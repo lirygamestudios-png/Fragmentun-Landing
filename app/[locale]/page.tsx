@@ -8,6 +8,7 @@ import { PageView } from "../../components/PageView";
 import { MotionEffects } from "../../components/MotionEffects";
 import { copy,locales,type Locale } from "../../lib/i18n";
 import { getBooks,getLocalizedContent } from "../../lib/content";
+import { fragmentunCoverEs } from "../../lib/officialAssets";
 
 export default async function Home({params}:{params:Promise<{locale:string}>}){
   const{locale:raw}=await params;
@@ -87,11 +88,13 @@ export default async function Home({params}:{params:Promise<{locale:string}>}){
 
           <div>
             <div className="bookStage">
-              <div className="bookPlaceholder">
-                <div><strong>FRAGMENTUN I</strong><p>{t.officialCover}</p></div>
-              </div>
+              {locale==="es"
+                ? <img className="officialBookCover" src={fragmentunCoverEs} alt="Portada oficial de FRAGMENTUN I: El Despertar Emocional de José Liranzo"/>
+                : <div className="bookPlaceholder"><div><strong>FRAGMENTUN I</strong><p>{t.officialCover}</p></div></div>}
             </div>
-            <p className="note">{t.officialCoverNote}</p>
+            <p className="note">{locale==="es"
+              ? "Portada oficial de la edición publicada."
+              : "English edition cover coming soon."}</p>
           </div>
         </div>
       </section>
