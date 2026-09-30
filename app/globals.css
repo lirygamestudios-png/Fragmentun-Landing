@@ -95,3 +95,5 @@ input{width:100%;background:#07101d;border:1px solid #ffffff25;color:white;paddi
 
 .adminFormGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.adminFormGrid input,.adminFormGrid select{width:100%;padding:11px;border-radius:10px;background:#07101d;color:white;border:1px solid #ffffff20}.adminTableWrap{overflow:auto}.adminTable{width:100%;border-collapse:collapse}.adminTable th,.adminTable td{text-align:left;padding:12px;border-bottom:1px solid #ffffff12}.adminTable th{color:var(--gold);font-size:.82rem;text-transform:uppercase;letter-spacing:.08em}
 @media(max-width:900px){.adminFormGrid{grid-template-columns:1fr 1fr}}@media(max-width:560px){.adminFormGrid{grid-template-columns:1fr}}
+
+.adminReviewGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.adminReviewGrid input,.adminReviewGrid textarea{width:100%;padding:11px;border-radius:10px;background:#07101d;color:white;border:1px solid #ffffff20}.adminReviewGrid textarea{grid-column:1/-1;min-height:120px}@media(max-width:700px){.adminReviewGrid{grid-template-columns:1fr}}
