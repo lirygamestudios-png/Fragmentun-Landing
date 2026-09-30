@@ -1,0 +1,27 @@
+name: CI Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://pasoapugmsazziflaomp.supabase.co
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_zmp738aV9F5KKpHyAktpAA_IO4MGfK1
+      NEXT_PUBLIC_SITE_URL: https://www.fragmentun.com
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install
+        run: npm install
+      - name: Build
+        run: npm run build
