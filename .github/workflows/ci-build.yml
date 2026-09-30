@@ -27,12 +27,12 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
-      - name: Commit lockfile if generated
+      - name: Commit lockfile changes
         run: |
-          if [ -f package-lock.json ] && ! git ls-files --error-unmatch package-lock.json >/dev/null 2>&1; then
+          if [ -f package-lock.json ] && ! git diff --quiet -- package-lock.json; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add package-lock.json
-            git commit -m "Add package-lock for deterministic deployments"
+            git commit -m "Update package-lock after dependency changes"
             git push origin HEAD:main
           fi
