@@ -1,0 +1,51 @@
+{
+  "name": "FRAGMENTUN Design Tokens",
+  "version": "1.0",
+  "colors": {
+    "navy": "#0A1628",
+    "gold": "#C9A84C",
+    "lumenBlue": "#4A90D9",
+    "shadowPurple": "#6A4EC7",
+    "background": "#050A12",
+    "textPrimary": "#E2E8F0",
+    "textSecondary": "#94A3B8",
+    "success": "#22C55E",
+    "warning": "#F59E0B",
+    "error": "#EF4444"
+  },
+  "typography": {
+    "display": "Cinzel",
+    "body": "Inter"
+  },
+  "radii": {
+    "sm": 8,
+    "md": 12,
+    "lg": 20,
+    "xl": 24,
+    "pill": 999
+  },
+  "spacing": [
+    4,
+    8,
+    12,
+    16,
+    24,
+    32,
+    48,
+    64,
+    96,
+    128
+  ],
+  "motion": {
+    "micro": "180ms",
+    "hover": "260ms",
+    "reveal": "420ms",
+    "easing": "cubic-bezier(.2,.8,.2,1)"
+  },
+  "breakpoints": {
+    "mobile": 390,
+    "tablet": 768,
+    "desktop": 1024,
+    "wide": 1440
+  }
+}
