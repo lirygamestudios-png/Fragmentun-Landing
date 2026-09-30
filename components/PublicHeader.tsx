@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import type { Locale } from "../lib/i18n";
 import { copy } from "../lib/i18n";
@@ -7,6 +8,7 @@ import { TrackLink } from "./TrackLink";
 
 export function PublicHeader({locale,amazonUrl}:{locale:Locale;amazonUrl?:string|null}){
   const t=copy[locale];
+  const pathname=usePathname();
   const[open,setOpen]=useState(false);
   const items=[
     [t.nav.story,`/${locale}#historia`],
@@ -17,12 +19,23 @@ export function PublicHeader({locale,amazonUrl}:{locale:Locale;amazonUrl?:string
     [t.nav.author,`/${locale}#autor`]
   ];
 
+  const localizedPath=(target:Locale)=>{
+    if(!pathname)return `/${target}`;
+    const parts=pathname.split("/").filter(Boolean);
+    if(parts[0]==="es"||parts[0]==="en") parts[0]=target;
+    else parts.unshift(target);
+    return "/"+parts.join("/");
+  };
+
   return <header className="header">
     <div className="container headerInner">
       <Link className="logo" href={`/${locale}`}>FRAGMENTUN</Link>
       <nav className="nav">{items.map(([label,href])=><Link key={href} href={href}>{label}</Link>)}</nav>
       <div className="headerActions">
-        <div className="lang"><Link className={locale==="es"?"active":""} href="/es">ES</Link><Link className={locale==="en"?"active":""} href="/en">EN</Link></div>
+        <div className="lang">
+          <Link className={locale==="es"?"active":""} href={localizedPath("es")}>ES</Link>
+          <Link className={locale==="en"?"active":""} href={localizedPath("en")}>EN</Link>
+        </div>
         {amazonUrl
           ? <TrackLink className="btn btnPrimary desktopBuy" href={amazonUrl} eventName="amazon_click" locale={locale} newTab>{t.buy}</TrackLink>
           : <span className="btn btnGhost desktopBuy">{locale==="es"?"Próximamente":"Coming soon"}</span>}
