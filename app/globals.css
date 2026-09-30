@@ -92,3 +92,6 @@ input{width:100%;background:#07101d;border:1px solid #ffffff25;color:white;paddi
 
 .adminSmallArea{width:100%;min-height:110px;background:#07101d;color:white;border:1px solid #ffffff20;border-radius:10px;padding:10px;font:inherit}.adminQuestionList{display:grid;gap:18px}.adminOptionGrid{display:grid;gap:8px;margin-top:16px}.adminOption{display:grid;grid-template-columns:1fr 1fr auto;gap:8px}.adminOption input{background:#07101d;color:white;border:1px solid #ffffff20;border-radius:9px;padding:9px}
 @media(max-width:800px){.adminOption{grid-template-columns:1fr}}
+
+.adminFormGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.adminFormGrid input,.adminFormGrid select{width:100%;padding:11px;border-radius:10px;background:#07101d;color:white;border:1px solid #ffffff20}.adminTableWrap{overflow:auto}.adminTable{width:100%;border-collapse:collapse}.adminTable th,.adminTable td{text-align:left;padding:12px;border-bottom:1px solid #ffffff12}.adminTable th{color:var(--gold);font-size:.82rem;text-transform:uppercase;letter-spacing:.08em}
+@media(max-width:900px){.adminFormGrid{grid-template-columns:1fr 1fr}}@media(max-width:560px){.adminFormGrid{grid-template-columns:1fr}}
