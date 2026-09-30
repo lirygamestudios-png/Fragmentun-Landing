@@ -171,3 +171,25 @@ Reglas:
 - Labels reales en formularios.
 - Alt text en imágenes.
 - Audio del mapa desactivado por defecto.
+
+
+## 13. Sistema bilingüe ES/EN
+FRAGMENTUN se diseña desde el inicio para español e inglés.
+
+Reglas UI:
+- Selector persistente: ES | EN.
+- Ningún componente puede depender de una longitud fija de texto.
+- Botones deben tolerar expansión de copy de al menos 35%.
+- Cards deben usar alturas flexibles cuando sea posible.
+- Evitar texto incrustado dentro de imágenes cuando deba traducirse.
+- Títulos cinematográficos pueden tener saltos de línea controlados por locale.
+- Formularios, errores, vacíos, tooltips y microcopy son localizables.
+
+Reglas tipográficas:
+- Mantener Cinzel + Inter en ambos idiomas.
+- Verificar kerning y saltos de línea por locale.
+- No reducir tipografía por debajo de mínimos de accesibilidad para compensar traducciones largas.
+
+Assets:
+- Portada oficial por edición/idioma cuando exista.
+- Nunca traducir o regenerar visualmente una portada oficial publicada.
