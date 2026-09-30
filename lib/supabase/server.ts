@@ -1,11 +1,10 @@
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-// VERCEL_SYNC_2026_09_30
 type CookieToSet = {
   name: string;
   value: string;
-  options: CookieOptions;
+  options?: any;
 };
 
 export async function createSupabaseServerClient() {
@@ -21,10 +20,12 @@ export async function createSupabaseServerClient() {
         },
         setAll(items: CookieToSet[]) {
           try {
-            items.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {}
+            items.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options);
+            });
+          } catch {
+            // Cookie writes are not always allowed in Server Components.
+          }
         },
       },
     }
