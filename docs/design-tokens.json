@@ -1,6 +1,6 @@
 {
   "name": "FRAGMENTUN Design Tokens",
-  "version": "1.0",
+  "version": "1.1",
   "colors": {
     "navy": "#0A1628",
     "gold": "#C9A84C",
@@ -47,5 +47,14 @@
     "tablet": 768,
     "desktop": 1024,
     "wide": 1440
+  },
+  "i18n": {
+    "defaultLocale": "es",
+    "locales": [
+      "es",
+      "en"
+    ],
+    "localeSwitcher": "ES | EN",
+    "maxCopyExpansionTarget": 1.35
   }
 }
