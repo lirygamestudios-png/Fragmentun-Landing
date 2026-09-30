@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { notFound } from "next/navigation";
 import { PublicHeader } from "../../components/PublicHeader";
 import { LeadForm } from "../../components/LeadForm";
