@@ -3,39 +3,91 @@
 import { useMemo,useState } from "react";
 import type { Locale } from "../lib/i18n";
 
-type Option={id:string;label_es:string;label_en:string;score_key:"vorax"|"umbral"|"ethelis"|"nara";score_value:number};
-type Question={id:string;prompt_es:string;prompt_en:string;sort_order:number;test_options:Option[]};
-type Profile={profile_key:string;name_es:string;name_en:string;description_es:string;description_en:string;superpower_es:string;superpower_en:string;color:string|null};
+type ScoreKey="vorax"|"umbral"|"ethelis"|"nara";
+type Option={
+  id:string;
+  label_es:string;
+  label_en:string;
+  score_key:ScoreKey;
+  score_value:number;
+  sort_order:number;
+};
+type Question={
+  id:string;
+  prompt_es:string;
+  prompt_en:string;
+  sort_order:number;
+  test_options:Option[];
+};
+type Profile={
+  profile_key:string;
+  name_es:string;
+  name_en:string;
+  description_es:string;
+  description_en:string;
+  superpower_es:string;
+  superpower_en:string;
+  color:string|null;
+};
 
 export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questions:Question[];profiles:Profile[]}) {
   const [started,setStarted]=useState(false);
   const [index,setIndex]=useState(0);
-  const [scores,setScores]=useState({vorax:0,umbral:0,ethelis:0,nara:0});
+  const [scores,setScores]=useState<Record<ScoreKey,number>>({vorax:0,umbral:0,ethelis:0,nara:0});
   const [done,setDone]=useState(false);
 
   const profileMap=useMemo(()=>Object.fromEntries(profiles.map(p=>[p.profile_key,p])),[profiles]);
 
+  function track(event_name:string,metadata?:Record<string,unknown>){
+    fetch("/api/analytics",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        event_name,
+        locale,
+        path:`/${locale}/test`,
+        metadata
+      }),
+      keepalive:true
+    }).catch(()=>{});
+  }
+
+  function start(){
+    if(!questions.length)return;
+    setStarted(true);
+    track("test_start",{question_count:questions.length});
+  }
+
   function choose(option:Option){
     const next={...scores,[option.score_key]:scores[option.score_key]+(option.score_value||1)};
     setScores(next);
-    fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-      event_name:index===0?"test_start":"map_interaction",locale,path:`/${locale}/test`,metadata:{question:index+1}
-    }),keepalive:true}).catch(()=>{});
+
     if(index>=questions.length-1){
       setDone(true);
-      fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-        event_name:"test_complete",locale,path:`/${locale}/test`,metadata:{scores:next}
-      }),keepalive:true}).catch(()=>{});
-    } else setIndex(index+1);
+      track("test_complete",{scores:next,question_count:questions.length});
+    }else{
+      setIndex(index+1);
+    }
   }
 
   const resultKey=useMemo(()=>{
-    const entries=Object.entries(scores) as [keyof typeof scores,number][];
+    const entries=Object.entries(scores) as [ScoreKey,number][];
     const max=Math.max(...entries.map(([,v])=>v));
     const winners=entries.filter(([,v])=>v===max);
     return winners.length===1?winners[0][0]:"balance";
   },[scores]);
+
   const result=profileMap[resultKey];
+
+  if(!questions.length){
+    return <section className="testPanel">
+      <div className="kicker">{locale==="es"?"Experiencia narrativa":"Narrative experience"}</div>
+      <h1>{locale==="es"?"El test está siendo preparado":"The test is being prepared"}</h1>
+      <p className="lead">{locale==="es"
+        ?"Las preguntas no están disponibles temporalmente. Vuelve a intentarlo más tarde."
+        :"The questions are temporarily unavailable. Please try again later."}</p>
+    </section>;
+  }
 
   if(!started){
     return <section className="testPanel">
@@ -44,7 +96,7 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
       <p className="lead">{locale==="es"
         ?"Responde 12 preguntas y descubre con qué territorio emocional de FRAGMENTUN tienes mayor afinidad. Es una experiencia narrativa de entretenimiento, no una evaluación clínica."
         :"Answer 12 questions and discover which FRAGMENTUN emotional territory you align with most. This is a narrative entertainment experience, not a clinical assessment."}</p>
-      <button className="btn btnPrimary" onClick={()=>setStarted(true)}>{locale==="es"?"Comenzar el test":"Start the test"}</button>
+      <button className="btn btnPrimary" onClick={start}>{locale==="es"?"Comenzar el test":"Start the test"}</button>
     </section>;
   }
 
@@ -60,19 +112,28 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
           <span>{scores[key]}</span>
         </div>)}
       </div>
-      <button className="btn btnGhost" onClick={()=>{setStarted(false);setDone(false);setIndex(0);setScores({vorax:0,umbral:0,ethelis:0,nara:0})}}>
+      <button className="btn btnGhost" onClick={()=>{
+        setStarted(false);
+        setDone(false);
+        setIndex(0);
+        setScores({vorax:0,umbral:0,ethelis:0,nara:0});
+      }}>
         {locale==="es"?"Repetir test":"Retake test"}
       </button>
     </section>;
   }
 
   const q=questions[index];
+  if(!q)return null;
+
+  const orderedOptions=[...(q.test_options||[])].sort((a,b)=>(a.sort_order??0)-(b.sort_order??0));
+
   return <section className="testPanel">
     <div className="testProgress"><span style={{width:`${((index+1)/questions.length)*100}%`}}/></div>
     <div className="note">{locale==="es"?"Pregunta":"Question"} {index+1} / {questions.length}</div>
     <h2>{locale==="es"?q.prompt_es:q.prompt_en}</h2>
     <div className="testOptions">
-      {q.test_options.sort((a,b)=>a.id.localeCompare(b.id)).map(option=><button key={option.id} className="testOption" onClick={()=>choose(option)}>
+      {orderedOptions.map(option=><button key={option.id} className="testOption" onClick={()=>choose(option)}>
         {locale==="es"?option.label_es:option.label_en}
       </button>)}
     </div>
