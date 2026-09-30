@@ -27,6 +27,9 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+      - name: Vercel CLI local build
+        run: npx --yes vercel@latest build --yes
+        continue-on-error: true
       - name: Commit lockfile if generated
         run: |
           if [ -f package-lock.json ] && ! git ls-files --error-unmatch package-lock.json >/dev/null 2>&1; then
