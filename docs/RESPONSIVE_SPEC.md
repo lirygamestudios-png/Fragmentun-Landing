@@ -116,3 +116,14 @@ Mobile: 1 o 2 compactos.
 - Lazy-load debajo del fold.
 - Imágenes de mapa divididas por capas.
 - Priorizar LCP del hero.
+
+
+## Consideraciones responsive para ES/EN
+- Diseñar contra el copy más largo entre ES y EN.
+- CTA mobile debe permitir 2 líneas sin romper altura táctil.
+- Menús deben aceptar etiquetas más largas en inglés.
+- Accordions y cards usan altura automática.
+- Test: opciones largas pueden ocupar múltiples líneas.
+- Mapa: tooltips y bottom sheets deben crecer verticalmente.
+- Evitar layouts donde el texto dependa de una sola línea fija.
+- QA obligatorio en 390 px, 768 px y 1440 px para ambos idiomas.
