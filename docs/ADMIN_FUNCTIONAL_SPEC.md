@@ -170,3 +170,36 @@ Registrar:
 - CSRF.
 - Sanitización de contenido.
 - Backups.
+
+
+## 15. Gestión multilingüe ES/EN
+Todo contenido público traducible debe tener pestañas o columnas:
+- ES
+- EN
+
+Campos administrativos por contenido:
+- estado_traduccion_es
+- estado_traduccion_en
+- revisado_por
+- fecha_revision
+
+Estados por idioma:
+- Pendiente
+- Traducido
+- Revisado
+- Publicado
+
+Funciones:
+- Filtrar contenido con traducción pendiente.
+- Duplicar estructura ES → EN sin copiarla como traducción final.
+- Vista previa por idioma.
+- Publicar un idioma sin obligar a publicar el otro cuando la estrategia lo requiera.
+- Advertencia antes de publicar si faltan campos críticos.
+- SEO por idioma.
+- CTA y URL Amazon por idioma.
+- Segmento MailerLite por idioma.
+- Reseñas localizadas solo cuando exista traducción autorizada.
+
+Dashboard:
+- Filtro ES / EN / Todos.
+- Métricas segmentadas por locale.
