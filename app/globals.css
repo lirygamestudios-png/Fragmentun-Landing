@@ -199,3 +199,10 @@ input{width:100%;background:#07101d;border:1px solid #ffffff25;color:white;paddi
   }
   .bookStage{transform:none!important}
 }
+
+.adminCardLink{
+  display:block;
+  color:inherit;
+  text-decoration:none
+}
+.adminCardLink:hover h3{color:var(--gold)}
