@@ -25,6 +25,9 @@ jobs:
           node-version: 20
       - name: Install
         run: npm install
+      - name: Type check diagnostic
+        run: npx tsc --noEmit
+        continue-on-error: true
       - name: Build
         run: npm run build
       - name: Commit lockfile changes
