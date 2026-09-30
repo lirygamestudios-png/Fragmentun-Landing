@@ -122,3 +122,50 @@ Salida:
 - Captura de email funcional.
 - Mobile first funcional.
 - Lighthouse objetivo: 90+ en Performance/Accessibility/SEO cuando sea razonable.
+
+
+## Internacionalización ES/EN — decisión arquitectónica
+La internacionalización se implementa antes de construir los componentes finales.
+
+### Rutas
+- /es/...
+- /en/...
+
+### Requisitos técnicos
+- Locale como parte explícita de la ruta.
+- Diccionarios/UI separados del contenido editorial.
+- CMS con campos localizados ES/EN.
+- Metadata y hreflang por idioma.
+- Persistencia de preferencia del usuario.
+- Eventos analytics incluyen locale.
+- MailerLite recibe locale.
+- URLs Amazon configurables por locale.
+
+### Estructura sugerida actualizada
+/app
+  /[locale]
+    page.tsx
+    universo/
+    personajes/
+    saga/
+    test/
+    mapa/
+    autor/
+    comunidad/
+  /admin
+    ...
+/messages
+  es.json
+  en.json
+
+Locales soportados iniciales:
+- es
+- en
+
+### QA adicional
+- Navegación ES/EN.
+- Fallbacks.
+- SEO internacional.
+- Emails por idioma.
+- Longitud de copy.
+- Formularios preservan locale.
