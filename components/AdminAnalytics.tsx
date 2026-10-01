@@ -19,6 +19,8 @@ export function AdminAnalytics(){
       <div className="kpi"><span>Conversión visita → lead</span><strong>{pct(data.conversion_rate)}</strong></div>
       <div className="kpi"><span>Clics Amazon</span><strong>{t.amazon_click||0}</strong></div>
       <div className="kpi"><span>CTR Amazon</span><strong>{pct(data.amazon_ctr)}</strong></div>
+      <div className="kpi"><span>Clics Patreon</span><strong>{t.patreon_click||0}</strong></div>
+      <div className="kpi"><span>CTR Patreon</span><strong>{pct(data.patreon_ctr)}</strong></div>
       <div className="kpi"><span>Test completados</span><strong>{t.test_complete||0}</strong></div>
     </div>
 
@@ -33,18 +35,18 @@ export function AdminAnalytics(){
 
     <div className="card" style={{marginTop:24}}>
       <h2>Conversión por fuente</h2>
-      <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Fuente</th><th>Visitas</th><th>Leads</th><th>Conv.</th><th>Amazon</th><th>CTR Amazon</th></tr></thead><tbody>
+      <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Fuente</th><th>Visitas</th><th>Leads</th><th>Conv.</th><th>Amazon</th><th>CTR Amazon</th><th>Patreon</th></tr></thead><tbody>
         {(data.by_source||[]).map((r:any)=><tr key={r.source}>
-          <td>{r.source}</td><td>{r.visits}</td><td>{r.leads}</td><td>{pct(r.conversion)}</td><td>{r.amazonClicks}</td><td>{pct(r.amazon_ctr)}</td>
+          <td>{r.source}</td><td>{r.visits}</td><td>{r.leads}</td><td>{pct(r.conversion)}</td><td>{r.amazonClicks}</td><td>{pct(r.amazon_ctr)}</td><td>{r.patreonClicks||0}</td>
         </tr>)}
       </tbody></table></div>
     </div>
 
     <div className="card" style={{marginTop:24}}>
       <h2>Rendimiento por idioma</h2>
-      <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Idioma</th><th>Visitas</th><th>Leads</th><th>Conv.</th><th>Amazon</th></tr></thead><tbody>
+      <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Idioma</th><th>Visitas</th><th>Leads</th><th>Conv.</th><th>Amazon</th><th>Patreon</th></tr></thead><tbody>
         {(data.by_locale||[]).map((r:any)=><tr key={r.locale}>
-          <td>{String(r.locale).toUpperCase()}</td><td>{r.visits}</td><td>{r.leads}</td><td>{pct(r.conversion)}</td><td>{r.amazonClicks}</td>
+          <td>{String(r.locale).toUpperCase()}</td><td>{r.visits}</td><td>{r.leads}</td><td>{pct(r.conversion)}</td><td>{r.amazonClicks}</td><td>{r.patreonClicks||0}</td>
         </tr>)}
       </tbody></table></div>
     </div>
