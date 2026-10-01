@@ -56,6 +56,23 @@ jobs:
             exit 1
           fi
 
+          assert_status() {
+            local expected="$1"
+            local url="$2"
+            shift 2
+            local actual
+            actual="$(curl -sS -o /tmp/contract-body.txt -w '%{http_code}' "$@" "$url")"
+            echo "$url -> HTTP $actual (expected $expected)"
+            if [ "$actual" != "$expected" ]; then
+              echo "Response body:"
+              cat /tmp/contract-body.txt || true
+              echo
+              echo "Server log tail:"
+              tail -n 80 /tmp/fragmentun-next.log || true
+              exit 1
+            fi
+          }
+
           # Public pages and funnel
           curl -fsS http://127.0.0.1:3000/es >/dev/null
           curl -fsS http://127.0.0.1:3000/en >/dev/null
@@ -68,22 +85,22 @@ jobs:
           curl -fsS http://127.0.0.1:3000/admin/forgot-password >/dev/null
           curl -fsS http://127.0.0.1:3000/admin/reset-password >/dev/null
 
-          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/404-test-route)" = "404"
-          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/go/amazon)" = "302"
-          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/go/patreon)" = "302"
+          assert_status 404 http://127.0.0.1:3000/404-test-route
+          assert_status 302 http://127.0.0.1:3000/go/amazon
+          assert_status 302 http://127.0.0.1:3000/go/patreon
 
-          # Backend contracts: reject invalid/unauthorized input without creating real data
-          test "$(curl -s -o /tmp/login.json -w '%{http_code}'             -X POST http://127.0.0.1:3000/api/auth/login             -H 'Content-Type: application/json'             --data '{"email":"bad","password":""}')" = "400"
+          # Backend contracts: invalid/unauthorized input only; no real data generated
+          assert_status 400 http://127.0.0.1:3000/api/auth/login             -X POST -H 'Content-Type: application/json'             --data '{"email":"bad","password":""}'
 
-          test "$(curl -s -o /tmp/forgot.json -w '%{http_code}'             -X POST http://127.0.0.1:3000/api/auth/forgot-password             -H 'Content-Type: application/json'             --data '{"email":"not-an-email"}')" = "200"
+          assert_status 200 http://127.0.0.1:3000/api/auth/forgot-password             -X POST -H 'Content-Type: application/json'             --data '{"email":"not-an-email"}'
 
-          test "$(curl -s -o /tmp/reset.json -w '%{http_code}'             -X POST http://127.0.0.1:3000/api/auth/update-password             -H 'Content-Type: application/json'             --data '{"password":"short"}')" = "400"
+          assert_status 400 http://127.0.0.1:3000/api/auth/update-password             -X POST -H 'Content-Type: application/json'             --data '{"password":"short"}'
 
-          test "$(curl -s -o /tmp/analytics.json -w '%{http_code}'             -X POST http://127.0.0.1:3000/api/analytics             -H 'Content-Type: application/json'             --data '{"event_name":"not_allowed","path":"/es"}')" = "400"
+          assert_status 400 http://127.0.0.1:3000/api/analytics             -X POST -H 'Content-Type: application/json'             --data '{"event_name":"not_allowed","path":"/es"}'
 
-          test "$(curl -s -o /tmp/subscribe.json -w '%{http_code}'             -X POST http://127.0.0.1:3000/api/subscribe             -H 'Origin: https://evil.example'             -H 'Host: 127.0.0.1:3000'             -H 'Content-Type: application/x-www-form-urlencoded'             --data 'email=test%40example.com&consent_marketing=yes')" = "403"
+          assert_status 403 http://127.0.0.1:3000/api/subscribe             -X POST             -H 'Origin: https://evil.example'             -H 'Content-Type: application/x-www-form-urlencoded'             --data 'email=test%40example.com&consent_marketing=yes'
 
-          test "$(curl -s -o /tmp/admin-status.json -w '%{http_code}'             http://127.0.0.1:3000/api/admin/status)" = "403"
+          assert_status 403 http://127.0.0.1:3000/api/admin/status
 
       - name: Commit lockfile changes
         run: |
