@@ -12,6 +12,7 @@ export function AdminAnalytics(){
   const t=data.totals||{};
   const ml=data.mailerlite||{};
   const tp=data.test_profiles||{};
+  const experiments=data.experiments||{};
 
   return <div>
     <div className="kpis">
@@ -24,6 +25,20 @@ export function AdminAnalytics(){
       <div className="kpi"><span>CTR Patreon</span><strong>{pct(data.patreon_ctr)}</strong></div>
       <div className="kpi"><span>Test completados</span><strong>{t.test_complete||0}</strong></div>
     </div>
+
+    {Object.keys(experiments).length>0&&<div className="card" style={{marginTop:24}}>
+      <h2>Experimentos A/B</h2>
+      <div className="adminTableWrap"><table className="adminTable">
+        <thead><tr><th>Experimento</th><th>Variante</th><th>Vistas</th><th>Leads</th><th>Conversión</th></tr></thead>
+        <tbody>{Object.entries(experiments).flatMap(([exp,v]:any)=>
+          Array.from(new Set([...Object.keys(v.views||{}),...Object.keys(v.leads||{})])).map((variant:any)=>{
+            const views=v.views?.[variant]||0;
+            const leads=v.leads?.[variant]||0;
+            return <tr key={exp+variant}><td>{exp}</td><td>{variant}</td><td>{views}</td><td>{leads}</td><td>{pct(views?leads/views*100:0)}</td></tr>
+          })
+        )}</tbody>
+      </table></div>
+    </div>}
 
     <div className="card" style={{marginTop:24}}>
       <h2>Perfiles del Test Emocional</h2>
