@@ -220,3 +220,12 @@ input{width:100%;background:#07101d;border:1px solid #ffffff25;color:white;paddi
 .reviewQuote{font-size:1.04rem;line-height:1.75;color:#d9e2ec}
 .reviewSource{display:inline-block;margin-top:10px;color:var(--gold);font-weight:700;text-decoration:none}
 .reviewSource:hover{text-decoration:underline}
+
+
+/* Lead capture and privacy */
+.consentRow{display:flex;align-items:flex-start;gap:12px;font-size:.9rem;line-height:1.45;color:var(--muted)}
+.consentRow input{width:18px;height:18px;margin-top:2px;flex:0 0 auto}
+.consentRow a{text-decoration:underline;text-underline-offset:3px}
+.hpField{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}
+.privacyCard h2{margin-top:1.7rem}
+.privacyCard h2:first-child{margin-top:0}
