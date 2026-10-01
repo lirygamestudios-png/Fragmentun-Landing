@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "../../lib/supabase/server";
+import { LogoutButton } from "../../components/LogoutButton";
 
 export default async function AdminPage(){
   const supabase=await createSupabaseServerClient();
@@ -42,8 +43,9 @@ export default async function AdminPage(){
         {nav.map(([label,href])=><a key={href} href={href}>{label}</a>)}
       </nav>
 
-      <div style={{marginTop:22}}>
+      <div style={{marginTop:22,display:"grid",gap:10}}>
         <a className="btn btnGhost" href="/es" target="_blank" rel="noreferrer">Ver sitio</a>
+        <LogoutButton/>
       </div>
     </aside>
 
