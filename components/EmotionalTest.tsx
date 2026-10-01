@@ -50,6 +50,10 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
         event_name,
         locale,
         path:`/${locale}/test`,
+        source:sessionStorage.getItem("utm_source")||"",
+        medium:sessionStorage.getItem("utm_medium")||"",
+        campaign:sessionStorage.getItem("utm_campaign")||"",
+        content:sessionStorage.getItem("utm_content")||"",
         metadata
       }),
       keepalive:true
@@ -131,8 +135,12 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
           <input type="hidden" name="emotional_profile" value={resultKey}/>
           <input type="hidden" name="emotional_scores" value={JSON.stringify(scores)}/>
           <input type="hidden" name="consent_version" value="2026-09-30"/>
-          <input name="name" value={name} onChange={e=>setName(e.target.value)} placeholder={locale==="es"?"Tu nombre (opcional)":"Your name (optional)"}/>
-          <input name="email" type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder={locale==="es"?"Tu correo electrónico":"Your email"} required/>
+          <input type="hidden" name="utm_source" value={typeof window!=="undefined"?sessionStorage.getItem("utm_source")||"":""}/>
+          <input type="hidden" name="utm_medium" value={typeof window!=="undefined"?sessionStorage.getItem("utm_medium")||"":""}/>
+          <input type="hidden" name="utm_campaign" value={typeof window!=="undefined"?sessionStorage.getItem("utm_campaign")||"":""}/>
+          <input type="hidden" name="utm_content" value={typeof window!=="undefined"?sessionStorage.getItem("utm_content")||"":""}/>
+          <input aria-label={locale==="es"?"Tu nombre":"Your name"} name="name" value={name} onChange={e=>setName(e.target.value)} placeholder={locale==="es"?"Tu nombre (opcional)":"Your name (optional)"}/>
+          <input aria-label={locale==="es"?"Tu correo electrónico":"Your email"} name="email" type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder={locale==="es"?"Tu correo electrónico":"Your email"} required/>
           <label className="consentRow">
             <input name="consent_marketing" type="checkbox" value="yes" checked={consent} onChange={e=>setConsent(e.target.checked)} required/>
             <span>
