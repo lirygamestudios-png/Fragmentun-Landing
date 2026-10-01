@@ -125,6 +125,8 @@ jobs:
 
           assert_status 403 http://127.0.0.1:3000/api/admin/status
 
+          assert_status 403 http://127.0.0.1:3000/api/admin/backup
+
           assert_status 403 http://127.0.0.1:3000/api/admin/leads/delete             -X POST -H 'Content-Type: application/json'             --data '{"id":"00000000-0000-0000-0000-000000000000","confirmation":"DELETE"}'
 
       - name: Commit lockfile changes
