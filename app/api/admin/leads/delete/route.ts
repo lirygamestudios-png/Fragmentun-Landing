@@ -55,16 +55,36 @@ export async function POST(request:NextRequest){
     }
   }
 
+  if(mailerliteMessage){
+    await supabase.from("integration_logs").insert({
+      integration:"privacy",
+      event_type:"lead_delete",
+      status:"error",
+      entity_type:"lead",
+      entity_id:id,
+      message:mailerliteMessage,
+      metadata:{
+        mailerlite_forget_attempted:true,
+        mailerlite_forgotten:false
+      }
+    });
+
+    return NextResponse.json({
+      ok:false,
+      error:"mailerlite_forget_failed"
+    },{status:502});
+  }
+
   const{error:deleteError}=await supabase.from("leads").delete().eq("id",id);
   if(deleteError)return NextResponse.json({error:"delete_failed"},{status:500});
 
   await supabase.from("integration_logs").insert({
     integration:"privacy",
     event_type:"lead_delete",
-    status:mailerliteMessage?"error":"success",
+    status:"success",
     entity_type:"lead",
     entity_id:id,
-    message:mailerliteMessage,
+    message:null,
     metadata:{
       mailerlite_forget_attempted:!!(token&&lead.mailerlite_subscriber_id),
       mailerlite_forgotten:mailerliteForgotten
@@ -73,7 +93,6 @@ export async function POST(request:NextRequest){
 
   return NextResponse.json({
     ok:true,
-    mailerlite_forgotten:mailerliteForgotten,
-    warning:mailerliteMessage
+    mailerlite_forgotten:mailerliteForgotten
   });
 }
