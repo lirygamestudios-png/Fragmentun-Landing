@@ -93,7 +93,7 @@ Estado: **IMPLEMENTADO**
 - Gestión de usuarios internos.
 
 ### Fase 6 — QA
-Estado: **EN CIERRE**
+Estado: **IMPLEMENTADA EN CÓDIGO / VALIDACIÓN EN PRODUCCIÓN PENDIENTE**
 Completado:
 - Builds CI en GitHub.
 - Errores visibles en formulario.
@@ -111,10 +111,16 @@ Completado:
 - Sitemap.
 - Robots.
 - Supabase Security Advisor: 0 avisos.
-- Dependencias críticas en revisión con overrides de seguridad.
+- Dependencias críticas fijadas en lockfile con overrides de seguridad.
+- Health endpoint.
+- Smoke tests automáticos del funnel.
+- Headers HTTP de seguridad.
+- Endurecimiento de APIs públicas.
+- Persistencia UTM cross-page.
+- Experimento A/B del CTA de Capítulo 1.
+- Dashboard de experimentos A/B.
 
 Pendiente QA:
-- Confirmar CI final con overrides de `sharp` y `postcss`.
 - Prueba end-to-end en entorno desplegado.
 - Lighthouse real.
 - Pruebas móvil / tablet / desktop en navegador real.
@@ -122,8 +128,10 @@ Pendiente QA:
 - Prueba de clics Amazon / Patreon en producción.
 
 ### Fase 7 — Producción
-Estado: **PAUSADA HASTA TERMINAR DESARROLLO**
+Estado: **PAUSADA HASTA VOLVER A VERCEL / INTEGRACIONES EXTERNAS**
 - Vercel: pendiente por decisión del proyecto.
+- Aprovisionar primer usuario Auth/admin_profile.
+- MailerLite: token + grupos + automatización ES/EN.
 - Variables de entorno de producción.
 - Dominio.
 - DNS.
@@ -169,3 +177,28 @@ Implementado:
 
 Pendiente:
 - Contenido editorial inglés completo donde aún no exista una edición aprobada.
+
+
+## Estado previo a volver a Vercel
+
+### Terminado
+- CI verde sobre la base funcional principal.
+- Supabase Security Advisor: 0 alertas.
+- Edge Functions activas.
+- Captación y analytics preparados.
+- Amazon y Patreon rastreables.
+- Health endpoint.
+- Smoke tests.
+- A/B testing.
+- Runbook de producción.
+- Guía MailerLite.
+- Guía de primer acceso admin.
+
+### Requiere acción externa / credencial
+- MailerLite API token.
+- IDs de grupos MailerLite ES/EN.
+- Configuración de automatizaciones en MailerLite.
+- Primer usuario Supabase Auth + admin_profile.
+- Despliegue Vercel.
+- Dominio/DNS/SSL.
+- Lighthouse y pruebas de navegador sobre entorno real.
