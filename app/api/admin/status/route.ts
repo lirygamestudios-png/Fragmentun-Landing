@@ -10,18 +10,19 @@ async function admin(){
 }
 
 export async function GET(){
+  const env=(upper:string,lower:string)=>process.env[upper]||process.env[lower]||"";
   const x=await admin();
   if(!x.ok)return NextResponse.json({error:"forbidden"},{status:403});
 
   const checks=[
     {key:"supabase_url",label:"Supabase URL",ok:!!process.env.NEXT_PUBLIC_SUPABASE_URL,required:true},
     {key:"supabase_key",label:"Supabase publishable key",ok:!!process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,required:true},
-    {key:"site_url",label:"URL pública del sitio",ok:!!process.env.NEXT_PUBLIC_SITE_URL,required:true},
-    {key:"patreon",label:"Patreon",ok:!!process.env.NEXT_PUBLIC_PATREON_URL,required:false},
-    {key:"instagram",label:"Instagram oficial",ok:!!process.env.NEXT_PUBLIC_INSTAGRAM_URL,required:false},
-    {key:"youtube",label:"YouTube oficial",ok:!!process.env.NEXT_PUBLIC_YOUTUBE_URL,required:false},
-    {key:"facebook",label:"Facebook oficial",ok:!!process.env.NEXT_PUBLIC_FACEBOOK_URL,required:false},
-    {key:"facebook_community",label:"Comunidad Facebook",ok:!!process.env.NEXT_PUBLIC_FACEBOOK_COMMUNITY_URL,required:false},
+    {key:"site_url",label:"URL pública del sitio",ok:!!env("NEXT_PUBLIC_SITE_URL","next_public_site_url"),required:true},
+    {key:"patreon",label:"Patreon",ok:!!env("NEXT_PUBLIC_PATREON_URL","next_public_patreon_url"),required:false},
+    {key:"instagram",label:"Instagram oficial",ok:!!env("NEXT_PUBLIC_INSTAGRAM_URL","next_public_instagram_url"),required:false},
+    {key:"youtube",label:"YouTube oficial",ok:!!env("NEXT_PUBLIC_YOUTUBE_URL","next_public_youtube_url"),required:false},
+    {key:"facebook",label:"Facebook oficial",ok:!!env("NEXT_PUBLIC_FACEBOOK_URL","next_public_facebook_url"),required:false},
+    {key:"facebook_community",label:"Comunidad Facebook",ok:!!env("NEXT_PUBLIC_FACEBOOK_COMMUNITY_URL","next_public_facebook_community_url"),required:false},
     {key:"mailerlite_token",label:"MailerLite API token",ok:!!process.env.MAILERLITE_API_TOKEN,required:true},
     {key:"mailerlite_es",label:"MailerLite grupo ES",ok:!!process.env.MAILERLITE_GROUP_FRAGMENTUN_CAP1_ES,required:true},
     {key:"mailerlite_en",label:"MailerLite grupo EN",ok:!!process.env.MAILERLITE_GROUP_FRAGMENTUN_CAP1_EN,required:false}
