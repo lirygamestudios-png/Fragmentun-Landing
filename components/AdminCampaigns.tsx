@@ -13,7 +13,14 @@ export function AdminCampaigns(){
  function emailAmazon(r:any){const u=new URL("https://www.fragmentun.com/go/amazon");u.searchParams.set("locale",r.locale||"es");u.searchParams.set("utm_source",r.source||"email");u.searchParams.set("utm_medium",r.medium||"email");if(r.campaign)u.searchParams.set("utm_campaign",r.campaign);if(r.content)u.searchParams.set("utm_content",r.content);return u.toString()}
  async function copyAmazon(r:any){await navigator.clipboard.writeText(emailAmazon(r));setMsg("URL Amazon rastreable copiada ✓")}
  return <div>
-   <div className="card"><h2>Nueva campaña</h2><div className="adminFormGrid">
+   <div className="card">
+     <h2>Presets rápidos</h2>
+     <div className="heroActions">
+       {presets.map(p=><button key={p.label} className="btn btnGhost" onClick={()=>setForm({...form,...p,code:`${p.source}_${Date.now()}`})}>{p.label}</button>)}
+     </div>
+     <p className="note">Usa una nomenclatura consistente para comparar canales sin fragmentar los datos.</p>
+   </div>
+   <div className="card" style={{marginTop:22}}><h2>Nueva campaña</h2><div className="adminFormGrid">
      {["code","source","medium","campaign","content","destination_url"].map(k=><input key={k} placeholder={k} value={form[k]} onChange={e=>setForm({...form,[k]:e.target.value})}/>)}
      <select value={form.locale} onChange={e=>setForm({...form,locale:e.target.value})}><option value="es">ES</option><option value="en">EN</option></select>
      <button className="btn btnPrimary" onClick={create}>Crear campaña</button>
