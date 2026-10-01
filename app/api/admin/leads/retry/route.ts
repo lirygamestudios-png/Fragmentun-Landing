@@ -33,10 +33,20 @@ export async function POST(request:NextRequest){
     :process.env.MAILERLITE_GROUP_FRAGMENTUN_CAP1_ES;
 
   if(!token||!group){
+    const message="MailerLite credentials or group not configured";
     await x.supabase.from("leads").update({
       mailerlite_status:"unconfigured",
-      last_error:"MailerLite credentials or group not configured"
+      last_error:message
     }).eq("id",id);
+    await x.supabase.from("integration_logs").insert({
+      integration:"mailerlite",
+      event_type:"manual_retry",
+      status:"info",
+      entity_type:"lead",
+      entity_id:id,
+      message,
+      metadata:{locale:lead.locale}
+    });
     return NextResponse.json({ok:false,error:"mailerlite_unconfigured"},{status:503});
   }
 
@@ -58,6 +68,15 @@ export async function POST(request:NextRequest){
       mailerlite_status:"error",
       last_error:message
     }).eq("id",id);
+    await x.supabase.from("integration_logs").insert({
+      integration:"mailerlite",
+      event_type:"manual_retry",
+      status:"error",
+      entity_type:"lead",
+      entity_id:id,
+      message,
+      metadata:{locale:lead.locale}
+    });
     return NextResponse.json({ok:false,error:message},{status:502});
   }
 
@@ -67,6 +86,16 @@ export async function POST(request:NextRequest){
     mailerlite_subscriber_id:data?.data?.id??null,
     last_error:null
   }).eq("id",id);
+
+  await x.supabase.from("integration_logs").insert({
+    integration:"mailerlite",
+    event_type:"manual_retry",
+    status:"success",
+    entity_type:"lead",
+    entity_id:id,
+    message:null,
+    metadata:{locale:lead.locale,subscriber_id:data?.data?.id??null}
+  });
 
   return NextResponse.json({ok:true});
 }
