@@ -16,32 +16,47 @@ export async function generateMetadata({
   const locale = raw as Locale;
   const site = process.env.NEXT_PUBLIC_SITE_URL || "https://www.fragmentun.com";
   const isEs = locale === "es";
+  const title=isEs
+    ? "FRAGMENTUN I — El Despertar Emocional | José Liranzo"
+    : "FRAGMENTUN I — The Emotional Awakening | José Liranzo";
+  const description=isEs
+    ? "En Lumen, las emociones están reguladas. Descubre FRAGMENTUN I: El Despertar Emocional, la saga de ciencia ficción de José Liranzo."
+    : "In Lumen, emotions are regulated. Discover FRAGMENTUN I: The Emotional Awakening, José Liranzo's science-fiction saga.";
 
   return {
-    title: isEs
-      ? "FRAGMENTUN I — El Despertar Emocional | José Liranzo"
-      : "FRAGMENTUN I — The Emotional Awakening | José Liranzo",
-    description: isEs
-      ? "Sitio oficial de FRAGMENTUN, saga de ciencia ficción emocional de José Liranzo."
-      : "Official site of FRAGMENTUN, José Liranzo's emotional science-fiction saga.",
+    title,
+    description,
     alternates: {
       canonical: `${site}/${locale}`,
       languages: {
         es: `${site}/es`,
         en: `${site}/en`,
+        "x-default": `${site}/es`
       },
     },
     openGraph: {
       type: "website",
+      locale:isEs?"es_US":"en_US",
+      alternateLocale:isEs?["en_US"]:["es_US"],
       url: `${site}/${locale}`,
       siteName: "FRAGMENTUN",
-      title: isEs
-        ? "FRAGMENTUN I — El Despertar Emocional"
-        : "FRAGMENTUN I — The Emotional Awakening",
-      description: isEs
-        ? "¿Y si sentir fuera el acto más peligroso del mundo?"
-        : "What if feeling became the most dangerous act in the world?",
+      title,
+      description,
+      images:[{
+        url:"/fragmentun-i-cover-es.jpg",
+        width:1200,
+        height:1800,
+        alt:isEs
+          ?"Portada de FRAGMENTUN I: El Despertar Emocional, de José Liranzo"
+          :"Cover of FRAGMENTUN I by José Liranzo"
+      }]
     },
+    twitter:{
+      card:"summary_large_image",
+      title,
+      description,
+      images:["/fragmentun-i-cover-es.jpg"]
+    }
   };
 }
 
