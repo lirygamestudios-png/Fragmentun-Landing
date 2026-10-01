@@ -34,6 +34,27 @@ jobs:
         continue-on-error: true
       - name: Build
         run: npm run build
+
+      - name: Smoke test public funnel
+        run: |
+          npm run start -- -H 127.0.0.1 -p 3000 > /tmp/fragmentun-next.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill $SERVER_PID || true' EXIT
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:3000/es >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:3000/es >/dev/null
+          curl -fsS http://127.0.0.1:3000/en >/dev/null
+          curl -fsS http://127.0.0.1:3000/es/test >/dev/null
+          curl -fsS http://127.0.0.1:3000/es/mapa >/dev/null
+          curl -fsS http://127.0.0.1:3000/es/privacidad >/dev/null
+          curl -fsS http://127.0.0.1:3000/robots.txt >/dev/null
+          curl -fsS http://127.0.0.1:3000/sitemap.xml >/dev/null
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/go/amazon)" = "302"
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/go/patreon)" = "302"
       - name: Commit lockfile changes
         run: |
           if [ -f package-lock.json ] && ! git diff --quiet -- package-lock.json; then
