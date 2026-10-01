@@ -37,7 +37,7 @@ export function PublicHeader({locale,amazonUrl}:{locale:Locale;amazonUrl?:string
           <Link className={locale==="en"?"active":""} href={localizedPath("en")}>EN</Link>
         </div>
         {amazonUrl
-          ? <TrackLink className="btn btnPrimary desktopBuy" href={amazonUrl} eventName="amazon_click" locale={locale} metadata={{book:"fragmentun-i",edition_locale:locale}} newTab>{t.buy}</TrackLink>
+          ? <TrackLink className="btn btnPrimary desktopBuy" href={amazonUrl} eventName="amazon_click" locale={locale} newTab>{t.buy}</TrackLink>
           : <span className="btn btnGhost desktopBuy">{locale==="es"?"Próximamente":"Coming soon"}</span>}
         <button className="menuButton" onClick={()=>setOpen(v=>!v)} aria-expanded={open} aria-label={locale==="es"?"Abrir menú":"Open menu"}>☰</button>
       </div>
