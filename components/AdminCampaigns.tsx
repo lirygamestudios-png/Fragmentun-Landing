@@ -2,6 +2,14 @@
 import { useEffect,useState } from "react";
 const empty={code:"",locale:"es",source:"instagram",medium:"paid_social",campaign:"fragmentun_cap1",content:"",destination_url:"https://www.fragmentun.com/es",active:true};
 
+const presets=[
+  {label:"Instagram orgánico",source:"instagram",medium:"organic_social",campaign:"fragmentun_cap1",content:"post_01"},
+  {label:"Meta Ads",source:"meta",medium:"paid_social",campaign:"fragmentun_cap1",content:"ad_01"},
+  {label:"TikTok orgánico",source:"tiktok",medium:"organic_social",campaign:"fragmentun_cap1",content:"video_01"},
+  {label:"YouTube",source:"youtube",medium:"organic_video",campaign:"fragmentun_cap1",content:"video_01"},
+  {label:"Email",source:"email",medium:"email",campaign:"fragmentun_nurture",content:"email_01"}
+];
+
 export function AdminCampaigns(){
  const[rows,setRows]=useState<any[]>([]);const[form,setForm]=useState<any>(empty);const[msg,setMsg]=useState("");
  const load=()=>fetch("/api/admin/campaigns").then(r=>r.json()).then(j=>setRows(j.data||[]));
