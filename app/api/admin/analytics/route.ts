@@ -73,7 +73,6 @@ export async function GET(){
         source,...v,
         conversion:v.visits?v.leads/v.visits*100:0,
         amazon_ctr:v.visits?v.amazonClicks/v.visits*100:0,
-        patreon_ctr:v.visits?v.patreonClicks/v.visits*100:0,
         patreon_ctr:v.visits?v.patreonClicks/v.visits*100:0
       }))
       .sort((a,b)=>b.visits-a.visits),
@@ -81,7 +80,8 @@ export async function GET(){
       .map(([locale,v])=>({
         locale,...v,
         conversion:v.visits?v.leads/v.visits*100:0,
-        amazon_ctr:v.visits?v.amazonClicks/v.visits*100:0
+        amazon_ctr:v.visits?v.amazonClicks/v.visits*100:0,
+        patreon_ctr:v.visits?v.patreonClicks/v.visits*100:0
       }))
   });
 }
