@@ -38,8 +38,24 @@ export async function GET(){
     required:true
   });
 
+  const[{count:allowlistCount},{count:profileCount}]=await Promise.all([
+    x.supabase.from("admin_access_allowlist").select("*",{count:"exact",head:true}),
+    x.supabase.from("admin_profiles").select("*",{count:"exact",head:true})
+  ]);
+
+  checks.push({
+    key:"admin_provisioning",
+    label:"Perfiles administrativos aprovisionados",
+    ok:(profileCount||0)>0,
+    required:true
+  });
+
   return NextResponse.json({
     checks,
+    admin_access:{
+      allowlisted:allowlistCount||0,
+      provisioned:profileCount||0
+    },
     ready_required:checks.filter(c=>c.required).every(c=>c.ok),
     configured:checks.filter(c=>c.ok).length,
     total:checks.length
