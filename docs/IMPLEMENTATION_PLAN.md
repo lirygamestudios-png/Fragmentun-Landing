@@ -94,6 +94,7 @@ Estado: **IMPLEMENTADO**
 - Auditoría administrativa.
 - Historial de integraciones.
 - Estado del sistema.
+- Backup administrativo sin leads ni secretos.
 - Eliminación de leads por solicitud de privacidad.
 - Forget GDPR de MailerLite cuando aplica.
 
@@ -145,7 +146,7 @@ Estado: **PAUSADA HASTA VOLVER A VERCEL / INTEGRACIONES EXTERNAS**
 - DNS.
 - SSL.
 - Monitoring.
-- Backup / exportaciones.
+- Backup/exportación JSON del CMS y configuración pública: IMPLEMENTADO.
 - Smoke test post-deploy.
 
 ## Criterios de aceptación
