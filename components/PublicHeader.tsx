@@ -6,7 +6,7 @@ import type { Locale } from "../lib/i18n";
 import { copy } from "../lib/i18n";
 import { TrackLink } from "./TrackLink";
 
-export function PublicHeader({locale,amazonUrl}:{locale:Locale;amazonUrl?:string|null}){
+export function PublicHeader({locale,amazonUrl,patreonUrl}:{locale:Locale;amazonUrl?:string|null;patreonUrl?:string|null}){
   const t=copy[locale];
   const pathname=usePathname();
   const[open,setOpen]=useState(false);
@@ -16,7 +16,8 @@ export function PublicHeader({locale,amazonUrl}:{locale:Locale;amazonUrl?:string
     ["Saga",`/${locale}#saga`],
     [t.nav.test,`/${locale}/test`],
     [t.nav.map,`/${locale}/mapa`],
-    [t.nav.author,`/${locale}#autor`]
+    [t.nav.author,`/${locale}#autor`],
+    [locale==="es"?"Patrocinar":"Support",`/${locale}#patreon`]
   ];
 
   const localizedPath=(target:Locale)=>{
@@ -47,6 +48,9 @@ export function PublicHeader({locale,amazonUrl}:{locale:Locale;amazonUrl?:string
       {amazonUrl
         ? <TrackLink className="btn btnPrimary" href={amazonUrl} eventName="amazon_click" locale={locale} newTab>{t.buy}</TrackLink>
         : <span className="btn btnGhost">{locale==="es"?"Próximamente":"Coming soon"}</span>}
+      {patreonUrl&&<TrackLink className="btn btnPatreon" href={patreonUrl} eventName="patreon_click" locale={locale} metadata={{placement:"mobile_menu",creator:"sagaFragmentun"}} newTab>
+        {locale==="es"?"Patrocinar en Patreon":"Support on Patreon"}
+      </TrackLink>}
     </div></div>}
   </header>;
 }
