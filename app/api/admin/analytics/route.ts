@@ -28,25 +28,26 @@ export async function GET(){
   ]);
 
   const totals:Record<string,number>={};
-  const byLocale:Record<string,{visits:number;leads:number;amazonClicks:number}>={};
-  const bySource:Record<string,{visits:number;leads:number;amazonClicks:number}>={};
+  const byLocale:Record<string,{visits:number;leads:number;amazonClicks:number;patreonClicks:number}>={};
+  const bySource:Record<string,{visits:number;leads:number;amazonClicks:number;patreonClicks:number}>={};
   const mailerlite:Record<string,number>={};
 
   for(const e of events||[]){
     totals[e.event_name]=(totals[e.event_name]||0)+1;
     const source=e.source||"direct";
     const locale=e.locale||"unknown";
-    bySource[source]??={visits:0,leads:0,amazonClicks:0};
-    byLocale[locale]??={visits:0,leads:0,amazonClicks:0};
+    bySource[source]??={visits:0,leads:0,amazonClicks:0,patreonClicks:0};
+    byLocale[locale]??={visits:0,leads:0,amazonClicks:0,patreonClicks:0};
     if(e.event_name==="page_view"){bySource[source].visits++;byLocale[locale].visits++;}
     if(e.event_name==="amazon_click"){bySource[source].amazonClicks++;byLocale[locale].amazonClicks++;}
+    if(e.event_name==="patreon_click"){bySource[source].patreonClicks++;byLocale[locale].patreonClicks++;}
   }
 
   for(const l of leads||[]){
     const source=l.source||"direct";
     const locale=l.locale||"unknown";
-    bySource[source]??={visits:0,leads:0,amazonClicks:0};
-    byLocale[locale]??={visits:0,leads:0,amazonClicks:0};
+    bySource[source]??={visits:0,leads:0,amazonClicks:0,patreonClicks:0};
+    byLocale[locale]??={visits:0,leads:0,amazonClicks:0,patreonClicks:0};
     bySource[source].leads++;
     byLocale[locale].leads++;
     const status=l.mailerlite_status||"unknown";
@@ -56,6 +57,7 @@ export async function GET(){
   const pageViews=totals.page_view||0;
   const leadCount=(leads||[]).length;
   const amazonClicks=totals.amazon_click||0;
+  const patreonClicks=totals.patreon_click||0;
 
   return NextResponse.json({
     range_days:30,
@@ -63,13 +65,16 @@ export async function GET(){
     lead_count:leadCount,
     conversion_rate:pageViews?(leadCount/pageViews)*100:0,
     amazon_ctr:pageViews?(amazonClicks/pageViews)*100:0,
+    patreon_ctr:pageViews?(patreonClicks/pageViews)*100:0,
     lead_to_amazon_ratio:leadCount?(amazonClicks/leadCount)*100:0,
     mailerlite,
     by_source:Object.entries(bySource)
       .map(([source,v])=>({
         source,...v,
         conversion:v.visits?v.leads/v.visits*100:0,
-        amazon_ctr:v.visits?v.amazonClicks/v.visits*100:0
+        amazon_ctr:v.visits?v.amazonClicks/v.visits*100:0,
+        patreon_ctr:v.visits?v.patreonClicks/v.visits*100:0,
+        patreon_ctr:v.visits?v.patreonClicks/v.visits*100:0
       }))
       .sort((a,b)=>b.visits-a.visits),
     by_locale:Object.entries(byLocale)
