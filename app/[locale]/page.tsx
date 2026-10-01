@@ -36,7 +36,7 @@ export default async function Home({
 
   const firstBook=(books as any[]).find((b:any)=>b.slug==="fragmentun-i")||(books as any[])[0];
   const amazonUrl=firstBook?.edition_status==="published"?firstBook?.amazon_url:null;
-  const env=(upper:string,lower:string)=>process.env[upper]||process.env[lower]||"";
+  const env=(upper:string,lower:string)=>(process.env[upper]||process.env[lower]||"").trim();
   const patreonUrl=env("NEXT_PUBLIC_PATREON_URL","next_public_patreon_url")||"https://patreon.com/sagaFragmentun?utm_source=fragmentun&utm_medium=website&utm_campaign=patreon_support&utm_content=landing";
   const facebookCommunityUrl=env("NEXT_PUBLIC_FACEBOOK_COMMUNITY_URL","next_public_facebook_community_url");
   const socialItems=[
