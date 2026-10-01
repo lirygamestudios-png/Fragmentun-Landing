@@ -21,6 +21,7 @@ export default async function AdminPage(){
     ["Contenido Web","/admin/contenido"],
     ["Medios","/admin/medios"],
     ["La Saga","/admin/saga"],
+    ["Personajes","/admin/personajes"],
     ["Mapa de Lumen","/admin/mapa"],
     ["Test Emocional","/admin/test"],
     ["Reseñas","/admin/resenas"],
@@ -72,6 +73,10 @@ export default async function AdminPage(){
       </div>
 
       <div className="grid3" style={{marginTop:18}}>
+        <a className="card adminCardLink" href="/admin/personajes">
+          <h3>Personajes</h3>
+          <p>Gestiona nombres, roles, biografías y territorios en ES/EN.</p>
+        </a>
         <a className="card adminCardLink" href="/admin/mapa">
           <h3>Mapa de Lumen</h3>
           <p>Edita territorios y puntos de interés.</p>
