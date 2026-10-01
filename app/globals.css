@@ -215,3 +215,8 @@ input{width:100%;background:#07101d;border:1px solid #ffffff25;color:white;paddi
   border-radius:8px;
   box-shadow:0 34px 90px rgba(0,0,0,.58),0 0 55px rgba(201,168,76,.14);
 }
+
+.reviewCard{min-height:220px}
+.reviewQuote{font-size:1.04rem;line-height:1.75;color:#d9e2ec}
+.reviewSource{display:inline-block;margin-top:10px;color:var(--gold);font-weight:700;text-decoration:none}
+.reviewSource:hover{text-decoration:underline}
