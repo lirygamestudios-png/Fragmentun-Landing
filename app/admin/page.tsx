@@ -32,7 +32,8 @@ export default async function AdminPage(){
     ["Usuarios","/admin/usuarios"],
     ["Estado","/admin/status"],
     ["Auditoría","/admin/audit"],
-    ["Integraciones","/admin/integrations"]
+    ["Integraciones","/admin/integrations"],
+    ["Backup","/api/admin/backup"]
   ] as const;
 
   return <main className="adminShell">
@@ -102,6 +103,10 @@ export default async function AdminPage(){
         <a className="card adminCardLink" href="/admin/medios">
           <h3>Multimedia</h3>
           <p>Portadas oficiales, recursos editoriales y press kit.</p>
+        </a>
+        <a className="card adminCardLink" href="/api/admin/backup">
+          <h3>Backup de contenido</h3>
+          <p>Descarga una copia JSON del CMS y configuración pública sin leads ni datos sensibles.</p>
         </a>
       </div>
     </section>
