@@ -7,7 +7,7 @@ import { TrackLink } from "../../components/TrackLink";
 import { PageView } from "../../components/PageView";
 import { MotionEffects } from "../../components/MotionEffects";
 import { copy,locales,type Locale } from "../../lib/i18n";
-import { getBooks,getLocalizedContent } from "../../lib/content";
+import { getBooks,getLocalizedContent,getPublishedReviews } from "../../lib/content";
 
 export default async function Home({params}:{params:Promise<{locale:string}>}){
   const{locale:raw}=await params;
@@ -15,9 +15,10 @@ export default async function Home({params}:{params:Promise<{locale:string}>}){
   const locale=raw as Locale;
   const t=copy[locale];
 
-  const[cms,books]=await Promise.all([
+  const[cms,books,reviews]=await Promise.all([
     getLocalizedContent(locale),
-    getBooks(locale)
+    getBooks(locale),
+    getPublishedReviews(locale)
   ]);
 
   const hero=cms["home.hero"]||{};
@@ -197,6 +198,26 @@ export default async function Home({params}:{params:Promise<{locale:string}>}){
           </div>
         </div>
       </section>
+
+      {reviews.length>0&&<section className="section" id="lectores">
+        <div className="container">
+          <div className="sectionIntro">
+            <div className="kicker">{locale==="es"?"Lectores":"Readers"}</div>
+            <h2>{locale==="es"?"Reseñas verificadas":"Verified reviews"}</h2>
+            <p className="lead">{locale==="es"
+              ?"Solo mostramos reseñas publicadas y marcadas como verificadas en el panel."
+              :"Only reviews published and marked as verified in the admin panel are shown."}</p>
+          </div>
+          <div className="grid3">
+            {reviews.map((r:any)=><article className="card reviewCard" key={r.id}>
+              <div className="kicker">{r.source}</div>
+              <p className="reviewQuote">“{r.body}”</p>
+              <p className="note">{r.author_display|| (locale==="es"?"Lector verificado":"Verified reader")}</p>
+              {r.source_url&&<a className="reviewSource" href={r.source_url} target="_blank" rel="noreferrer">{locale==="es"?"Ver fuente":"View source"}</a>}
+            </article>)}
+          </div>
+        </div>
+      </section>}
 
       <section className="section" id="autor">
         <div className="container">
