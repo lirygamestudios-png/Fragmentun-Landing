@@ -79,7 +79,7 @@ export default async function Home({params}:{params:Promise<{locale:string}>}){
 
             <div className="heroActions">
               {amazonUrl
-                ?<TrackLink className="btn btnPrimary" href={amazonUrl} eventName="amazon_click" locale={locale} newTab>{hero.primary_cta||t.buy}</TrackLink>
+                ?<TrackLink className="btn btnPrimary" href={amazonUrl} eventName="amazon_click" locale={locale} metadata={{book:"fragmentun-i",edition_locale:locale,marketplace:firstBook?.marketplace||"amazon.com"}} newTab>{hero.primary_cta||t.buy}</TrackLink>
                 :<span className="btn btnGhost">{locale==="es"?"Edición en este idioma: próximamente":"Edition in this language: coming soon"}</span>}
               <TrackLink className="btn btnSecondary" href="#capitulo" eventName="chapter_click" locale={locale}>{hero.secondary_cta||t.chapter}</TrackLink>
             </div>
@@ -170,7 +170,7 @@ export default async function Home({params}:{params:Promise<{locale:string}>}){
               <h3>{locale==="es"?b.subtitle_es:b.subtitle_en}</h3>
               <p>{b.edition_status==="published"?(locale==="es"?"Publicado":"Published"):(locale==="es"?"Próximamente":"Coming soon")}</p>
               {b.edition_status==="published"&&b.amazon_url&&
-                <TrackLink className="btn btnPrimary" href={b.amazon_url} eventName="amazon_click" locale={locale} newTab>{t.buy}</TrackLink>}
+                <TrackLink className="btn btnPrimary" href={b.amazon_url} eventName="amazon_click" locale={locale} metadata={{book:b.slug,edition_locale:locale,marketplace:b.marketplace||"amazon.com"}} newTab>{t.buy}</TrackLink>}
             </article>)}
           </div>
         </div>
@@ -213,7 +213,7 @@ export default async function Home({params}:{params:Promise<{locale:string}>}){
           <div className="kicker">{finalCta.eyebrow||(locale==="es"?"El despertar ya comenzó":"The awakening has begun")}</div>
           <h2>{finalCta.title||(locale==="es"?"Entra en Lumen. Decide cuánto estás dispuesto a sentir.":"Enter Lumen. Decide how much you are willing to feel.")}</h2>
           <div className="heroActions">
-            {amazonUrl&&<TrackLink className="btn btnPrimary" href={amazonUrl} eventName="amazon_click" locale={locale} newTab>{finalCta.primary_cta||t.buy}</TrackLink>}
+            {amazonUrl&&<TrackLink className="btn btnPrimary" href={amazonUrl} eventName="amazon_click" locale={locale} metadata={{book:"fragmentun-i",edition_locale:locale,marketplace:firstBook?.marketplace||"amazon.com"}} newTab>{finalCta.primary_cta||t.buy}</TrackLink>}
             <TrackLink className="btn btnSecondary" href="#capitulo" eventName="chapter_click" locale={locale}>{finalCta.secondary_cta||t.chapter}</TrackLink>
           </div>
         </div>
