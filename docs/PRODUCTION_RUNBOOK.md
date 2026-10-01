@@ -199,3 +199,18 @@ Cuando se cree el grupo:
 1. añadir la URL oficial a `NEXT_PUBLIC_FACEBOOK_COMMUNITY_URL`;
 2. el CTA “Únete a la comunidad FRAGMENTUN” aparecerá automáticamente;
 3. los clics se medirán como `community_click` con `network=facebook_group`.
+
+
+## Solicitudes de eliminación de datos
+
+Desde `/admin/leads` un usuario con rol admin/marketing puede eliminar un lead.
+
+Flujo:
+1. confirmar explícitamente la acción;
+2. si existe subscriber_id y MailerLite está configurado, ejecutar `POST /subscribers/:id/forget`;
+3. eliminar el lead de Supabase;
+4. registrar el resultado en `integration_logs`.
+
+Si MailerLite falla:
+- el lead local se elimina igualmente;
+- queda una advertencia en Integraciones para seguimiento manual.
