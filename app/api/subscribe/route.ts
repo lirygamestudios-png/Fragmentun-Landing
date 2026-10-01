@@ -61,10 +61,12 @@ export async function POST(request:NextRequest){
   const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
+  let leadStored=false;
+
   if(url&&key){
     const headers={"Content-Type":"application/json","apikey":key,"Authorization":`Bearer ${key}`};
 
-    await fetch(`${url}/functions/v1/collect-lead`,{
+    const leadResponse=await fetch(`${url}/functions/v1/collect-lead`,{
       method:"POST",
       headers,
       body:JSON.stringify({
@@ -78,7 +80,9 @@ export async function POST(request:NextRequest){
         emotional_scores:emotionalScores
       }),
       cache:"no-store"
-    }).catch(()=>{});
+    }).catch(()=>null);
+
+    leadStored=!!leadResponse?.ok;
 
     await fetch(`${url}/functions/v1/collect-analytics`,{
       method:"POST",
@@ -95,6 +99,10 @@ export async function POST(request:NextRequest){
       }),
       cache:"no-store"
     }).catch(()=>{});
+  }
+
+  if(!leadStored){
+    return NextResponse.redirect(new URL(`/${locale}?signup=error#capitulo`,request.url),303);
   }
 
   const delivery=mailerliteStatus==="synced"?"email":"pending";
