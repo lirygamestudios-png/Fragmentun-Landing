@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo,useState } from "react";
+import Link from "next/link";
 import type { Locale } from "../lib/i18n";
 
 type ScoreKey="vorax"|"umbral"|"ethelis"|"nara";
@@ -35,6 +36,9 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
   const [index,setIndex]=useState(0);
   const [scores,setScores]=useState<Record<ScoreKey,number>>({vorax:0,umbral:0,ethelis:0,nara:0});
   const [done,setDone]=useState(false);
+  const [email,setEmail]=useState("");
+  const [name,setName]=useState("");
+  const [consent,setConsent]=useState(false);
 
   const profileMap=useMemo(()=>Object.fromEntries(profiles.map(p=>[p.profile_key,p])),[profiles]);
 
@@ -111,6 +115,35 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
           <strong>{profileMap[key]?.[locale==="es"?"name_es":"name_en"]||key}</strong>
           <span>{scores[key]}</span>
         </div>)}
+      </div>
+      <div className="profileCapture card">
+        <div className="kicker">{locale==="es"?"Guarda tu resultado":"Save your result"}</div>
+        <h3>{locale==="es"?"Recibe novedades según tu perfil emocional":"Get updates based on your emotional profile"}</h3>
+        <p>{locale==="es"
+          ?"Si quieres, guarda tu perfil junto a tu correo para recibir futuras comunicaciones de FRAGMENTUN relacionadas con este territorio emocional."
+          :"If you want, save your profile with your email to receive future FRAGMENTUN communications related to this emotional territory."}</p>
+        <form className="formGrid" action="/api/subscribe" method="post">
+          <input type="hidden" name="locale" value={locale}/>
+          <input type="hidden" name="emotional_profile" value={resultKey}/>
+          <input type="hidden" name="emotional_scores" value={JSON.stringify(scores)}/>
+          <input type="hidden" name="consent_version" value="2026-09-30"/>
+          <input name="name" value={name} onChange={e=>setName(e.target.value)} placeholder={locale==="es"?"Tu nombre (opcional)":"Your name (optional)"}/>
+          <input name="email" type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder={locale==="es"?"Tu correo electrónico":"Your email"} required/>
+          <label className="consentRow">
+            <input name="consent_marketing" type="checkbox" value="yes" checked={consent} onChange={e=>setConsent(e.target.checked)} required/>
+            <span>
+              {locale==="es"
+                ?"Acepto recibir comunicaciones de FRAGMENTUN por correo electrónico."
+                :"I agree to receive FRAGMENTUN email communications."}
+              {" "}
+              <Link href={`/${locale}/privacidad`}>{locale==="es"?"Política de privacidad.":"Privacy policy."}</Link>
+            </span>
+          </label>
+          <input className="hpField" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true"/>
+          <button className="btn btnPrimary" type="submit">
+            {locale==="es"?"Guardar mi perfil":"Save my profile"}
+          </button>
+        </form>
       </div>
       <button className="btn btnGhost" onClick={()=>{
         setStarted(false);
