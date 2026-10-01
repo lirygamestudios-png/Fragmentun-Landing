@@ -9,6 +9,7 @@ export function AdminLeads(){
   const[status,setStatus]=useState("");
   const[profile,setProfile]=useState("");
   const[loading,setLoading]=useState(true);
+  const[actionMsg,setActionMsg]=useState("");
 
   async function load(){
     setLoading(true);
@@ -25,6 +26,18 @@ export function AdminLeads(){
   }
 
   useEffect(()=>{load()},[]);
+
+  async function retry(id:string){
+    setActionMsg("Reintentando sincronización…");
+    const r=await fetch("/api/admin/leads/retry",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({id})
+    });
+    const j=await r.json().catch(()=>({}));
+    setActionMsg(r.ok?"Sincronizado con MailerLite ✓":j.error==="mailerlite_unconfigured"?"MailerLite todavía no está configurado.":"No se pudo sincronizar.");
+    await load();
+  }
 
   function exportCsv(){
     const p=new URLSearchParams({format:"csv"});
@@ -73,7 +86,7 @@ export function AdminLeads(){
     <div className="card" style={{marginTop:24}}>
       <h2>Leads</h2>
       {loading?<p>Cargando…</p>:<div className="adminTableWrap"><table className="adminTable">
-        <thead><tr><th>Fecha</th><th>Correo</th><th>Nombre</th><th>Idioma</th><th>Fuente</th><th>Campaña</th><th>Perfil</th><th>MailerLite</th><th>Consentimiento</th></tr></thead>
+        <thead><tr><th>Fecha</th><th>Correo</th><th>Nombre</th><th>Idioma</th><th>Fuente</th><th>Campaña</th><th>Perfil</th><th>MailerLite</th><th>Consentimiento</th><th></th></tr></thead>
         <tbody>{rows.map((r:any)=><tr key={r.id}>
           <td>{new Date(r.created_at).toLocaleDateString()}</td>
           <td>{r.email}</td>
@@ -84,8 +97,12 @@ export function AdminLeads(){
           <td>{r.emotional_profile?String(r.emotional_profile).toUpperCase():"—"}</td>
           <td>{r.mailerlite_status||"—"}</td>
           <td>{r.consent_marketing?"Sí":"No"}</td>
+          <td>{r.mailerlite_status!=="synced"
+            ?<button className="btn btnGhost" onClick={()=>retry(r.id)}>Reintentar</button>
+            :"—"}</td>
         </tr>)}</tbody>
       </table></div>}
     </div>
+    {actionMsg&&<p className="note">{actionMsg}</p>}
   </div>;
 }
