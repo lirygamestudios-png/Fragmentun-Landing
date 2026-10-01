@@ -11,6 +11,7 @@ export function AdminAnalytics(){
 
   const t=data.totals||{};
   const ml=data.mailerlite||{};
+  const tp=data.test_profiles||{};
 
   return <div>
     <div className="kpis">
@@ -22,6 +23,17 @@ export function AdminAnalytics(){
       <div className="kpi"><span>Clics Patreon</span><strong>{t.patreon_click||0}</strong></div>
       <div className="kpi"><span>CTR Patreon</span><strong>{pct(data.patreon_ctr)}</strong></div>
       <div className="kpi"><span>Test completados</span><strong>{t.test_complete||0}</strong></div>
+    </div>
+
+    <div className="card" style={{marginTop:24}}>
+      <h2>Perfiles del Test Emocional</h2>
+      <div className="kpis">
+        <div className="kpi"><span>Vorax</span><strong>{tp.vorax||0}</strong></div>
+        <div className="kpi"><span>Umbral</span><strong>{tp.umbral||0}</strong></div>
+        <div className="kpi"><span>Ethelis</span><strong>{tp.ethelis||0}</strong></div>
+        <div className="kpi"><span>Nara</span><strong>{tp.nara||0}</strong></div>
+        <div className="kpi"><span>Balance</span><strong>{tp.balance||0}</strong></div>
+      </div>
     </div>
 
     <div className="card" style={{marginTop:24}}>
