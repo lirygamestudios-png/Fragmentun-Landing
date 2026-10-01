@@ -91,6 +91,9 @@ Estado: **IMPLEMENTADO**
 - Exportación CSV.
 - Estado de MailerLite.
 - Gestión de usuarios internos.
+- Auditoría administrativa.
+- Historial de integraciones.
+- Estado del sistema.
 
 ### Fase 6 — QA
 Estado: **IMPLEMENTADA EN CÓDIGO / VALIDACIÓN EN PRODUCCIÓN PENDIENTE**
@@ -119,6 +122,9 @@ Completado:
 - Persistencia UTM cross-page.
 - Experimento A/B del CTA de Capítulo 1.
 - Dashboard de experimentos A/B.
+- Manejo de errores 404/global.
+- Smoke test de 404.
+- Observabilidad de integraciones.
 
 Pendiente QA:
 - Prueba end-to-end en entorno desplegado.
@@ -187,6 +193,8 @@ Pendiente:
 - Edge Functions activas.
 - Captación y analytics preparados.
 - Amazon y Patreon rastreables.
+- Redes sociales oficiales con tracking.
+- Comunidad Facebook preparada pero oculta hasta disponer de URL oficial.
 - Health endpoint.
 - Smoke tests.
 - A/B testing.
