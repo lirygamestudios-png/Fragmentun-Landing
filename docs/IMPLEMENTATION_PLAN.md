@@ -94,6 +94,8 @@ Estado: **IMPLEMENTADO**
 - Auditoría administrativa.
 - Historial de integraciones.
 - Estado del sistema.
+- Eliminación de leads por solicitud de privacidad.
+- Forget GDPR de MailerLite cuando aplica.
 
 ### Fase 6 — QA
 Estado: **IMPLEMENTADA EN CÓDIGO / VALIDACIÓN EN PRODUCCIÓN PENDIENTE**
