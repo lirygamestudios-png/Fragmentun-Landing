@@ -64,7 +64,37 @@ export default async function Home({params}:{params:Promise<{locale:string}>}){
     }
   ];
 
+  const site=process.env.NEXT_PUBLIC_SITE_URL||"https://www.fragmentun.com";
+  const structuredData=[
+    {
+      "@context":"https://schema.org",
+      "@type":"Book",
+      name:locale==="es"?"FRAGMENTUN I: El Despertar Emocional":"FRAGMENTUN I: The Emotional Awakening",
+      author:{"@type":"Person",name:"José Liranzo"},
+      inLanguage:locale,
+      url:`${site}/${locale}`,
+      image:`${site}/fragmentun-i-cover-es.jpg`,
+      sameAs:["https://www.amazon.com/dp/B0HBLTHT8S"],
+      publisher:{"@type":"Organization",name:"LIRYGAMES STUDIOS"}
+    },
+    {
+      "@context":"https://schema.org",
+      "@type":"Person",
+      name:"José Liranzo",
+      url:`${site}/${locale}#autor`,
+      worksFor:{"@type":"Organization",name:"LIRYGAMES STUDIOS"}
+    },
+    {
+      "@context":"https://schema.org",
+      "@type":"WebSite",
+      name:"FRAGMENTUN",
+      url:site,
+      inLanguage:["es","en"]
+    }
+  ];
+
   return <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(structuredData)}}/>
     <PageView locale={locale}/>
     <MotionEffects/>
     <PublicHeader locale={locale} amazonUrl={amazonUrl} patreonUrl={patreonUrl}/>
