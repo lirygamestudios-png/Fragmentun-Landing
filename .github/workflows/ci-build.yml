@@ -53,6 +53,9 @@ jobs:
           curl -fsS http://127.0.0.1:3000/es/privacidad >/dev/null
           curl -fsS http://127.0.0.1:3000/robots.txt >/dev/null
           curl -fsS http://127.0.0.1:3000/sitemap.xml >/dev/null
+          curl -fsS http://127.0.0.1:3000/admin/login >/dev/null
+          curl -fsS http://127.0.0.1:3000/admin/forgot-password >/dev/null
+          curl -fsS http://127.0.0.1:3000/admin/reset-password >/dev/null
           curl -fsS http://127.0.0.1:3000/api/health >/dev/null
           test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/go/amazon)" = "302"
           test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/go/patreon)" = "302"
