@@ -31,6 +31,7 @@ export async function GET(){
   const byLocale:Record<string,{visits:number;leads:number;amazonClicks:number;patreonClicks:number}>={};
   const bySource:Record<string,{visits:number;leads:number;amazonClicks:number;patreonClicks:number}>={};
   const mailerlite:Record<string,number>={};
+  const testProfiles:Record<string,number>={};
 
   for(const e of events||[]){
     totals[e.event_name]=(totals[e.event_name]||0)+1;
@@ -41,6 +42,10 @@ export async function GET(){
     if(e.event_name==="page_view"){bySource[source].visits++;byLocale[locale].visits++;}
     if(e.event_name==="amazon_click"){bySource[source].amazonClicks++;byLocale[locale].amazonClicks++;}
     if(e.event_name==="patreon_click"){bySource[source].patreonClicks++;byLocale[locale].patreonClicks++;}
+    if(e.event_name==="test_complete"){
+      const profile=String((e.metadata as any)?.profile||"unknown");
+      testProfiles[profile]=(testProfiles[profile]||0)+1;
+    }
   }
 
   for(const l of leads||[]){
@@ -68,6 +73,7 @@ export async function GET(){
     patreon_ctr:pageViews?(patreonClicks/pageViews)*100:0,
     lead_to_amazon_ratio:leadCount?(amazonClicks/leadCount)*100:0,
     mailerlite,
+    test_profiles:testProfiles,
     by_source:Object.entries(bySource)
       .map(([source,v])=>({
         source,...v,
