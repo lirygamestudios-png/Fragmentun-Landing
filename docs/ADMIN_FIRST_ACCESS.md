@@ -14,13 +14,11 @@ Antes del lanzamiento público:
 
 1. Crear o invitar el usuario administrativo principal en Supabase Auth usando el mismo correo presente en `admin_access_allowlist`.
 2. Iniciar sesión una vez mediante magic link.
-3. Obtener el `user_id` generado por Supabase Auth.
-4. Crear la fila correspondiente en `public.admin_profiles` con:
-   - `user_id`
-   - `display_name`
-   - `role=admin`
-5. Verificar acceso a `/admin`.
-6. Confirmar que el panel Estado del sistema muestra perfiles administrativos aprovisionados.
+3. Confirmar el correo si Supabase lo exige.
+4. Iniciar sesión una vez.
+5. La aplicación verificará automáticamente que el email esté en `admin_access_allowlist` y creará `admin_profiles` con el rol autorizado.
+6. Verificar acceso a `/admin`.
+7. Confirmar que el panel Estado del sistema muestra perfiles administrativos aprovisionados.
 
 ## Regla de seguridad
 Nunca crear un `admin_profile` para un correo que no esté previamente en `admin_access_allowlist`.
@@ -38,4 +36,4 @@ El estado esperado antes de producción es:
 - Usuario no autorizado: sin acceso al panel.
 
 ## Nota
-Este paso es deliberadamente manual para el primer administrador. Después, la gestión de usuarios internos se realiza desde el Control Center.
+El único paso manual del primer administrador es crear/invitar el usuario en Supabase Auth. El perfil/rol se aprovisiona automáticamente en el primer acceso si el email está previamente autorizado.
