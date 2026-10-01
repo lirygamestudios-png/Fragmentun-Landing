@@ -10,7 +10,7 @@ async function admin(){
 }
 
 export async function GET(){
-  const env=(upper:string,lower:string)=>process.env[upper]||process.env[lower]||"";
+  const env=(upper:string,lower:string)=>(process.env[upper]||process.env[lower]||"").trim();
   const x=await admin();
   if(!x.ok)return NextResponse.json({error:"forbidden"},{status:403});
 
