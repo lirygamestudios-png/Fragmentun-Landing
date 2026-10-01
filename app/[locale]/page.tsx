@@ -154,7 +154,33 @@ export default async function Home({
         </div>
       </section>
 
-      <section className="section" id="historia">
+      <section className="masterValueStrip" aria-label={locale==="es"?"Valor de FRAGMENTUN":"FRAGMENTUN value"}>
+        <div className="container masterValueGrid">
+          <div><span>✦</span><strong>{locale==="es"?"Ciencia ficción emocional":"Emotional science fiction"}</strong></div>
+          <div><span>◉</span><strong>{locale==="es"?"Un universo expansible":"An expandable universe"}</strong></div>
+          <div><span>♙</span><strong>{locale==="es"?"Personajes inolvidables":"Unforgettable characters"}</strong></div>
+          <div><span>↗</span><strong>{locale==="es"?"Ya disponible en Amazon":"Available now on Amazon"}</strong></div>
+        </div>
+      </section>
+
+      <section className="masterAuthorBand" id="autor">
+        <div className="container masterAuthorGrid">
+          <div className="masterAuthorCopy">
+            <div className="kicker">{locale==="es"?"José Liranzo · El autor":"José Liranzo · The author"}</div>
+            <h2>José Liranzo</h2>
+            <p className="lead">{locale==="es"
+              ?"Creo en el poder de las historias para despertar lo que sentimos, cuestionar lo que somos y construir mundos más humanos."
+              :"I believe in the power of stories to awaken what we feel, question who we are, and build more human worlds."}</p>
+            <a className="btn btnPrimary" href="#autor-historia">{locale==="es"?"Conoce mi historia":"Meet the author"}</a>
+          </div>
+          <div className="masterAuthorPortrait" aria-hidden="true"><span>JL</span></div>
+          <blockquote>FRAGMENTUN<br/>{locale==="es"
+            ?"nace de una pregunta que aún me acompaña: ¿y si sentir fuera el acto más peligroso del mundo?"
+            :"was born from a question that still follows me: what if feeling were the most dangerous act in the world?"}</blockquote>
+        </div>
+      </section>
+
+      <section className="section masterWhySection" id="historia">
         <div className="container">
           <div className="sectionIntro">
             <div className="kicker">{why.title||t.why}</div>
@@ -173,7 +199,7 @@ export default async function Home({
         </div>
       </section>
 
-      <section className="section" id="lumen">
+      <section className="section masterLumenSection" id="lumen">
         <div className="container split">
           <div>
             <div className="kicker">{lumen.subtitle||t.lumen}</div>
@@ -201,7 +227,7 @@ export default async function Home({
         </div>
       </section>
 
-      <section className="section" id="capitulo">
+      <section className="section masterChapterSection" id="capitulo">
         <div className="container">
           <div className="formPanel">
             <div className="sectionIntro">
@@ -222,7 +248,7 @@ export default async function Home({
         </div>
       </section>
 
-      <section className="section" id="saga">
+      <section className="section masterSagaSection" id="saga">
         <div className="container">
           <div className="sectionIntro">
             <div className="kicker">{locale==="es"?"La saga":"The saga"}</div>
@@ -241,7 +267,7 @@ export default async function Home({
         </div>
       </section>
 
-      <section className="section" id="test">
+      <section className="section masterInteractiveSection" id="test">
         <div className="container">
           <div className="sectionIntro">
             <div className="kicker">{locale==="es"?"Experiencia interactiva":"Interactive experience"}</div>
@@ -252,7 +278,7 @@ export default async function Home({
         </div>
       </section>
 
-      <section className="section" id="mapa">
+      <section className="section masterMapSection" id="mapa">
         <div className="container">
           <div className="sectionIntro">
             <div className="kicker">{locale==="es"?"Exploración":"Exploration"}</div>
@@ -309,7 +335,7 @@ export default async function Home({
         </div>
       </section>
 
-      <section className="section" id="redes">
+      <section className="section masterCommunitySection" id="comunidad-publica">
         <div className="container">
           <div className="sectionIntro">
             <div className="kicker">{locale==="es"?"Redes sociales":"Social media"}</div>
@@ -346,12 +372,17 @@ export default async function Home({
         </div>
       </section>}
 
-      <section className="section" id="autor">
-        <div className="container">
-          <div className="sectionIntro">
-            <div className="kicker">{locale==="es"?"Autor":"Author"}</div>
+      <section className="section masterAuthorStory" id="autor-historia">
+        <div className="container split">
+          <div>
+            <div className="kicker">{locale==="es"?"El autor":"The author"}</div>
             <h2>{t.author}</h2>
             <p className="lead">{t.authorBody}</p>
+          </div>
+          <div className="masterAuthorSeal">
+            <span>FRAGMENTUN</span>
+            <strong>JOSÉ LIRANZO</strong>
+            <small>LIRYGAMES STUDIOS</small>
           </div>
         </div>
       </section>
