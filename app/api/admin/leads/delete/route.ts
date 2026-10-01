@@ -66,7 +66,6 @@ export async function POST(request:NextRequest){
     entity_id:id,
     message:mailerliteMessage,
     metadata:{
-      email:lead.email,
       mailerlite_forget_attempted:!!(token&&lead.mailerlite_subscriber_id),
       mailerlite_forgotten:mailerliteForgotten
     }
