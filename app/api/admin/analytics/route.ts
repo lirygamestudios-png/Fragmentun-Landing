@@ -39,6 +39,7 @@ export async function GET(request:Request){
   const mailerlite:Record<string,number>={};
   const testProfiles:Record<string,number>={};
   const experiments:Record<string,{views:Record<string,number>;leads:Record<string,number>}>= {};
+  const community:Record<string,number>={};
 
   for(const e of events||[]){
     totals[e.event_name]=(totals[e.event_name]||0)+1;
@@ -49,6 +50,10 @@ export async function GET(request:Request){
     if(e.event_name==="page_view"){bySource[source].visits++;byLocale[locale].visits++;}
     if(e.event_name==="amazon_click"){bySource[source].amazonClicks++;byLocale[locale].amazonClicks++;}
     if(e.event_name==="patreon_click"){bySource[source].patreonClicks++;byLocale[locale].patreonClicks++;}
+    if(e.event_name==="community_click"){
+      const network=String((e.metadata as any)?.network||"unknown");
+      community[network]=(community[network]||0)+1;
+    }
     if(e.event_name==="experiment_view"){
       const exp=String((e.metadata as any)?.experiment||"unknown");
       const variant=String((e.metadata as any)?.variant||"unknown");
@@ -109,6 +114,7 @@ export async function GET(request:Request){
     mailerlite,
     test_profiles:testProfiles,
     experiments,
+    community,
     by_source:Object.entries(bySource)
       .map(([source,v])=>({
         source,...v,
