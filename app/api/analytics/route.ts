@@ -1,6 +1,6 @@
 import { NextRequest,NextResponse } from "next/server";
 
-const allowed=new Set(["page_view","amazon_click","chapter_click","test_start","test_complete","map_interaction","community_click","lead_submit"]);
+const allowed=new Set(["page_view","amazon_click","chapter_click","test_start","test_complete","map_interaction","community_click","lead_submit","patreon_click"]);
 
 export async function POST(request:NextRequest){
   const body=await request.json().catch(()=>null);
