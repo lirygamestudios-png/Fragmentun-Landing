@@ -237,3 +237,31 @@ input{width:100%;background:#07101d;border:1px solid #ffffff25;color:white;paddi
 .chapterBody p{margin:0 0 1.35rem}
 .chapterEnd{margin-top:3rem;text-align:center}
 .chapterEnd .heroActions{justify-content:center}
+
+
+/* Patreon sponsorship */
+.supportPanel{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:32px;
+  align-items:center;
+  padding:clamp(28px,5vw,52px);
+  border:1px solid rgba(201,168,76,.28);
+  border-radius:26px;
+  background:
+    radial-gradient(circle at 85% 20%,rgba(255,66,77,.16),transparent 34%),
+    linear-gradient(145deg,rgba(18,35,57,.96),rgba(8,20,36,.96));
+  box-shadow:0 26px 80px rgba(0,0,0,.35)
+}
+.btnPatreon{
+  background:linear-gradient(135deg,#ff7a83,#ff424d);
+  color:white;
+  border-color:rgba(255,255,255,.18);
+  box-shadow:0 10px 30px rgba(255,66,77,.18)
+}
+.btnPatreon:hover{
+  box-shadow:0 14px 36px rgba(255,66,77,.28)
+}
+@media(max-width:760px){
+  .supportPanel{grid-template-columns:1fr}
+}
