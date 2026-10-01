@@ -32,6 +32,7 @@ export async function GET(){
   const bySource:Record<string,{visits:number;leads:number;amazonClicks:number;patreonClicks:number}>={};
   const mailerlite:Record<string,number>={};
   const testProfiles:Record<string,number>={};
+  const experiments:Record<string,{views:Record<string,number>;leads:Record<string,number>}>= {};
 
   for(const e of events||[]){
     totals[e.event_name]=(totals[e.event_name]||0)+1;
@@ -42,6 +43,20 @@ export async function GET(){
     if(e.event_name==="page_view"){bySource[source].visits++;byLocale[locale].visits++;}
     if(e.event_name==="amazon_click"){bySource[source].amazonClicks++;byLocale[locale].amazonClicks++;}
     if(e.event_name==="patreon_click"){bySource[source].patreonClicks++;byLocale[locale].patreonClicks++;}
+    if(e.event_name==="experiment_view"){
+      const exp=String((e.metadata as any)?.experiment||"unknown");
+      const variant=String((e.metadata as any)?.variant||"unknown");
+      experiments[exp]??={views:{},leads:{}};
+      experiments[exp].views[variant]=(experiments[exp].views[variant]||0)+1;
+    }
+    if(e.event_name==="lead_submit"){
+      const exp=String((e.metadata as any)?.experiment||"");
+      const variant=String((e.metadata as any)?.experiment_variant||"");
+      if(exp&&variant){
+        experiments[exp]??={views:{},leads:{}};
+        experiments[exp].leads[variant]=(experiments[exp].leads[variant]||0)+1;
+      }
+    }
     if(e.event_name==="test_complete"){
       const profile=String((e.metadata as any)?.profile||"unknown");
       testProfiles[profile]=(testProfiles[profile]||0)+1;
@@ -74,6 +89,7 @@ export async function GET(){
     lead_to_amazon_ratio:leadCount?(amazonClicks/leadCount)*100:0,
     mailerlite,
     test_profiles:testProfiles,
+    experiments,
     by_source:Object.entries(bySource)
       .map(([source,v])=>({
         source,...v,
