@@ -16,10 +16,10 @@ export function LeadForm({locale,nameLabel,emailLabel,submitLabel}:{locale:Local
   useEffect(()=>{
     const qs=new URLSearchParams(window.location.search);
     setUtm({
-      source:qs.get("utm_source")||"",
-      medium:qs.get("utm_medium")||"",
-      campaign:qs.get("utm_campaign")||"",
-      content:qs.get("utm_content")||""
+      source:qs.get("utm_source")||sessionStorage.getItem("utm_source")||"",
+      medium:qs.get("utm_medium")||sessionStorage.getItem("utm_medium")||"",
+      campaign:qs.get("utm_campaign")||sessionStorage.getItem("utm_campaign")||"",
+      content:qs.get("utm_content")||sessionStorage.getItem("utm_content")||""
     });
   },[]);
 
@@ -31,12 +31,13 @@ export function LeadForm({locale,nameLabel,emailLabel,submitLabel}:{locale:Local
     <input type="hidden" name="utm_content" value={utm.content}/>
     <input type="hidden" name="consent_version" value="2026-09-30"/>
     <input
+      aria-label={locale==="es"?"Tu nombre":"Your name"}
       name="name"
       placeholder={locale==="es"?`${nameLabel} (opcional)`:`${nameLabel} (optional)`}
       autoComplete="name"
       maxLength={200}
     />
-    <input name="email" type="email" placeholder={emailLabel} autoComplete="email" maxLength={320} required/>
+    <input aria-label={locale==="es"?"Tu correo electrónico":"Your email"} name="email" type="email" placeholder={emailLabel} autoComplete="email" maxLength={320} required/>
     <label className="consentRow">
       <input name="consent_marketing" type="checkbox" value="yes" required/>
       <span>
