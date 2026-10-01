@@ -265,3 +265,11 @@ input{width:100%;background:#07101d;border:1px solid #ffffff25;color:white;paddi
 @media(max-width:760px){
   .supportPanel{grid-template-columns:1fr}
 }
+
+.profileCapture{
+  margin-top:28px;
+  min-height:auto;
+  text-align:left
+}
+.profileCapture h3{margin-bottom:8px}
+.profileCapture .formGrid{margin-top:16px}
