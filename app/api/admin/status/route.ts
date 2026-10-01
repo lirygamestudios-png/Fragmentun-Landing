@@ -54,13 +54,20 @@ export async function GET(){
     required:true
   });
 
+  const blockers=checks.filter(c=>c.required&&!c.ok);
+  const optionalPending=checks.filter(c=>!c.required&&!c.ok);
+
   return NextResponse.json({
     checks,
     admin_access:{
       allowlisted:allowlistCount||0,
       provisioned:profileCount||0
     },
-    ready_required:checks.filter(c=>c.required).every(c=>c.ok),
+    ready_required:blockers.length===0,
+    launch_status:blockers.length===0?"GO":"NO_GO",
+    blockers:blockers.map(c=>({key:c.key,label:c.label})),
+    blocker_count:blockers.length,
+    optional_pending:optionalPending.map(c=>({key:c.key,label:c.label})),
     configured:checks.filter(c=>c.ok).length,
     total:checks.length
   });
