@@ -22,10 +22,10 @@ export function TrackLink({
           event_name:eventName,
           locale,
           path:window.location.pathname,
-          source:url.searchParams.get("utm_source")||"",
-          medium:url.searchParams.get("utm_medium")||"",
-          campaign:url.searchParams.get("utm_campaign")||"",
-          content:url.searchParams.get("utm_content")||"",
+          source:url.searchParams.get("utm_source")||sessionStorage.getItem("utm_source")||"",
+          medium:url.searchParams.get("utm_medium")||sessionStorage.getItem("utm_medium")||"",
+          campaign:url.searchParams.get("utm_campaign")||sessionStorage.getItem("utm_campaign")||"",
+          content:url.searchParams.get("utm_content")||sessionStorage.getItem("utm_content")||"",
           metadata:metadata||undefined
         }),
         keepalive:true
