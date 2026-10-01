@@ -7,7 +7,9 @@ const presets=[
   {label:"Meta Ads",source:"meta",medium:"paid_social",campaign:"fragmentun_cap1",content:"ad_01"},
   {label:"TikTok orgánico",source:"tiktok",medium:"organic_social",campaign:"fragmentun_cap1",content:"video_01"},
   {label:"YouTube",source:"youtube",medium:"organic_video",campaign:"fragmentun_cap1",content:"video_01"},
-  {label:"Email",source:"email",medium:"email",campaign:"fragmentun_nurture",content:"email_01"}
+  {label:"Email",source:"email",medium:"email",campaign:"fragmentun_nurture",content:"email_01"},
+  {label:"Amazon",source:"instagram",medium:"paid_social",campaign:"fragmentun_amazon",content:"ad_01"},
+  {label:"Patreon",source:"instagram",medium:"paid_social",campaign:"fragmentun_patreon",content:"ad_01"}
 ];
 
 export function AdminCampaigns(){
@@ -20,6 +22,8 @@ export function AdminCampaigns(){
  async function copyUrl(r:any){const u=url(r);if(!u)return;await navigator.clipboard.writeText(u);setMsg("URL copiada ✓")}
  function emailAmazon(r:any){const u=new URL("https://www.fragmentun.com/go/amazon");u.searchParams.set("locale",r.locale||"es");u.searchParams.set("utm_source",r.source||"email");u.searchParams.set("utm_medium",r.medium||"email");if(r.campaign)u.searchParams.set("utm_campaign",r.campaign);if(r.content)u.searchParams.set("utm_content",r.content);return u.toString()}
  async function copyAmazon(r:any){await navigator.clipboard.writeText(emailAmazon(r));setMsg("URL Amazon rastreable copiada ✓")}
+ function emailPatreon(r:any){const u=new URL("https://www.fragmentun.com/go/patreon");u.searchParams.set("locale",r.locale||"es");u.searchParams.set("utm_source",r.source||"email");u.searchParams.set("utm_medium",r.medium||"email");if(r.campaign)u.searchParams.set("utm_campaign",r.campaign);if(r.content)u.searchParams.set("utm_content",r.content);return u.toString()}
+ async function copyPatreon(r:any){await navigator.clipboard.writeText(emailPatreon(r));setMsg("URL Patreon rastreable copiada ✓")}
  return <div>
    <div className="card">
      <h2>Presets rápidos</h2>
@@ -42,6 +46,7 @@ export function AdminCampaigns(){
      <div className="heroActions">
        <button className="btn btnGhost" onClick={()=>copyUrl(r)}>Copiar URL campaña</button>
        <button className="btn btnGhost" onClick={()=>copyAmazon(r)}>Copiar enlace Amazon rastreable</button>
+       <button className="btn btnGhost" onClick={()=>copyPatreon(r)}>Copiar enlace Patreon rastreable</button>
      </div>
    </article>)}</div><p>{msg}</p>
  </div>;
