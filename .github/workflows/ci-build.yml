@@ -104,7 +104,11 @@ jobs:
           curl -fsS http://127.0.0.1:3000/admin/forgot-password >/dev/null
           curl -fsS http://127.0.0.1:3000/admin/reset-password >/dev/null
 
-          assert_status 404 http://127.0.0.1:3000/404-test-route
+          assert_status 307 http://127.0.0.1:3000/404-test-route
+          FINAL_404="$(curl -sS -L -o /tmp/404-final.txt -w '%{http_code}' http://127.0.0.1:3000/404-test-route)"
+          echo "localized 404 final -> HTTP $FINAL_404 (expected 404)"
+          test "$FINAL_404" = "404"
+
           assert_status 302 http://127.0.0.1:3000/go/amazon
           assert_status 302 http://127.0.0.1:3000/go/patreon
 
