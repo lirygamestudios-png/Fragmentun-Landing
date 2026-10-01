@@ -16,7 +16,7 @@ export function PublicHeader({locale,amazonUrl,patreonUrl}:{locale:Locale;amazon
     ["Saga",`/${locale}#saga`],
     [t.nav.test,`/${locale}/test`],
     [t.nav.map,`/${locale}/mapa`],
-    [locale==="es"?"Comunidad":"Community",`/${locale}#comunidad`],
+    [locale==="es"?"Redes":"Social",`/${locale}#redes`],
     [t.nav.author,`/${locale}#autor`],
     [locale==="es"?"Patrocinar":"Support",`/${locale}#patreon`]
   ];
