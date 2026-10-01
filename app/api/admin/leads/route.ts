@@ -23,24 +23,26 @@ export async function GET(request:NextRequest){
   const status=q.get("status");
   const search=(q.get("q")||"").trim().slice(0,200);
   const format=q.get("format");
+  const profile=q.get("profile");
 
   let query=x.supabase.from("leads")
-    .select("id,email,name,locale,source,medium,campaign,content,consent_marketing,consent_version,consented_at,mailerlite_status,mailerlite_subscriber_id,last_error,created_at")
+    .select("id,email,name,locale,source,medium,campaign,content,consent_marketing,consent_version,consented_at,mailerlite_status,mailerlite_subscriber_id,last_error,emotional_profile,emotional_scores,created_at")
     .order("created_at",{ascending:false})
     .limit(format==="csv"?5000:500);
 
   if(locale==="es"||locale==="en")query=query.eq("locale",locale);
   if(status&&["pending","synced","error","unconfigured"].includes(status))query=query.eq("mailerlite_status",status);
   if(search)query=query.or(`email.ilike.%${search}%,name.ilike.%${search}%`);
+  if(profile&&["vorax","umbral","ethelis","nara","balance"].includes(profile))query=query.eq("emotional_profile",profile);
 
   const{data,error}=await query;
   if(error)return NextResponse.json({error:error.message},{status:500});
 
   if(format==="csv"){
-    const head=["email","name","locale","source","medium","campaign","content","consent","consent_version","consented_at","mailerlite_status","created_at"];
+    const head=["email","name","locale","source","medium","campaign","content","consent","consent_version","consented_at","mailerlite_status","emotional_profile","created_at"];
     const lines=(data||[]).map((r:any)=>[
       r.email,r.name,r.locale,r.source,r.medium,r.campaign,r.content,
-      r.consent_marketing?"yes":"no",r.consent_version,r.consented_at,r.mailerlite_status,r.created_at
+      r.consent_marketing?"yes":"no",r.consent_version,r.consented_at,r.mailerlite_status,r.emotional_profile,r.created_at
     ].map(csvCell).join(","));
     return new NextResponse([head.join(","),...lines].join("\n"),{
       headers:{
