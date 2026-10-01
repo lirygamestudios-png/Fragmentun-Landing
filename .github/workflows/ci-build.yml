@@ -29,6 +29,25 @@ jobs:
           node-version: 20
       - name: Install
         run: npm install
+      - name: Audit dependency vulnerabilities
+        run: |
+          npm audit --json > /tmp/npm-audit.json || true
+          node - <<'NODE'
+          const fs=require('fs');
+          const j=JSON.parse(fs.readFileSync('/tmp/npm-audit.json','utf8'));
+          const vs=j.vulnerabilities||{};
+          console.log('npm audit summary:',j.metadata?.vulnerabilities||{});
+          for(const [name,v] of Object.entries(vs)){
+            console.log(JSON.stringify({
+              package:name,
+              severity:v.severity,
+              range:v.range,
+              via:Array.isArray(v.via)?v.via.map(x=>typeof x==='string'?x:{title:x.title,url:x.url,severity:x.severity,range:x.range}):v.via,
+              fixAvailable:v.fixAvailable
+            }));
+          }
+          NODE
+
       - name: Type check diagnostic
         run: npx tsc --noEmit
         continue-on-error: true
