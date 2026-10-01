@@ -6,6 +6,7 @@ import { ChapterLeadExperiment } from "../../components/ChapterLeadExperiment";
 import { TrackLink } from "../../components/TrackLink";
 import { PageView } from "../../components/PageView";
 import { MotionEffects } from "../../components/MotionEffects";
+import { SocialLinks } from "../../components/SocialLinks";
 import { copy,locales,type Locale } from "../../lib/i18n";
 import { getBooks,getLocalizedContent,getPublishedReviews } from "../../lib/content";
 
@@ -36,6 +37,13 @@ export default async function Home({
   const firstBook=(books as any[]).find((b:any)=>b.slug==="fragmentun-i")||(books as any[])[0];
   const amazonUrl=firstBook?.edition_status==="published"?firstBook?.amazon_url:null;
   const patreonUrl=process.env.NEXT_PUBLIC_PATREON_URL||"https://patreon.com/sagaFragmentun?utm_source=fragmentun&utm_medium=website&utm_campaign=patreon_support&utm_content=landing";
+  const socialItems=[
+    {key:"instagram",label:"Instagram",url:process.env.NEXT_PUBLIC_INSTAGRAM_URL||""},
+    {key:"tiktok",label:"TikTok",url:process.env.NEXT_PUBLIC_TIKTOK_URL||""},
+    {key:"youtube",label:"YouTube",url:process.env.NEXT_PUBLIC_YOUTUBE_URL||""},
+    {key:"facebook",label:"Facebook",url:process.env.NEXT_PUBLIC_FACEBOOK_URL||""},
+    {key:"x",label:"X",url:process.env.NEXT_PUBLIC_X_URL||""}
+  ];
 
   const fallbackBooks=[
     {
@@ -80,7 +88,7 @@ export default async function Home({
       inLanguage:locale,
       url:`${site}/${locale}`,
       image:`${site}/fragmentun-i-cover-es.jpg`,
-      sameAs:["https://www.amazon.com/dp/B0HBLTHT8S"],
+      sameAs:["https://www.amazon.com/dp/B0HBLTHT8S",patreonUrl,...socialItems.map(x=>x.url).filter(Boolean)],
       publisher:{"@type":"Organization",name:"LIRYGAMES STUDIOS"}
     },
     {
@@ -88,7 +96,8 @@ export default async function Home({
       "@type":"Person",
       name:"José Liranzo",
       url:`${site}/${locale}#autor`,
-      worksFor:{"@type":"Organization",name:"LIRYGAMES STUDIOS"}
+      worksFor:{"@type":"Organization",name:"LIRYGAMES STUDIOS"},
+      sameAs:socialItems.map(x=>x.url).filter(Boolean)
     },
     {
       "@context":"https://schema.org",
@@ -298,6 +307,19 @@ export default async function Home({
         </div>
       </section>
 
+      <section className="section" id="comunidad">
+        <div className="container">
+          <div className="sectionIntro">
+            <div className="kicker">{locale==="es"?"Comunidad":"Community"}</div>
+            <h2>{locale==="es"?"Sigue FRAGMENTUN":"Follow FRAGMENTUN"}</h2>
+            <p className="lead">{locale==="es"
+              ?"Acompaña el desarrollo de la saga, nuevas imágenes, videos, avances y publicaciones."
+              :"Follow the saga's development, new artwork, videos, previews and releases."}</p>
+            <SocialLinks locale={locale} items={socialItems} placement="community_section"/>
+          </div>
+        </div>
+      </section>
+
       <section className="section" id="autor">
         <div className="container">
           <div className="sectionIntro">
@@ -327,6 +349,7 @@ export default async function Home({
       <div className="container footerGrid">
         <span>© 2026 José Liranzo · FRAGMENTUN</span>
         <span>{t.footer}</span>
+        <SocialLinks locale={locale} items={socialItems} placement="footer"/>
       </div>
     </footer>
   </>;
