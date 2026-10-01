@@ -1,6 +1,41 @@
 import { NextRequest,NextResponse } from "next/server";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 
+async function ensureAdminProfile(supabase:any,user:{id:string;email?:string|null}){
+  let{data:profile}=await supabase
+    .from("admin_profiles")
+    .select("role")
+    .eq("user_id",user.id)
+    .maybeSingle();
+
+  if(profile)return profile;
+  if(!user.email)return null;
+
+  const{data:allowed}=await supabase
+    .from("admin_access_allowlist")
+    .select("role,display_name")
+    .ilike("email",user.email)
+    .maybeSingle();
+
+  if(!allowed)return null;
+
+  const{error}=await supabase.from("admin_profiles").upsert({
+    user_id:user.id,
+    display_name:allowed.display_name??null,
+    role:allowed.role
+  },{onConflict:"user_id"});
+
+  if(error)return null;
+
+  const refreshed=await supabase
+    .from("admin_profiles")
+    .select("role")
+    .eq("user_id",user.id)
+    .maybeSingle();
+
+  return refreshed.data||null;
+}
+
 export async function POST(request:NextRequest){
   const length=Number(request.headers.get("content-length")||"0");
   if(length>10000) return NextResponse.json({ok:false,error:"payload_too_large"},{status:413});
@@ -20,11 +55,7 @@ export async function POST(request:NextRequest){
     return NextResponse.json({ok:false,error:"invalid_credentials"},{status:401});
   }
 
-  const{data:profile}=await supabase
-    .from("admin_profiles")
-    .select("role")
-    .eq("user_id",data.user.id)
-    .maybeSingle();
+  const profile=await ensureAdminProfile(supabase,data.user);
 
   if(!profile){
     await supabase.auth.signOut();
