@@ -29,6 +29,8 @@ export function AdminAnalytics(){
       <div className="kpi"><span>CTR Amazon</span><strong>{pct(data.amazon_ctr)}</strong></div>
       <div className="kpi"><span>Clics Patreon</span><strong>{t.patreon_click||0}</strong></div>
       <div className="kpi"><span>CTR Patreon</span><strong>{pct(data.patreon_ctr)}</strong></div>
+      <div className="kpi"><span>Clics Comunidad</span><strong>{t.community_click||0}</strong></div>
+      <div className="kpi"><span>CTR Comunidad</span><strong>{pct(data.community_ctr)}</strong></div>
       <div className="kpi"><span>Test completados</span><strong>{t.test_complete||0}</strong></div>
     </div>
 
