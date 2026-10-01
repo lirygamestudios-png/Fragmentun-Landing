@@ -9,10 +9,16 @@ async function marketing(){
   return {ok:!!p&&["admin","marketing"].includes(p.role),supabase};
 }
 
-export async function GET(){
+function csvCell(v:unknown){
+  const s=typeof v==="object"?JSON.stringify(v??{}):String(v??"");
+  return `"${s.replace(/"/g,'""')}"`;
+}
+
+export async function GET(request?:Request){
   const x=await marketing();
   if(!x.ok)return NextResponse.json({error:"forbidden"},{status:403});
   const since=new Date(Date.now()-30*86400000).toISOString();
+  const format=request?new URL(request.url).searchParams.get("format"):null;
 
   const[{data:events},{data:leads}]=await Promise.all([
     x.supabase.from("analytics_events")
@@ -72,6 +78,19 @@ export async function GET(){
     byLocale[locale].leads++;
     const status=l.mailerlite_status||"unknown";
     mailerlite[status]=(mailerlite[status]||0)+1;
+  }
+
+  if(format==="csv"){
+    const head=["created_at","event_name","locale","source","medium","campaign","content","metadata"];
+    const lines=(events||[]).map((e:any)=>[
+      e.created_at,e.event_name,e.locale,e.source,e.medium,e.campaign,e.content,e.metadata
+    ].map(csvCell).join(","));
+    return new NextResponse([head.join(","),...lines].join("\n"),{
+      headers:{
+        "Content-Type":"text/csv; charset=utf-8",
+        "Content-Disposition":'attachment; filename="fragmentun-analytics-30d.csv"'
+      }
+    });
   }
 
   const pageViews=totals.page_view||0;
