@@ -10,7 +10,7 @@ export default function AdminLoginPage(){
     setStatus("Enviando acceso…");
     const supabase=createSupabaseBrowserClient();
     const callback=`${window.location.origin}/auth/callback?next=/admin`;
-    const{error}=await supabase.auth.signInWithOtp({email,options:{emailRedirectTo:callback,shouldCreateUser:true}});
+    const{error}=await supabase.auth.signInWithOtp({email,options:{emailRedirectTo:callback,shouldCreateUser:false}});
     setStatus(error?"No se pudo enviar el enlace de acceso.":"Revisa tu correo. Te enviamos un enlace seguro para entrar al Control Center.");
   }
   return <main style={{minHeight:"100vh",display:"grid",placeItems:"center",background:"#050A12",color:"#E2E8F0",padding:24}}>
@@ -18,7 +18,7 @@ export default function AdminLoginPage(){
       <div style={{color:"#C9A84C",letterSpacing:".16em"}}>FRAGMENTUN CONTROL CENTER</div>
       <h1>Acceso administrativo</h1>
       <p>Solo los correos autorizados reciben permisos del panel.</p>
-      <input style={{width:"100%",padding:14,borderRadius:10,margin:"16px 0"}} type="email" required value={email} onChange={e=>setEmail(e.target.value)} placeholder="Correo autorizado" autoComplete="email"/>
+      <input style={{width:"100%",padding:14,borderRadius:10,margin:"16px 0"}} type="email" required value={email} onChange={e=>setEmail(e.target.value)} placeholder="Correo autorizado" autoComplete="email" aria-label="Correo autorizado"/>
       <button style={{width:"100%",padding:14,borderRadius:999,border:0,fontWeight:800,background:"#C9A84C"}}>Enviar enlace de acceso</button>
       <p>{status}</p>
     </form>
