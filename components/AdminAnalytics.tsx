@@ -14,7 +14,12 @@ export function AdminAnalytics(){
   const tp=data.test_profiles||{};
   const experiments=data.experiments||{};
 
+  function exportCsv(){window.location.href="/api/admin/analytics?format=csv"}
+
   return <div>
+    <div className="heroActions" style={{justifyContent:"flex-end",marginBottom:18}}>
+      <button className="btn btnGhost" onClick={exportCsv}>Exportar Analytics CSV</button>
+    </div>
     <div className="kpis">
       <div className="kpi"><span>Visitas · 30 días</span><strong>{t.page_view||0}</strong></div>
       <div className="kpi"><span>Leads</span><strong>{data.lead_count||0}</strong></div>
