@@ -9,8 +9,14 @@ import { MotionEffects } from "../../components/MotionEffects";
 import { copy,locales,type Locale } from "../../lib/i18n";
 import { getBooks,getLocalizedContent,getPublishedReviews } from "../../lib/content";
 
-export default async function Home({params}:{params:Promise<{locale:string}>}){
-  const{locale:raw}=await params;
+export default async function Home({
+  params,
+  searchParams
+}:{
+  params:Promise<{locale:string}>;
+  searchParams:Promise<{signup?:string}>;
+}){
+  const[{locale:raw},{signup}] = await Promise.all([params,searchParams]);
   if(!locales.includes(raw as Locale)) notFound();
   const locale=raw as Locale;
   const t=copy[locale];
@@ -183,6 +189,13 @@ export default async function Home({params}:{params:Promise<{locale:string}>}){
               <h2>{chapter.title||t.chapterTitle}</h2>
               <p className="lead">{chapter.body||t.chapterBody}</p>
             </div>
+            {signup&&<div className="formNotice" role="status">
+              {signup==="invalid"
+                ?(locale==="es"?"Revisa el correo electrónico e inténtalo de nuevo.":"Check your email address and try again.")
+                :signup==="consent"
+                  ?(locale==="es"?"Debes aceptar el consentimiento para recibir el Capítulo 1 por correo.":"You must accept consent to receive Chapter 1 by email.")
+                  :(locale==="es"?"No pudimos guardar tu registro. Inténtalo nuevamente.":"We couldn't save your signup. Please try again.")}
+            </div>}
             <LeadForm locale={locale} nameLabel={t.name} emailLabel={t.email} submitLabel={chapter.cta||t.send}/>
             <p className="note">{chapter.privacy||(locale==="es"?"Tu idioma se guardará para que recibas la secuencia correcta.":"Your language will be preserved so you receive the correct sequence.")}</p>
           </div>
