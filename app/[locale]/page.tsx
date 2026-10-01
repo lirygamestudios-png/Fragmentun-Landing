@@ -29,7 +29,7 @@ export default async function Home({params}:{params:Promise<{locale:string}>}){
 
   const firstBook=(books as any[]).find((b:any)=>b.slug==="fragmentun-i")||(books as any[])[0];
   const amazonUrl=firstBook?.edition_status==="published"?firstBook?.amazon_url:null;
-  const patreonUrl=process.env.NEXT_PUBLIC_PATREON_URL||"https://patreon.com/sagaFragmentun?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink";
+  const patreonUrl=process.env.NEXT_PUBLIC_PATREON_URL||"https://patreon.com/sagaFragmentun?utm_source=fragmentun&utm_medium=website&utm_campaign=patreon_support&utm_content=landing";
 
   const fallbackBooks=[
     {
