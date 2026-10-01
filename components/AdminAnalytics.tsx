@@ -13,6 +13,7 @@ export function AdminAnalytics(){
   const ml=data.mailerlite||{};
   const tp=data.test_profiles||{};
   const experiments=data.experiments||{};
+  const community=data.community||{};
 
   function exportCsv(){window.location.href="/api/admin/analytics?format=csv"}
 
@@ -29,6 +30,16 @@ export function AdminAnalytics(){
       <div className="kpi"><span>Clics Patreon</span><strong>{t.patreon_click||0}</strong></div>
       <div className="kpi"><span>CTR Patreon</span><strong>{pct(data.patreon_ctr)}</strong></div>
       <div className="kpi"><span>Test completados</span><strong>{t.test_complete||0}</strong></div>
+    </div>
+
+    <div className="card" style={{marginTop:24}}>
+      <h2>Comunidad y redes sociales</h2>
+      <div className="kpis">
+        <div className="kpi"><span>Instagram</span><strong>{community.instagram||0}</strong></div>
+        <div className="kpi"><span>YouTube</span><strong>{community.youtube||0}</strong></div>
+        <div className="kpi"><span>Facebook</span><strong>{community.facebook||0}</strong></div>
+        <div className="kpi"><span>Otros</span><strong>{(community.tiktok||0)+(community.x||0)+(community.unknown||0)}</strong></div>
+      </div>
     </div>
 
     {Object.keys(experiments).length>0&&<div className="card" style={{marginTop:24}}>
