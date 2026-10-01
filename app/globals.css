@@ -283,3 +283,22 @@ input{width:100%;background:#07101d;border:1px solid #ffffff25;color:white;paddi
   color:#f4e7b6;
   font-weight:700
 }
+
+
+/* Accessibility and interaction QA */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible{
+  outline:3px solid var(--gold);
+  outline-offset:3px
+}
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled{
+  opacity:.6;
+  cursor:not-allowed
+}
+input::placeholder{color:#8090a5}
