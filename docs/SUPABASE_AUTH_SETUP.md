@@ -20,8 +20,9 @@ El Control Center usa email + contraseña mediante Supabase Auth.
 Después de autenticar:
 1. El backend obtiene el usuario real.
 2. Consulta `admin_profiles`.
-3. Si no existe perfil, cierra la sesión y devuelve `unauthorized`.
-4. Solo usuarios con perfil administrativo pueden entrar.
+3. Si no existe perfil, consulta la allowlist con el email autenticado.
+4. Si el email está autorizado, crea automáticamente `admin_profiles` con el rol permitido.
+5. Si no está autorizado, cierra la sesión y devuelve `unauthorized`.
 
 ## Recuperación
 `/admin/forgot-password` llama a `resetPasswordForEmail`.
@@ -59,10 +60,11 @@ El botón `Cerrar sesión` llama a:
 El backend ejecuta `supabase.auth.signOut()` y la UI vuelve a `/admin/login`.
 
 ## Primer administrador
-Antes de poder usar login con contraseña debe existir:
+Antes del primer acceso debe existir:
 1. Usuario en Supabase Auth.
-2. Fila correspondiente en `admin_profiles`.
-3. Correo previamente aprobado en `admin_access_allowlist`.
+2. Correo previamente aprobado en `admin_access_allowlist`.
+
+La fila de `admin_profiles` se crea automáticamente en el primer login/callback válido.
 
 Ver:
 `docs/ADMIN_FIRST_ACCESS.md`
