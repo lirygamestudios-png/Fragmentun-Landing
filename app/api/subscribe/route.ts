@@ -18,6 +18,10 @@ export async function POST(request:NextRequest){
   const consentMarketing=form.get("consent_marketing")==="yes";
   const consentVersion=clean(form.get("consent_version"),50)||"2026-09-30";
   const honeypot=clean(form.get("website"));
+  const emotionalProfile=clean(form.get("emotional_profile"),20).toLowerCase();
+  const emotionalScoresRaw=clean(form.get("emotional_scores"),1000);
+  let emotionalScores:Record<string,number>={};
+  try{emotionalScores=JSON.parse(emotionalScoresRaw||"{}")}catch{emotionalScores={}}
 
   if(honeypot) return NextResponse.redirect(new URL(`/${locale}/gracias`,request.url),303);
   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -69,7 +73,9 @@ export async function POST(request:NextRequest){
         mailerlite_status:mailerliteStatus,
         last_error:lastError,
         consent_marketing:true,
-        consent_version:consentVersion
+        consent_version:consentVersion,
+        emotional_profile:["vorax","umbral","ethelis","nara","balance"].includes(emotionalProfile)?emotionalProfile:null,
+        emotional_scores:emotionalScores
       }),
       cache:"no-store"
     }).catch(()=>{});
@@ -82,12 +88,16 @@ export async function POST(request:NextRequest){
         locale,
         path:`/${locale}`,
         source,medium,campaign,content,
-        metadata:{mailerlite_status:mailerliteStatus}
+        metadata:{
+          mailerlite_status:mailerliteStatus,
+          emotional_profile:["vorax","umbral","ethelis","nara","balance"].includes(emotionalProfile)?emotionalProfile:null
+        }
       }),
       cache:"no-store"
     }).catch(()=>{});
   }
 
   const delivery=mailerliteStatus==="synced"?"email":"pending";
-  return NextResponse.redirect(new URL(`/${locale}/gracias?delivery=${delivery}`,request.url),303);
+  const next=emotionalProfile? `/${locale}/gracias?delivery=${delivery}&profile=${encodeURIComponent(emotionalProfile)}` : `/${locale}/gracias?delivery=${delivery}`;
+  return NextResponse.redirect(new URL(next,request.url),303);
 }
