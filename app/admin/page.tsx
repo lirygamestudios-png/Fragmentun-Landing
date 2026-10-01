@@ -30,7 +30,8 @@ export default async function AdminPage(){
     ["Analytics","/admin/analytics"],
     ["Leads","/admin/leads"],
     ["Usuarios","/admin/usuarios"],
-    ["Estado","/admin/status"]
+    ["Estado","/admin/status"],
+    ["Auditoría","/admin/audit"]
   ] as const;
 
   return <main className="adminShell">
