@@ -28,7 +28,8 @@ export default async function AdminPage(){
     ["Marketing","/admin/marketing"],
     ["Analytics","/admin/analytics"],
     ["Leads","/admin/leads"],
-    ["Usuarios","/admin/usuarios"]
+    ["Usuarios","/admin/usuarios"],
+    ["Estado","/admin/status"]
   ] as const;
 
   return <main className="adminShell">
@@ -78,6 +79,10 @@ export default async function AdminPage(){
       </div>
 
       <div className="grid3" style={{marginTop:18}}>
+        <a className="card adminCardLink" href="/admin/status">
+          <h3>Estado del sistema</h3>
+          <p>Revisa qué integraciones y variables críticas están listas antes de producción.</p>
+        </a>
         <a className="card adminCardLink" href="/admin/personajes">
           <h3>Personajes</h3>
           <p>Gestiona nombres, roles, biografías y territorios en ES/EN.</p>
