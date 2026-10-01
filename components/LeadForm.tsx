@@ -10,7 +10,16 @@ type Utm={
   content:string;
 };
 
-export function LeadForm({locale,nameLabel,emailLabel,submitLabel}:{locale:Locale;nameLabel:string;emailLabel:string;submitLabel:string}){
+export function LeadForm({
+  locale,nameLabel,emailLabel,submitLabel,experiment,experimentVariant
+}:{
+  locale:Locale;
+  nameLabel:string;
+  emailLabel:string;
+  submitLabel:string;
+  experiment?:string;
+  experimentVariant?:string;
+}){
   const[utm,setUtm]=useState<Utm>({source:"",medium:"",campaign:"",content:""});
 
   useEffect(()=>{
@@ -30,6 +39,8 @@ export function LeadForm({locale,nameLabel,emailLabel,submitLabel}:{locale:Local
     <input type="hidden" name="utm_campaign" value={utm.campaign}/>
     <input type="hidden" name="utm_content" value={utm.content}/>
     <input type="hidden" name="consent_version" value="2026-09-30"/>
+    <input type="hidden" name="experiment" value={experiment||""}/>
+    <input type="hidden" name="experiment_variant" value={experimentVariant||""}/>
     <input
       aria-label={locale==="es"?"Tu nombre":"Your name"}
       name="name"
