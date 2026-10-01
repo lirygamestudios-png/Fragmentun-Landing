@@ -1,11 +1,18 @@
 "use client";
 import Link from "next/link";
-import { FormEvent,useState } from "react";
-import { useRouter,useSearchParams } from "next/navigation";
+import { FormEvent,useEffect,useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage(){
   const router=useRouter();
-  const params=useSearchParams();
+  const[unauthorized,setUnauthorized]=useState(false);
+  const[authError,setAuthError]=useState(false);
+
+  useEffect(()=>{
+    const qs=new URLSearchParams(window.location.search);
+    setUnauthorized(qs.get("unauthorized")==="1");
+    setAuthError(qs.get("auth_error")==="1");
+  },[]);
   const[email,setEmail]=useState("");
   const[password,setPassword]=useState("");
   const[status,setStatus]=useState("");
@@ -44,8 +51,10 @@ export default function AdminLoginPage(){
       <h1>Acceso administrativo</h1>
       <p className="lead">Entra con tu correo autorizado y contraseña.</p>
 
-      {params.get("unauthorized")==="1"&&
+      {unauthorized&&
         <div className="formNotice">Tu sesión no tiene permisos administrativos.</div>}
+      {authError&&
+        <div className="formNotice">El enlace de acceso o recuperación no es válido o expiró.</div>}
 
       <form onSubmit={signIn} className="formGrid">
         <label>
