@@ -27,6 +27,7 @@ export default async function AdminPage(){
     ["Reseñas","/admin/resenas"],
     ["Marketing","/admin/marketing"],
     ["Analytics","/admin/analytics"],
+    ["Leads","/admin/leads"],
     ["Usuarios","/admin/usuarios"]
   ] as const;
 
@@ -69,6 +70,10 @@ export default async function AdminPage(){
         <a className="card adminCardLink" href="/admin/analytics">
           <h3>Conversión</h3>
           <p>Leads, campañas y clics hacia Amazon medidos con datos reales.</p>
+        </a>
+        <a className="card adminCardLink" href="/admin/leads">
+          <h3>Leads</h3>
+          <p>Busca suscriptores, revisa consentimiento y estado MailerLite, y exporta CSV.</p>
         </a>
       </div>
 
