@@ -13,9 +13,18 @@ export function AdminSystemStatus(){
 
   return <div>
     <div className="kpis">
+      <div className="kpi"><span>Estado lanzamiento</span><strong>{data.launch_status==="GO"?"GO":"NO-GO"}</strong></div>
+      <div className="kpi"><span>Bloqueos críticos</span><strong>{data.blocker_count||0}</strong></div>
       <div className="kpi"><span>Configuraciones detectadas</span><strong>{data.configured}/{data.total}</strong></div>
       <div className="kpi"><span>Requisitos críticos</span><strong>{data.ready_required?"OK":"Pendientes"}</strong></div>
     </div>
+
+    {(data.blockers||[]).length>0&&<div className="card" style={{marginTop:24}}>
+      <h2>Bloqueos de lanzamiento</h2>
+      <ul className="statusList">
+        {data.blockers.map((b:any)=><li key={b.key}>✕ {b.label}</li>)}
+      </ul>
+    </div>}
 
     <div className="card" style={{marginTop:24}}>
       <h2>Configuración de producción</h2>
