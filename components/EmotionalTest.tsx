@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo,useState } from "react";
+import { useEffect,useMemo,useState } from "react";
 import Link from "next/link";
 import type { Locale } from "../lib/i18n";
 
@@ -39,6 +39,16 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
   const [email,setEmail]=useState("");
   const [name,setName]=useState("");
   const [consent,setConsent]=useState(false);
+  const [utm,setUtm]=useState({source:"",medium:"",campaign:"",content:""});
+
+  useEffect(()=>{
+    setUtm({
+      source:sessionStorage.getItem("utm_source")||"",
+      medium:sessionStorage.getItem("utm_medium")||"",
+      campaign:sessionStorage.getItem("utm_campaign")||"",
+      content:sessionStorage.getItem("utm_content")||""
+    });
+  },[]);
 
   const profileMap=useMemo(()=>Object.fromEntries(profiles.map(p=>[p.profile_key,p])),[profiles]);
 
@@ -50,10 +60,10 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
         event_name,
         locale,
         path:`/${locale}/test`,
-        source:sessionStorage.getItem("utm_source")||"",
-        medium:sessionStorage.getItem("utm_medium")||"",
-        campaign:sessionStorage.getItem("utm_campaign")||"",
-        content:sessionStorage.getItem("utm_content")||"",
+        source:utm.source,
+        medium:utm.medium,
+        campaign:utm.campaign,
+        content:utm.content,
         metadata
       }),
       keepalive:true
@@ -135,10 +145,10 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
           <input type="hidden" name="emotional_profile" value={resultKey}/>
           <input type="hidden" name="emotional_scores" value={JSON.stringify(scores)}/>
           <input type="hidden" name="consent_version" value="2026-09-30"/>
-          <input type="hidden" name="utm_source" value={typeof window!=="undefined"?sessionStorage.getItem("utm_source")||"":""}/>
-          <input type="hidden" name="utm_medium" value={typeof window!=="undefined"?sessionStorage.getItem("utm_medium")||"":""}/>
-          <input type="hidden" name="utm_campaign" value={typeof window!=="undefined"?sessionStorage.getItem("utm_campaign")||"":""}/>
-          <input type="hidden" name="utm_content" value={typeof window!=="undefined"?sessionStorage.getItem("utm_content")||"":""}/>
+          <input type="hidden" name="utm_source" value={utm.source}/>
+          <input type="hidden" name="utm_medium" value={utm.medium}/>
+          <input type="hidden" name="utm_campaign" value={utm.campaign}/>
+          <input type="hidden" name="utm_content" value={utm.content}/>
           <input aria-label={locale==="es"?"Tu nombre":"Your name"} name="name" value={name} onChange={e=>setName(e.target.value)} placeholder={locale==="es"?"Tu nombre (opcional)":"Your name (optional)"}/>
           <input aria-label={locale==="es"?"Tu correo electrónico":"Your email"} name="email" type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder={locale==="es"?"Tu correo electrónico":"Your email"} required/>
           <label className="consentRow">
