@@ -32,6 +32,7 @@ export default async function ChapterOne({params}:{params:Promise<{locale:string
   const {locale:raw}=await params;
   if(!locales.includes(raw as Locale)) notFound();
   const locale=raw as Locale;
+  const patreonUrl=process.env.NEXT_PUBLIC_PATREON_URL||"https://patreon.com/sagaFragmentun?utm_source=fragmentun&utm_medium=website&utm_campaign=patreon_support&utm_content=chapter_end";
 
   if(locale==="en"){
     return <main className="section"><div className="container" style={{maxWidth:760,textAlign:"center"}}>
@@ -66,6 +67,16 @@ export default async function ChapterOne({params}:{params:Promise<{locale:string
             newTab
           >
             Continuar en Amazon
+          </TrackLink>
+          <TrackLink
+            className="btn btnPatreon"
+            href={patreonUrl}
+            eventName="patreon_click"
+            locale="es"
+            metadata={{placement:"chapter_end",creator:"sagaFragmentun"}}
+            newTab
+          >
+            Patrocinar FRAGMENTUN
           </TrackLink>
           <Link className="btn btnGhost" href="/es">Volver a FRAGMENTUN</Link>
         </div>
