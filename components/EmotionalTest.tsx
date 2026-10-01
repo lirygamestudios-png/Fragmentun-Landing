@@ -67,8 +67,12 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
     setScores(next);
 
     if(index>=questions.length-1){
+      const entries=Object.entries(next) as [ScoreKey,number][];
+      const max=Math.max(...entries.map(([,v])=>v));
+      const winners=entries.filter(([,v])=>v===max);
+      const completedProfile=winners.length===1?winners[0][0]:"balance";
       setDone(true);
-      track("test_complete",{scores:next,question_count:questions.length});
+      track("test_complete",{scores:next,profile:completedProfile,question_count:questions.length});
     }else{
       setIndex(index+1);
     }
