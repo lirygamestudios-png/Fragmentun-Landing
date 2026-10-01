@@ -102,6 +102,7 @@ export async function GET(request:Request){
   const leadCount=(leads||[]).length;
   const amazonClicks=totals.amazon_click||0;
   const patreonClicks=totals.patreon_click||0;
+  const communityClicks=totals.community_click||0;
 
   return NextResponse.json({
     range_days:30,
@@ -110,6 +111,7 @@ export async function GET(request:Request){
     conversion_rate:pageViews?(leadCount/pageViews)*100:0,
     amazon_ctr:pageViews?(amazonClicks/pageViews)*100:0,
     patreon_ctr:pageViews?(patreonClicks/pageViews)*100:0,
+    community_ctr:pageViews?(communityClicks/pageViews)*100:0,
     lead_to_amazon_ratio:leadCount?(amazonClicks/leadCount)*100:0,
     mailerlite,
     test_profiles:testProfiles,
