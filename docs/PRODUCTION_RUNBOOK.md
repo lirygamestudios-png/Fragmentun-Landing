@@ -177,3 +177,25 @@ Tracking:
 - evento `community_click`
 - metadata `network`
 - metadata `placement`
+
+
+## Comunidad oficial de Facebook
+
+Estado actual: pendiente.
+
+La landing diferencia entre:
+- perfiles sociales públicos,
+- comunidad/grupo oficial de Facebook.
+
+Variable reservada:
+- `NEXT_PUBLIC_FACEBOOK_COMMUNITY_URL`
+
+Mientras esta variable esté vacía:
+- no se muestra CTA de comunidad,
+- no se muestra sección de grupo,
+- solo aparecen las redes oficiales existentes.
+
+Cuando se cree el grupo:
+1. añadir la URL oficial a `NEXT_PUBLIC_FACEBOOK_COMMUNITY_URL`;
+2. el CTA “Únete a la comunidad FRAGMENTUN” aparecerá automáticamente;
+3. los clics se medirán como `community_click` con `network=facebook_group`.
