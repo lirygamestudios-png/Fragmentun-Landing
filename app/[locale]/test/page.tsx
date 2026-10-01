@@ -29,9 +29,10 @@ export default async function TestPage({params}:{params:Promise<{locale:string}>
 
   const firstBook=(books as any[]).find((b:any)=>b.slug==="fragmentun-i")||(books as any[])[0];
   const amazonUrl=firstBook?.edition_status==="published"?firstBook?.amazon_url:null;
+  const patreonUrl=process.env.NEXT_PUBLIC_PATREON_URL||null;
 
   return <>
-    <PublicHeader locale={locale} amazonUrl={amazonUrl}/>
+    <PublicHeader locale={locale} amazonUrl={amazonUrl} patreonUrl={patreonUrl}/>
     <main className="section">
       <div className="container">
         <EmotionalTest locale={locale} questions={(questions||[]) as any} profiles={(profiles||[]) as any}/>
