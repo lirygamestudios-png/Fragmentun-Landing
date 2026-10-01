@@ -21,6 +21,7 @@ export async function GET(){
     {key:"instagram",label:"Instagram oficial",ok:!!process.env.NEXT_PUBLIC_INSTAGRAM_URL,required:false},
     {key:"youtube",label:"YouTube oficial",ok:!!process.env.NEXT_PUBLIC_YOUTUBE_URL,required:false},
     {key:"facebook",label:"Facebook oficial",ok:!!process.env.NEXT_PUBLIC_FACEBOOK_URL,required:false},
+    {key:"facebook_community",label:"Comunidad Facebook",ok:!!process.env.NEXT_PUBLIC_FACEBOOK_COMMUNITY_URL,required:false},
     {key:"mailerlite_token",label:"MailerLite API token",ok:!!process.env.MAILERLITE_API_TOKEN,required:true},
     {key:"mailerlite_es",label:"MailerLite grupo ES",ok:!!process.env.MAILERLITE_GROUP_FRAGMENTUN_CAP1_ES,required:true},
     {key:"mailerlite_en",label:"MailerLite grupo EN",ok:!!process.env.MAILERLITE_GROUP_FRAGMENTUN_CAP1_EN,required:false}
