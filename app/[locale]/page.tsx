@@ -36,14 +36,15 @@ export default async function Home({
 
   const firstBook=(books as any[]).find((b:any)=>b.slug==="fragmentun-i")||(books as any[])[0];
   const amazonUrl=firstBook?.edition_status==="published"?firstBook?.amazon_url:null;
-  const patreonUrl=process.env.NEXT_PUBLIC_PATREON_URL||"https://patreon.com/sagaFragmentun?utm_source=fragmentun&utm_medium=website&utm_campaign=patreon_support&utm_content=landing";
-  const facebookCommunityUrl=process.env.NEXT_PUBLIC_FACEBOOK_COMMUNITY_URL||"";
+  const env=(upper:string,lower:string)=>process.env[upper]||process.env[lower]||"";
+  const patreonUrl=env("NEXT_PUBLIC_PATREON_URL","next_public_patreon_url")||"https://patreon.com/sagaFragmentun?utm_source=fragmentun&utm_medium=website&utm_campaign=patreon_support&utm_content=landing";
+  const facebookCommunityUrl=env("NEXT_PUBLIC_FACEBOOK_COMMUNITY_URL","next_public_facebook_community_url");
   const socialItems=[
-    {key:"instagram",label:"Instagram",url:process.env.NEXT_PUBLIC_INSTAGRAM_URL||""},
-    {key:"tiktok",label:"TikTok",url:process.env.NEXT_PUBLIC_TIKTOK_URL||""},
-    {key:"youtube",label:"YouTube",url:process.env.NEXT_PUBLIC_YOUTUBE_URL||""},
-    {key:"facebook",label:"Facebook",url:process.env.NEXT_PUBLIC_FACEBOOK_URL||""},
-    {key:"x",label:"X",url:process.env.NEXT_PUBLIC_X_URL||""}
+    {key:"instagram",label:"Instagram",url:env("NEXT_PUBLIC_INSTAGRAM_URL","next_public_instagram_url")},
+    {key:"tiktok",label:"TikTok",url:env("NEXT_PUBLIC_TIKTOK_URL","next_public_tiktok_url")},
+    {key:"youtube",label:"YouTube",url:env("NEXT_PUBLIC_YOUTUBE_URL","next_public_youtube_url")},
+    {key:"facebook",label:"Facebook",url:env("NEXT_PUBLIC_FACEBOOK_URL","next_public_facebook_url")},
+    {key:"x",label:"X",url:env("NEXT_PUBLIC_X_URL","next_public_x_url")}
   ];
 
   const fallbackBooks=[
@@ -79,7 +80,7 @@ export default async function Home({
     }
   ];
 
-  const site=process.env.NEXT_PUBLIC_SITE_URL||"https://www.fragmentun.com";
+  const site=env("NEXT_PUBLIC_SITE_URL","next_public_site_url")||"https://www.fragmentun.com";
   const structuredData=[
     {
       "@context":"https://schema.org",
