@@ -42,3 +42,21 @@ export async function getBooks(locale:Locale="es"){
     };
   });
 }
+
+
+export async function getPublishedReviews(locale:Locale){
+  const supabase=client();
+  if(!supabase) return [];
+  const{data}=await supabase
+    .from("reviews")
+    .select("id,source,author_display,body_original,body_es,body_en,source_url,verified,created_at")
+    .eq("published",true)
+    .eq("verified",true)
+    .order("created_at",{ascending:false})
+    .limit(6);
+
+  return (data||[]).map((r:any)=>({
+    ...r,
+    body:locale==="es"?(r.body_es||r.body_original):(r.body_en||r.body_original)
+  }));
+}
