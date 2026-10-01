@@ -39,6 +39,28 @@ export function AdminLeads(){
     await load();
   }
 
+  async function deleteLead(id:string,email:string){
+    const ok=window.confirm(`Eliminar permanentemente el lead ${email}? Esta acción no se puede deshacer.`);
+    if(!ok)return;
+
+    setActionMsg("Eliminando lead…");
+    const r=await fetch("/api/admin/leads/delete",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({id,confirmation:"DELETE"})
+    });
+    const j=await r.json().catch(()=>({}));
+
+    if(r.ok){
+      setActionMsg(j.warning
+        ?"Lead eliminado de Supabase. MailerLite devolvió una advertencia; revisa Integraciones."
+        :"Lead eliminado correctamente.");
+      await load();
+    }else{
+      setActionMsg("No se pudo eliminar el lead.");
+    }
+  }
+
   function exportCsv(){
     const p=new URLSearchParams({format:"csv"});
     if(q)p.set("q",q);
@@ -97,9 +119,14 @@ export function AdminLeads(){
           <td>{r.emotional_profile?String(r.emotional_profile).toUpperCase():"—"}</td>
           <td>{r.mailerlite_status||"—"}</td>
           <td>{r.consent_marketing?"Sí":"No"}</td>
-          <td>{r.mailerlite_status!=="synced"
-            ?<button className="btn btnGhost" onClick={()=>retry(r.id)}>Reintentar</button>
-            :"—"}</td>
+          <td>
+            <div className="heroActions">
+              {r.mailerlite_status!=="synced"
+                ?<button className="btn btnGhost" onClick={()=>retry(r.id)}>Reintentar</button>
+                :null}
+              <button className="btn btnGhost" onClick={()=>deleteLead(r.id,r.email)}>Eliminar</button>
+            </div>
+          </td>
         </tr>)}</tbody>
       </table></div>}
     </div>
