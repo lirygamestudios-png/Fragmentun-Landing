@@ -7,6 +7,7 @@ export function AdminLeads(){
   const[q,setQ]=useState("");
   const[locale,setLocale]=useState("");
   const[status,setStatus]=useState("");
+  const[profile,setProfile]=useState("");
   const[loading,setLoading]=useState(true);
 
   async function load(){
@@ -15,6 +16,7 @@ export function AdminLeads(){
     if(q)p.set("q",q);
     if(locale)p.set("locale",locale);
     if(status)p.set("status",status);
+    if(profile)p.set("profile",profile);
     const r=await fetch("/api/admin/leads?"+p.toString());
     const j=await r.json();
     setRows(j.data||[]);
@@ -29,6 +31,7 @@ export function AdminLeads(){
     if(q)p.set("q",q);
     if(locale)p.set("locale",locale);
     if(status)p.set("status",status);
+    if(profile)p.set("profile",profile);
     window.location.href="/api/admin/leads?"+p.toString();
   }
 
@@ -54,6 +57,14 @@ export function AdminLeads(){
           <option value="unconfigured">MailerLite sin configurar</option>
           <option value="error">Error</option>
         </select>
+        <select value={profile} onChange={e=>setProfile(e.target.value)}>
+          <option value="">Todos los perfiles</option>
+          <option value="vorax">Vorax</option>
+          <option value="umbral">Umbral</option>
+          <option value="ethelis">Ethelis</option>
+          <option value="nara">Nara</option>
+          <option value="balance">Balance</option>
+        </select>
         <button className="btn btnPrimary" onClick={load}>Aplicar</button>
         <button className="btn btnGhost" onClick={exportCsv}>Exportar CSV</button>
       </div>
@@ -62,7 +73,7 @@ export function AdminLeads(){
     <div className="card" style={{marginTop:24}}>
       <h2>Leads</h2>
       {loading?<p>Cargando…</p>:<div className="adminTableWrap"><table className="adminTable">
-        <thead><tr><th>Fecha</th><th>Correo</th><th>Nombre</th><th>Idioma</th><th>Fuente</th><th>Campaña</th><th>MailerLite</th><th>Consentimiento</th></tr></thead>
+        <thead><tr><th>Fecha</th><th>Correo</th><th>Nombre</th><th>Idioma</th><th>Fuente</th><th>Campaña</th><th>Perfil</th><th>MailerLite</th><th>Consentimiento</th></tr></thead>
         <tbody>{rows.map((r:any)=><tr key={r.id}>
           <td>{new Date(r.created_at).toLocaleDateString()}</td>
           <td>{r.email}</td>
@@ -70,6 +81,7 @@ export function AdminLeads(){
           <td>{String(r.locale||"").toUpperCase()}</td>
           <td>{r.source||"direct"}</td>
           <td>{r.campaign||"—"}</td>
+          <td>{r.emotional_profile?String(r.emotional_profile).toUpperCase():"—"}</td>
           <td>{r.mailerlite_status||"—"}</td>
           <td>{r.consent_marketing?"Sí":"No"}</td>
         </tr>)}</tbody>
