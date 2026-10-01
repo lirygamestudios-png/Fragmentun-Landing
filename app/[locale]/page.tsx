@@ -29,6 +29,7 @@ export default async function Home({params}:{params:Promise<{locale:string}>}){
 
   const firstBook=(books as any[]).find((b:any)=>b.slug==="fragmentun-i")||(books as any[])[0];
   const amazonUrl=firstBook?.edition_status==="published"?firstBook?.amazon_url:null;
+  const patreonUrl=process.env.NEXT_PUBLIC_PATREON_URL||"https://patreon.com/sagaFragmentun?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink";
 
   const fallbackBooks=[
     {
@@ -66,7 +67,7 @@ export default async function Home({params}:{params:Promise<{locale:string}>}){
   return <>
     <PageView locale={locale}/>
     <MotionEffects/>
-    <PublicHeader locale={locale} amazonUrl={amazonUrl}/>
+    <PublicHeader locale={locale} amazonUrl={amazonUrl} patreonUrl={patreonUrl}/>
 
     <main>
       <section className="hero">
@@ -219,6 +220,32 @@ export default async function Home({params}:{params:Promise<{locale:string}>}){
         </div>
       </section>}
 
+      <section className="section" id="patreon">
+        <div className="container">
+          <div className="supportPanel">
+            <div>
+              <div className="kicker">{locale==="es"?"Patrocina la saga":"Support the saga"}</div>
+              <h2>{locale==="es"?"Ayuda a llevar FRAGMENTUN más lejos":"Help take FRAGMENTUN further"}</h2>
+              <p className="lead">
+                {locale==="es"
+                  ?"Si quieres apoyar directamente el crecimiento de FRAGMENTUN, el desarrollo de nuevas historias, arte y experiencias del universo, puedes convertirte en patrocinador a través de Patreon."
+                  :"If you want to directly support FRAGMENTUN's growth, new stories, art and experiences across the universe, you can become a supporter through Patreon."}
+              </p>
+            </div>
+            <TrackLink
+              className="btn btnPatreon"
+              href={patreonUrl}
+              eventName="patreon_click"
+              locale={locale}
+              metadata={{placement:"support_section",creator:"sagaFragmentun"}}
+              newTab
+            >
+              {locale==="es"?"Apoyar FRAGMENTUN en Patreon":"Support FRAGMENTUN on Patreon"}
+            </TrackLink>
+          </div>
+        </div>
+      </section>
+
       <section className="section" id="autor">
         <div className="container">
           <div className="sectionIntro">
@@ -236,6 +263,9 @@ export default async function Home({params}:{params:Promise<{locale:string}>}){
           <div className="heroActions">
             {amazonUrl&&<TrackLink className="btn btnPrimary" href={amazonUrl} eventName="amazon_click" locale={locale} metadata={{book:"fragmentun-i",edition_locale:locale,marketplace:firstBook?.marketplace||"amazon.com"}} newTab>{finalCta.primary_cta||t.buy}</TrackLink>}
             <TrackLink className="btn btnSecondary" href="#capitulo" eventName="chapter_click" locale={locale}>{finalCta.secondary_cta||t.chapter}</TrackLink>
+            <TrackLink className="btn btnPatreon" href={patreonUrl} eventName="patreon_click" locale={locale} metadata={{placement:"final_cta",creator:"sagaFragmentun"}} newTab>
+              {locale==="es"?"Patrocinar en Patreon":"Support on Patreon"}
+            </TrackLink>
           </div>
         </div>
       </section>
