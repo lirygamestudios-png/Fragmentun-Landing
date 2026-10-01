@@ -37,6 +37,7 @@ export default async function Home({
   const firstBook=(books as any[]).find((b:any)=>b.slug==="fragmentun-i")||(books as any[])[0];
   const amazonUrl=firstBook?.edition_status==="published"?firstBook?.amazon_url:null;
   const patreonUrl=process.env.NEXT_PUBLIC_PATREON_URL||"https://patreon.com/sagaFragmentun?utm_source=fragmentun&utm_medium=website&utm_campaign=patreon_support&utm_content=landing";
+  const facebookCommunityUrl=process.env.NEXT_PUBLIC_FACEBOOK_COMMUNITY_URL||"";
   const socialItems=[
     {key:"instagram",label:"Instagram",url:process.env.NEXT_PUBLIC_INSTAGRAM_URL||""},
     {key:"tiktok",label:"TikTok",url:process.env.NEXT_PUBLIC_TIKTOK_URL||""},
@@ -307,18 +308,42 @@ export default async function Home({
         </div>
       </section>
 
-      <section className="section" id="comunidad">
+      <section className="section" id="redes">
         <div className="container">
           <div className="sectionIntro">
-            <div className="kicker">{locale==="es"?"Comunidad":"Community"}</div>
+            <div className="kicker">{locale==="es"?"Redes sociales":"Social media"}</div>
             <h2>{locale==="es"?"Sigue FRAGMENTUN":"Follow FRAGMENTUN"}</h2>
             <p className="lead">{locale==="es"
               ?"Acompaña el desarrollo de la saga, nuevas imágenes, videos, avances y publicaciones."
               :"Follow the saga's development, new artwork, videos, previews and releases."}</p>
-            <SocialLinks locale={locale} items={socialItems} placement="community_section"/>
+            <SocialLinks locale={locale} items={socialItems} placement="social_section"/>
           </div>
         </div>
       </section>
+
+      {facebookCommunityUrl&&<section className="section" id="comunidad">
+        <div className="container">
+          <div className="supportPanel">
+            <div>
+              <div className="kicker">{locale==="es"?"Comunidad oficial":"Official community"}</div>
+              <h2>{locale==="es"?"Únete a la comunidad FRAGMENTUN":"Join the FRAGMENTUN community"}</h2>
+              <p className="lead">{locale==="es"
+                ?"Conversa con otros lectores, comparte teorías y sigue de cerca la evolución de la saga."
+                :"Talk with other readers, share theories and follow the saga's evolution closely."}</p>
+            </div>
+            <TrackLink
+              className="btn btnSecondary"
+              href={facebookCommunityUrl}
+              eventName="community_click"
+              locale={locale}
+              metadata={{network:"facebook_group",placement:"community_cta"}}
+              newTab
+            >
+              {locale==="es"?"Unirme a la comunidad":"Join the community"}
+            </TrackLink>
+          </div>
+        </div>
+      </section>}
 
       <section className="section" id="autor">
         <div className="container">
