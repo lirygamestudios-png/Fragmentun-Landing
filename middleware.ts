@@ -5,6 +5,24 @@ const locales = ["es", "en"] as const;
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const method=request.method.toUpperCase();
+
+  if(
+    (pathname.startsWith("/api/admin") || pathname.startsWith("/api/auth")) &&
+    ["POST","PUT","PATCH","DELETE"].includes(method)
+  ){
+    const origin=request.headers.get("origin");
+    const host=request.headers.get("host");
+    if(origin&&host){
+      try{
+        if(new URL(origin).host!==host){
+          return NextResponse.json({error:"invalid_origin"},{status:403});
+        }
+      }catch{
+        return NextResponse.json({error:"invalid_origin"},{status:403});
+      }
+    }
+  }
 
   if (
     pathname.startsWith("/_next") ||
