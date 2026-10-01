@@ -87,11 +87,11 @@ export default async function Home({params}:{params:Promise<{locale:string}>}){
 
           <div>
             <div className="bookStage">
-              <div className="bookPlaceholder">
-                <div><strong>FRAGMENTUN I</strong><p>{t.officialCover}</p></div>
-              </div>
+              {locale==="es"
+                ? <img className="officialBookCover" src="/fragmentun-i-cover-es.jpg" alt="Portada oficial de FRAGMENTUN I: El Despertar Emocional de José Liranzo"/>
+                : <div className="bookPlaceholder"><div><strong>FRAGMENTUN I</strong><p>{t.officialCover}</p></div></div>}
             </div>
-            <p className="note">{t.officialCoverNote}</p>
+            <p className="note">{locale==="es"?"Portada oficial de la edición publicada.":"English edition cover coming soon."}</p>
           </div>
         </div>
       </section>
