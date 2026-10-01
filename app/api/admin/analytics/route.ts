@@ -14,11 +14,11 @@ function csvCell(v:unknown){
   return `"${s.replace(/"/g,'""')}"`;
 }
 
-export async function GET(request?:Request){
+export async function GET(request:Request){
   const x=await marketing();
   if(!x.ok)return NextResponse.json({error:"forbidden"},{status:403});
   const since=new Date(Date.now()-30*86400000).toISOString();
-  const format=request?new URL(request.url).searchParams.get("format"):null;
+  const format=new URL(request.url).searchParams.get("format");
 
   const[{data:events},{data:leads}]=await Promise.all([
     x.supabase.from("analytics_events")
