@@ -595,3 +595,207 @@ input::placeholder{color:#8090a5}
   .controlKpis,.controlQuickGrid,.controlBooks{grid-template-columns:1fr}
   .controlQuickCard{min-height:180px}
 }
+
+
+/* Approved FRAGMENTUN Landing Master Design */
+.masterValueStrip{
+  border-block:1px solid rgba(201,168,76,.12);
+  background:linear-gradient(180deg,rgba(6,14,25,.94),rgba(8,18,31,.96));
+}
+.masterValueGrid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0
+}
+.masterValueGrid>div{
+  min-height:92px;display:flex;align-items:center;justify-content:center;gap:12px;
+  padding:20px;border-right:1px solid #ffffff0d;text-align:center
+}
+.masterValueGrid>div:last-child{border-right:0}
+.masterValueGrid span{color:var(--gold);font-size:1.2rem}
+.masterValueGrid strong{font-size:.82rem;letter-spacing:.02em}
+
+.masterAuthorBand{
+  border-bottom:1px solid #ffffff0c;
+  background:
+    radial-gradient(circle at 66% 35%,rgba(201,168,76,.14),transparent 24%),
+    radial-gradient(circle at 28% 30%,rgba(74,144,217,.12),transparent 28%),
+    linear-gradient(120deg,#0c1829,#07101d 62%,#101522);
+}
+.masterAuthorGrid{
+  min-height:350px;display:grid;grid-template-columns:1fr .72fr .85fr;align-items:center;gap:24px;padding-block:44px
+}
+.masterAuthorCopy h2{font-size:clamp(2.4rem,5vw,4.3rem);color:#f2df9e}
+.masterAuthorPortrait{
+  width:min(260px,100%);aspect-ratio:4/5;margin:auto;border-radius:20px;
+  display:grid;place-items:center;position:relative;overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 26%,#d5b85c44,transparent 24%),
+    linear-gradient(180deg,#172a3e,#081321);
+  border:1px solid rgba(201,168,76,.3);box-shadow:0 30px 70px #0007
+}
+.masterAuthorPortrait:before{
+  content:"";position:absolute;width:42%;height:42%;border-radius:50%;top:14%;
+  background:linear-gradient(135deg,#a77847,#4c2f23);box-shadow:0 0 0 12px #0d1724
+}
+.masterAuthorPortrait:after{
+  content:"";position:absolute;width:72%;height:47%;border-radius:45% 45% 8% 8%;bottom:-6%;
+  background:linear-gradient(135deg,#152437,#070d15)
+}
+.masterAuthorPortrait span{z-index:2;margin-top:auto;margin-bottom:18px;color:#d6bc70;font-family:Georgia,serif;letter-spacing:.2em}
+.masterAuthorGrid blockquote{
+  margin:0;padding:26px 0 26px 28px;border-left:1px solid rgba(201,168,76,.3);
+  font:italic clamp(1.1rem,2.1vw,1.5rem)/1.5 Georgia,serif;color:#d7c99f
+}
+
+.masterWhySection .card{
+  position:relative;overflow:hidden;min-height:260px;padding-top:110px
+}
+.masterWhySection .card:before{
+  content:"";position:absolute;inset:0 0 auto;height:105px;
+  background:
+    radial-gradient(circle at 65% 45%,rgba(201,168,76,.34),transparent 22%),
+    linear-gradient(135deg,#17304e,#0b1727);
+  border-bottom:1px solid #ffffff0e
+}
+.masterWhySection .card:nth-child(2):before{background:radial-gradient(circle at 55% 40%,#4a90d94c,transparent 24%),linear-gradient(135deg,#172d48,#09111d)}
+.masterWhySection .card:nth-child(3):before{background:radial-gradient(circle at 50% 50%,#4a90d955,transparent 28%),linear-gradient(135deg,#102844,#07101d)}
+.masterWhySection .card:nth-child(4):before{background:radial-gradient(circle at 50% 45%,#c9a84c44,transparent 24%),linear-gradient(135deg,#301e2f,#08111d)}
+
+.masterLumenSection{
+  position:relative;overflow:hidden;
+  background:
+    radial-gradient(circle at 70% 50%,rgba(201,168,76,.2),transparent 20%),
+    radial-gradient(circle at 82% 35%,rgba(74,144,217,.18),transparent 28%),
+    linear-gradient(120deg,#081424,#0b1d31);
+}
+.masterLumenSection:after{
+  content:"";position:absolute;right:3%;bottom:0;width:50%;height:75%;opacity:.45;pointer-events:none;
+  background:
+    linear-gradient(90deg,transparent 0 7%,#d1ac4d 7% 8%,transparent 8% 20%,#4a90d9 20% 21%,transparent 21% 32%,#d1ac4d 32% 34%,transparent 34%),
+    linear-gradient(transparent 70%,rgba(201,168,76,.14));
+  clip-path:polygon(0 100%,8% 55%,15% 100%,25% 30%,34% 100%,47% 15%,56% 100%,66% 42%,76% 100%,88% 20%,100% 100%)
+}
+.masterLumenSection .container{position:relative;z-index:2}
+.masterLumenSection h2{color:#f2d786}
+
+.masterChapterSection{
+  background:
+    radial-gradient(circle at 88% 50%,rgba(201,168,76,.16),transparent 25%),
+    linear-gradient(90deg,#081524,#102239 70%,#0a1522)
+}
+.masterChapterSection .formPanel{
+  border-color:rgba(201,168,76,.2);
+  box-shadow:0 26px 80px #0005,inset 0 0 80px rgba(74,144,217,.03)
+}
+.masterChapterSection .formPanel:after{
+  content:"FRAGMENTUN";float:right;margin-top:-56px;margin-right:18px;
+  color:#c9a84c33;font:700 clamp(2rem,5vw,4rem) Georgia,serif;letter-spacing:.08em
+}
+
+.masterSagaSection{
+  background:linear-gradient(180deg,#07101d,#091524)
+}
+.masterSagaSection .sagaCard{
+  min-height:300px;padding-top:150px
+}
+.masterSagaSection .sagaCard:before{
+  content:"";position:absolute;top:20px;left:50%;transform:translateX(-50%);
+  width:88px;height:132px;border-radius:7px;border:1px solid rgba(201,168,76,.28);
+  background:linear-gradient(145deg,#17304c,#07101d);box-shadow:0 18px 34px #0008
+}
+.masterSagaSection .sagaCard:first-child:before{
+  background:
+    radial-gradient(circle at 50% 72%,rgba(201,168,76,.35),transparent 22%),
+    linear-gradient(160deg,#183654,#07101d);
+  border-color:rgba(201,168,76,.7)
+}
+
+.masterInteractiveSection,.masterMapSection{
+  padding-block:48px
+}
+.masterInteractiveSection{
+  background:
+    radial-gradient(circle at 18% 50%,rgba(106,78,199,.35),transparent 22%),
+    radial-gradient(circle at 25% 50%,rgba(74,144,217,.2),transparent 30%),
+    #0b1321
+}
+.masterInteractiveSection .sectionIntro{
+  position:relative;padding-left:38%;max-width:none;min-height:210px
+}
+.masterInteractiveSection .sectionIntro:before{
+  content:"";position:absolute;left:5%;top:50%;transform:translateY(-50%);
+  width:210px;aspect-ratio:1;border-radius:50%;
+  background:
+    radial-gradient(circle,#091a2d 12%,#4a90d94d 13% 16%,#6a4ec766 17% 25%,transparent 26%),
+    conic-gradient(from 25deg,#4a90d9,#6a4ec7,#c9a84c,#4a90d9);
+  box-shadow:0 0 60px #6a4ec766,inset 0 0 45px #050a12
+}
+.masterMapSection{
+  background:
+    radial-gradient(circle at 70% 45%,rgba(201,168,76,.18),transparent 18%),
+    radial-gradient(circle at 55% 55%,rgba(74,144,217,.22),transparent 36%),
+    linear-gradient(120deg,#07101d,#102641)
+}
+.masterMapSection .sectionIntro{max-width:620px}
+
+.masterCommunitySection{
+  background:
+    radial-gradient(circle at 25% 45%,rgba(201,168,76,.12),transparent 24%),
+    linear-gradient(120deg,#101827,#07101d)
+}
+.masterCommunitySection .container{
+  position:relative
+}
+.masterCommunitySection .container:after{
+  content:"";position:absolute;right:2%;top:50%;transform:translateY(-50%);
+  width:38%;height:180px;
+  background:
+    radial-gradient(circle at 12% 60%,#c9a84c88 0 2%,transparent 3%),
+    radial-gradient(circle at 30% 38%,#c9a84c66 0 2%,transparent 3%),
+    radial-gradient(circle at 50% 58%,#c9a84c77 0 2%,transparent 3%),
+    radial-gradient(circle at 68% 32%,#4a90d988 0 2%,transparent 3%),
+    radial-gradient(circle at 86% 55%,#c9a84c88 0 2%,transparent 3%);
+  opacity:.8
+}
+.masterAuthorStory{
+  background:linear-gradient(180deg,#07101d,#0a1626)
+}
+.masterAuthorSeal{
+  min-height:280px;border-radius:24px;display:grid;place-items:center;align-content:center;gap:8px;
+  border:1px solid rgba(201,168,76,.2);
+  background:
+    radial-gradient(circle at 50% 40%,rgba(201,168,76,.18),transparent 28%),
+    linear-gradient(145deg,#10233a,#07101d)
+}
+.masterAuthorSeal span{font-family:Georgia,serif;font-size:2.1rem;color:var(--gold);letter-spacing:.1em}
+.masterAuthorSeal strong{font-size:.9rem;letter-spacing:.16em}
+.masterAuthorSeal small{color:#7f8e9d;letter-spacing:.12em}
+
+.ctaFinal{
+  position:relative;overflow:hidden
+}
+.ctaFinal:after{
+  content:"";position:absolute;right:4%;bottom:-10%;width:240px;height:360px;border-radius:14px;
+  transform:rotate(7deg);
+  background:linear-gradient(160deg,#173756,#07101d);
+  border:1px solid rgba(201,168,76,.5);box-shadow:0 20px 60px #0009
+}
+.ctaFinal .container{position:relative;z-index:2}
+
+@media(max-width:900px){
+  .masterValueGrid{grid-template-columns:1fr 1fr}
+  .masterValueGrid>div:nth-child(2){border-right:0}
+  .masterAuthorGrid{grid-template-columns:1fr 1fr}
+  .masterAuthorGrid blockquote{grid-column:1/-1}
+  .masterInteractiveSection .sectionIntro{padding-left:0;padding-top:240px}
+  .masterInteractiveSection .sectionIntro:before{left:50%;top:0;transform:translateX(-50%)}
+}
+@media(max-width:560px){
+  .masterValueGrid{grid-template-columns:1fr 1fr}
+  .masterValueGrid>div{min-height:82px;padding:14px;display:grid;gap:6px}
+  .masterAuthorGrid{grid-template-columns:1fr}
+  .masterAuthorPortrait{width:180px}
+  .masterAuthorGrid blockquote{border-left:0;border-top:1px solid rgba(201,168,76,.2);padding:20px 0}
+  .masterWhySection .card{min-height:220px}
+  .masterCommunitySection .container:after{display:none}
+  .ctaFinal:after{opacity:.22;right:-90px}
+}
