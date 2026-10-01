@@ -36,6 +36,8 @@ export async function POST(request:NextRequest){
   const consentVersion=clean(form.get("consent_version"),50)||"2026-09-30";
   const honeypot=clean(form.get("website"));
   const emotionalProfile=clean(form.get("emotional_profile"),20).toLowerCase();
+  const experiment=clean(form.get("experiment"),100);
+  const experimentVariant=clean(form.get("experiment_variant"),20);
   const emotionalScoresRaw=clean(form.get("emotional_scores"),1000);
   let emotionalScores:Record<string,number>={};
   try{emotionalScores=JSON.parse(emotionalScoresRaw||"{}")}catch{emotionalScores={}}
@@ -111,7 +113,9 @@ export async function POST(request:NextRequest){
         source,medium,campaign,content,
         metadata:{
           mailerlite_status:mailerliteStatus,
-          emotional_profile:["vorax","umbral","ethelis","nara","balance"].includes(emotionalProfile)?emotionalProfile:null
+          emotional_profile:["vorax","umbral","ethelis","nara","balance"].includes(emotionalProfile)?emotionalProfile:null,
+          experiment:experiment||null,
+          experiment_variant:experimentVariant||null
         }
       }),
       cache:"no-store"
