@@ -30,7 +30,10 @@ export default async function Gracias({
             :"Your signup was received successfully. Your Chapter 1 access will remain associated with this email while automated delivery is being activated.")}
       </p>
       <div className="heroActions" style={{justifyContent:"center"}}>
-        <Link className="btn btnPrimary" href={`/${locale}/test`}>
+        <Link className="btn btnPrimary" href={`/${locale}/capitulo-1`}>
+          {locale==="es"?"Leer el Capítulo 1 ahora":"Read Chapter 1 now"}
+        </Link>
+        <Link className="btn btnSecondary" href={`/${locale}/test`}>
           {locale==="es"?"Descubrir mi perfil emocional":"Discover my emotional profile"}
         </Link>
         <Link className="btn btnGhost" href={`/${locale}`}>
