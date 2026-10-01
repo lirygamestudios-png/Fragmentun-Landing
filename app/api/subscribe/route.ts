@@ -7,6 +7,23 @@ function clean(value:FormDataEntryValue|null,max=200){
 }
 
 export async function POST(request:NextRequest){
+  const origin=request.headers.get("origin");
+  const host=request.headers.get("host");
+  if(origin&&host){
+    try{
+      if(new URL(origin).host!==host){
+        return NextResponse.json({ok:false,error:"invalid_origin"},{status:403});
+      }
+    }catch{
+      return NextResponse.json({ok:false,error:"invalid_origin"},{status:403});
+    }
+  }
+
+  const length=Number(request.headers.get("content-length")||"0");
+  if(length>20000){
+    return NextResponse.json({ok:false,error:"payload_too_large"},{status:413});
+  }
+
   const form=await request.formData();
   const email=clean(form.get("email"),320).toLowerCase();
   const name=clean(form.get("name"));
