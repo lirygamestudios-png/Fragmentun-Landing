@@ -158,3 +158,22 @@ NO-GO si cualquiera de estos puntos críticos falla:
 - redirects rotos,
 - auth administrativa insegura,
 - MailerLite no recibe contactos durante campañas activas.
+
+
+## 10. Redes sociales oficiales
+
+- Instagram oficial: https://www.instagram.com/jfliranzo22/
+- YouTube oficial: https://www.youtube.com/@JoseLiranzo-n3v
+- Facebook oficial: https://www.facebook.com/profile.php?id=61587405719109
+
+Variables:
+- `NEXT_PUBLIC_INSTAGRAM_URL`
+- `NEXT_PUBLIC_YOUTUBE_URL`
+- `NEXT_PUBLIC_FACEBOOK_URL`
+
+TikTok y X deben permanecer vacíos hasta tener URLs oficiales confirmadas.
+
+Tracking:
+- evento `community_click`
+- metadata `network`
+- metadata `placement`
