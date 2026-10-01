@@ -2,10 +2,17 @@ import Link from "next/link";
 import { locales, type Locale } from "../../../lib/i18n";
 import { notFound } from "next/navigation";
 
-export default async function Gracias({params}:{params:Promise<{locale:string}>}) {
-  const {locale: raw} = await params;
+export default async function Gracias({
+  params,
+  searchParams
+}:{
+  params:Promise<{locale:string}>;
+  searchParams:Promise<{delivery?:string}>;
+}) {
+  const [{locale: raw},{delivery}] = await Promise.all([params,searchParams]);
   if(!locales.includes(raw as Locale)) notFound();
   const locale = raw as Locale;
+  const emailReady=delivery==="email";
 
   return <main className="hero">
     <div className="container" style={{maxWidth:760,textAlign:"center"}}>
@@ -14,13 +21,22 @@ export default async function Gracias({params}:{params:Promise<{locale:string}>}
         {locale==="es"?"Tu entrada a Lumen comienza aquí.":"Your journey into Lumen begins here."}
       </h1>
       <p className="lead">
-        {locale==="es"
-          ?"Gracias por registrarte. Revisa tu correo para recibir el Capítulo 1 y futuras comunicaciones de FRAGMENTUN."
-          :"Thanks for signing up. Check your inbox for Chapter 1 and future FRAGMENTUN communications."}
+        {emailReady
+          ?(locale==="es"
+            ?"Registro confirmado. Revisa tu correo para recibir el Capítulo 1 y las próximas comunicaciones de FRAGMENTUN."
+            :"Signup confirmed. Check your inbox for Chapter 1 and upcoming FRAGMENTUN communications.")
+          :(locale==="es"
+            ?"Tu registro fue recibido correctamente. Tu acceso al Capítulo 1 quedará asociado a este correo mientras terminamos de activar la entrega automática."
+            :"Your signup was received successfully. Your Chapter 1 access will remain associated with this email while automated delivery is being activated.")}
       </p>
-      <Link className="btn btnPrimary" href={`/${locale}`}>
-        {locale==="es"?"Volver a FRAGMENTUN":"Back to FRAGMENTUN"}
-      </Link>
+      <div className="heroActions" style={{justifyContent:"center"}}>
+        <Link className="btn btnPrimary" href={`/${locale}/test`}>
+          {locale==="es"?"Descubrir mi perfil emocional":"Discover my emotional profile"}
+        </Link>
+        <Link className="btn btnGhost" href={`/${locale}`}>
+          {locale==="es"?"Volver a FRAGMENTUN":"Back to FRAGMENTUN"}
+        </Link>
+      </div>
     </div>
   </main>;
 }
