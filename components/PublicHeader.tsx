@@ -13,12 +13,10 @@ export function PublicHeader({locale,amazonUrl,patreonUrl}:{locale:Locale;amazon
   const items=[
     [t.nav.story,`/${locale}#historia`],
     [t.nav.universe,`/${locale}#lumen`],
-    ["Saga",`/${locale}#saga`],
-    [t.nav.test,`/${locale}/test`],
-    [t.nav.map,`/${locale}/mapa`],
-    [locale==="es"?"Redes":"Social",`/${locale}#redes`],
-    [t.nav.author,`/${locale}#autor`],
-    [locale==="es"?"Patrocinar":"Support",`/${locale}#patreon`]
+    [locale==="es"?"Personajes":"Characters",`/${locale}#historia`],
+    [t.nav.test,`/${locale}#test`],
+    [locale==="es"?"Comunidad":"Community",`/${locale}#comunidad-publica`],
+    [t.nav.author,`/${locale}#autor`]
   ];
 
   const localizedPath=(target:Locale)=>{
