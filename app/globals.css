@@ -1444,3 +1444,81 @@ input::placeholder{color:#8090a5}
   .whyCardCopy h3{font-size:.68rem}
   .whyCardCopy p{font-size:.57rem}
 }
+
+
+/* Hero fidelity — approved master proportions */
+@media(min-width:901px){
+  .hero{min-height:640px;padding:60px 0 36px}
+  .heroGrid{
+    grid-template-columns:240px minmax(480px,640px) minmax(250px,1fr);
+    gap:30px;
+    min-height:610px;
+    align-items:center
+  }
+  .heroGrid>div:nth-child(2){grid-column:1;grid-row:1}
+  .approvedLandingHeroCopy{grid-column:2;grid-row:1;padding-top:16px}
+  .approvedLandingHeroCopy h1{
+    font-size:clamp(3.1rem,4.55vw,4.85rem);
+    line-height:.94;
+    max-width:620px;
+    margin:10px 0 16px
+  }
+  .approvedLandingHeroCopy>.lead{font-size:.94rem;max-width:520px;line-height:1.58}
+  .heroActions{margin-top:20px}
+  .heroActions .btn{border-radius:7px;padding:11px 18px;font-size:.76rem}
+  .hero .bookStage{min-height:390px;justify-content:center}
+  .hero .officialBookCover{max-width:205px;box-shadow:0 28px 55px #000a}
+}
+.hero:after{
+  content:"";
+  position:absolute;
+  right:0;top:0;bottom:0;
+  width:42%;
+  pointer-events:none;
+  background:linear-gradient(90deg,transparent 0%,rgba(7,15,25,.02) 40%,rgba(7,15,25,.16) 100%);
+  z-index:1
+}
+.hero .container{position:relative;z-index:2}
+
+/* Chapter 1 — approved editorial band */
+.masterChapterSection{padding:52px 0}
+.masterChapterSection .container{max-width:1180px}
+.masterChapterSection .formPanel{
+  min-height:280px;
+  border-radius:12px;
+  padding:26px 36% 24px 28px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+  background:
+    linear-gradient(90deg,rgba(7,18,31,.98) 0%,rgba(10,26,43,.95) 55%,rgba(8,18,30,.35) 78%,rgba(8,18,30,.08) 100%),
+    url('/fragmentun-i-cover-es.jpg') 91% 52%/22% auto no-repeat,
+    linear-gradient(180deg,#10223a,#081421)
+}
+.masterChapterSection .formPanel:after{
+  content:"";
+  position:absolute;
+  right:22%;
+  top:14%;
+  bottom:14%;
+  width:1px;
+  background:linear-gradient(transparent,rgba(201,168,76,.4),transparent)
+}
+.masterChapterSection .sectionIntro{margin-bottom:14px;max-width:630px}
+.masterChapterSection .sectionIntro h2{font-size:clamp(1.7rem,3vw,2.8rem);margin:.15em 0}
+.masterChapterSection .sectionIntro .lead{font-size:.82rem;max-width:560px}
+.masterChapterSection .leadFields{max-width:640px;gap:9px}
+.masterChapterSection .leadField input{min-height:42px;border-radius:5px;padding:9px 11px}
+.masterChapterSection .leadField>span{font-size:.58rem}
+.masterChapterSection .leadSubmit{min-width:160px;border-radius:5px;padding:10px 16px;font-size:.7rem}
+.masterChapterSection .consentRow{max-width:650px;font-size:.58rem}
+.masterChapterSection .note{font-size:.58rem;max-width:650px;margin-top:8px}
+@media(max-width:900px){
+  .masterChapterSection .formPanel{
+    padding:24px;
+    background:linear-gradient(180deg,#10223a,#081421)
+  }
+  .masterChapterSection .formPanel:after{display:none}
+}
