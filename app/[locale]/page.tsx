@@ -353,19 +353,47 @@ export default async function Home({
           <div className="heroActions">
             {amazonUrl&&<TrackLink className="btn btnPrimary" href={amazonUrl} eventName="amazon_click" locale={locale} metadata={{book:"fragmentun-i",edition_locale:locale,marketplace:firstBook?.marketplace||"amazon.com"}} newTab>{finalCta.primary_cta||t.buy}</TrackLink>}
             <TrackLink className="btn btnSecondary" href="#capitulo" eventName="chapter_click" locale={locale}>{finalCta.secondary_cta||t.chapter}</TrackLink>
-            <TrackLink className="btn btnPatreon" href={patreonUrl} eventName="patreon_click" locale={locale} metadata={{placement:"final_cta",creator:"sagaFragmentun"}} newTab>
-              {locale==="es"?"Patrocinar en Patreon":"Support on Patreon"}
-            </TrackLink>
           </div>
         </div>
       </section>
     </main>
 
-    <footer className="footer">
-      <div className="container footerGrid">
-        <span>© 2026 José Liranzo · FRAGMENTUN</span>
-        <span>{t.footer}</span>
-        <SocialLinks locale={locale} items={socialItems} placement="footer"/>
+    <footer className="footer approvedFooter">
+      <div className="container approvedFooterGrid">
+        <div className="approvedFooterBrand">
+          <strong>FRAGMENTUN</strong>
+          <span>EL UNIVERSO</span>
+          <p>{locale==="es"?"Historias para un mundo más consciente.":"Stories for a more conscious world."}</p>
+          <SocialLinks locale={locale} items={socialItems} placement="footer"/>
+        </div>
+        <div className="approvedFooterCol">
+          <h3>{locale==="es"?"Explora":"Explore"}</h3>
+          <a href="#saga">{locale==="es"?"El Libro":"The Book"}</a>
+          <a href="#lumen">{locale==="es"?"El Universo":"The Universe"}</a>
+          <a href="#historia">{locale==="es"?"Personajes":"Characters"}</a>
+          <a href={`/${locale}/mapa`}>{locale==="es"?"Mapa de Lumen":"Map of Lumen"}</a>
+        </div>
+        <div className="approvedFooterCol">
+          <h3>{locale==="es"?"Recursos":"Resources"}</h3>
+          <a href={`/${locale}/test`}>{locale==="es"?"Test Emocional":"Emotional Test"}</a>
+          <a href="#comunidad-publica">{locale==="es"?"Comunidad":"Community"}</a>
+          <a href="#lectores">{locale==="es"?"Reseñas":"Reviews"}</a>
+          <a href="#capitulo">{locale==="es"?"Capítulo 1":"Chapter 1"}</a>
+        </div>
+        <div className="approvedFooterCol">
+          <h3>{locale==="es"?"Legal":"Legal"}</h3>
+          <a href={`/${locale}/privacidad`}>{locale==="es"?"Política de Privacidad":"Privacy Policy"}</a>
+          <span>{t.footer}</span>
+        </div>
+        <div className="approvedFooterJoin">
+          <h3>{locale==="es"?"Únete al universo":"Join the universe"}</h3>
+          <p>{locale==="es"?"Recibe novedades, arte y próximos capítulos.":"Receive news, artwork and upcoming chapters."}</p>
+          <a className="btn btnPrimary" href="#capitulo">{locale==="es"?"Quiero entrar →":"Join →"}</a>
+        </div>
+      </div>
+      <div className="container approvedFooterBottom">
+        <span>© 2026 LIRYGAMES STUDIOS · FRAGMENTUN</span>
+        <span>{locale==="es"?"El despertar apenas comienza...":"The awakening is only beginning..."}</span>
       </div>
     </footer>
     <nav className="mobileBottomNav" aria-label={locale==="es"?"Navegación móvil":"Mobile navigation"}>
