@@ -2,9 +2,25 @@ import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "../../lib/supabase/server";
 import { LogoutButton } from "../../components/LogoutButton";
 
-function formatDate(value?:string|null){
-  if(!value) return "—";
-  return new Intl.DateTimeFormat("es-US",{day:"2-digit",month:"short",year:"numeric"}).format(new Date(value));
+type EventRow={event_name:string;source:string|null;medium:string|null;created_at:string};
+type LeadRow={name:string|null;email:string;locale:string|null;created_at:string};
+type BookRow={slug:string;volume:number;title_es:string|null;subtitle_es:string|null;status:string|null;amazon_url_es:string|null};
+
+function ago(value:string){
+  const minutes=Math.max(1,Math.round((Date.now()-new Date(value).getTime())/60000));
+  if(minutes<60)return `Hace ${minutes} min`;
+  const hours=Math.round(minutes/60);
+  if(hours<24)return `Hace ${hours} h`;
+  return `Hace ${Math.round(hours/24)} d`;
+}
+function initials(name:string|null,email:string){
+  const src=(name||email).trim().split(/\s+/).slice(0,2).map(x=>x[0]?.toUpperCase()).join("");
+  return src||"F";
+}
+function chartPoints(values:number[],height=180,width=760){
+  const max=Math.max(1,...values);
+  const step=values.length>1?width/(values.length-1):width;
+  return values.map((v,i)=>`${(i*step).toFixed(1)},${(height-(v/max)*(height-24)-12).toFixed(1)}`).join(" ");
 }
 
 export default async function AdminPage(){
@@ -15,187 +31,204 @@ export default async function AdminPage(){
   const{data:profile}=await supabase.from("admin_profiles").select("display_name,role").eq("user_id",user.id).maybeSingle();
   if(!profile) redirect("/admin/login?unauthorized=1");
 
+  const since=new Date(Date.now()-29*86400000).toISOString();
   const[
     {count:leadCount},
     {count:visitorCount},
     {count:amazonCount},
     {count:testCount},
-    {count:questionCount},
-    {count:campaignCount},
     {data:books},
-    {data:reviews},
-    {data:audit}
+    {data:events},
+    {data:latestLeads}
   ]=await Promise.all([
     supabase.from("leads").select("*",{count:"exact",head:true}),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","page_view"),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","amazon_click"),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","test_complete"),
-    supabase.from("test_questions").select("*",{count:"exact",head:true}).eq("active",true),
-    supabase.from("campaigns").select("*",{count:"exact",head:true}).eq("active",true),
     supabase.from("books").select("slug,volume,title_es,subtitle_es,status,amazon_url_es").order("sort_order",{ascending:true}).limit(4),
-    supabase.from("reviews").select("author_display,body_es,body_original,source,verified,published,created_at").eq("published",true).order("created_at",{ascending:false}).limit(1),
-    supabase.from("admin_audit_log").select("action,table_name,created_at").order("created_at",{ascending:false}).limit(4)
+    supabase.from("analytics_events").select("event_name,source,medium,created_at").gte("created_at",since).order("created_at",{ascending:true}).limit(5000),
+    supabase.from("leads").select("name,email,locale,created_at").order("created_at",{ascending:false}).limit(5)
   ]);
 
   const displayName=profile.display_name||"José Liranzo";
-  const latestReview=reviews?.[0];
-  const publishedBook=(books||[]).find((b:any)=>b.status==="published"||Boolean(b.amazon_url_es));
+  const eventRows=(events||[]) as EventRow[];
+  const leadRows=(latestLeads||[]) as LeadRow[];
+  const days=Array.from({length:30},(_,i)=>{
+    const d=new Date(Date.now()-(29-i)*86400000);
+    return d.toISOString().slice(0,10);
+  });
+  const viewsByDay=days.map(day=>eventRows.filter(e=>e.event_name==="page_view"&&e.created_at.slice(0,10)===day).length);
+  const amazonByDay=days.map(day=>eventRows.filter(e=>e.event_name==="amazon_click"&&e.created_at.slice(0,10)===day).length);
+  const recentViews=viewsByDay.reduce((a,b)=>a+b,0);
+  const recentAmazon=amazonByDay.reduce((a,b)=>a+b,0);
+  const conversion=recentViews?((recentAmazon/recentViews)*100):0;
+
+  const sources={social:0,organic:0,paid:0,direct:0,other:0};
+  eventRows.filter(e=>e.event_name==="page_view").forEach(e=>{
+    const s=(e.source||"").toLowerCase(),m=(e.medium||"").toLowerCase();
+    if(/instagram|facebook|youtube|tiktok|social/.test(s+" "+m))sources.social++;
+    else if(/organic|google|bing|search/.test(s+" "+m))sources.organic++;
+    else if(/paid|cpc|ads|ppc/.test(s+" "+m))sources.paid++;
+    else if(!s&&!m||/direct/.test(s+" "+m))sources.direct++;
+    else sources.other++;
+  });
+  const sourceTotal=Math.max(1,Object.values(sources).reduce((a,b)=>a+b,0));
+  const pct=(n:number)=>Math.round((n/sourceTotal)*100);
+  const pSocial=pct(sources.social),pOrganic=pct(sources.organic),pPaid=pct(sources.paid),pDirect=pct(sources.direct);
+  const pOther=Math.max(0,100-pSocial-pOrganic-pPaid-pDirect);
+  const d1=pSocial,d2=d1+pOrganic,d3=d2+pPaid,d4=d3+pDirect;
+
+  const fallbackBooks:BookRow[]=[
+    {slug:"fragmentun-i",volume:1,title_es:"FRAGMENTUN I",subtitle_es:"El Despertar Emocional",status:"published",amazon_url_es:"https://www.amazon.com/dp/B0HBLTHT8S"},
+    {slug:"fragmentun-ii",volume:2,title_es:"FRAGMENTUN II",subtitle_es:"La Guerra de la Fractura",status:"coming_soon",amazon_url_es:null},
+    {slug:"fragmentun-iii",volume:3,title_es:"FRAGMENTUN III",subtitle_es:"Protocolo de Ascensión",status:"coming_soon",amazon_url_es:null},
+    {slug:"fragmentun-iv",volume:4,title_es:"FRAGMENTUN IV",subtitle_es:"Génesis del Halo",status:"development",amazon_url_es:null}
+  ];
+  const sourceBooks=((books||[]) as BookRow[]);
+  const displayBooks=fallbackBooks.map(f=>sourceBooks.find(b=>b.volume===f.volume)||f);
 
   const nav=[
-    ["▦","Dashboard","Resumen y estadísticas","/admin"],
-    ["✦","Contenido Web","Editar secciones y páginas","/admin/contenido"],
-    ["◫","Medios","Imágenes, videos y archivos","/admin/medios"],
-    ["▤","La Saga","Libros y contenido","/admin/saga"],
-    ["◉","Personajes","Biografías y gestión","/admin/personajes"],
-    ["⌖","Mapa de Lumen","Territorios y ubicaciones","/admin/mapa"],
-    ["◇","Test Emocional","Preguntas y resultados","/admin/test"],
-    ["★","Reseñas / Testimonios","Gestión de reseñas reales","/admin/resenas"],
-    ["↗","Marketing","CTAs, enlaces y campañas","/admin/marketing"],
-    ["⌁","Analytics","Estadísticas y conversiones","/admin/analytics"],
-    ["✉","Leads","Suscriptores y MailerLite","/admin/leads"],
-    ["♙","Usuarios","Roles y permisos","/admin/usuarios"],
-    ["●","Estado","Preparación del sistema","/admin/status"],
-    ["≡","Auditoría","Actividad administrativa","/admin/audit"],
-    ["⛓","Integraciones","Servicios conectados","/admin/integrations"]
+    ["⌂","Inicio","/admin"],
+    ["▤","Libros de la Saga","/admin/saga"],
+    ["▧","Contenido del Sitio","/admin/contenido"],
+    ["▦","Secciones","/admin/contenido"],
+    ["a","Amazon (Enlaces)","/admin/marketing"],
+    ["♟","Suscriptores","/admin/leads"],
+    ["▥","Analítica","/admin/analytics"],
+    ["◉","Test Emocional","/admin/test"],
+    ["⌘","Mapa de Lumen","/admin/mapa"],
+    ["▣","Multimedia","/admin/medios"],
+    ["◎","Traducciones","/admin/contenido"],
+    ["⚙","Ajustes","/admin/status"]
   ] as const;
 
-  return <main className="controlCenter">
-    <aside className="controlSidebar">
-      <div className="controlBrand">
-        <div className="controlBrandName">FRAGMENTUN</div>
-        <div className="controlBrandSub">CONTROL CENTER</div>
+  return <main className="approvedAdmin">
+    <aside className="approvedAdminSidebar">
+      <div className="approvedAdminBrand">
+        <div className="approvedAdminSigil">✦</div>
+        <strong>FRAGMENTUN</strong>
+        <span>PANEL DE ADMINISTRACIÓN</span>
       </div>
-
-      <nav className="controlNav">
-        {nav.map(([icon,label,description,href],i)=>
-          <a key={href} href={href} className={i===0?"active":""}>
-            <span className="controlNavIcon">{icon}</span>
-            <span><strong>{label}</strong><small>{description}</small></span>
-          </a>
-        )}
+      <nav className="approvedAdminNav">
+        {nav.map(([icon,label,href],i)=><a key={label} href={href} className={i===0?"active":""}>
+          <b>{icon}</b><span>{label}</span>{label==="Contenido del Sitio"&&<em>›</em>}
+        </a>)}
       </nav>
-
-      <div className="controlStudio">
-        <div className="controlStudioOrb"/>
-        <strong>LIRYGAMES STUDIOS</strong>
-        <small>TODOS LOS DERECHOS RESERVADOS</small>
+      <div className="approvedAdminIdentity">
+        <div className="approvedAdminAvatar">JL</div>
+        <div><strong>{displayName}</strong><small>{profile.role==="admin"?"Administrador":profile.role}</small></div>
       </div>
+      <div className="approvedAdminStudio">LIRYGAMES STUDIOS</div>
+      <a className="approvedAdminSiteBtn" href="/es" target="_blank" rel="noreferrer">↗ <span>Ver Sitio Web</span></a>
+      <LogoutButton/>
     </aside>
 
-    <section className="controlMain">
-      <header className="controlTopbar">
-        <div>
-          <span className="controlEyebrow">Panel de Administración</span>
-          <h1>Gestiona el universo FRAGMENTUN</h1>
+    <section className="approvedAdminWorkspace">
+      <header className="approvedAdminHero">
+        <div className="approvedAdminHeroShade"/>
+        <div className="approvedAdminHeroTitle">
+          <strong>FRAGMENTUN</strong>
+          <span>UNA SAGA DE CIENCIA FICCIÓN EMOCIONAL</span>
         </div>
-        <div className="controlTopActions">
-          <a className="controlGhostButton" href="/es" target="_blank" rel="noreferrer">Ver Sitio Web ↗</a>
-          <div className="controlUser">
-            <span className="controlAvatar">JL</span>
-            <span><strong>{displayName}</strong><small>{profile.role}</small></span>
-          </div>
-          <LogoutButton/>
-        </div>
+        <div className="approvedAdminHeroActions"><span>ES</span><i>|</i><span>EN</span><a href="/es" target="_blank" rel="noreferrer">Ver Sitio ↗</a></div>
       </header>
 
-      <section className="controlHero">
-        <div className="controlHeroCopy">
-          <span className="controlEyebrow">Centro de mando</span>
-          <h2>Bienvenido, {displayName}</h2>
-          <p>Aquí gestionas el universo FRAGMENTUN.</p>
-          <blockquote>“Una historia que conecta emociones, puede transformar el mundo.”</blockquote>
-        </div>
-        <div className="controlHeroVisual" aria-hidden="true">
-          <div className="controlPlanet"/>
-          <div className="controlSkyline"><i/><i/><i/><i/><i/><i/></div>
-        </div>
-        <div className="controlSiteStatus">
-          <span><i/> Estado del Sitio Web</span>
-          <strong>En línea</strong>
-          <small>Producción · www.fragmentun.com</small>
-          <a className="controlPrimaryButton" href="/admin/status">Revisar estado →</a>
-        </div>
-      </section>
+      <div className="approvedAdminBody">
+        <section className="approvedAdminKpis">
+          <article><span className="kpiIcon">♟</span><div><strong>{(leadCount??0).toLocaleString()}</strong><small>Suscriptores</small></div><em>REAL</em></article>
+          <article><span className="kpiIcon">↖</span><div><strong>{(visitorCount??0).toLocaleString()}</strong><small>Visitas del Sitio</small></div><em>REAL</em></article>
+          <article><span className="kpiIcon amazon">a</span><div><strong>{(amazonCount??0).toLocaleString()}</strong><small>Clics a Amazon</small></div><em>REAL</em></article>
+          <article><span className="kpiIcon">▥</span><div><strong>{conversion.toFixed(1)}%</strong><small>Tasa de Conversión</small></div><em>30D</em></article>
+          <div className="approvedAdminRange">▣ <span>Últimos 30 días</span>⌄</div>
+        </section>
 
-      <section className="controlKpis">
-        <article><span className="controlMetricIcon">◉</span><div><strong>{visitorCount??0}</strong><small>Visitantes registrados</small></div></article>
-        <article><span className="controlMetricIcon">✉</span><div><strong>{leadCount??0}</strong><small>Leads capturados</small></div></article>
-        <article><span className="controlMetricIcon">↗</span><div><strong>{amazonCount??0}</strong><small>Clics a Amazon</small></div></article>
-        <article><span className="controlMetricIcon">◇</span><div><strong>{testCount??0}</strong><small>Test completados</small></div></article>
-      </section>
+        <section className="approvedAdminUpperGrid">
+          <article className="approvedAdminPanel approvedAdminSaga">
+            <div className="approvedAdminPanelTitle"><h2>Libros de la Saga</h2><a href="/admin/saga">Gestionar libros</a></div>
+            <div className="approvedAdminBookGrid">
+              {displayBooks.map(book=><div className="approvedAdminBook" key={book.slug}>
+                <h3>{book.volume}. {book.subtitle_es}</h3>
+                <div className={`approvedBookCover approvedBookCover${book.volume}`}>
+                  {book.volume===1?<img src="/fragmentun-i-cover-es.jpg" alt="FRAGMENTUN I"/>:<><span>FRAGMENTUN</span><b>{book.subtitle_es}</b><i>✦</i></>}
+                  <em className={book.status==="published"||book.amazon_url_es?"published":book.volume===4?"development":"soon"}>
+                    {book.status==="published"||book.amazon_url_es?"Publicado":book.volume===4?"En desarrollo":"Próximamente"}
+                  </em>
+                </div>
+                <div className="approvedBookLang"><span>🇪🇸 ES</span><span>🇺🇸 EN</span></div>
+                {book.amazon_url_es?<a className="approvedBookAmazon" href={book.amazon_url_es} target="_blank" rel="noreferrer">a&nbsp;&nbsp; Ver en Amazon</a>:<span className="approvedBookAmazon disabled">a&nbsp;&nbsp; Ver en Amazon</span>}
+                <a className="approvedBookEdit" href="/admin/saga">Editar</a>
+              </div>)}
+            </div>
+          </article>
 
-      <section className="controlSection">
-        <div className="controlSectionHead">
-          <div><span className="controlEyebrow">Gestión editorial</span><h2>Edición Rápida de Contenido</h2><p>Accede rápidamente a las secciones principales de la web.</p></div>
-          <a href="/admin/contenido">Ver todas las páginas →</a>
-        </div>
-        <div className="controlQuickGrid">
-          <a className="controlQuickCard controlQuickHero" href="/admin/contenido"><span>Página Principal</span><strong>Hero, textos y CTAs</strong><small>Editar →</small></a>
-          <a className="controlQuickCard controlQuickBook" href="/admin/saga"><img src="/fragmentun-i-cover-es.jpg" alt="Portada FRAGMENTUN I"/><span>Portada del Libro</span><strong>Edición y enlaces</strong><small>Editar →</small></a>
-          <a className="controlQuickCard controlQuickWorld" href="/admin/mapa"><span>Universo / Lumen</span><strong>Contenido y mapa</strong><small>Editar →</small></a>
-          <a className="controlQuickCard controlQuickAuthor" href="/admin/contenido"><span>Autor</span><strong>Biografía y multimedia</strong><small>Editar →</small></a>
-        </div>
-      </section>
+          <div className="approvedAdminAnalyticsColumn">
+            <article className="approvedAdminPanel approvedAdminPerformance">
+              <div className="approvedAdminPanelTitle"><h2>Rendimiento del Sitio</h2><div className="approvedLegend"><span className="goldDot"/>Visitas <span className="blueDot"/>Clics Amazon</div></div>
+              <div className="approvedChart">
+                <svg viewBox="0 0 760 200" preserveAspectRatio="none" aria-label="Rendimiento últimos 30 días">
+                  {[25,70,115,160].map(y=><line key={y} x1="0" y1={y} x2="760" y2={y} className="gridLine"/>)}
+                  <polyline points={chartPoints(viewsByDay)} className="chartGold"/>
+                  <polyline points={chartPoints(amazonByDay)} className="chartBlue"/>
+                </svg>
+                <div className="approvedChartAxis"><span>Sep 1</span><span>Sep 8</span><span>Sep 15</span><span>Sep 22</span><span>Sep 30</span></div>
+              </div>
+            </article>
 
-      <section className="controlDashboardGrid">
-        <article className="controlPanel controlSagaPanel">
-          <div className="controlPanelHead"><div><span className="controlEyebrow">Biblioteca</span><h3>La Saga FRAGMENTUN</h3></div><a href="/admin/saga">Gestionar →</a></div>
-          <div className="controlBooks">
-            {(books||[]).map((book:any)=><div className="controlBook" key={book.slug}>
-              {book.volume===1?<img src="/fragmentun-i-cover-es.jpg" alt={book.title_es||"FRAGMENTUN I"}/>:<div className="controlBookPlaceholder">FRAGMENTUN<br/><b>{book.volume}</b></div>}
-              <strong>{book.title_es||`FRAGMENTUN ${book.volume}`}</strong>
-              <small>{book.subtitle_es||"Próximamente"}</small>
-              <em className={(book.status==="published"||book.amazon_url_es)?"published":""}>{(book.status==="published"||book.amazon_url_es)?"Publicado":"Próximamente"}</em>
-            </div>)}
+            <article className="approvedAdminPanel approvedAdminTraffic">
+              <h2>Orígenes de Tráfico</h2>
+              <div className="approvedTrafficInner">
+                <div className="approvedDonut" style={{background:`conic-gradient(#13a9ee 0 ${d1}%,#40d39b ${d1}% ${d2}%,#a452e8 ${d2}% ${d3}%,#ff6953 ${d3}% ${d4}%,#f3bd37 ${d4}% 100%)`}}>
+                  <div><strong>{recentViews.toLocaleString()}</strong><span>Visitas</span></div>
+                </div>
+                <div className="approvedTrafficLegend">
+                  <p><i className="s1"/>Redes Sociales <b>{pSocial}%</b></p>
+                  <p><i className="s2"/>Búsqueda Orgánica <b>{pOrganic}%</b></p>
+                  <p><i className="s3"/>Búsqueda de Pago <b>{pPaid}%</b></p>
+                  <p><i className="s4"/>Enlaces Directos <b>{pDirect}%</b></p>
+                  <p><i className="s5"/>Otros <b>{pOther}%</b></p>
+                </div>
+              </div>
+            </article>
           </div>
-        </article>
+        </section>
 
-        <article className="controlPanel">
-          <div className="controlPanelHead"><div><span className="controlEyebrow">Experiencia</span><h3>Test Emocional</h3></div><a href="/admin/test">Editar →</a></div>
-          <div className="controlFeatureList">
-            <div><span>?</span><p><strong>Preguntas del test</strong><small>{questionCount??0} preguntas activas</small></p></div>
-            <div><span>◫</span><p><strong>Perfiles / Resultados</strong><small>Arquetipos emocionales</small></p></div>
-            <div><span>T</span><p><strong>Diseño y textos</strong><small>Mensajes ES / EN</small></p></div>
+        <section className="approvedAdminLowerGrid">
+          <article className="approvedAdminPanel approvedSubscribers">
+            <div className="approvedAdminPanelTitle"><h2>Últimos Suscriptores</h2><a href="/admin/leads">Ver todos</a></div>
+            <div className="approvedSubscriberList">
+              {leadRows.length?leadRows.map(lead=><div key={lead.email}>
+                <span className="subscriberAvatar">{initials(lead.name,lead.email)}</span>
+                <p><strong>{lead.name||"Suscriptor FRAGMENTUN"}</strong><small>{lead.email}</small></p>
+                <em>{lead.locale==="en"?"🇺🇸":"🇪🇸"}</em><time>{ago(lead.created_at)}</time>
+              </div>):<div className="approvedEmpty">Los primeros suscriptores aparecerán aquí cuando lleguen registros reales.</div>}
+            </div>
+          </article>
+
+          <article className="approvedAdminPanel approvedQuick">
+            <h2>Contenido Rápido</h2>
+            <a href="/admin/contenido"><b>⌂</b><span>Editar Página de Inicio</span></a>
+            <a href="/admin/contenido"><b>▣</b><span>Editar Sección de Lumen</span></a>
+            <a href="/admin/test"><b>◉</b><span>Actualizar Test Emocional</span></a>
+            <a href="/admin/mapa"><b>⌘</b><span>Gestionar Mapa Interactivo</span></a>
+          </article>
+
+          <div className="approvedAdminRightLower">
+            <article className="approvedAdminPanel approvedMedia">
+              <div className="approvedAdminPanelTitle"><h2>Multimedia Reciente</h2><a href="/admin/medios">Ver todos</a></div>
+              <div className="approvedMediaGrid">
+                <div><img src="/elyon-hero.jpg" alt="Lumen"/><span>Lumen_Ciudad.jpg</span></div>
+                <div><img src="/elyon-hero.jpg" alt="Elyon"/><span>Elyon_Portada.jpg</span></div>
+                <div><img src="/fragmentun-i-cover-es.jpg" alt="FRAGMENTUN I"/><span>FRAGMENTUN_I.jpg</span></div>
+                <div className="approvedTrailer"><img src="/elyon-hero.jpg" alt="Trailer"/><b>▶</b><span>Trailer_01.jpg</span></div>
+              </div>
+            </article>
+            <article className="approvedAdminPanel approvedConfig">
+              <h2>Configuración del Sitio</h2>
+              <div><a href="/admin/contenido">◎ Idiomas</a><a href="/admin/status">⌕ SEO</a><a href="/admin/integrations">↗ Integraciones</a><a href="/admin/status">⚙ Ajustes Generales</a></div>
+            </article>
           </div>
-        </article>
-
-        <article className="controlPanel controlMapPanel">
-          <div className="controlPanelHead"><div><span className="controlEyebrow">Worldbuilding</span><h3>Mapa Interactivo de Lumen</h3></div><a href="/admin/mapa">Editar →</a></div>
-          <div className="controlMiniMap">
-            <span className="vorax">VORAX</span><span className="nara">NARA</span><span className="ethelis">ETHELIS</span><span className="umbral">UMBRAL</span>
-            <i/><i/><i/><i/>
-          </div>
-        </article>
-
-        <article className="controlPanel">
-          <div className="controlPanelHead"><div><span className="controlEyebrow">Prueba social</span><h3>Últimas Reseñas</h3></div><a href="/admin/resenas">Ver todas →</a></div>
-          {latestReview?<div className="controlReview">
-            <div className="controlStars">★★★★★</div>
-            <p>“{latestReview.body_es||latestReview.body_original}”</p>
-            <strong>{latestReview.author_display||"Lector verificado"}</strong>
-            <small>{latestReview.source||"Fuente"} · {formatDate(latestReview.created_at)} {latestReview.verified?"· Verificada":""}</small>
-          </div>:<div className="controlEmpty">Aún no hay reseñas publicadas. El panel mostrará únicamente reseñas reales.</div>}
-        </article>
-
-        <article className="controlPanel">
-          <div className="controlPanelHead"><div><span className="controlEyebrow">Conversión</span><h3>Marketing y CTAs</h3></div><a href="/admin/marketing">Editar →</a></div>
-          <div className="controlMarketing">
-            <div><span>Amazon</span><strong>{publishedBook?.amazon_url_es?"Enlace activo":"Pendiente"}</strong></div>
-            <div><span>Campañas UTM</span><strong>{campaignCount??0} activas</strong></div>
-            <div><span>Leads</span><strong>{leadCount??0} capturados</strong></div>
-          </div>
-        </article>
-
-        <article className="controlPanel">
-          <div className="controlPanelHead"><div><span className="controlEyebrow">Trazabilidad</span><h3>Actividad Reciente</h3></div><a href="/admin/audit">Ver actividad →</a></div>
-          <div className="controlActivity">
-            {(audit||[]).length?(audit||[]).map((item:any,index:number)=><div key={index}>
-              <span>{item.action==="UPDATE"?"✎":item.action==="INSERT"?"+":"−"}</span>
-              <p><strong>{item.action} · {item.table_name}</strong><small>{formatDate(item.created_at)}</small></p>
-            </div>):<div className="controlEmpty">La actividad administrativa aparecerá aquí.</div>}
-          </div>
-        </article>
-      </section>
+        </section>
+      </div>
     </section>
   </main>;
 }
