@@ -892,3 +892,93 @@ input::placeholder{color:#8090a5}
   .mobileBottomNav a span{font-size:1.05rem;color:#e6bd56}
   .mobileBottomNav a small{font-size:.52rem;letter-spacing:.02em}
 }
+
+
+/* Approved lower landing composition */
+.masterDualRow,.masterCommunityRow{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  padding-top:18px;
+  padding-bottom:18px;
+}
+.masterDualRow>section,.masterCommunityRow>section{
+  min-height:300px;
+  border:1px solid rgba(74,144,217,.24);
+  border-radius:14px;
+  overflow:hidden;
+  position:relative;
+  padding:28px;
+}
+.masterDualRow .masterInteractiveSection{
+  background:
+    radial-gradient(circle at 20% 52%,rgba(106,78,199,.4),transparent 22%),
+    radial-gradient(circle at 22% 50%,rgba(74,144,217,.18),transparent 34%),
+    linear-gradient(120deg,#0b1321,#09101b);
+}
+.masterDualRow .masterInteractiveSection .sectionIntro{
+  max-width:none;
+  min-height:240px;
+  padding:28px 0 24px 47%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+}
+.masterDualRow .masterInteractiveSection .sectionIntro:before{
+  left:7%;top:50%;transform:translateY(-50%);width:210px
+}
+.masterDualRow .masterMapSection{
+  background:
+    linear-gradient(90deg,rgba(6,16,27,.82),rgba(6,16,27,.18)),
+    url('/elyon-hero.jpg') 38% 72%/cover no-repeat;
+}
+.masterDualRow .masterMapSection .sectionIntro{
+  max-width:58%;
+  min-height:240px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+}
+.masterDualRow h2{font-size:clamp(1.55rem,2.5vw,2.35rem);margin:8px 0 10px}
+.masterDualRow .lead{font-size:.86rem}
+.masterCommunityRow .masterCommunitySection{
+  background:
+    linear-gradient(90deg,rgba(7,16,29,.9),rgba(7,16,29,.52)),
+    url('/elyon-hero.jpg') 35% 58%/cover no-repeat;
+}
+.masterCommunityRow .masterCommunitySection:after{display:none}
+.masterCommunityRow .masterCommunitySection h2{
+  max-width:580px;font-size:clamp(1.55rem,2.3vw,2.25rem);margin:8px 0
+}
+.masterCommunityRow .masterCommunitySection .lead{max-width:560px;font-size:.86rem}
+.communityActions{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+.masterReviewsPanel{
+  background:
+    radial-gradient(circle at 85% 20%,rgba(201,168,76,.1),transparent 24%),
+    linear-gradient(145deg,#081827,#05111d);
+  display:flex;flex-direction:column;justify-content:center
+}
+.masterReviewsPanel .kicker{margin-bottom:14px}
+.featuredReview blockquote{
+  margin:8px 0 14px;
+  font:italic clamp(1.25rem,2.1vw,1.8rem)/1.45 Georgia,serif;
+  color:#e4edf4
+}
+.featuredReview p,.featuredReview small{margin:0;display:block}
+.featuredReview p{font-weight:800;font-size:.78rem;color:#f0d47c}
+.featuredReview small{font-size:.65rem;color:#8fa4b5;margin-top:4px}
+.reviewStars,.reviewAwaiting>span{color:#f0bd43;letter-spacing:.12em}
+.reviewAwaiting{padding:28px;border:1px dashed #214765;border-radius:12px;color:#91a5b4}
+.reviewAwaiting p{margin:10px 0 0}
+@media(max-width:900px){
+  .masterDualRow,.masterCommunityRow{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .masterDualRow,.masterCommunityRow{padding-inline:12px;gap:10px}
+  .masterDualRow>section,.masterCommunityRow>section{min-height:280px;padding:20px}
+  .masterDualRow .masterInteractiveSection .sectionIntro{padding:210px 0 0}
+  .masterDualRow .masterInteractiveSection .sectionIntro:before{left:50%;top:0;transform:translateX(-50%);width:180px}
+  .masterDualRow .masterMapSection .sectionIntro{max-width:100%;min-height:250px}
+}
