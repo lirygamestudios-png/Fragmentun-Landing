@@ -9,7 +9,7 @@ export function MotionEffects(){
     document.documentElement.classList.add("motion-ready");
 
     const targets=Array.from(document.querySelectorAll<HTMLElement>(
-      ".heroGrid > *, .section, .band, .ctaFinal, .card, .territory"
+      ".heroGrid > *, .section, .band, .ctaFinal, .card, .territory, .masterDualRow > *, .masterCommunityRow > *"
     ));
 
     const observer=new IntersectionObserver(entries=>{
@@ -24,6 +24,20 @@ export function MotionEffects(){
     targets.forEach(el=>observer.observe(el));
 
     const stage=document.querySelector<HTMLElement>(".bookStage");
+    const hero=document.querySelector<HTMLElement>(".hero");
+    const lumen=document.querySelector<HTMLElement>(".masterLumenSection");
+
+    const parallax=()=>{
+      const y=window.scrollY;
+      hero?.style.setProperty("--hero-shift",`${Math.min(34,y*.055)}px`);
+      if(lumen){
+        const rect=lumen.getBoundingClientRect();
+        const center=(window.innerHeight-rect.top)/(window.innerHeight+rect.height);
+        lumen.style.setProperty("--lumen-shift",`${Math.max(-20,Math.min(20,(center-.5)*34))}px`);
+      }
+    };
+    parallax();
+    window.addEventListener("scroll",parallax,{passive:true});
 
     const move=(event:MouseEvent)=>{
       if(!stage)return;
@@ -44,6 +58,7 @@ export function MotionEffects(){
 
     return ()=>{
       observer.disconnect();
+      window.removeEventListener("scroll",parallax);
       stage?.removeEventListener("mousemove",move);
       stage?.removeEventListener("mouseleave",reset);
       document.documentElement.classList.remove("motion-ready");
