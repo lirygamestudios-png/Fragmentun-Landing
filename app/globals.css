@@ -1746,3 +1746,144 @@ input::placeholder{color:#8090a5}
 }
 .finalCtaMaster .heroActions{justify-content:center;margin-top:0}
 .finalCtaMaster .btn{border-radius:6px;padding:10px 16px;font-size:.67rem}
+
+
+/* Responsive fidelity — approved tablet/mobile behavior */
+@media(max-width:900px){
+  .headerInner{min-height:56px}
+  .logo{font-size:1.28rem}
+  .hero{
+    min-height:760px;
+    padding:56px 0 26px
+  }
+  .heroGrid{
+    min-height:720px!important;
+    padding-top:230px!important;
+    display:block!important;
+    position:relative
+  }
+  .heroGrid>div:nth-child(2){
+    position:absolute!important;
+    left:18px!important;
+    top:38px!important;
+    width:132px
+  }
+  .hero .bookStage{min-height:0!important;display:block}
+  .hero .officialBookCover{max-width:128px!important;transform:rotateY(-4deg)}
+  .approvedLandingHeroCopy{max-width:540px;padding:0 4px}
+  .approvedLandingHeroCopy h1{
+    font-size:clamp(2.25rem,8vw,3.8rem)!important;
+    max-width:520px;
+    margin:7px 0 12px
+  }
+  .approvedLandingHeroCopy>.lead{font-size:.86rem;max-width:470px}
+  .heroActions{gap:8px;margin-top:16px}
+  .heroActions .btn{padding:10px 13px;font-size:.64rem}
+
+  .masterAuthorBand{padding:34px 0}
+  .masterAuthorGrid{grid-template-columns:1fr 150px!important;gap:18px}
+  .masterAuthorPortrait{min-height:210px}
+  .masterAuthorGrid blockquote{grid-column:1/-1!important;padding-top:0;font-size:.9rem}
+  .masterAuthorCopy h2{font-size:2rem}
+
+  .masterWhySection{padding:52px 0}
+  .masterWhySection .sectionIntro{margin-bottom:20px}
+  .masterWhySection .sectionIntro h2{font-size:2.3rem}
+
+  .masterLumenSection{min-height:310px;padding:42px 0}
+  .lumenMasterCopy{max-width:470px}
+  .lumenMasterCopy h2{font-size:4.6rem}
+
+  .masterChapterSection{padding:38px 0}
+  .masterChapterSection .formPanel{min-height:auto}
+  .masterChapterSection .sectionIntro h2{font-size:2rem}
+
+  .masterSagaSection .grid3{grid-template-columns:repeat(4,210px);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px}
+  .masterSagaSection .sagaCard{scroll-snap-align:start}
+
+  .newsSection{padding:54px 0}
+  .newsGrid{grid-template-columns:1fr 1fr}
+  .newsCard.featured{grid-column:1/-1}
+
+  .masterDualRow,.masterCommunityRow{padding-inline:16px}
+  .masterDualRow>section,.masterCommunityRow>section{min-height:285px}
+  .masterDualRow .masterInteractiveSection .sectionIntro{padding-left:43%}
+
+  .finalCtaMaster h2{font-size:2.8rem}
+}
+
+@media(max-width:560px){
+  .container{width:min(100% - 24px,1180px)}
+  .headerInner{min-height:52px}
+  .logo{font-size:1.05rem}
+  .lang{display:none}
+  .headerActions .desktopBuy{display:none}
+
+  .hero{min-height:720px;padding:46px 0 20px}
+  .heroGrid{min-height:680px!important;padding-top:205px!important}
+  .heroGrid>div:nth-child(2){left:6px!important;top:28px!important;width:110px}
+  .hero .officialBookCover{max-width:106px!important}
+  .approvedLandingHeroCopy{padding:0}
+  .approvedLandingHeroCopy>.kicker{font-size:.56rem;letter-spacing:.12em}
+  .approvedLandingHeroCopy h1{
+    font-size:2.05rem!important;
+    line-height:.96!important;
+    max-width:330px
+  }
+  .approvedLandingHeroCopy>.lead{font-size:.78rem;line-height:1.5}
+  .heroActions{display:grid!important;grid-template-columns:1fr 1fr;max-width:330px}
+  .heroActions .btn{width:100%;padding:10px 8px}
+
+  .discoveryGrid{grid-template-columns:1fr 1fr}
+  .discoveryCard{min-height:78px}
+  .discoveryPanelInner{padding:14px}
+
+  .masterAuthorGrid{grid-template-columns:1fr!important}
+  .masterAuthorPortrait{width:150px;min-height:190px;justify-self:end;margin-top:-110px}
+  .masterAuthorCopy{max-width:68%}
+  .masterAuthorGrid blockquote{margin-top:8px}
+  .masterAuthorCopy .lead{font-size:.78rem}
+
+  .masterWhySection .grid4{grid-template-columns:1fr 1fr!important}
+  .masterWhySection .whyCard{grid-template-rows:122px 1fr!important;min-height:235px!important}
+  .masterWhySection .sectionIntro h2{font-size:1.9rem}
+  .whyCardCopy h3{font-size:.62rem}
+  .whyCardCopy p{font-size:.54rem}
+
+  .charactersSection{padding:48px 0}
+  .charactersSection .sectionIntro h2{font-size:1.9rem}
+  .characterTile{min-width:68vw!important}
+  .characterTileArt{height:285px!important}
+
+  .masterLumenSection{min-height:290px;padding:38px 0}
+  .lumenMasterCopy h2{font-size:3.7rem}
+  .lumenMasterCopy h3{font-size:.88rem}
+  .lumenMasterCopy .lead{font-size:.74rem;max-width:85%}
+
+  .masterChapterSection .formPanel{padding:20px!important}
+  .masterChapterSection .sectionIntro h2{font-size:1.7rem}
+  .leadFields{grid-template-columns:1fr!important}
+  .leadSubmit{width:100%}
+
+  .masterSagaSection{padding:46px 0}
+  .masterSagaSection .grid3{grid-template-columns:none!important;display:flex!important}
+  .masterSagaSection .sagaCard{min-width:72vw!important}
+
+  .newsHeader h2{font-size:1.9rem}
+  .newsSignal{font-size:.48rem}
+  .newsGrid{grid-template-columns:1fr!important}
+
+  .masterDualRow,.masterCommunityRow{padding-inline:12px}
+  .masterDualRow>section,.masterCommunityRow>section{padding:18px!important}
+  .masterDualRow .masterInteractiveSection .sectionIntro{padding:190px 0 0!important}
+  .masterDualRow .masterMapSection .sectionIntro{max-width:100%!important}
+  .masterCommunityRow .masterCommunitySection h2{font-size:1.55rem}
+  .masterReviewsPanel .featuredReview blockquote{font-size:1.15rem}
+
+  .ctaFinal{min-height:250px;padding:40px 0!important}
+  .finalCtaMaster h2{font-size:2.15rem}
+  .finalCtaMaster>p{font-size:.72rem}
+
+  .approvedFooterGrid{grid-template-columns:1fr 1fr!important}
+  .approvedFooterBrand,.approvedFooterJoin{grid-column:1/-1}
+}
