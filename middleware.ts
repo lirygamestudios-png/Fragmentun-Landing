@@ -34,11 +34,15 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const hasLocale = locales.some(
+  const matchedLocale = locales.find(
     (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`)
   );
 
-  if (hasLocale) return NextResponse.next();
+  if (matchedLocale) {
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-fragmentun-locale", matchedLocale);
+    return NextResponse.next({request:{headers:requestHeaders}});
+  }
 
   const preferred = request.headers.get("accept-language")?.toLowerCase().startsWith("en")
     ? "en"
