@@ -1333,3 +1333,26 @@ input::placeholder{color:#8090a5}
     filter:saturate(1.1) contrast(1.04) brightness(1.06)
   }
 }
+
+
+/* Character art framing — book-faithful portraits */
+.characterTileArt,
+.characterModalArt{
+  background-size:cover!important;
+  background-repeat:no-repeat!important;
+}
+.characterTileArt.elyon,.characterModalArt.elyon{background-position:54% 24%!important}
+.characterTileArt.umbral,.characterModalArt.umbral{background-position:50% 22%!important}
+.characterTileArt.ethelis,.characterModalArt.ethelis{background-position:50% 20%!important}
+.characterTileArt.vorax,.characterModalArt.vorax{background-position:50% 22%!important}
+.characterTileArt.nara,.characterModalArt.nara{background-position:50% 20%!important}
+.characterTileArt:before{
+  content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg,transparent 48%,rgba(2,8,14,.18) 64%,rgba(2,8,14,.82) 100%);
+  pointer-events:none
+}
+.characterTileArt:after{display:none}
+.characterTileArt span{z-index:2}
+.characterModalArt .characterModalGlow{
+  background:linear-gradient(180deg,rgba(1,7,12,.02) 40%,rgba(1,7,12,.28) 72%,rgba(1,7,12,.78) 100%)
+}
