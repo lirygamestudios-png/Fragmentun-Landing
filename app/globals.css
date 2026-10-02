@@ -846,3 +846,49 @@ input::placeholder{color:#8090a5}
 @keyframes fragmentunPulse{0%,100%{opacity:.45;transform:scale(.98)}50%{opacity:1;transform:scale(1.03)}}
 @media(max-width:900px){.hero:before{background:linear-gradient(180deg,rgba(3,11,20,.18),rgba(3,11,20,.92) 58%),url('/elyon-hero.jpg') 58% 18%/cover no-repeat}.heroGrid{grid-template-columns:1fr;padding-top:260px;min-height:820px}.heroGrid>div:nth-child(2){position:absolute;top:80px;left:30px}.officialBookCover{max-width:160px}.hero h1{font-size:3.5rem}.hero .lead strong{font-size:2.6rem}.masterLumenSection{background-attachment:scroll}}
 @media(max-width:560px){.hero{min-height:790px}.heroGrid{min-height:790px;padding-top:260px}.heroGrid>div:nth-child(2){left:20px;top:72px}.officialBookCover{max-width:135px}.hero h1{font-size:2.8rem}.hero .lead strong{font-size:2rem;line-height:1.03}.heroActions{display:grid}.masterValueGrid strong{font-size:.68rem}}
+
+
+/* Final fidelity pass — definitive approved landing */
+.approvedLandingHeroCopy{max-width:680px}
+.approvedLandingHeroCopy h1{
+  margin:14px 0 18px;
+  max-width:680px;
+  font:500 clamp(3rem,5.45vw,5.9rem)/.96 Georgia,"Times New Roman",serif;
+  letter-spacing:-.025em;
+  text-transform:uppercase;
+  color:#f3cd72;
+  text-shadow:0 3px 24px #000,0 0 36px rgba(201,168,76,.12)
+}
+.approvedLandingHeroCopy>.kicker{font-size:.76rem;letter-spacing:.19em;color:#ddb859}
+.approvedLandingHeroCopy>.lead{max-width:600px;color:#dbe5ed;font-size:1rem}
+.masterAuthorPortrait{
+  background:
+    linear-gradient(180deg,transparent 58%,rgba(3,10,17,.3)),
+    url('/jose-liranzo.jpg') 50% 50%/cover no-repeat !important;
+}
+.approvedAdminAvatar{
+  color:transparent;
+  background:url('/jose-liranzo.jpg') 50% 45%/cover no-repeat;
+}
+.masterSagaSection .grid3{grid-template-columns:repeat(4,1fr)}
+.mobileBottomNav{display:none}
+@media(max-width:900px){
+  .approvedLandingHeroCopy h1{font-size:clamp(2.45rem,7.8vw,4rem)}
+}
+@media(max-width:560px){
+  body{padding-bottom:66px}
+  .approvedLandingHeroCopy h1{font-size:2.18rem;line-height:.98}
+  .approvedLandingHeroCopy>.lead{font-size:.9rem;line-height:1.55}
+  .masterSagaSection .grid3{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px}
+  .masterSagaSection .sagaCard{min-width:78vw;scroll-snap-align:center}
+  .mobileBottomNav{
+    position:fixed;left:0;right:0;bottom:0;z-index:100;
+    min-height:62px;padding:6px 10px calc(6px + env(safe-area-inset-bottom));
+    display:grid;grid-template-columns:repeat(5,1fr);align-items:center;
+    background:rgba(3,13,23,.96);backdrop-filter:blur(14px);
+    border-top:1px solid rgba(201,168,76,.28);box-shadow:0 -10px 35px #0008
+  }
+  .mobileBottomNav a{display:grid;place-items:center;gap:2px;color:#cbd7e1;text-decoration:none}
+  .mobileBottomNav a span{font-size:1.05rem;color:#e6bd56}
+  .mobileBottomNav a small{font-size:.52rem;letter-spacing:.02em}
+}

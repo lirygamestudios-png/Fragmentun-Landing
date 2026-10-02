@@ -77,6 +77,16 @@ export default async function Home({
       subtitle_en:"Ascension Protocol",
       edition_status:"coming_soon",
       amazon_url:null
+    },
+    {
+      slug:"fragmentun-iv",
+      volume:4,
+      title_es:"FRAGMENTUN IV",
+      title_en:"FRAGMENTUN IV",
+      subtitle_es:"Génesis del Halo",
+      subtitle_en:"Genesis of the Halo",
+      edition_status:"coming_soon",
+      amazon_url:null
     }
   ];
 
