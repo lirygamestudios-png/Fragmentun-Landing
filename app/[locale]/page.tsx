@@ -185,7 +185,7 @@ export default async function Home({
             <p className="lead">{locale==="es"
               ?"Creo en el poder de las historias para despertar lo que sentimos, cuestionar lo que somos y construir mundos más humanos."
               :"I believe in the power of stories to awaken what we feel, question who we are, and build more human worlds."}</p>
-            <a className="btn btnPrimary" href="#autor-historia">{locale==="es"?"Conoce mi historia":"Meet the author"}</a>
+            <a className="btn btnPrimary" href="#historia">{locale==="es"?"Conoce mi historia":"Meet the author"}</a>
           </div>
           <div className="masterAuthorPortrait" aria-hidden="true"><span>JL</span></div>
           <blockquote>FRAGMENTUN<br/>{locale==="es"
@@ -281,125 +281,70 @@ export default async function Home({
         </div>
       </section>
 
-      <section className="section masterInteractiveSection" id="test">
-        <div className="container">
+      <div className="masterDualRow container">
+        <section className="masterInteractiveSection" id="test">
           <div className="sectionIntro">
-            <div className="kicker">{locale==="es"?"Experiencia interactiva":"Interactive experience"}</div>
-            <h2>{locale==="es"?"Descubre tu perfil emocional":"Discover your emotional profile"}</h2>
-            <p className="lead">{locale==="es"?"12 preguntas narrativas y cinco perfiles conectados al universo FRAGMENTUN.":"12 narrative questions and five profiles connected to the FRAGMENTUN universe."}</p>
-            <a className="btn btnSecondary" href={`/${locale}/test`}>{locale==="es"?"Hacer el test":"Take the test"}</a>
+            <div className="kicker">{locale==="es"?"Test emocional":"Emotional test"}</div>
+            <h2>{locale==="es"?"Descubre tu perfil en el universo FRAGMENTUN":"Discover your profile in the FRAGMENTUN universe"}</h2>
+            <p className="lead">{locale==="es"?"12 preguntas · 5 arquetipos · resultados personalizados.":"12 questions · 5 archetypes · personalized results."}</p>
+            <a className="btn btnPrimary" href={`/${locale}/test`}>{locale==="es"?"Hacer el Test":"Take the Test"}</a>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="section masterMapSection" id="mapa">
-        <div className="container">
+        <section className="masterMapSection" id="mapa">
           <div className="sectionIntro">
-            <div className="kicker">{locale==="es"?"Exploración":"Exploration"}</div>
-            <h2>{locale==="es"?"Mapa interactivo de Lumen":"Interactive map of Lumen"}</h2>
-            <p className="lead">{locale==="es"?"Territorios, puntos de interés y eventos narrativos con navegación visual.":"Territories, landmarks and narrative events with visual navigation."}</p>
-            <a className="btn btnGhost" href={`/${locale}/mapa`}>{locale==="es"?"Abrir el mapa":"Open the map"}</a>
+            <div className="kicker">{locale==="es"?"Mapa interactivo de Lumen":"Interactive map of Lumen"}</div>
+            <h2>{locale==="es"?"Explora los territorios. Descubre sus secretos.":"Explore the territories. Discover their secrets."}</h2>
+            <p className="lead">{locale==="es"?"Vorax, Ethelis, Umbral y Nara te esperan dentro de Lumen.":"Vorax, Ethelis, Umbral and Nara await inside Lumen."}</p>
+            <a className="btn btnPrimary" href={`/${locale}/mapa`}>{locale==="es"?"Abrir el Mapa":"Open the Map"}</a>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
-      {reviews.length>0&&<section className="section" id="lectores">
-        <div className="container">
-          <div className="sectionIntro">
-            <div className="kicker">{locale==="es"?"Lectores":"Readers"}</div>
-            <h2>{locale==="es"?"Reseñas verificadas":"Verified reviews"}</h2>
-            <p className="lead">{locale==="es"
-              ?"Solo mostramos reseñas publicadas y marcadas como verificadas en el panel."
-              :"Only reviews published and marked as verified in the admin panel are shown."}</p>
-          </div>
-          <div className="grid3">
-            {reviews.map((r:any)=><article className="card reviewCard" key={r.id}>
-              <div className="kicker">{r.source}</div>
-              <p className="reviewQuote">“{r.body}”</p>
-              <p className="note">{r.author_display|| (locale==="es"?"Lector verificado":"Verified reader")}</p>
-              {r.source_url&&<a className="reviewSource" href={r.source_url} target="_blank" rel="noreferrer">{locale==="es"?"Ver fuente":"View source"}</a>}
-            </article>)}
-          </div>
-        </div>
-      </section>}
-
-      <section className="section" id="patreon">
-        <div className="container">
-          <div className="supportPanel">
-            <div>
-              <div className="kicker">{locale==="es"?"Patrocina la saga":"Support the saga"}</div>
-              <h2>{locale==="es"?"Ayuda a llevar FRAGMENTUN más lejos":"Help take FRAGMENTUN further"}</h2>
-              <p className="lead">
-                {locale==="es"
-                  ?"Si quieres apoyar directamente el crecimiento de FRAGMENTUN, el desarrollo de nuevas historias, arte y experiencias del universo, puedes convertirte en patrocinador a través de Patreon."
-                  :"If you want to directly support FRAGMENTUN's growth, new stories, art and experiences across the universe, you can become a supporter through Patreon."}
-              </p>
-            </div>
-            <TrackLink
-              className="btn btnPatreon"
-              href={patreonUrl}
-              eventName="patreon_click"
-              locale={locale}
-              metadata={{placement:"support_section",creator:"sagaFragmentun"}}
-              newTab
-            >
-              {locale==="es"?"Apoyar FRAGMENTUN en Patreon":"Support FRAGMENTUN on Patreon"}
-            </TrackLink>
-          </div>
-        </div>
-      </section>
-
-      <section className="section masterCommunitySection" id="comunidad-publica">
-        <div className="container">
-          <div className="sectionIntro">
-            <div className="kicker">{locale==="es"?"Redes sociales":"Social media"}</div>
-            <h2>{locale==="es"?"Sigue FRAGMENTUN":"Follow FRAGMENTUN"}</h2>
-            <p className="lead">{locale==="es"
-              ?"Acompaña el desarrollo de la saga, nuevas imágenes, videos, avances y publicaciones."
-              :"Follow the saga's development, new artwork, videos, previews and releases."}</p>
-            <SocialLinks locale={locale} items={socialItems} placement="social_section"/>
-          </div>
-        </div>
-      </section>
-
-      {facebookCommunityUrl&&<section className="section" id="comunidad">
-        <div className="container">
-          <div className="supportPanel">
-            <div>
-              <div className="kicker">{locale==="es"?"Comunidad oficial":"Official community"}</div>
-              <h2>{locale==="es"?"Únete a la comunidad FRAGMENTUN":"Join the FRAGMENTUN community"}</h2>
-              <p className="lead">{locale==="es"
-                ?"Conversa con otros lectores, comparte teorías y sigue de cerca la evolución de la saga."
-                :"Talk with other readers, share theories and follow the saga's evolution closely."}</p>
-            </div>
-            <TrackLink
-              className="btn btnSecondary"
+      <div className="masterCommunityRow container">
+        <section className="masterCommunitySection" id="comunidad-publica">
+          <div className="kicker">{locale==="es"?"Comunidad FRAGMENTUN":"FRAGMENTUN community"}</div>
+          <h2>{locale==="es"?"Únete a quienes sienten, cuestionan y exploran más allá de lo evidente.":"Join those who feel, question and explore beyond the obvious."}</h2>
+          <p className="lead">{locale==="es"
+            ?"Sigue la evolución de la saga, comparte el universo y acompaña las próximas historias."
+            :"Follow the saga's evolution, share the universe and join the stories to come."}</p>
+          <SocialLinks locale={locale} items={socialItems} placement="community_section"/>
+          <div className="communityActions">
+            {facebookCommunityUrl&&<TrackLink
+              className="btn btnPrimary"
               href={facebookCommunityUrl}
               eventName="community_click"
               locale={locale}
               metadata={{network:"facebook_group",placement:"community_cta"}}
               newTab
-            >
-              {locale==="es"?"Unirme a la comunidad":"Join the community"}
-            </TrackLink>
+            >{locale==="es"?"Unirme a la Comunidad":"Join the Community"}</TrackLink>}
+            <TrackLink
+              className="btn btnPatreon"
+              href={patreonUrl}
+              eventName="patreon_click"
+              locale={locale}
+              metadata={{placement:"community_section",creator:"sagaFragmentun"}}
+              newTab
+            >{locale==="es"?"Patrocinar la Saga":"Support the Saga"}</TrackLink>
           </div>
-        </div>
-      </section>}
+        </section>
 
-      <section className="section masterAuthorStory" id="autor-historia">
-        <div className="container split">
-          <div>
-            <div className="kicker">{locale==="es"?"El autor":"The author"}</div>
-            <h2>{t.author}</h2>
-            <p className="lead">{t.authorBody}</p>
-          </div>
-          <div className="masterAuthorSeal">
-            <span>FRAGMENTUN</span>
-            <strong>JOSÉ LIRANZO</strong>
-            <small>LIRYGAMES STUDIOS</small>
-          </div>
-        </div>
-      </section>
+        <section className="masterReviewsPanel" id="lectores">
+          <div className="kicker">{locale==="es"?"Lo que dicen los lectores":"What readers say"}</div>
+          {reviews.length>0
+            ?<article className="featuredReview">
+              <div className="reviewStars">★★★★★</div>
+              <blockquote>“{reviews[0].body}”</blockquote>
+              <p>{reviews[0].author_display|| (locale==="es"?"Lector verificado":"Verified reader")}</p>
+              <small>{reviews[0].source}</small>
+              {reviews[0].source_url&&<a className="reviewSource" href={reviews[0].source_url} target="_blank" rel="noreferrer">{locale==="es"?"Ver fuente":"View source"}</a>}
+            </article>
+            :<div className="reviewAwaiting">
+              <span>★★★★★</span>
+              <p>{locale==="es"?"Las reseñas verificadas de lectores aparecerán aquí.":"Verified reader reviews will appear here."}</p>
+            </div>}
+        </section>
+      </div>
 
       <section className="ctaFinal">
         <div className="container">
