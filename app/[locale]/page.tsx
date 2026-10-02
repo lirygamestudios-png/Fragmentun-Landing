@@ -391,12 +391,15 @@ export default async function Home({
       </div>
 
       <section className="ctaFinal">
-        <div className="container">
-          <div className="kicker">{finalCta.eyebrow||(locale==="es"?"El despertar ya comenzó":"The awakening has begun")}</div>
-          <h2>{finalCta.title||(locale==="es"?"Entra en Lumen. Decide cuánto estás dispuesto a sentir.":"Enter Lumen. Decide how much you are willing to feel.")}</h2>
+        <div className="container finalCtaMaster">
+          <div className="kicker">{locale==="es"?"EL DESPERTAR YA COMENZÓ":"THE AWAKENING HAS BEGUN"}</div>
+          <h2>{locale==="es"?"Descubre FRAGMENTUN I y forma parte de esta historia.":"Discover FRAGMENTUN I and become part of this story."}</h2>
+          <p>{locale==="es"
+            ?"Entra en Lumen. Decide cuánto estás dispuesto a sentir."
+            :"Enter Lumen. Decide how much you are willing to feel."}</p>
           <div className="heroActions">
-            {amazonUrl&&<TrackLink className="btn btnPrimary" href={amazonUrl} eventName="amazon_click" locale={locale} metadata={{book:"fragmentun-i",edition_locale:locale,marketplace:firstBook?.marketplace||"amazon.com"}} newTab>{finalCta.primary_cta||t.buy}</TrackLink>}
-            <TrackLink className="btn btnSecondary" href="#capitulo" eventName="chapter_click" locale={locale}>{finalCta.secondary_cta||t.chapter}</TrackLink>
+            {amazonUrl&&<TrackLink className="btn btnPrimary" href={amazonUrl} eventName="amazon_click" locale={locale} metadata={{book:"fragmentun-i",edition_locale:locale,marketplace:firstBook?.marketplace||"amazon.com"}} newTab>{locale==="es"?"Comprar en Amazon →":"Buy on Amazon →"}</TrackLink>}
+            <TrackLink className="btn btnSecondary" href="#capitulo" eventName="chapter_click" locale={locale}>{locale==="es"?"Leer el Capítulo 1":"Read Chapter 1"}</TrackLink>
           </div>
         </div>
       </section>
