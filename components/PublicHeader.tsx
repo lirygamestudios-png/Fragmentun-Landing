@@ -11,6 +11,7 @@ export function PublicHeader({locale,amazonUrl,patreonUrl}:{locale:Locale;amazon
   const pathname=usePathname();
   const[open,setOpen]=useState(false);
   const items=[
+    [locale==="es"?"Inicio":"Home",`/${locale}`],
     [t.nav.story,`/${locale}#historia`],
     [t.nav.universe,`/${locale}#lumen`],
     [locale==="es"?"Personajes":"Characters",`/${locale}#historia`],

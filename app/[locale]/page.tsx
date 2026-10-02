@@ -119,11 +119,9 @@ export default async function Home({
     <main>
       <section className="hero">
         <div className="container heroGrid">
-          <div>
-            <div className="kicker">{hero.eyebrow||t.heroKicker}</div>
-            <h1>{hero.title||t.title}</h1>
-            <div className="kicker">{hero.subtitle||t.subtitle}</div>
-            <p className="lead"><strong>{hero.question||t.heroQuestion}</strong></p>
+          <div className="approvedLandingHeroCopy">
+            <div className="kicker">{locale==="es"?"FRAGMENTUN I · EL DESPERTAR EMOCIONAL":"FRAGMENTUN I · THE EMOTIONAL AWAKENING"}</div>
+            <h1>{hero.question||t.heroQuestion}</h1>
             <p className="lead">{hero.body||t.heroBody}</p>
 
             <div className="heroActions">
@@ -409,5 +407,12 @@ export default async function Home({
         <SocialLinks locale={locale} items={socialItems} placement="footer"/>
       </div>
     </footer>
+    <nav className="mobileBottomNav" aria-label={locale==="es"?"Navegación móvil":"Mobile navigation"}>
+      <a href={`/${locale}`}><span>⌂</span><small>{locale==="es"?"Inicio":"Home"}</small></a>
+      <a href="#historia"><span>◫</span><small>{locale==="es"?"Historia":"Story"}</small></a>
+      <a href="#test"><span>◇</span><small>Test</small></a>
+      <a href="#mapa"><span>⌖</span><small>{locale==="es"?"Mapa":"Map"}</small></a>
+      <a href="#comunidad-publica"><span>♟</span><small>{locale==="es"?"Comunidad":"Community"}</small></a>
+    </nav>
   </>;
 }
