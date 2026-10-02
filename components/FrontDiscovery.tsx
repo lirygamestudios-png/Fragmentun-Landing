@@ -175,7 +175,7 @@ export function FrontDiscovery({locale,amazonUrl}:{locale:Locale;amazonUrl:strin
       return <div className="characterModalBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setSelected(null)}}>
         <section className="characterModal" role="dialog" aria-modal="true" aria-label={char.name} tabIndex={-1}>
           <button className="characterModalClose" type="button" aria-label={locale==="es"?"Cerrar":"Close"} onClick={()=>setSelected(null)}>×</button>
-          <div className={`characterModalArt ${char.tone}`} style={char.image?{backgroundImage:`url(${char.image})`}:undefined}>
+          <div className={`characterModalArt ${char.tone}`} style={char.image?{backgroundImage:char.fallbackImage?`url("${char.image}"), url("${char.fallbackImage}")`:`url("${char.image}")`}:undefined}>
             <div className="characterModalGlow"/>
             <span>{char.name}</span>
           </div>
