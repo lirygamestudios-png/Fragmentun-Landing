@@ -1008,3 +1008,59 @@ input::placeholder{color:#8090a5}
 @media(prefers-reduced-motion:reduce){
   .hero:before,.masterLumenSection,.officialBookCover,.btn,.card,.territory{transition:none!important;animation:none!important;transform:none!important}
 }
+
+
+/* Definitive desktop composition corrections */
+@media(min-width:901px){
+  .heroGrid{
+    grid-template-columns:minmax(210px,.62fr) minmax(460px,1.2fr) minmax(260px,.72fr);
+    gap:24px;
+  }
+  .approvedLandingHeroCopy{
+    grid-column:2;
+    grid-row:1;
+    align-self:center;
+    max-width:620px
+  }
+  .heroGrid>div:nth-child(2){
+    grid-column:1;
+    grid-row:1;
+    align-self:center;
+    position:relative;
+    z-index:3
+  }
+  .hero .bookStage{
+    min-height:430px;
+    background:transparent;
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+    overflow:visible
+  }
+  .hero .officialBookCover{max-width:235px}
+}
+.masterLumenSection .worldPanel{display:none}
+.masterLumenSection .split{grid-template-columns:1fr;min-height:300px}
+.masterLumenSection .split>div:first-child{max-width:540px}
+.masterChapterSection .formPanel{
+  position:relative;
+  overflow:hidden;
+  padding-right:36%;
+  background:
+    linear-gradient(90deg,rgba(13,29,48,.98) 0%,rgba(13,29,48,.94) 58%,rgba(7,16,29,.35) 100%),
+    url('/fragmentun-i-cover-es.jpg') 91% 52%/23% auto no-repeat,
+    linear-gradient(180deg,#12233a,#0b1626)
+}
+.masterChapterSection .formPanel:before{
+  content:"";
+  position:absolute;right:27%;top:0;bottom:0;width:1px;
+  background:linear-gradient(transparent,rgba(201,168,76,.4),transparent)
+}
+.masterSagaSection .sagaCard:first-child:before{
+  background:url('/fragmentun-i-cover-es.jpg') center 18%/cover no-repeat;
+  border-color:rgba(201,168,76,.72)
+}
+@media(max-width:900px){
+  .masterChapterSection .formPanel{padding-right:28px;background:linear-gradient(180deg,#12233a,#0b1626)}
+  .masterChapterSection .formPanel:before{display:none}
+}
