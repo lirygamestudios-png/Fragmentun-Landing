@@ -1887,3 +1887,163 @@ input::placeholder{color:#8090a5}
   .approvedFooterGrid{grid-template-columns:1fr 1fr!important}
   .approvedFooterBrand,.approvedFooterJoin{grid-column:1/-1}
 }
+
+
+/* =========================================================
+   FRONTDESK MASTER REFINEMENT — 2026-10-02
+   Preserve approved structure; improve visual hierarchy only.
+   ========================================================= */
+@media(min-width:901px){
+  .hero{
+    min-height:620px;
+    padding:48px 0 30px;
+  }
+  .heroGrid{
+    min-height:590px;
+    grid-template-columns:220px minmax(500px,650px) minmax(240px,1fr);
+    gap:34px;
+  }
+  .hero .bookStage{min-height:370px}
+  .hero .officialBookCover{max-width:215px}
+  .approvedLandingHeroCopy{max-width:640px}
+  .approvedLandingHeroCopy h1{
+    max-width:630px;
+    font-size:clamp(3.25rem,4.7vw,4.95rem);
+    line-height:.93;
+  }
+  .approvedLandingHeroCopy>.lead{
+    max-width:540px;
+    font-size:.93rem;
+    line-height:1.62;
+  }
+}
+
+/* Author band should read as its own editorial moment, not another hero crop */
+.masterAuthorBand{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 76% 34%,rgba(74,144,217,.13),transparent 24%),
+    radial-gradient(circle at 22% 0%,rgba(201,168,76,.08),transparent 27%),
+    linear-gradient(105deg,#081522 0%,#0a1928 55%,#07121e 100%)!important;
+  border-top:1px solid rgba(201,168,76,.12);
+  border-bottom:1px solid rgba(74,144,217,.13);
+}
+.masterAuthorBand:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(90deg,transparent 0 66%,rgba(201,168,76,.035) 66% 66.15%,transparent 66.15%),
+    radial-gradient(circle at 78% 48%,rgba(201,168,76,.07),transparent 15%);
+}
+.masterAuthorGrid{position:relative;z-index:1}
+.masterAuthorPortrait{
+  border-radius:10px!important;
+  border:1px solid rgba(201,168,76,.34)!important;
+  box-shadow:0 22px 55px rgba(0,0,0,.38);
+}
+.masterAuthorCopy h2{color:#f0cc72}
+.masterAuthorGrid blockquote{
+  color:#c9d5df;
+  border-left-color:rgba(201,168,76,.52);
+}
+
+/* Lumen becomes the large cinematic city band from the approved master */
+.masterLumenSection{
+  min-height:390px;
+  padding:58px 0;
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:#050f1a!important;
+}
+.masterLumenSection:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  background:
+    linear-gradient(90deg,rgba(4,13,22,.96) 0%,rgba(4,13,22,.80) 31%,rgba(4,13,22,.36) 55%,rgba(4,13,22,.16) 100%),
+    url('/elyon-hero.jpg') 84% 69%/cover no-repeat!important;
+  filter:saturate(1.12) contrast(1.07) brightness(1.08);
+  transform:scale(1.025);
+}
+.masterLumenSection:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  opacity:1!important;
+  background:
+    radial-gradient(circle at 72% 35%,rgba(74,144,217,.18),transparent 18%),
+    linear-gradient(180deg,transparent 65%,rgba(2,8,14,.36));
+}
+.lumenMasterCopy{max-width:510px}
+.lumenMasterCopy h2{
+  font-size:clamp(4.4rem,7vw,6.4rem);
+  letter-spacing:.025em;
+  text-shadow:0 4px 34px rgba(0,0,0,.72);
+}
+.lumenMasterCopy h3{
+  margin-top:10px;
+  color:#f4d98c;
+}
+.lumenMasterCopy .lead{
+  max-width:460px;
+  color:#c9d7e2;
+}
+
+/* Editorial breathing room around the conversion band */
+.masterChapterSection{
+  padding:46px 0 54px;
+  background:linear-gradient(180deg,#07131f,#081725);
+}
+.masterChapterSection .formPanel{
+  box-shadow:0 26px 70px rgba(0,0,0,.32);
+  border-color:rgba(201,168,76,.19);
+}
+
+/* Saga spacing: slightly more air between art and copy */
+.masterSagaSection .sagaCard{
+  padding-top:184px!important;
+}
+.masterSagaSection .sagaCard:before{
+  top:14px!important;
+  height:158px!important;
+}
+.masterSagaSection .sagaMark{margin-top:4px}
+.masterSagaSection .sagaCard h3{margin-top:6px!important}
+
+/* Keep lower modules cinematic but visually quieter than the Lumen master band */
+.masterDualRow>section,
+.masterCommunityRow>section{
+  box-shadow:0 18px 46px rgba(0,0,0,.22);
+}
+.masterReviewsPanel:before{
+  background:linear-gradient(90deg,rgba(5,14,24,.96) 0%,rgba(5,14,24,.88) 62%,rgba(5,14,24,.42) 100%);
+}
+
+/* Desktop rhythm closer to the approved composition */
+@media(min-width:901px){
+  .masterWhySection{padding-top:58px;padding-bottom:62px}
+  .charactersSection{padding-top:54px;padding-bottom:58px}
+  .newsSection{padding-top:58px;padding-bottom:58px}
+  .masterDualRow,.masterCommunityRow{gap:16px}
+}
+
+/* Preserve approved tablet/mobile layouts while inheriting visual cleanup */
+@media(max-width:900px){
+  .masterAuthorBand{
+    background:
+      radial-gradient(circle at 78% 26%,rgba(74,144,217,.12),transparent 25%),
+      linear-gradient(180deg,#081522,#07121e)!important;
+  }
+  .masterLumenSection:before{
+    background:
+      linear-gradient(180deg,rgba(4,13,22,.35) 0%,rgba(4,13,22,.66) 54%,rgba(4,13,22,.94) 100%),
+      url('/elyon-hero.jpg') 70% 24%/cover no-repeat!important;
+  }
+}
