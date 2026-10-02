@@ -1522,3 +1522,71 @@ input::placeholder{color:#8090a5}
   }
   .masterChapterSection .formPanel:after{display:none}
 }
+
+
+/* Saga — closer to approved master */
+.masterSagaSection{padding-top:58px;padding-bottom:58px}
+.masterSagaSection .sectionIntro{text-align:center;margin-inline:auto;margin-bottom:24px}
+.masterSagaSection .sectionIntro h2{font-size:clamp(2rem,3.8vw,3.5rem)}
+.masterSagaSection .grid3{gap:16px}
+.masterSagaSection .sagaCard{
+  min-height:342px;
+  padding:176px 14px 16px!important;
+  border-radius:12px;
+  text-align:center;
+  background:linear-gradient(180deg,#0a1b2d,#07121f);
+  border-color:#183e58
+}
+.masterSagaSection .sagaCard:before{
+  width:110px!important;
+  height:156px!important;
+  top:12px!important;
+  border-radius:6px!important;
+  box-shadow:0 16px 30px #0009!important
+}
+.masterSagaSection .sagaCard:nth-child(1):before{
+  background:url('/fragmentun-i-cover-es.jpg') center 16%/cover no-repeat!important;
+  border-color:#c9a84caa!important
+}
+.masterSagaSection .sagaCard:nth-child(2):before{
+  background:
+    linear-gradient(180deg,rgba(4,10,18,.04),rgba(4,10,18,.2)),
+    url('/umbral-hd.jpg') 50% 22%/cover no-repeat!important;
+  border-color:#4a90d988!important
+}
+.masterSagaSection .sagaCard:nth-child(3):before{
+  background:
+    linear-gradient(180deg,rgba(4,10,18,.04),rgba(4,10,18,.18)),
+    url('/ethelis-hd.jpg') 50% 20%/cover no-repeat!important;
+  border-color:#c9a84c88!important
+}
+.masterSagaSection .sagaCard:nth-child(4):before{
+  background:
+    linear-gradient(180deg,rgba(4,10,18,.04),rgba(4,10,18,.18)),
+    url('/nara-hd.jpg') 50% 20%/cover no-repeat!important;
+  border-color:#c9a84c88!important
+}
+.masterSagaSection .sagaMark{
+  font-size:.64rem;
+  letter-spacing:.08em;
+  color:#c9a84c;
+  min-height:32px
+}
+.masterSagaSection .sagaCard h3{
+  font-size:.82rem;
+  line-height:1.2;
+  margin:3px 0 4px!important
+}
+.masterSagaSection .sagaCard p{
+  font-size:.62rem;
+  color:#8fa4b5;
+  margin:0 0 10px!important
+}
+.masterSagaSection .sagaCard .btn{
+  border-radius:5px;
+  padding:8px 12px;
+  font-size:.62rem
+}
+@media(max-width:560px){
+  .masterSagaSection .sagaCard{min-width:74vw;min-height:330px;padding-top:170px!important}
+}
