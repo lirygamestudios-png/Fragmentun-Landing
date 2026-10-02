@@ -1636,3 +1636,33 @@ input::placeholder{color:#8090a5}
   .nav{display:none}
   .menuButton{display:block}
 }
+
+
+/* Lumen master band */
+.masterLumenSection{
+  min-height:360px;
+  padding:54px 0;
+  display:flex;
+  align-items:center;
+  border-top:1px solid rgba(201,168,76,.18);
+  border-bottom:1px solid rgba(201,168,76,.12);
+}
+.masterLumenSection .split{
+  grid-template-columns:1fr;
+  min-height:250px;
+}
+.lumenMasterCopy{max-width:540px}
+.lumenMasterCopy h2{
+  margin:.05em 0 0;
+  font:500 clamp(3.8rem,7.2vw,6.8rem)/.88 Georgia,serif;
+  color:#f0cf72;
+  letter-spacing:.02em
+}
+.lumenMasterCopy h3{
+  margin:8px 0 14px;
+  font:600 clamp(1rem,1.8vw,1.45rem)/1.1 Georgia,serif;
+  letter-spacing:.06em;
+  color:#f1d98d
+}
+.lumenMasterCopy .lead{font-size:.9rem;line-height:1.6;max-width:500px}
+.lumenMasterCopy .btn{border-radius:6px;padding:10px 16px;font-size:.68rem}
