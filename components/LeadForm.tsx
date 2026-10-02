@@ -32,7 +32,7 @@ export function LeadForm({
     });
   },[]);
 
-  return <form className="formGrid" action="/api/subscribe" method="post">
+  return <form className="leadCaptureForm" action="/api/subscribe" method="post">
     <input type="hidden" name="locale" value={locale}/>
     <input type="hidden" name="utm_source" value={utm.source}/>
     <input type="hidden" name="utm_medium" value={utm.medium}/>
@@ -41,27 +41,48 @@ export function LeadForm({
     <input type="hidden" name="consent_version" value="2026-09-30"/>
     <input type="hidden" name="experiment" value={experiment||""}/>
     <input type="hidden" name="experiment_variant" value={experimentVariant||""}/>
-    <input
-      aria-label={locale==="es"?"Tu nombre":"Your name"}
-      name="name"
-      placeholder={locale==="es"?`${nameLabel} (opcional)`:`${nameLabel} (optional)`}
-      autoComplete="name"
-      maxLength={200}
-    />
-    <input aria-label={locale==="es"?"Tu correo electrónico":"Your email"} name="email" type="email" placeholder={emailLabel} autoComplete="email" maxLength={320} required/>
+
+    <div className="leadFields">
+      <label className="leadField">
+        <span>{locale==="es"?"Nombre":"Name"}</span>
+        <input
+          aria-label={locale==="es"?"Nombre":"Name"}
+          name="name"
+          placeholder={nameLabel}
+          autoComplete="name"
+          maxLength={200}
+          required
+        />
+      </label>
+
+      <label className="leadField">
+        <span>{locale==="es"?"Correo electrónico":"Email address"}</span>
+        <input
+          aria-label={locale==="es"?"Correo electrónico":"Email address"}
+          name="email"
+          type="email"
+          placeholder={emailLabel}
+          autoComplete="email"
+          maxLength={320}
+          required
+        />
+      </label>
+    </div>
+
     <label className="consentRow">
       <input name="consent_marketing" type="checkbox" value="yes" required/>
       <span>
         {locale==="es"
-          ?"Acepto recibir el Capítulo 1 y comunicaciones de FRAGMENTUN por correo electrónico. Puedo darme de baja en cualquier momento."
-          :"I agree to receive Chapter 1 and FRAGMENTUN email communications. I can unsubscribe at any time."}
+          ?"Acepto recibir el Capítulo 1 y la secuencia de correos de FRAGMENTUN. Puedo darme de baja en cualquier momento."
+          :"I agree to receive Chapter 1 and the FRAGMENTUN email sequence. I can unsubscribe at any time."}
         {" "}
         <Link href={`/${locale}/privacidad`}>
           {locale==="es"?"Política de privacidad.":"Privacy policy."}
         </Link>
       </span>
     </label>
+
     <input className="hpField" type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true"/>
-    <button className="btn btnPrimary" type="submit">{submitLabel}</button>
+    <button className="btn btnPrimary leadSubmit" type="submit">{submitLabel}</button>
   </form>;
 }
