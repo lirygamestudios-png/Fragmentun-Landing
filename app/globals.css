@@ -1666,3 +1666,54 @@ input::placeholder{color:#8090a5}
 }
 .lumenMasterCopy .lead{font-size:.9rem;line-height:1.6;max-width:500px}
 .lumenMasterCopy .btn{border-radius:6px;padding:10px 16px;font-size:.68rem}
+
+
+/* Lower frontdesk visual differentiation */
+.masterDualRow .masterInteractiveSection{
+  background:
+    linear-gradient(90deg,rgba(7,14,27,.94) 0%,rgba(7,14,27,.78) 48%,rgba(7,14,27,.28) 100%),
+    url('/nara-hd.jpg') 18% 28%/cover no-repeat!important;
+}
+.masterDualRow .masterInteractiveSection:after{
+  background:
+    radial-gradient(circle at 20% 50%,rgba(106,78,199,.22),transparent 17%),
+    radial-gradient(circle at 26% 45%,rgba(74,144,217,.15),transparent 29%)!important
+}
+.masterDualRow .masterMapSection{
+  background:
+    linear-gradient(90deg,rgba(6,16,27,.88) 0%,rgba(6,16,27,.7) 52%,rgba(6,16,27,.26) 100%),
+    url('/umbral-hd.jpg') 54% 42%/cover no-repeat!important;
+}
+.masterCommunityRow .masterCommunitySection{
+  background:
+    linear-gradient(90deg,rgba(7,16,29,.92) 0%,rgba(7,16,29,.72) 50%,rgba(7,16,29,.24) 100%),
+    url('/ethelis-hd.jpg') 58% 30%/cover no-repeat!important;
+}
+.masterCommunityRow .masterCommunitySection h2,
+.masterCommunityRow .masterCommunitySection .lead{
+  max-width:54%
+}
+.masterReviewsPanel{
+  background:
+    linear-gradient(90deg,rgba(6,16,27,.94),rgba(6,16,27,.72)),
+    url('/vorax-hd.jpg') 70% 28%/cover no-repeat!important
+}
+.masterReviewsPanel:before{
+  content:"";
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(5,14,24,.92) 0%,rgba(5,14,24,.84) 58%,rgba(5,14,24,.28) 100%);
+  pointer-events:none
+}
+.masterReviewsPanel>*{position:relative;z-index:1}
+@media(max-width:900px){
+  .masterCommunityRow .masterCommunitySection h2,
+  .masterCommunityRow .masterCommunitySection .lead{max-width:72%}
+}
+@media(max-width:560px){
+  .masterCommunityRow .masterCommunitySection h2,
+  .masterCommunityRow .masterCommunitySection .lead{max-width:100%}
+  .masterDualRow .masterInteractiveSection,
+  .masterDualRow .masterMapSection,
+  .masterCommunityRow .masterCommunitySection,
+  .masterReviewsPanel{background-position:center 20%!important}
+}
