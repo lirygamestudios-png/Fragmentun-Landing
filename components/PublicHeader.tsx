@@ -14,8 +14,9 @@ export function PublicHeader({locale,amazonUrl,patreonUrl}:{locale:Locale;amazon
     [locale==="es"?"Inicio":"Home",`/${locale}`],
     [t.nav.story,`/${locale}#historia`],
     [t.nav.universe,`/${locale}#lumen`],
-    [locale==="es"?"Personajes":"Characters",`/${locale}#historia`],
+    [locale==="es"?"Personajes":"Characters",`/${locale}#personajes`],
     [t.nav.test,`/${locale}#test`],
+    [locale==="es"?"Noticias":"News",`/${locale}#noticias`],
     [locale==="es"?"Comunidad":"Community",`/${locale}#comunidad-publica`],
     [t.nav.author,`/${locale}#autor`]
   ];
@@ -49,7 +50,7 @@ export function PublicHeader({locale,amazonUrl,patreonUrl}:{locale:Locale;amazon
         ? <TrackLink className="btn btnPrimary" href={amazonUrl} eventName="amazon_click" locale={locale} newTab>{t.buy}</TrackLink>
         : <span className="btn btnGhost">{locale==="es"?"Próximamente":"Coming soon"}</span>}
       {patreonUrl&&<TrackLink className="btn btnPatreon" href={patreonUrl} eventName="patreon_click" locale={locale} metadata={{placement:"mobile_menu",creator:"sagaFragmentun"}} newTab>
-        {locale==="es"?"Patrocinar en Patreon":"Support on Patreon"}
+        {locale==="es"?"PATREON · Apoyar FRAGMENTUN":"PATREON · Support FRAGMENTUN"}
       </TrackLink>}
     </div></div>}
   </header>;
