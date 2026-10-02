@@ -1356,3 +1356,91 @@ input::placeholder{color:#8090a5}
 .characterModalArt .characterModalGlow{
   background:linear-gradient(180deg,rgba(1,7,12,.02) 40%,rgba(1,7,12,.28) 72%,rgba(1,7,12,.78) 100%)
 }
+
+
+/* Why FRAGMENTUN — approved visual card treatment */
+.masterWhySection .grid4{gap:14px}
+.masterWhySection .whyCard{
+  padding:0;
+  overflow:hidden;
+  min-height:310px;
+  display:grid;
+  grid-template-rows:178px 1fr;
+  background:#081522;
+  border:1px solid #173f5a;
+  border-radius:13px;
+  position:relative;
+}
+.masterWhySection .whyCard:before{display:none!important}
+.whyCardVisual{
+  position:relative;
+  background-size:cover!important;
+  background-position:center!important;
+  filter:saturate(1.08) contrast(1.03);
+}
+.whyCardVisual:after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 42%,rgba(4,13,22,.88) 100%)
+}
+.whyCard1 .whyCardVisual{
+  background:
+    linear-gradient(180deg,rgba(6,12,20,.03),rgba(6,12,20,.05)),
+    url('/nara-hd.jpg') 48% 48%/cover no-repeat
+}
+.whyCard2 .whyCardVisual{
+  background:
+    linear-gradient(180deg,rgba(5,12,20,.02),rgba(5,12,20,.08)),
+    url('/elyon-hero.jpg') 62% 24%/cover no-repeat
+}
+.whyCard3 .whyCardVisual{
+  background:
+    linear-gradient(180deg,rgba(5,12,20,.04),rgba(5,12,20,.08)),
+    radial-gradient(circle at 50% 45%,rgba(74,144,217,.22),transparent 22%),
+    url('/elyon-hero.jpg') 43% 72%/cover no-repeat
+}
+.whyCard4 .whyCardVisual{
+  background:
+    linear-gradient(180deg,rgba(5,12,20,.02),rgba(5,12,20,.08)),
+    url('/umbral-hd.jpg') 50% 26%/cover no-repeat
+}
+.whyCardCopy{position:relative;padding:14px 15px 16px;display:grid;grid-template-columns:1fr auto;gap:5px 10px}
+.whyCardCopy h3{margin:0;grid-column:1;font-size:.82rem;text-transform:uppercase;letter-spacing:.04em;color:#e9c55f}
+.whyCardCopy p{margin:0;grid-column:1;font-size:.66rem;line-height:1.5;color:#99adbd}
+.whyCardArrow{grid-column:2;grid-row:1/3;align-self:end;color:#e7c563;font-size:1.1rem}
+.masterWhySection .whyCard:hover .whyCardVisual{transform:scale(1.035);transition:transform .35s ease}
+.masterWhySection .whyCard:hover{transform:translateY(-6px);border-color:#c9a84c77;box-shadow:0 18px 45px #0006}
+
+/* Lumen city band — reduce hero repetition */
+.masterLumenSection{
+  position:relative;
+  isolation:isolate;
+}
+.masterLumenSection:before{
+  content:"";
+  position:absolute;inset:0;z-index:-1;
+  background:
+    linear-gradient(90deg,rgba(5,14,24,.86) 0%,rgba(5,14,24,.48) 36%,rgba(5,14,24,.08) 64%,rgba(5,14,24,.12) 100%),
+    radial-gradient(circle at 70% 42%,rgba(201,168,76,.22),transparent 20%),
+    url('/elyon-hero.jpg') 45% 64%/cover no-repeat;
+  filter:saturate(1.12) contrast(1.04) brightness(1.08)
+}
+.masterLumenSection{
+  background:#06101b!important;
+}
+.masterLumenSection h2{
+  text-transform:uppercase;
+  letter-spacing:.015em;
+  max-width:720px
+}
+.masterLumenSection .lead{max-width:560px}
+@media(max-width:900px){
+  .masterWhySection .grid4{grid-template-columns:1fr 1fr}
+  .masterWhySection .whyCard{min-height:290px}
+}
+@media(max-width:560px){
+  .masterWhySection .grid4{grid-template-columns:1fr 1fr;gap:10px}
+  .masterWhySection .whyCard{grid-template-rows:135px 1fr;min-height:255px}
+  .whyCardCopy{padding:11px}
+  .whyCardCopy h3{font-size:.68rem}
+  .whyCardCopy p{font-size:.57rem}
+}
