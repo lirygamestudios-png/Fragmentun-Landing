@@ -311,7 +311,7 @@ export default async function Home({
                 <p>{locale==="es"
                   ?"El mapa interactivo evoluciona hacia una experiencia 3D con territorios y puntos narrativos."
                   :"The interactive map is evolving into a 3D experience with territories and narrative points."}</p>
-                <a className="newsLink" href={\`/\${locale}/mapa\`}>{locale==="es"?"Explorar el mapa →":"Explore the map →"}</a>
+                <a className="newsLink" href={`/${locale}/mapa`}>{locale==="es"?"Explorar el mapa →":"Explore the map →"}</a>
               </div>
             </article>
 
@@ -323,7 +323,7 @@ export default async function Home({
                 <p>{locale==="es"
                   ?"El Test Emocional conecta tus respuestas con los arquetipos de FRAGMENTUN."
                   :"The Emotional Test connects your answers with FRAGMENTUN archetypes."}</p>
-                <a className="newsLink" href={\`/\${locale}/test\`}>{locale==="es"?"Hacer el test →":"Take the test →"}</a>
+                <a className="newsLink" href={`/${locale}/test`}>{locale==="es"?"Hacer el test →":"Take the test →"}</a>
               </div>
             </article>
           </div>
@@ -419,7 +419,7 @@ export default async function Home({
           <h3>{locale==="es"?"Explora":"Explore"}</h3>
           <a href="#saga">{locale==="es"?"El Libro":"The Book"}</a>
           <a href="#lumen">{locale==="es"?"El Universo":"The Universe"}</a>
-          <a href="#historia">{locale==="es"?"Personajes":"Characters"}</a>
+          <a href="#personajes">{locale==="es"?"Personajes":"Characters"}</a>
           <a href={`/${locale}/mapa`}>{locale==="es"?"Mapa de Lumen":"Map of Lumen"}</a>
         </div>
         <div className="approvedFooterCol">
