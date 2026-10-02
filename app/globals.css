@@ -1109,3 +1109,44 @@ input::placeholder{color:#8090a5}
   .approvedFooterBrand,.approvedFooterJoin{grid-column:1/-1}
   .approvedFooterBottom{display:grid}
 }
+
+
+/* Lead capture — approved layout */
+.leadCaptureForm{display:grid;gap:14px;margin-top:18px}
+.leadFields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.leadField{display:grid;gap:7px}
+.leadField>span{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:#d7c47a;font-weight:800}
+.leadField input{
+  min-height:48px;
+  background:#f4f7fb;
+  color:#0a1628;
+  border:1px solid rgba(255,255,255,.42);
+  border-radius:7px;
+  padding:12px 14px;
+  box-shadow:inset 0 1px 2px #00000012
+}
+.leadField input::placeholder{color:#6e7b89}
+.leadField input:focus{outline:2px solid rgba(74,144,217,.7);outline-offset:1px;border-color:#4a90d9}
+.consentRow{
+  display:grid;
+  grid-template-columns:18px 1fr;
+  align-items:start;
+  gap:9px;
+  font-size:.66rem;
+  line-height:1.45;
+  color:#9fb0bf
+}
+.consentRow input{width:16px;height:16px;margin-top:2px;accent-color:#c9a84c}
+.consentRow a{color:#d9bd68}
+.leadSubmit{justify-self:start;min-width:180px;border-radius:7px}
+.hpField{
+  position:absolute!important;
+  width:1px!important;height:1px!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  left:-9999px!important
+}
+@media(max-width:650px){
+  .leadFields{grid-template-columns:1fr}
+  .leadSubmit{width:100%}
+}
