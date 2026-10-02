@@ -136,7 +136,7 @@ export function FrontDiscovery({locale,amazonUrl}:{locale:Locale;amazonUrl:strin
           {item.key==="available"
             ?<div className="storeGrid">
               {amazonUrl
-                ?<a className="storeCard active" href={amazonUrl} target="_blank" rel="noreferrer"><b>amazon</b><span>{locale==="es"?"Disponible":"Available"}</span></a>
+                ?<TrackLink className="storeCard active" href={amazonUrl} eventName="amazon_click" locale={locale} metadata={{placement:"store_selector",store:"amazon",book:"fragmentun-i"}} newTab><b>amazon</b><span>{locale==="es"?"Disponible":"Available"}</span></TrackLink>
                 :<div className="storeCard"><b>amazon</b><span>{locale==="es"?"Próximamente":"Coming soon"}</span></div>}
               <div className="storeCard"><b>Apple Books</b><span>{locale==="es"?"Próximamente":"Coming soon"}</span></div>
               <div className="storeCard"><b>Kobo</b><span>{locale==="es"?"Próximamente":"Coming soon"}</span></div>
