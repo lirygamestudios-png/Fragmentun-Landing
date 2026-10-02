@@ -13,6 +13,7 @@ type Character={
   bodyEn:string;
   tone:string;
   image?:string;
+  fallbackImage?:string;
 };
 
 const characters:Character[]=[
@@ -21,35 +22,35 @@ const characters:Character[]=[
     roleEs:"Protagonista · Sensitivo",roleEn:"Protagonist · Sensitive",
     bodyEs:"Un hombre que comienza a sentir de una forma que Lumen ya no puede explicar. Su despertar convierte una crisis personal en una amenaza para todo el sistema.",
     bodyEn:"A man who begins to feel in a way Lumen can no longer explain. His awakening turns a personal crisis into a threat to the entire system.",
-    tone:"elyon",image:"/elyon-hero.jpg"
+    tone:"elyon",image:"/elyon-hd.webp",fallbackImage:"/elyon-hero.jpg"
   },
   {
     key:"umbral",name:"Umbral",
     roleEs:"Fragmento del Miedo",roleEn:"Fragment of Fear",
     bodyEs:"Alto y esbelto, compuesto por números que giran y letras que se desvanecen. Encarna el miedo sofisticado a perder, fallar y no ser suficiente.",
     bodyEn:"Tall and slender, formed by rotating numbers and fading letters. It embodies the sophisticated fear of losing, failing and never being enough.",
-    tone:"umbral",image:"/umbral-hd.jpg"
+    tone:"umbral",image:"/umbral-hd.webp",fallbackImage:"/umbral-hd.jpg"
   },
   {
     key:"ethelis",name:"Ethelis",
     roleEs:"Fragmento de la Esperanza",roleEn:"Fragment of Hope",
     bodyEs:"Una presencia andrógina hecha de pétalos y rayos de sol solidificados. Donde avanza, la vida recupera fuerza, color y posibilidades.",
     bodyEn:"An androgynous presence made of petals and solidified sunlight. Wherever it moves, life regains strength, color and possibility.",
-    tone:"ethelis",image:"/ethelis-hd.jpg"
+    tone:"ethelis",image:"/ethelis-hd.webp",fallbackImage:"/ethelis-hd.jpg"
   },
   {
     key:"vorax",name:"Vorax",
     roleEs:"Fragmento de la Ira",roleEn:"Fragment of Anger",
     bodyEs:"Masa, calor y propósito. Su piel parece lava enfriándose y convierte la ira reprimida en una energía capaz de destruir o crear.",
     bodyEn:"Mass, heat and purpose. Its skin resembles cooling lava, turning repressed anger into an energy capable of destroying or creating.",
-    tone:"vorax",image:"/vorax-hd.jpg"
+    tone:"vorax",image:"/vorax-hd.webp",fallbackImage:"/vorax-hd.jpg"
   },
   {
     key:"nara",name:"Nara",
     roleEs:"Potencial · Conciencia emergente",roleEn:"Potential · Emerging consciousness",
     bodyEs:"Una conciencia nacida de memoria y emoción. Su presencia cuestiona la frontera entre herramienta, identidad y una nueva forma de vida.",
     bodyEn:"A consciousness born from memory and emotion. Its presence questions the boundary between tool, identity and a new form of life.",
-    tone:"nara",image:"/nara-hd.jpg"
+    tone:"nara",image:"/nara-hd.webp",fallbackImage:"/nara-hd.jpg"
   }
 ];
 
@@ -159,7 +160,7 @@ export function FrontDiscovery({locale,amazonUrl}:{locale:Locale;amazonUrl:strin
         </div>
         <div className="charactersRail">
           {characters.map((char,index)=><button type="button" className="characterTile" key={char.key} onClick={()=>setSelected(index)}>
-            <div className={`characterTileArt ${char.tone}`} style={char.image?{backgroundImage:`url(${char.image})`}:undefined}>
+            <div className={`characterTileArt ${char.tone}`} style={char.image?{backgroundImage:char.fallbackImage?`url("${char.image}"), url("${char.fallbackImage}")`:`url("${char.image}")`}:undefined}>
               <span>{char.name}</span>
             </div>
             <strong>{char.name}</strong>
