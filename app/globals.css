@@ -1296,3 +1296,40 @@ input::placeholder{color:#8090a5}
 @media(max-width:560px){
   .map3dCanvas{min-height:470px}.map3dHint{font-size:.46rem;max-width:72%}.map3dCore{width:65px;height:65px;font-size:.55rem}
 }
+
+
+/* Frontdesk image clarity pass */
+.hero:before{
+  background:
+    linear-gradient(90deg,rgba(3,11,20,.88) 0%,rgba(3,11,20,.68) 34%,rgba(3,11,20,.10) 60%,rgba(3,11,20,.03) 100%),
+    url('/elyon-hero.jpg') 76% 38%/cover no-repeat;
+  filter:saturate(1.12) contrast(1.05) brightness(1.08)
+}
+.masterAuthorBand{
+  background:
+    linear-gradient(90deg,rgba(8,20,32,.88) 0%,rgba(8,20,32,.48) 44%,rgba(8,20,32,.72) 100%),
+    url('/elyon-hero.jpg') 54% 30%/cover no-repeat
+}
+.masterLumenSection{
+  background:
+    linear-gradient(90deg,rgba(7,17,29,.78),rgba(7,17,29,.12)),
+    url('/elyon-hero.jpg') 47% calc(58% + var(--lumen-shift,0px))/cover no-repeat
+}
+.masterMapSection{
+  background:
+    linear-gradient(90deg,rgba(6,16,27,.76),rgba(6,16,27,.12)),
+    url('/elyon-hero.jpg') 40% 70%/cover no-repeat
+}
+.newsVisual img,.officialBookCover,.masterAuthorPortrait{
+  image-rendering:auto;
+  backface-visibility:hidden;
+  transform:translateZ(0)
+}
+@media(max-width:900px){
+  .hero:before{
+    background:
+      linear-gradient(180deg,rgba(3,11,20,.08),rgba(3,11,20,.78) 58%,rgba(3,11,20,.94) 100%),
+      url('/elyon-hero.jpg') 58% 18%/cover no-repeat;
+    filter:saturate(1.1) contrast(1.04) brightness(1.06)
+  }
+}
