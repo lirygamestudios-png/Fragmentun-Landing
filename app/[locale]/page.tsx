@@ -202,7 +202,14 @@ export default async function Home({
               {title:locale==="es"?"Personajes":"Characters",body:locale==="es"?"Elyon Voss convierte el conflicto social en una experiencia íntima.":"Elyon Voss turns social conflict into an intimate experience."},
               {title:locale==="es"?"Un mundo vivo":"A living world",body:locale==="es"?"Lumen y sus sistemas revelan el costo de una paz diseñada.":"Lumen and its systems reveal the cost of engineered peace."},
               {title:locale==="es"?"Temas":"Themes",body:locale==="es"?"Identidad, libertad, emoción y el costo humano del control.":"Identity, freedom, emotion and the human cost of control."}
-            ]).map((c:any)=><article className="card" key={c.title}><h3>{c.title}</h3><p>{c.body}</p></article>)}
+            ]).map((c:any,index:number)=><article className={`card whyCard whyCard${index+1}`} key={c.title}>
+              <div className="whyCardVisual" aria-hidden="true"/>
+              <div className="whyCardCopy">
+                <h3>{c.title}</h3>
+                <p>{c.body}</p>
+                <span className="whyCardArrow" aria-hidden="true">→</span>
+              </div>
+            </article>)}
           </div>
         </div>
       </section>
