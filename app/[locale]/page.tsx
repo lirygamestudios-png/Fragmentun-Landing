@@ -90,6 +90,12 @@ export default async function Home({
     }
   ];
 
+  const publicBooks=fallbackBooks.map((fallback:any)=>
+    (books as any[]).find((book:any)=>Number(book.volume)===fallback.volume)
+      ? {...fallback,...(books as any[]).find((book:any)=>Number(book.volume)===fallback.volume)}
+      : fallback
+  );
+
   const site=env("NEXT_PUBLIC_SITE_URL","next_public_site_url")||"https://www.fragmentun.com";
   const structuredData=[
     {
@@ -264,7 +270,7 @@ export default async function Home({
           </div>
 
           <div className="grid3">
-            {(books.length?books:fallbackBooks).map((b:any)=><article className="card sagaCard" key={b.slug}>
+            {publicBooks.map((b:any)=><article className="card sagaCard" key={b.slug}>
               <div className="sagaMark">{locale==="es"?b.title_es:b.title_en}</div>
               <h3>{locale==="es"?b.subtitle_es:b.subtitle_en}</h3>
               <p>{b.edition_status==="published"?(locale==="es"?"Publicado":"Published"):(locale==="es"?"Próximamente":"Coming soon")}</p>
