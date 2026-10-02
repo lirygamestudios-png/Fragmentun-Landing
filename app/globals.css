@@ -1590,3 +1590,49 @@ input::placeholder{color:#8090a5}
 @media(max-width:560px){
   .masterSagaSection .sagaCard{min-width:74vw;min-height:330px;padding-top:170px!important}
 }
+
+
+/* Header fidelity — approved compact navigation */
+.header{
+  position:sticky;
+  top:0;
+  z-index:120;
+  background:rgba(3,12,21,.92);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(201,168,76,.16)
+}
+.headerInner{min-height:58px}
+.logo{
+  font:500 1.45rem Georgia,serif;
+  letter-spacing:.08em;
+  color:#e9c45e!important;
+  text-shadow:0 0 22px rgba(201,168,76,.18)
+}
+.nav{gap:14px}
+.nav a{
+  font-size:.68rem;
+  color:#c7d3de;
+  letter-spacing:.02em;
+  transition:.18s ease
+}
+.nav a:hover{color:#f0cf72}
+.lang{
+  border-radius:6px;
+  padding:2px;
+  background:transparent;
+  border-color:#315166
+}
+.lang a{padding:4px 7px;border-radius:4px;font-size:.62rem}
+.headerActions .desktopBuy{
+  border-radius:6px;
+  padding:9px 13px;
+  font-size:.66rem;
+  box-shadow:none
+}
+@media(max-width:1180px){
+  .nav a:nth-child(6){display:none}
+}
+@media(max-width:980px){
+  .nav{display:none}
+  .menuButton{display:block}
+}
