@@ -216,29 +216,17 @@ export default async function Home({
 
       <section className="section masterLumenSection" id="lumen">
         <div className="container split">
-          <div>
-            <div className="kicker">{lumen.subtitle||t.lumen}</div>
-            <h2>{lumen.title||t.lumen}</h2>
-            <p className="lead">{lumen.body||t.lumenBody}</p>
-            <TrackLink className="btn btnGhost" href={`/${locale}/mapa`} eventName="map_interaction" locale={locale}>
-              {lumen.cta||(locale==="es"?"Explorar el mapa de Lumen":"Explore the map of Lumen")}
+          <div className="lumenMasterCopy">
+            <div className="kicker">LUMEN</div>
+            <h2>LUMEN</h2>
+            <h3>{locale==="es"?"UNA CIUDAD, MIL EMOCIONES":"ONE CITY, A THOUSAND EMOTIONS"}</h3>
+            <p className="lead">{lumen.body||(locale==="es"
+              ?"Explora la ciudad donde las emociones son poder, memoria y resistencia."
+              :"Explore the city where emotions are power, memory and resistance.")}</p>
+            <TrackLink className="btn btnPrimary" href={`/${locale}/mapa`} eventName="map_interaction" locale={locale}>
+              {locale==="es"?"Explorar el Mapa de Lumen →":"Explore the Map of Lumen →"}
             </TrackLink>
           </div>
-
-          <div className="worldPanel">
-            <span>RN</span>
-            <span>{locale==="es"?"Sensitivos":"Sensitives"}</span>
-            <span>{locale==="es"?"Fragmentados":"Fragmented"}</span>
-          </div>
-        </div>
-      </section>
-
-      <section className="band">
-        <div className="container grid4">
-          <div className="territory"><strong>Vorax</strong><span>{locale==="es"?"Ira":"Anger"}</span></div>
-          <div className="territory"><strong>Umbral</strong><span>{locale==="es"?"Miedo":"Fear"}</span></div>
-          <div className="territory"><strong>Ethelis</strong><span>{locale==="es"?"Esperanza":"Hope"}</span></div>
-          <div className="territory"><strong>Nara</strong><span>{locale==="es"?"Potencial":"Potential"}</span></div>
         </div>
       </section>
 
