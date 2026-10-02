@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 
 const site=process.env.NEXT_PUBLIC_SITE_URL||"https://www.fragmentun.com";
 
@@ -22,9 +23,12 @@ export const metadata: Metadata = {
   }
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const requestHeaders=await headers();
+  const locale=requestHeaders.get("x-fragmentun-locale")==="en"?"en":"es";
+
   return (
-    <html lang="es">
+    <html lang={locale}>
       <body>{children}</body>
     </html>
   );
