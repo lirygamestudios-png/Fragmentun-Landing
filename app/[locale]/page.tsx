@@ -7,6 +7,7 @@ import { TrackLink } from "../../components/TrackLink";
 import { PageView } from "../../components/PageView";
 import { MotionEffects } from "../../components/MotionEffects";
 import { SocialLinks } from "../../components/SocialLinks";
+import { FrontDiscovery } from "../../components/FrontDiscovery";
 import { copy,locales,type Locale } from "../../lib/i18n";
 import { getBooks,getLocalizedContent,getPublishedReviews } from "../../lib/content";
 
@@ -168,14 +169,7 @@ export default async function Home({
         </div>
       </section>
 
-      <section className="masterValueStrip" aria-label={locale==="es"?"Valor de FRAGMENTUN":"FRAGMENTUN value"}>
-        <div className="container masterValueGrid">
-          <div><span>✦</span><strong>{locale==="es"?"Ciencia ficción emocional":"Emotional science fiction"}</strong></div>
-          <div><span>◉</span><strong>{locale==="es"?"Un universo expansible":"An expandable universe"}</strong></div>
-          <div><span>♙</span><strong>{locale==="es"?"Personajes inolvidables":"Unforgettable characters"}</strong></div>
-          <div><span>↗</span><strong>{locale==="es"?"Ya disponible en Amazon":"Available now on Amazon"}</strong></div>
-        </div>
-      </section>
+      <FrontDiscovery locale={locale} amazonUrl={amazonUrl}/>
 
       <section className="masterAuthorBand" id="autor">
         <div className="container masterAuthorGrid">
@@ -281,6 +275,61 @@ export default async function Home({
         </div>
       </section>
 
+      <section className="section newsSection" id="noticias">
+        <div className="container">
+          <div className="newsHeader">
+            <div>
+              <div className="kicker">{locale==="es"?"Noticias del Universo":"Universe news"}</div>
+              <h2>{locale==="es"?"Últimas transmisiones desde Lumen":"Latest transmissions from Lumen"}</h2>
+              <p className="lead">{locale==="es"
+                ?"Novedades editoriales, experiencias interactivas y avances del universo FRAGMENTUN."
+                :"Editorial updates, interactive experiences and developments from the FRAGMENTUN universe."}</p>
+            </div>
+            <span className="newsSignal">● {locale==="es"?"TRANSMISIÓN ACTIVA":"LIVE TRANSMISSION"}</span>
+          </div>
+
+          <div className="newsGrid">
+            <article className="newsCard featured">
+              <div className="newsVisual bookNews"><img src="/fragmentun-i-cover-es.jpg" alt="FRAGMENTUN I"/></div>
+              <div className="newsCopy">
+                <span>{locale==="es"?"PUBLICACIÓN":"RELEASE"}</span>
+                <h3>{locale==="es"?"FRAGMENTUN I ya está disponible":"FRAGMENTUN I is now available"}</h3>
+                <p>{locale==="es"
+                  ?"El Despertar Emocional abre oficialmente las puertas de Lumen a los lectores."
+                  :"The Emotional Awakening officially opens the gates of Lumen to readers."}</p>
+                {amazonUrl&&<TrackLink className="newsLink" href={amazonUrl} eventName="amazon_click" locale={locale} metadata={{placement:"news",book:"fragmentun-i"}} newTab>
+                  {locale==="es"?"Ver edición disponible →":"View available edition →"}
+                </TrackLink>}
+              </div>
+            </article>
+
+            <article className="newsCard">
+              <div className="newsVisual lumenNews"/>
+              <div className="newsCopy">
+                <span>{locale==="es"?"EXPERIENCIA":"EXPERIENCE"}</span>
+                <h3>{locale==="es"?"Lumen se abre a la exploración":"Lumen opens for exploration"}</h3>
+                <p>{locale==="es"
+                  ?"El mapa interactivo evoluciona hacia una experiencia 3D con territorios y puntos narrativos."
+                  :"The interactive map is evolving into a 3D experience with territories and narrative points."}</p>
+                <a className="newsLink" href={\`/\${locale}/mapa\`}>{locale==="es"?"Explorar el mapa →":"Explore the map →"}</a>
+              </div>
+            </article>
+
+            <article className="newsCard">
+              <div className="newsVisual testNews"/>
+              <div className="newsCopy">
+                <span>{locale==="es"?"INTERACTIVO":"INTERACTIVE"}</span>
+                <h3>{locale==="es"?"¿Qué emoción domina tu perfil?":"Which emotion shapes your profile?"}</h3>
+                <p>{locale==="es"
+                  ?"El Test Emocional conecta tus respuestas con los arquetipos de FRAGMENTUN."
+                  :"The Emotional Test connects your answers with FRAGMENTUN archetypes."}</p>
+                <a className="newsLink" href={\`/\${locale}/test\`}>{locale==="es"?"Hacer el test →":"Take the test →"}</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <div className="masterDualRow container">
         <section className="masterInteractiveSection" id="test">
           <div className="sectionIntro">
@@ -325,7 +374,7 @@ export default async function Home({
               locale={locale}
               metadata={{placement:"community_section",creator:"sagaFragmentun"}}
               newTab
-            >{locale==="es"?"Patrocinar la Saga":"Support the Saga"}</TrackLink>
+            >{locale==="es"?"APOYAR FRAGMENTUN EN PATREON":"SUPPORT FRAGMENTUN ON PATREON"}</TrackLink>
           </div>
         </section>
 
