@@ -2047,3 +2047,232 @@ input::placeholder{color:#8090a5}
       url('/elyon-hero.jpg') 70% 24%/cover no-repeat!important;
   }
 }
+
+
+/* =========================================================
+   CANONICAL LUMEN MAP — based on approved post-Pulse map
+   ========================================================= */
+.lumenCanonicalShell{display:grid;gap:18px}
+.lumenCanonicalTopline{
+  display:flex;justify-content:space-between;align-items:flex-end;gap:18px;
+  padding:0 2px 2px
+}
+.lumenCanonicalTopline h2{margin:.28rem 0 0;font-size:clamp(1.65rem,2.8vw,2.7rem)}
+.lumenFlowLegend{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.lumenFlowLegend span{
+  font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:6px 9px;border-radius:999px;border:1px solid #ffffff1a;background:#071521cc
+}
+.flowWill{color:#f1c85b}.flowAnger{color:#ff6547}.flowFear{color:#59cfff}.flowHope{color:#7de887}
+
+.canonicalMapLayout{grid-template-columns:minmax(0,1.5fr) minmax(280px,.5fr)}
+.canonicalMapCanvas{
+  min-height:760px;
+  border-radius:18px;
+  background:
+    linear-gradient(180deg,rgba(5,13,22,.04),rgba(2,8,14,.22)),
+    radial-gradient(circle at 52% 18%,rgba(255,233,180,.28),transparent 12%),
+    linear-gradient(180deg,#62798c 0 16%,#27394a 17% 26%,#08131f 72%);
+  box-shadow:inset 0 0 120px #0009,0 30px 80px #0008;
+  overflow:hidden
+}
+.canonicalMapCanvas:before{
+  content:"";
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 50% 14%,rgba(255,246,218,.30),transparent 13%),
+    radial-gradient(ellipse at 50% 20%,rgba(255,255,255,.14),transparent 23%),
+    linear-gradient(180deg,rgba(255,255,255,.08),transparent 26%);
+  pointer-events:none
+}
+.canonicalAtmosphere{
+  background:
+    radial-gradient(circle at 51% 15%,rgba(255,255,255,.18),transparent 11%),
+    radial-gradient(circle at 80% 35%,rgba(201,168,76,.11),transparent 20%),
+    radial-gradient(circle at 18% 34%,rgba(74,144,217,.14),transparent 22%)
+}
+.canonicalCityScene{
+  inset:7% 5% 9%;
+  border-radius:43% 43% 24% 24% / 18% 18% 36% 36%;
+  background:
+    radial-gradient(circle at 50% 48%,rgba(201,168,76,.12),transparent 10%),
+    linear-gradient(160deg,#0a1724,#07121d 72%);
+  border:1px solid rgba(223,193,112,.22);
+  box-shadow:0 58px 100px #000c,inset 0 0 80px #000a;
+  transform-style:preserve-3d
+}
+.canonicalCityScene:before{
+  content:"";position:absolute;inset:2.5%;
+  border-radius:inherit;
+  border:2px solid rgba(232,210,155,.22);
+  box-shadow:inset 0 0 40px rgba(255,224,153,.06);
+  transform:translateZ(2px)
+}
+.canonicalCityWall{
+  position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  box-shadow:
+    inset 0 0 0 22px rgba(2,7,12,.42),
+    inset 0 -24px 34px rgba(0,0,0,.72),
+    0 22px 0 rgba(2,7,12,.55);
+  transform:translateZ(6px)
+}
+.canonicalHaloRing{
+  position:absolute;left:7%;right:7%;top:-4%;height:18%;
+  border:3px solid rgba(255,236,186,.74);
+  border-radius:50%;
+  box-shadow:0 0 22px #fff7,0 0 48px rgba(201,168,76,.52),inset 0 0 20px #fff4;
+  transform:translateZ(92px)
+}
+.canonicalFlowGrid{
+  position:absolute;inset:8%;
+  border-radius:44% 44% 28% 28%;
+  background:
+    radial-gradient(circle at 50% 54%,rgba(255,209,92,.18),transparent 6%),
+    conic-gradient(from 178deg at 50% 54%,
+      rgba(255,90,55,.52) 0 22%,
+      rgba(201,168,76,.42) 22% 30%,
+      rgba(90,213,255,.48) 30% 48%,
+      rgba(113,224,124,.45) 48% 70%,
+      rgba(201,168,76,.40) 70% 100%);
+  filter:blur(12px);
+  opacity:.7;
+  transform:translateZ(10px)
+}
+.canonicalZone{
+  position:absolute;border:1px solid rgba(255,255,255,.14);color:#f6f0df;
+  display:grid;place-content:center;text-align:center;gap:2px;
+  border-radius:34% 38% 30% 34%;
+  cursor:pointer;
+  box-shadow:0 20px 28px #0007,inset 0 0 28px #0007;
+  backdrop-filter:blur(2px);
+  transform:translateZ(34px);
+  transition:.22s ease
+}
+.canonicalZone:hover{transform:translateZ(42px) scale(1.018);filter:brightness(1.08)}
+.canonicalZone span{font-size:.62rem;color:#d8bf78}
+.canonicalZone strong{font:700 .72rem/1.1 Georgia,serif;letter-spacing:.04em}
+.canonicalZone small{font-size:.58rem;letter-spacing:.08em}
+.canonicalUmbral{
+  left:7%;top:16%;width:37%;height:34%;
+  background:
+    radial-gradient(circle at 50% 45%,rgba(91,186,255,.30),transparent 20%),
+    linear-gradient(145deg,#15314c,#081828 65%)
+}
+.canonicalEthelis{
+  left:55%;top:16%;width:37%;height:34%;
+  background:
+    radial-gradient(circle at 55% 42%,rgba(143,239,128,.34),transparent 20%),
+    radial-gradient(circle at 68% 58%,rgba(231,187,88,.20),transparent 18%),
+    linear-gradient(145deg,#203b25,#0a1c14 66%)
+}
+.canonicalVorax{
+  left:7%;top:53%;width:37%;height:34%;
+  background:
+    radial-gradient(circle at 48% 48%,rgba(255,92,51,.40),transparent 22%),
+    linear-gradient(145deg,#4c1b11,#160b08 68%)
+}
+.canonicalNeutral{
+  left:56%;top:54%;width:36%;height:31%;
+  background:
+    radial-gradient(circle at 50% 50%,rgba(101,205,255,.33),transparent 18%),
+    linear-gradient(145deg,#102c43,#071521 68%)
+}
+.canonicalTower{
+  position:absolute;left:43%;top:16%;width:14%;height:56%;
+  border:0;background:transparent;color:white;cursor:pointer;z-index:6;
+  transform:translateZ(72px)
+}
+.towerBody{
+  position:absolute;left:34%;right:34%;top:6%;bottom:16%;
+  clip-path:polygon(50% 0,72% 12%,82% 74%,100% 100%,0 100%,18% 74%,28% 12%);
+  background:
+    linear-gradient(90deg,#071522 0 18%,#9fb5c4 19% 23%,#18344f 24% 43%,#e5c66d 44% 49%,#18344f 50% 76%,#9fb5c4 77% 81%,#071522 82% 100%);
+  border:1px solid #c8a85a;
+  box-shadow:0 0 34px rgba(201,168,76,.26),0 22px 36px #0009
+}
+.towerBeam{
+  position:absolute;left:49%;top:-26%;width:2%;height:40%;
+  background:linear-gradient(180deg,rgba(126,211,255,.05),#8fdcff 30%,#fff 55%,#c9a84c 100%);
+  box-shadow:0 0 16px #87d7ff,0 0 30px #fff7
+}
+.towerLabel{
+  position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+  width:230px;padding:8px 10px;border-radius:7px;
+  border:1px solid rgba(201,168,76,.44);background:#07131ee8;
+  font:500 .69rem Georgia,serif;letter-spacing:.03em;box-shadow:0 10px 25px #0008
+}
+.towerLabel small{display:block;margin-top:2px;font-size:.56rem;color:#d9e2e8}
+.canonicalSublevel{
+  position:absolute;left:36%;bottom:-7%;width:28%;height:18%;
+  border-radius:50%;border:1px solid #a83a26;background:#1b0908;color:#ffd8cf;
+  display:grid;place-content:center;text-align:center;gap:2px;cursor:pointer;
+  box-shadow:0 0 24px rgba(255,62,28,.55),inset 0 0 35px #000;
+  transform:translateZ(18px)
+}
+.sublevelCore{
+  position:absolute;left:50%;top:20%;transform:translate(-50%,-50%);
+  width:18px;height:18px;border-radius:50%;background:#ff4f32;
+  box-shadow:0 0 12px #ff4f32,0 0 30px #ff3b1f
+}
+.canonicalSublevel strong{font:500 .65rem Georgia,serif}
+.canonicalSublevel small{font-size:.53rem}
+.canonicalPoint{width:18px;height:18px;z-index:8}
+
+.canonicalMapInfo{
+  border-color:rgba(201,168,76,.34);
+  background:linear-gradient(180deg,rgba(8,23,36,.98),rgba(4,14,23,.99));
+  box-shadow:0 24px 60px #0006
+}
+.canonicalMapInfo h2{font-size:1.45rem;color:#f0cd75}
+.canonicalEmotion{
+  display:grid;gap:4px;margin:14px 0 18px;padding:11px 12px;border-radius:10px;
+  background:#ffffff06;border:1px solid #ffffff10
+}
+.canonicalEmotion span{font-size:.58rem;text-transform:uppercase;letter-spacing:.09em;color:#7f94a7}
+.canonicalEmotion strong{font-size:.96rem}
+.canonicalLegend{display:grid;gap:7px}
+.canonicalLegend button{
+  display:grid;grid-template-columns:12px 20px 1fr;gap:8px;align-items:center;
+  text-align:left;padding:9px 10px;border-radius:9px;border:1px solid #ffffff10;
+  background:#071725;color:#dbe7ef;cursor:pointer
+}
+.canonicalLegend button:hover,.canonicalLegend button.active{
+  border-color:rgba(201,168,76,.52);background:#0b2235
+}
+.canonicalLegend button>span{width:10px;height:10px;border-radius:50%;display:block}
+.canonicalLegend button>span.canonicalUmbral{background:#59cfff}
+.canonicalLegend button>span.canonicalEthelis{background:#7de887}
+.canonicalLegend button>span.canonicalVorax{background:#ff6547}
+.canonicalLegend button>span.canonicalCentral{background:#d8bd72}
+.canonicalLegend button>span.canonicalPureza{background:#ff3f2b}
+.canonicalLegend button>span.canonicalNeutral{background:#8edcff}
+.canonicalLegend b{font-size:.58rem;color:#b99b50}
+.canonicalLegend small{font-size:.61rem;line-height:1.25}
+.canonicalMapFacts{
+  display:grid;gap:5px;margin-top:18px;padding-top:14px;border-top:1px solid #ffffff10
+}
+.canonicalMapFacts strong{font-size:.64rem;letter-spacing:.12em;color:#d5bd76}
+.canonicalMapFacts span{font-size:.6rem;color:#8fa4b5}
+
+@media(max-width:1100px){
+  .canonicalMapLayout{grid-template-columns:1fr}
+  .canonicalMapInfo{position:static}
+}
+@media(max-width:900px){
+  .lumenCanonicalTopline{display:grid}
+  .lumenFlowLegend{justify-content:flex-start}
+  .canonicalMapCanvas{min-height:620px}
+  .canonicalCityScene{inset:9% 3% 10%}
+  .towerLabel{width:190px;font-size:.59rem}
+}
+@media(max-width:560px){
+  .canonicalMapCanvas{min-height:530px}
+  .canonicalCityScene{inset:10% 1.5% 12%}
+  .canonicalZone strong{font-size:.56rem}
+  .canonicalZone small{font-size:.48rem}
+  .canonicalZone span{font-size:.5rem}
+  .canonicalTower{left:41%;width:18%}
+  .towerLabel{width:155px;font-size:.52rem}
+  .canonicalSublevel{left:32%;width:36%}
+  .lumenFlowLegend span{font-size:.49rem}
+}
