@@ -982,3 +982,29 @@ input::placeholder{color:#8090a5}
   .masterDualRow .masterInteractiveSection .sectionIntro:before{left:50%;top:0;transform:translateX(-50%);width:180px}
   .masterDualRow .masterMapSection .sectionIntro{max-width:100%;min-height:250px}
 }
+
+
+/* Depth motion hooks */
+.hero:before{
+  transform:translate3d(0,var(--hero-shift,0px),0) scale(1.04);
+  transition:transform .12s linear;
+  will-change:transform
+}
+.masterLumenSection{
+  background-position:47% calc(58% + var(--lumen-shift,0px));
+  transition:background-position .12s linear
+}
+.motion-ready .masterDualRow>*,
+.motion-ready .masterCommunityRow>*{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity .72s cubic-bezier(.2,.7,.2,1),transform .72s cubic-bezier(.2,.7,.2,1)
+}
+.motion-ready .masterDualRow>*.is-visible,
+.motion-ready .masterCommunityRow>*.is-visible{
+  opacity:1;
+  transform:translateY(0)
+}
+@media(prefers-reduced-motion:reduce){
+  .hero:before,.masterLumenSection,.officialBookCover,.btn,.card,.territory{transition:none!important;animation:none!important;transform:none!important}
+}
