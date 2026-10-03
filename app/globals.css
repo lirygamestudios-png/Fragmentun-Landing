@@ -2810,3 +2810,20 @@ input::placeholder{color:#8090a5}
   .masterAuthorPortrait img,
   .masterAuthorPortrait video{min-height:300px}
 }
+
+
+/* CMS character video support */
+.characterTileArt,
+.characterModalArt{position:relative;overflow:hidden}
+.characterTileArt video,
+.characterModalArt video{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0
+}
+.characterTileArt>span,
+.characterModalArt>span,
+.characterModalGlow{position:relative;z-index:2}
+.characterTileArt:after,
+.characterModalArt:after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,transparent 45%,rgba(3,9,15,.72) 100%)
+}
