@@ -8,6 +8,7 @@ import { PageView } from "../../components/PageView";
 import { MotionEffects } from "../../components/MotionEffects";
 import { SocialLinks } from "../../components/SocialLinks";
 import { FrontDiscovery } from "../../components/FrontDiscovery";
+import { ReviewsShowcase } from "../../components/ReviewsShowcase";
 import { copy,locales,type Locale } from "../../lib/i18n";
 import { getBooks,getLocalizedContent,getPublishedReviews } from "../../lib/content";
 
@@ -376,18 +377,7 @@ export default async function Home({
 
         <section className="masterReviewsPanel" id="lectores">
           <div className="kicker">{locale==="es"?"Lo que dicen los lectores":"What readers say"}</div>
-          {reviews.length>0
-            ?<article className="featuredReview">
-              <div className="reviewStars">★★★★★</div>
-              <blockquote>“{reviews[0].body}”</blockquote>
-              <p>{reviews[0].author_display|| (locale==="es"?"Lector verificado":"Verified reader")}</p>
-              <small>{reviews[0].source}</small>
-              {reviews[0].source_url&&<a className="reviewSource" href={reviews[0].source_url} target="_blank" rel="noreferrer">{locale==="es"?"Ver fuente":"View source"}</a>}
-            </article>
-            :<div className="reviewAwaiting">
-              <span>★★★★★</span>
-              <p>{locale==="es"?"Las reseñas verificadas de lectores aparecerán aquí.":"Verified reader reviews will appear here."}</p>
-            </div>}
+          <ReviewsShowcase locale={locale} reviews={reviews as any[]}/>
         </section>
       </div>
 
