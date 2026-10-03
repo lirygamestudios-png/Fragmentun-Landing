@@ -6,7 +6,7 @@ import type { Locale } from "../lib/i18n";
 import { copy } from "../lib/i18n";
 import { TrackLink } from "./TrackLink";
 
-export function PublicHeader({locale,amazonUrl,patreonUrl}:{locale:Locale;amazonUrl?:string|null;patreonUrl?:string|null}){
+export function PublicHeader({locale,amazonUrl,patreonUrl,shopEnabled=false}:{locale:Locale;amazonUrl?:string|null;patreonUrl?:string|null;shopEnabled?:boolean}){
   const t=copy[locale];
   const pathname=usePathname();
   const[open,setOpen]=useState(false);
@@ -18,6 +18,7 @@ export function PublicHeader({locale,amazonUrl,patreonUrl}:{locale:Locale;amazon
     [t.nav.test,`/${locale}#test`],
     [locale==="es"?"Noticias":"News",`/${locale}#noticias`],
     [locale==="es"?"Comunidad":"Community",`/${locale}#comunidad-publica`],
+    ...(shopEnabled?[[locale==="es"?"Tienda":"Store",`/${locale}#tienda`]]:[]),
     [t.nav.author,`/${locale}#autor`]
   ];
 
