@@ -43,6 +43,7 @@ export default async function Home({
   const shareReward=cms["home.share_reward"]||{};
   const officialVideo=cms["home.official_video"]||{};
   const shop=cms["home.shop"]||{};
+  const charactersCms=cms["home.characters"]||{};
   const footerCms=cms["home.footer"]||{};
   const mapCms=cms["home.map"]||{};
   const testCms=cms["home.test"]||{};
@@ -182,7 +183,7 @@ export default async function Home({
         </div>
       </section>
 
-      <FrontDiscovery locale={locale} amazonUrl={amazonUrl} shareReward={shareReward}/>
+      <FrontDiscovery locale={locale} amazonUrl={amazonUrl} shareReward={shareReward} charactersContent={charactersCms}/>
 
       <section className="masterAuthorBand" id="autor">
         <div className="container masterAuthorGrid">
