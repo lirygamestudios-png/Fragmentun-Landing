@@ -22,7 +22,7 @@ const characters:Character[]=[
     roleEs:"Protagonista · Sensitivo",roleEn:"Protagonist · Sensitive",
     bodyEs:"Un hombre que comienza a sentir de una forma que Lumen ya no puede explicar. Su despertar convierte una crisis personal en una amenaza para todo el sistema.",
     bodyEn:"A man who begins to feel in a way Lumen can no longer explain. His awakening turns a personal crisis into a threat to the entire system.",
-    tone:"elyon",image:"/elyon-hd.webp",fallbackImage:"/elyon-hero.jpg"
+    tone:"elyon",image:"/elyon-hd.avif",fallbackImage:"/elyon-hero.jpg"
   },
   {
     key:"umbral",name:"Umbral",
