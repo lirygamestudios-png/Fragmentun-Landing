@@ -2646,3 +2646,67 @@ input::placeholder{color:#8090a5}
   font-size:.72rem;
   line-height:1.45
 }
+
+
+/* FRAGMENTUN merch gateway */
+.fragmentunShopSection{
+  position:relative;
+  overflow:hidden;
+  padding:clamp(52px,8vw,92px) 0;
+  background:
+    radial-gradient(circle at 82% 18%,rgba(74,144,217,.10),transparent 32%),
+    linear-gradient(180deg,#07111d,#0A1628 58%,#07111d);
+  border-top:1px solid rgba(201,168,76,.12);
+  border-bottom:1px solid rgba(201,168,76,.12)
+}
+.fragmentunShopBackdrop{position:absolute;inset:0;z-index:0}
+.fragmentunShopBackdrop img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  filter:saturate(.82) brightness(.38)
+}
+.fragmentunShopBackdrop:after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(5,12,21,.94) 0%,rgba(5,12,21,.74) 48%,rgba(5,12,21,.54) 100%)
+}
+.fragmentunShopInner{
+  position:relative;z-index:1;
+  display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
+  gap:clamp(28px,5vw,64px);align-items:center
+}
+.fragmentunShopCopy h2{
+  margin:.55rem 0 .9rem;
+  font-size:clamp(2.2rem,5vw,4.6rem);
+  line-height:.98
+}
+.fragmentunShopCopy .lead{max-width:640px}
+.fragmentunProductGrid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px
+}
+.fragmentunProductCard{
+  min-height:220px;border-radius:18px;overflow:hidden;position:relative;
+  text-decoration:none;border:1px solid rgba(255,255,255,.10);
+  background:linear-gradient(180deg,#102235,#081522);
+  box-shadow:0 20px 50px rgba(0,0,0,.30)
+}
+.fragmentunProductCard img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:saturate(.88) brightness(.66);transition:transform .35s ease,filter .35s ease
+}
+.fragmentunProductCard:after{
+  content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 38%,rgba(3,9,15,.94) 92%)
+}
+.fragmentunProductCard>span{
+  position:absolute;left:16px;right:16px;bottom:14px;z-index:2
+}
+.fragmentunProductCard strong,.fragmentunProductCard small{display:block}
+.fragmentunProductCard strong{color:#fff;font-size:.92rem}
+.fragmentunProductCard small{margin-top:4px;color:#d5bd74;font-size:.72rem}
+.fragmentunProductCard:hover img{transform:scale(1.04);filter:saturate(.98) brightness(.74)}
+.fragmentunProductCard:hover{border-color:rgba(201,168,76,.42)}
+@media(max-width:900px){
+  .fragmentunShopInner{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .fragmentunProductGrid{grid-template-columns:1fr}
+  .fragmentunProductCard{min-height:190px}
+}
