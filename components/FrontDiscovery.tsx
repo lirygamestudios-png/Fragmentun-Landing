@@ -14,9 +14,10 @@ type Character={
   tone:string;
   image?:string;
   fallbackImage?:string;
+  video?:string;
 };
 
-const characters:Character[]=[
+const fallbackCharacters:Character[]=[
   {
     key:"elyon",name:"Elyon Voss",
     roleEs:"Protagonista · Sensitivo",roleEn:"Protagonist · Sensitive",
@@ -54,12 +55,26 @@ const characters:Character[]=[
   }
 ];
 
-export function FrontDiscovery({locale,amazonUrl,shareReward}:{locale:Locale;amazonUrl:string|null;shareReward?:any}){
+export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:{locale:Locale;amazonUrl:string|null;shareReward?:any;charactersContent?:any}){
   const[openValue,setOpenValue]=useState<string|null>(null);
   const[selected,setSelected]=useState<number|null>(null);
   const[rewardOpen,setRewardOpen]=useState(false);
   const[rewardReady,setRewardReady]=useState(false);
   const[shareStatus,setShareStatus]=useState<"idle"|"sharing"|"unsupported"|"error">("idle");
+  const characters:Character[]=Array.isArray(charactersContent?.characters)&&charactersContent.characters.length
+    ?charactersContent.characters.map((item:any)=>({
+      key:item.key||item.name,
+      name:item.name||item.key,
+      roleEs:item.role||"",
+      roleEn:item.role||"",
+      bodyEs:item.body||"",
+      bodyEn:item.body||"",
+      tone:item.tone||item.key||"elyon",
+      image:item.image_url||"",
+      fallbackImage:item.fallback_url||"",
+      video:item.video_url||""
+    }))
+    :fallbackCharacters;
 
   useEffect(()=>{
     if(selected===null)return;
@@ -240,15 +255,16 @@ export function FrontDiscovery({locale,amazonUrl,shareReward}:{locale:Locale;ama
     <section className="section charactersSection" id="personajes">
       <div className="container">
         <div className="sectionIntro">
-          <div className="kicker">{locale==="es"?"Personajes":"Characters"}</div>
-          <h2>{locale==="es"?"Rostros de un mundo que vuelve a sentir":"Faces of a world learning to feel again"}</h2>
-          <p className="lead">{locale==="es"
+          <div className="kicker">{charactersContent?.eyebrow||(locale==="es"?"Personajes":"Characters")}</div>
+          <h2>{charactersContent?.title||(locale==="es"?"Rostros de un mundo que vuelve a sentir":"Faces of a world learning to feel again")}</h2>
+          <p className="lead">{charactersContent?.body||(locale==="es"
             ?"Pulsa un personaje para abrir su ficha visual. Puedes cerrar con la X, hacer clic fuera de la ventana o usar Esc."
-            :"Select a character to open the visual profile. Close with X, click outside the window, or press Esc."}</p>
+            :"Select a character to open the visual profile. Close with X, click outside the window, or press Esc.")}</p>
         </div>
         <div className="charactersRail">
           {characters.map((char,index)=><button type="button" className="characterTile" key={char.key} onClick={()=>setSelected(index)}>
             <div className={`characterTileArt ${char.tone}`} style={char.image?{backgroundImage:char.fallbackImage?`url("${char.image}"), url("${char.fallbackImage}")`:`url("${char.image}")`}:undefined}>
+              {char.video&&<video autoPlay muted loop playsInline preload="metadata" poster={char.image||char.fallbackImage}><source src={char.video}/></video>}
               <span>{char.name}</span>
             </div>
             <strong>{char.name}</strong>
@@ -264,6 +280,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward}:{locale:Locale;ama
         <section className="characterModal" role="dialog" aria-modal="true" aria-label={char.name} tabIndex={-1}>
           <button className="characterModalClose" type="button" aria-label={locale==="es"?"Cerrar":"Close"} onClick={()=>setSelected(null)}>×</button>
           <div className={`characterModalArt ${char.tone}`} style={char.image?{backgroundImage:char.fallbackImage?`url("${char.image}"), url("${char.fallbackImage}")`:`url("${char.image}")`}:undefined}>
+            {char.video&&<video autoPlay muted loop playsInline preload="metadata" poster={char.image||char.fallbackImage}><source src={char.video}/></video>}
             <div className="characterModalGlow"/>
             <span>{char.name}</span>
           </div>
