@@ -43,6 +43,10 @@ export default async function Home({
   const shareReward=cms["home.share_reward"]||{};
   const officialVideo=cms["home.official_video"]||{};
   const shop=cms["home.shop"]||{};
+  const footerCms=cms["home.footer"]||{};
+  const mapCms=cms["home.map"]||{};
+  const testCms=cms["home.test"]||{};
+  const news=cms["home.news"]||{};
 
   const firstBook=(books as any[]).find((b:any)=>b.slug==="fragmentun-i")||(books as any[])[0];
   const amazonUrl=firstBook?.edition_status==="published"?firstBook?.amazon_url:null;
@@ -291,17 +295,19 @@ export default async function Home({
         </div>
       </section>
 
-      <section className="section newsSection" id="noticias">
-        <div className="container">
+      <section className="section newsSection cmsMediaSection" id="noticias">
+        <CmsSectionMedia content={news} className="newsCmsMedia"/>
+        <div className="cmsMediaOverlay newsMediaOverlay"/>
+        <div className="container cmsMediaContent">
           <div className="newsHeader">
             <div>
-              <div className="kicker">{locale==="es"?"Noticias del Universo":"Universe news"}</div>
-              <h2>{locale==="es"?"Últimas transmisiones desde Lumen":"Latest transmissions from Lumen"}</h2>
-              <p className="lead">{locale==="es"
+              <div className="kicker">{news.eyebrow||(locale==="es"?"Noticias del Universo":"Universe news")}</div>
+              <h2>{news.title||(locale==="es"?"Últimas transmisiones desde Lumen":"Latest transmissions from Lumen")}</h2>
+              <p className="lead">{news.body||(locale==="es"
                 ?"Novedades editoriales, experiencias interactivas y avances del universo FRAGMENTUN."
-                :"Editorial updates, interactive experiences and developments from the FRAGMENTUN universe."}</p>
+                :"Editorial updates, interactive experiences and developments from the FRAGMENTUN universe.")}</p>
             </div>
-            <span className="newsSignal">● {locale==="es"?"TRANSMISIÓN ACTIVA":"LIVE TRANSMISSION"}</span>
+            <span className="newsSignal">● {news.signal||(locale==="es"?"TRANSMISIÓN ACTIVA":"LIVE TRANSMISSION")}</span>
           </div>
 
           <div className="newsGrid">
@@ -347,21 +353,25 @@ export default async function Home({
       </section>
 
       <div className="masterDualRow container">
-        <section className="masterInteractiveSection" id="test">
-          <div className="sectionIntro">
-            <div className="kicker">{locale==="es"?"Test emocional":"Emotional test"}</div>
-            <h2>{locale==="es"?"Descubre tu perfil en el universo FRAGMENTUN":"Discover your profile in the FRAGMENTUN universe"}</h2>
-            <p className="lead">{locale==="es"?"12 preguntas · 5 arquetipos · resultados personalizados.":"12 questions · 5 archetypes · personalized results."}</p>
-            <a className="btn btnPrimary" href={`/${locale}/test`}>{locale==="es"?"Hacer el Test":"Take the Test"}</a>
+        <section className="masterInteractiveSection cmsMediaSection" id="test">
+          <CmsSectionMedia content={testCms} className="testCmsMedia"/>
+          <div className="cmsMediaOverlay compactMediaOverlay"/>
+          <div className="sectionIntro cmsMediaContent">
+            <div className="kicker">{testCms.eyebrow||(locale==="es"?"Test emocional":"Emotional test")}</div>
+            <h2>{testCms.title||(locale==="es"?"Descubre tu perfil en el universo FRAGMENTUN":"Discover your profile in the FRAGMENTUN universe")}</h2>
+            <p className="lead">{testCms.body||(locale==="es"?"12 preguntas · 5 arquetipos · resultados personalizados.":"12 questions · 5 archetypes · personalized results.")}</p>
+            <a className="btn btnPrimary" href={`/${locale}/test`}>{testCms.cta||(locale==="es"?"Hacer el Test":"Take the Test")}</a>
           </div>
         </section>
 
-        <section className="masterMapSection" id="mapa">
-          <div className="sectionIntro">
-            <div className="kicker">{locale==="es"?"Mapa interactivo de Lumen":"Interactive map of Lumen"}</div>
-            <h2>{locale==="es"?"Explora los territorios. Descubre sus secretos.":"Explore the territories. Discover their secrets."}</h2>
-            <p className="lead">{locale==="es"?"Vorax, Ethelis, Umbral y Nara te esperan dentro de Lumen.":"Vorax, Ethelis, Umbral and Nara await inside Lumen."}</p>
-            <a className="btn btnPrimary" href={`/${locale}/mapa`}>{locale==="es"?"Abrir el Mapa":"Open the Map"}</a>
+        <section className="masterMapSection cmsMediaSection" id="mapa">
+          <CmsSectionMedia content={mapCms} className="mapCmsMedia"/>
+          <div className="cmsMediaOverlay compactMediaOverlay"/>
+          <div className="sectionIntro cmsMediaContent">
+            <div className="kicker">{mapCms.eyebrow||(locale==="es"?"Mapa interactivo de Lumen":"Interactive map of Lumen")}</div>
+            <h2>{mapCms.title||(locale==="es"?"Explora los territorios. Descubre sus secretos.":"Explore the territories. Discover their secrets.")}</h2>
+            <p className="lead">{mapCms.body||(locale==="es"?"Vorax, Ethelis, Umbral y Nara te esperan dentro de Lumen.":"Vorax, Ethelis, Umbral and Nara await inside Lumen.")}</p>
+            <a className="btn btnPrimary" href={`/${locale}/mapa`}>{mapCms.cta||(locale==="es"?"Abrir el Mapa":"Open the Map")}</a>
           </div>
         </section>
       </div>
@@ -423,12 +433,14 @@ export default async function Home({
       </section>
     </main>
 
-    <footer className="footer approvedFooter">
-      <div className="container approvedFooterGrid">
+    <footer className="footer approvedFooter cmsMediaSection">
+      <CmsSectionMedia content={footerCms} className="footerCmsMedia"/>
+      <div className="cmsMediaOverlay footerMediaOverlay"/>
+      <div className="container approvedFooterGrid cmsMediaContent">
         <div className="approvedFooterBrand">
-          <strong>FRAGMENTUN</strong>
-          <span>EL UNIVERSO</span>
-          <p>{locale==="es"?"Historias para un mundo más consciente.":"Stories for a more conscious world."}</p>
+          <strong>{footerCms.brand||"FRAGMENTUN"}</strong>
+          <span>{footerCms.subtitle||(locale==="es"?"EL UNIVERSO":"THE UNIVERSE")}</span>
+          <p>{footerCms.body||(locale==="es"?"Historias para un mundo más consciente.":"Stories for a more conscious world.")}</p>
           <SocialLinks locale={locale} items={socialItems} placement="footer"/>
         </div>
         <div className="approvedFooterCol">
@@ -452,14 +464,14 @@ export default async function Home({
           <span>{t.footer}</span>
         </div>
         <div className="approvedFooterJoin">
-          <h3>{locale==="es"?"Únete al universo":"Join the universe"}</h3>
-          <p>{locale==="es"?"Recibe novedades, arte y próximos capítulos.":"Receive news, artwork and upcoming chapters."}</p>
-          <a className="btn btnPrimary" href="#capitulo">{locale==="es"?"Quiero entrar →":"Join →"}</a>
+          <h3>{footerCms.join_title||(locale==="es"?"Únete al universo":"Join the universe")}</h3>
+          <p>{footerCms.join_body||(locale==="es"?"Recibe novedades, arte y próximos capítulos.":"Receive news, artwork and upcoming chapters.")}</p>
+          <a className="btn btnPrimary" href="#capitulo">{footerCms.join_cta||(locale==="es"?"Quiero entrar →":"Join →")}</a>
         </div>
       </div>
       <div className="container approvedFooterBottom">
         <span>© 2026 JOSÉ LIRANZO · FRAGMENTUN · {locale==="es"?"Todos los derechos reservados.":"All rights reserved."}</span>
-        <span>{locale==="es"?"El despertar apenas comienza...":"The awakening is only beginning..."}</span>
+        <span>{footerCms.closing||(locale==="es"?"El despertar apenas comienza...":"The awakening is only beginning...")}</span>
       </div>
     </footer>
     <nav className="mobileBottomNav" aria-label={locale==="es"?"Navegación móvil":"Mobile navigation"}>
