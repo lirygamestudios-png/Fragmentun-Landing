@@ -34,10 +34,12 @@ export default async function Home({
   ]);
 
   const hero=cms["home.hero"]||{};
+  const author=cms["home.author"]||{};
   const why=cms["home.why"]||{};
   const lumen=cms["home.lumen"]||{};
   const chapter=cms["home.chapter"]||{};
   const finalCta=cms["home.final_cta"]||{};
+  const community=cms["home.community"]||{};
   const shareReward=cms["home.share_reward"]||{};
   const officialVideo=cms["home.official_video"]||{};
   const shop=cms["home.shop"]||{};
@@ -178,20 +180,24 @@ export default async function Home({
 
       <FrontDiscovery locale={locale} amazonUrl={amazonUrl} shareReward={shareReward}/>
 
-      <section className="masterAuthorBand" id="autor">
-        <div className="container masterAuthorGrid">
+      <section className="masterAuthorBand cmsMediaSection" id="autor">
+        <CmsSectionMedia content={author} className="authorCmsMedia"/>
+        <div className="cmsMediaOverlay authorMediaOverlay"/>
+        <div className="container masterAuthorGrid cmsMediaContent">
           <div className="masterAuthorCopy">
-            <div className="kicker">{locale==="es"?"José Liranzo · El autor":"José Liranzo · The author"}</div>
-            <h2>José Liranzo</h2>
-            <p className="lead">{locale==="es"
+            <div className="kicker">{author.kicker||(locale==="es"?"José Liranzo · El autor":"José Liranzo · The author")}</div>
+            <h2>{author.title||"José Liranzo"}</h2>
+            <p className="lead">{author.body||(locale==="es"
               ?"Creo en el poder de las historias para despertar lo que sentimos, cuestionar lo que somos y construir mundos más humanos."
-              :"I believe in the power of stories to awaken what we feel, question who we are, and build more human worlds."}</p>
-            <a className="btn btnPrimary" href="#historia">{locale==="es"?"Conoce mi historia":"Meet the author"}</a>
+              :"I believe in the power of stories to awaken what we feel, question who we are, and build more human worlds.")}</p>
+            <a className="btn btnPrimary" href="#historia">{author.cta||(locale==="es"?"Conoce mi historia":"Meet the author")}</a>
           </div>
-          <div className="masterAuthorPortrait" aria-hidden="true"><span>JL</span></div>
-          <blockquote>FRAGMENTUN<br/>{locale==="es"
-            ?"nace de una pregunta que aún me acompaña: ¿y si sentir fuera el acto más peligroso del mundo?"
-            :"was born from a question that still follows me: what if feeling were the most dangerous act in the world?"}</blockquote>
+          <div className="masterAuthorPortrait">
+            <img src={author.image_url||"/jose-liranzo.jpg"} alt={author.image_alt||"José Liranzo"}/>
+          </div>
+          <blockquote>{author.quote||(locale==="es"
+            ?"FRAGMENTUN nace de una pregunta que aún me acompaña: ¿y si sentir fuera el acto más peligroso del mundo?"
+            :"FRAGMENTUN was born from a question that still follows me: what if feeling were the most dangerous act in the world?")}</blockquote>
         </div>
       </section>
 
@@ -359,12 +365,15 @@ export default async function Home({
       </div>
 
       <div className="masterCommunityRow container">
-        <section className="masterCommunitySection" id="comunidad-publica">
-          <div className="kicker">{locale==="es"?"Comunidad FRAGMENTUN":"FRAGMENTUN community"}</div>
-          <h2>{locale==="es"?"Únete a quienes sienten, cuestionan y exploran más allá de lo evidente.":"Join those who feel, question and explore beyond the obvious."}</h2>
-          <p className="lead">{locale==="es"
+        <section className="masterCommunitySection cmsMediaSection" id="comunidad-publica">
+          <CmsSectionMedia content={community} className="communityCmsMedia"/>
+          <div className="cmsMediaOverlay communityMediaOverlay"/>
+          <div className="cmsMediaContent">
+          <div className="kicker">{community.eyebrow||(locale==="es"?"Comunidad FRAGMENTUN":"FRAGMENTUN community")}</div>
+          <h2>{community.title||(locale==="es"?"Únete a quienes sienten, cuestionan y exploran más allá de lo evidente.":"Join those who feel, question and explore beyond the obvious.")}</h2>
+          <p className="lead">{community.body||(locale==="es"
             ?"Sigue la evolución de la saga, comparte el universo y acompaña las próximas historias."
-            :"Follow the saga's evolution, share the universe and join the stories to come."}</p>
+            :"Follow the saga's evolution, share the universe and join the stories to come.")}</p>
           <SocialLinks locale={locale} items={socialItems} placement="community_section"/>
           <div className="communityActions">
             {facebookCommunityUrl&&<TrackLink
@@ -382,7 +391,8 @@ export default async function Home({
               locale={locale}
               metadata={{placement:"community_section",creator:"sagaFragmentun"}}
               newTab
-            >{locale==="es"?"APOYAR FRAGMENTUN EN PATREON":"SUPPORT FRAGMENTUN ON PATREON"}</TrackLink>
+            >{community.patreon_cta||(locale==="es"?"APOYAR FRAGMENTUN EN PATREON":"SUPPORT FRAGMENTUN ON PATREON")}</TrackLink>
+          </div>
           </div>
         </section>
 
@@ -394,16 +404,18 @@ export default async function Home({
 
       <FragmentunShop locale={locale} content={shop}/>
 
-      <section className="ctaFinal">
-        <div className="container finalCtaMaster">
-          <div className="kicker">{locale==="es"?"EL DESPERTAR YA COMENZÓ":"THE AWAKENING HAS BEGUN"}</div>
-          <h2>{locale==="es"?"Descubre FRAGMENTUN I y forma parte de esta historia.":"Discover FRAGMENTUN I and become part of this story."}</h2>
-          <p>{locale==="es"
+      <section className="ctaFinal cmsMediaSection">
+        <CmsSectionMedia content={finalCta} className="finalCtaCmsMedia"/>
+        <div className="cmsMediaOverlay finalCtaMediaOverlay"/>
+        <div className="container finalCtaMaster cmsMediaContent">
+          <div className="kicker">{finalCta.eyebrow||(locale==="es"?"EL DESPERTAR YA COMENZÓ":"THE AWAKENING HAS BEGUN")}</div>
+          <h2>{finalCta.title||(locale==="es"?"Descubre FRAGMENTUN I y forma parte de esta historia.":"Discover FRAGMENTUN I and become part of this story.")}</h2>
+          <p>{finalCta.body||(locale==="es"
             ?"Entra en Lumen. Decide cuánto estás dispuesto a sentir."
-            :"Enter Lumen. Decide how much you are willing to feel."}</p>
+            :"Enter Lumen. Decide how much you are willing to feel.")}</p>
           <div className="heroActions">
-            {amazonUrl&&<TrackLink className="btn btnPrimary" href={amazonUrl} eventName="amazon_click" locale={locale} metadata={{book:"fragmentun-i",edition_locale:locale,marketplace:firstBook?.marketplace||"amazon.com"}} newTab>{locale==="es"?"Comprar en Amazon →":"Buy on Amazon →"}</TrackLink>}
-            <TrackLink className="btn btnSecondary" href="#capitulo" eventName="chapter_click" locale={locale}>{locale==="es"?"Leer el Capítulo 1":"Read Chapter 1"}</TrackLink>
+            {amazonUrl&&<TrackLink className="btn btnPrimary" href={amazonUrl} eventName="amazon_click" locale={locale} metadata={{book:"fragmentun-i",edition_locale:locale,marketplace:firstBook?.marketplace||"amazon.com"}} newTab>{(finalCta.primary_cta||(locale==="es"?"Comprar en Amazon":"Buy on Amazon"))+" →"}</TrackLink>}
+            <TrackLink className="btn btnSecondary" href="#capitulo" eventName="chapter_click" locale={locale}>{finalCta.secondary_cta||(locale==="es"?"Leer el Capítulo 1":"Read Chapter 1")}</TrackLink>
           </div>
         </div>
       </section>
