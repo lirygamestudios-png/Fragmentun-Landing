@@ -54,9 +54,11 @@ const characters:Character[]=[
   }
 ];
 
-export function FrontDiscovery({locale,amazonUrl}:{locale:Locale;amazonUrl:string|null}){
+export function FrontDiscovery({locale,amazonUrl,shareReward}:{locale:Locale;amazonUrl:string|null;shareReward?:any}){
   const[openValue,setOpenValue]=useState<string|null>(null);
   const[selected,setSelected]=useState<number|null>(null);
+  const[rewardOpen,setRewardOpen]=useState(false);
+  const[rewardReady,setRewardReady]=useState(false);
 
   useEffect(()=>{
     if(selected===null)return;
@@ -109,6 +111,15 @@ export function FrontDiscovery({locale,amazonUrl}:{locale:Locale;amazonUrl:strin
         :"FRAGMENTUN I is already published. This access will grow as new platforms are added.",
       action:locale==="es"?"Ver plataformas":"View platforms",
       href:"#"
+    },
+    {
+      key:"free-art",icon:"✧",
+      title:shareReward?.title||(locale==="es"?"Arte conceptual gratis":"Free concept art"),
+      body:shareReward?.body||(locale==="es"
+        ?"Comparte FRAGMENTUN y recibe una pieza de arte conceptual gratuita de la saga."
+        :"Share FRAGMENTUN and receive a free piece of concept art from the saga."),
+      action:shareReward?.action||(locale==="es"?"Compartir y recibir arte":"Share and receive art"),
+      href:"#"
     }
   ];
 
@@ -144,10 +155,51 @@ export function FrontDiscovery({locale,amazonUrl}:{locale:Locale;amazonUrl:strin
               <div className="storeCard"><b>Google Play Books</b><span>{locale==="es"?"Próximamente":"Coming soon"}</span></div>
               <div className="storeCard"><b>Barnes & Noble</b><span>{locale==="es"?"Próximamente":"Coming soon"}</span></div>
             </div>
-            :<a className="btn btnSecondary" href={item.href}>{item.action}</a>}
+            :item.key==="free-art"
+              ?<button className="btn btnSecondary" type="button" onClick={async()=>{
+                const url=window.location.href;
+                const text=locale==="es"
+                  ?"Descubre FRAGMENTUN, una saga de ciencia ficción emocional."
+                  :"Discover FRAGMENTUN, an emotional science-fiction saga.";
+                try{
+                  if(typeof navigator.share==="function") await navigator.share({title:"FRAGMENTUN",text,url});
+                  else await navigator.clipboard.writeText(url);
+                }catch{}
+                fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+                  event_name:"share_reward_unlock",locale,path:window.location.pathname,metadata:{placement:"value_strip"}
+                }),keepalive:true}).catch(()=>{});
+                setRewardReady(true);
+                setRewardOpen(true);
+              }}>{item.action}</button>
+              :<a className="btn btnSecondary" href={item.href}>{item.action}</a>}
         </div>)}
       </div>}
     </section>
+
+
+    {rewardOpen&&<div className="shareRewardBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setRewardOpen(false)}}>
+      <section className="shareRewardModal" role="dialog" aria-modal="true" aria-label={shareReward?.thank_you||(locale==="es"?"Gracias por compartir este universo":"Thank you for sharing this universe")}>
+        <button className="shareRewardClose" type="button" aria-label={locale==="es"?"Cerrar":"Close"} onClick={()=>setRewardOpen(false)}>×</button>
+        <div className="shareRewardArt">
+          <img src={shareReward?.art_url||"/elyon-hero.jpg"} alt={locale==="es"?"Arte conceptual gratuito de FRAGMENTUN":"Free FRAGMENTUN concept art"}/>
+        </div>
+        <div className="shareRewardCopy">
+          <div className="kicker">{locale==="es"?"RECOMPENSA DESBLOQUEADA":"REWARD UNLOCKED"}</div>
+          <h2>{shareReward?.thank_you||(locale==="es"?"GRACIAS POR COMPARTIR ESTE UNIVERSO":"THANK YOU FOR SHARING THIS UNIVERSE")}</h2>
+          <p>{locale==="es"
+            ?"Tu pieza de arte conceptual de FRAGMENTUN está lista. Puedes guardarla y seguir compartiendo el universo."
+            :"Your FRAGMENTUN concept art is ready. Save it and keep sharing the universe."}</p>
+          {rewardReady&&<a
+            className="btn btnPrimary"
+            href={shareReward?.art_url||"/elyon-hero.jpg"}
+            download
+            onClick={()=>fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+              event_name:"share_reward_download",locale,path:window.location.pathname,metadata:{placement:"value_strip"}
+            }),keepalive:true}).catch(()=>{})}
+          >{shareReward?.reward_label||(locale==="es"?"Descargar arte conceptual":"Download concept art")}</a>}
+        </div>
+      </section>
+    </div>}
 
     <section className="section charactersSection" id="personajes">
       <div className="container">
