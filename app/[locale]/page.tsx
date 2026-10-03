@@ -9,6 +9,7 @@ import { MotionEffects } from "../../components/MotionEffects";
 import { SocialLinks } from "../../components/SocialLinks";
 import { FrontDiscovery } from "../../components/FrontDiscovery";
 import { ReviewsShowcase } from "../../components/ReviewsShowcase";
+import { OfficialVideo } from "../../components/OfficialVideo";
 import { copy,locales,type Locale } from "../../lib/i18n";
 import { getBooks,getLocalizedContent,getPublishedReviews } from "../../lib/content";
 
@@ -36,6 +37,7 @@ export default async function Home({
   const chapter=cms["home.chapter"]||{};
   const finalCta=cms["home.final_cta"]||{};
   const shareReward=cms["home.share_reward"]||{};
+  const officialVideo=cms["home.official_video"]||{};
 
   const firstBook=(books as any[]).find((b:any)=>b.slug==="fragmentun-i")||(books as any[])[0];
   const amazonUrl=firstBook?.edition_status==="published"?firstBook?.amazon_url:null;
@@ -231,6 +233,8 @@ export default async function Home({
           </div>
         </div>
       </section>
+
+      <OfficialVideo locale={locale} content={officialVideo} amazonUrl={amazonUrl}/>
 
       <section className="section masterChapterSection" id="capitulo">
         <div className="container">
