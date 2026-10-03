@@ -2276,3 +2276,77 @@ input::placeholder{color:#8090a5}
   .canonicalSublevel{left:32%;width:36%}
   .lumenFlowLegend span{font-size:.49rem}
 }
+
+
+/* FRONTDESK PENDING FIXES — share, spacing, Patreon, author layout */
+.socialLinksWrap{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.shareMenu{position:relative}
+.shareButton{font:inherit;cursor:pointer}
+.shareDropdown{
+  position:absolute;right:0;bottom:calc(100% + 10px);z-index:80;
+  width:min(340px,calc(100vw - 32px));padding:14px;border-radius:14px;
+  background:#071522f5;border:1px solid rgba(201,168,76,.30);
+  box-shadow:0 18px 50px #0009;backdrop-filter:blur(12px)
+}
+.shareDropdown strong,.shareDropdown small{display:block}
+.shareDropdown strong{font-size:.78rem;color:#f0cf78}
+.shareDropdown small{font-size:.62rem;color:#91a4b5;line-height:1.45;margin-top:4px}
+.shareGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}
+.shareGrid a,.shareGrid button{
+  min-height:38px;border-radius:9px;border:1px solid #ffffff18;background:#0b2033;color:#e5edf4;
+  display:flex;align-items:center;justify-content:center;text-decoration:none;font:700 .65rem Inter,sans-serif;cursor:pointer
+}
+.shareGrid a:hover,.shareGrid button:hover{border-color:#c9a84c88;background:#102b43}
+.footer .shareDropdown{bottom:calc(100% + 12px)}
+
+.btnPatreon{
+  background:linear-gradient(135deg,#4a90d9,#2467b2)!important;
+  border-color:rgba(126,189,255,.48)!important;
+  color:#fff!important;
+  box-shadow:0 10px 30px rgba(36,103,178,.28)!important
+}
+.btnPatreon:hover{
+  background:linear-gradient(135deg,#5ba0e6,#2c73c7)!important;
+  box-shadow:0 14px 38px rgba(36,103,178,.38)!important
+}
+
+/* Remove the oversized dead space introduced between the first and second public sections */
+.hero{margin-bottom:0!important}
+.discoveryStrip{margin-top:0!important}
+.hero + .discoveryStrip{position:relative;top:0}
+@media(min-width:901px){
+  .hero{padding-bottom:18px!important}
+  .discoveryGrid{min-height:88px}
+}
+
+/* Keep author image in its own grid track; never overlap copy */
+.masterAuthorGrid{
+  grid-template-columns:minmax(0,1.05fr) minmax(190px,260px) minmax(0,.82fr)!important;
+  align-items:center!important;
+}
+.masterAuthorCopy{min-width:0;max-width:100%!important}
+.masterAuthorPortrait{
+  width:min(240px,100%)!important;
+  min-height:0!important;
+  margin:0 auto!important;
+  justify-self:center!important;
+  align-self:center!important
+}
+.masterAuthorGrid blockquote{min-width:0}
+@media(max-width:900px){
+  .masterAuthorGrid{grid-template-columns:minmax(0,1fr) 150px!important}
+  .masterAuthorPortrait{margin:0!important;justify-self:end!important}
+  .masterAuthorGrid blockquote{grid-column:1/-1!important}
+}
+@media(max-width:560px){
+  .masterAuthorGrid{grid-template-columns:1fr!important}
+  .masterAuthorCopy{max-width:100%!important}
+  .masterAuthorPortrait{
+    width:170px!important;
+    margin:10px auto 0!important;
+    justify-self:center!important;
+    min-height:210px!important
+  }
+  .masterAuthorGrid blockquote{margin-top:12px!important}
+  .shareDropdown{left:0;right:auto;bottom:calc(100% + 8px)}
+}
