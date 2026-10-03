@@ -33,7 +33,7 @@ export function SocialLinks({locale,items,placement="footer"}:{
   function encoded(value:string){return encodeURIComponent(value)}
   async function nativeShare(){
     try{
-      if(navigator.share){
+      if(typeof navigator.share==="function"){
         await navigator.share({title,text,url:pageUrl});
         setShareOpen(false);
         return;
@@ -79,7 +79,7 @@ export function SocialLinks({locale,items,placement="footer"}:{
         className="socialLink shareButton"
         aria-haspopup="menu"
         aria-expanded={shareOpen}
-        onClick={()=>{if(typeof navigator!=="undefined"&&navigator.share){nativeShare()}else setShareOpen(v=>!v)}}
+        onClick={()=>{if(typeof navigator!=="undefined"&&typeof navigator.share==="function"){nativeShare()}else setShareOpen(v=>!v)}}
       >
         ↗ {locale==="es"?"Compartir":"Share"}
       </button>
