@@ -439,7 +439,7 @@ export default async function Home({
         </div>
       </div>
       <div className="container approvedFooterBottom">
-        <span>© 2026 LIRYGAMES STUDIOS · FRAGMENTUN</span>
+        <span>© 2026 JOSÉ LIRANZO · FRAGMENTUN</span>
         <span>{locale==="es"?"El despertar apenas comienza...":"The awakening is only beginning..."}</span>
       </div>
     </footer>
