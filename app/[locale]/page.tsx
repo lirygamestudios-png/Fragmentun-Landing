@@ -34,6 +34,7 @@ export default async function Home({
   const lumen=cms["home.lumen"]||{};
   const chapter=cms["home.chapter"]||{};
   const finalCta=cms["home.final_cta"]||{};
+  const shareReward=cms["home.share_reward"]||{};
 
   const firstBook=(books as any[]).find((b:any)=>b.slug==="fragmentun-i")||(books as any[])[0];
   const amazonUrl=firstBook?.edition_status==="published"?firstBook?.amazon_url:null;
@@ -169,7 +170,7 @@ export default async function Home({
         </div>
       </section>
 
-      <FrontDiscovery locale={locale} amazonUrl={amazonUrl}/>
+      <FrontDiscovery locale={locale} amazonUrl={amazonUrl} shareReward={shareReward}/>
 
       <section className="masterAuthorBand" id="autor">
         <div className="container masterAuthorGrid">
