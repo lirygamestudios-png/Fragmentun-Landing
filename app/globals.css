@@ -2476,3 +2476,56 @@ input::placeholder{color:#8090a5}
   .discoveryGrid{grid-template-columns:1fr!important}
   .shareRewardCopy{padding:28px 22px 30px}
 }
+
+
+/* Reviews showcase: 1 featured + 3 secondary + carousel */
+.reviewsShowcase{display:grid;gap:16px}
+.reviewSecondaryGrid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px
+}
+.reviewMiniCard{
+  padding:16px;
+  border-radius:14px;
+  background:linear-gradient(180deg,rgba(14,31,49,.92),rgba(7,18,30,.96));
+  border:1px solid rgba(255,255,255,.09);
+  box-shadow:0 14px 34px rgba(0,0,0,.22)
+}
+.reviewMiniCard blockquote{
+  margin:8px 0 12px;
+  color:#d9e4ed;
+  font-size:.86rem;
+  line-height:1.55
+}
+.reviewMiniCard p{
+  margin:0;
+  color:#f0cf78;
+  font-weight:800;
+  font-size:.72rem
+}
+.reviewMiniCard small{display:block;margin-top:2px;color:#7e91a2;font-size:.62rem}
+.reviewMiniCard .reviewSource{font-size:.62rem;margin-top:7px}
+.reviewCarouselNav{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  margin-top:2px
+}
+.reviewCarouselNav button{
+  width:36px;height:36px;border-radius:50%;
+  border:1px solid rgba(201,168,76,.34);
+  background:#0a1928;color:#f0cf78;cursor:pointer
+}
+.reviewCarouselNav button:hover{
+  border-color:rgba(201,168,76,.68);
+  background:#10253a
+}
+.reviewCarouselNav span{
+  min-width:54px;text-align:center;
+  color:#93a5b7;font-size:.68rem;font-weight:800
+}
+@media(max-width:900px){
+  .reviewSecondaryGrid{grid-template-columns:1fr}
+}
