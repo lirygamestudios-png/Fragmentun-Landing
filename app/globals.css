@@ -2764,3 +2764,49 @@ input::placeholder{color:#8090a5}
   .masterLumenSection{min-height:580px;align-items:end}
   .lumenMasterCopy{padding:24px}
 }
+
+
+/* Final FrontDesk CMS media + author portrait */
+.masterAuthorPortrait{
+  overflow:hidden;
+  border-radius:24px;
+  min-height:360px;
+  border:1px solid rgba(201,168,76,.22);
+  box-shadow:0 24px 70px rgba(0,0,0,.32)
+}
+.masterAuthorPortrait img,
+.masterAuthorPortrait video{
+  width:100%;
+  height:100%;
+  min-height:360px;
+  object-fit:cover;
+  display:block
+}
+.newsMediaOverlay{
+  background:linear-gradient(180deg,rgba(5,12,21,.80),rgba(5,12,21,.92))
+}
+.compactMediaOverlay{
+  background:linear-gradient(135deg,rgba(5,12,21,.90),rgba(7,18,31,.76))
+}
+.masterInteractiveSection.cmsMediaSection,
+.masterMapSection.cmsMediaSection{
+  overflow:hidden;
+  border-radius:22px
+}
+.masterInteractiveSection .cmsMediaContent,
+.masterMapSection .cmsMediaContent{
+  position:relative;
+  z-index:2
+}
+.footerMediaOverlay{
+  background:linear-gradient(180deg,rgba(4,10,18,.92),rgba(4,10,18,.97))
+}
+.approvedFooter.cmsMediaSection>.approvedFooterBottom{
+  position:relative;
+  z-index:2
+}
+@media(max-width:760px){
+  .masterAuthorPortrait,
+  .masterAuthorPortrait img,
+  .masterAuthorPortrait video{min-height:300px}
+}
