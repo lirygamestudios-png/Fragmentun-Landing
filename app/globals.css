@@ -2635,3 +2635,14 @@ input::placeholder{color:#8090a5}
   .officialVideoAfter{align-items:flex-start;flex-direction:column}
   .officialVideoActions{justify-content:flex-start}
 }
+
+
+/* Strict share-reward verification feedback */
+.shareRewardAction{display:grid;gap:9px;justify-items:start}
+.shareRewardStatus{
+  display:block;
+  max-width:560px;
+  color:#91a4b5;
+  font-size:.72rem;
+  line-height:1.45
+}
