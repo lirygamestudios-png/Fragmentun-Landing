@@ -2827,3 +2827,54 @@ input::placeholder{color:#8090a5}
   content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(180deg,transparent 45%,rgba(3,9,15,.72) 100%)
 }
+
+
+/* FrontDesk freeze QA — responsive, touch and viewport safety */
+html,body{max-width:100%;overflow-x:hidden}
+button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
+button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
+  touch-action:manipulation
+}
+.masterAuthorPortrait{background:#07131f!important}
+.characterModalClose,.shareRewardClose,.officialVideoClose{
+  min-width:44px;min-height:44px
+}
+.reviewCarouselNav button,.mapControls button{min-width:44px;min-height:44px}
+.characterTileArt video,.characterModalArt video{pointer-events:none}
+
+@media(max-width:760px){
+  .characterModalBackdrop,.shareRewardBackdrop,.officialVideoBackdrop{
+    padding:8px;
+    align-items:center
+  }
+  .characterModal,.shareRewardModal,.officialVideoModal{
+    width:min(100%,calc(100vw - 16px));
+    max-height:calc(100dvh - 16px);
+    border-radius:18px
+  }
+  .characterModalCopy{padding:26px 20px 22px}
+  .shareRewardCopy{padding:28px 22px 30px}
+  .officialVideoAfter{padding:18px}
+  .officialVideoPlay{max-width:100%;white-space:normal}
+  .fragmentunShopCopy h2{font-size:clamp(2rem,10vw,3.1rem)}
+  .masterAuthorPortrait img,.masterAuthorPortrait video{object-position:center 24%}
+}
+
+@media(max-width:480px){
+  .headerActions{gap:6px}
+  .lang{white-space:nowrap}
+  .discoveryPanel{padding-inline:12px}
+  .discoveryPanelInner{padding:18px 16px}
+  .characterModalArt{min-height:250px}
+  .shareRewardArt,.shareRewardArt img{min-height:250px}
+  .officialVideoPoster{min-height:330px}
+  .officialVideoCopy{left:18px;width:calc(100% - 36px);bottom:20px}
+  .officialVideoCopy>strong{font-size:2rem}
+  .fragmentunProductCard{min-height:175px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .characterTileArt,.fragmentunProductCard img,.officialVideoPoster>img{
+    transition:none!important;transform:none!important
+  }
+}
