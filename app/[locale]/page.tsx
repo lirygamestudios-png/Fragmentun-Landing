@@ -11,6 +11,7 @@ import { FrontDiscovery } from "../../components/FrontDiscovery";
 import { ReviewsShowcase } from "../../components/ReviewsShowcase";
 import { OfficialVideo } from "../../components/OfficialVideo";
 import { FragmentunShop } from "../../components/FragmentunShop";
+import { CmsSectionMedia } from "../../components/CmsSectionMedia";
 import { copy,locales,type Locale } from "../../lib/i18n";
 import { getBooks,getLocalizedContent,getPublishedReviews } from "../../lib/content";
 
@@ -194,8 +195,10 @@ export default async function Home({
         </div>
       </section>
 
-      <section className="section masterWhySection" id="historia">
-        <div className="container">
+      <section className="section masterWhySection cmsMediaSection" id="historia">
+        <CmsSectionMedia content={why} className="whyCmsMedia"/>
+        <div className="cmsMediaOverlay"/>
+        <div className="container cmsMediaContent">
           <div className="sectionIntro">
             <div className="kicker">{why.title||t.why}</div>
             <h2>{why.title||t.why}</h2>
@@ -220,17 +223,19 @@ export default async function Home({
         </div>
       </section>
 
-      <section className="section masterLumenSection" id="lumen">
-        <div className="container split">
+      <section className="section masterLumenSection cmsMediaSection" id="lumen">
+        <CmsSectionMedia content={lumen} className="lumenCmsMedia"/>
+        <div className="cmsMediaOverlay lumenMediaOverlay"/>
+        <div className="container split cmsMediaContent">
           <div className="lumenMasterCopy">
-            <div className="kicker">LUMEN</div>
-            <h2>LUMEN</h2>
-            <h3>{locale==="es"?"UNA CIUDAD, MIL EMOCIONES":"ONE CITY, A THOUSAND EMOTIONS"}</h3>
+            <div className="kicker">{lumen.title||"LUMEN"}</div>
+            <h2>{lumen.title||"LUMEN"}</h2>
+            <h3>{lumen.subtitle||(locale==="es"?"UNA CIUDAD, MIL EMOCIONES":"ONE CITY, A THOUSAND EMOTIONS")}</h3>
             <p className="lead">{lumen.body||(locale==="es"
               ?"Explora la ciudad donde las emociones son poder, memoria y resistencia."
               :"Explore the city where emotions are power, memory and resistance.")}</p>
             <TrackLink className="btn btnPrimary" href={`/${locale}/mapa`} eventName="map_interaction" locale={locale}>
-              {locale==="es"?"Explorar el Mapa de Lumen →":"Explore the Map of Lumen →"}
+              {(lumen.cta||(locale==="es"?"Explorar el Mapa de Lumen":"Explore the Map of Lumen"))+" →"}
             </TrackLink>
           </div>
         </div>
