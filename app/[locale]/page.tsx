@@ -180,10 +180,8 @@ export default async function Home({
 
       <FrontDiscovery locale={locale} amazonUrl={amazonUrl} shareReward={shareReward}/>
 
-      <section className="masterAuthorBand cmsMediaSection" id="autor">
-        <CmsSectionMedia content={author} className="authorCmsMedia"/>
-        <div className="cmsMediaOverlay authorMediaOverlay"/>
-        <div className="container masterAuthorGrid cmsMediaContent">
+      <section className="masterAuthorBand" id="autor">
+        <div className="container masterAuthorGrid">
           <div className="masterAuthorCopy">
             <div className="kicker">{author.kicker||(locale==="es"?"José Liranzo · El autor":"José Liranzo · The author")}</div>
             <h2>{author.title||"José Liranzo"}</h2>
@@ -193,7 +191,11 @@ export default async function Home({
             <a className="btn btnPrimary" href="#historia">{author.cta||(locale==="es"?"Conoce mi historia":"Meet the author")}</a>
           </div>
           <div className="masterAuthorPortrait">
-            <img src={author.image_url||"/jose-liranzo.jpg"} alt={author.image_alt||"José Liranzo"}/>
+            {author.video_url
+              ?<video autoPlay muted loop playsInline preload="metadata" poster={author.poster_url||author.image_url||"/jose-liranzo.jpg"}>
+                <source src={author.video_url}/>
+              </video>
+              :<img src={author.image_url||"/jose-liranzo.jpg"} alt={author.image_alt||"José Liranzo"}/>}
           </div>
           <blockquote>{author.quote||(locale==="es"
             ?"FRAGMENTUN nace de una pregunta que aún me acompaña: ¿y si sentir fuera el acto más peligroso del mundo?"
