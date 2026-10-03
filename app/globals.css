@@ -2878,3 +2878,35 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
     transition:none!important;transform:none!important
   }
 }
+
+
+/* News conversion cards — Compra · Comparte · Únete */
+.newsActionButton{
+  appearance:none;
+  border:0;
+  padding:0;
+  background:transparent;
+  font:inherit;
+  cursor:pointer
+}
+.newsActionButton:disabled{opacity:.62;cursor:wait}
+.rewardNews img,.expansionNews img{
+  width:100%;height:100%;object-fit:cover;display:block
+}
+.rewardNews:after,.expansionNews:after{
+  content:"";position:absolute;inset:0;pointer-events:none
+}
+.rewardNews:after{
+  background:
+    radial-gradient(circle at 72% 24%,rgba(201,168,76,.18),transparent 30%),
+    linear-gradient(180deg,transparent 42%,rgba(4,11,18,.52))
+}
+.expansionNews:after{
+  background:
+    radial-gradient(circle at 72% 22%,rgba(74,144,217,.18),transparent 30%),
+    linear-gradient(180deg,transparent 38%,rgba(4,11,18,.58))
+}
+.newsRewardCard{border-color:rgba(201,168,76,.34)}
+.newsExpansionCard{border-color:rgba(74,144,217,.34)}
+.newsRewardCard .newsCopy>span{color:#f0c861}
+.newsExpansionCard .newsCopy>span{color:#74b8ec}
