@@ -10,6 +10,7 @@ import { SocialLinks } from "../../components/SocialLinks";
 import { FrontDiscovery } from "../../components/FrontDiscovery";
 import { ReviewsShowcase } from "../../components/ReviewsShowcase";
 import { OfficialVideo } from "../../components/OfficialVideo";
+import { FragmentunShop } from "../../components/FragmentunShop";
 import { copy,locales,type Locale } from "../../lib/i18n";
 import { getBooks,getLocalizedContent,getPublishedReviews } from "../../lib/content";
 
@@ -38,6 +39,7 @@ export default async function Home({
   const finalCta=cms["home.final_cta"]||{};
   const shareReward=cms["home.share_reward"]||{};
   const officialVideo=cms["home.official_video"]||{};
+  const shop=cms["home.shop"]||{};
 
   const firstBook=(books as any[]).find((b:any)=>b.slug==="fragmentun-i")||(books as any[])[0];
   const amazonUrl=firstBook?.edition_status==="published"?firstBook?.amazon_url:null;
@@ -135,7 +137,7 @@ export default async function Home({
     <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(structuredData)}}/>
     <PageView locale={locale}/>
     <MotionEffects/>
-    <PublicHeader locale={locale} amazonUrl={amazonUrl} patreonUrl={patreonUrl}/>
+    <PublicHeader locale={locale} amazonUrl={amazonUrl} patreonUrl={patreonUrl} shopEnabled={!!shop.enabled&&!!shop.shop_url}/>
 
     <main>
       <section className="hero">
@@ -385,6 +387,8 @@ export default async function Home({
         </section>
       </div>
 
+      <FragmentunShop locale={locale} content={shop}/>
+
       <section className="ctaFinal">
         <div className="container finalCtaMaster">
           <div className="kicker">{locale==="es"?"EL DESPERTAR YA COMENZÓ":"THE AWAKENING HAS BEGUN"}</div>
@@ -421,6 +425,7 @@ export default async function Home({
           <a href="#comunidad-publica">{locale==="es"?"Comunidad":"Community"}</a>
           <a href="#lectores">{locale==="es"?"Reseñas":"Reviews"}</a>
           <a href="#capitulo">{locale==="es"?"Capítulo 1":"Chapter 1"}</a>
+          {!!shop.enabled&&!!shop.shop_url&&<a href="#tienda">{locale==="es"?"Tienda FRAGMENTUN":"FRAGMENTUN Store"}</a>}
         </div>
         <div className="approvedFooterCol">
           <h3>{locale==="es"?"Legal":"Legal"}</h3>
