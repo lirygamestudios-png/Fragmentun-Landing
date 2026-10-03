@@ -52,6 +52,8 @@ export function OfficialVideo({
     return()=>{document.body.style.overflow="";window.removeEventListener("keydown",onKey)};
   },[open]);
 
+  if(!enabled)return null;
+
   function openVideo(){
     if(!enabled)return;
     fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
