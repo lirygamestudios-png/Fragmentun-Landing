@@ -12,6 +12,7 @@ import { ReviewsShowcase } from "../../components/ReviewsShowcase";
 import { OfficialVideo } from "../../components/OfficialVideo";
 import { FragmentunShop } from "../../components/FragmentunShop";
 import { CmsSectionMedia } from "../../components/CmsSectionMedia";
+import { NewsConversionCards } from "../../components/NewsConversionCards";
 import { copy,locales,type Locale } from "../../lib/i18n";
 import { getBooks,getLocalizedContent,getPublishedReviews } from "../../lib/content";
 
@@ -326,29 +327,7 @@ export default async function Home({
               </div>
             </article>
 
-            <article className="newsCard">
-              <div className="newsVisual lumenNews"/>
-              <div className="newsCopy">
-                <span>{locale==="es"?"EXPERIENCIA":"EXPERIENCE"}</span>
-                <h3>{locale==="es"?"Lumen se abre a la exploración":"Lumen opens for exploration"}</h3>
-                <p>{locale==="es"
-                  ?"El mapa interactivo evoluciona hacia una experiencia 3D con territorios y puntos narrativos."
-                  :"The interactive map is evolving into a 3D experience with territories and narrative points."}</p>
-                <a className="newsLink" href={`/${locale}/mapa`}>{locale==="es"?"Explorar el mapa →":"Explore the map →"}</a>
-              </div>
-            </article>
-
-            <article className="newsCard">
-              <div className="newsVisual testNews"/>
-              <div className="newsCopy">
-                <span>{locale==="es"?"INTERACTIVO":"INTERACTIVE"}</span>
-                <h3>{locale==="es"?"¿Qué emoción domina tu perfil?":"Which emotion shapes your profile?"}</h3>
-                <p>{locale==="es"
-                  ?"El Test Emocional conecta tus respuestas con los arquetipos de FRAGMENTUN."
-                  :"The Emotional Test connects your answers with FRAGMENTUN archetypes."}</p>
-                <a className="newsLink" href={`/${locale}/test`}>{locale==="es"?"Hacer el test →":"Take the test →"}</a>
-              </div>
-            </article>
+            <NewsConversionCards locale={locale} news={news} shareReward={shareReward}/>
           </div>
         </div>
       </section>
