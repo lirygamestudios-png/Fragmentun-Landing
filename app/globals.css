@@ -2350,3 +2350,56 @@ input::placeholder{color:#8090a5}
   .masterAuthorGrid blockquote{margin-top:12px!important}
   .shareDropdown{left:0;right:auto;bottom:calc(100% + 8px)}
 }
+
+
+/* FRAGMENTUN integrated share popover */
+.shareDropdown{
+  background:
+    radial-gradient(circle at 84% 10%,rgba(74,144,217,.16),transparent 32%),
+    radial-gradient(circle at 12% 0%,rgba(201,168,76,.10),transparent 28%),
+    linear-gradient(160deg,#0A1628 0%,#081522 62%,#06111d 100%)!important;
+  border:1px solid rgba(201,168,76,.42)!important;
+  box-shadow:
+    0 24px 64px rgba(0,0,0,.62),
+    0 0 0 1px rgba(74,144,217,.08) inset,
+    0 0 28px rgba(201,168,76,.08)!important;
+  color:#eaf2f8;
+}
+.shareDropdown:before{
+  content:"";
+  position:absolute;
+  left:18px;right:18px;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,#C9A84C,transparent);
+  opacity:.7;
+}
+.shareDropdown strong{
+  color:#C9A84C!important;
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:.9rem!important;
+  letter-spacing:.03em;
+}
+.shareDropdown small{
+  color:#9fb2c4!important;
+}
+.shareGrid a,.shareGrid button{
+  background:linear-gradient(180deg,rgba(18,42,64,.92),rgba(10,27,43,.96))!important;
+  border:1px solid rgba(74,144,217,.28)!important;
+  color:#eef6fb!important;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease;
+}
+.shareGrid a:hover,.shareGrid button:hover,
+.shareGrid a:focus-visible,.shareGrid button:focus-visible{
+  transform:translateY(-1px);
+  border-color:rgba(201,168,76,.68)!important;
+  background:linear-gradient(180deg,rgba(24,58,88,.98),rgba(12,33,52,.98))!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.3),0 0 18px rgba(74,144,217,.10);
+}
+.shareButton{
+  border-color:rgba(201,168,76,.42)!important;
+  background:linear-gradient(135deg,rgba(201,168,76,.12),rgba(74,144,217,.10))!important;
+  color:#f2d47f!important;
+}
+.shareButton:hover{
+  background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(74,144,217,.16))!important;
+  border-color:rgba(201,168,76,.72)!important;
+}
