@@ -185,16 +185,70 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                   }
 
                   try{
+                    setRewardReady(false);
+                    setRewardOpen(false);
                     setShareStatus("sharing");
+
+                    let shareSurfaceWasOpen=false;
+                    let shareResolved=false;
+                    let rewardShown=false;
+                    let returnTimeout:number|undefined;
+
+                    const cleanupShareReturn=()=>{
+                      window.removeEventListener("blur",onBlur);
+                      window.removeEventListener("focus",onFocus);
+                      window.removeEventListener("pointerdown",onPointerReturn,true);
+                      document.removeEventListener("visibilitychange",onVisibility);
+                      if(returnTimeout)window.clearTimeout(returnTimeout);
+                    };
+
+                    const revealReward=()=>{
+                      if(rewardShown||!shareResolved)return;
+                      if(document.visibilityState!=="visible"||!document.hasFocus())return;
+                      rewardShown=true;
+                      cleanupShareReturn();
+
+                      fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+                        event_name:"share_reward_unlock",locale,path:window.location.pathname,metadata:{placement:"value_strip",result:"completed_after_return"}
+                      }),keepalive:true}).catch(()=>{});
+
+                      window.setTimeout(()=>{
+                        setRewardReady(true);
+                        setRewardOpen(true);
+                        setShareStatus("idle");
+                      },220);
+                    };
+
+                    const onBlur=()=>{shareSurfaceWasOpen=true;};
+                    const onFocus=()=>{
+                      if(shareResolved)revealReward();
+                    };
+                    const onPointerReturn=()=>{
+                      if(shareResolved)revealReward();
+                    };
+                    const onVisibility=()=>{
+                      if(document.visibilityState==="hidden"){
+                        shareSurfaceWasOpen=true;
+                        return;
+                      }
+                      if(shareResolved)revealReward();
+                    };
+
+                    window.addEventListener("blur",onBlur,{once:true});
+                    window.addEventListener("focus",onFocus,{once:true});
+                    window.addEventListener("pointerdown",onPointerReturn,{capture:true,once:true});
+                    document.addEventListener("visibilitychange",onVisibility);
+
                     await navigator.share({title:"FRAGMENTUN",text,url});
+                    shareResolved=true;
 
-                    fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-                      event_name:"share_reward_unlock",locale,path:window.location.pathname,metadata:{placement:"value_strip",result:"completed"}
-                    }),keepalive:true}).catch(()=>{});
-
-                    setRewardReady(true);
-                    setRewardOpen(true);
-                    setShareStatus("idle");
+                    // Some systems resolve navigator.share before their native social sheet
+                    // has actually disappeared. Never open the reward immediately.
+                    // If the page genuinely left focus, wait for focus/visibility to return.
+                    // Otherwise the first interaction back on the page is the safe fallback.
+                    if(shareSurfaceWasOpen){
+                      returnTimeout=window.setTimeout(revealReward,120);
+                    }
                   }catch(error){
                     const aborted=error instanceof DOMException&&error.name==="AbortError";
                     if(!aborted){
