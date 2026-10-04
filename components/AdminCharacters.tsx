@@ -73,14 +73,14 @@ export function AdminCharacters(){
     <section>
       {!current?<div className="card"><p>No hay personajes todavía.</p></div>:<div className="card adminCharacterCard">
         <div className="adminPanelHeader"><div><div className="kicker">Archivo de personaje</div><h2>{current.name||"Nuevo personaje"}</h2></div><span className="adminPanelBadge">{current.status}</span></div>
-        <div className="adminFormGrid">
+        <div className="adminModuleSectionHead"><div><div className="kicker">Identidad</div><h3>Datos principales</h3></div></div><div className="adminFormGrid">
           <label>Nombre<input value={current.name||""} onChange={e=>update("name",e.target.value)}/></label>
           <label>Identificador interno<input value={current.slug||""} onChange={e=>update("slug",e.target.value)}/></label>
           <label>Territorio<input value={current.territory||""} onChange={e=>update("territory",e.target.value)}/></label>
           <label>Orden<input type="number" value={current.sort_order??0} onChange={e=>update("sort_order",Number(e.target.value))}/></label>
         </div>
 
-        <div className="adminLangGrid" style={{marginTop:18}}>
+        <div className="adminModuleSectionHead" style={{marginTop:22}}><div><div className="kicker">Presentación pública</div><h3>Contenido bilingüe</h3></div></div><div className="adminLangGrid" style={{marginTop:0}}>
           <div>
             <div className="kicker">Español</div>
             <label>Rol</label><input value={current.role_es||""} onChange={e=>update("role_es",e.target.value)}/>
@@ -93,7 +93,7 @@ export function AdminCharacters(){
           </div>
         </div>
 
-        <div className="adminFormGrid" style={{marginTop:16}}>
+        <div className="adminModuleSectionHead" style={{marginTop:22}}><div><div className="kicker">Publicación</div><h3>Medios y estado</h3></div></div><div className="adminFormGrid" style={{marginTop:0}}>
           <label>Imagen
             <select value={current.image_asset_id||""} onChange={e=>update("image_asset_id",e.target.value||null)}>
               <option value="">Sin imagen</option>
