@@ -16,6 +16,11 @@ export const metadata: Metadata = {
   creator:"José Liranzo",
   publisher:"LIRYGAMES STUDIOS",
   category:"Books",
+  icons:{
+    icon:[{url:"/fragmentun-mark.png",type:"image/png",sizes:"192x192"}],
+    shortcut:"/fragmentun-mark.png",
+    apple:"/fragmentun-mark.png"
+  },
   openGraph:{
     type:"website",
     siteName:"FRAGMENTUN",
