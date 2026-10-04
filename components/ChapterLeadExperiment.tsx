@@ -2,6 +2,7 @@
 import { useEffect,useState } from "react";
 import { LeadForm } from "./LeadForm";
 import type { Locale } from "../lib/i18n";
+import { analyticsAttribution } from "../lib/analytics-client";
 
 const KEY="fragmentun_exp_chapter_cta_v1";
 
@@ -30,10 +31,7 @@ export function ChapterLeadExperiment({
         event_name:"experiment_view",
         locale,
         path:`/${locale}`,
-        source:sessionStorage.getItem("utm_source")||"",
-        medium:sessionStorage.getItem("utm_medium")||"",
-        campaign:sessionStorage.getItem("utm_campaign")||"",
-        content:sessionStorage.getItem("utm_content")||"",
+        ...analyticsAttribution(),
         metadata:{experiment:"chapter_cta_v1",variant:v}
       }),
       keepalive:true
