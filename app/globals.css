@@ -3605,3 +3605,36 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
     height:144px!important
   }
 }
+
+
+/* Restore canonical Lumen CMS image above legacy fallback artwork */
+.masterLumenSection:has(.lumenCmsMedia) {
+  background:#06101b!important;
+}
+.masterLumenSection:has(.lumenCmsMedia)::before,
+.masterLumenSection:has(.lumenCmsMedia)::after{
+  display:none!important;
+}
+.masterLumenSection .lumenCmsMedia{
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  display:block!important;
+  opacity:1!important;
+}
+.masterLumenSection .lumenCmsMedia img,
+.masterLumenSection .lumenCmsMedia video{
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center center!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+.masterLumenSection .lumenMediaOverlay{
+  z-index:1!important;
+}
+.masterLumenSection .cmsMediaContent{
+  position:relative!important;
+  z-index:2!important;
+}
