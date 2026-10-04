@@ -57,7 +57,10 @@ export function AdminIntegrationLogs(){
                       {(a.steps||[]).map((s:any)=><li key={s.id||s.type}>
                         <strong>{s.type||"paso"}</strong>
                         {s.subject?<> · {s.subject}</>:null}
+                        {s.from_name?<> · De: {s.from_name}</>:null}
                         {s.value!=null||s.unit?<> · {String(s.value??"")} {s.unit||""}</>:null}
+                        {s.preview_url?<>{' '}· <a href={s.preview_url} target="_blank" rel="noreferrer">Ver correo</a></>:null}
+                        {s.screenshot_url?<>{' '}· <a href={s.screenshot_url} target="_blank" rel="noreferrer">Captura</a></>:null}
                       </li>)}
                     </ol>}
                   </td>
