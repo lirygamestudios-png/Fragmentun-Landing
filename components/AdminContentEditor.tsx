@@ -9,14 +9,22 @@ type Row={
 };
 type MediaAsset={id:string;slug:string;kind:string;storage_path:string;public_visible:boolean};
 const SECTION_LABELS:Record<string,string>={
-  "home.hero":"Portada principal",
-  "home.why":"Por qué FRAGMENTUN",
-  "home.lumen":"Lumen",
+  "home.hero":"Inicio",
+  "home.characters":"Personajes",
   "home.author":"Autor",
+  "home.why":"¿Por qué FRAGMENTUN?",
+  "home.lumen":"Lumen",
+  "home.official_video":"Video oficial · FRAGMENTUN I",
+  "home.chapter":"Entra en Lumen",
+  "home.news":"Noticias del Universo",
+  "home.test":"Test emocional",
+  "home.map":"Mapa interactivo de Lumen",
   "home.community":"Comunidad",
-  "home.final_cta":"Llamado final",
-  "home.news":"Noticias",
-  "home.saga":"Saga"
+  "home.share_reward":"Arte conceptual gratis",
+  "home.shop":"Tienda FRAGMENTUN",
+  "home.final_cta":"El despertar ya comenzó",
+  "home.footer":"Pie de página",
+  "home.saga":"La saga"
 };
 const FIELD_LABELS:Record<string,string>={
   kicker:"Encabezado",
@@ -222,12 +230,12 @@ export function AdminContentEditor(){
   return <div className="adminEditorGrid">
     <aside className="adminList">
       {rows.map(row=><button key={row.content_key} onClick={()=>choose(row)} className={selected?.content_key===row.content_key?"active":""}>
-        <strong>{sectionLabel(row.content_key)}</strong><span>{row.section}</span>
+        <strong>{sectionLabel(row.content_key)}</strong><span>FrontDesk</span>
       </button>)}
     </aside>
     <section className="card">
       {!selected?<p>Selecciona una sección para editar.</p>:<>
-        <div className="kicker">{selected.section}</div>
+        <div className="kicker">FrontDesk · Sección editable</div>
         <h2>{sectionLabel(selected.content_key)}</h2>
         {selected.content_key==="home.author"&&<div className="adminAuthorVisual">
           <div className="adminAuthorVisualHead"><div><div className="kicker">Imagen del autor</div><h3>Fotografía pública</h3></div><span>ES + EN</span></div>
