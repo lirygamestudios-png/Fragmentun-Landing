@@ -220,9 +220,20 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                       if(pageBlurred||pageHidden||!document.hasFocus()||document.visibilityState!=="visible"){
                         window.addEventListener("focus",onReturn);
                         document.addEventListener("visibilitychange",onVisibilityReturn);
-                        timer=window.setTimeout(finish,5000);
                       }else{
-                        timer=window.setTimeout(finish,900);
+                        // Some desktop share surfaces keep the page technically focused even
+                        // while their UI remains open. In that case never guess with a timer:
+                        // wait for the first real interaction back on FRAGMENTUN.
+                        const onPointerReturn=()=>{
+                          window.removeEventListener("keydown",onKeyReturn);
+                          finish();
+                        };
+                        const onKeyReturn=()=>{
+                          window.removeEventListener("pointerdown",onPointerReturn,true);
+                          finish();
+                        };
+                        window.addEventListener("pointerdown",onPointerReturn,{capture:true,once:true});
+                        window.addEventListener("keydown",onKeyReturn,{once:true});
                       }
                     });
 
