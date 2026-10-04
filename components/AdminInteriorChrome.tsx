@@ -10,6 +10,7 @@ const items=[
   ["Medios","/admin/medios"],
   ["Analítica","/admin/analytics"],
   ["Suscriptores","/admin/leads"],
+  ["Integraciones","/admin/integrations"],
   ["Mapa","/admin/mapa"],
   ["Estado","/admin/status"]
 ] as const;
