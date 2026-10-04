@@ -59,7 +59,8 @@ export async function POST(request:NextRequest){
       groups:[group],
       status:"active"
     }),
-    cache:"no-store"
+    cache:"no-store",
+    signal:AbortSignal.timeout(8000)
   }).catch(()=>null);
 
   if(!ml?.ok){
