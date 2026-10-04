@@ -122,7 +122,7 @@ export default async function Home({
       author:{"@type":"Person",name:"José Liranzo"},
       inLanguage:locale,
       url:`${site}/${locale}`,
-      image:`${site}/fragmentun-i-cover-es.jpg`,
+      image:firstBook?.cover_url||`${site}/fragmentun-i-cover-es.jpg`,
       sameAs:["https://www.amazon.com/dp/B0HBLTHT8S",patreonUrl,...socialItems.map(x=>x.url).filter(Boolean)],
       publisher:{"@type":"Organization",name:"LIRYGAMES STUDIOS"}
     },
@@ -315,7 +315,7 @@ export default async function Home({
 
           <div className="newsGrid">
             <article className="newsCard featured">
-              <div className="newsVisual bookNews"><img src="/fragmentun-i-cover-es.jpg" alt="FRAGMENTUN I"/></div>
+              <div className="newsVisual bookNews"><img src={firstBook?.cover_url||"/fragmentun-i-cover-es.jpg"} alt={firstBook?.cover_alt||"FRAGMENTUN I"}/></div>
               <div className="newsCopy">
                 <span>{locale==="es"?"PUBLICACIÓN":"RELEASE"}</span>
                 <h3>{locale==="es"?"FRAGMENTUN I ya está disponible":"FRAGMENTUN I is now available"}</h3>
