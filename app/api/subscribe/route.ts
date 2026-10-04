@@ -4,25 +4,45 @@ import { consumePublicRateLimit } from "../../../lib/rate-limit";
 const ML="https://connect.mailerlite.com/api/subscribers";
 const ML_GROUPS="https://connect.mailerlite.com/api/groups";
 
-async function resolveMailerLiteGroup(token:string,raw:string){
+function normalizeGroupName(value:string){
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+}
+
+async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
   const value=String(raw||"").trim();
-  if(!value) return null;
-  if(/^\d+$/.test(value)) return Number(value);
+  if(!value) return {id:null as number|null,debug:"empty configured group"};
+  if(/^\d+$/.test(value)) return {id:Number(value),debug:null};
 
   const embedded=value.match(/(?:^|\D)(\d{8,})(?:\D|$)/);
-  if(embedded?.[1]) return Number(embedded[1]);
+  if(embedded?.[1]) return {id:Number(embedded[1]),debug:null};
 
-  const res=await fetch(`${ML_GROUPS}?filter[name]=${encodeURIComponent(value)}&limit=100`,{
+  const res=await fetch(`${ML_GROUPS}?limit=100`,{
     headers:{Authorization:`Bearer ${token}`,Accept:"application/json"},
     cache:"no-store",
     signal:AbortSignal.timeout(8000)
   }).catch(()=>null);
-  if(!res?.ok) return null;
+  if(!res?.ok) return {id:null,debug:res?`groups endpoint HTTP ${res.status}`:"groups endpoint request failed"};
 
   const data=await res.json().catch(()=>({}));
   const groups=Array.isArray(data?.data)?data.data:[];
-  const exact=groups.find((g:any)=>String(g?.name||"").trim().toLowerCase()===value.toLowerCase());
-  return exact?.id?Number(exact.id):null;
+  const normalizedConfigured=normalizeGroupName(value);
+
+  const exact=groups.find((g:any)=>normalizeGroupName(String(g?.name||""))===normalizedConfigured);
+  if(exact?.id) return {id:Number(exact.id),debug:null};
+
+  const candidates=groups.filter((g:any)=>{
+    const n=normalizeGroupName(String(g?.name||""));
+    if(!n.includes("fragmentun")) return false;
+    if(locale==="es") return /(^| )(es|esp|espanol|spanish)( |$)/.test(n) || n.includes("cap1");
+    return /(^| )(en|eng|english|ingles)( |$)/.test(n) || n.includes("cap1");
+  });
+
+  if(candidates.length===1&&candidates[0]?.id){
+    return {id:Number(candidates[0].id),debug:null};
+  }
+
+  const preview=groups.slice(0,20).map((g:any)=>`${g?.id}:${g?.name}`).join(" | ");
+  return {id:null,debug:`configured=${value}; candidates=${candidates.length}; available=${preview}`.slice(0,900)};
 }
 
 function clean(value:FormDataEntryValue|null,max=200){
@@ -89,10 +109,11 @@ export async function POST(request:NextRequest){
   let lastError:string|null=null;
 
   if(token&&configuredGroup){
-    const group=await resolveMailerLiteGroup(token,configuredGroup);
+    const resolvedGroup=await resolveMailerLiteGroup(token,configuredGroup,locale);
+    const group=resolvedGroup.id;
     if(!group){
       mailerliteStatus="error";
-      lastError="MailerLite group could not be resolved to a numeric group ID";
+      lastError=`MailerLite group could not be resolved — ${resolvedGroup.debug||"unknown"}`;
     }else{
     const ml=await fetch(ML,{
       method:"POST",
