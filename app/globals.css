@@ -3403,3 +3403,96 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
 @media(max-width:480px){
   .adminMediaGallery{grid-template-columns:1fr}
 }
+
+
+/* Analytics, leads and map premium hierarchy */
+.adminModuleToolbar,
+.adminModuleSectionHead{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+  margin:0 0 22px
+}
+.adminModuleToolbar h2,
+.adminModuleSectionHead h2{
+  margin:.2rem 0 0;
+  font-size:clamp(1.7rem,3vw,2.6rem)
+}
+.adminModuleSectionHead>span{
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(74,144,217,.24);
+  background:rgba(74,144,217,.07);
+  color:#8fc1ed;
+  font-size:.7rem;
+  font-weight:800
+}
+.adminAnalyticsModule>.kpis,
+.adminLeadsModule>.kpis{
+  margin-bottom:24px
+}
+.adminAnalyticsModule .kpi,
+.adminLeadsModule .kpi{
+  min-height:118px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 85% 16%,rgba(201,168,76,.09),transparent 34%),
+    linear-gradient(180deg,#0f2135,#091726);
+  border-color:rgba(255,255,255,.08);
+  box-shadow:0 18px 50px rgba(0,0,0,.24)
+}
+.adminAnalyticsModule .kpi strong,
+.adminLeadsModule .kpi strong{font-size:clamp(1.7rem,3vw,2.3rem)}
+.adminInsightPanel{
+  margin-top:24px!important;
+  padding:22px
+}
+.adminInsightPanel>h2{font-size:clamp(1.35rem,2.2vw,1.85rem);margin-top:0}
+.adminInsightPanel>.note{
+  padding:10px 12px;
+  border-radius:12px;
+  background:rgba(74,144,217,.05);
+  border:1px solid rgba(74,144,217,.12)
+}
+.adminFilterPanel,
+.adminLeadTableCard{margin-top:24px!important}
+.adminFilterPanel .adminFormGrid{
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  align-items:center
+}
+.adminLeadTableCard .adminTable td:last-child{min-width:190px}
+.adminLeadTableCard .heroActions{margin:0;gap:6px}
+.adminLeadTableCard .btn{padding:9px 12px;font-size:.72rem}
+.adminMapModule .adminBookGrid{
+  grid-template-columns:repeat(2,minmax(0,1fr))
+}
+.adminMapRegionCard,
+.adminMapPointCard{
+  position:relative;
+  overflow:hidden
+}
+.adminMapRegionCard:before,
+.adminMapPointCard:before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:3px;
+  background:linear-gradient(180deg,#C9A84C,#4A90D9);
+  opacity:.7
+}
+.adminMapRegionCard .kicker,
+.adminMapPointCard .kicker{margin-bottom:12px}
+@media(max-width:1100px){
+  .adminFilterPanel .adminFormGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:800px){
+  .adminMapModule .adminBookGrid{grid-template-columns:1fr}
+  .adminModuleToolbar,
+  .adminModuleSectionHead{align-items:stretch;flex-direction:column}
+}
+@media(max-width:620px){
+  .adminFilterPanel .adminFormGrid{grid-template-columns:1fr}
+}
