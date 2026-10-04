@@ -18,7 +18,7 @@ export function AdminAnalytics(){
   function exportCsv(){window.location.href="/api/admin/analytics?format=csv"}
 
   return <div className="adminAnalyticsModule">
-    <div className="adminModuleToolbar"><div><div className="kicker">Inteligencia del embudo</div><h2>Rendimiento y conversión</h2></div><button className="btn btnGhost" onClick={exportCsv}>Exportar Analytics CSV</button></div><div style={{display:"none"}}>
+    <div className="adminModuleToolbar"><div><div className="kicker">Inteligencia del embudo</div><h2>Rendimiento y conversión</h2></div><button className="btn btnGhost" onClick={exportCsv}>Descargar informe</button></div><div style={{display:"none"}}>
     </div>
     <div className="kpis">
       <div className="kpi"><span>Sesiones · 30 días</span><strong>{data.sessions||0}</strong></div>
