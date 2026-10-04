@@ -36,7 +36,7 @@ export function AdminMediaLibrary(){
 
   return <div>
     <div className="card adminMediaUploadCard">
-      <div className="adminPanelHeader"><div><div className="kicker">Biblioteca oficial</div><h2>Subir recurso</h2></div><span className="adminPanelBadge">FRAGMENTUN MEDIA</span></div>
+      <div className="adminPanelHeader"><div><div className="kicker">Biblioteca oficial</div><h2>Subir archivo</h2></div><span className="adminPanelBadge">BIBLIOTECA</span></div>
       <div className="adminFormGrid">
         <input placeholder="slug-ejemplo" value={form.slug} onChange={e=>setForm({...form,slug:e.target.value})}/>
         <select value={form.kind} onChange={e=>setForm({...form,kind:e.target.value})}><option value="image">Imagen</option><option value="pdf">PDF</option><option value="video">Video</option><option value="press">Press kit</option></select>
@@ -44,7 +44,7 @@ export function AdminMediaLibrary(){
         <input type="file" onChange={e=>setFile(e.target.files?.[0]||null)}/>
         <input placeholder="Alt ES" value={form.alt_es} onChange={e=>setForm({...form,alt_es:e.target.value})}/>
         <input placeholder="Alt EN" value={form.alt_en} onChange={e=>setForm({...form,alt_en:e.target.value})}/>
-        <button className="btn btnPrimary" onClick={upload}>Subir recurso</button>
+        <button className="btn btnPrimary" onClick={upload}>Subir archivo</button>
       </div>
       <p className="note">Usa “Official media” para portada publicada y arte aprobado. “Editorial media” permanece privado.</p>
       <p>{msg}</p>
