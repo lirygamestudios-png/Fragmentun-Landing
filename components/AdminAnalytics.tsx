@@ -17,9 +17,8 @@ export function AdminAnalytics(){
 
   function exportCsv(){window.location.href="/api/admin/analytics?format=csv"}
 
-  return <div>
-    <div className="heroActions" style={{justifyContent:"flex-end",marginBottom:18}}>
-      <button className="btn btnGhost" onClick={exportCsv}>Exportar Analytics CSV</button>
+  return <div className="adminAnalyticsModule">
+    <div className="adminModuleToolbar"><div><div className="kicker">Inteligencia del embudo</div><h2>Rendimiento y conversión</h2></div><button className="btn btnGhost" onClick={exportCsv}>Exportar Analytics CSV</button></div><div style={{display:"none"}}>
     </div>
     <div className="kpis">
       <div className="kpi"><span>Sesiones · 30 días</span><strong>{data.sessions||0}</strong></div>
@@ -35,7 +34,7 @@ export function AdminAnalytics(){
       <div className="kpi"><span>Test completados</span><strong>{t.test_complete||0}</strong></div>
     </div>
 
-    <div className="card" style={{marginTop:24}}>
+    <div className="card adminInsightPanel">
       <h2>Embudo comercial · sesiones</h2>
       <p className="note">Cobertura del nuevo seguimiento por sesión: {pct(data.session_tracking_coverage)}. Los eventos históricos anteriores se conservan por separado y no se mezclan con este embudo.</p>
       <div className="kpis">
@@ -50,7 +49,7 @@ export function AdminAnalytics(){
       </div>
     </div>
 
-    <div className="card" style={{marginTop:24}}>
+    <div className="card adminInsightPanel">
       <h2>Histórico agregado</h2>
       <div className="kpis">
         <div className="kpi"><span>Page views históricos</span><strong>{data.historical?.page_views||0}</strong></div>
@@ -60,7 +59,7 @@ export function AdminAnalytics(){
       </div>
     </div>
 
-    <div className="card" style={{marginTop:24}}>
+    <div className="card adminInsightPanel">
       <h2>Comunidad y redes sociales</h2>
       <div className="kpis">
         <div className="kpi"><span>Instagram</span><strong>{community.instagram||0}</strong></div>
@@ -70,7 +69,7 @@ export function AdminAnalytics(){
       </div>
     </div>
 
-    {Object.keys(experiments).length>0&&<div className="card" style={{marginTop:24}}>
+    {Object.keys(experiments).length>0&&<div className="card adminInsightPanel">
       <h2>Experimentos A/B</h2>
       <div className="adminTableWrap"><table className="adminTable">
         <thead><tr><th>Experimento</th><th>Variante</th><th>Vistas</th><th>Leads</th><th>Conversión</th></tr></thead>
@@ -84,7 +83,7 @@ export function AdminAnalytics(){
       </table></div>
     </div>}
 
-    <div className="card" style={{marginTop:24}}>
+    <div className="card adminInsightPanel">
       <h2>Perfiles del Test Emocional</h2>
       <div className="kpis">
         <div className="kpi"><span>Vorax</span><strong>{tp.vorax||0}</strong></div>
@@ -95,7 +94,7 @@ export function AdminAnalytics(){
       </div>
     </div>
 
-    <div className="card" style={{marginTop:24}}>
+    <div className="card adminInsightPanel">
       <h2>Estado de captación</h2>
       <div className="kpis">
         <div className="kpi"><span>MailerLite sincronizados</span><strong>{ml.synced||0}</strong></div>
@@ -104,7 +103,7 @@ export function AdminAnalytics(){
       </div>
     </div>
 
-    <div className="card" style={{marginTop:24}}>
+    <div className="card adminInsightPanel">
       <h2>Conversión por fuente</h2>
       <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Fuente</th><th>Visitas</th><th>Leads</th><th>Conv.</th><th>Amazon</th><th>CTR Amazon</th><th>Patreon</th></tr></thead><tbody>
         {(data.by_source||[]).map((r:any)=><tr key={r.source}>
@@ -113,7 +112,7 @@ export function AdminAnalytics(){
       </tbody></table></div>
     </div>
 
-    <div className="card" style={{marginTop:24}}>
+    <div className="card adminInsightPanel">
       <h2>Rendimiento por idioma</h2>
       <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Idioma</th><th>Visitas</th><th>Leads</th><th>Conv.</th><th>Amazon</th><th>Patreon</th></tr></thead><tbody>
         {(data.by_locale||[]).map((r:any)=><tr key={r.locale}>
