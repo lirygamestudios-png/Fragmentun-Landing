@@ -6,8 +6,8 @@ function pct(v:any){return Number(v||0).toFixed(1)+"%";}
 export function AdminAnalytics(){
   const[data,setData]=useState<any>(null);
   useEffect(()=>{fetch("/api/admin/analytics").then(r=>r.json()).then(setData)},[]);
-  if(!data)return <p>Cargando analytics…</p>;
-  if(data.error)return <p>No fue posible cargar analytics.</p>;
+  if(!data)return <p>Cargando analítica…</p>;
+  if(data.error)return <p>No fue posible cargar la analítica.</p>;
 
   const t=data.totals||{};
   const ml=data.mailerlite||{};
@@ -22,9 +22,9 @@ export function AdminAnalytics(){
     </div>
     <div className="kpis">
       <div className="kpi"><span>Sesiones · 30 días</span><strong>{data.sessions||0}</strong></div>
-      <div className="kpi"><span>Page views</span><strong>{t.page_view||0}</strong></div>
-      <div className="kpi"><span>Leads</span><strong>{data.lead_count||0}</strong></div>
-      <div className="kpi"><span>Conversión sesión → lead</span><strong>{pct(data.conversion_rate)}</strong></div>
+      <div className="kpi"><span>Vistas de página</span><strong>{t.page_view||0}</strong></div>
+      <div className="kpi"><span>Suscriptores</span><strong>{data.lead_count||0}</strong></div>
+      <div className="kpi"><span>Conversión sesión → suscriptor</span><strong>{pct(data.conversion_rate)}</strong></div>
       <div className="kpi"><span>Clics Amazon</span><strong>{t.amazon_click||0}</strong></div>
       <div className="kpi"><span>CTR Amazon</span><strong>{pct(data.amazon_ctr)}</strong></div>
       <div className="kpi"><span>Clics Patreon</span><strong>{t.patreon_click||0}</strong></div>
@@ -40,19 +40,19 @@ export function AdminAnalytics(){
       <div className="kpis">
         <div className="kpi"><span>Sesiones</span><strong>{data.funnel?.sessions||0}</strong></div>
         <div className="kpi"><span>Capítulo</span><strong>{data.funnel?.chapter_sessions||0}</strong></div>
-        <div className="kpi"><span>Leads</span><strong>{data.funnel?.lead_sessions||0}</strong></div>
+        <div className="kpi"><span>Suscriptores</span><strong>{data.funnel?.lead_sessions||0}</strong></div>
         <div className="kpi"><span>Amazon</span><strong>{data.funnel?.amazon_sessions||0}</strong></div>
         <div className="kpi"><span>Patreon</span><strong>{data.funnel?.patreon_sessions||0}</strong></div>
         <div className="kpi"><span>Recompensa desbloqueada</span><strong>{data.funnel?.share_unlock_sessions||0}</strong></div>
         <div className="kpi"><span>Arte descargado</span><strong>{data.funnel?.share_download_sessions||0}</strong></div>
-        <div className="kpi"><span>Share → descarga</span><strong>{pct(data.share_download_rate)}</strong></div>
+        <div className="kpi"><span>Compartir → descarga</span><strong>{pct(data.share_download_rate)}</strong></div>
       </div>
     </div>
 
     <div className="card adminInsightPanel">
       <h2>Histórico agregado</h2>
       <div className="kpis">
-        <div className="kpi"><span>Page views históricos</span><strong>{data.historical?.page_views||0}</strong></div>
+        <div className="kpi"><span>Vistas de página históricos</span><strong>{data.historical?.page_views||0}</strong></div>
         <div className="kpi"><span>Clics Amazon históricos</span><strong>{data.historical?.amazon_clicks||0}</strong></div>
         <div className="kpi"><span>CTR Amazon histórico</span><strong>{pct(data.historical?.amazon_ctr_event)}</strong></div>
         <div className="kpi"><span>Clics Patreon históricos</span><strong>{data.historical?.patreon_clicks||0}</strong></div>
@@ -70,9 +70,9 @@ export function AdminAnalytics(){
     </div>
 
     {Object.keys(experiments).length>0&&<div className="card adminInsightPanel">
-      <h2>Experimentos A/B</h2>
+      <h2>Pruebas comparativas</h2>
       <div className="adminTableWrap"><table className="adminTable">
-        <thead><tr><th>Experimento</th><th>Variante</th><th>Vistas</th><th>Leads</th><th>Conversión</th></tr></thead>
+        <thead><tr><th>Experimento</th><th>Variante</th><th>Vistas</th><th>Suscriptores</th><th>Conversión</th></tr></thead>
         <tbody>{Object.entries(experiments).flatMap(([exp,v]:any)=>
           Array.from(new Set([...Object.keys(v.views||{}),...Object.keys(v.leads||{})])).map((variant:any)=>{
             const views=v.views?.[variant]||0;
@@ -105,7 +105,7 @@ export function AdminAnalytics(){
 
     <div className="card adminInsightPanel">
       <h2>Conversión por fuente</h2>
-      <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Fuente</th><th>Visitas</th><th>Leads</th><th>Conv.</th><th>Amazon</th><th>CTR Amazon</th><th>Patreon</th></tr></thead><tbody>
+      <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Fuente</th><th>Visitas</th><th>Suscriptores</th><th>Conv.</th><th>Amazon</th><th>CTR Amazon</th><th>Patreon</th></tr></thead><tbody>
         {(data.by_source||[]).map((r:any)=><tr key={r.source}>
           <td>{r.source}</td><td>{r.visits}</td><td>{r.leads}</td><td>{pct(r.conversion)}</td><td>{r.amazonClicks}</td><td>{pct(r.amazon_ctr)}</td><td>{r.patreonClicks||0}</td>
         </tr>)}
@@ -114,7 +114,7 @@ export function AdminAnalytics(){
 
     <div className="card adminInsightPanel">
       <h2>Rendimiento por idioma</h2>
-      <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Idioma</th><th>Visitas</th><th>Leads</th><th>Conv.</th><th>Amazon</th><th>Patreon</th></tr></thead><tbody>
+      <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Idioma</th><th>Visitas</th><th>Suscriptores</th><th>Conv.</th><th>Amazon</th><th>Patreon</th></tr></thead><tbody>
         {(data.by_locale||[]).map((r:any)=><tr key={r.locale}>
           <td>{String(r.locale).toUpperCase()}</td><td>{r.visits}</td><td>{r.leads}</td><td>{pct(r.conversion)}</td><td>{r.amazonClicks}</td><td>{r.patreonClicks||0}</td>
         </tr>)}
