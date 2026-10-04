@@ -238,8 +238,17 @@ export default async function Home({
         </div>
       </section>
 
-      <section className="section masterLumenSection cmsMediaSection" id="lumen">
-        <CmsSectionMedia content={lumen} className="lumenCmsMedia"/>
+      <section
+        className="section masterLumenSection cmsMediaSection"
+        id="lumen"
+        style={lumen.image_url?{
+          backgroundImage:`linear-gradient(90deg,rgba(4,10,18,.90) 0%,rgba(4,10,18,.70) 36%,rgba(4,10,18,.18) 72%,rgba(4,10,18,.30) 100%),url(${lumen.image_url})`,
+          backgroundSize:"cover",
+          backgroundPosition:"center center",
+          backgroundRepeat:"no-repeat"
+        }:undefined}
+      >
+        {!lumen.image_url&&<CmsSectionMedia content={lumen} className="lumenCmsMedia"/>}
         <div className="cmsMediaOverlay lumenMediaOverlay"/>
         <div className="container split cmsMediaContent">
           <div className="lumenMasterCopy">
