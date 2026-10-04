@@ -101,7 +101,11 @@ export async function GET(){
     error:leads.filter((x:any)=>x.mailerlite_status==="error").length
   };
   const ready=config.token&&config.group_es;
-  const degraded=counts.error>0||counts.unconfigured>0;
+  const recent=leads.slice(0,5);
+  const recentSuccesses=recent.filter((x:any)=>x.mailerlite_status==="synced").length;
+  const latestStatus=recent[0]?.mailerlite_status||null;
+  const currentHealthy=ready&&latestStatus==="synced"&&recentSuccesses>=Math.min(2,recent.length);
+  const currentDegraded=ready&&!currentHealthy&&(latestStatus==="error"||latestStatus==="unconfigured");
 
   return NextResponse.json({
     items,
@@ -110,7 +114,9 @@ export async function GET(){
       integration:"mailerlite",
       configured:config,
       ready,
-      state:!ready?"NO_CONFIG":degraded?"DEGRADED":"HEALTHY",
+      state:!ready?"NO_CONFIG":currentHealthy?"HEALTHY":currentDegraded?"DEGRADED":"CHECK",
+      latest_status:latestStatus,
+      recent_successes:recentSuccesses,
       leads:counts,
       last_success_at:lastSuccess,
       last_error_at:lastError
