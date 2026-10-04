@@ -24,7 +24,7 @@ export default function ForgotPasswordPage(){
 
   return <main className="authShell">
     <section className="authCard">
-      <div className="kicker">FRAGMENTUN CONTROL CENTER</div>
+      <div className="kicker">FRAGMENTUN · PANEL DE ADMINISTRACIÓN</div>
       <h1>Recuperar contraseña</h1>
       <p className="lead">Escribe el correo de tu cuenta administrativa.</p>
 
@@ -39,7 +39,7 @@ export default function ForgotPasswordPage(){
       </form>
 
       <div className="authLinks">
-        <Link href="/admin/login">Volver al login</Link>
+        <Link href="/admin/login">Volver al acceso</Link>
       </div>
 
       {status&&<div className="formNotice" role="status">{status}</div>}
