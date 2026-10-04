@@ -14,10 +14,10 @@ export default async function AdminCharactersPage(){
   return <main className="adminMain">
     <div className="adminTopbar">
       <div>
-        <div className="kicker">Control Center</div>
+        <div className="kicker">Panel de administración</div>
         <h1>Personajes</h1>
       </div>
-      <Link className="btn btnGhost" href="/admin">← Dashboard</Link>
+      <Link className="btn btnGhost" href="/admin">← Inicio</Link>
     </div>
     <AdminCharacters/>
   </main>;
