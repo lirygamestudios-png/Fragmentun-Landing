@@ -11,8 +11,8 @@ export default async function LeadsPage(){
   if(!p||!["admin","marketing"].includes(p.role))redirect("/admin");
   return <main className="adminMain">
     <div className="adminTopbar">
-      <div><div className="kicker">Control Center</div><h1>Leads del embudo</h1></div>
-      <Link className="btn btnGhost" href="/admin">← Dashboard</Link>
+      <div><div className="kicker">Panel de administración</div><h1>Suscriptores</h1></div>
+      <Link className="btn btnGhost" href="/admin">← Inicio</Link>
     </div>
     <AdminLeads/>
   </main>;
