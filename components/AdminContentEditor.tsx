@@ -91,7 +91,7 @@ export function AdminContentEditor(){
   }
 
   function json(lang:"es"|"en"){try{return JSON.parse(lang==="es"?esText:enText)||{}}catch{return {}}}
-  function setField(lang:"es"|"en",field:string,value:string){
+  function setField(lang:"es"|"en",field:string,value:any){
     const next={...json(lang),[field]:value};
     if(lang==="es")setEsText(JSON.stringify(next,null,2)); else setEnText(JSON.stringify(next,null,2));
   }
@@ -114,6 +114,14 @@ export function AdminContentEditor(){
     const j=await r.json();
     if(!r.ok){setUploading(false);setStatus(j.error||"No se pudo registrar la imagen.");return}
     const url=assetUrl(j.data);setAuthorImage(url);setMedia(m=>[j.data,...m.filter(x=>x.id!==j.data.id)]);setAuthorFile(null);setUploading(false);setStatus("Imagen preparada. Pulsa Guardar cambios.");
+  }
+
+  function setWhyCard(lang:"es"|"en",index:number,field:"title"|"body",value:string){
+    const current=json(lang);
+    const cards=Array.isArray(current.cards)?[...current.cards]:[];
+    while(cards.length<4)cards.push({title:"",body:""});
+    cards[index]={...cards[index],[field]:value};
+    setField(lang,"cards",cards as any);
   }
 
   async function save(){
@@ -177,11 +185,36 @@ export function AdminContentEditor(){
             </div>)}
           </div>
         </div>}
+        {selected.content_key==="home.why"&&<div className="adminWhyEditor">
+          <div className="adminPanelHeader">
+            <div><div className="kicker">Apartados publicados</div><h3>Tarjetas de “Por qué FRAGMENTUN”</h3></div>
+            <span className="adminPanelBadge">4 tarjetas</span>
+          </div>
+          <div className="adminLangGrid">
+            {(["es","en"] as const).map(lang=><div key={lang}>
+              <div className="kicker">{lang==="es"?"Español":"Inglés"}</div>
+              <div className="adminWhyCards">
+                {(Array.isArray(json(lang).cards)?json(lang).cards:[]).map((card:any,index:number)=><div className="adminWhyCardEditor" key={index}>
+                  <strong>Apartado {index+1}</strong>
+                  <label>Título
+                    <input value={card?.title||""} onChange={e=>setWhyCard(lang,index,"title",e.target.value)}/>
+                    <small>{String(card?.title||"").length} caracteres</small>
+                  </label>
+                  <label>Texto
+                    <textarea className="adminSmallArea" value={card?.body||""} onChange={e=>setWhyCard(lang,index,"body",e.target.value)}/>
+                    <small>{String(card?.body||"").length} caracteres</small>
+                  </label>
+                </div>)}
+              </div>
+            </div>)}
+          </div>
+        </div>}
+
         <div className="adminLangGrid">
           {(["es","en"] as const).map(lang=><div className="adminVisualContentFields" key={lang}>
             <div className="kicker">{lang==="es"?"Español":"Inglés"}</div>
             {Object.entries(json(lang))
-              .filter(([key,value])=>!["image_url","video_url","poster_url","art_url"].includes(key)&&["string","number","boolean"].includes(typeof value))
+              .filter(([key,value])=>!["image_url","video_url","poster_url","art_url","cards"].includes(key)&&["string","number","boolean"].includes(typeof value))
               .map(([key,value])=><label key={key}>
                 <span>{fieldLabel(key)}</span>
                 {String(value).length>120
