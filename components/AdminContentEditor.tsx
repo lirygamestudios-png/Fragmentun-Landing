@@ -1,5 +1,6 @@
 "use client";
-import { useEffect,useMemo,useState } from "react";\nimport { createSupabaseBrowserClient } from "../lib/supabase/browser";
+import { useEffect,useMemo,useState } from "react";
+import { createSupabaseBrowserClient } from "../lib/supabase/browser";
 
 type Row={
   content_key:string;section:string;es:any;en:any;
@@ -15,7 +16,10 @@ export function AdminContentEditor(){
   const[enText,setEnText]=useState("");
   const[status,setStatus]=useState("");
   const[loading,setLoading]=useState(true);
-  const[media,setMedia]=useState<MediaAsset[]>([]);\n  const[authorFile,setAuthorFile]=useState<File|null>(null);\n  const[uploading,setUploading]=useState(false);\n  const supabase=useMemo(()=>createSupabaseBrowserClient(),[]);
+  const[media,setMedia]=useState<MediaAsset[]>([]);
+  const[authorFile,setAuthorFile]=useState<File|null>(null);
+  const[uploading,setUploading]=useState(false);
+  const supabase=useMemo(()=>createSupabaseBrowserClient(),[]);
 
   useEffect(()=>{
     Promise.all([fetch("/api/admin/content"),fetch("/api/admin/media")])
@@ -51,7 +55,30 @@ export function AdminContentEditor(){
     try{return JSON.parse(lang==="es"?esText:enText)?.[field]||""}catch{return ""}
   }
 
-  function json(lang:"es"|"en"){try{return JSON.parse(lang==="es"?esText:enText)||{}}catch{return {}}}\n  function setField(lang:"es"|"en",field:string,value:string){\n    const next={...json(lang),[field]:value};\n    if(lang==="es")setEsText(JSON.stringify(next,null,2)); else setEnText(JSON.stringify(next,null,2));\n  }\n  function authorImage(){return json("es").image_url||json("en").image_url||""}\n  function setAuthorImage(value:string){\n    for(const lang of ["es","en"] as const){setField(lang,"image_url",value);setField(lang,"poster_url",value)}\n  }\n  async function uploadAuthorImage(){\n    if(!authorFile)return;\n    setUploading(true);setStatus("Subiendo imagen…");\n    const slug="jose-liranzo-author";\n    const safe=authorFile.name.toLowerCase().replace(/[^a-z0-9._-]+/g,"-");\n    const path=\`${slug}/${Date.now()}-${safe}\`;\n    const{error}=await supabase.storage.from("official-media").upload(path,authorFile,{contentType:authorFile.type||undefined});\n    if(error){setUploading(false);setStatus(error.message);return}\n    const r=await fetch("/api/admin/media",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug,kind:"image",storage_path:\`official-media/${path}\`,alt_es:"José Liranzo, autor de FRAGMENTUN",alt_en:"José Liranzo, author of FRAGMENTUN",protected:false,public_visible:true,metadata:{filename:authorFile.name,bucket:"official-media",path,usage:"author_photo"}})});\n    const j=await r.json();\n    if(!r.ok){setUploading(false);setStatus(j.error||"No se pudo registrar la imagen.");return}\n    const url=assetUrl(j.data);setAuthorImage(url);setMedia(m=>[j.data,...m.filter(x=>x.id!==j.data.id)]);setAuthorFile(null);setUploading(false);setStatus("Imagen preparada. Pulsa Guardar cambios.");\n  }\n\n  async function save(){
+  function json(lang:"es"|"en"){try{return JSON.parse(lang==="es"?esText:enText)||{}}catch{return {}}}
+  function setField(lang:"es"|"en",field:string,value:string){
+    const next={...json(lang),[field]:value};
+    if(lang==="es")setEsText(JSON.stringify(next,null,2)); else setEnText(JSON.stringify(next,null,2));
+  }
+  function authorImage(){return json("es").image_url||json("en").image_url||""}
+  function setAuthorImage(value:string){
+    for(const lang of ["es","en"] as const){setField(lang,"image_url",value);setField(lang,"poster_url",value)}
+  }
+  async function uploadAuthorImage(){
+    if(!authorFile)return;
+    setUploading(true);setStatus("Subiendo imagen…");
+    const slug="jose-liranzo-author";
+    const safe=authorFile.name.toLowerCase().replace(/[^a-z0-9._-]+/g,"-");
+    const path=`${slug}/${Date.now()}-${safe}`;
+    const{error}=await supabase.storage.from("official-media").upload(path,authorFile,{contentType:authorFile.type||undefined});
+    if(error){setUploading(false);setStatus(error.message);return}
+    const r=await fetch("/api/admin/media",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug,kind:"image",storage_path:`official-media/${path}`,alt_es:"José Liranzo, autor de FRAGMENTUN",alt_en:"José Liranzo, author of FRAGMENTUN",protected:false,public_visible:true,metadata:{filename:authorFile.name,bucket:"official-media",path,usage:"author_photo"}})});
+    const j=await r.json();
+    if(!r.ok){setUploading(false);setStatus(j.error||"No se pudo registrar la imagen.");return}
+    const url=assetUrl(j.data);setAuthorImage(url);setMedia(m=>[j.data,...m.filter(x=>x.id!==j.data.id)]);setAuthorFile(null);setUploading(false);setStatus("Imagen preparada. Pulsa Guardar cambios.");
+  }
+
+  async function save(){
     if(!selected)return;
     try{
       const es=JSON.parse(esText),en=JSON.parse(enText);
@@ -77,7 +104,19 @@ export function AdminContentEditor(){
       {!selected?<p>Selecciona una sección para editar.</p>:<>
         <div className="kicker">{selected.section}</div>
         <h2>{selected.content_key}</h2>
-        {selected.content_key==="home.author"&&<div className="adminAuthorVisual">\n          <div className="adminAuthorVisualHead"><div><div className="kicker">Imagen del autor</div><h3>Fotografía pública</h3></div><span>ES + EN</span></div>\n          <div className="adminAuthorVisualGrid">\n            <div className="adminAuthorPreview">{authorImage()?<img src={authorImage()} alt="José Liranzo"/>:<div>JL</div>}</div>\n            <div className="adminAuthorControls">\n              <label>Imagen de Multimedia<select value={authorImage()} onChange={e=>setAuthorImage(e.target.value)}><option value="">— Sin imagen —</option>{media.filter(m=>m.public_visible&&m.kind==="image").map(m=><option key={m.id} value={assetUrl(m)}>{m.slug}</option>)}</select></label>\n              <label>Subir nueva fotografía<input type="file" accept="image/*" onChange={e=>setAuthorFile(e.target.files?.[0]||null)}/></label>\n              <button className="btn btnPrimary" type="button" disabled={!authorFile||uploading} onClick={uploadAuthorImage}>{uploading?"Subiendo…":"Subir fotografía"}</button>\n              <p className="note">Después de subirla, pulsa “Guardar cambios” para publicarla en la sección Autor.</p>\n            </div>\n          </div>\n        </div>}\n        <div className="card" style={{marginBottom:18}}>
+        {selected.content_key==="home.author"&&<div className="adminAuthorVisual">
+          <div className="adminAuthorVisualHead"><div><div className="kicker">Imagen del autor</div><h3>Fotografía pública</h3></div><span>ES + EN</span></div>
+          <div className="adminAuthorVisualGrid">
+            <div className="adminAuthorPreview">{authorImage()?<img src={authorImage()} alt="José Liranzo"/>:<div>JL</div>}</div>
+            <div className="adminAuthorControls">
+              <label>Imagen de Multimedia<select value={authorImage()} onChange={e=>setAuthorImage(e.target.value)}><option value="">— Sin imagen —</option>{media.filter(m=>m.public_visible&&m.kind==="image").map(m=><option key={m.id} value={assetUrl(m)}>{m.slug}</option>)}</select></label>
+              <label>Subir nueva fotografía<input type="file" accept="image/*" onChange={e=>setAuthorFile(e.target.files?.[0]||null)}/></label>
+              <button className="btn btnPrimary" type="button" disabled={!authorFile||uploading} onClick={uploadAuthorImage}>{uploading?"Subiendo…":"Subir fotografía"}</button>
+              <p className="note">Después de subirla, pulsa “Guardar cambios” para publicarla en la sección Autor.</p>
+            </div>
+          </div>
+        </div>}
+        <div className="card" style={{marginBottom:18}}>
           <div className="kicker">Multimedia rápida</div>
           <p className="note">Asigna recursos aprobados de la Biblioteca sin editar rutas manualmente. El JSON continúa disponible para campos avanzados.</p>
           <div className="adminLangGrid">
