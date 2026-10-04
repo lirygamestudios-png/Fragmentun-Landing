@@ -123,3 +123,66 @@ export async function GET(){
     }
   });
 }
+
+
+export async function POST(){
+  const supabase=await createSupabaseServerClient();
+  const{data:{user}}=await supabase.auth.getUser();
+  if(!user)return NextResponse.json({error:"forbidden"},{status:403});
+
+  const{data:profile}=await supabase
+    .from("admin_profiles")
+    .select("role")
+    .eq("user_id",user.id)
+    .maybeSingle();
+
+  if(!profile||!["admin","marketing"].includes(profile.role)){
+    return NextResponse.json({error:"forbidden"},{status:403});
+  }
+
+  const token=process.env.MAILERLITE_API_TOKEN;
+  if(!token)return NextResponse.json({error:"mailerlite_not_configured"},{status:500});
+
+  const headers={Authorization:`Bearer ${token}`,"Content-Type":"application/json",Accept:"application/json"};
+  const desired=[
+    "FRAGMENTUN · ES · Evergreen 12 correos",
+    "FRAGMENTUN · EN · Evergreen 12 emails"
+  ];
+
+  const list=await fetch("https://connect.mailerlite.com/api/automations?limit=100",{
+    headers,cache:"no-store",signal:AbortSignal.timeout(8000)
+  }).catch(()=>null);
+
+  if(!list?.ok){
+    return NextResponse.json({error:"mailerlite_list_failed",status:list?.status||0},{status:502});
+  }
+
+  const payload=await list.json().catch(()=>({}));
+  const existing=Array.isArray(payload?.data)?payload.data:[];
+  const results:any[]=[];
+
+  for(const name of desired){
+    const found=existing.find((a:any)=>String(a?.name||"").trim()===name);
+    if(found){
+      results.push({name,id:String(found.id),created:false,enabled:!!found.enabled});
+      continue;
+    }
+
+    const created=await fetch("https://connect.mailerlite.com/api/automations",{
+      method:"POST",
+      headers,
+      body:JSON.stringify({name}),
+      cache:"no-store",
+      signal:AbortSignal.timeout(8000)
+    }).catch(()=>null);
+
+    const body=await created?.json().catch(()=>null);
+    if(!created?.ok||!body?.data?.id){
+      results.push({name,created:false,error:created?`HTTP ${created.status}`:"request_failed"});
+      continue;
+    }
+    results.push({name,id:String(body.data.id),created:true,enabled:false});
+  }
+
+  return NextResponse.json({ok:results.every(x=>!x.error),results});
+}
