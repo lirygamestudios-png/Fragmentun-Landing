@@ -3748,3 +3748,26 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   height:100%!important;
   object-fit:contain!important;
 }
+
+
+/* Definitive managed Lumen image override */
+.masterLumenSection.masterLumenManaged{
+  background-image:
+    linear-gradient(90deg,rgba(4,10,18,.90) 0%,rgba(4,10,18,.70) 36%,rgba(4,10,18,.18) 72%,rgba(4,10,18,.30) 100%),
+    var(--lumen-managed-image)!important;
+  background-size:cover!important;
+  background-position:center center!important;
+  background-repeat:no-repeat!important;
+  background-attachment:scroll!important;
+}
+.masterLumenSection.masterLumenManaged::before,
+.masterLumenSection.masterLumenManaged::after{
+  display:none!important;
+  content:none!important;
+}
+@media(max-width:900px){
+  .masterLumenSection.masterLumenManaged{
+    background-position:center center!important;
+    background-attachment:scroll!important;
+  }
+}
