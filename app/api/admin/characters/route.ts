@@ -19,7 +19,7 @@ export async function POST(request:NextRequest){
   if(!x.ok)return NextResponse.json({error:"forbidden"},{status:403});
   const body=await request.json().catch(()=>null);
   if(!body?.name||!body?.slug)return NextResponse.json({error:"invalid_request"},{status:400});
-  const payload={slug:String(body.slug).trim().toLowerCase(),name:String(body.name).trim(),role_es:body.role_es||null,role_en:body.role_en||null,bio_es:body.bio_es||null,bio_en:body.bio_en||null,territory:body.territory||null,status:body.status||"draft",sort_order:Number(body.sort_order??0)};
+  const payload={slug:String(body.slug).trim().toLowerCase(),name:String(body.name).trim(),role_es:body.role_es||null,role_en:body.role_en||null,bio_es:body.bio_es||null,bio_en:body.bio_en||null,territory:body.territory||null,image_asset_id:body.image_asset_id||null,video_asset_id:body.video_asset_id||null,status:body.status||"draft",sort_order:Number(body.sort_order??0)};
   const{data,error}=await x.supabase.from("characters").insert(payload).select().single();
   return NextResponse.json(error?{error:error.message}:{data},{status:error?500:201});
 }
@@ -28,7 +28,7 @@ export async function PUT(request:NextRequest){
   if(!x.ok)return NextResponse.json({error:"forbidden"},{status:403});
   const body=await request.json().catch(()=>null);
   if(!body?.id)return NextResponse.json({error:"invalid_request"},{status:400});
-  const payload={slug:String(body.slug||"").trim().toLowerCase(),name:String(body.name||"").trim(),role_es:body.role_es||null,role_en:body.role_en||null,bio_es:body.bio_es||null,bio_en:body.bio_en||null,territory:body.territory||null,status:body.status||"draft",sort_order:Number(body.sort_order??0)};
+  const payload={slug:String(body.slug||"").trim().toLowerCase(),name:String(body.name||"").trim(),role_es:body.role_es||null,role_en:body.role_en||null,bio_es:body.bio_es||null,bio_en:body.bio_en||null,territory:body.territory||null,image_asset_id:body.image_asset_id||null,video_asset_id:body.video_asset_id||null,status:body.status||"draft",sort_order:Number(body.sort_order??0)};
   const{data,error}=await x.supabase.from("characters").update(payload).eq("id",body.id).select().single();
   return NextResponse.json(error?{error:error.message}:{data},{status:error?500:200});
 }
