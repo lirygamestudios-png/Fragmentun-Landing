@@ -2,6 +2,7 @@
 import { useEffect,useState } from "react";
 import Link from "next/link";
 import type { Locale } from "../lib/i18n";
+import { analyticsSessionId } from "../lib/analytics-client";
 
 type Utm={
   source:string;
@@ -21,6 +22,7 @@ export function LeadForm({
   experimentVariant?:string;
 }){
   const[utm,setUtm]=useState<Utm>({source:"",medium:"",campaign:"",content:""});
+  const[sessionId,setSessionId]=useState("");
 
   useEffect(()=>{
     const qs=new URLSearchParams(window.location.search);
@@ -30,6 +32,7 @@ export function LeadForm({
       campaign:qs.get("utm_campaign")||sessionStorage.getItem("utm_campaign")||"",
       content:qs.get("utm_content")||sessionStorage.getItem("utm_content")||""
     });
+    setSessionId(analyticsSessionId());
   },[]);
 
   return <form className="leadCaptureForm" action="/api/subscribe" method="post">
@@ -38,6 +41,7 @@ export function LeadForm({
     <input type="hidden" name="utm_medium" value={utm.medium}/>
     <input type="hidden" name="utm_campaign" value={utm.campaign}/>
     <input type="hidden" name="utm_content" value={utm.content}/>
+    <input type="hidden" name="session_id" value={sessionId}/>
     <input type="hidden" name="consent_version" value="2026-09-30"/>
     <input type="hidden" name="experiment" value={experiment||""}/>
     <input type="hidden" name="experiment_variant" value={experimentVariant||""}/>
