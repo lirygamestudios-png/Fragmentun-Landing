@@ -11,6 +11,8 @@ export function AdminSystemStatus(){
   if(!data)return <p>Cargando estado…</p>;
   if(data.error)return <p>No fue posible cargar el estado.</p>;
 
+  const ops=data.operations||{};
+
   return <div>
     <div className="kpis">
       <div className="kpi"><span>Estado lanzamiento</span><strong>{data.launch_status==="GO"?"GO":"NO-GO"}</strong></div>
@@ -27,18 +29,40 @@ export function AdminSystemStatus(){
     </div>}
 
     <div className="card" style={{marginTop:24}}>
+      <h2>Salud operativa</h2>
+      <div className="kpis">
+        <div className="kpi"><span>CMS</span><strong>{ops.content_blocks||0}</strong><small>bloques</small></div>
+        <div className="kpi"><span>Personajes</span><strong>{ops.published_characters||0}</strong><small>publicados</small></div>
+        <div className="kpi"><span>Multimedia</span><strong>{ops.public_media||0}</strong><small>recursos</small></div>
+        <div className="kpi"><span>Analytics</span><strong>{ops.analytics_events||0}</strong><small>eventos</small></div>
+        <div className="kpi"><span>Leads</span><strong>{ops.leads||0}</strong></div>
+        <div className="kpi"><span>MailerLite</span><strong>{ops.mailerlite_reachable?"ONLINE":"REVISAR"}</strong></div>
+      </div>
+      <div className="adminTableWrap" style={{marginTop:18}}>
+        <table className="adminTable"><tbody>
+          <tr><td>Último evento Analytics</td><td>{ops.latest_analytics_at?new Date(ops.latest_analytics_at).toLocaleString():"—"}</td></tr>
+          <tr><td>Último lead</td><td>{ops.latest_lead_at?new Date(ops.latest_lead_at).toLocaleString():"—"}</td></tr>
+          <tr><td>Latencia Backend</td><td>{ops.query_ms??"—"} ms</td></tr>
+          <tr><td>Storage</td><td>{(ops.storage_buckets||[]).join(", ")||"—"}</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <div className="card" style={{marginTop:24}}>
       <h2>Configuración de producción</h2>
       <div className="adminTableWrap">
         <table className="adminTable">
-          <thead><tr><th>Servicio</th><th>Estado</th><th>Prioridad</th></tr></thead>
+          <thead><tr><th>Área</th><th>Servicio</th><th>Estado</th><th>Detalle</th><th>Prioridad</th></tr></thead>
           <tbody>{(data.checks||[]).map((c:any)=><tr key={c.key}>
+            <td>{c.category||"General"}</td>
             <td>{c.label}</td>
-            <td><strong>{c.ok?"✓ Configurado":"✕ Pendiente"}</strong></td>
+            <td><strong>{c.ok?"✓ OK":"✕ Pendiente"}</strong></td>
+            <td>{c.detail||"—"}</td>
             <td>{c.required?"Requerido":"Opcional / según fase"}</td>
           </tr>)}</tbody>
         </table>
       </div>
-      <p className="note">Este panel solo muestra si una variable existe; nunca expone tokens, claves ni valores secretos.</p>
+      <p className="note">El panel combina configuración y comprobaciones operativas sin exponer valores sensibles.</p>
     </div>
   </div>;
 }
