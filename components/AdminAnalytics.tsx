@@ -22,9 +22,10 @@ export function AdminAnalytics(){
       <button className="btn btnGhost" onClick={exportCsv}>Exportar Analytics CSV</button>
     </div>
     <div className="kpis">
-      <div className="kpi"><span>Visitas · 30 días</span><strong>{t.page_view||0}</strong></div>
+      <div className="kpi"><span>Sesiones · 30 días</span><strong>{data.sessions||0}</strong></div>
+      <div className="kpi"><span>Page views</span><strong>{t.page_view||0}</strong></div>
       <div className="kpi"><span>Leads</span><strong>{data.lead_count||0}</strong></div>
-      <div className="kpi"><span>Conversión visita → lead</span><strong>{pct(data.conversion_rate)}</strong></div>
+      <div className="kpi"><span>Conversión sesión → lead</span><strong>{pct(data.conversion_rate)}</strong></div>
       <div className="kpi"><span>Clics Amazon</span><strong>{t.amazon_click||0}</strong></div>
       <div className="kpi"><span>CTR Amazon</span><strong>{pct(data.amazon_ctr)}</strong></div>
       <div className="kpi"><span>Clics Patreon</span><strong>{t.patreon_click||0}</strong></div>
@@ -32,6 +33,20 @@ export function AdminAnalytics(){
       <div className="kpi"><span>Clics Comunidad</span><strong>{t.community_click||0}</strong></div>
       <div className="kpi"><span>CTR Comunidad</span><strong>{pct(data.community_ctr)}</strong></div>
       <div className="kpi"><span>Test completados</span><strong>{t.test_complete||0}</strong></div>
+    </div>
+
+    <div className="card" style={{marginTop:24}}>
+      <h2>Embudo comercial · sesiones</h2>
+      <div className="kpis">
+        <div className="kpi"><span>Sesiones</span><strong>{data.funnel?.sessions||0}</strong></div>
+        <div className="kpi"><span>Capítulo</span><strong>{data.funnel?.chapter_sessions||0}</strong></div>
+        <div className="kpi"><span>Leads</span><strong>{data.funnel?.lead_sessions||0}</strong></div>
+        <div className="kpi"><span>Amazon</span><strong>{data.funnel?.amazon_sessions||0}</strong></div>
+        <div className="kpi"><span>Patreon</span><strong>{data.funnel?.patreon_sessions||0}</strong></div>
+        <div className="kpi"><span>Recompensa desbloqueada</span><strong>{data.funnel?.share_unlock_sessions||0}</strong></div>
+        <div className="kpi"><span>Arte descargado</span><strong>{data.funnel?.share_download_sessions||0}</strong></div>
+        <div className="kpi"><span>Share → descarga</span><strong>{pct(data.share_download_rate)}</strong></div>
+      </div>
     </div>
 
     <div className="card" style={{marginTop:24}}>
