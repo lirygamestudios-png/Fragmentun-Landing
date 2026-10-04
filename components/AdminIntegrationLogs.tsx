@@ -1,5 +1,6 @@
 "use client";
 import { useEffect,useState } from "react";
+import { FRAGMENTUN_EMAIL_SEQUENCE,FRAGMENTUN_EMAIL_BRAND } from "../lib/fragmentun-email-sequence";
 
 export function AdminIntegrationLogs(){
   const[data,setData]=useState<any>(null);
@@ -67,6 +68,45 @@ export function AdminIntegrationLogs(){
                 </tr>)}</tbody>
               </table>
             </div>}
+    </div>
+
+    <div className="card adminSecondaryPanel">
+      <h2>Secuencia aprobada · FRAGMENTUN</h2>
+      <p style={{opacity:.8}}>Referencia editorial y visual aprobada para los correos de captación, nutrición, conversión y reseña.</p>
+      <div style={{display:"grid",gap:"1rem"}}>
+        {FRAGMENTUN_EMAIL_SEQUENCE.map((mail:any)=><div key={mail.id} style={{
+          border:"1px solid rgba(201,168,76,.35)",
+          borderRadius:"18px",
+          overflow:"hidden",
+          background:FRAGMENTUN_EMAIL_BRAND.background
+        }}>
+          <div style={{padding:"20px 22px",borderBottom:"1px solid rgba(201,168,76,.22)",display:"flex",alignItems:"center",gap:"12px"}}>
+            <img src="/fragmentun-mark.png" alt="FRAGMENTUN" width="38" height="38" style={{objectFit:"contain"}}/>
+            <div>
+              <div style={{fontWeight:800,letterSpacing:".12em",color:FRAGMENTUN_EMAIL_BRAND.gold}}>FRAGMENTUN</div>
+              <div style={{fontSize:".82rem",opacity:.68}}>Correo {mail.order} · {mail.delay}</div>
+            </div>
+          </div>
+          <div style={{padding:"22px"}}>
+            <div style={{fontSize:".78rem",textTransform:"uppercase",letterSpacing:".08em",color:FRAGMENTUN_EMAIL_BRAND.blue}}>{mail.purpose}</div>
+            <h3 style={{margin:"8px 0 6px",color:"#fff"}}>{mail.subject}</h3>
+            <p style={{margin:"0 0 18px",opacity:.8}}>{mail.preheader}</p>
+            <div style={{display:"flex",gap:"10px",flexWrap:"wrap"}}>
+              <a href={mail.primaryCta.href} target="_blank" rel="noreferrer" style={{
+                display:"inline-block",padding:"10px 14px",borderRadius:"999px",
+                background:FRAGMENTUN_EMAIL_BRAND.gold,color:FRAGMENTUN_EMAIL_BRAND.background,
+                fontWeight:800,textDecoration:"none"
+              }}>{mail.primaryCta.label}</a>
+              <a href={mail.secondaryCta.href} target="_blank" rel="noreferrer" style={{
+                display:"inline-block",padding:"10px 14px",borderRadius:"999px",
+                border:`1px solid ${FRAGMENTUN_EMAIL_BRAND.blue}`,color:"#fff",
+                fontWeight:700,textDecoration:"none"
+              }}>{mail.secondaryCta.label}</a>
+            </div>
+            <p style={{margin:"18px 0 0",fontSize:".82rem",opacity:.62}}>{mail.note}</p>
+          </div>
+        </div>)}
+      </div>
     </div>
 
     <div className="card adminSecondaryPanel">
