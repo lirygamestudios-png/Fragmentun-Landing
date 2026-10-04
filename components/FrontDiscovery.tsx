@@ -259,10 +259,6 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                       evaluate();
                     });
 
-                    window.removeEventListener("blur",markBlur);
-                    window.removeEventListener("focus",markFocus);
-                    document.removeEventListener("visibilitychange",markVisibility);
-
                     fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
                       event_name:"share_reward_unlock",locale,path:window.location.pathname,metadata:{placement:"value_strip",result:"completed_after_share_closed"}
                     }),keepalive:true}).catch(()=>{});
