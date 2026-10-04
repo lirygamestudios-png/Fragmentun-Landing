@@ -36,9 +36,29 @@ export async function GET(){
     x.supabase.from("admin_profiles").select("*").order("created_at")
   ]);
 
+  const profileRows=profiles||[];
+  const profileByEmail=new Map<string,any>();
+  try{
+    const service=createSupabaseServiceClient();
+    for(let page=1;page<=10;page++){
+      const{data,error}=await service.auth.admin.listUsers({page,perPage:100});
+      if(error)break;
+      for(const authUser of data.users){
+        const profile=profileRows.find((p:any)=>p.user_id===authUser.id);
+        if(profile&&authUser.email)profileByEmail.set(authUser.email.toLowerCase(),profile);
+      }
+      if(data.users.length<100)break;
+    }
+  }catch{}
+
+  const access=(allowlist||[]).map((row:any)=>({
+    ...row,
+    profile_active:profileByEmail.has(String(row.email||"").toLowerCase())
+  }));
+
   return NextResponse.json({
-    allowlist:allowlist||[],
-    profiles:profiles||[],
+    allowlist:access,
+    profiles:profileRows,
     current_user:{email:x.user?.email||"",role:x.profile?.role||""}
   });
 }
