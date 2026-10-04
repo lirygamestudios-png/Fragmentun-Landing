@@ -19,7 +19,7 @@ export function AdminMediaLibrary(){
   useEffect(()=>{load()},[]);
 
   async function upload(){
-    if(!file||!form.slug){setMsg("Selecciona un archivo y define un slug.");return}
+    if(!file||!form.slug){setMsg("Selecciona un archivo y escribe un nombre interno.");return}
     setMsg("Subiendo…");
     const safe=file.name.toLowerCase().replace(/[^a-z0-9._-]+/g,"-");
     const path=`${form.slug}/${Date.now()}-${safe}`;
@@ -39,7 +39,7 @@ export function AdminMediaLibrary(){
       <div className="adminPanelHeader"><div><div className="kicker">Biblioteca oficial</div><h2>Subir archivo</h2></div><span className="adminPanelBadge">BIBLIOTECA</span></div>
       <div className="adminFormGrid">
         <input placeholder="nombre-del-archivo" value={form.slug} onChange={e=>setForm({...form,slug:e.target.value})}/>
-        <select value={form.kind} onChange={e=>setForm({...form,kind:e.target.value})}><option value="image">Imagen</option><option value="pdf">PDF</option><option value="video">Video</option><option value="press">Press kit</option></select>
+        <select value={form.kind} onChange={e=>setForm({...form,kind:e.target.value})}><option value="image">Imagen</option><option value="pdf">PDF</option><option value="video">Video</option><option value="press">Kit de prensa</option></select>
         <select value={form.bucket} onChange={e=>setForm({...form,bucket:e.target.value})}><option value="official-media">Medios oficiales</option><option value="editorial-media">Medios editoriales</option><option value="press-kit">Kit de prensa</option></select>
         <input type="file" onChange={e=>setFile(e.target.files?.[0]||null)}/>
         <input placeholder="Descripción de imagen en español" value={form.alt_es} onChange={e=>setForm({...form,alt_es:e.target.value})}/>
