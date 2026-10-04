@@ -198,44 +198,27 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
 
                     await navigator.share({title:"FRAGMENTUN",text,url});
 
-                    // Do not reveal the reward while the native social sheet can still be visible.
-                    // Wait until the document is visible/focused again; on platforms that never
-                    // report blur/visibility, add a short post-share grace period.
-                    await new Promise<void>(resolve=>{
-                      let done=false;
-                      let timer:number|undefined;
-                      const finish=()=>{
-                        if(done)return;
-                        if(document.visibilityState!=="visible"||!document.hasFocus())return;
-                        done=true;
-                        window.removeEventListener("focus",onReturn);
-                        document.removeEventListener("visibilitychange",onVisibilityReturn);
-                        if(timer)window.clearTimeout(timer);
-                        // two frames + a grace delay ensure the native share UI has painted away
-                        requestAnimationFrame(()=>requestAnimationFrame(()=>window.setTimeout(resolve,350)));
-                      };
-                      const onReturn=()=>finish();
-                      const onVisibilityReturn=()=>{if(document.visibilityState==="visible")finish();};
+                    // navigator.share resolves only after the native share flow finishes.
+                    // If the page lost visibility/focus, wait until FRAGMENTUN is active again.
+                    if(document.visibilityState!=="visible"||!document.hasFocus()){
+                      await new Promise<void>(resolve=>{
+                        let done=false;
+                        const finish=()=>{
+                          if(done)return;
+                          if(document.visibilityState!=="visible"||!document.hasFocus())return;
+                          done=true;
+                          window.removeEventListener("focus",finish);
+                          document.removeEventListener("visibilitychange",finish);
+                          resolve();
+                        };
+                        window.addEventListener("focus",finish);
+                        document.addEventListener("visibilitychange",finish);
+                      });
+                    }
 
-                      if(pageBlurred||pageHidden||!document.hasFocus()||document.visibilityState!=="visible"){
-                        window.addEventListener("focus",onReturn);
-                        document.addEventListener("visibilitychange",onVisibilityReturn);
-                      }else{
-                        // Some desktop share surfaces keep the page technically focused even
-                        // while their UI remains open. In that case never guess with a timer:
-                        // wait for the first real interaction back on FRAGMENTUN.
-                        const onPointerReturn=()=>{
-                          window.removeEventListener("keydown",onKeyReturn);
-                          finish();
-                        };
-                        const onKeyReturn=()=>{
-                          window.removeEventListener("pointerdown",onPointerReturn,true);
-                          finish();
-                        };
-                        window.addEventListener("pointerdown",onPointerReturn,{capture:true,once:true});
-                        window.addEventListener("keydown",onKeyReturn,{once:true});
-                      }
-                    });
+                    // Small automatic grace period so the native social surface is fully gone
+                    // before the FRAGMENTUN reward modal appears.
+                    await new Promise<void>(resolve=>window.setTimeout(resolve,450));
 
                     window.removeEventListener("blur",markBlur);
                     document.removeEventListener("visibilitychange",markVisibility);
