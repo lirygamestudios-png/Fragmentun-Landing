@@ -227,7 +227,7 @@ export default async function Home({
               {title:locale==="es"?"Un mundo vivo":"A living world",body:locale==="es"?"Lumen y sus sistemas revelan el costo de una paz diseñada.":"Lumen and its systems reveal the cost of engineered peace."},
               {title:locale==="es"?"Temas":"Themes",body:locale==="es"?"Identidad, libertad, emoción y el costo humano del control.":"Identity, freedom, emotion and the human cost of control."}
             ]).map((c:any,index:number)=><article className={`card whyCard whyCard${index+1}`} key={c.title}>
-              <div className="whyCardVisual" aria-hidden="true"/>
+              <div className="whyCardVisual" aria-hidden="true" style={c.image_url?{backgroundImage:`linear-gradient(180deg,rgba(5,12,20,.03),rgba(5,12,20,.08)),url(${c.image_url})`}:undefined}/>
               <div className="whyCardCopy">
                 <h3>{c.title}</h3>
                 <p>{c.body}</p>
