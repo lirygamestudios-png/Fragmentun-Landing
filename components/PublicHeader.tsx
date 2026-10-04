@@ -32,7 +32,7 @@ export function PublicHeader({locale,amazonUrl,patreonUrl,shopEnabled=false}:{lo
 
   return <header className="header">
     <div className="container headerInner">
-      <Link className="logo" href={`/${locale}`}>FRAGMENTUN</Link>
+      <Link className="logo brandLogo" href={`/${locale}`} aria-label="FRAGMENTUN"><img className="brandMark" src="/fragmentun-mark.png" alt="" width={36} height={36}/><span className="brandWordmark">FRAGMENTUN</span></Link>
       <nav className="nav">{items.map(([label,href])=><Link key={href} href={href}>{label}</Link>)}</nav>
       <div className="headerActions">
         <div className="lang">
