@@ -49,6 +49,12 @@ export function AdminSystemStatus(){
     </div>
 
     <div className="card" style={{marginTop:24}}>
+      <h2>Recuperación</h2>
+      <p className="note">Genera un backup versionado del contenido y metadatos públicos. No incluye leads, credenciales ni otros datos sensibles.</p>
+      <a className="btn btnPrimary" href="/api/admin/backup">Descargar backup de contenido</a>
+    </div>
+
+    <div className="card" style={{marginTop:24}}>
       <h2>Configuración de producción</h2>
       <div className="adminTableWrap">
         <table className="adminTable">
