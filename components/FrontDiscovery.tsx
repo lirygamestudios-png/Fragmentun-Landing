@@ -189,64 +189,74 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                     setRewardOpen(false);
                     setShareStatus("sharing");
 
-                    let pageBlurred=false;
-                    let pageHidden=document.visibilityState==="hidden";
-                    let pageReturned=false;
-
-                    const markBlur=()=>{pageBlurred=true;};
-                    const markFocus=()=>{
-                      if(pageBlurred||pageHidden)pageReturned=true;
-                    };
-                    const markVisibility=()=>{
-                      if(document.visibilityState==="hidden"){
-                        pageHidden=true;
-                      }else if(pageHidden){
-                        pageReturned=true;
-                      }
-                    };
-
-                    window.addEventListener("blur",markBlur);
-                    window.addEventListener("focus",markFocus);
-                    document.addEventListener("visibilitychange",markVisibility);
+                    let lostControl=document.visibilityState==="hidden"||!document.hasFocus();
 
                     await navigator.share({title:"FRAGMENTUN",text,url});
 
-                    // Some browsers resolve navigator.share() before the native/social surface
-                    // has visually disappeared. Wait for a real return signal when available.
-                    // Never require a user click: a timed fallback completes the sequence automatically.
+                    // On some desktop browsers navigator.share() resolves before the native
+                    // social surface has visually disappeared. Do not use a timer fallback
+                    // that can reveal the reward while that surface is still open.
+                    //
+                    // Instead, wait until FRAGMENTUN has demonstrably lost control at least once
+                    // (blur/hidden/no focus), then require the page to be visible + focused
+                    // continuously for a short stability window before showing the reward.
                     await new Promise<void>(resolve=>{
+                      let settledTimer:number|undefined;
+                      let poll:number|undefined;
                       let done=false;
-                      let fallback:number|undefined;
+
+                      const cleanup=()=>{
+                        if(poll!==undefined)window.clearInterval(poll);
+                        if(settledTimer!==undefined)window.clearTimeout(settledTimer);
+                        window.removeEventListener("blur",onBlur);
+                        window.removeEventListener("focus",onFocus);
+                        document.removeEventListener("visibilitychange",onVisibility);
+                      };
 
                       const finish=()=>{
                         if(done)return;
                         done=true;
-                        window.removeEventListener("focus",onReturn);
-                        document.removeEventListener("visibilitychange",onVisibilityReturn);
-                        if(fallback!==undefined)window.clearTimeout(fallback);
-                        // brief grace period after the native social UI has yielded control
-                        window.setTimeout(resolve,450);
+                        cleanup();
+                        resolve();
                       };
 
-                      const onReturn=()=>{
-                        if(pageBlurred||pageHidden||pageReturned)finish();
+                      const cancelStable=()=>{
+                        if(settledTimer!==undefined){
+                          window.clearTimeout(settledTimer);
+                          settledTimer=undefined;
+                        }
                       };
-                      const onVisibilityReturn=()=>{
-                        if(document.visibilityState==="visible"&&(pageHidden||pageReturned))finish();
+
+                      const evaluate=()=>{
+                        const active=document.visibilityState==="visible"&&document.hasFocus();
+
+                        if(!active){
+                          lostControl=true;
+                          cancelStable();
+                          return;
+                        }
+
+                        if(lostControl&&settledTimer===undefined){
+                          // Require sustained return to FRAGMENTUN so an intermediate focus
+                          // event from the browser share UI cannot trigger the reward.
+                          settledTimer=window.setTimeout(()=>{
+                            const stillActive=document.visibilityState==="visible"&&document.hasFocus();
+                            if(stillActive&&lostControl)finish();
+                            else cancelStable();
+                          },700);
+                        }
                       };
 
-                      if(pageReturned){
-                        finish();
-                        return;
-                      }
+                      const onBlur=()=>{lostControl=true;cancelStable();};
+                      const onFocus=()=>evaluate();
+                      const onVisibility=()=>evaluate();
 
-                      window.addEventListener("focus",onReturn);
-                      document.addEventListener("visibilitychange",onVisibilityReturn);
+                      window.addEventListener("blur",onBlur);
+                      window.addEventListener("focus",onFocus);
+                      document.addEventListener("visibilitychange",onVisibility);
+                      poll=window.setInterval(evaluate,120);
 
-                      // Desktop share implementations do not always emit reliable focus/visibility
-                      // events. This fallback prevents "Compartiendo…" from getting stuck while
-                      // still delaying the reward long enough for the social sheet to close.
-                      fallback=window.setTimeout(finish,1800);
+                      evaluate();
                     });
 
                     window.removeEventListener("blur",markBlur);
