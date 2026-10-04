@@ -3,6 +3,7 @@
 import {useEffect,useState} from "react";
 import type {Locale} from "../lib/i18n";
 import {TrackLink} from "./TrackLink";
+import {analyticsAttribution} from "../lib/analytics-client";
 
 type Character={
   key:string;
@@ -260,7 +261,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                     });
 
                     fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-                      event_name:"share_reward_unlock",locale,path:window.location.pathname,metadata:{placement:"value_strip",result:"completed_after_share_closed"}
+                      event_name:"share_reward_unlock",locale,path:window.location.pathname,...analyticsAttribution(),metadata:{placement:"value_strip",result:"completed_after_share_closed"}
                     }),keepalive:true}).catch(()=>{});
 
                     setRewardReady(true);
@@ -270,7 +271,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                     const aborted=error instanceof DOMException&&error.name==="AbortError";
                     if(!aborted){
                       fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-                        event_name:"share_reward_error",locale,path:window.location.pathname,metadata:{placement:"value_strip"}
+                        event_name:"share_reward_error",locale,path:window.location.pathname,...analyticsAttribution(),metadata:{placement:"value_strip"}
                       }),keepalive:true}).catch(()=>{});
                     }
                     setRewardReady(false);
@@ -316,7 +317,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
             href={shareReward?.art_url||"/elyon-hero.jpg"}
             download
             onClick={()=>fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-              event_name:"share_reward_download",locale,path:window.location.pathname,metadata:{placement:"value_strip"}
+              event_name:"share_reward_download",locale,path:window.location.pathname,...analyticsAttribution(),metadata:{placement:"value_strip"}
             }),keepalive:true}).catch(()=>{})}
           >{shareReward?.reward_label||(locale==="es"?"Descargar arte conceptual":"Download concept art")}</a>}
         </div>
