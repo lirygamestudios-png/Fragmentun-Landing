@@ -1,4 +1,5 @@
 import { NextRequest,NextResponse } from "next/server";
+import { consumePublicRateLimit } from "../../../lib/rate-limit";
 
 const ML="https://connect.mailerlite.com/api/subscribers";
 
@@ -49,6 +50,11 @@ export async function POST(request:NextRequest){
   }
   if(!consentMarketing) {
     return NextResponse.redirect(new URL(`/${locale}?signup=consent#capitulo`,request.url),303);
+  }
+
+  const rate=await consumePublicRateLimit(request,"lead_submit",email,3600,5);
+  if(!rate.allowed){
+    return NextResponse.redirect(new URL(`/${locale}?signup=rate#capitulo`,request.url),303);
   }
 
   const token=process.env.MAILERLITE_API_TOKEN;
