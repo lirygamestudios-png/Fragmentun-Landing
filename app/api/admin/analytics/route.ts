@@ -22,12 +22,12 @@ export async function GET(request:Request){
 
   const[{data:events},{data:leads}]=await Promise.all([
     x.supabase.from("analytics_events")
-      .select("event_name,locale,source,medium,campaign,content,metadata,created_at")
+      .select("event_name,locale,source,medium,campaign,content,session_id,metadata,created_at")
       .gte("created_at",since)
       .order("created_at",{ascending:false})
       .limit(10000),
     x.supabase.from("leads")
-      .select("locale,source,medium,campaign,content,mailerlite_status,created_at")
+      .select("locale,source,medium,campaign,content,session_id,mailerlite_status,created_at")
       .gte("created_at",since)
       .order("created_at",{ascending:false})
       .limit(10000)
@@ -104,15 +104,36 @@ export async function GET(request:Request){
   const patreonClicks=totals.patreon_click||0;
   const communityClicks=totals.community_click||0;
 
+  const pageViewSessions=new Set((events||[]).filter((e:any)=>e.event_name==="page_view"&&e.session_id).map((e:any)=>e.session_id)).size;
+  const sessions=Math.max(pageViewSessions,pageViews);
+  const sessionCountFor=(eventName:string)=>new Set(
+    (events||[]).filter((e:any)=>e.event_name===eventName&&e.session_id).map((e:any)=>e.session_id)
+  ).size;
+  const leadSessions=new Set((leads||[]).map((l:any)=>l.session_id).filter(Boolean)).size;
+  const funnel={
+    sessions,
+    chapter_sessions:sessionCountFor("chapter_click"),
+    lead_sessions:leadSessions,
+    amazon_sessions:sessionCountFor("amazon_click"),
+    patreon_sessions:sessionCountFor("patreon_click"),
+    share_unlock_sessions:sessionCountFor("share_reward_unlock"),
+    share_download_sessions:sessionCountFor("share_reward_download"),
+    test_complete_sessions:sessionCountFor("test_complete")
+  };
+
   return NextResponse.json({
     range_days:30,
     totals,
+    sessions,
+    funnel,
     lead_count:leadCount,
-    conversion_rate:pageViews?(leadCount/pageViews)*100:0,
-    amazon_ctr:pageViews?(amazonClicks/pageViews)*100:0,
-    patreon_ctr:pageViews?(patreonClicks/pageViews)*100:0,
-    community_ctr:pageViews?(communityClicks/pageViews)*100:0,
-    lead_to_amazon_ratio:leadCount?(amazonClicks/leadCount)*100:0,
+    conversion_rate:sessions?(leadSessions/sessions)*100:0,
+    amazon_ctr:sessions?(funnel.amazon_sessions/sessions)*100:0,
+    patreon_ctr:sessions?(funnel.patreon_sessions/sessions)*100:0,
+    community_ctr:sessions?(sessionCountFor("community_click")/sessions)*100:0,
+    share_unlock_rate:sessions?(funnel.share_unlock_sessions/sessions)*100:0,
+    share_download_rate:funnel.share_unlock_sessions?(funnel.share_download_sessions/funnel.share_unlock_sessions)*100:0,
+    lead_to_amazon_ratio:leadSessions?(funnel.amazon_sessions/leadSessions)*100:0,
     mailerlite,
     test_profiles:testProfiles,
     experiments,
