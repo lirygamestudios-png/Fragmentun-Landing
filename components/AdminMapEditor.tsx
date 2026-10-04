@@ -13,7 +13,7 @@ export function AdminMapEditor(){
   return <div className="adminMapModule">
     <div className="adminModuleSectionHead"><div><div className="kicker">Cartografía emocional</div><h2>Territorios</h2></div><span>{regions.length} regiones</span></div>
     <div className="adminBookGrid">{regions.map((r,i)=><article className="card adminMapRegionCard" key={r.id}>
-      <div className="kicker">{r.slug}</div>
+      <div className="adminPanelHeader"><div><div className="kicker">Territorio</div><h3>{r.name_es||r.slug}</h3></div><span className="adminPanelBadge">{r.slug}</span></div>
       <label>Nombre · Español</label><input value={r.name_es||""} onChange={e=>update("region",i,"name_es",e.target.value)}/>
       <label>Nombre · Inglés</label><input value={r.name_en||""} onChange={e=>update("region",i,"name_en",e.target.value)}/>
       <label>Descripción · Español</label><textarea className="adminSmallArea" value={r.description_es||""} onChange={e=>update("region",i,"description_es",e.target.value)}/>
@@ -23,7 +23,7 @@ export function AdminMapEditor(){
     </article>)}</div>
     <div className="adminModuleSectionHead" style={{marginTop:32}}><div><div className="kicker">Nodos del mapa</div><h2>Puntos de interés</h2></div><span>{points.length} puntos</span></div>
     <div className="adminBookGrid">{points.map((p,i)=><article className="card adminMapPointCard" key={p.id}>
-      <div className="kicker">{p.slug}</div>
+      <div className="adminPanelHeader"><div><div className="kicker">Punto de interés</div><h3>{p.name_es||p.slug}</h3></div><span className="adminPanelBadge">{p.slug}</span></div>
       <label>Nombre · Español</label><input value={p.name_es||""} onChange={e=>update("point",i,"name_es",e.target.value)}/>
       <label>Nombre · Inglés</label><input value={p.name_en||""} onChange={e=>update("point",i,"name_en",e.target.value)}/>
       <label>Posición horizontal</label><input type="number" value={p.x??50} onChange={e=>update("point",i,"x",e.target.value)}/>
