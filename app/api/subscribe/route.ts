@@ -32,6 +32,7 @@ export async function POST(request:NextRequest){
   const medium=clean(form.get("utm_medium"));
   const campaign=clean(form.get("utm_campaign"));
   const content=clean(form.get("utm_content"));
+  const sessionId=clean(form.get("session_id"),200);
   const consentMarketing=form.get("consent_marketing")==="yes";
   const consentVersion=clean(form.get("consent_version"),50)||"2026-09-30";
   const honeypot=clean(form.get("website"));
@@ -89,7 +90,7 @@ export async function POST(request:NextRequest){
       method:"POST",
       headers,
       body:JSON.stringify({
-        email,name,locale,source,medium,campaign,content,
+        email,name,locale,source,medium,campaign,content,session_id:sessionId,
         mailerlite_subscriber_id:mailerliteSubscriberId,
         mailerlite_status:mailerliteStatus,
         last_error:lastError,
@@ -110,7 +111,7 @@ export async function POST(request:NextRequest){
         event_name:"lead_submit",
         locale,
         path:`/${locale}`,
-        source,medium,campaign,content,
+        source,medium,campaign,content,session_id:sessionId,
         metadata:{
           mailerlite_status:mailerliteStatus,
           emotional_profile:["vorax","umbral","ethelis","nara","balance"].includes(emotionalProfile)?emotionalProfile:null,
