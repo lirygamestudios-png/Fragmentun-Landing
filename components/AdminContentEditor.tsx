@@ -63,6 +63,7 @@ export function AdminContentEditor(){
   const[showAdvanced,setShowAdvanced]=useState(false);
   const[uploadingWhy,setUploadingWhy]=useState<number|null>(null);
   const[uploadingNews,setUploadingNews]=useState<string|null>(null);
+  const[uploadingLumen,setUploadingLumen]=useState(false);
   const supabase=useMemo(()=>createSupabaseBrowserClient(),[]);
 
   useEffect(()=>{
@@ -167,6 +168,36 @@ export function AdminContentEditor(){
     setStatus(`Imagen del apartado ${index+1} preparada. Pulsa Guardar cambios.`);
   }
 
+  function lumenImage(){return json("es").image_url||json("en").image_url||""}
+  function setLumenImage(value:string){
+    const es={...json("es"),image_url:value,poster_url:value};
+    const en={...json("en"),image_url:value,poster_url:value};
+    setEsText(JSON.stringify(es,null,2));
+    setEnText(JSON.stringify(en,null,2));
+  }
+  async function uploadLumenImage(file:File|null){
+    if(!file)return;
+    if(!file.type.startsWith("image/")){setStatus("Selecciona un archivo de imagen.");return}
+    setUploadingLumen(true);setStatus("Subiendo imagen de Lumen…");
+    const slug="lumen-frontdesk-managed";
+    const safe=file.name.toLowerCase().replace(/[^a-z0-9._-]+/g,"-");
+    const path=`${slug}/${Date.now()}-${safe}`;
+    const{error}=await supabase.storage.from("official-media").upload(path,file,{contentType:file.type||undefined});
+    if(error){setUploadingLumen(false);setStatus(error.message);return}
+    const r=await fetch("/api/admin/media",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+      slug,kind:"image",storage_path:`official-media/${path}`,
+      alt_es:"Ciudad de Lumen",alt_en:"City of Lumen",
+      protected:false,public_visible:true,
+      metadata:{filename:file.name,size:file.size,mime:file.type,bucket:"official-media",path,usage:"lumen_frontdesk"}
+    })});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok){setUploadingLumen(false);setStatus(j.error||"No se pudo registrar la imagen.");return}
+    setLumenImage(assetUrl(j.data));
+    setMedia(m=>[j.data,...m.filter(x=>x.id!==j.data.id)]);
+    setUploadingLumen(false);
+    setStatus("Imagen de Lumen preparada. Pulsa Guardar cambios.");
+  }
+
   const NEWS_CARDS=[
     {key:"feature",name:"Publicación",fallback:"/fragmentun-i-cover-es.jpg"},
     {key:"share",name:"Recompensa",fallback:"/elyon-hero.jpg"},
@@ -249,7 +280,7 @@ export function AdminContentEditor(){
             </div>
           </div>
         </div>}
-        {!["home.author","home.why","home.news"].includes(selected.content_key)&&<div className="card" style={{marginBottom:18}}>
+        {!["home.author","home.why","home.news","home.lumen"].includes(selected.content_key)&&<div className="card" style={{marginBottom:18}}>
           <div className="kicker">Recursos visuales</div>
           <p className="note">Selecciona imágenes o videos aprobados de la biblioteca.</p>
           <div className="adminLangGrid">
@@ -269,6 +300,30 @@ export function AdminContentEditor(){
             </div>)}
           </div>
         </div>}
+        {selected.content_key==="home.lumen"&&<div className="adminAuthorVisual adminLumenVisual">
+          <div className="adminAuthorVisualHead">
+            <div><div className="kicker">Lumen</div><h3>Imagen principal de la sección</h3></div>
+            <span>ES + EN</span>
+          </div>
+          <div className="adminAuthorVisualGrid">
+            <div className="adminLumenPreview">{lumenImage()?<img src={lumenImage()} alt="Ciudad de Lumen"/>:<div>Sin imagen</div>}</div>
+            <div className="adminAuthorControls">
+              <label>Elegir imagen existente
+                <select value={lumenImage()} onChange={e=>setLumenImage(e.target.value)}>
+                  <option value="">— Sin imagen —</option>
+                  {media.filter(m=>m.public_visible&&m.kind==="image").map(m=><option key={m.id} value={assetUrl(m)}>{m.slug}</option>)}
+                </select>
+              </label>
+              <label>Subir nueva imagen
+                <input type="file" accept="image/*" disabled={uploadingLumen} onChange={e=>uploadLumenImage(e.target.files?.[0]||null)}/>
+              </label>
+              <p className="note">La imagen seleccionada se usará directamente en la sección Lumen del FrontDesk. Después de subirla, pulsa “Guardar cambios”.</p>
+              {uploadingLumen&&<p className="adminInlineStatus" role="status">Subiendo imagen de Lumen…</p>}
+              {status.includes("Lumen")&&<p className={status.includes("preparada")?"adminInlineStatus success":"adminInlineStatus"} role="status">{status}</p>}
+            </div>
+          </div>
+        </div>}
+
         {selected.content_key==="home.why"&&<div className="adminWhyEditor">
           <div className="adminPanelHeader">
             <div><div className="kicker">Apartados publicados</div><h3>Tarjetas de “Por qué FRAGMENTUN”</h3><p className="note">Cada apartado controla su propio texto e imagen. La imagen se comparte entre Español e Inglés.</p></div>
