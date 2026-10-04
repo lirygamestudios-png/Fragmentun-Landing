@@ -288,6 +288,7 @@ export default async function Home({
 
           <div className="grid3">
             {publicBooks.map((b:any)=><article className="card sagaCard" key={b.slug}>
+              {b.cover_url&&<div className="sagaCoverWrap"><img className="sagaCover" src={b.cover_url} alt={b.cover_alt||(locale==="es"?`Portada de ${b.title_es||"FRAGMENTUN"}`:`Cover of ${b.title_en||"FRAGMENTUN"}`)}/></div>}
               <div className="sagaMark">{locale==="es"?b.title_es:b.title_en}</div>
               <h3>{locale==="es"?b.subtitle_es:b.subtitle_en}</h3>
               <p>{b.edition_status==="published"?(locale==="es"?"Publicado":"Published"):(locale==="es"?"Próximamente":"Coming soon")}</p>
