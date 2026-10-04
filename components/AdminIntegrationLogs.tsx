@@ -103,7 +103,8 @@ export function AdminIntegrationLogs(){
                 fontWeight:700,textDecoration:"none"
               }}>{mail.secondaryCta.label}</a>
             </div>
-            <p style={{margin:"18px 0 0",fontSize:".82rem",opacity:.62}}>{mail.note}</p>
+            <p style={{margin:"14px 0 0",fontSize:".82rem",opacity:.72}}><strong>Trigger:</strong> {mail.trigger}</p>
+            <p style={{margin:"8px 0 0",fontSize:".82rem",opacity:.62}}>{mail.note}</p>
           </div>
         </div>)}
       </div>
