@@ -189,66 +189,53 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                     setRewardOpen(false);
                     setShareStatus("sharing");
 
-                    let shareSurfaceWasOpen=false;
-                    let shareResolved=false;
-                    let rewardShown=false;
-                    let returnTimeout:number|undefined;
-
-                    const cleanupShareReturn=()=>{
-                      window.removeEventListener("blur",onBlur);
-                      window.removeEventListener("focus",onFocus);
-                      window.removeEventListener("pointerdown",onPointerReturn,true);
-                      document.removeEventListener("visibilitychange",onVisibility);
-                      if(returnTimeout)window.clearTimeout(returnTimeout);
-                    };
-
-                    const revealReward=()=>{
-                      if(rewardShown||!shareResolved)return;
-                      if(document.visibilityState!=="visible"||!document.hasFocus())return;
-                      rewardShown=true;
-                      cleanupShareReturn();
-
-                      fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-                        event_name:"share_reward_unlock",locale,path:window.location.pathname,metadata:{placement:"value_strip",result:"completed_after_return"}
-                      }),keepalive:true}).catch(()=>{});
-
-                      window.setTimeout(()=>{
-                        setRewardReady(true);
-                        setRewardOpen(true);
-                        setShareStatus("idle");
-                      },220);
-                    };
-
-                    const onBlur=()=>{shareSurfaceWasOpen=true;};
-                    const onFocus=()=>{
-                      if(shareResolved)revealReward();
-                    };
-                    const onPointerReturn=()=>{
-                      if(shareResolved)revealReward();
-                    };
-                    const onVisibility=()=>{
-                      if(document.visibilityState==="hidden"){
-                        shareSurfaceWasOpen=true;
-                        return;
-                      }
-                      if(shareResolved)revealReward();
-                    };
-
-                    window.addEventListener("blur",onBlur,{once:true});
-                    window.addEventListener("focus",onFocus,{once:true});
-                    window.addEventListener("pointerdown",onPointerReturn,{capture:true,once:true});
-                    document.addEventListener("visibilitychange",onVisibility);
+                    let pageBlurred=false;
+                    let pageHidden=document.visibilityState==="hidden";
+                    const markBlur=()=>{pageBlurred=true;};
+                    const markVisibility=()=>{if(document.visibilityState==="hidden")pageHidden=true;};
+                    window.addEventListener("blur",markBlur,{once:true});
+                    document.addEventListener("visibilitychange",markVisibility);
 
                     await navigator.share({title:"FRAGMENTUN",text,url});
-                    shareResolved=true;
 
-                    // Some systems resolve navigator.share before their native social sheet
-                    // has actually disappeared. Never open the reward immediately.
-                    // If the page genuinely left focus, wait for focus/visibility to return.
-                    // Otherwise the first interaction back on the page is the safe fallback.
-                    if(shareSurfaceWasOpen){
-                      returnTimeout=window.setTimeout(revealReward,120);
-                    }
+                    // Do not reveal the reward while the native social sheet can still be visible.
+                    // Wait until the document is visible/focused again; on platforms that never
+                    // report blur/visibility, add a short post-share grace period.
+                    await new Promise<void>(resolve=>{
+                      let done=false;
+                      let timer:number|undefined;
+                      const finish=()=>{
+                        if(done)return;
+                        if(document.visibilityState!=="visible"||!document.hasFocus())return;
+                        done=true;
+                        window.removeEventListener("focus",onReturn);
+                        document.removeEventListener("visibilitychange",onVisibilityReturn);
+                        if(timer)window.clearTimeout(timer);
+                        // two frames + a grace delay ensure the native share UI has painted away
+                        requestAnimationFrame(()=>requestAnimationFrame(()=>window.setTimeout(resolve,350)));
+                      };
+                      const onReturn=()=>finish();
+                      const onVisibilityReturn=()=>{if(document.visibilityState==="visible")finish();};
+
+                      if(pageBlurred||pageHidden||!document.hasFocus()||document.visibilityState!=="visible"){
+                        window.addEventListener("focus",onReturn);
+                        document.addEventListener("visibilitychange",onVisibilityReturn);
+                        timer=window.setTimeout(finish,5000);
+                      }else{
+                        timer=window.setTimeout(finish,900);
+                      }
+                    });
+
+                    window.removeEventListener("blur",markBlur);
+                    document.removeEventListener("visibilitychange",markVisibility);
+
+                    fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+                      event_name:"share_reward_unlock",locale,path:window.location.pathname,metadata:{placement:"value_strip",result:"completed_after_share_closed"}
+                    }),keepalive:true}).catch(()=>{});
+
+                    setRewardReady(true);
+                    setRewardOpen(true);
+                    setShareStatus("idle");
                   }catch(error){
                     const aborted=error instanceof DOMException&&error.name==="AbortError";
                     if(!aborted){
