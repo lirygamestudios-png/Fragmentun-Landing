@@ -7,6 +7,7 @@ export function AdminIntegrationLogs(){
   const[emailLocale,setEmailLocale]=useState<"es"|"en">("es");
   const[provisioning,setProvisioning]=useState(false);
   const[provisionResult,setProvisionResult]=useState<any>(null);
+  const[blueprintStatus,setBlueprintStatus]=useState<"idle"|"copied"|"error">("idle");
   useEffect(()=>{fetch("/api/admin/integrations").then(r=>r.json()).then(setData)},[]);
 
   if(!data)return <p>Cargando integraciones…</p>;
@@ -19,6 +20,7 @@ export function AdminIntegrationLogs(){
   const approvedSequence=emailLocale==="es"?FRAGMENTUN_EMAIL_SEQUENCE:FRAGMENTUN_EMAIL_SEQUENCE_EN;
 
   async function copyBlueprint(){
+    setBlueprintStatus("idle");
     const lines=approvedSequence.map((mail:any)=>[
       `${mail.order}. ${mail.subject}`,
       `   Fase: ${mail.phase}`,
@@ -29,7 +31,13 @@ export function AdminIntegrationLogs(){
       mail.downloadCta?`   Descarga: ${mail.downloadCta.label} → ${mail.downloadCta.href}`:"",
       `   Nota: ${mail.note}`
     ].filter(Boolean).join("\n")).join("\n\n");
-    await navigator.clipboard.writeText(lines);
+    try{
+      await navigator.clipboard.writeText(lines);
+      setBlueprintStatus("copied");
+      window.setTimeout(()=>setBlueprintStatus("idle"),3000);
+    }catch{
+      setBlueprintStatus("error");
+    }
   }
 
   async function provisionAutomations(){
@@ -131,7 +139,9 @@ export function AdminIntegrationLogs(){
           <button type="button" className="btn btnGhost" onClick={()=>setEmailLocale("en")} aria-pressed={emailLocale==="en"} style={emailLocale==="en"?{borderColor:FRAGMENTUN_EMAIL_BRAND.gold,color:FRAGMENTUN_EMAIL_BRAND.gold}:undefined}>EN</button>
         </div>
       </div>
-      <div style={{display:"flex",justifyContent:"flex-end",marginBottom:"12px"}}>
+      <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",gap:"10px",marginBottom:"12px",flexWrap:"wrap"}}>
+        {blueprintStatus==="copied"?<span style={{fontSize:".82rem",color:FRAGMENTUN_EMAIL_BRAND.gold,fontWeight:800}}>✓ Blueprint {emailLocale.toUpperCase()} copiado al portapapeles</span>:null}
+        {blueprintStatus==="error"?<span style={{fontSize:".82rem",color:"#ff8a8a",fontWeight:800}}>No fue posible copiar automáticamente. Revisa los permisos del portapapeles.</span>:null}
         <button type="button" className="btn btnGhost" onClick={copyBlueprint}>Copiar blueprint MailerLite</button>
       </div>
       <div style={{display:"grid",gap:"1rem"}}>
