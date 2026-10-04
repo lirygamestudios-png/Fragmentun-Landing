@@ -63,7 +63,7 @@ export function AdminUsers(){
           <option value="editor">Editor</option>
           <option value="marketing">Marketing</option>
         </select>
-        <button className="btn btnPrimary" onClick={add}>Autorizar / actualizar</button>
+        <button className="btn btnPrimary" onClick={add}>Guardar acceso</button>
       </div>
     </div>
 
