@@ -40,6 +40,33 @@ export function AdminIntegrationLogs(){
     </div>
 
     <div className="card adminSecondaryPanel">
+      <h2>Secuencia de correos · MailerLite</h2>
+      {!data.automations?.ok
+        ? <p>No fue posible leer las automatizaciones de MailerLite: {data.automations?.error||"—"}</p>
+        : (data.automations?.automations||[]).length===0
+          ? <p>No hay automatizaciones disponibles en la cuenta conectada.</p>
+          : <div className="adminTableWrap">
+              <table className="adminTable">
+                <thead><tr><th>Automatización</th><th>Estado</th><th>Disparador</th><th>Secuencia</th></tr></thead>
+                <tbody>{(data.automations?.automations||[]).map((a:any)=><tr key={a.id}>
+                  <td><strong>{a.name||"Sin nombre"}</strong></td>
+                  <td>{a.enabled?"✓ Activa":"⏸ Inactiva"}</td>
+                  <td><code>{JSON.stringify(a.trigger_data||{})}</code></td>
+                  <td>
+                    {(a.steps||[]).length===0?"—":<ol style={{margin:0,paddingLeft:"1.2rem"}}>
+                      {(a.steps||[]).map((s:any)=><li key={s.id||s.type}>
+                        <strong>{s.type||"paso"}</strong>
+                        {s.subject?<> · {s.subject}</>:null}
+                        {s.value!=null||s.unit?<> · {String(s.value??"")} {s.unit||""}</>:null}
+                      </li>)}
+                    </ol>}
+                  </td>
+                </tr>)}</tbody>
+              </table>
+            </div>}
+    </div>
+
+    <div className="card adminSecondaryPanel">
       <h2>Historial de integraciones</h2>
       <div className="adminTableWrap">
         <table className="adminTable">
