@@ -7,6 +7,7 @@ export function AdminSagaEditor(){
   const[media,setMedia]=useState<any[]>([]);
   const[msg,setMsg]=useState("");
   const[uploading,setUploading]=useState("");
+  const[uploadStatus,setUploadStatus]=useState<Record<string,string>>({});
   const supabase=useMemo(()=>createSupabaseBrowserClient(),[]);
 
   const loadMedia=()=>fetch("/api/admin/media").then(r=>r.json()).then(j=>setMedia((j.data||[]).filter((m:any)=>m.kind==="image"&&m.public_visible)));
@@ -79,13 +80,14 @@ export function AdminSagaEditor(){
     const path=`${slug}/${Date.now()}-${safe}`;
     const key=`${book.id}:${j}`;
     setUploading(key);
-    setMsg("Subiendo portada…");
+    setUploadStatus(s=>({...s,[key]:"Subiendo portada…"}));
+    setMsg("");
 
     const{error:uploadError}=await supabase.storage.from("official-media").upload(path,file,{
       upsert:false,
       contentType:file.type||undefined
     });
-    if(uploadError){setUploading("");setMsg(uploadError.message);return}
+    if(uploadError){setUploading("");setUploadStatus(s=>({...s,[key]:uploadError.message}));return}
 
     const metaResponse=await fetch("/api/admin/media",{
       method:"POST",
@@ -104,7 +106,7 @@ export function AdminSagaEditor(){
     const meta=await metaResponse.json().catch(()=>({}));
     if(!metaResponse.ok){
       setUploading("");
-      setMsg(meta.error||"La imagen subió, pero no pudo registrarse en la biblioteca.");
+      setUploadStatus(s=>({...s,[key]:meta.error||"La imagen subió, pero no pudo registrarse en la biblioteca."}));
       return;
     }
 
@@ -116,9 +118,9 @@ export function AdminSagaEditor(){
     await loadMedia();
     try{
       await persistBook(nextBook);
-      setMsg("Portada subida y vinculada ✓");
+      setUploadStatus(s=>({...s,[key]:"Portada guardada correctamente ✓"}));
     }catch(error:any){
-      setMsg(error?.message||"La portada subió, pero no pudo vincularse a la edición.");
+      setUploadStatus(s=>({...s,[key]:error?.message||"La portada subió, pero no pudo vincularse a la edición."}));
     }finally{
       setUploading("");
     }
@@ -194,7 +196,7 @@ export function AdminSagaEditor(){
                 />
               </div>
               <p className="note">Puedes subir una portada nueva o seleccionar una imagen ya existente en Medios. Las nuevas portadas se guardan en Medios oficiales.</p>
-              {uploading===uploadKey&&<p>Subiendo portada…</p>}
+              {uploadStatus[uploadKey]&&<p className={uploadStatus[uploadKey].includes("✓")?"adminInlineStatus success":"adminInlineStatus"} role="status">{uploadStatus[uploadKey]}</p>}
               {preview&&<div className="adminSagaCoverPreview"><img src={preview} alt={b.subtitle_es||"Portada FRAGMENTUN"}/><span>{String(ed.locale||"").toUpperCase()}</span></div>}
             </div>
           </div>
