@@ -73,7 +73,7 @@ export default async function AdminPage(){
   const recentViews=viewsByDay.reduce((a,b)=>a+b,0);
   const recentAmazon=amazonByDay.reduce((a,b)=>a+b,0);
   const sessionIds=new Set(eventRows.filter(e=>e.event_name==="page_view"&&e.session_id).map(e=>e.session_id as string));
-  const recentSessions=Math.max(sessionIds.size,recentViews);
+  const recentSessions=sessionIds.size;
   const amazonSessions=new Set(eventRows.filter(e=>e.event_name==="amazon_click"&&e.session_id).map(e=>e.session_id as string)).size;
   const recentLeadSessions=new Set(((recentLeadRows||[]) as any[]).filter(l=>l.session_id).map(l=>String(l.session_id))).size;
   const amazonCtr=recentSessions?((amazonSessions/recentSessions)*100):0;
