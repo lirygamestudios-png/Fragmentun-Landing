@@ -16,13 +16,16 @@ export function AdminAuditLog(){
     <div className="adminTableWrap">
       <table className="adminTable">
         <thead><tr><th>Fecha</th><th>Acción</th><th>Tabla</th><th>Registro</th><th>Usuario</th></tr></thead>
-        <tbody>{(data.items||[]).map((r:any)=><tr key={r.id}>
-          <td>{new Date(r.created_at).toLocaleString()}</td>
-          <td>{r.action}</td>
-          <td>{r.table_name}</td>
-          <td>{r.record_id||"—"}</td>
-          <td>{r.user_id||"Sistema"}</td>
-        </tr>)}</tbody>
+        <tbody>{(data.items||[]).map((r:any)=>{
+          const actor=r.actor_name ? [r.actor_name,r.actor_role].filter(Boolean).join(" · ") : (r.user_id||"Sistema");
+          return <tr key={r.id}>
+            <td>{new Date(r.created_at).toLocaleString()}</td>
+            <td>{r.action}</td>
+            <td>{r.table_name}</td>
+            <td>{r.record_id||"—"}</td>
+            <td>{actor}</td>
+          </tr>;
+        })}</tbody>
       </table>
     </div>
   </div>;
