@@ -12,14 +12,33 @@ function isLikelySecret(value:string){
   return value.startsWith("eyJ") || value.split(".").length===3 || value.length>80;
 }
 
+async function createMailerLiteGroup(token:string,name:string){
+  const res=await fetch(ML_GROUPS,{
+    method:"POST",
+    headers:{Authorization:`Bearer ${token}`,"Content-Type":"application/json",Accept:"application/json"},
+    body:JSON.stringify({name}),
+    cache:"no-store",
+    signal:AbortSignal.timeout(8000)
+  }).catch(()=>null);
+
+  if(!res?.ok){
+    const detail=await res?.json().catch(()=>null);
+    const message=detail?.message?String(detail.message):"";
+    return {id:null as string|null,debug:res?`create group HTTP ${res.status}${message?` — ${message}`:""}`:"create group request failed"};
+  }
+
+  const data=await res.json().catch(()=>({}));
+  const id=String(data?.data?.id||"").trim();
+  return /^\d+$/.test(id)?{id,debug:null}:{id:null,debug:"created group returned invalid id"};
+}
+
 async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
   const value=String(raw||"").trim();
 
   if(value && !isLikelySecret(value)){
-    if(/^\d+$/.test(value)) return {id:Number(value),debug:null};
-
+    if(/^\d+$/.test(value)) return {id:value,debug:null};
     const embedded=value.match(/(?:^|\D)(\d{8,})(?:\D|$)/);
-    if(embedded?.[1]) return {id:Number(embedded[1]),debug:null};
+    if(embedded?.[1]) return {id:embedded[1],debug:null};
   }
 
   const res=await fetch(`${ML_GROUPS}?limit=100`,{
@@ -29,7 +48,7 @@ async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
   }).catch(()=>null);
 
   if(!res?.ok){
-    return {id:null as number|null,debug:res?`groups endpoint HTTP ${res.status}`:"groups endpoint request failed"};
+    return {id:null as string|null,debug:res?`groups endpoint HTTP ${res.status}`:"groups endpoint request failed"};
   }
 
   const data=await res.json().catch(()=>({}));
@@ -38,11 +57,15 @@ async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
   if(value && !isLikelySecret(value)){
     const normalizedConfigured=normalizeGroupName(value);
     const exact=groups.find((g:any)=>normalizeGroupName(String(g?.name||""))===normalizedConfigured);
-    if(exact?.id) return {id:Number(exact.id),debug:null};
+    if(exact?.id) return {id:String(exact.id),debug:null};
   }
 
-  const fragmentunGroups=groups.filter((g:any)=>normalizeGroupName(String(g?.name||"")).includes("fragmentun"));
+  const desiredName=locale==="es"?"FRAGMENTUN CAP1 ES":"FRAGMENTUN CAP1 EN";
+  const desiredNormalized=normalizeGroupName(desiredName);
+  const exactDesired=groups.find((g:any)=>normalizeGroupName(String(g?.name||""))===desiredNormalized);
+  if(exactDesired?.id) return {id:String(exactDesired.id),debug:null};
 
+  const fragmentunGroups=groups.filter((g:any)=>normalizeGroupName(String(g?.name||"")).includes("fragmentun"));
   const languageMatched=fragmentunGroups.filter((g:any)=>{
     const n=` ${normalizeGroupName(String(g?.name||""))} `;
     return locale==="es"
@@ -51,24 +74,15 @@ async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
   });
 
   if(languageMatched.length===1 && languageMatched[0]?.id){
-    return {id:Number(languageMatched[0].id),debug:null};
+    return {id:String(languageMatched[0].id),debug:null};
   }
 
-  const chapterMatched=fragmentunGroups.filter((g:any)=>{
-    const n=normalizeGroupName(String(g?.name||""));
-    const hasChapter=/cap(itulo)? ?1|chapter ?1/.test(n);
-    const langOk=locale==="es"
-      ? /(^| )(es|esp|espanol|spanish)( |$)/.test(n)
-      : /(^| )(en|eng|english|ingles)( |$)/.test(n);
-    return hasChapter && langOk;
-  });
+  return await createMailerLiteGroup(token,desiredName);
+}
 
-  if(chapterMatched.length===1 && chapterMatched[0]?.id){
-    return {id:Number(chapterMatched[0].id),debug:null};
-  }
-
-  const safePreview=fragmentunGroups.slice(0,20).map((g:any)=>`${g?.id}:${g?.name}`).join(" | ");
-  return {id:null,debug:`fragmentun_groups=${safePreview||"none"}`.slice(0,900)};
+function mailerLiteSubscriberBody(email:string,name:string,groupId:string){
+  const fields=name?`,"fields":${JSON.stringify({name})}`:"";
+  return `{"email":${JSON.stringify(email)}${fields},"groups":[${groupId}],"status":"active"}`;
 }
 
 function clean(value:FormDataEntryValue|null,max=200){
@@ -144,7 +158,7 @@ export async function POST(request:NextRequest){
     const ml=await fetch(ML,{
       method:"POST",
       headers:{Authorization:`Bearer ${token}`,"Content-Type":"application/json",Accept:"application/json"},
-      body:JSON.stringify({email,fields:name?{name}:undefined,groups:[group],status:"active"}),
+      body:mailerLiteSubscriberBody(email,name,group),
       cache:"no-store",
       signal:AbortSignal.timeout(8000)
     }).catch(()=>null);
