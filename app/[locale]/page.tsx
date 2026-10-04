@@ -167,11 +167,11 @@ export default async function Home({
 
           <div>
             <div className="bookStage">
-              {locale==="es"
+              {firstBook?.cover_url||locale==="es"
                 ? <img
                   className="officialBookCover"
-                  src="/fragmentun-i-cover-es.jpg"
-                  alt="Portada oficial de FRAGMENTUN I: El Despertar Emocional de José Liranzo"
+                  src={firstBook?.cover_url||"/fragmentun-i-cover-es.jpg"}
+                  alt={firstBook?.cover_alt||(locale==="es"?"Portada oficial de FRAGMENTUN I: El Despertar Emocional de José Liranzo":"Official cover of FRAGMENTUN I")}
                   width={1200}
                   height={1800}
                   loading="eager"
