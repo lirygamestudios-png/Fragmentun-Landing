@@ -3771,3 +3771,21 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
     background-attachment:scroll!important;
   }
 }
+
+
+/* Inline feedback for Saga cover uploads */
+.adminInlineStatus{
+  margin:10px 0 0;
+  padding:9px 11px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.035);
+  color:#c8d5e1;
+  font-size:.76rem;
+  font-weight:700
+}
+.adminInlineStatus.success{
+  border-color:rgba(64,211,155,.28);
+  background:rgba(64,211,155,.07);
+  color:#8fe0bc
+}
