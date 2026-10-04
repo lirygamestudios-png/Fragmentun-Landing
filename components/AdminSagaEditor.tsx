@@ -128,14 +128,18 @@ export function AdminSagaEditor(){
     {books.map((b,i)=><article className="card adminSagaBookCard" key={b.id}>
       <div className="adminPanelHeader"><div><div className="kicker">FRAGMENTUN {b.volume}</div><h2>{b.subtitle_es||b.subtitle_en||"Libro de la Saga"}</h2></div><span className="adminPanelBadge">{b.status}</span></div>
 
-      <label>Título · Español</label>
-      <input value={b.title_es||""} onChange={e=>setBook(i,"title_es",e.target.value)}/>
-      <label>Subtítulo · Español</label>
-      <input value={b.subtitle_es||""} onChange={e=>setBook(i,"subtitle_es",e.target.value)}/>
-      <label>Título · Inglés</label>
-      <input value={b.title_en||""} onChange={e=>setBook(i,"title_en",e.target.value)}/>
-      <label>Subtítulo · Inglés</label>
-      <input value={b.subtitle_en||""} onChange={e=>setBook(i,"subtitle_en",e.target.value)}/>
+      <div className="adminLangGrid adminBookLanguageGrid">
+        <div>
+          <div className="kicker">Español</div>
+          <label>Título<input value={b.title_es||""} onChange={e=>setBook(i,"title_es",e.target.value)}/></label>
+          <label>Subtítulo<input value={b.subtitle_es||""} onChange={e=>setBook(i,"subtitle_es",e.target.value)}/></label>
+        </div>
+        <div>
+          <div className="kicker">Inglés</div>
+          <label>Título<input value={b.title_en||""} onChange={e=>setBook(i,"title_en",e.target.value)}/></label>
+          <label>Subtítulo<input value={b.subtitle_en||""} onChange={e=>setBook(i,"subtitle_en",e.target.value)}/></label>
+        </div>
+      </div>
 
       <label>Estado general</label>
       <select value={b.status} onChange={e=>setBook(i,"status",e.target.value)}>
@@ -144,7 +148,7 @@ export function AdminSagaEditor(){
         <option value="development">Desarrollo</option>
       </select>
 
-      <div className="editionList">
+      <div className="adminModuleSectionHead adminBookEditionHead"><div><div className="kicker">Publicación</div><h3>Ediciones</h3></div><span>{(b.editions||[]).length} ediciones</span></div><div className="editionList">
         {(b.editions||[]).map((ed:any,j:number)=>{
           const preview=mediaUrl(ed.cover_media_slug||"");
           const uploadKey=`${b.id}:${j}`;
