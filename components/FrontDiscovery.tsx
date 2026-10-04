@@ -198,27 +198,10 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
 
                     await navigator.share({title:"FRAGMENTUN",text,url});
 
-                    // navigator.share resolves only after the native share flow finishes.
-                    // If the page lost visibility/focus, wait until FRAGMENTUN is active again.
-                    if(document.visibilityState!=="visible"||!document.hasFocus()){
-                      await new Promise<void>(resolve=>{
-                        let done=false;
-                        const finish=()=>{
-                          if(done)return;
-                          if(document.visibilityState!=="visible"||!document.hasFocus())return;
-                          done=true;
-                          window.removeEventListener("focus",finish);
-                          document.removeEventListener("visibilitychange",finish);
-                          resolve();
-                        };
-                        window.addEventListener("focus",finish);
-                        document.addEventListener("visibilitychange",finish);
-                      });
-                    }
-
-                    // Small automatic grace period so the native social surface is fully gone
-                    // before the FRAGMENTUN reward modal appears.
-                    await new Promise<void>(resolve=>window.setTimeout(resolve,450));
+                    // navigator.share resolves when the native share flow has finished.
+                    // Do not require a second click or focus event: reveal the reward automatically
+                    // after a short grace period so the social surface has time to disappear.
+                    await new Promise<void>(resolve=>window.setTimeout(resolve,500));
 
                     window.removeEventListener("blur",markBlur);
                     document.removeEventListener("visibilitychange",markVisibility);
