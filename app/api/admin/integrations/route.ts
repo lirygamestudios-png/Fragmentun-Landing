@@ -32,10 +32,17 @@ async function fetchMailerLiteAutomations(){
         type:String(s?.type||""),
         name:s?.name||null,
         subject:s?.subject||null,
+        from:s?.from||s?.email?.from||null,
+        from_name:s?.from_name||s?.email?.from_name||null,
         description:s?.description||null,
         unit:s?.unit||null,
         value:s?.value||null,
-        complete:s?.complete??null
+        complete:s?.complete??null,
+        email_id:s?.email_id||s?.email?.id||null,
+        preview_url:s?.email?.preview_url||null,
+        screenshot_url:s?.email?.screenshot_url||null,
+        is_designed:s?.email?.is_designed??null,
+        stats:s?.email?.stats||null
       }))
     };
   }));
