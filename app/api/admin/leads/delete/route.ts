@@ -45,7 +45,8 @@ export async function POST(request:NextRequest){
           Authorization:`Bearer ${token}`,
           Accept:"application/json"
         },
-        cache:"no-store"
+        cache:"no-store",
+        signal:AbortSignal.timeout(8000)
       }
     ).catch(()=>null);
 
