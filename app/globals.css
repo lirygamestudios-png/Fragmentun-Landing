@@ -3825,3 +3825,30 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   position:relative!important;
   z-index:2!important;
 }
+
+
+/* Lumen visibility correction — keep city art visible, darken only behind copy */
+.masterLumenSection.masterLumenManaged .lumenMediaOverlay{
+  background:
+    linear-gradient(90deg,
+      rgba(4,10,18,.54) 0%,
+      rgba(4,10,18,.34) 34%,
+      rgba(4,10,18,.10) 66%,
+      rgba(4,10,18,.14) 100%)!important;
+}
+.masterLumenSection.masterLumenManaged .lumenMasterCopy{
+  background:linear-gradient(145deg,rgba(7,17,29,.58),rgba(10,22,40,.30))!important;
+  backdrop-filter:blur(4px)!important;
+}
+@media(max-width:760px){
+  .masterLumenSection.masterLumenManaged .lumenMediaOverlay{
+    background:
+      linear-gradient(180deg,
+        rgba(4,10,18,.08) 0%,
+        rgba(4,10,18,.18) 48%,
+        rgba(4,10,18,.62) 100%)!important;
+  }
+  .masterLumenSection.masterLumenManaged .lumenMasterCopy{
+    background:linear-gradient(180deg,rgba(7,17,29,.54),rgba(7,17,29,.72))!important;
+  }
+}
