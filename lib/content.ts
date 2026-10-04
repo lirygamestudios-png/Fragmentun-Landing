@@ -60,3 +60,45 @@ export async function getPublishedReviews(locale:Locale){
     body:locale==="es"?(r.body_es||r.body_original):(r.body_en||r.body_original)
   }));
 }
+
+
+function mediaPublicUrl(storagePath:string|null|undefined){
+  if(!storagePath)return null;
+  if(storagePath.startsWith("/")||/^https?:\/\//i.test(storagePath))return storagePath;
+  const slash=storagePath.indexOf("/");
+  if(slash<1)return null;
+  const bucket=storagePath.slice(0,slash);
+  const path=storagePath.slice(slash+1);
+  const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if(!url)return null;
+  return `${url}/storage/v1/object/public/${bucket}/${path}`;
+}
+
+export async function getPublishedCharacters(locale:Locale){
+  const supabase=client();
+  if(!supabase)return [];
+  const[{data:characters},{data:media}]=await Promise.all([
+    supabase.from("characters")
+      .select("id,slug,name,role_es,role_en,bio_es,bio_en,image_asset_id,video_asset_id,territory,status,sort_order")
+      .eq("status","published")
+      .order("sort_order"),
+    supabase.from("media_assets")
+      .select("id,slug,kind,storage_path,alt_es,alt_en,public_visible")
+      .eq("public_visible",true)
+  ]);
+  const byId=new Map((media||[]).map((m:any)=>[m.id,m]));
+  return (characters||[]).map((character:any)=>{
+    const image:any=character.image_asset_id?byId.get(character.image_asset_id):null;
+    const video:any=character.video_asset_id?byId.get(character.video_asset_id):null;
+    return {
+      key:character.slug==="elyon-voss"?"elyon":character.slug,
+      name:character.name,
+      role:locale==="en"?(character.role_en||character.role_es||""):(character.role_es||character.role_en||""),
+      body:locale==="en"?(character.bio_en||character.bio_es||""):(character.bio_es||character.bio_en||""),
+      tone:character.territory||character.slug,
+      image_url:mediaPublicUrl(image?.storage_path)||"",
+      image_alt:locale==="en"?(image?.alt_en||image?.alt_es||character.name):(image?.alt_es||image?.alt_en||character.name),
+      video_url:mediaPublicUrl(video?.storage_path)||""
+    };
+  });
+}
