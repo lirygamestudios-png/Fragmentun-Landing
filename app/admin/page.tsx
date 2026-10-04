@@ -41,6 +41,7 @@ export default async function AdminPage(){
     {data:books},
     {data:events},
     {data:latestLeads},
+    {data:recentLeadRows},
     {data:recentMedia}
   ]=await Promise.all([
     supabase.from("leads").select("*",{count:"exact",head:true}),
@@ -50,6 +51,7 @@ export default async function AdminPage(){
     supabase.from("books").select("slug,volume,title_es,subtitle_es,status,amazon_url_es").order("sort_order",{ascending:true}).limit(4),
     supabase.from("analytics_events").select("event_name,source,medium,session_id,created_at").gte("created_at",since).order("created_at",{ascending:true}).limit(5000),
     supabase.from("leads").select("name,email,locale,session_id,created_at").order("created_at",{ascending:false}).limit(5),
+    supabase.from("leads").select("session_id,created_at").gte("created_at",since).limit(5000),
     supabase.from("media_assets").select("id,slug,kind,storage_path,public_visible").eq("public_visible",true).order("created_at",{ascending:false}).limit(4)
   ]);
 
@@ -73,7 +75,7 @@ export default async function AdminPage(){
   const sessionIds=new Set(eventRows.filter(e=>e.event_name==="page_view"&&e.session_id).map(e=>e.session_id as string));
   const recentSessions=Math.max(sessionIds.size,recentViews);
   const amazonSessions=new Set(eventRows.filter(e=>e.event_name==="amazon_click"&&e.session_id).map(e=>e.session_id as string)).size;
-  const recentLeadSessions=new Set(leadRows.filter(l=>l.session_id).map(l=>l.session_id as string)).size;
+  const recentLeadSessions=new Set(((recentLeadRows||[]) as any[]).filter(l=>l.session_id).map(l=>String(l.session_id))).size;
   const amazonCtr=recentSessions?((amazonSessions/recentSessions)*100):0;
   const leadConversion=recentSessions?((recentLeadSessions/recentSessions)*100):0;
 
