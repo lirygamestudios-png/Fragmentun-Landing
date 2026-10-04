@@ -75,7 +75,7 @@ export function AdminCharacters(){
         <div className="adminPanelHeader"><div><div className="kicker">Archivo de personaje</div><h2>{current.name||"Nuevo personaje"}</h2></div><span className="adminPanelBadge">{current.status}</span></div>
         <div className="adminFormGrid">
           <label>Nombre<input value={current.name||""} onChange={e=>update("name",e.target.value)}/></label>
-          <label>Slug<input value={current.slug||""} onChange={e=>update("slug",e.target.value)}/></label>
+          <label>Identificador interno<input value={current.slug||""} onChange={e=>update("slug",e.target.value)}/></label>
           <label>Territorio<input value={current.territory||""} onChange={e=>update("territory",e.target.value)}/></label>
           <label>Orden<input type="number" value={current.sort_order??0} onChange={e=>update("sort_order",Number(e.target.value))}/></label>
         </div>
@@ -87,9 +87,9 @@ export function AdminCharacters(){
             <label>Biografía</label><textarea className="adminSmallArea" value={current.bio_es||""} onChange={e=>update("bio_es",e.target.value)}/>
           </div>
           <div>
-            <div className="kicker">English</div>
-            <label>Role</label><input value={current.role_en||""} onChange={e=>update("role_en",e.target.value)}/>
-            <label>Biography</label><textarea className="adminSmallArea" value={current.bio_en||""} onChange={e=>update("bio_en",e.target.value)}/>
+            <div className="kicker">Inglés</div>
+            <label>Rol</label><input value={current.role_en||""} onChange={e=>update("role_en",e.target.value)}/>
+            <label>Biografía</label><textarea className="adminSmallArea" value={current.bio_en||""} onChange={e=>update("bio_en",e.target.value)}/>
           </div>
         </div>
 
