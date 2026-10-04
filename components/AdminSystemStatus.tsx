@@ -13,7 +13,7 @@ export function AdminSystemStatus(){
 
   const ops=data.operations||{};
 
-  return <div>
+  return <div className="adminSecondaryModule adminStatusModule">
     <div className="kpis">
       <div className="kpi"><span>Estado lanzamiento</span><strong>{data.launch_status==="GO"?"GO":"NO-GO"}</strong></div>
       <div className="kpi"><span>Bloqueos críticos</span><strong>{data.blocker_count||0}</strong></div>
@@ -21,14 +21,14 @@ export function AdminSystemStatus(){
       <div className="kpi"><span>Requisitos críticos</span><strong>{data.ready_required?"OK":"Pendientes"}</strong></div>
     </div>
 
-    {(data.blockers||[]).length>0&&<div className="card" style={{marginTop:24}}>
+    {(data.blockers||[]).length>0&&<div className="card adminSecondaryPanel">
       <h2>Bloqueos de lanzamiento</h2>
       <ul className="statusList">
         {data.blockers.map((b:any)=><li key={b.key}>✕ {b.label}</li>)}
       </ul>
     </div>}
 
-    <div className="card" style={{marginTop:24}}>
+    <div className="card adminSecondaryPanel">
       <h2>Salud operativa</h2>
       <div className="kpis">
         <div className="kpi"><span>CMS</span><strong>{ops.content_blocks||0}</strong><small>bloques</small></div>
@@ -48,13 +48,13 @@ export function AdminSystemStatus(){
       </div>
     </div>
 
-    <div className="card" style={{marginTop:24}}>
+    <div className="card adminSecondaryPanel">
       <h2>Recuperación</h2>
       <p className="note">Genera un backup versionado del contenido y metadatos públicos. No incluye leads, credenciales ni otros datos sensibles.</p>
       <a className="btn btnPrimary" href="/api/admin/backup">Descargar backup de contenido</a>
     </div>
 
-    <div className="card" style={{marginTop:24}}>
+    <div className="card adminSecondaryPanel">
       <h2>Configuración de producción</h2>
       <div className="adminTableWrap">
         <table className="adminTable">
