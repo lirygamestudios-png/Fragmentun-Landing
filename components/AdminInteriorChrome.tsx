@@ -7,11 +7,11 @@ const items=[
   ["Saga","/admin/saga"],
   ["Contenido","/admin/contenido"],
   ["Personajes","/admin/personajes"],
-  ["Multimedia","/admin/medios"],
-  ["Analytics","/admin/analytics"],
-  ["Leads","/admin/leads"],
+  ["Medios","/admin/medios"],
+  ["Analítica","/admin/analytics"],
+  ["Suscriptores","/admin/leads"],
   ["Mapa","/admin/mapa"],
-  ["Sistema","/admin/status"]
+  ["Estado","/admin/status"]
 ] as const;
 
 const hiddenPrefixes=[
@@ -29,7 +29,7 @@ export function AdminInteriorChrome({children}:{children:React.ReactNode}){
     <div className="adminInteriorBrandbar">
       <Link href="/admin" className="adminInteriorBrand">
         <span className="adminInteriorSigil">✦</span>
-        <div><strong>FRAGMENTUN</strong><small>CONTROL CENTER</small></div>
+        <div><strong>FRAGMENTUN</strong><small>PANEL DE ADMINISTRACIÓN</small></div>
       </Link>
       <nav className="adminInteriorNav" aria-label="Navegación del panel">
         {items.map(([label,href])=><Link key={href} href={href} className={pathname===href?"active":""}>{label}</Link>)}
