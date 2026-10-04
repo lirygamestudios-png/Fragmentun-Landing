@@ -81,7 +81,16 @@ export async function POST(request:NextRequest){
       mailerliteSubscriberId=data?.data?.id??null;
     }else{
       mailerliteStatus="error";
-      lastError=ml? `MailerLite HTTP ${ml.status}` : "MailerLite request failed";
+      if(ml){
+        const detail=await ml.json().catch(()=>null);
+        const message=detail?.message?String(detail.message):"";
+        const errors=detail?.errors&&typeof detail.errors==="object"
+          ?Object.entries(detail.errors).map(([k,v])=>`${k}: ${Array.isArray(v)?v.join(", "):String(v)}`).join(" | ")
+          :"";
+        lastError=[`MailerLite HTTP ${ml.status}`,message,errors].filter(Boolean).join(" — ").slice(0,1000);
+      }else{
+        lastError="MailerLite request failed";
+      }
     }
   }
 
