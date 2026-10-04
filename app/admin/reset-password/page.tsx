@@ -45,7 +45,7 @@ export default function ResetPasswordPage(){
 
   return <main className="authShell">
     <section className="authCard">
-      <div className="kicker">FRAGMENTUN CONTROL CENTER</div>
+      <div className="kicker">FRAGMENTUN · PANEL DE ADMINISTRACIÓN</div>
       <h1>Nueva contraseña</h1>
       <p className="lead">Crea una contraseña nueva para tu cuenta administrativa.</p>
 
@@ -64,7 +64,7 @@ export default function ResetPasswordPage(){
       </form>
 
       <div className="authLinks">
-        <Link href="/admin/login">Volver al login</Link>
+        <Link href="/admin/login">Volver al acceso</Link>
       </div>
 
       {status&&<p className="note" role="status">{status}</p>}
