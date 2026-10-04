@@ -60,7 +60,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
   const[selected,setSelected]=useState<number|null>(null);
   const[rewardOpen,setRewardOpen]=useState(false);
   const[rewardReady,setRewardReady]=useState(false);
-  const[shareStatus,setShareStatus]=useState<"idle"|"sharing"|"unsupported"|"error">("idle");
+  const[shareStatus,setShareStatus]=useState<"idle"|"sharing"|"confirm"|"unsupported"|"error">("idle");
   const characters:Character[]=Array.isArray(charactersContent?.characters)&&charactersContent.characters.length
     ?charactersContent.characters.map((item:any)=>({
       key:item.key||item.name,
@@ -192,9 +192,9 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                       event_name:"share_reward_unlock",locale,path:window.location.pathname,metadata:{placement:"value_strip",result:"completed"}
                     }),keepalive:true}).catch(()=>{});
 
-                    setRewardReady(true);
-                    setRewardOpen(true);
-                    setShareStatus("idle");
+                    setRewardReady(false);
+                    setRewardOpen(false);
+                    setShareStatus("confirm");
                   }catch(error){
                     const aborted=error instanceof DOMException&&error.name==="AbortError";
                     if(!aborted){
@@ -211,6 +211,23 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                     ?(locale==="es"?"Compartiendo…":"Sharing…")
                     :item.action}
                 </button>
+                {shareStatus==="confirm"&&<div className="shareRewardConfirm">
+                  <small className="shareRewardStatus">
+                    {locale==="es"
+                      ?"La ventana de compartir se cerró. Confirma solo si terminaste de compartir para desbloquear el arte."
+                      :"The share window closed. Confirm only if you completed the share to unlock the artwork."}
+                  </small>
+                  <button className="btn btnPrimary" type="button" onClick={()=>{
+                    fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+                      event_name:"share_reward_unlock",locale,path:window.location.pathname,metadata:{placement:"value_strip",result:"user_confirmed"}
+                    }),keepalive:true}).catch(()=>{});
+                    setRewardReady(true);
+                    setRewardOpen(true);
+                    setShareStatus("idle");
+                  }}>
+                    {locale==="es"?"Sí, ya compartí":"Yes, I shared it"}
+                  </button>
+                </div>}
                 {shareStatus==="unsupported"&&<small className="shareRewardStatus">
                   {locale==="es"
                     ?"Este navegador no permite verificar que el contenido haya sido compartido. Abre esta página en un dispositivo compatible con Compartir para desbloquear el arte."
@@ -263,7 +280,8 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
         </div>
         <div className="charactersRail">
           {characters.map((char,index)=><button type="button" className="characterTile" key={char.key} onClick={()=>setSelected(index)}>
-            <div className={`characterTileArt ${char.tone}`} style={char.image?{backgroundImage:char.fallbackImage?`url("${char.image}"), url("${char.fallbackImage}")`:`url("${char.image}")`}:undefined}>
+            <div className={`characterTileArt ${char.tone}`}>
+              {char.image&&<img className="characterPhoto" src={char.image} alt="" loading="lazy" decoding="async" onError={e=>{if(char.fallbackImage){e.currentTarget.onerror=null;e.currentTarget.src=char.fallbackImage}}}/>}
               {char.video&&<video autoPlay muted loop playsInline preload="metadata" poster={char.image||char.fallbackImage}><source src={char.video}/></video>}
               <span>{char.name}</span>
             </div>
@@ -279,7 +297,8 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
       return <div className="characterModalBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setSelected(null)}}>
         <section className="characterModal" role="dialog" aria-modal="true" aria-label={char.name} tabIndex={-1}>
           <button className="characterModalClose" type="button" aria-label={locale==="es"?"Cerrar":"Close"} onClick={()=>setSelected(null)}>×</button>
-          <div className={`characterModalArt ${char.tone}`} style={char.image?{backgroundImage:char.fallbackImage?`url("${char.image}"), url("${char.fallbackImage}")`:`url("${char.image}")`}:undefined}>
+          <div className={`characterModalArt ${char.tone}`}>
+            {char.image&&<img className="characterPhoto" src={char.image} alt={char.name} decoding="async" onError={e=>{if(char.fallbackImage){e.currentTarget.onerror=null;e.currentTarget.src=char.fallbackImage}}}/>}
             {char.video&&<video autoPlay muted loop playsInline preload="metadata" poster={char.image||char.fallbackImage}><source src={char.video}/></video>}
             <div className="characterModalGlow"/>
             <span>{char.name}</span>
