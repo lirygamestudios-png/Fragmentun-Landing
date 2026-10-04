@@ -241,9 +241,10 @@ export default async function Home({
       <section
         className={`section masterLumenSection cmsMediaSection${lumen.image_url?" masterLumenManaged":""}`}
         id="lumen"
-        style={lumen.image_url?({"--lumen-managed-image":`url("${lumen.image_url}")`} as any):undefined}
       >
-        {!lumen.image_url&&<CmsSectionMedia content={lumen} className="lumenCmsMedia"/>}
+        {lumen.image_url
+          ?<img className="lumenManagedImage" src={lumen.image_url} alt={lumen.image_alt||"Ciudad de Lumen"}/>
+          :<CmsSectionMedia content={lumen} className="lumenCmsMedia"/>}
         <div className="cmsMediaOverlay lumenMediaOverlay"/>
         <div className="container split cmsMediaContent">
           <div className="lumenMasterCopy">
