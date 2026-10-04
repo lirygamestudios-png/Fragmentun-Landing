@@ -18,6 +18,20 @@ export function AdminIntegrationLogs(){
   const success=items.filter((x:any)=>x.status==="success").length;
   const approvedSequence=emailLocale==="es"?FRAGMENTUN_EMAIL_SEQUENCE:FRAGMENTUN_EMAIL_SEQUENCE_EN;
 
+  async function copyBlueprint(){
+    const lines=approvedSequence.map((mail:any)=>[
+      `${mail.order}. ${mail.subject}`,
+      `   Fase: ${mail.phase}`,
+      `   Espera: ${mail.delay}`,
+      `   Trigger: ${mail.trigger}`,
+      `   CTA principal: ${mail.primaryCta.label} → ${mail.primaryCta.href}`,
+      `   CTA secundario: ${mail.secondaryCta.label} → ${mail.secondaryCta.href}`,
+      mail.downloadCta?`   Descarga: ${mail.downloadCta.label} → ${mail.downloadCta.href}`:"",
+      `   Nota: ${mail.note}`
+    ].filter(Boolean).join("\n")).join("\n\n");
+    await navigator.clipboard.writeText(lines);
+  }
+
   async function provisionAutomations(){
     setProvisioning(true);
     setProvisionResult(null);
@@ -116,6 +130,9 @@ export function AdminIntegrationLogs(){
           <button type="button" className="btn btnGhost" onClick={()=>setEmailLocale("es")} aria-pressed={emailLocale==="es"} style={emailLocale==="es"?{borderColor:FRAGMENTUN_EMAIL_BRAND.gold,color:FRAGMENTUN_EMAIL_BRAND.gold}:undefined}>ES</button>
           <button type="button" className="btn btnGhost" onClick={()=>setEmailLocale("en")} aria-pressed={emailLocale==="en"} style={emailLocale==="en"?{borderColor:FRAGMENTUN_EMAIL_BRAND.gold,color:FRAGMENTUN_EMAIL_BRAND.gold}:undefined}>EN</button>
         </div>
+      </div>
+      <div style={{display:"flex",justifyContent:"flex-end",marginBottom:"12px"}}>
+        <button type="button" className="btn btnGhost" onClick={copyBlueprint}>Copiar blueprint MailerLite</button>
       </div>
       <div style={{display:"grid",gap:"1rem"}}>
         {approvedSequence.map((mail:any)=><div key={mail.id} style={{
