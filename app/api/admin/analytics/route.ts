@@ -105,7 +105,7 @@ export async function GET(request:Request){
   const communityClicks=totals.community_click||0;
 
   const pageViewSessions=new Set((events||[]).filter((e:any)=>e.event_name==="page_view"&&e.session_id).map((e:any)=>e.session_id)).size;
-  const sessions=Math.max(pageViewSessions,pageViews);
+  const sessions=pageViewSessions;
   const sessionCountFor=(eventName:string)=>new Set(
     (events||[]).filter((e:any)=>e.event_name===eventName&&e.session_id).map((e:any)=>e.session_id)
   ).size;
@@ -126,6 +126,15 @@ export async function GET(request:Request){
     totals,
     sessions,
     funnel,
+    session_tracking_coverage:pageViews?(pageViewSessions/pageViews)*100:0,
+    historical:{
+      page_views:pageViews,
+      amazon_clicks:amazonClicks,
+      patreon_clicks:patreonClicks,
+      community_clicks:communityClicks,
+      amazon_ctr_event:pageViews?(amazonClicks/pageViews)*100:0,
+      patreon_ctr_event:pageViews?(patreonClicks/pageViews)*100:0
+    },
     lead_count:leadCount,
     conversion_rate:sessions?(leadSessions/sessions)*100:0,
     amazon_ctr:sessions?(funnel.amazon_sessions/sessions)*100:0,
