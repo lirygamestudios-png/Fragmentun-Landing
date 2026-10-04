@@ -19,6 +19,7 @@ export function AdminContentEditor(){
   const[media,setMedia]=useState<MediaAsset[]>([]);
   const[authorFile,setAuthorFile]=useState<File|null>(null);
   const[uploading,setUploading]=useState(false);
+  const[showAdvanced,setShowAdvanced]=useState(false);
   const supabase=useMemo(()=>createSupabaseBrowserClient(),[]);
 
   useEffect(()=>{
@@ -32,6 +33,7 @@ export function AdminContentEditor(){
     setEsText(JSON.stringify(row.es,null,2));
     setEnText(JSON.stringify(row.en,null,2));
     setStatus("");
+    setShowAdvanced(false);
   }
 
   function assetUrl(asset:MediaAsset){
@@ -62,7 +64,10 @@ export function AdminContentEditor(){
   }
   function authorImage(){return json("es").image_url||json("en").image_url||""}
   function setAuthorImage(value:string){
-    for(const lang of ["es","en"] as const){setField(lang,"image_url",value);setField(lang,"poster_url",value)}
+    const es={...json("es"),image_url:value,poster_url:value};
+    const en={...json("en"),image_url:value,poster_url:value};
+    setEsText(JSON.stringify(es,null,2));
+    setEnText(JSON.stringify(en,null,2));
   }
   async function uploadAuthorImage(){
     if(!authorFile)return;
@@ -89,7 +94,10 @@ export function AdminContentEditor(){
       const j=await r.json();
       if(!r.ok) throw new Error(j.error||"error");
       setRows(old=>old.map(x=>x.content_key===selected.content_key?j.data:x));
-      setSelected(j.data);setStatus("Guardado ✓");
+      setSelected(j.data);
+      setEsText(JSON.stringify(j.data.es||{},null,2));
+      setEnText(JSON.stringify(j.data.en||{},null,2));
+      setStatus("Guardado ✓");
     }catch(e){setStatus("Revisa el JSON antes de guardar.");}
   }
 
@@ -137,23 +145,38 @@ export function AdminContentEditor(){
           </div>
         </div>
         <div className="adminLangGrid">
-          <div>
-            <label>ES · JSON</label>
-            <textarea value={esText} onChange={e=>setEsText(e.target.value)} className="adminTextarea"/>
-            <label>Estado ES</label>
-            <select value={selected.status_es} onChange={e=>setSelected({...selected,status_es:e.target.value as Row["status_es"]})}>
-              <option value="draft">Borrador</option><option value="review">Revisión</option><option value="published">Publicado</option>
-            </select>
-          </div>
-          <div>
-            <label>EN · JSON</label>
-            <textarea value={enText} onChange={e=>setEnText(e.target.value)} className="adminTextarea"/>
-            <label>Estado EN</label>
-            <select value={selected.status_en} onChange={e=>setSelected({...selected,status_en:e.target.value as Row["status_en"]})}>
-              <option value="draft">Draft</option><option value="review">Review</option><option value="published">Published</option>
-            </select>
-          </div>
+          {(["es","en"] as const).map(lang=><div className="adminVisualContentFields" key={lang}>
+            <div className="kicker">{lang==="es"?"Español":"Inglés"}</div>
+            {Object.entries(json(lang))
+              .filter(([key,value])=>!["image_url","video_url","poster_url","art_url"].includes(key)&&["string","number","boolean"].includes(typeof value))
+              .map(([key,value])=><label key={key}>
+                <span>{key.replace(/_/g," ")}</span>
+                {String(value).length>120
+                  ?<textarea className="adminSmallArea" value={String(value)} onChange={e=>setField(lang,key,e.target.value)}/>
+                  :<input value={String(value)} onChange={e=>setField(lang,key,e.target.value)}/>}
+              </label>)}
+            <label>Estado
+              <select value={lang==="es"?selected.status_es:selected.status_en} onChange={e=>setSelected(lang==="es"
+                ?{...selected,status_es:e.target.value as Row["status_es"]}
+                :{...selected,status_en:e.target.value as Row["status_en"]})}>
+                <option value="draft">Borrador</option>
+                <option value="review">Revisión</option>
+                <option value="published">Publicado</option>
+              </select>
+            </label>
+          </div>)}
         </div>
+
+        <button type="button" className="adminAdvancedToggle" onClick={()=>setShowAdvanced(v=>!v)}>
+          {showAdvanced?"Ocultar opciones avanzadas":"Opciones avanzadas"}
+        </button>
+        {showAdvanced&&<div className="adminAdvancedPanel">
+          <p className="note">Vista técnica para mantenimiento. No es necesaria para la edición normal.</p>
+          <div className="adminLangGrid">
+            <div><label>Datos ES</label><textarea value={esText} onChange={e=>setEsText(e.target.value)} className="adminTextarea"/></div>
+            <div><label>Datos EN</label><textarea value={enText} onChange={e=>setEnText(e.target.value)} className="adminTextarea"/></div>
+          </div>
+        </div>}
         <div className="adminSaveRow"><button className="btn btnPrimary" onClick={save}>Guardar cambios</button><span>{status}</span></div>
       </>}
     </section>
