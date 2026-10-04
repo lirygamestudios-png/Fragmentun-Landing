@@ -75,36 +75,113 @@ export function AdminIntegrationLogs(){
       <p style={{opacity:.8}}>Referencia editorial y visual aprobada para los correos de captación, nutrición, conversión y reseña.</p>
       <div style={{display:"grid",gap:"1rem"}}>
         {FRAGMENTUN_EMAIL_SEQUENCE.map((mail:any)=><div key={mail.id} style={{
-          border:"1px solid rgba(201,168,76,.35)",
-          borderRadius:"18px",
+          border:"1px solid rgba(201,168,76,.28)",
+          borderRadius:"22px",
           overflow:"hidden",
-          background:FRAGMENTUN_EMAIL_BRAND.background
+          background:"#07111f",
+          boxShadow:"0 18px 50px rgba(0,0,0,.28)"
         }}>
-          <div style={{padding:"20px 22px",borderBottom:"1px solid rgba(201,168,76,.22)",display:"flex",alignItems:"center",gap:"12px"}}>
-            <img src="/fragmentun-mark.png" alt="FRAGMENTUN" width="38" height="38" style={{objectFit:"contain"}}/>
-            <div>
-              <div style={{fontWeight:800,letterSpacing:".12em",color:FRAGMENTUN_EMAIL_BRAND.gold}}>FRAGMENTUN</div>
-              <div style={{fontSize:".82rem",opacity:.68}}>Correo {mail.order} · {mail.delay}</div>
+          <div style={{
+            padding:"22px 24px",
+            borderBottom:"1px solid rgba(201,168,76,.18)",
+            display:"flex",
+            alignItems:"center",
+            justifyContent:"space-between",
+            gap:"16px",
+            background:"linear-gradient(135deg,rgba(10,22,40,.98),rgba(14,37,66,.98))"
+          }}>
+            <div style={{display:"flex",alignItems:"center",gap:"12px"}}>
+              <img src="/fragmentun-mark.png" alt="FRAGMENTUN" width="42" height="42" style={{objectFit:"contain"}}/>
+              <div>
+                <div style={{fontWeight:900,letterSpacing:".14em",color:FRAGMENTUN_EMAIL_BRAND.gold}}>FRAGMENTUN</div>
+                <div style={{fontSize:".76rem",opacity:.62,letterSpacing:".05em"}}>UNA SAGA DE CIENCIA FICCIÓN EMOCIONAL</div>
+              </div>
             </div>
+            <span style={{
+              padding:"6px 10px",
+              borderRadius:"999px",
+              border:"1px solid rgba(74,144,217,.45)",
+              color:FRAGMENTUN_EMAIL_BRAND.blue,
+              fontSize:".72rem",
+              fontWeight:800,
+              letterSpacing:".08em"
+            }}>{mail.phase}</span>
           </div>
-          <div style={{padding:"22px"}}>
-            <div style={{fontSize:".78rem",textTransform:"uppercase",letterSpacing:".08em",color:FRAGMENTUN_EMAIL_BRAND.blue}}>{mail.purpose}</div>
-            <h3 style={{margin:"8px 0 6px",color:"#fff"}}>{mail.subject}</h3>
-            <p style={{margin:"0 0 18px",opacity:.8}}>{mail.preheader}</p>
-            <div style={{display:"flex",gap:"10px",flexWrap:"wrap"}}>
+
+          <div style={{
+            padding:"34px 26px 28px",
+            background:"radial-gradient(circle at 85% 15%,rgba(74,144,217,.16),transparent 32%),radial-gradient(circle at 10% 0%,rgba(201,168,76,.12),transparent 28%),#0A1628"
+          }}>
+            <div style={{fontSize:".75rem",textTransform:"uppercase",letterSpacing:".12em",color:FRAGMENTUN_EMAIL_BRAND.blue}}>
+              Correo {mail.order} · {mail.delay}
+            </div>
+            <h3 style={{
+              margin:"10px 0 10px",
+              color:FRAGMENTUN_EMAIL_BRAND.gold,
+              fontSize:"1.55rem",
+              lineHeight:1.15,
+              maxWidth:"760px"
+            }}>{mail.subject}</h3>
+            <p style={{margin:"0 0 18px",color:"rgba(255,255,255,.82)",fontSize:"1rem",lineHeight:1.6,maxWidth:"760px"}}>
+              {mail.preheader}
+            </p>
+
+            <div style={{
+              margin:"20px 0 22px",
+              padding:"18px 20px",
+              border:"1px solid rgba(255,255,255,.08)",
+              borderRadius:"16px",
+              background:"rgba(255,255,255,.035)",
+              color:"rgba(255,255,255,.86)",
+              lineHeight:1.65
+            }}>
+              <strong style={{color:"#fff"}}>{mail.purpose}</strong>
+              <div style={{marginTop:"6px",opacity:.78}}>{mail.note}</div>
+            </div>
+
+            <div style={{display:"flex",gap:"12px",flexWrap:"wrap"}}>
               <a href={mail.primaryCta.href} target="_blank" rel="noreferrer" style={{
-                display:"inline-block",padding:"10px 14px",borderRadius:"999px",
-                background:FRAGMENTUN_EMAIL_BRAND.gold,color:FRAGMENTUN_EMAIL_BRAND.background,
-                fontWeight:800,textDecoration:"none"
+                display:"inline-block",
+                padding:"12px 18px",
+                borderRadius:"999px",
+                background:FRAGMENTUN_EMAIL_BRAND.gold,
+                color:FRAGMENTUN_EMAIL_BRAND.background,
+                fontWeight:900,
+                textDecoration:"none",
+                letterSpacing:".03em"
               }}>{mail.primaryCta.label}</a>
               <a href={mail.secondaryCta.href} target="_blank" rel="noreferrer" style={{
-                display:"inline-block",padding:"10px 14px",borderRadius:"999px",
-                border:`1px solid ${FRAGMENTUN_EMAIL_BRAND.blue}`,color:"#fff",
-                fontWeight:700,textDecoration:"none"
+                display:"inline-block",
+                padding:"12px 18px",
+                borderRadius:"999px",
+                border:`1px solid ${FRAGMENTUN_EMAIL_BRAND.blue}`,
+                color:"#fff",
+                fontWeight:800,
+                textDecoration:"none"
               }}>{mail.secondaryCta.label}</a>
             </div>
-            <p style={{margin:"14px 0 0",fontSize:".82rem",opacity:.72}}><strong>Trigger:</strong> {mail.trigger}</p>
-            <p style={{margin:"8px 0 0",fontSize:".82rem",opacity:.62}}>{mail.note}</p>
+
+            <div style={{marginTop:"24px",fontSize:".8rem",color:"rgba(255,255,255,.58)"}}>
+              <strong style={{color:"rgba(255,255,255,.78)"}}>Trigger:</strong> {mail.trigger}
+            </div>
+          </div>
+
+          <div style={{
+            padding:"20px 24px 22px",
+            borderTop:"1px solid rgba(201,168,76,.14)",
+            background:"#07111f",
+            textAlign:"center"
+          }}>
+            <div style={{color:"#fff",fontWeight:700}}>José Liranzo</div>
+            <div style={{marginTop:"4px",fontSize:".78rem",color:"rgba(255,255,255,.5)"}}>Autor de FRAGMENTUN</div>
+            <div style={{marginTop:"14px",fontSize:".72rem",color:"rgba(255,255,255,.42)",lineHeight:1.6}}>
+              © 2026 José Liranzo · FRAGMENTUN · Todos los derechos reservados.
+            </div>
+            <div style={{marginTop:"8px",fontSize:".72rem"}}>
+              <a href="/es/privacidad" style={{color:"rgba(255,255,255,.56)",textDecoration:"underline"}}>Privacidad</a>
+              <span style={{margin:"0 8px",color:"rgba(255,255,255,.25)"}}>·</span>
+              <span style={{color:"rgba(255,255,255,.56)",textDecoration:"underline"}}>Cancelar suscripción</span>
+            </div>
           </div>
         </div>)}
       </div>
