@@ -418,7 +418,7 @@ export default async function Home({
       <div className="cmsMediaOverlay footerMediaOverlay"/>
       <div className="container approvedFooterGrid cmsMediaContent">
         <div className="approvedFooterBrand">
-          <strong>{footerCms.brand||"FRAGMENTUN"}</strong>
+          <strong className="brandWordmark footerBrandWordmark">{footerCms.brand||"FRAGMENTUN"}</strong>
           <span>{footerCms.subtitle||(locale==="es"?"EL UNIVERSO":"THE UNIVERSE")}</span>
           <p>{footerCms.body||(locale==="es"?"Historias para un mundo más consciente.":"Stories for a more conscious world.")}</p>
           <SocialLinks locale={locale} items={socialItems} placement="footer"/>
@@ -455,7 +455,7 @@ export default async function Home({
       </div>
     </footer>
     <nav className="mobileBottomNav" aria-label={locale==="es"?"Navegación móvil":"Mobile navigation"}>
-      <a href={`/${locale}`}><span>⌂</span><small>{locale==="es"?"Inicio":"Home"}</small></a>
+      <a href={`/${locale}`}><span className="mobileBrandAvatar"><img src="/fragmentun-mark.png" alt="" width={24} height={24}/></span><small>{locale==="es"?"Inicio":"Home"}</small></a>
       <a href="#historia"><span>◫</span><small>{locale==="es"?"Historia":"Story"}</small></a>
       <a href="#test"><span>◇</span><small>Test</small></a>
       <a href="#mapa"><span>⌖</span><small>{locale==="es"?"Mapa":"Map"}</small></a>
