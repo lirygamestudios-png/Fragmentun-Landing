@@ -31,7 +31,7 @@ export default function AdminLoginPage(){
     const j=await r.json().catch(()=>({}));
 
     if(r.ok){
-      setStatus("Acceso correcto. Abriendo Control Center…");
+      setStatus("Acceso correcto. Abriendo Panel de administración…");
       router.replace("/admin");
       router.refresh();
       return;
@@ -40,14 +40,14 @@ export default function AdminLoginPage(){
     setLoading(false);
     setStatus(
       j.error==="unauthorized"
-        ?"La cuenta existe, pero no tiene permisos para entrar al Control Center."
+        ?"La cuenta existe, pero no tiene permisos para entrar al Panel de administración."
         :"Correo o contraseña incorrectos."
     );
   }
 
   return <main className="authShell">
     <section className="authCard">
-      <div className="kicker">FRAGMENTUN CONTROL CENTER</div>
+      <div className="kicker">FRAGMENTUN · PANEL DE ADMINISTRACIÓN</div>
       <h1>Acceso administrativo</h1>
       <p className="lead">Entra con tu correo autorizado y contraseña.</p>
 
