@@ -14,7 +14,7 @@ import { FragmentunShop } from "../../components/FragmentunShop";
 import { CmsSectionMedia } from "../../components/CmsSectionMedia";
 import { NewsConversionCards } from "../../components/NewsConversionCards";
 import { copy,locales,type Locale } from "../../lib/i18n";
-import { getBooks,getLocalizedContent,getPublishedReviews } from "../../lib/content";
+import { getBooks,getLocalizedContent,getPublishedReviews,getPublishedCharacters } from "../../lib/content";
 
 export default async function Home({
   params,
@@ -28,10 +28,11 @@ export default async function Home({
   const locale=raw as Locale;
   const t=copy[locale];
 
-  const[cms,books,reviews]=await Promise.all([
+  const[cms,books,reviews,characters]=await Promise.all([
     getLocalizedContent(locale),
     getBooks(locale),
-    getPublishedReviews(locale)
+    getPublishedReviews(locale),
+    getPublishedCharacters(locale)
   ]);
 
   const hero=cms["home.hero"]||{};
@@ -44,7 +45,7 @@ export default async function Home({
   const shareReward=cms["home.share_reward"]||{};
   const officialVideo=cms["home.official_video"]||{};
   const shop=cms["home.shop"]||{};
-  const charactersCms=cms["home.characters"]||{};
+  const charactersCms={...(cms["home.characters"]||{}),characters:characters.length?characters:(cms["home.characters"]?.characters||[])};
   const footerCms=cms["home.footer"]||{};
   const mapCms=cms["home.map"]||{};
   const testCms=cms["home.test"]||{};
