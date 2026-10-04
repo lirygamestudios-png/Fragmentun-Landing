@@ -8,6 +8,39 @@ type Row={
   status_en:"draft"|"review"|"published";
 };
 type MediaAsset={id:string;slug:string;kind:string;storage_path:string;public_visible:boolean};
+const SECTION_LABELS:Record<string,string>={
+  "home.hero":"Portada principal",
+  "home.why":"Por qué FRAGMENTUN",
+  "home.lumen":"Lumen",
+  "home.author":"Autor",
+  "home.community":"Comunidad",
+  "home.final_cta":"Llamado final",
+  "home.news":"Noticias",
+  "home.saga":"Saga"
+};
+const FIELD_LABELS:Record<string,string>={
+  kicker:"Encabezado",
+  title:"Título",
+  subtitle:"Subtítulo",
+  body:"Texto principal",
+  description:"Descripción",
+  quote:"Frase destacada",
+  cta:"Texto del botón",
+  cta_label:"Texto del botón",
+  image_alt:"Descripción de la imagen",
+  name:"Nombre",
+  heading:"Título",
+  eyebrow:"Encabezado corto"
+};
+const MEDIA_LABELS:Record<string,string>={
+  image_url:"Imagen principal",
+  video_url:"Video",
+  poster_url:"Imagen de portada",
+  art_url:"Arte"
+};
+function sectionLabel(key:string){return SECTION_LABELS[key]||key.replace(/^home\./,"").replace(/_/g," ")}
+function fieldLabel(key:string){return FIELD_LABELS[key]||key.replace(/_/g," ")}
+
 
 export function AdminContentEditor(){
   const[rows,setRows]=useState<Row[]>([]);
@@ -49,7 +82,7 @@ export function AdminContentEditor(){
       if(lang==="es")setEsText(JSON.stringify(next,null,2));
       else setEnText(JSON.stringify(next,null,2));
     }catch{
-      setStatus("Revisa el JSON antes de asignar multimedia.");
+      setStatus("No fue posible asignar el recurso. Revisa las opciones avanzadas.");
     }
   }
 
@@ -98,43 +131,43 @@ export function AdminContentEditor(){
       setEsText(JSON.stringify(j.data.es||{},null,2));
       setEnText(JSON.stringify(j.data.en||{},null,2));
       setStatus("Guardado ✓");
-    }catch(e){setStatus("Revisa el JSON antes de guardar.");}
+    }catch(e){setStatus("No fue posible guardar. Revisa los campos e inténtalo de nuevo.");}
   }
 
   if(loading)return <p>Cargando contenido…</p>;
   return <div className="adminEditorGrid">
     <aside className="adminList">
       {rows.map(row=><button key={row.content_key} onClick={()=>choose(row)} className={selected?.content_key===row.content_key?"active":""}>
-        <strong>{row.content_key}</strong><span>{row.section}</span>
+        <strong>{sectionLabel(row.content_key)}</strong><span>{row.section}</span>
       </button>)}
     </aside>
     <section className="card">
       {!selected?<p>Selecciona una sección para editar.</p>:<>
         <div className="kicker">{selected.section}</div>
-        <h2>{selected.content_key}</h2>
+        <h2>{sectionLabel(selected.content_key)}</h2>
         {selected.content_key==="home.author"&&<div className="adminAuthorVisual">
           <div className="adminAuthorVisualHead"><div><div className="kicker">Imagen del autor</div><h3>Fotografía pública</h3></div><span>ES + EN</span></div>
           <div className="adminAuthorVisualGrid">
             <div className="adminAuthorPreview">{authorImage()?<img src={authorImage()} alt="José Liranzo"/>:<div>JL</div>}</div>
             <div className="adminAuthorControls">
-              <label>Imagen de Multimedia<select value={authorImage()} onChange={e=>setAuthorImage(e.target.value)}><option value="">— Sin imagen —</option>{media.filter(m=>m.public_visible&&m.kind==="image").map(m=><option key={m.id} value={assetUrl(m)}>{m.slug}</option>)}</select></label>
+              <label>Elegir imagen existente<select value={authorImage()} onChange={e=>setAuthorImage(e.target.value)}><option value="">— Sin imagen —</option>{media.filter(m=>m.public_visible&&m.kind==="image").map(m=><option key={m.id} value={assetUrl(m)}>{m.slug}</option>)}</select></label>
               <label>Subir nueva fotografía<input type="file" accept="image/*" onChange={e=>setAuthorFile(e.target.files?.[0]||null)}/></label>
               <button className="btn btnPrimary" type="button" disabled={!authorFile||uploading} onClick={uploadAuthorImage}>{uploading?"Subiendo…":"Subir fotografía"}</button>
               <p className="note">Después de subirla, pulsa “Guardar cambios” para publicarla en la sección Autor.</p>
             </div>
           </div>
         </div>}
-        <div className="card" style={{marginBottom:18}}>
-          <div className="kicker">Multimedia rápida</div>
-          <p className="note">Asigna recursos aprobados de la Biblioteca sin editar rutas manualmente. El JSON continúa disponible para campos avanzados.</p>
+        {selected.content_key!=="home.author"&&<div className="card" style={{marginBottom:18}}>
+          <div className="kicker">Recursos visuales</div>
+          <p className="note">Selecciona imágenes o videos aprobados de la biblioteca.</p>
           <div className="adminLangGrid">
             {(["es","en"] as const).map(lang=><div key={lang}>
-              <strong>{lang==="es"?"Español":"English"}</strong>
+              <strong>{lang==="es"?"Español":"Inglés"}</strong>
               {(["image_url","video_url","poster_url","art_url"] as const).map(field=>{
                 const wantVideo=field==="video_url";
                 const options=media.filter(m=>m.public_visible&&(wantVideo?m.kind==="video":m.kind==="image"));
                 return <label key={field} style={{display:"block",marginTop:10}}>
-                  {field}
+                  {MEDIA_LABELS[field]}
                   <select value={mediaFieldValue(lang,field)} onChange={e=>setMediaField(lang,field,e.target.value)}>
                     <option value="">— Sin asignar —</option>
                     {options.map(m=><option key={m.id} value={assetUrl(m)}>{m.slug}</option>)}
@@ -143,14 +176,14 @@ export function AdminContentEditor(){
               })}
             </div>)}
           </div>
-        </div>
+        </div>}
         <div className="adminLangGrid">
           {(["es","en"] as const).map(lang=><div className="adminVisualContentFields" key={lang}>
             <div className="kicker">{lang==="es"?"Español":"Inglés"}</div>
             {Object.entries(json(lang))
               .filter(([key,value])=>!["image_url","video_url","poster_url","art_url"].includes(key)&&["string","number","boolean"].includes(typeof value))
               .map(([key,value])=><label key={key}>
-                <span>{key.replace(/_/g," ")}</span>
+                <span>{fieldLabel(key)}</span>
                 {String(value).length>120
                   ?<textarea className="adminSmallArea" value={String(value)} onChange={e=>setField(lang,key,e.target.value)}/>
                   :<input value={String(value)} onChange={e=>setField(lang,key,e.target.value)}/>}
@@ -171,10 +204,10 @@ export function AdminContentEditor(){
           {showAdvanced?"Ocultar opciones avanzadas":"Opciones avanzadas"}
         </button>
         {showAdvanced&&<div className="adminAdvancedPanel">
-          <p className="note">Vista técnica para mantenimiento. No es necesaria para la edición normal.</p>
+          <p className="note">Configuración técnica para mantenimiento. No necesitas abrirla para editar el contenido habitual.</p>
           <div className="adminLangGrid">
-            <div><label>Datos ES</label><textarea value={esText} onChange={e=>setEsText(e.target.value)} className="adminTextarea"/></div>
-            <div><label>Datos EN</label><textarea value={enText} onChange={e=>setEnText(e.target.value)} className="adminTextarea"/></div>
+            <div><label>Datos técnicos · Español</label><textarea value={esText} onChange={e=>setEsText(e.target.value)} className="adminTextarea"/></div>
+            <div><label>Datos técnicos · Inglés</label><textarea value={enText} onChange={e=>setEnText(e.target.value)} className="adminTextarea"/></div>
           </div>
         </div>}
         <div className="adminSaveRow"><button className="btn btnPrimary" onClick={save}>Guardar cambios</button><span>{status}</span></div>
