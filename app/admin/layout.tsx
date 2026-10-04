@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AdminInteriorChrome } from "../../components/AdminInteriorChrome";
 
 export const metadata:Metadata={
   robots:{
@@ -14,5 +15,5 @@ export const metadata:Metadata={
 };
 
 export default function AdminLayout({children}:{children:React.ReactNode}){
-  return children;
+  return <AdminInteriorChrome>{children}</AdminInteriorChrome>;
 }
