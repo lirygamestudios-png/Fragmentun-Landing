@@ -101,7 +101,7 @@ export function AdminLeads(){
           <option value="balance">Balance</option>
         </select>
         <button className="btn btnPrimary" onClick={load}>Aplicar</button>
-        <button className="btn btnGhost" onClick={exportCsv}>Exportar CSV</button>
+        <button className="btn btnGhost" onClick={exportCsv}>Descargar lista</button>
       </div>
     </div>
 
@@ -122,7 +122,7 @@ export function AdminLeads(){
           <td>
             <div className="heroActions">
               {r.mailerlite_status!=="synced"
-                ?<button className="btn btnGhost" onClick={()=>retry(r.id)}>Reintentar</button>
+                ?<button className="btn btnGhost" onClick={()=>retry(r.id)}>Volver a intentar</button>
                 :null}
               <button className="btn btnGhost" onClick={()=>deleteLead(r.id,r.email)}>Eliminar</button>
             </div>
