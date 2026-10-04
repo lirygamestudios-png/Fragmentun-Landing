@@ -37,6 +37,7 @@ export function AdminAnalytics(){
 
     <div className="card" style={{marginTop:24}}>
       <h2>Embudo comercial · sesiones</h2>
+      <p className="note">Cobertura del nuevo seguimiento por sesión: {pct(data.session_tracking_coverage)}. Los eventos históricos anteriores se conservan por separado y no se mezclan con este embudo.</p>
       <div className="kpis">
         <div className="kpi"><span>Sesiones</span><strong>{data.funnel?.sessions||0}</strong></div>
         <div className="kpi"><span>Capítulo</span><strong>{data.funnel?.chapter_sessions||0}</strong></div>
@@ -46,6 +47,16 @@ export function AdminAnalytics(){
         <div className="kpi"><span>Recompensa desbloqueada</span><strong>{data.funnel?.share_unlock_sessions||0}</strong></div>
         <div className="kpi"><span>Arte descargado</span><strong>{data.funnel?.share_download_sessions||0}</strong></div>
         <div className="kpi"><span>Share → descarga</span><strong>{pct(data.share_download_rate)}</strong></div>
+      </div>
+    </div>
+
+    <div className="card" style={{marginTop:24}}>
+      <h2>Histórico agregado</h2>
+      <div className="kpis">
+        <div className="kpi"><span>Page views históricos</span><strong>{data.historical?.page_views||0}</strong></div>
+        <div className="kpi"><span>Clics Amazon históricos</span><strong>{data.historical?.amazon_clicks||0}</strong></div>
+        <div className="kpi"><span>CTR Amazon histórico</span><strong>{pct(data.historical?.amazon_ctr_event)}</strong></div>
+        <div className="kpi"><span>Clics Patreon históricos</span><strong>{data.historical?.patreon_clicks||0}</strong></div>
       </div>
     </div>
 
