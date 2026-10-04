@@ -12,8 +12,8 @@ export default async function StatusPage(){
 
   return <main className="adminMain">
     <div className="adminTopbar">
-      <div><div className="kicker">Control Center</div><h1>Estado del sistema</h1></div>
-      <Link className="btn btnGhost" href="/admin">← Dashboard</Link>
+      <div><div className="kicker">Panel de administración</div><h1>Estado del sistema</h1></div>
+      <Link className="btn btnGhost" href="/admin">← Inicio</Link>
     </div>
     <AdminSystemStatus/>
   </main>;
