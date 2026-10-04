@@ -3638,3 +3638,90 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   position:relative!important;
   z-index:2!important;
 }
+
+
+/* Why FRAGMENTUN admin: one clear image control per card */
+.adminWhyCardsUnified{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px
+}
+.adminWhyCardUnified{
+  padding:18px;
+  border:1px solid rgba(201,168,76,.16);
+  border-radius:18px;
+  background:linear-gradient(180deg,rgba(12,28,45,.94),rgba(7,17,29,.98));
+  box-shadow:0 18px 48px rgba(0,0,0,.24)
+}
+.adminWhyCardHead{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:14px
+}
+.adminWhyCardHead>div:first-child span,
+.adminWhyCardHead>div:first-child strong{display:block}
+.adminWhyCardHead>div:first-child span{
+  color:#d4b65a;
+  font-size:.68rem;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase
+}
+.adminWhyCardHead>div:first-child strong{
+  margin-top:4px;
+  color:#edf3f8;
+  font-size:1rem
+}
+.adminWhyImagePreview{
+  width:92px;
+  aspect-ratio:4/3;
+  overflow:hidden;
+  border-radius:10px;
+  border:1px solid rgba(201,168,76,.22);
+  background:#06101b;
+  flex:0 0 auto
+}
+.adminWhyImagePreview img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block
+}
+.adminWhyImageControls{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+  align-items:end;
+  margin-bottom:16px
+}
+.adminWhyImageControls label{display:grid;gap:6px}
+.adminWhyUpload{
+  min-width:150px;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px dashed rgba(74,144,217,.34);
+  background:rgba(74,144,217,.05);
+  cursor:pointer
+}
+.adminWhyUpload span{font-size:.72rem;color:#b9d4ea;font-weight:700}
+.adminWhyUpload input{margin-top:6px;font-size:.68rem}
+.adminWhyCardUnified .adminLangGrid{
+  grid-template-columns:1fr 1fr;
+  gap:12px
+}
+.adminWhyCardUnified label small{
+  display:block;
+  margin-top:4px;
+  color:#72879a;
+  font-size:.62rem
+}
+@media(max-width:1000px){
+  .adminWhyCardsUnified{grid-template-columns:1fr}
+}
+@media(max-width:680px){
+  .adminWhyImageControls,
+  .adminWhyCardUnified .adminLangGrid{grid-template-columns:1fr}
+  .adminWhyImagePreview{width:78px}
+}
