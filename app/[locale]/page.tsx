@@ -325,15 +325,15 @@ export default async function Home({
 
           <div className="newsGrid">
             <article className="newsCard featured">
-              <div className="newsVisual bookNews"><img src={firstBook?.cover_url||"/fragmentun-i-cover-es.jpg"} alt={firstBook?.cover_alt||"FRAGMENTUN I"}/></div>
+              <div className="newsVisual bookNews"><img src={news.card_feature_image||firstBook?.cover_url||"/fragmentun-i-cover-es.jpg"} alt={firstBook?.cover_alt||"FRAGMENTUN I"}/></div>
               <div className="newsCopy">
-                <span>{locale==="es"?"PUBLICACIÓN":"RELEASE"}</span>
-                <h3>{locale==="es"?"FRAGMENTUN I ya está disponible":"FRAGMENTUN I is now available"}</h3>
-                <p>{locale==="es"
+                <span>{news.card_feature_label||(locale==="es"?"PUBLICACIÓN":"RELEASE")}</span>
+                <h3>{news.card_feature_title||(locale==="es"?"FRAGMENTUN I ya está disponible":"FRAGMENTUN I is now available")}</h3>
+                <p>{news.card_feature_body||(locale==="es"
                   ?"El Despertar Emocional abre oficialmente las puertas de Lumen a los lectores."
-                  :"The Emotional Awakening officially opens the gates of Lumen to readers."}</p>
+                  :"The Emotional Awakening officially opens the gates of Lumen to readers.")}</p>
                 {amazonUrl&&<TrackLink className="newsLink" href={amazonUrl} eventName="amazon_click" locale={locale} metadata={{placement:"news",book:"fragmentun-i"}} newTab>
-                  {locale==="es"?"Ver edición disponible →":"View available edition →"}
+                  {news.card_feature_cta||(locale==="es"?"Ver edición disponible →":"View available edition →")}
                 </TrackLink>}
               </div>
             </article>
