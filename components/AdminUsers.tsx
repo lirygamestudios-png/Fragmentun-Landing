@@ -73,13 +73,12 @@ export function AdminUsers(){
         <table className="adminTable">
           <thead><tr><th>Correo</th><th>Nombre</th><th>Rol</th><th>Perfil</th><th></th></tr></thead>
           <tbody>{(data.allowlist||[]).map((u:any)=>{
-            const profile=(data.profiles||[]).find((p:any)=>String(p.user_id)===(u.user_id||""));
             const isSelf=String(u.email||"").toLowerCase()===current;
             return <tr key={u.email}>
               <td>{u.email}{isSelf&&<small style={{marginLeft:8}}>Tú</small>}</td>
               <td>{u.display_name||"—"}</td>
               <td>{u.role}</td>
-              <td>{profile?"Activo":"Pendiente de primer acceso"}</td>
+              <td>{u.profile_active?"Activo":"Pendiente de primer acceso"}</td>
               <td><button className="btn btnGhost" disabled={isSelf} onClick={()=>remove(u.email)}>{isSelf?"Protegido":"Quitar"}</button></td>
             </tr>;
           })}</tbody>
