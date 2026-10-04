@@ -1,6 +1,6 @@
 import { NextRequest,NextResponse } from "next/server";
 
-const allowed=new Set(["page_view","amazon_click","chapter_click","test_start","test_complete","map_interaction","community_click","lead_submit","patreon_click","experiment_view"]);
+const allowed=new Set(["page_view","amazon_click","chapter_click","test_start","test_complete","map_interaction","community_click","lead_submit","patreon_click","experiment_view","share_reward_unlock","share_reward_error","share_reward_download"]);
 
 export async function POST(request:NextRequest){
   const length=Number(request.headers.get("content-length")||"0");
