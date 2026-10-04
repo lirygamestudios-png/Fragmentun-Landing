@@ -70,7 +70,7 @@ export function AdminLeads(){
     window.location.href="/api/admin/leads?"+p.toString();
   }
 
-  return <div>
+  return <div className="adminLeadsModule">
     <div className="kpis">
       <div className="kpi"><span>Resultados</span><strong>{summary.total||0}</strong></div>
       <div className="kpi"><span>MailerLite sincronizados</span><strong>{summary.synced||0}</strong></div>
@@ -78,8 +78,8 @@ export function AdminLeads(){
       <div className="kpi"><span>Errores</span><strong>{summary.errors||0}</strong></div>
     </div>
 
-    <div className="card" style={{marginTop:24}}>
-      <h2>Buscar y filtrar</h2>
+    <div className="card adminFilterPanel">
+      <div className="adminPanelHeader"><div><div className="kicker">Segmentación</div><h2>Buscar y filtrar</h2></div><span className="adminPanelBadge">{summary.total||0} leads</span></div>
       <div className="adminFormGrid">
         <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Correo o nombre"/>
         <select value={locale} onChange={e=>setLocale(e.target.value)}>
@@ -105,8 +105,8 @@ export function AdminLeads(){
       </div>
     </div>
 
-    <div className="card" style={{marginTop:24}}>
-      <h2>Leads</h2>
+    <div className="card adminLeadTableCard">
+      <div className="adminPanelHeader"><div><div className="kicker">Base de datos</div><h2>Leads</h2></div><span className="adminPanelBadge">{loading?"Cargando":rows.length+" visibles"}</span></div>
       {loading?<p>Cargando…</p>:<div className="adminTableWrap"><table className="adminTable">
         <thead><tr><th>Fecha</th><th>Correo</th><th>Nombre</th><th>Idioma</th><th>Fuente</th><th>Campaña</th><th>Perfil</th><th>MailerLite</th><th>Consentimiento</th><th></th></tr></thead>
         <tbody>{rows.map((r:any)=><tr key={r.id}>
