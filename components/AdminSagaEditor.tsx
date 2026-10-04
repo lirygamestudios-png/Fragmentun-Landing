@@ -197,7 +197,7 @@ export function AdminSagaEditor(){
         })}
 
         <button className="btn btnGhost" type="button" onClick={()=>addEdition(i)}>
-          + Añadir idioma / edición
+          + Añadir edición
         </button>
       </div>
 
