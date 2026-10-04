@@ -8,41 +8,67 @@ function normalizeGroupName(value:string){
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
 }
 
+function isLikelySecret(value:string){
+  return value.startsWith("eyJ") || value.split(".").length===3 || value.length>80;
+}
+
 async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
   const value=String(raw||"").trim();
-  if(!value) return {id:null as number|null,debug:"empty configured group"};
-  if(/^\d+$/.test(value)) return {id:Number(value),debug:null};
 
-  const embedded=value.match(/(?:^|\D)(\d{8,})(?:\D|$)/);
-  if(embedded?.[1]) return {id:Number(embedded[1]),debug:null};
+  if(value && !isLikelySecret(value)){
+    if(/^\d+$/.test(value)) return {id:Number(value),debug:null};
+
+    const embedded=value.match(/(?:^|\D)(\d{8,})(?:\D|$)/);
+    if(embedded?.[1]) return {id:Number(embedded[1]),debug:null};
+  }
 
   const res=await fetch(`${ML_GROUPS}?limit=100`,{
     headers:{Authorization:`Bearer ${token}`,Accept:"application/json"},
     cache:"no-store",
     signal:AbortSignal.timeout(8000)
   }).catch(()=>null);
-  if(!res?.ok) return {id:null,debug:res?`groups endpoint HTTP ${res.status}`:"groups endpoint request failed"};
+
+  if(!res?.ok){
+    return {id:null as number|null,debug:res?`groups endpoint HTTP ${res.status}`:"groups endpoint request failed"};
+  }
 
   const data=await res.json().catch(()=>({}));
   const groups=Array.isArray(data?.data)?data.data:[];
-  const normalizedConfigured=normalizeGroupName(value);
 
-  const exact=groups.find((g:any)=>normalizeGroupName(String(g?.name||""))===normalizedConfigured);
-  if(exact?.id) return {id:Number(exact.id),debug:null};
-
-  const candidates=groups.filter((g:any)=>{
-    const n=normalizeGroupName(String(g?.name||""));
-    if(!n.includes("fragmentun")) return false;
-    if(locale==="es") return /(^| )(es|esp|espanol|spanish)( |$)/.test(n) || n.includes("cap1");
-    return /(^| )(en|eng|english|ingles)( |$)/.test(n) || n.includes("cap1");
-  });
-
-  if(candidates.length===1&&candidates[0]?.id){
-    return {id:Number(candidates[0].id),debug:null};
+  if(value && !isLikelySecret(value)){
+    const normalizedConfigured=normalizeGroupName(value);
+    const exact=groups.find((g:any)=>normalizeGroupName(String(g?.name||""))===normalizedConfigured);
+    if(exact?.id) return {id:Number(exact.id),debug:null};
   }
 
-  const preview=groups.slice(0,20).map((g:any)=>`${g?.id}:${g?.name}`).join(" | ");
-  return {id:null,debug:`configured=${value}; candidates=${candidates.length}; available=${preview}`.slice(0,900)};
+  const fragmentunGroups=groups.filter((g:any)=>normalizeGroupName(String(g?.name||"")).includes("fragmentun"));
+
+  const languageMatched=fragmentunGroups.filter((g:any)=>{
+    const n=` ${normalizeGroupName(String(g?.name||""))} `;
+    return locale==="es"
+      ? / (es|esp|espanol|spanish) /.test(n)
+      : / (en|eng|english|ingles) /.test(n);
+  });
+
+  if(languageMatched.length===1 && languageMatched[0]?.id){
+    return {id:Number(languageMatched[0].id),debug:null};
+  }
+
+  const chapterMatched=fragmentunGroups.filter((g:any)=>{
+    const n=normalizeGroupName(String(g?.name||""));
+    const hasChapter=/cap(itulo)? ?1|chapter ?1/.test(n);
+    const langOk=locale==="es"
+      ? /(^| )(es|esp|espanol|spanish)( |$)/.test(n)
+      : /(^| )(en|eng|english|ingles)( |$)/.test(n);
+    return hasChapter && langOk;
+  });
+
+  if(chapterMatched.length===1 && chapterMatched[0]?.id){
+    return {id:Number(chapterMatched[0].id),debug:null};
+  }
+
+  const safePreview=fragmentunGroups.slice(0,20).map((g:any)=>`${g?.id}:${g?.name}`).join(" | ");
+  return {id:null,debug:`fragmentun_groups=${safePreview||"none"}`.slice(0,900)};
 }
 
 function clean(value:FormDataEntryValue|null,max=200){
