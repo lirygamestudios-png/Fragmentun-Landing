@@ -1,5 +1,6 @@
 "use client";
 import type { MouseEvent,ReactNode } from "react";
+import { analyticsAttribution } from "../lib/analytics-client";
 
 export function TrackLink({
   href,eventName,locale,className,children,newTab=false,metadata
@@ -14,7 +15,7 @@ export function TrackLink({
 }){
   async function track(_e:MouseEvent<HTMLAnchorElement>){
     try{
-      const url=new URL(window.location.href);
+      const attribution=analyticsAttribution();
       await fetch("/api/analytics",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
@@ -22,10 +23,7 @@ export function TrackLink({
           event_name:eventName,
           locale,
           path:window.location.pathname,
-          source:url.searchParams.get("utm_source")||sessionStorage.getItem("utm_source")||"",
-          medium:url.searchParams.get("utm_medium")||sessionStorage.getItem("utm_medium")||"",
-          campaign:url.searchParams.get("utm_campaign")||sessionStorage.getItem("utm_campaign")||"",
-          content:url.searchParams.get("utm_content")||sessionStorage.getItem("utm_content")||"",
+          ...attribution,
           metadata:metadata||undefined
         }),
         keepalive:true
