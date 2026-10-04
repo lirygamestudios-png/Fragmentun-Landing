@@ -53,6 +53,7 @@ export function AdminContentEditor(){
   const[authorFile,setAuthorFile]=useState<File|null>(null);
   const[uploading,setUploading]=useState(false);
   const[showAdvanced,setShowAdvanced]=useState(false);
+  const[uploadingWhy,setUploadingWhy]=useState<number|null>(null);
   const supabase=useMemo(()=>createSupabaseBrowserClient(),[]);
 
   useEffect(()=>{
@@ -116,12 +117,45 @@ export function AdminContentEditor(){
     const url=assetUrl(j.data);setAuthorImage(url);setMedia(m=>[j.data,...m.filter(x=>x.id!==j.data.id)]);setAuthorFile(null);setUploading(false);setStatus("Imagen preparada. Pulsa Guardar cambios.");
   }
 
-  function setWhyCard(lang:"es"|"en",index:number,field:"title"|"body",value:string){
+  function setWhyCard(lang:"es"|"en",index:number,field:"title"|"body"|"image_url",value:string){
     const current=json(lang);
     const cards=Array.isArray(current.cards)?[...current.cards]:[];
-    while(cards.length<4)cards.push({title:"",body:""});
+    while(cards.length<4)cards.push({title:"",body:"",image_url:""});
     cards[index]={...cards[index],[field]:value};
-    setField(lang,"cards",cards as any);
+    setField(lang,"cards",cards);
+  }
+  function setWhyCardImage(index:number,value:string){
+    setWhyCard("es",index,"image_url",value);
+    setWhyCard("en",index,"image_url",value);
+  }
+  function whyCardImage(index:number){
+    const esCards=Array.isArray(json("es").cards)?json("es").cards:[];
+    const enCards=Array.isArray(json("en").cards)?json("en").cards:[];
+    return esCards[index]?.image_url||enCards[index]?.image_url||"";
+  }
+  async function uploadWhyCardImage(index:number,file:File|null){
+    if(!file)return;
+    if(!file.type.startsWith("image/")){setStatus("Selecciona un archivo de imagen.");return}
+    setUploadingWhy(index);setStatus(`Subiendo imagen del apartado ${index+1}…`);
+    const slug=`why-fragmentun-${index+1}`;
+    const safe=file.name.toLowerCase().replace(/[^a-z0-9._-]+/g,"-");
+    const path=`${slug}/${Date.now()}-${safe}`;
+    const{error}=await supabase.storage.from("official-media").upload(path,file,{contentType:file.type||undefined});
+    if(error){setUploadingWhy(null);setStatus(error.message);return}
+    const r=await fetch("/api/admin/media",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+      slug,kind:"image",storage_path:`official-media/${path}`,
+      alt_es:`Imagen del apartado ${index+1} de Por qué FRAGMENTUN`,
+      alt_en:`Image for Why FRAGMENTUN section ${index+1}`,
+      protected:false,public_visible:true,
+      metadata:{filename:file.name,bucket:"official-media",path,usage:"why_fragmentun_card",card_index:index+1}
+    })});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok){setUploadingWhy(null);setStatus(j.error||"No se pudo registrar la imagen.");return}
+    const url=assetUrl(j.data);
+    setWhyCardImage(index,url);
+    setMedia(m=>[j.data,...m.filter(x=>x.id!==j.data.id)]);
+    setUploadingWhy(null);
+    setStatus(`Imagen del apartado ${index+1} preparada. Pulsa Guardar cambios.`);
   }
 
   async function save(){
@@ -165,7 +199,7 @@ export function AdminContentEditor(){
             </div>
           </div>
         </div>}
-        {selected.content_key!=="home.author"&&<div className="card" style={{marginBottom:18}}>
+        {!["home.author","home.why"].includes(selected.content_key)&&<div className="card" style={{marginBottom:18}}>
           <div className="kicker">Recursos visuales</div>
           <p className="note">Selecciona imágenes o videos aprobados de la biblioteca.</p>
           <div className="adminLangGrid">
@@ -187,26 +221,46 @@ export function AdminContentEditor(){
         </div>}
         {selected.content_key==="home.why"&&<div className="adminWhyEditor">
           <div className="adminPanelHeader">
-            <div><div className="kicker">Apartados publicados</div><h3>Tarjetas de “Por qué FRAGMENTUN”</h3></div>
-            <span className="adminPanelBadge">4 tarjetas</span>
+            <div><div className="kicker">Apartados publicados</div><h3>Tarjetas de “Por qué FRAGMENTUN”</h3><p className="note">Cada apartado controla su propio texto e imagen. La imagen se comparte entre Español e Inglés.</p></div>
+            <span className="adminPanelBadge">4 apartados</span>
           </div>
-          <div className="adminLangGrid">
-            {(["es","en"] as const).map(lang=><div key={lang}>
-              <div className="kicker">{lang==="es"?"Español":"Inglés"}</div>
-              <div className="adminWhyCards">
-                {(Array.isArray(json(lang).cards)?json(lang).cards:[]).map((card:any,index:number)=><div className="adminWhyCardEditor" key={index}>
-                  <strong>Apartado {index+1}</strong>
-                  <label>Título
-                    <input value={card?.title||""} onChange={e=>setWhyCard(lang,index,"title",e.target.value)}/>
-                    <small>{String(card?.title||"").length} caracteres</small>
+          <div className="adminWhyCards adminWhyCardsUnified">
+            {[0,1,2,3].map(index=>{
+              const esCard=(Array.isArray(json("es").cards)?json("es").cards:[])[index]||{};
+              const enCard=(Array.isArray(json("en").cards)?json("en").cards:[])[index]||{};
+              const image=whyCardImage(index);
+              const fallback=["/nara-hd.jpg","/elyon-hero.jpg","/lumen-frontdesk.webp","/umbral-hd.jpg"][index];
+              return <article className="adminWhyCardEditor adminWhyCardUnified" key={index}>
+                <div className="adminWhyCardHead">
+                  <div><span>Apartado {index+1}</span><strong>{esCard.title||`Apartado ${index+1}`}</strong></div>
+                  <div className="adminWhyImagePreview"><img src={image||fallback} alt=""/></div>
+                </div>
+                <div className="adminWhyImageControls">
+                  <label>Imagen del apartado
+                    <select value={image} onChange={e=>setWhyCardImage(index,e.target.value)}>
+                      <option value="">Usar imagen actual del diseño</option>
+                      {media.filter(m=>m.public_visible&&m.kind==="image").map(m=><option key={m.id} value={assetUrl(m)}>{m.slug}</option>)}
+                    </select>
                   </label>
-                  <label>Texto
-                    <textarea className="adminSmallArea" value={card?.body||""} onChange={e=>setWhyCard(lang,index,"body",e.target.value)}/>
-                    <small>{String(card?.body||"").length} caracteres</small>
+                  <label className="adminWhyUpload">
+                    <span>{uploadingWhy===index?"Subiendo…":"Subir nueva imagen"}</span>
+                    <input type="file" accept="image/*" disabled={uploadingWhy===index} onChange={e=>uploadWhyCardImage(index,e.target.files?.[0]||null)}/>
                   </label>
-                </div>)}
-              </div>
-            </div>)}
+                </div>
+                <div className="adminLangGrid">
+                  <div>
+                    <div className="kicker">Español</div>
+                    <label>Título<input value={esCard.title||""} onChange={e=>setWhyCard("es",index,"title",e.target.value)}/><small>{String(esCard.title||"").length} caracteres</small></label>
+                    <label>Texto<textarea className="adminSmallArea" value={esCard.body||""} onChange={e=>setWhyCard("es",index,"body",e.target.value)}/><small>{String(esCard.body||"").length} caracteres</small></label>
+                  </div>
+                  <div>
+                    <div className="kicker">Inglés</div>
+                    <label>Título<input value={enCard.title||""} onChange={e=>setWhyCard("en",index,"title",e.target.value)}/><small>{String(enCard.title||"").length} caracteres</small></label>
+                    <label>Texto<textarea className="adminSmallArea" value={enCard.body||""} onChange={e=>setWhyCard("en",index,"body",e.target.value)}/><small>{String(enCard.body||"").length} caracteres</small></label>
+                  </div>
+                </div>
+              </article>
+            })}
           </div>
         </div>}
 
