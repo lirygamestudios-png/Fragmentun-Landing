@@ -111,6 +111,7 @@ export default async function AdminPage(){
     ["♙","Personajes","/admin/personajes"],
     ["a","Amazon (Enlaces)","/admin/marketing"],
     ["♟","Suscriptores","/admin/leads"],
+    ["↗","Integraciones","/admin/integrations"],
     ["▥","Analítica","/admin/analytics"],
     ["◉","Test Emocional","/admin/test"],
     ["⌘","Mapa de Lumen","/admin/mapa"],
