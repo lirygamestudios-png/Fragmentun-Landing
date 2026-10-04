@@ -16,7 +16,7 @@ export function AdminIntegrationLogs(){
   return <div className="adminSecondaryModule adminIntegrationsModule">
     <div className="kpis">
       <div className="kpi"><span>Estado MailerLite</span><strong>{health.state||"—"}</strong></div>
-      <div className="kpi"><span>Leads sincronizados</span><strong>{health.leads?.synced||0}</strong></div>
+      <div className="kpi"><span>Suscriptores sincronizados</span><strong>{health.leads?.synced||0}</strong></div>
       <div className="kpi"><span>Pendientes / sin configurar</span><strong>{(health.leads?.pending||0)+(health.leads?.unconfigured||0)}</strong></div>
       <div className="kpi"><span>Errores de sincronización</span><strong>{health.leads?.error||0}</strong></div>
       <div className="kpi"><span>Eventos recientes</span><strong>{items.length}</strong></div>
@@ -29,9 +29,9 @@ export function AdminIntegrationLogs(){
       <div className="adminTableWrap">
         <table className="adminTable">
           <tbody>
-            <tr><td>API token</td><td><strong>{health.configured?.token?"✓ Configurado":"✕ Pendiente"}</strong></td></tr>
-            <tr><td>Grupo ES</td><td><strong>{health.configured?.group_es?"✓ Configurado":"✕ Pendiente"}</strong></td></tr>
-            <tr><td>Grupo EN</td><td><strong>{health.configured?.group_en?"✓ Configurado":"— Opcional / pendiente"}</strong></td></tr>
+            <tr><td>Clave de conexión API</td><td><strong>{health.configured?.token?"✓ Configurado":"✕ Pendiente"}</strong></td></tr>
+            <tr><td>Grupo Español</td><td><strong>{health.configured?.group_es?"✓ Configurado":"✕ Pendiente"}</strong></td></tr>
+            <tr><td>Grupo Inglés</td><td><strong>{health.configured?.group_en?"✓ Configurado":"— Opcional / pendiente"}</strong></td></tr>
             <tr><td>Último éxito</td><td>{health.last_success_at?new Date(health.last_success_at).toLocaleString():"—"}</td></tr>
             <tr><td>Último error</td><td>{health.last_error_at?new Date(health.last_error_at).toLocaleString():"—"}</td></tr>
           </tbody>
