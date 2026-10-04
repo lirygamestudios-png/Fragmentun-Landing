@@ -13,7 +13,7 @@ export function AdminIntegrationLogs(){
   const errors=items.filter((x:any)=>x.status==="error").length;
   const success=items.filter((x:any)=>x.status==="success").length;
 
-  return <div>
+  return <div className="adminSecondaryModule adminIntegrationsModule">
     <div className="kpis">
       <div className="kpi"><span>Estado MailerLite</span><strong>{health.state||"—"}</strong></div>
       <div className="kpi"><span>Leads sincronizados</span><strong>{health.leads?.synced||0}</strong></div>
@@ -24,7 +24,7 @@ export function AdminIntegrationLogs(){
       <div className="kpi"><span>Errores</span><strong>{errors}</strong></div>
     </div>
 
-    <div className="card" style={{marginTop:24}}>
+    <div className="card adminSecondaryPanel">
       <h2>Salud de MailerLite</h2>
       <div className="adminTableWrap">
         <table className="adminTable">
@@ -39,7 +39,7 @@ export function AdminIntegrationLogs(){
       </div>
     </div>
 
-    <div className="card" style={{marginTop:24}}>
+    <div className="card adminSecondaryPanel">
       <h2>Historial de integraciones</h2>
       <div className="adminTableWrap">
         <table className="adminTable">
