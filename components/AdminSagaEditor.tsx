@@ -128,13 +128,13 @@ export function AdminSagaEditor(){
     {books.map((b,i)=><article className="card adminSagaBookCard" key={b.id}>
       <div className="adminPanelHeader"><div><div className="kicker">FRAGMENTUN {b.volume}</div><h2>{b.subtitle_es||b.subtitle_en||"Libro de la Saga"}</h2></div><span className="adminPanelBadge">{b.status}</span></div>
 
-      <label>Título ES</label>
+      <label>Título · Español</label>
       <input value={b.title_es||""} onChange={e=>setBook(i,"title_es",e.target.value)}/>
-      <label>Subtítulo ES</label>
+      <label>Subtítulo · Español</label>
       <input value={b.subtitle_es||""} onChange={e=>setBook(i,"subtitle_es",e.target.value)}/>
-      <label>Title EN</label>
+      <label>Título · Inglés</label>
       <input value={b.title_en||""} onChange={e=>setBook(i,"title_en",e.target.value)}/>
-      <label>Subtitle EN</label>
+      <label>Subtítulo · Inglés</label>
       <input value={b.subtitle_en||""} onChange={e=>setBook(i,"subtitle_en",e.target.value)}/>
 
       <label>Estado general</label>
@@ -189,7 +189,7 @@ export function AdminSagaEditor(){
                   onChange={e=>uploadCover(i,j,e.target.files?.[0]||null)}
                 />
               </div>
-              <p className="note">Puedes subir una portada nueva o seleccionar una imagen ya existente en Medios. Las nuevas portadas se guardan en Official media.</p>
+              <p className="note">Puedes subir una portada nueva o seleccionar una imagen ya existente en Medios. Las nuevas portadas se guardan en Medios oficiales.</p>
               {uploading===uploadKey&&<p>Subiendo portada…</p>}
               {preview&&<div className="adminSagaCoverPreview"><img src={preview} alt={b.subtitle_es||"Portada FRAGMENTUN"}/><span>{String(ed.locale||"").toUpperCase()}</span></div>}
             </div>
