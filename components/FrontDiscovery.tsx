@@ -191,19 +191,66 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
 
                     let pageBlurred=false;
                     let pageHidden=document.visibilityState==="hidden";
+                    let pageReturned=false;
+
                     const markBlur=()=>{pageBlurred=true;};
-                    const markVisibility=()=>{if(document.visibilityState==="hidden")pageHidden=true;};
-                    window.addEventListener("blur",markBlur,{once:true});
+                    const markFocus=()=>{
+                      if(pageBlurred||pageHidden)pageReturned=true;
+                    };
+                    const markVisibility=()=>{
+                      if(document.visibilityState==="hidden"){
+                        pageHidden=true;
+                      }else if(pageHidden){
+                        pageReturned=true;
+                      }
+                    };
+
+                    window.addEventListener("blur",markBlur);
+                    window.addEventListener("focus",markFocus);
                     document.addEventListener("visibilitychange",markVisibility);
 
                     await navigator.share({title:"FRAGMENTUN",text,url});
 
-                    // navigator.share resolves when the native share flow has finished.
-                    // Do not require a second click or focus event: reveal the reward automatically
-                    // after a short grace period so the social surface has time to disappear.
-                    await new Promise<void>(resolve=>window.setTimeout(resolve,500));
+                    // Some browsers resolve navigator.share() before the native/social surface
+                    // has visually disappeared. Wait for a real return signal when available.
+                    // Never require a user click: a timed fallback completes the sequence automatically.
+                    await new Promise<void>(resolve=>{
+                      let done=false;
+                      let fallback:number|undefined;
+
+                      const finish=()=>{
+                        if(done)return;
+                        done=true;
+                        window.removeEventListener("focus",onReturn);
+                        document.removeEventListener("visibilitychange",onVisibilityReturn);
+                        if(fallback!==undefined)window.clearTimeout(fallback);
+                        // brief grace period after the native social UI has yielded control
+                        window.setTimeout(resolve,450);
+                      };
+
+                      const onReturn=()=>{
+                        if(pageBlurred||pageHidden||pageReturned)finish();
+                      };
+                      const onVisibilityReturn=()=>{
+                        if(document.visibilityState==="visible"&&(pageHidden||pageReturned))finish();
+                      };
+
+                      if(pageReturned){
+                        finish();
+                        return;
+                      }
+
+                      window.addEventListener("focus",onReturn);
+                      document.addEventListener("visibilitychange",onVisibilityReturn);
+
+                      // Desktop share implementations do not always emit reliable focus/visibility
+                      // events. This fallback prevents "Compartiendo…" from getting stuck while
+                      // still delaying the reward long enough for the social sheet to close.
+                      fallback=window.setTimeout(finish,1800);
+                    });
 
                     window.removeEventListener("blur",markBlur);
+                    window.removeEventListener("focus",markFocus);
                     document.removeEventListener("visibilitychange",markVisibility);
 
                     fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
