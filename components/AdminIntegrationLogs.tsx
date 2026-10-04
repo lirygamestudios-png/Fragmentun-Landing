@@ -1,9 +1,10 @@
 "use client";
 import { useEffect,useState } from "react";
-import { FRAGMENTUN_EMAIL_SEQUENCE,FRAGMENTUN_EMAIL_BRAND } from "../lib/fragmentun-email-sequence";
+import { FRAGMENTUN_EMAIL_SEQUENCE,FRAGMENTUN_EMAIL_SEQUENCE_EN,FRAGMENTUN_EMAIL_BRAND } from "../lib/fragmentun-email-sequence";
 
 export function AdminIntegrationLogs(){
   const[data,setData]=useState<any>(null);
+  const[emailLocale,setEmailLocale]=useState<"es"|"en">("es");
   useEffect(()=>{fetch("/api/admin/integrations").then(r=>r.json()).then(setData)},[]);
 
   if(!data)return <p>Cargando integraciones…</p>;
@@ -13,6 +14,7 @@ export function AdminIntegrationLogs(){
   const health=data.health||{};
   const errors=items.filter((x:any)=>x.status==="error").length;
   const success=items.filter((x:any)=>x.status==="success").length;
+  const approvedSequence=emailLocale==="es"?FRAGMENTUN_EMAIL_SEQUENCE:FRAGMENTUN_EMAIL_SEQUENCE_EN;
 
   return <div className="adminSecondaryModule adminIntegrationsModule">
     <div className="kpis">
@@ -71,10 +73,18 @@ export function AdminIntegrationLogs(){
     </div>
 
     <div className="card adminSecondaryPanel">
-      <h2>Secuencia aprobada · FRAGMENTUN</h2>
-      <p style={{opacity:.8}}>Referencia editorial y visual aprobada para los correos de captación, nutrición, conversión y reseña.</p>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:"12px",flexWrap:"wrap"}}>
+        <div>
+          <h2 style={{marginBottom:".25rem"}}>Secuencia aprobada · FRAGMENTUN</h2>
+          <p style={{opacity:.8,marginTop:0}}>Referencia editorial y visual aprobada para los correos de captación, nutrición, conversión y reseña.</p>
+        </div>
+        <div style={{display:"flex",gap:"8px"}}>
+          <button type="button" className="btn btnGhost" onClick={()=>setEmailLocale("es")} aria-pressed={emailLocale==="es"} style={emailLocale==="es"?{borderColor:FRAGMENTUN_EMAIL_BRAND.gold,color:FRAGMENTUN_EMAIL_BRAND.gold}:undefined}>ES</button>
+          <button type="button" className="btn btnGhost" onClick={()=>setEmailLocale("en")} aria-pressed={emailLocale==="en"} style={emailLocale==="en"?{borderColor:FRAGMENTUN_EMAIL_BRAND.gold,color:FRAGMENTUN_EMAIL_BRAND.gold}:undefined}>EN</button>
+        </div>
+      </div>
       <div style={{display:"grid",gap:"1rem"}}>
-        {FRAGMENTUN_EMAIL_SEQUENCE.map((mail:any)=><div key={mail.id} style={{
+        {approvedSequence.map((mail:any)=><div key={mail.id} style={{
           border:"1px solid rgba(201,168,76,.28)",
           borderRadius:"22px",
           overflow:"hidden",
@@ -173,14 +183,14 @@ export function AdminIntegrationLogs(){
             textAlign:"center"
           }}>
             <div style={{color:"#fff",fontWeight:700}}>José Liranzo</div>
-            <div style={{marginTop:"4px",fontSize:".78rem",color:"rgba(255,255,255,.5)"}}>Autor de FRAGMENTUN</div>
+            <div style={{marginTop:"4px",fontSize:".78rem",color:"rgba(255,255,255,.5)"}}>{emailLocale==="es"?"Autor de FRAGMENTUN":"Author of FRAGMENTUN"}</div>
             <div style={{marginTop:"14px",fontSize:".72rem",color:"rgba(255,255,255,.42)",lineHeight:1.6}}>
-              © 2026 José Liranzo · FRAGMENTUN · Todos los derechos reservados.
+              {emailLocale==="es"?"© 2026 José Liranzo · FRAGMENTUN · Todos los derechos reservados.":"© 2026 José Liranzo · FRAGMENTUN · All rights reserved."}
             </div>
             <div style={{marginTop:"8px",fontSize:".72rem"}}>
               <a href="/es/privacidad" style={{color:"rgba(255,255,255,.56)",textDecoration:"underline"}}>Privacidad</a>
               <span style={{margin:"0 8px",color:"rgba(255,255,255,.25)"}}>·</span>
-              <span style={{color:"rgba(255,255,255,.56)",textDecoration:"underline"}}>Cancelar suscripción</span>
+              <span style={{color:"rgba(255,255,255,.56)",textDecoration:"underline"}}>{emailLocale==="es"?"Cancelar suscripción":"Unsubscribe"}</span>
             </div>
           </div>
         </div>)}
