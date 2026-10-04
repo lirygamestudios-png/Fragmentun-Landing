@@ -71,7 +71,8 @@ export function AdminCharacters(){
     </aside>
 
     <section>
-      {!current?<div className="card"><p>No hay personajes todavía.</p></div>:<div className="card">
+      {!current?<div className="card"><p>No hay personajes todavía.</p></div>:<div className="card adminCharacterCard">
+        <div className="adminPanelHeader"><div><div className="kicker">Archivo de personaje</div><h2>{current.name||"Nuevo personaje"}</h2></div><span className="adminPanelBadge">{current.status}</span></div>
         <div className="adminFormGrid">
           <label>Nombre<input value={current.name||""} onChange={e=>update("name",e.target.value)}/></label>
           <label>Slug<input value={current.slug||""} onChange={e=>update("slug",e.target.value)}/></label>
@@ -114,6 +115,7 @@ export function AdminCharacters(){
           </label>
         </div>
 
+        <div className="adminCharacterPreviewWrap">
         {current.image_asset_id&&(()=>{
           const asset=media.find(m=>m.id===current.image_asset_id);
           const src=mediaUrl(asset);
@@ -122,6 +124,8 @@ export function AdminCharacters(){
             <img src={src} alt={current.name} style={{width:"100%",aspectRatio:"2 / 3",objectFit:"cover",borderRadius:16}}/>
           </div>:null;
         })()}
+        <div className="adminCharacterIdentity"><strong>{current.name||"Sin nombre"}</strong><span>{current.role_es||current.role_en||"Rol pendiente"}</span><small>{current.territory||"Territorio no definido"}</small></div>
+        </div>
 
         <div className="adminSaveRow">
           <button className="btn btnPrimary" onClick={save}>Guardar personaje</button>
