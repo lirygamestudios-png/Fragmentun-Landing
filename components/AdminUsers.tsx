@@ -51,7 +51,7 @@ export function AdminUsers(){
 
   const current=(data.current_user?.email||"").toLowerCase();
 
-  return <div>
+  return <div className="adminSecondaryModule adminUsersModule">
     <div className="card">
       <h2>Autorizar usuario</h2>
       <p className="note">Los cambios de rol se sincronizan también con perfiles ya aprovisionados. Tu propio acceso administrativo está protegido contra revocación o degradación accidental.</p>
@@ -67,7 +67,7 @@ export function AdminUsers(){
       </div>
     </div>
 
-    <div className="card" style={{marginTop:22}}>
+    <div className="card adminSecondaryPanel">
       <h2>Lista de acceso</h2>
       <div className="adminTableWrap">
         <table className="adminTable">
@@ -86,7 +86,7 @@ export function AdminUsers(){
       </div>
     </div>
 
-    <div className="card" style={{marginTop:22}}>
+    <div className="card adminSecondaryPanel">
       <h2>Perfiles aprovisionados</h2>
       <div className="adminTableWrap">
         <table className="adminTable">
