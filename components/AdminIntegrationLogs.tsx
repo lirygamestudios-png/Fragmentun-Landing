@@ -5,6 +5,8 @@ import { FRAGMENTUN_EMAIL_SEQUENCE,FRAGMENTUN_EMAIL_SEQUENCE_EN,FRAGMENTUN_EMAIL
 export function AdminIntegrationLogs(){
   const[data,setData]=useState<any>(null);
   const[emailLocale,setEmailLocale]=useState<"es"|"en">("es");
+  const[provisioning,setProvisioning]=useState(false);
+  const[provisionResult,setProvisionResult]=useState<any>(null);
   useEffect(()=>{fetch("/api/admin/integrations").then(r=>r.json()).then(setData)},[]);
 
   if(!data)return <p>Cargando integraciones…</p>;
@@ -15,6 +17,24 @@ export function AdminIntegrationLogs(){
   const errors=items.filter((x:any)=>x.status==="error").length;
   const success=items.filter((x:any)=>x.status==="success").length;
   const approvedSequence=emailLocale==="es"?FRAGMENTUN_EMAIL_SEQUENCE:FRAGMENTUN_EMAIL_SEQUENCE_EN;
+
+  async function provisionAutomations(){
+    setProvisioning(true);
+    setProvisionResult(null);
+    try{
+      const r=await fetch("/api/admin/integrations",{method:"POST"});
+      const j=await r.json();
+      setProvisionResult(j);
+      if(r.ok){
+        const refreshed=await fetch("/api/admin/integrations").then(x=>x.json());
+        setData(refreshed);
+      }
+    }catch{
+      setProvisionResult({ok:false,error:"request_failed"});
+    }finally{
+      setProvisioning(false);
+    }
+  }
 
   return <div className="adminSecondaryModule adminIntegrationsModule">
     <div className="kpis">
@@ -43,7 +63,21 @@ export function AdminIntegrationLogs(){
     </div>
 
     <div className="card adminSecondaryPanel">
-      <h2>Secuencia de correos · MailerLite</h2>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:"12px",flexWrap:"wrap"}}>
+        <div>
+          <h2 style={{marginBottom:".25rem"}}>Secuencia de correos · MailerLite</h2>
+          <p style={{marginTop:0,opacity:.75}}>Automatizaciones reales detectadas en la cuenta conectada.</p>
+        </div>
+        <button type="button" className="btn btnPrimary" onClick={provisionAutomations} disabled={provisioning}>
+          {provisioning?"Creando borradores…":"Crear / verificar borradores ES + EN"}
+        </button>
+      </div>
+      {provisionResult&&<div style={{margin:"0 0 16px",padding:"12px 14px",borderRadius:"12px",border:"1px solid rgba(201,168,76,.25)"}}>
+        {provisionResult.ok?<strong>✓ Borradores verificados en MailerLite</strong>:<strong>No fue posible completar la creación.</strong>}
+        {(provisionResult.results||[]).map((x:any)=><div key={x.name} style={{marginTop:"6px",fontSize:".86rem",opacity:.82}}>
+          {x.error?"✕":"✓"} {x.name} {x.created?"· creado":x.id?"· ya existía":""} {x.error?"· "+x.error:""}
+        </div>)}
+      </div>}
       {!data.automations?.ok
         ? <p>No fue posible leer las automatizaciones de MailerLite: {data.automations?.error||"—"}</p>
         : (data.automations?.automations||[]).length===0
