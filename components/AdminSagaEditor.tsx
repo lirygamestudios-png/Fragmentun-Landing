@@ -125,8 +125,8 @@ export function AdminSagaEditor(){
   }
 
   return <div className="adminBookGrid">
-    {books.map((b,i)=><article className="card" key={b.id}>
-      <div className="kicker">FRAGMENTUN {b.volume}</div>
+    {books.map((b,i)=><article className="card adminSagaBookCard" key={b.id}>
+      <div className="adminPanelHeader"><div><div className="kicker">FRAGMENTUN {b.volume}</div><h2>{b.subtitle_es||b.subtitle_en||"Libro de la Saga"}</h2></div><span className="adminPanelBadge">{b.status}</span></div>
 
       <label>Título ES</label>
       <input value={b.title_es||""} onChange={e=>setBook(i,"title_es",e.target.value)}/>
@@ -191,7 +191,7 @@ export function AdminSagaEditor(){
               </div>
               <p className="note">Puedes subir una portada nueva o seleccionar una imagen ya existente en Medios. Las nuevas portadas se guardan en Official media.</p>
               {uploading===uploadKey&&<p>Subiendo portada…</p>}
-              {preview&&<img src={preview} alt="" style={{display:"block",width:120,maxWidth:"100%",height:"auto",marginTop:10,borderRadius:8}}/>}
+              {preview&&<div className="adminSagaCoverPreview"><img src={preview} alt={b.subtitle_es||"Portada FRAGMENTUN"}/><span>{String(ed.locale||"").toUpperCase()}</span></div>}
             </div>
           </div>
         })}
