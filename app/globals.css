@@ -2962,3 +2962,34 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   .brandMark{width:31px;height:31px}
   .brandLogo .brandWordmark{font-size:.86rem;letter-spacing:.17em!important}
 }
+
+
+/* FINAL MEDIA RENDERING FIX */
+.characterTileArt .characterPhoto,
+.characterModalArt .characterPhoto{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  z-index:0;
+  background:#07131f
+}
+.characterTileArt.elyon .characterPhoto,.characterModalArt.elyon .characterPhoto{object-position:54% 24%}
+.characterTileArt.umbral .characterPhoto,.characterModalArt.umbral .characterPhoto{object-position:50% 22%}
+.characterTileArt.ethelis .characterPhoto,.characterModalArt.ethelis .characterPhoto{object-position:50% 20%}
+.characterTileArt.vorax .characterPhoto,.characterModalArt.vorax .characterPhoto{object-position:50% 22%}
+.characterTileArt.nara .characterPhoto,.characterModalArt.nara .characterPhoto{object-position:50% 20%}
+.masterLumenSection{
+  background:#06101b!important
+}
+.lumenCmsMedia img,.lumenCmsMedia video{
+  object-position:center center
+}
+.shareRewardConfirm{
+  display:grid;
+  gap:10px;
+  justify-items:start;
+  padding-top:2px
+}
