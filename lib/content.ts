@@ -22,23 +22,31 @@ export async function getLocalizedContent(locale:Locale){
 export async function getBooks(locale:Locale="es"){
   const supabase=client();
   if(!supabase) return [];
-  const[{data:books},{data:editions}]=await Promise.all([
+  const[{data:books},{data:editions},{data:media}]=await Promise.all([
     supabase.from("books").select("*").order("sort_order"),
     supabase.from("book_editions")
       .select("book_id,locale,marketplace,asin,amazon_url,status,cover_media_slug")
-      .eq("locale",locale)
+      .eq("locale",locale),
+    supabase.from("media_assets")
+      .select("slug,storage_path,alt_es,alt_en,public_visible")
+      .eq("kind","image")
+      .eq("public_visible",true)
   ]);
   const byBook=new Map((editions||[]).map((e:any)=>[e.book_id,e]));
+  const mediaBySlug=new Map((media||[]).map((m:any)=>[m.slug,m]));
   return (books||[]).map((book:any)=>{
     const ed=byBook.get(book.id) as any;
     const legacy=locale==="es"?book.amazon_url_es:book.amazon_url_en;
+    const cover:any=ed?.cover_media_slug?mediaBySlug.get(ed.cover_media_slug):null;
     return {
       ...book,
       amazon_url:ed?.amazon_url||legacy||null,
       asin:ed?.asin||null,
       edition_status:ed?.status||((legacy&&book.status==="published")?"published":"coming_soon"),
       marketplace:ed?.marketplace||"amazon.com",
-      cover_media_slug:ed?.cover_media_slug||null
+      cover_media_slug:ed?.cover_media_slug||null,
+      cover_url:mediaPublicUrl(cover?.storage_path)||null,
+      cover_alt:locale==="en"?(cover?.alt_en||cover?.alt_es||null):(cover?.alt_es||cover?.alt_en||null)
     };
   });
 }
