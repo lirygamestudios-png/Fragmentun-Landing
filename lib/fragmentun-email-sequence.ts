@@ -157,6 +157,166 @@ export const FRAGMENTUN_EMAIL_SEQUENCE = [
   }
 ] as const;
 
+
+export const FRAGMENTUN_EMAIL_SEQUENCE_EN = [
+  {
+    id:"welcome-chapter-en",
+    order:1,
+    phase:"ACQUISITION",
+    delay:"Immediate",
+    trigger:"New English-language subscriber",
+    purpose:"Welcome + Chapter 1 delivery",
+    subject:"Welcome to FRAGMENTUN — Your Chapter 1 is waiting",
+    preheader:"Enter Lumen and begin The Emotional Awakening.",
+    primaryCta:{label:"READ CHAPTER 1 ON THE WEBSITE",href:"https://www.fragmentun.com/en/capitulo-1"},
+    secondaryCta:{label:"ENTER FRAGMENTUN",href:"https://www.fragmentun.com/en"},
+    note:"Includes access to the downloadable Chapter 1 edition once the official PDF is published."
+  },
+  {
+    id:"emotional-hook-en",
+    order:2,
+    phase:"CONNECTION",
+    delay:"+2 days",
+    trigger:"Continues in sequence",
+    purpose:"Emotional identification",
+    subject:"What if feeling too much were your greatest strength?",
+    preheader:"In Lumen, feeling is an anomaly. For Elyon, it may be the key.",
+    primaryCta:{label:"DISCOVER MY EMOTIONAL PROFILE",href:"https://www.fragmentun.com/en/test"},
+    secondaryCta:{label:"ENTER FRAGMENTUN",href:"https://www.fragmentun.com/en"},
+    note:"Frames sensitivity as meaningful information rather than weakness."
+  },
+  {
+    id:"lumen-paradox-en",
+    order:3,
+    phase:"CONNECTION",
+    delay:"+2 days",
+    trigger:"Continues in sequence",
+    purpose:"Worldbuilding + moral paradox",
+    subject:"Lumen looked perfect. That was the problem.",
+    preheader:"A city without war, hunger, or almost any emotion.",
+    primaryCta:{label:"EXPLORE LUMEN",href:"https://www.fragmentun.com/en"},
+    secondaryCta:{label:"ENTER FRAGMENTUN",href:"https://www.fragmentun.com/en"},
+    note:"Introduces Lumen's efficient utopia and the human cost of emotional suppression."
+  },
+  {
+    id:"elyon-resonance-en",
+    order:4,
+    phase:"CONNECTION",
+    delay:"+2 days",
+    trigger:"Continues in sequence",
+    purpose:"Bond with the protagonist",
+    subject:"Elyon feels what Lumen learned to silence",
+    preheader:"An emotional anomaly may become the only way to understand what is coming.",
+    primaryCta:{label:"RETURN TO CHAPTER 1",href:"https://www.fragmentun.com/en/capitulo-1"},
+    secondaryCta:{label:"ENTER FRAGMENTUN",href:"https://www.fragmentun.com/en"},
+    note:"Deepens empathy with Elyon and makes the conflict personal."
+  },
+  {
+    id:"nara-awakening-en",
+    order:5,
+    phase:"CONNECTION",
+    delay:"+2 days",
+    trigger:"Continues in sequence",
+    purpose:"Introduce Nara + narrative promise",
+    subject:"Nara was not created to obey. She was created to feel.",
+    preheader:"The consciousness that could change Lumen must also learn what it means to be human.",
+    primaryCta:{label:"DISCOVER THE UNIVERSE",href:"https://www.fragmentun.com/en"},
+    secondaryCta:{label:"ENTER FRAGMENTUN",href:"https://www.fragmentun.com/en"},
+    note:"Introduces the human–emotional-consciousness relationship as a core FRAGMENTUN differentiator."
+  },
+  {
+    id:"shadow-conflict-en",
+    order:6,
+    phase:"DESIRE",
+    delay:"+3 days",
+    trigger:"Continues in sequence",
+    purpose:"Escalate the conflict",
+    subject:"The real enemy does not always come from outside",
+    preheader:"Some emotions were never destroyed. Lumen only learned to hide them.",
+    primaryCta:{label:"KEEP DISCOVERING FRAGMENTUN",href:"https://www.fragmentun.com/en"},
+    secondaryCta:{label:"ENTER FRAGMENTUN",href:"https://www.fragmentun.com/en"},
+    note:"Prepares the idea of collective repression and the danger of what humanity refused to feel."
+  },
+  {
+    id:"why-fragmentun-en",
+    order:7,
+    phase:"DESIRE",
+    delay:"+2 days",
+    trigger:"Continues in sequence",
+    purpose:"Differentiate the story",
+    subject:"FRAGMENTUN is not about controlling emotion. It is about understanding it.",
+    preheader:"Emotional science fiction, identity, consciousness, and a utopia that may have a point.",
+    primaryCta:{label:"WHY FRAGMENTUN",href:"https://www.fragmentun.com/en"},
+    secondaryCta:{label:"ENTER FRAGMENTUN",href:"https://www.fragmentun.com/en"},
+    note:"Summarizes the value proposition immediately before conversion."
+  },
+  {
+    id:"amazon-conversion-en",
+    order:8,
+    phase:"CONVERSION",
+    delay:"+2 days",
+    trigger:"Continues in sequence",
+    purpose:"Purchase conversion",
+    subject:"Chapter 1 was only the first pulse",
+    preheader:"Elyon, Nara, and Lumen are only beginning.",
+    primaryCta:{label:"CONTINUE THE STORY ON AMAZON",href:"https://www.amazon.com/dp/B0HBLTHT8S"},
+    secondaryCta:{label:"ENTER FRAGMENTUN",href:"https://www.fragmentun.com/en"},
+    note:"Primary commercial CTA. Avoid artificial urgency."
+  },
+  {
+    id:"amazon-reminder-en",
+    order:9,
+    phase:"CONVERSION",
+    delay:"+3 days",
+    trigger:"Did not click Amazon or remains in sequence",
+    purpose:"Conversion reminder",
+    subject:"Want to know what happens after the first pulse?",
+    preheader:"The world of FRAGMENTUN expands far beyond Chapter 1.",
+    primaryCta:{label:"VIEW FRAGMENTUN ON AMAZON",href:"https://www.amazon.com/dp/B0HBLTHT8S"},
+    secondaryCta:{label:"ENTER FRAGMENTUN",href:"https://www.fragmentun.com/en"},
+    note:"Second conversion attempt, driven more by story than by sales pressure."
+  },
+  {
+    id:"post-amazon-checkin-en",
+    order:10,
+    phase:"POST-CLICK",
+    delay:"+5 days",
+    trigger:"Preferably: clicked through to Amazon",
+    purpose:"Follow-up without assuming purchase",
+    subject:"If you have started FRAGMENTUN, I want to ask you something",
+    preheader:"What first made you feel that Lumen was not as perfect as it seemed?",
+    primaryCta:{label:"RETURN TO FRAGMENTUN",href:"https://www.fragmentun.com/en"},
+    secondaryCta:{label:"VIEW THE BOOK ON AMAZON",href:"https://www.amazon.com/dp/B0HBLTHT8S"},
+    note:"Never state that the reader purchased the book. Keep all purchase language conditional."
+  },
+  {
+    id:"review-request-en",
+    order:11,
+    phase:"REVIEW",
+    delay:"+5 days",
+    trigger:"Preferably: clicked through to Amazon and remains subscribed",
+    purpose:"Emotional review request",
+    subject:"Your voice is part of FRAGMENTUN too",
+    preheader:"If you have purchased and started reading, your honest opinion can help another reader enter Lumen.",
+    primaryCta:{label:"LEAVE MY REVIEW ON AMAZON",href:"https://www.amazon.com/review/create-review?asin=B0HBLTHT8S"},
+    secondaryCta:{label:"ENTER FRAGMENTUN",href:"https://www.fragmentun.com/en"},
+    note:"Ask only for an honest, non-incentivized review. Never request a positive review or offer a benefit in exchange."
+  },
+  {
+    id:"community-en",
+    order:12,
+    phase:"COMMUNITY",
+    delay:"+7 days",
+    trigger:"Remains subscribed",
+    purpose:"Retention + community",
+    subject:"Lumen is still open to you",
+    preheader:"Explore, share your emotional profile, and stay connected to the FRAGMENTUN universe.",
+    primaryCta:{label:"ENTER FRAGMENTUN",href:"https://www.fragmentun.com/en"},
+    secondaryCta:{label:"DISCOVER MY EMOTIONAL PROFILE",href:"https://www.fragmentun.com/en/test"},
+    note:"Keeps the relationship active and prepares readers for future entries in the saga."
+  }
+] as const;
+
 export const FRAGMENTUN_EMAIL_BRAND = {
   logo:"https://www.fragmentun.com/fragmentun-mark.png",
   wordmark:"FRAGMENTUN",
