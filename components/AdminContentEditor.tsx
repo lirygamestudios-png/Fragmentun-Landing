@@ -54,6 +54,7 @@ export function AdminContentEditor(){
   const[uploading,setUploading]=useState(false);
   const[showAdvanced,setShowAdvanced]=useState(false);
   const[uploadingWhy,setUploadingWhy]=useState<number|null>(null);
+  const[uploadingNews,setUploadingNews]=useState<string|null>(null);
   const supabase=useMemo(()=>createSupabaseBrowserClient(),[]);
 
   useEffect(()=>{
@@ -158,6 +159,47 @@ export function AdminContentEditor(){
     setStatus(`Imagen del apartado ${index+1} preparada. Pulsa Guardar cambios.`);
   }
 
+  const NEWS_CARDS=[
+    {key:"feature",name:"Publicación",fallback:"/fragmentun-i-cover-es.jpg"},
+    {key:"share",name:"Recompensa",fallback:"/elyon-hero.jpg"},
+    {key:"expand",name:"Expansión",fallback:"/lumen-ciudad-oficial.webp"}
+  ] as const;
+  function newsField(lang:"es"|"en",card:string,field:string){
+    return json(lang)?.[`card_${card}_${field}`]||"";
+  }
+  function setNewsField(lang:"es"|"en",card:string,field:string,value:string){
+    setField(lang,`card_${card}_${field}`,value);
+  }
+  function newsImage(card:string){
+    return newsField("es",card,"image")||newsField("en",card,"image")||"";
+  }
+  function setNewsImage(card:string,value:string){
+    setNewsField("es",card,"image",value);
+    setNewsField("en",card,"image",value);
+  }
+  async function uploadNewsImage(card:string,file:File|null){
+    if(!file)return;
+    if(!file.type.startsWith("image/")){setStatus("Selecciona un archivo de imagen.");return}
+    setUploadingNews(card);setStatus("Subiendo imagen de Noticias…");
+    const slug=`news-${card}`;
+    const safe=file.name.toLowerCase().replace(/[^a-z0-9._-]+/g,"-");
+    const path=`${slug}/${Date.now()}-${safe}`;
+    const{error}=await supabase.storage.from("official-media").upload(path,file,{contentType:file.type||undefined});
+    if(error){setUploadingNews(null);setStatus(error.message);return}
+    const r=await fetch("/api/admin/media",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+      slug,kind:"image",storage_path:`official-media/${path}`,
+      alt_es:`Imagen de Noticias: ${card}`,alt_en:`News image: ${card}`,
+      protected:false,public_visible:true,
+      metadata:{filename:file.name,bucket:"official-media",path,usage:"news_card",card}
+    })});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok){setUploadingNews(null);setStatus(j.error||"No se pudo registrar la imagen.");return}
+    setNewsImage(card,assetUrl(j.data));
+    setMedia(m=>[j.data,...m.filter(x=>x.id!==j.data.id)]);
+    setUploadingNews(null);
+    setStatus("Imagen preparada. Pulsa Guardar cambios.");
+  }
+
   async function save(){
     if(!selected)return;
     try{
@@ -199,7 +241,7 @@ export function AdminContentEditor(){
             </div>
           </div>
         </div>}
-        {!["home.author","home.why"].includes(selected.content_key)&&<div className="card" style={{marginBottom:18}}>
+        {!["home.author","home.why","home.news"].includes(selected.content_key)&&<div className="card" style={{marginBottom:18}}>
           <div className="kicker">Recursos visuales</div>
           <p className="note">Selecciona imágenes o videos aprobados de la biblioteca.</p>
           <div className="adminLangGrid">
@@ -264,11 +306,50 @@ export function AdminContentEditor(){
           </div>
         </div>}
 
+        {selected.content_key==="home.news"&&<div className="adminWhyEditor adminNewsEditor">
+          <div className="adminPanelHeader">
+            <div><div className="kicker">Tarjetas publicadas</div><h3>Noticias</h3><p className="note">Cada tarjeta se edita como un bloque independiente. La portada del libro sigue siendo el respaldo de la tarjeta Publicación.</p></div>
+            <span className="adminPanelBadge">3 tarjetas</span>
+          </div>
+          <div className="adminWhyCards adminWhyCardsUnified">
+            {NEWS_CARDS.map(card=>{
+              const image=newsImage(card.key);
+              return <article className="adminWhyCardEditor adminWhyCardUnified" key={card.key}>
+                <div className="adminWhyCardHead">
+                  <div><span>{card.name}</span><strong>{newsField("es",card.key,"title")||card.name}</strong></div>
+                  <div className="adminWhyImagePreview"><img src={image||card.fallback} alt=""/></div>
+                </div>
+                <div className="adminWhyImageControls">
+                  <label>Imagen de la tarjeta
+                    <select value={image} onChange={e=>setNewsImage(card.key,e.target.value)}>
+                      <option value="">Usar imagen actual del diseño</option>
+                      {media.filter(m=>m.public_visible&&m.kind==="image").map(m=><option key={m.id} value={assetUrl(m)}>{m.slug}</option>)}
+                    </select>
+                  </label>
+                  <label className="adminWhyUpload">
+                    <span>{uploadingNews===card.key?"Subiendo…":"Subir nueva imagen"}</span>
+                    <input type="file" accept="image/*" disabled={uploadingNews===card.key} onChange={e=>uploadNewsImage(card.key,e.target.files?.[0]||null)}/>
+                  </label>
+                </div>
+                <div className="adminLangGrid">
+                  {(["es","en"] as const).map(lang=><div key={lang}>
+                    <div className="kicker">{lang==="es"?"Español":"Inglés"}</div>
+                    <label>Etiqueta<input value={newsField(lang,card.key,"label")} onChange={e=>setNewsField(lang,card.key,"label",e.target.value)}/></label>
+                    <label>Título<input value={newsField(lang,card.key,"title")} onChange={e=>setNewsField(lang,card.key,"title",e.target.value)}/></label>
+                    <label>Texto<textarea className="adminSmallArea" value={newsField(lang,card.key,"body")} onChange={e=>setNewsField(lang,card.key,"body",e.target.value)}/></label>
+                    <label>Texto del botón<input value={newsField(lang,card.key,"cta")} onChange={e=>setNewsField(lang,card.key,"cta",e.target.value)}/></label>
+                  </div>)}
+                </div>
+              </article>
+            })}
+          </div>
+        </div>}
+
         <div className="adminLangGrid">
           {(["es","en"] as const).map(lang=><div className="adminVisualContentFields" key={lang}>
             <div className="kicker">{lang==="es"?"Español":"Inglés"}</div>
             {Object.entries(json(lang))
-              .filter(([key,value])=>!["image_url","video_url","poster_url","art_url","cards"].includes(key)&&["string","number","boolean"].includes(typeof value))
+              .filter(([key,value])=>!["image_url","video_url","poster_url","art_url","cards"].includes(key)&&!(selected.content_key==="home.news"&&key.startsWith("card_"))&&["string","number","boolean"].includes(typeof value))
               .map(([key,value])=><label key={key}>
                 <span>{fieldLabel(key)}</span>
                 {String(value).length>120
