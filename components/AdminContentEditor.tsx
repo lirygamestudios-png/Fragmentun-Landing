@@ -6,6 +6,7 @@ type Row={
   status_es:"draft"|"review"|"published";
   status_en:"draft"|"review"|"published";
 };
+type MediaAsset={id:string;slug:string;kind:string;storage_path:string;public_visible:boolean};
 
 export function AdminContentEditor(){
   const[rows,setRows]=useState<Row[]>([]);
@@ -14,14 +15,40 @@ export function AdminContentEditor(){
   const[enText,setEnText]=useState("");
   const[status,setStatus]=useState("");
   const[loading,setLoading]=useState(true);
+  const[media,setMedia]=useState<MediaAsset[]>([]);
 
-  useEffect(()=>{fetch("/api/admin/content").then(r=>r.json()).then(j=>{setRows(j.data||[]);setLoading(false)})},[]);
+  useEffect(()=>{
+    Promise.all([fetch("/api/admin/content"),fetch("/api/admin/media")])
+      .then(async([a,b])=>[await a.json(),await b.json()])
+      .then(([content,assets])=>{setRows(content.data||[]);setMedia(assets.data||[]);setLoading(false)})
+  },[]);
 
   function choose(row:Row){
     setSelected(row);
     setEsText(JSON.stringify(row.es,null,2));
     setEnText(JSON.stringify(row.en,null,2));
     setStatus("");
+  }
+
+  function assetUrl(asset:MediaAsset){
+    if(asset.storage_path.startsWith("/")||/^https?:\/\//i.test(asset.storage_path))return asset.storage_path;
+    const base=process.env.NEXT_PUBLIC_SUPABASE_URL||"";
+    return base?`${base}/storage/v1/object/public/${asset.storage_path}`:"";
+  }
+
+  function setMediaField(lang:"es"|"en",field:"image_url"|"video_url"|"poster_url"|"art_url",value:string){
+    try{
+      const current=JSON.parse(lang==="es"?esText:enText);
+      const next={...current,[field]:value};
+      if(lang==="es")setEsText(JSON.stringify(next,null,2));
+      else setEnText(JSON.stringify(next,null,2));
+    }catch{
+      setStatus("Revisa el JSON antes de asignar multimedia.");
+    }
+  }
+
+  function mediaFieldValue(lang:"es"|"en",field:string){
+    try{return JSON.parse(lang==="es"?esText:enText)?.[field]||""}catch{return ""}
   }
 
   async function save(){
@@ -50,6 +77,26 @@ export function AdminContentEditor(){
       {!selected?<p>Selecciona una sección para editar.</p>:<>
         <div className="kicker">{selected.section}</div>
         <h2>{selected.content_key}</h2>
+        <div className="card" style={{marginBottom:18}}>
+          <div className="kicker">Multimedia rápida</div>
+          <p className="note">Asigna recursos aprobados de la Biblioteca sin editar rutas manualmente. El JSON continúa disponible para campos avanzados.</p>
+          <div className="adminLangGrid">
+            {(["es","en"] as const).map(lang=><div key={lang}>
+              <strong>{lang==="es"?"Español":"English"}</strong>
+              {(["image_url","video_url","poster_url","art_url"] as const).map(field=>{
+                const wantVideo=field==="video_url";
+                const options=media.filter(m=>m.public_visible&&(wantVideo?m.kind==="video":m.kind==="image"));
+                return <label key={field} style={{display:"block",marginTop:10}}>
+                  {field}
+                  <select value={mediaFieldValue(lang,field)} onChange={e=>setMediaField(lang,field,e.target.value)}>
+                    <option value="">— Sin asignar —</option>
+                    {options.map(m=><option key={m.id} value={assetUrl(m)}>{m.slug}</option>)}
+                  </select>
+                </label>;
+              })}
+            </div>)}
+          </div>
+        </div>
         <div className="adminLangGrid">
           <div>
             <label>ES · JSON</label>
