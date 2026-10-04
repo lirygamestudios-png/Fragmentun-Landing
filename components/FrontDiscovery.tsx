@@ -60,7 +60,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
   const[selected,setSelected]=useState<number|null>(null);
   const[rewardOpen,setRewardOpen]=useState(false);
   const[rewardReady,setRewardReady]=useState(false);
-  const[shareStatus,setShareStatus]=useState<"idle"|"sharing"|"confirm"|"unsupported"|"error">("idle");
+  const[shareStatus,setShareStatus]=useState<"idle"|"sharing"|"unsupported"|"error">("idle");
   const characters:Character[]=Array.isArray(charactersContent?.characters)&&charactersContent.characters.length
     ?charactersContent.characters.map((item:any)=>({
       key:item.key||item.name,
@@ -192,9 +192,9 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                       event_name:"share_reward_unlock",locale,path:window.location.pathname,metadata:{placement:"value_strip",result:"completed"}
                     }),keepalive:true}).catch(()=>{});
 
-                    setRewardReady(false);
-                    setRewardOpen(false);
-                    setShareStatus("confirm");
+                    setRewardReady(true);
+                    setRewardOpen(true);
+                    setShareStatus("idle");
                   }catch(error){
                     const aborted=error instanceof DOMException&&error.name==="AbortError";
                     if(!aborted){
@@ -211,24 +211,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                     ?(locale==="es"?"Compartiendo…":"Sharing…")
                     :item.action}
                 </button>
-                {shareStatus==="confirm"&&<div className="shareRewardConfirm">
-                  <small className="shareRewardStatus">
-                    {locale==="es"
-                      ?"La ventana de compartir se cerró. Confirma solo si terminaste de compartir para desbloquear el arte."
-                      :"The share window closed. Confirm only if you completed the share to unlock the artwork."}
-                  </small>
-                  <button className="btn btnPrimary" type="button" onClick={()=>{
-                    fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-                      event_name:"share_reward_unlock",locale,path:window.location.pathname,metadata:{placement:"value_strip",result:"user_confirmed"}
-                    }),keepalive:true}).catch(()=>{});
-                    setRewardReady(true);
-                    setRewardOpen(true);
-                    setShareStatus("idle");
-                  }}>
-                    {locale==="es"?"Sí, ya compartí":"Yes, I shared it"}
-                  </button>
-                </div>}
-                {shareStatus==="unsupported"&&<small className="shareRewardStatus">
+                                {shareStatus==="unsupported"&&<small className="shareRewardStatus">
                   {locale==="es"
                     ?"Este navegador no permite verificar que el contenido haya sido compartido. Abre esta página en un dispositivo compatible con Compartir para desbloquear el arte."
                     :"This browser cannot verify that sharing was completed. Open this page on a device with native Share support to unlock the artwork."}
