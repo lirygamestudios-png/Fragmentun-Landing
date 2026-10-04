@@ -1,5 +1,6 @@
 import { NextRequest,NextResponse } from "next/server";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
+import { consumePublicRateLimit } from "../../../../lib/rate-limit";
 
 async function ensureAdminProfile(supabase:any,user:{id:string;email?:string|null}){
   let{data:profile}=await supabase
@@ -46,6 +47,11 @@ export async function POST(request:NextRequest){
 
   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!password){
     return NextResponse.json({ok:false,error:"invalid_credentials"},{status:400});
+  }
+
+  const rate=await consumePublicRateLimit(request,"admin_login",email,900,8);
+  if(!rate.allowed){
+    return NextResponse.json({ok:false,error:"too_many_attempts"},{status:429});
   }
 
   const supabase=await createSupabaseServerClient();
