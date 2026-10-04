@@ -2,8 +2,8 @@ import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "../../lib/supabase/server";
 import { LogoutButton } from "../../components/LogoutButton";
 
-type EventRow={event_name:string;source:string|null;medium:string|null;created_at:string};
-type LeadRow={name:string|null;email:string;locale:string|null;created_at:string};
+type EventRow={event_name:string;source:string|null;medium:string|null;session_id:string|null;created_at:string};
+type LeadRow={name:string|null;email:string;locale:string|null;session_id:string|null;created_at:string};
 type BookRow={slug:string;volume:number;title_es:string|null;subtitle_es:string|null;status:string|null;amazon_url_es:string|null};
 type MediaRow={id:string;slug:string;kind:string;storage_path:string;public_visible:boolean};
 
@@ -48,8 +48,8 @@ export default async function AdminPage(){
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","amazon_click"),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","test_complete"),
     supabase.from("books").select("slug,volume,title_es,subtitle_es,status,amazon_url_es").order("sort_order",{ascending:true}).limit(4),
-    supabase.from("analytics_events").select("event_name,source,medium,created_at").gte("created_at",since).order("created_at",{ascending:true}).limit(5000),
-    supabase.from("leads").select("name,email,locale,created_at").order("created_at",{ascending:false}).limit(5),
+    supabase.from("analytics_events").select("event_name,source,medium,session_id,created_at").gte("created_at",since).order("created_at",{ascending:true}).limit(5000),
+    supabase.from("leads").select("name,email,locale,session_id,created_at").order("created_at",{ascending:false}).limit(5),
     supabase.from("media_assets").select("id,slug,kind,storage_path,public_visible").eq("public_visible",true).order("created_at",{ascending:false}).limit(4)
   ]);
 
@@ -70,7 +70,12 @@ export default async function AdminPage(){
   const amazonByDay=days.map(day=>eventRows.filter(e=>e.event_name==="amazon_click"&&e.created_at.slice(0,10)===day).length);
   const recentViews=viewsByDay.reduce((a,b)=>a+b,0);
   const recentAmazon=amazonByDay.reduce((a,b)=>a+b,0);
-  const conversion=recentViews?((recentAmazon/recentViews)*100):0;
+  const sessionIds=new Set(eventRows.filter(e=>e.event_name==="page_view"&&e.session_id).map(e=>e.session_id as string));
+  const recentSessions=Math.max(sessionIds.size,recentViews);
+  const amazonSessions=new Set(eventRows.filter(e=>e.event_name==="amazon_click"&&e.session_id).map(e=>e.session_id as string)).size;
+  const recentLeadSessions=new Set(leadRows.filter(l=>l.session_id).map(l=>l.session_id as string)).size;
+  const amazonCtr=recentSessions?((amazonSessions/recentSessions)*100):0;
+  const leadConversion=recentSessions?((recentLeadSessions/recentSessions)*100):0;
 
   const sources={social:0,organic:0,paid:0,direct:0,other:0};
   eventRows.filter(e=>e.event_name==="page_view").forEach(e=>{
@@ -146,9 +151,9 @@ export default async function AdminPage(){
       <div className="approvedAdminBody">
         <section className="approvedAdminKpis">
           <article><span className="kpiIcon">♟</span><div><strong>{(leadCount??0).toLocaleString()}</strong><small>Suscriptores</small></div><em>REAL</em></article>
-          <article><span className="kpiIcon">↖</span><div><strong>{(visitorCount??0).toLocaleString()}</strong><small>Visitas del Sitio</small></div><em>REAL</em></article>
-          <article><span className="kpiIcon amazon">a</span><div><strong>{(amazonCount??0).toLocaleString()}</strong><small>Clics a Amazon</small></div><em>REAL</em></article>
-          <article><span className="kpiIcon">▥</span><div><strong>{conversion.toFixed(1)}%</strong><small>Tasa de Conversión</small></div><em>30D</em></article>
+          <article><span className="kpiIcon">↖</span><div><strong>{recentSessions.toLocaleString()}</strong><small>Sesiones · 30 días</small></div><em>30D</em></article>
+          <article><span className="kpiIcon amazon">a</span><div><strong>{amazonCtr.toFixed(1)}%</strong><small>CTR Amazon</small></div><em>30D</em></article>
+          <article><span className="kpiIcon">▥</span><div><strong>{leadConversion.toFixed(1)}%</strong><small>Conversión a Lead</small></div><em>30D</em></article>
           <div className="approvedAdminRange">▣ <span>Últimos 30 días</span>⌄</div>
         </section>
 
