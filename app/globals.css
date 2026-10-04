@@ -3789,3 +3789,39 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   background:rgba(64,211,155,.07);
   color:#8fe0bc
 }
+
+
+/* Final Lumen image layer: real image element, immune to legacy backgrounds */
+.masterLumenSection.masterLumenManaged{
+  position:relative!important;
+  isolation:isolate!important;
+  overflow:hidden!important;
+  background:#06101b!important;
+}
+.masterLumenSection.masterLumenManaged::before,
+.masterLumenSection.masterLumenManaged::after{
+  display:none!important;
+  content:none!important;
+}
+.masterLumenSection .lumenManagedImage{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center center!important;
+  display:block!important;
+  opacity:1!important;
+  visibility:visible!important;
+  z-index:0!important;
+  pointer-events:none!important;
+}
+.masterLumenSection.masterLumenManaged .lumenMediaOverlay{
+  position:absolute!important;
+  inset:0!important;
+  z-index:1!important;
+}
+.masterLumenSection.masterLumenManaged .cmsMediaContent{
+  position:relative!important;
+  z-index:2!important;
+}
