@@ -38,15 +38,15 @@ export function AdminMediaLibrary(){
     <div className="card adminMediaUploadCard">
       <div className="adminPanelHeader"><div><div className="kicker">Biblioteca oficial</div><h2>Subir archivo</h2></div><span className="adminPanelBadge">BIBLIOTECA</span></div>
       <div className="adminFormGrid">
-        <input placeholder="slug-ejemplo" value={form.slug} onChange={e=>setForm({...form,slug:e.target.value})}/>
+        <input placeholder="nombre-del-archivo" value={form.slug} onChange={e=>setForm({...form,slug:e.target.value})}/>
         <select value={form.kind} onChange={e=>setForm({...form,kind:e.target.value})}><option value="image">Imagen</option><option value="pdf">PDF</option><option value="video">Video</option><option value="press">Press kit</option></select>
-        <select value={form.bucket} onChange={e=>setForm({...form,bucket:e.target.value})}><option value="official-media">Official media</option><option value="editorial-media">Editorial media</option><option value="press-kit">Press kit</option></select>
+        <select value={form.bucket} onChange={e=>setForm({...form,bucket:e.target.value})}><option value="official-media">Medios oficiales</option><option value="editorial-media">Medios editoriales</option><option value="press-kit">Kit de prensa</option></select>
         <input type="file" onChange={e=>setFile(e.target.files?.[0]||null)}/>
-        <input placeholder="Alt ES" value={form.alt_es} onChange={e=>setForm({...form,alt_es:e.target.value})}/>
-        <input placeholder="Alt EN" value={form.alt_en} onChange={e=>setForm({...form,alt_en:e.target.value})}/>
+        <input placeholder="Descripción de imagen en español" value={form.alt_es} onChange={e=>setForm({...form,alt_es:e.target.value})}/>
+        <input placeholder="Descripción de imagen en inglés" value={form.alt_en} onChange={e=>setForm({...form,alt_en:e.target.value})}/>
         <button className="btn btnPrimary" onClick={upload}>Subir archivo</button>
       </div>
-      <p className="note">Usa “Official media” para portada publicada y arte aprobado. “Editorial media” permanece privado.</p>
+      <p className="note">Usa “Medios oficiales” para portadas y arte público. “Medios editoriales” permanece privado.</p>
       <p>{msg}</p>
     </div>
 
