@@ -71,7 +71,8 @@ export async function POST(request:NextRequest){
       method:"POST",
       headers:{Authorization:`Bearer ${token}`,"Content-Type":"application/json",Accept:"application/json"},
       body:JSON.stringify({email,fields:name?{name}:undefined,groups:[group],status:"active"}),
-      cache:"no-store"
+      cache:"no-store",
+      signal:AbortSignal.timeout(8000)
     }).catch(()=>null);
 
     if(ml?.ok){
