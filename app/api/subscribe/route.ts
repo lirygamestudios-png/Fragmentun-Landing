@@ -7,10 +7,10 @@ const ML_GROUPS="https://connect.mailerlite.com/api/groups";
 async function resolveMailerLiteGroup(token:string,raw:string){
   const value=String(raw||"").trim();
   if(!value) return null;
-  if(/^\d+$/.test(value)) return value;
+  if(/^\d+$/.test(value)) return Number(value);
 
   const embedded=value.match(/(?:^|\D)(\d{8,})(?:\D|$)/);
-  if(embedded?.[1]) return embedded[1];
+  if(embedded?.[1]) return Number(embedded[1]);
 
   const res=await fetch(`${ML_GROUPS}?filter[name]=${encodeURIComponent(value)}&limit=100`,{
     headers:{Authorization:`Bearer ${token}`,Accept:"application/json"},
@@ -22,7 +22,7 @@ async function resolveMailerLiteGroup(token:string,raw:string){
   const data=await res.json().catch(()=>({}));
   const groups=Array.isArray(data?.data)?data.data:[];
   const exact=groups.find((g:any)=>String(g?.name||"").trim().toLowerCase()===value.toLowerCase());
-  return exact?.id?String(exact.id):null;
+  return exact?.id?Number(exact.id):null;
 }
 
 function clean(value:FormDataEntryValue|null,max=200){
