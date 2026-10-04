@@ -44,9 +44,9 @@ export function AdminCampaigns(){
      <button className="btn btnGhost" onClick={()=>save(r)}>Guardar</button></div>
      <p className="note" style={{wordBreak:"break-all"}}>{url(r)}</p>
      <div className="heroActions">
-       <button className="btn btnGhost" onClick={()=>copyUrl(r)}>Copiar URL campaña</button>
-       <button className="btn btnGhost" onClick={()=>copyAmazon(r)}>Copiar enlace Amazon rastreable</button>
-       <button className="btn btnGhost" onClick={()=>copyPatreon(r)}>Copiar enlace Patreon rastreable</button>
+       <button className="btn btnGhost" onClick={()=>copyUrl(r)}>Copiar enlace</button>
+       <button className="btn btnGhost" onClick={()=>copyAmazon(r)}>Copiar enlace Amazon</button>
+       <button className="btn btnGhost" onClick={()=>copyPatreon(r)}>Copiar enlace Patreon</button>
      </div>
    </article>)}</div><p>{msg}</p>
  </div>;
