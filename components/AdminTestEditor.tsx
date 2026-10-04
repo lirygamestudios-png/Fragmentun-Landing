@@ -13,7 +13,10 @@ export function AdminTestEditor(){
      <label>Inglés</label><textarea className="adminSmallArea" value={q.prompt_en||""} onChange={e=>setQuestions(a=>a.map((x,n)=>n===qi?{...x,prompt_en:e.target.value}:x))}/>
      <button className="btn btnPrimary" onClick={()=>save("question",q)}>Guardar pregunta</button>
      <div className="adminOptionGrid">{(q.test_options||[]).map((o:any,oi:number)=><div className="adminOption" key={o.id}>
+       <strong>Opción {oi+1}</strong>
+       <label>Español</label>
        <input value={o.label_es||""} onChange={e=>setQuestions(a=>a.map((x,n)=>n===qi?{...x,test_options:x.test_options.map((z:any,m:number)=>m===oi?{...z,label_es:e.target.value}:z)}:x))}/>
+       <label>Inglés</label>
        <input value={o.label_en||""} onChange={e=>setQuestions(a=>a.map((x,n)=>n===qi?{...x,test_options:x.test_options.map((z:any,m:number)=>m===oi?{...z,label_en:e.target.value}:z)}:x))}/>
        <button className="btn btnGhost" onClick={()=>save("option",o)}>Guardar opción</button>
      </div>)}</div>
