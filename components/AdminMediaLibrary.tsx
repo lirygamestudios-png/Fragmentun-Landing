@@ -2,6 +2,13 @@
 import { useEffect,useMemo,useState } from "react";
 import { createSupabaseBrowserClient } from "../lib/supabase/browser";
 
+function publicUrl(row:any){
+  if(!row?.storage_path)return "";
+  if(row.storage_path.startsWith("/")||/^https?:\/\//i.test(row.storage_path))return row.storage_path;
+  const base=process.env.NEXT_PUBLIC_SUPABASE_URL||"";
+  return base?`${base}/storage/v1/object/public/${row.storage_path}`:"";
+}
+
 export function AdminMediaLibrary(){
   const[rows,setRows]=useState<any[]>([]);
   const[file,setFile]=useState<File|null>(null);
@@ -28,8 +35,8 @@ export function AdminMediaLibrary(){
   }
 
   return <div>
-    <div className="card">
-      <h2>Subir recurso</h2>
+    <div className="card adminMediaUploadCard">
+      <div className="adminPanelHeader"><div><div className="kicker">Biblioteca oficial</div><h2>Subir recurso</h2></div><span className="adminPanelBadge">FRAGMENTUN MEDIA</span></div>
       <div className="adminFormGrid">
         <input placeholder="slug-ejemplo" value={form.slug} onChange={e=>setForm({...form,slug:e.target.value})}/>
         <select value={form.kind} onChange={e=>setForm({...form,kind:e.target.value})}><option value="image">Imagen</option><option value="pdf">PDF</option><option value="video">Video</option><option value="press">Press kit</option></select>
@@ -43,11 +50,20 @@ export function AdminMediaLibrary(){
       <p>{msg}</p>
     </div>
 
-    <div className="card" style={{marginTop:22}}>
-      <h2>Biblioteca</h2>
-      <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Slug</th><th>Tipo</th><th>Ruta</th><th>Público</th></tr></thead><tbody>
-        {rows.map(r=><tr key={r.id}><td>{r.slug}</td><td>{r.kind}</td><td style={{maxWidth:360,wordBreak:"break-all"}}>{r.storage_path}</td><td>{r.public_visible?"Sí":"No"}</td></tr>)}
-      </tbody></table></div>
+    <div className="card adminMediaLibraryCard" style={{marginTop:22}}>
+      <div className="adminPanelHeader"><div><div className="kicker">Recursos</div><h2>Biblioteca</h2></div><span className="adminPanelBadge">{rows.length} archivos</span></div>
+      <div className="adminMediaGallery">
+        {rows.map(r=>{
+          const src=publicUrl(r);
+          return <article className="adminMediaTile" key={r.id}>
+            <div className="adminMediaThumb">
+              {r.kind==="image"&&src?<img src={src} alt={r.alt_es||r.slug}/>:<div className="adminMediaType">{String(r.kind||"media").toUpperCase()}</div>}
+              <span className={r.public_visible?"live":"private"}>{r.public_visible?"Público":"Privado"}</span>
+            </div>
+            <div className="adminMediaMeta"><strong>{r.slug}</strong><small>{r.kind} · {r.storage_path}</small></div>
+          </article>
+        })}
+      </div>
     </div>
   </div>;
 }
