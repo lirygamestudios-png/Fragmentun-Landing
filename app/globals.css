@@ -3725,3 +3725,26 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   .adminWhyCardUnified .adminLangGrid{grid-template-columns:1fr}
   .adminWhyImagePreview{width:78px}
 }
+
+
+/* Saga covers: preserve true 2:3 book-cover ratio without visual compression */
+.masterSagaSection .sagaCard .sagaCoverWrap{
+  width:96px!important;
+  height:auto!important;
+  aspect-ratio:2/3!important;
+}
+.masterSagaSection .sagaCard .sagaCover{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+}
+.adminSagaCoverPreview{
+  width:132px!important;
+  aspect-ratio:2/3!important;
+}
+.adminSagaCoverPreview img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+}
