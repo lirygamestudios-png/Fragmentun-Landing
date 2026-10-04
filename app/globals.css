@@ -2993,3 +2993,20 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   justify-items:start;
   padding-top:2px
 }
+
+
+/* HERO HD MEDIA — use the same high-resolution Elyon master as the share reward */
+.hero:before{
+  background:
+    linear-gradient(90deg,rgba(3,11,20,.88) 0%,rgba(3,11,20,.68) 34%,rgba(3,11,20,.10) 60%,rgba(3,11,20,.03) 100%),
+    url('/elyon-hd.avif') 76% 38%/cover no-repeat!important;
+  filter:saturate(1.12) contrast(1.05) brightness(1.08);
+}
+@media(max-width:900px){
+  .hero:before{
+    background:
+      linear-gradient(180deg,rgba(3,11,20,.08),rgba(3,11,20,.78) 58%,rgba(3,11,20,.94) 100%),
+      url('/elyon-hd.avif') 58% 18%/cover no-repeat!important;
+    filter:saturate(1.1) contrast(1.04) brightness(1.06);
+  }
+}
