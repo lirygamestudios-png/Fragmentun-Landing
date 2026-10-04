@@ -10,7 +10,8 @@ export const FRAGMENTUN_EMAIL_SEQUENCE = [
     preheader:"Entra en Lumen y comienza El Despertar Emocional.",
     primaryCta:{label:"LEER EL CAPÍTULO 1 EN LA WEB",href:"https://www.fragmentun.com/es/capitulo-1"},
     secondaryCta:{label:"ENTRAR A FRAGMENTUN",href:"https://www.fragmentun.com/es"},
-    note:"Incluye acceso a la copia descargable del Capítulo 1 cuando el PDF oficial esté publicado."
+    downloadCta:{label:"DESCARGAR CAPÍTULO 1 EN PDF",href:"https://www.fragmentun.com/api/chapter-1-pdf"},
+    note:"Incluye lectura web y copia descargable oficial del Capítulo 1."
   },
   {
     id:"emotional-hook",
