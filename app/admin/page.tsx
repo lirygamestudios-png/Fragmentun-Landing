@@ -5,6 +5,7 @@ import { LogoutButton } from "../../components/LogoutButton";
 type EventRow={event_name:string;source:string|null;medium:string|null;created_at:string};
 type LeadRow={name:string|null;email:string;locale:string|null;created_at:string};
 type BookRow={slug:string;volume:number;title_es:string|null;subtitle_es:string|null;status:string|null;amazon_url_es:string|null};
+type MediaRow={id:string;slug:string;kind:string;storage_path:string;public_visible:boolean};
 
 function ago(value:string){
   const minutes=Math.max(1,Math.round((Date.now()-new Date(value).getTime())/60000));
@@ -39,7 +40,8 @@ export default async function AdminPage(){
     {count:testCount},
     {data:books},
     {data:events},
-    {data:latestLeads}
+    {data:latestLeads},
+    {data:recentMedia}
   ]=await Promise.all([
     supabase.from("leads").select("*",{count:"exact",head:true}),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","page_view"),
@@ -47,10 +49,17 @@ export default async function AdminPage(){
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","test_complete"),
     supabase.from("books").select("slug,volume,title_es,subtitle_es,status,amazon_url_es").order("sort_order",{ascending:true}).limit(4),
     supabase.from("analytics_events").select("event_name,source,medium,created_at").gte("created_at",since).order("created_at",{ascending:true}).limit(5000),
-    supabase.from("leads").select("name,email,locale,created_at").order("created_at",{ascending:false}).limit(5)
+    supabase.from("leads").select("name,email,locale,created_at").order("created_at",{ascending:false}).limit(5),
+    supabase.from("media_assets").select("id,slug,kind,storage_path,public_visible").eq("public_visible",true).order("created_at",{ascending:false}).limit(4)
   ]);
 
   const displayName=profile.display_name||"José Liranzo";
+  const mediaRows=(recentMedia||[]) as MediaRow[];
+  const mediaUrl=(row:MediaRow)=>{
+    if(row.storage_path.startsWith("/")||/^https?:\/\//i.test(row.storage_path))return row.storage_path;
+    const base=process.env.NEXT_PUBLIC_SUPABASE_URL||"";
+    return base?`${base}/storage/v1/object/public/${row.storage_path}`:"";
+  };
   const eventRows=(events||[]) as EventRow[];
   const leadRows=(latestLeads||[]) as LeadRow[];
   const days=Array.from({length:30},(_,i)=>{
@@ -92,6 +101,7 @@ export default async function AdminPage(){
     ["▤","Libros de la Saga","/admin/saga"],
     ["▧","Contenido del Sitio","/admin/contenido"],
     ["▦","Secciones","/admin/contenido"],
+    ["♙","Personajes","/admin/personajes"],
     ["a","Amazon (Enlaces)","/admin/marketing"],
     ["♟","Suscriptores","/admin/leads"],
     ["▥","Analítica","/admin/analytics"],
@@ -216,10 +226,15 @@ export default async function AdminPage(){
             <article className="approvedAdminPanel approvedMedia">
               <div className="approvedAdminPanelTitle"><h2>Multimedia Reciente</h2><a href="/admin/medios">Ver todos</a></div>
               <div className="approvedMediaGrid">
-                <div><img src="/elyon-hero.jpg" alt="Lumen"/><span>Lumen_Ciudad.jpg</span></div>
-                <div><img src="/elyon-hero.jpg" alt="Elyon"/><span>Elyon_Portada.jpg</span></div>
-                <div><img src="/fragmentun-i-cover-es.jpg" alt="FRAGMENTUN I"/><span>FRAGMENTUN_I.jpg</span></div>
-                <div className="approvedTrailer"><img src="/elyon-hero.jpg" alt="Trailer"/><b>▶</b><span>Trailer_01.jpg</span></div>
+                {mediaRows.length?mediaRows.map(row=>{
+                  const src=mediaUrl(row);
+                  const isVideo=row.kind==="video";
+                  return <div key={row.id} className={isVideo?"approvedTrailer":""}>
+                    {src&&row.kind==="image"?<img src={src} alt={row.slug}/>:<div className="approvedMediaPlaceholder">{isVideo?"VIDEO":"MEDIA"}</div>}
+                    {isVideo&&<b>▶</b>}
+                    <span>{row.slug}</span>
+                  </div>;
+                }):<div className="approvedEmpty">La biblioteca multimedia aparecerá aquí cuando tenga recursos públicos.</div>}
               </div>
             </article>
             <article className="approvedAdminPanel approvedConfig">
