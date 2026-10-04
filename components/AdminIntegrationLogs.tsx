@@ -169,6 +169,15 @@ export function AdminIntegrationLogs(){
                 fontWeight:800,
                 textDecoration:"none"
               }}>{mail.secondaryCta.label}</a>
+              {mail.downloadCta?<a href={mail.downloadCta.href} target="_blank" rel="noreferrer" style={{
+                display:"inline-block",
+                padding:"12px 18px",
+                borderRadius:"999px",
+                border:"1px solid rgba(201,168,76,.45)",
+                color:FRAGMENTUN_EMAIL_BRAND.gold,
+                fontWeight:800,
+                textDecoration:"none"
+              }}>{mail.downloadCta.label}</a>:null}
             </div>
 
             <div style={{marginTop:"24px",fontSize:".8rem",color:"rgba(255,255,255,.58)"}}>
