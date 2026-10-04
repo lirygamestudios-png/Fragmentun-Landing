@@ -2910,3 +2910,55 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
 .newsExpansionCard{border-color:rgba(74,144,217,.34)}
 .newsRewardCard .newsCopy>span{color:#f0c861}
 .newsExpansionCard .newsCopy>span{color:#74b8ec}
+
+
+/* FRAGMENTUN FINAL BRAND SYSTEM */
+.brandLogo{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  flex:0 0 auto;
+  text-decoration:none
+}
+.brandMark{
+  width:36px;
+  height:36px;
+  object-fit:contain;
+  border-radius:50%;
+  filter:drop-shadow(0 0 10px rgba(201,168,76,.18))
+}
+.brandWordmark{
+  font-family:Arial,"Helvetica Neue",Helvetica,sans-serif!important;
+  font-weight:500!important;
+  font-stretch:expanded;
+  letter-spacing:.22em!important;
+  color:#e3c46d!important;
+  line-height:1!important;
+  text-transform:uppercase;
+  text-shadow:0 0 18px rgba(201,168,76,.10)
+}
+.brandLogo .brandWordmark{font-size:1.03rem}
+.footerBrandWordmark{
+  display:inline-block;
+  font-size:1.08rem!important;
+  margin-bottom:7px
+}
+.mobileBrandAvatar{
+  width:24px!important;
+  height:24px!important;
+  display:grid!important;
+  place-items:center;
+  margin-inline:auto
+}
+.mobileBrandAvatar img{
+  width:24px;
+  height:24px;
+  object-fit:contain;
+  display:block;
+  filter:drop-shadow(0 0 7px rgba(201,168,76,.18))
+}
+@media(max-width:560px){
+  .brandLogo{gap:7px}
+  .brandMark{width:31px;height:31px}
+  .brandLogo .brandWordmark{font-size:.86rem;letter-spacing:.17em!important}
+}
