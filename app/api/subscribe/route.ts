@@ -2,6 +2,28 @@ import { NextRequest,NextResponse } from "next/server";
 import { consumePublicRateLimit } from "../../../lib/rate-limit";
 
 const ML="https://connect.mailerlite.com/api/subscribers";
+const ML_GROUPS="https://connect.mailerlite.com/api/groups";
+
+async function resolveMailerLiteGroup(token:string,raw:string){
+  const value=String(raw||"").trim();
+  if(!value) return null;
+  if(/^\d+$/.test(value)) return value;
+
+  const embedded=value.match(/(?:^|\D)(\d{8,})(?:\D|$)/);
+  if(embedded?.[1]) return embedded[1];
+
+  const res=await fetch(`${ML_GROUPS}?filter[name]=${encodeURIComponent(value)}&limit=100`,{
+    headers:{Authorization:`Bearer ${token}`,Accept:"application/json"},
+    cache:"no-store",
+    signal:AbortSignal.timeout(8000)
+  }).catch(()=>null);
+  if(!res?.ok) return null;
+
+  const data=await res.json().catch(()=>({}));
+  const groups=Array.isArray(data?.data)?data.data:[];
+  const exact=groups.find((g:any)=>String(g?.name||"").trim().toLowerCase()===value.toLowerCase());
+  return exact?.id?String(exact.id):null;
+}
 
 function clean(value:FormDataEntryValue|null,max=200){
   return String(value??"").trim().slice(0,max);
@@ -58,7 +80,7 @@ export async function POST(request:NextRequest){
   }
 
   const token=process.env.MAILERLITE_API_TOKEN;
-  const group=locale==="en"
+  const configuredGroup=locale==="en"
     ?process.env.MAILERLITE_GROUP_FRAGMENTUN_CAP1_EN
     :process.env.MAILERLITE_GROUP_FRAGMENTUN_CAP1_ES;
 
@@ -66,7 +88,12 @@ export async function POST(request:NextRequest){
   let mailerliteSubscriberId:string|null=null;
   let lastError:string|null=null;
 
-  if(token&&group){
+  if(token&&configuredGroup){
+    const group=await resolveMailerLiteGroup(token,configuredGroup);
+    if(!group){
+      mailerliteStatus="error";
+      lastError="MailerLite group could not be resolved to a numeric group ID";
+    }else{
     const ml=await fetch(ML,{
       method:"POST",
       headers:{Authorization:`Bearer ${token}`,"Content-Type":"application/json",Accept:"application/json"},
@@ -91,6 +118,7 @@ export async function POST(request:NextRequest){
       }else{
         lastError="MailerLite request failed";
       }
+    }
     }
   }
 
