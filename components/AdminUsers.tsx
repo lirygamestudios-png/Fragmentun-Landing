@@ -30,7 +30,7 @@ export function AdminUsers(){
     if(r.ok){
       setForm({email:"",display_name:"",role:"editor"});
       await load();
-      setMsg(j.synced_profile?"Acceso y perfil actualizados ✓":"Acceso guardado ✓ · el perfil se activará cuando el usuario acceda.");
+      setMsg(j.synced_profile?"GUARDADO SATISFACTORIAMENTE":"GUARDADO SATISFACTORIAMENTE");
     }else{
       setMsg(errorText[j.error]||"No fue posible guardar el acceso.");
     }
@@ -101,6 +101,6 @@ export function AdminUsers(){
       </div>
     </div>
 
-    {msg&&<p>{msg}</p>}
+    {msg&&<p className={msg==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(msg&&(msg.toLowerCase().includes("error")||msg.toLowerCase().includes("no fue")||msg.toLowerCase().includes("no se")||msg.toLowerCase().includes("inválid")||msg.toLowerCase().includes("obligatorio")||msg.toLowerCase().includes("falta"))?"adminSaveFeedback error":"adminSaveFeedback")}>{msg}</p>}
   </div>;
 }
