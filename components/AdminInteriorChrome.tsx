@@ -10,6 +10,7 @@ const items=[
   ["Medios","/admin/medios"],
   ["Analítica","/admin/analytics"],
   ["Reportes","/admin/reportes"],
+  ["SEO y Social","/admin/seo"],
   ["Suscriptores","/admin/leads"],
   ["Integraciones","/admin/integrations"],
   ["Mapa","/admin/mapa"],
