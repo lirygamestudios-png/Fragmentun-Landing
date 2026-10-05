@@ -4485,3 +4485,65 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   .fragmentunProductTile>.fragmentunProductCard{min-height:190px}
   .fragmentunProductShare{top:9px;right:9px}
 }
+
+
+/* Unified Admin hover language */
+.controlCenter button:not(:disabled),
+.controlCenter .btn:not([aria-disabled="true"]),
+.controlCenter a.btn,
+.adminMain button:not(:disabled),
+.adminMain .btn:not([aria-disabled="true"]),
+.adminMain a.btn{
+  transition:
+    background-color .18s ease,
+    color .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease,
+    transform .18s ease,
+    filter .18s ease
+}
+.controlCenter button:not(:disabled):hover,
+.adminMain button:not(:disabled):hover{
+  color:#fff;
+  border-color:rgba(201,168,76,.52);
+  background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(74,144,217,.14));
+  box-shadow:0 8px 24px rgba(0,0,0,.20),inset 0 0 0 1px rgba(201,168,76,.05);
+  transform:translateY(-1px)
+}
+.controlCenter .btnPrimary:not(:disabled):hover,
+.adminMain .btnPrimary:not(:disabled):hover,
+.controlCenter a.btnPrimary:hover,
+.adminMain a.btnPrimary:hover{
+  color:#07101d;
+  background:linear-gradient(135deg,#fff0b8,#d8b657);
+  border-color:#f0d98e;
+  box-shadow:0 10px 28px rgba(201,168,76,.24);
+  filter:brightness(1.06)
+}
+.controlCenter .btnGhost:not(:disabled):hover,
+.adminMain .btnGhost:not(:disabled):hover,
+.controlCenter a.btnGhost:hover,
+.adminMain a.btnGhost:hover{
+  color:#f4df96;
+  background:rgba(201,168,76,.10);
+  border-color:rgba(201,168,76,.48)
+}
+.controlCenter .btnSecondary:not(:disabled):hover,
+.adminMain .btnSecondary:not(:disabled):hover,
+.controlCenter a.btnSecondary:hover,
+.adminMain a.btnSecondary:hover{
+  color:#fff;
+  background:rgba(74,144,217,.28);
+  border-color:rgba(106,174,241,.72)
+}
+.controlCenter button.active:hover,
+.adminMain button.active:hover,
+.controlCenter button[aria-pressed="true"]:hover,
+.adminMain button[aria-pressed="true"]:hover{
+  filter:brightness(1.08)
+}
+.controlCenter button:disabled:hover,
+.adminMain button:disabled:hover{
+  transform:none;
+  box-shadow:none
+}
