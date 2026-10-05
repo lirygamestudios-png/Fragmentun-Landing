@@ -3863,3 +3863,31 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   .hero + .discoveryStrip{margin-top:0!important;top:0!important}
   .discoveryStrip{margin-top:0!important}
 }
+
+
+/* Share card close control */
+.shareCloseButton{
+  position:absolute;top:10px;right:10px;z-index:3;
+  width:30px;height:30px;border-radius:50%;
+  border:1px solid rgba(201,168,76,.34);
+  background:rgba(6,17,29,.92);color:#f0d178;
+  display:grid;place-items:center;font-size:1.15rem;line-height:1;
+  cursor:pointer;transition:background .18s ease,border-color .18s ease,transform .18s ease
+}
+.shareCloseButton:hover,.shareCloseButton:focus-visible{
+  background:#10283d;border-color:rgba(201,168,76,.72);transform:scale(1.04)
+}
+.shareDropdown{padding-right:48px!important}
+.shareGrid{margin-right:-34px}
+@media(max-width:560px){
+  .mobileMenuShare{width:100%}
+  .mobileMenuShare .socialLinksWrap{width:100%;display:block}
+  .mobileMenuShare .shareMenu{width:100%}
+  .mobileMenuShare .shareButton{width:100%;min-height:44px;justify-content:center}
+  .mobileMenuShare .shareDropdown{
+    position:fixed!important;left:14px!important;right:14px!important;bottom:18px!important;top:auto!important;
+    width:auto!important;max-width:none!important;padding:18px 48px 18px 18px!important;z-index:180
+  }
+  .mobileMenuShare .shareGrid{margin-right:-30px}
+  .mobileMenuShare .shareCloseButton{top:12px;right:12px}
+}
