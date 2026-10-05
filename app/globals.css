@@ -4547,3 +4547,100 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   transform:none;
   box-shadow:none
 }
+
+
+/* Approved Admin dashboard — complete hover feedback */
+.approvedAdmin a:not(.disabled),
+.approvedAdmin button:not(:disabled),
+.approvedAdmin summary{
+  transition:
+    background .18s ease,
+    color .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease,
+    transform .18s ease,
+    filter .18s ease
+}
+.approvedAdmin a:not(.disabled):hover,
+.approvedAdmin button:not(:disabled):hover,
+.approvedAdmin summary:hover{
+  color:#fff7d1;
+  border-color:rgba(201,168,76,.62)!important;
+  background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(74,144,217,.16))!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.22),inset 0 0 0 1px rgba(201,168,76,.05);
+  transform:translateY(-1px)
+}
+.approvedAdminNav a:hover{
+  color:#fff7d1!important;
+  background:linear-gradient(90deg,rgba(201,168,76,.16),rgba(74,144,217,.13))!important;
+  border-color:rgba(201,168,76,.48)!important;
+  transform:translateX(2px)
+}
+.approvedAdminKpiLink{
+  display:block;
+  text-decoration:none;
+  border-radius:10px
+}
+.approvedAdminKpiLink:hover{
+  background:transparent!important;
+  box-shadow:none!important
+}
+.approvedAdminKpiLink:hover article{
+  border-color:rgba(201,168,76,.62)!important;
+  background:linear-gradient(180deg,#10314a,#092238)!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.24),inset 0 0 0 1px rgba(201,168,76,.06);
+  transform:translateY(-2px)
+}
+.approvedAdminKpis article{
+  transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease
+}
+.approvedAdminPanelTitle>a:hover,
+.approvedPanelAction:hover,
+.approvedAdminHeroActions a:hover,
+.approvedAdminSiteBtn:hover,
+.approvedBookEdit:hover,
+.approvedBookAmazon:not(.disabled):hover,
+.approvedQuick>a:hover,
+.approvedConfig a:hover{
+  color:#fff4c2!important;
+  background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(15,74,110,.72))!important;
+  border-color:#d0ad4e!important
+}
+.approvedQuick>a:hover b{
+  color:#f5d46d;
+  border-right-color:rgba(201,168,76,.45)
+}
+.approvedMediaLink{
+  display:block;
+  border-radius:7px;
+  text-decoration:none;
+  transition:transform .18s ease,filter .18s ease,box-shadow .18s ease
+}
+.approvedMediaLink:hover{
+  background:transparent!important;
+  transform:translateY(-2px);
+  filter:brightness(1.08);
+  box-shadow:0 8px 20px rgba(0,0,0,.24)
+}
+.approvedMediaLink:hover img,
+.approvedMediaLink:hover .approvedMediaPlaceholder{
+  border-color:rgba(201,168,76,.58)!important
+}
+.approvedAdminRange summary{
+  cursor:pointer;
+  border-radius:9px;
+  padding:10px 12px
+}
+.approvedAdminRangeMenu a:hover{
+  color:#fff4c2!important;
+  background:rgba(201,168,76,.13)!important
+}
+.approvedBookAmazon.disabled,
+.approvedBookAmazon.disabled:hover{
+  transform:none!important;
+  box-shadow:none!important;
+  background:#061724!important;
+  border-color:#34576d!important;
+  color:#69879a!important;
+  cursor:not-allowed
+}
