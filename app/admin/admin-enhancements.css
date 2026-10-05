@@ -57,3 +57,23 @@
 @media(max-width:800px){.adminMediaFilters{grid-template-columns:1fr 1fr}.adminMediaSearch{grid-column:1/-1}.adminMediaResultCount{height:42px}.adminMediaModal{grid-template-columns:1fr}.adminMediaModalPreview{min-height:320px;max-height:48vh}}
 @media(max-width:620px){.adminMediaUploadGrid,.adminMediaFilters{grid-template-columns:1fr}.adminMediaFileInput,.adminMediaUploadAction,.adminMediaSearch{grid-column:auto}.adminMediaGalleryEnhanced{grid-template-columns:repeat(2,minmax(0,1fr))}.adminMediaModalBackdrop{padding:10px}.adminMediaModalInfo{padding:24px 18px}.adminMediaDetailGrid{grid-template-columns:1fr 1fr}}
 @media(max-width:430px){.adminMediaGalleryEnhanced{grid-template-columns:1fr}}
+
+
+/* Activated main dashboard controls */
+.approvedAdminKpiLink{display:block;text-decoration:none;color:inherit}
+.approvedAdminKpiLink article{height:100%;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.approvedAdminKpiLink:hover article,.approvedAdminKpiLink:focus-visible article{transform:translateY(-2px);border-color:rgba(201,168,76,.34);box-shadow:0 14px 36px rgba(0,0,0,.18)}
+.approvedAdminHeroActions a{color:inherit;text-decoration:none}
+.approvedAdminHeroActions a:hover,.approvedAdminHeroActions a:focus-visible{color:#f0cf78}
+.approvedAdminRange{position:relative}
+.approvedAdminRange summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px}
+.approvedAdminRange summary::-webkit-details-marker{display:none}
+.approvedAdminRangeMenu{position:absolute;right:0;top:calc(100% + 8px);z-index:30;min-width:165px;padding:8px;border-radius:12px;background:#071522;border:1px solid rgba(201,168,76,.22);box-shadow:0 18px 50px rgba(0,0,0,.42)}
+.approvedAdminRangeMenu a{display:block;padding:9px 10px;border-radius:8px;color:#a8b8c6;text-decoration:none;font-size:.72rem;font-weight:800}
+.approvedAdminRangeMenu a:hover,.approvedAdminRangeMenu a.active{background:rgba(201,168,76,.10);color:#f0d178}
+.approvedPanelAction{font-size:.68rem!important;font-weight:800!important;color:#d8bb64!important;text-decoration:none!important;white-space:nowrap}
+.approvedPanelAction:hover{text-decoration:underline!important}
+.approvedMediaLink{position:relative;display:block;color:inherit;text-decoration:none;border-radius:12px;overflow:hidden}
+.approvedMediaLink:hover{outline:1px solid rgba(201,168,76,.32);box-shadow:0 10px 30px rgba(0,0,0,.22)}
+.approvedMediaLink span{display:block}
+@media(max-width:760px){.approvedAdminRangeMenu{left:0;right:auto}}
