@@ -76,7 +76,6 @@ export function AdminContentEditor(){
     setEsText(JSON.stringify(row.es,null,2));
     setEnText(JSON.stringify(row.en,null,2));
     setStatus("");
-    setShowAdvanced(false);
   }
 
   function assetUrl(asset:MediaAsset){
