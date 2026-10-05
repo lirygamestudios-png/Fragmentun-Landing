@@ -4644,3 +4644,32 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   color:#69879a!important;
   cursor:not-allowed
 }
+
+
+/* Unified Admin save/upload feedback */
+.adminSaveFeedback{
+  display:inline-flex;
+  align-items:center;
+  min-height:34px;
+  margin:8px 0 0;
+  padding:8px 11px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.035);
+  color:#c8d5e1;
+  font-size:.74rem;
+  font-weight:800;
+  letter-spacing:.02em
+}
+.adminSaveFeedback.success{
+  border-color:rgba(64,211,155,.38);
+  background:rgba(64,211,155,.10);
+  color:#79e4b5;
+  box-shadow:0 0 18px rgba(64,211,155,.08)
+}
+.adminSaveFeedback.error{
+  border-color:rgba(255,92,92,.38);
+  background:rgba(255,92,92,.09);
+  color:#ff9d9d;
+  box-shadow:0 0 18px rgba(255,92,92,.07)
+}
