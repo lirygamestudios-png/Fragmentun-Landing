@@ -32,57 +32,41 @@ export function NewsConversionCards({locale,news,shareReward}:Props){
       setRewardOpen(false);
       setShareStatus("sharing");
 
-      let lostControl=document.visibilityState==="hidden"||!document.hasFocus();
-
       await navigator.share({title:"FRAGMENTUN",text,url});
 
+      // Native share behavior differs by browser/OS. Once navigator.share()
+      // resolves, immediately move into the branded FRAGMENTUN processing state.
+      // Then wait for the page to be visibly active for a short stable window,
+      // with a hard fallback so the UI can never remain stuck on "Compartiendo…".
+      setShareStatus("returning");
+
       await new Promise<void>(resolve=>{
-        let settledTimer:number|undefined;
+        let stableTimer:number|undefined;
+        let hardTimer:number|undefined;
         let poll:number|undefined;
         let done=false;
 
-        const cleanup=()=>{
-          if(poll!==undefined)window.clearInterval(poll);
-          if(settledTimer!==undefined)window.clearTimeout(settledTimer);
-          window.removeEventListener("blur",onBlur);
-          window.removeEventListener("focus",onFocus);
-          document.removeEventListener("visibilitychange",onVisibility);
-        };
         const finish=()=>{
           if(done)return;
           done=true;
-          cleanup();
+          if(stableTimer!==undefined)window.clearTimeout(stableTimer);
+          if(hardTimer!==undefined)window.clearTimeout(hardTimer);
+          if(poll!==undefined)window.clearInterval(poll);
           resolve();
         };
-        const cancelStable=()=>{
-          if(settledTimer!==undefined){
-            window.clearTimeout(settledTimer);
-            settledTimer=undefined;
-          }
-        };
+
         const evaluate=()=>{
           const active=document.visibilityState==="visible"&&document.hasFocus();
-          if(!active){
-            lostControl=true;
-            cancelStable();
-            return;
-          }
-          if(lostControl&&settledTimer===undefined){
-            settledTimer=window.setTimeout(()=>{
-              const stillActive=document.visibilityState==="visible"&&document.hasFocus();
-              if(stillActive&&lostControl)finish();
-              else cancelStable();
-            },700);
+          if(active&&stableTimer===undefined){
+            stableTimer=window.setTimeout(finish,1100);
+          }else if(!active&&stableTimer!==undefined){
+            window.clearTimeout(stableTimer);
+            stableTimer=undefined;
           }
         };
-        const onBlur=()=>{lostControl=true;cancelStable();};
-        const onFocus=()=>evaluate();
-        const onVisibility=()=>evaluate();
 
-        window.addEventListener("blur",onBlur);
-        window.addEventListener("focus",onFocus);
-        document.addEventListener("visibilitychange",onVisibility);
         poll=window.setInterval(evaluate,120);
+        hardTimer=window.setTimeout(finish,4200);
         evaluate();
       });
 
