@@ -2,6 +2,18 @@
 import { useEffect,useState } from "react";
 import { FRAGMENTUN_EMAIL_SEQUENCE,FRAGMENTUN_EMAIL_SEQUENCE_EN,FRAGMENTUN_EMAIL_BRAND } from "../lib/fragmentun-email-sequence";
 
+function formatAutomationTrigger(trigger:any){
+  if(!trigger||typeof trigger!=="object")return "Automático";
+  const type=String(trigger.type||trigger.event||"").toLowerCase();
+  if(Array.isArray(trigger.group_ids)&&trigger.group_ids.length)return "Entrada al grupo asignado";
+  if(trigger.group_id)return "Entrada al grupo asignado";
+  if(trigger.segment_id)return "Entrada a segmento";
+  if(trigger.form_id)return "Formulario completado";
+  if(type.includes("group"))return "Entrada al grupo asignado";
+  if(type.includes("form"))return "Formulario completado";
+  return "Automático";
+}
+
 export function AdminIntegrationLogs(){
   const[data,setData]=useState<any>(null);
   const[emailLocale,setEmailLocale]=useState<"es"|"en">("es");
@@ -110,7 +122,7 @@ export function AdminIntegrationLogs(){
                 <tbody>{(data.automations?.automations||[]).map((a:any)=><tr key={a.id}>
                   <td><strong>{a.name||"Sin nombre"}</strong></td>
                   <td>{a.enabled?"✓ Activa":"⏸ Inactiva"}</td>
-                  <td><code>{JSON.stringify(a.trigger_data||{})}</code></td>
+                  <td><span className="adminReadableStatus">{formatAutomationTrigger(a.trigger_data)}</span></td>
                   <td>
                     {(a.steps||[]).length===0?"—":<ol style={{margin:0,paddingLeft:"1.2rem"}}>
                       {(a.steps||[]).map((s:any)=><li key={s.id||s.type}>
