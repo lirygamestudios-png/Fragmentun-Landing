@@ -13,12 +13,14 @@ type Settings={
   stripe_enabled:boolean;
   paypal_enabled:boolean;
 };
-type Stats={products:number;active_products:number;orders:number;paid_orders:number;pending_fulfillment:number;shipping_labels:number};\ntype ProcessorStatus={stripe_configured:boolean;paypal_configured:boolean};
+type Stats={products:number;active_products:number;orders:number;paid_orders:number;pending_fulfillment:number;shipping_labels:number};
+type ProcessorStatus={stripe_configured:boolean;paypal_configured:boolean};
 
 export function AdminCommerceOperations(){
   const[settings,setSettings]=useState<Settings|null>(null);
   const[stats,setStats]=useState<Stats|null>(null);
-  const[msg,setMsg]=useState("");\n  const[processorStatus,setProcessorStatus]=useState<ProcessorStatus>({stripe_configured:false,paypal_configured:false});
+  const[msg,setMsg]=useState("");
+  const[processorStatus,setProcessorStatus]=useState<ProcessorStatus>({stripe_configured:false,paypal_configured:false});
   const[saving,setSaving]=useState(false);
 
   useEffect(()=>{
