@@ -77,3 +77,17 @@
 .approvedMediaLink:hover{outline:1px solid rgba(201,168,76,.32);box-shadow:0 10px 30px rgba(0,0,0,.22)}
 .approvedMediaLink span{display:block}
 @media(max-width:760px){.approvedAdminRangeMenu{left:0;right:auto}}
+
+
+/* SEO and social preview module */
+.adminSeoIntro{margin-bottom:22px}
+.adminSeoStatus{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px}
+.adminSeoStatus>div{padding:15px;border-radius:15px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.025)}
+.adminSeoStatus span,.adminSeoStatus strong{display:block}.adminSeoStatus span{color:#7d90a3;font-size:.65rem}.adminSeoStatus strong{margin-top:5px;color:#e2c46d;font-size:.82rem}
+.adminSeoGrid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.adminSeoCard{overflow:hidden}
+.adminSeoCardHead{display:flex;align-items:center;gap:10px;margin-bottom:16px}.adminSeoCardHead>span{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:rgba(74,144,217,.1);border:1px solid rgba(74,144,217,.22);color:#9ec6ea;font-weight:900}.adminSeoCardHead strong{flex:1}.adminSeoCardHead a{color:#d8bb64;text-decoration:none;font-size:.68rem;font-weight:800}
+.adminSeoPreview{overflow:hidden;border-radius:16px;border:1px solid rgba(255,255,255,.07);background:#081522}.adminSeoPreview img{width:100%;height:190px;object-fit:cover;object-position:center 20%;display:block}.adminSeoPreview>div{padding:16px}.adminSeoPreview small{color:#6f8598;font-size:.62rem}.adminSeoPreview h3{margin:.35rem 0 .5rem;color:#e6c86e;font-size:1.2rem}.adminSeoPreview p{margin:0;color:#aab7c4;font-size:.78rem;line-height:1.55}
+.adminSeoFields{display:grid;gap:10px;margin:16px 0 0}.adminSeoFields>div{padding:11px 12px;border-radius:11px;background:rgba(255,255,255,.022);border:1px solid rgba(255,255,255,.055)}.adminSeoFields dt{color:#6f8295;font-size:.62rem}.adminSeoFields dd{margin:4px 0 0;color:#b9c5d0;font-size:.75rem;word-break:break-word}
+.adminSeoActions{margin-top:20px;display:flex;justify-content:space-between;align-items:center;gap:20px}.adminSeoActions>div:last-child{display:flex;gap:10px;flex-wrap:wrap}
+@media(max-width:900px){.adminSeoGrid{grid-template-columns:1fr}.adminSeoStatus{grid-template-columns:1fr 1fr}.adminSeoActions{align-items:flex-start;flex-direction:column}}
+@media(max-width:520px){.adminSeoStatus{grid-template-columns:1fr}}
