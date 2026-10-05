@@ -2,14 +2,17 @@
 import {useEffect,useMemo,useState} from "react";
 import {createSupabaseBrowserClient} from "../lib/supabase/browser";
 
-type ShopMode="external"|"internal"|"interest";\ntype Product={name:string;url?:string;image_url:string;price_label:string;mode?:ShopMode;external_url?:string;sku?:string;price_cents?:number;currency?:string;supplier?:string;supplier_product_id?:string;interest_cta?:string};
+type ShopMode="external"|"internal"|"interest";
+type Product={name:string;url?:string;image_url:string;price_label:string;mode?:ShopMode;external_url?:string;sku?:string;price_cents?:number;currency?:string;supplier?:string;supplier_product_id?:string;interest_cta?:string};
 type LangContent={
   enabled?:boolean;eyebrow?:string;title?:string;body?:string;cta?:string;
   shop_url?:string;provider?:string;banner_url?:string;campaign?:string;
   featured_products?:Product[];
 };
 
-const emptyProduct=():Product=>({name:"",url:"",image_url:"",price_label:"",mode:"interest",external_url:"",sku:"",currency:"USD",supplier:"",supplier_product_id:"",interest_cta:""});\nfunction productMode(p:Product):ShopMode{return p.mode==="external"||p.mode==="internal"||p.mode==="interest"?p.mode:(p.external_url||p.url?"external":"interest")}\nfunction productReady(p:Product){if(!p.name?.trim())return false;const mode=productMode(p);return mode!=="external"||!!(p.external_url||p.url||"").trim()}
+const emptyProduct=():Product=>({name:"",url:"",image_url:"",price_label:"",mode:"interest",external_url:"",sku:"",currency:"USD",supplier:"",supplier_product_id:"",interest_cta:""});
+function productMode(p:Product):ShopMode{return p.mode==="external"||p.mode==="internal"||p.mode==="interest"?p.mode:(p.external_url||p.url?"external":"interest")}
+function productReady(p:Product){if(!p.name?.trim())return false;const mode=productMode(p);return mode!=="external"||!!(p.external_url||p.url||"").trim()}
 
 export function AdminShop(){
   const[es,setEs]=useState<LangContent|null>(null);
@@ -89,7 +92,8 @@ export function AdminShop(){
   }
 
   if(!es||!en)return <p>Cargando Tienda FRAGMENTUN…</p>;
-  const active=!!es.enabled&&(!!(es.shop_url||"").trim()||products("es").some(productReady));\n  const modeCounts=products("es").reduce((a,p)=>{a[productMode(p)]++;return a},{external:0,internal:0,interest:0});
+  const active=!!es.enabled&&(!!(es.shop_url||"").trim()||products("es").some(productReady));
+  const modeCounts=products("es").reduce((a,p)=>{a[productMode(p)]++;return a},{external:0,internal:0,interest:0});
 
   return <div className="adminShopModule">
     <section className="card adminShopStatus">
