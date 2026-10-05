@@ -32,6 +32,9 @@ export function NewsConversionCards({locale,news,shareReward}:Props){
       setRewardOpen(false);
       setShareStatus("sharing");
 
+      // Let React paint the branded COMPARTIENDO state before the OS share sheet takes control.
+      await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
+
       await navigator.share({title:"FRAGMENTUN",text,url});
 
       // Native share behavior differs by browser/OS. Once navigator.share()
