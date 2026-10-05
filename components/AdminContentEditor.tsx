@@ -135,7 +135,7 @@ export function AdminContentEditor(){
     const r=await fetch("/api/admin/media",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug,kind:"image",storage_path:`official-media/${path}`,alt_es:"José Liranzo, autor de FRAGMENTUN",alt_en:"José Liranzo, author of FRAGMENTUN",protected:false,public_visible:true,metadata:{filename:authorFile.name,bucket:"official-media",path,usage:"author_photo"}})});
     const j=await r.json();
     if(!r.ok){setUploading(false);setStatus(j.error||"No se pudo registrar la imagen.");return}
-    const url=assetUrl(j.data);setAuthorImage(url);setMedia(m=>[j.data,...m.filter(x=>x.id!==j.data.id)]);setAuthorFile(null);setUploading(false);setStatus("Imagen preparada. Pulsa Guardar cambios.");
+    const url=assetUrl(j.data);setAuthorImage(url);setMedia(m=>[j.data,...m.filter(x=>x.id!==j.data.id)]);setAuthorFile(null);setUploading(false);setStatus("GUARDADO SATISFACTORIAMENTE");
   }
 
   function setWhyCard(lang:"es"|"en",index:number,field:"title"|"body"|"image_url",value:string){
@@ -176,7 +176,7 @@ export function AdminContentEditor(){
     setWhyCardImage(index,url);
     setMedia(m=>[j.data,...m.filter(x=>x.id!==j.data.id)]);
     setUploadingWhy(null);
-    setStatus(`Imagen del apartado ${index+1} preparada. Pulsa Guardar cambios.`);
+    setStatus(`GUARDADO SATISFACTORIAMENTE`);
   }
 
   function lumenImage(){return json("es").image_url||json("en").image_url||""}
@@ -206,7 +206,7 @@ export function AdminContentEditor(){
     setLumenImage(assetUrl(j.data));
     setMedia(m=>[j.data,...m.filter(x=>x.id!==j.data.id)]);
     setUploadingLumen(false);
-    setStatus("Imagen de Lumen preparada. Pulsa Guardar cambios.");
+    setStatus("GUARDADO SATISFACTORIAMENTE");
   }
 
   const NEWS_CARDS=[
@@ -247,7 +247,7 @@ export function AdminContentEditor(){
     setNewsImage(card,assetUrl(j.data));
     setMedia(m=>[j.data,...m.filter(x=>x.id!==j.data.id)]);
     setUploadingNews(null);
-    setStatus("Imagen preparada. Pulsa Guardar cambios.");
+    setStatus("GUARDADO SATISFACTORIAMENTE");
   }
 
   async function save(){
@@ -264,7 +264,7 @@ export function AdminContentEditor(){
       setSelected(j.data);
       setEsText(JSON.stringify(j.data.es||{},null,2));
       setEnText(JSON.stringify(j.data.en||{},null,2));
-      setStatus("Guardado ✓");
+      setStatus("GUARDADO SATISFACTORIAMENTE");
     }catch(e){setStatus("No fue posible guardar. Revisa los campos e inténtalo de nuevo.");}
   }
 
@@ -330,7 +330,7 @@ export function AdminContentEditor(){
               </label>
               <p className="note">La imagen seleccionada se usará directamente en la sección Lumen del FrontDesk. Después de subirla, pulsa “Guardar cambios”.</p>
               {uploadingLumen&&<p className="adminInlineStatus" role="status">Subiendo imagen de Lumen…</p>}
-              {status.includes("Lumen")&&<p className={status.includes("preparada")?"adminInlineStatus success":"adminInlineStatus"} role="status">{status}</p>}
+              {status.includes("Lumen")&&<p className={status==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":"adminSaveFeedback error"} role="status">{status}</p>}
             </div>
           </div>
         </div>}
@@ -441,7 +441,7 @@ export function AdminContentEditor(){
             </label>
           </div>)}
         </div>
-        <div className="adminSaveRow"><button className="btn btnPrimary" onClick={save}>Guardar cambios</button><span>{status}</span></div>
+        <div className="adminSaveRow"><button className="btn btnPrimary" onClick={save}>Guardar cambios</button><span className={status==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(status&&(status.toLowerCase().includes("error")||status.toLowerCase().includes("no fue")||status.toLowerCase().includes("no se")||status.toLowerCase().includes("inválid")||status.toLowerCase().includes("obligatorio")||status.toLowerCase().includes("falta"))?"adminSaveFeedback error":"adminSaveFeedback")}>{status}</span></div>
       </>}
     </section>
   </div>;
