@@ -357,8 +357,13 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                     }),keepalive:true}).catch(()=>{});
 
                     setRewardReady(true);
-                    setRewardOpen(true);
                     setShareStatus("idle");
+
+                    // Ensure the branded process overlay is fully removed before
+                    // opening the thank-you reward card. This prevents overlap
+                    // even when the native share sheet is still visually present.
+                    await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
+                    setRewardOpen(true);
                   }catch(error){
                     const aborted=error instanceof DOMException&&error.name==="AbortError";
                     if(!aborted){
