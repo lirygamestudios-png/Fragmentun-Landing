@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { Locale } from "../lib/i18n";
 import { copy } from "../lib/i18n";
 import { TrackLink } from "./TrackLink";
+import { SocialLinks } from "./SocialLinks";
 
 export function PublicHeader({locale,amazonUrl,patreonUrl,shopEnabled=false}:{locale:Locale;amazonUrl?:string|null;patreonUrl?:string|null;shopEnabled?:boolean}){
   const t=copy[locale];
@@ -53,6 +54,9 @@ export function PublicHeader({locale,amazonUrl,patreonUrl,shopEnabled=false}:{lo
       {patreonUrl&&<TrackLink className="btn btnPatreon" href={patreonUrl} eventName="patreon_click" locale={locale} metadata={{placement:"mobile_menu",creator:"sagaFragmentun"}} newTab>
         {locale==="es"?"PATREON · Apoyar FRAGMENTUN":"PATREON · Support FRAGMENTUN"}
       </TrackLink>}
+      <div className="mobileMenuShare">
+        <SocialLinks locale={locale} items={[]} placement="mobile_menu"/>
+      </div>
     </div></div>}
   </header>;
 }
