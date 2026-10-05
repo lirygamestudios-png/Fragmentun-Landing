@@ -313,6 +313,9 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                     setRewardOpen(false);
                     setShareStatus("sharing");
 
+                    // Let React paint the branded COMPARTIENDO state before the OS share sheet takes control.
+                    await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
+
                     await navigator.share({title:"FRAGMENTUN",text,url});
 
                     setShareStatus("returning");
