@@ -9,7 +9,7 @@ const items=[
   ["Personajes","/admin/personajes"],
   ["Medios","/admin/medios"],
   ["Analítica","/admin/analytics"],
-  ["Reportes","/admin/analytics#reportes"],
+  ["Reportes","/admin/reportes"],
   ["Suscriptores","/admin/leads"],
   ["Integraciones","/admin/integrations"],
   ["Mapa","/admin/mapa"],
