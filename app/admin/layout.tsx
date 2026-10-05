@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AdminInteriorChrome } from "../../components/AdminInteriorChrome";
+import "./admin-enhancements.css";
 
 export const metadata:Metadata={
   robots:{
