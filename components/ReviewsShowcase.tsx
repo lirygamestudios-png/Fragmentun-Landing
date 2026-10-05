@@ -21,14 +21,14 @@ export function ReviewsShowcase({locale,reviews}:{locale:Locale;reviews:Review[]
 
   if(!reviews.length){
     return <div className="reviewAwaiting">
-      <span>★★★★★</span>
+      <span className="reviewVerifiedBadge">{locale==="es"?"Reseñas verificadas":"Verified reviews"}</span>
       <p>{locale==="es"?"Las reseñas verificadas de lectores aparecerán aquí.":"Verified reader reviews will appear here."}</p>
     </div>;
   }
 
   return <div className="reviewsShowcase">
     <article className="featuredReview">
-      <div className="reviewStars">★★★★★</div>
+      <div className="reviewVerifiedBadge">{locale==="es"?"Reseña verificada":"Verified review"}</div>
       <blockquote>“{featured.body}”</blockquote>
       <p>{featured.author_display||(locale==="es"?"Lector verificado":"Verified reader")}</p>
       <small>{featured.source}</small>
@@ -37,7 +37,7 @@ export function ReviewsShowcase({locale,reviews}:{locale:Locale;reviews:Review[]
 
     {secondary.length>0&&<div className="reviewSecondaryGrid">
       {secondary.map(review=><article className="reviewMiniCard" key={review.id}>
-        <div className="reviewStars">★★★★★</div>
+        <div className="reviewVerifiedBadge">{locale==="es"?"Reseña verificada":"Verified review"}</div>
         <blockquote>“{review.body}”</blockquote>
         <p>{review.author_display||(locale==="es"?"Lector verificado":"Verified reader")}</p>
         <small>{review.source}</small>
