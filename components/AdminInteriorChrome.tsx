@@ -8,6 +8,7 @@ const items=[
   ["Contenido","/admin/contenido"],
   ["Personajes","/admin/personajes"],
   ["Medios","/admin/medios"],
+  ["Tienda","/admin/tienda"],
   ["Analítica","/admin/analytics"],
   ["Reportes","/admin/reportes"],
   ["SEO y Social","/admin/seo"],
