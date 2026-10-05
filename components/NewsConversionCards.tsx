@@ -27,14 +27,69 @@ export function NewsConversionCards({locale,news,shareReward}:Props){
     }
 
     try{
+      setRewardReady(false);
+      setRewardOpen(false);
       setShareStatus("sharing");
+
+      let lostControl=document.visibilityState==="hidden"||!document.hasFocus();
+
       await navigator.share({title:"FRAGMENTUN",text,url});
+
+      await new Promise<void>(resolve=>{
+        let settledTimer:number|undefined;
+        let poll:number|undefined;
+        let done=false;
+
+        const cleanup=()=>{
+          if(poll!==undefined)window.clearInterval(poll);
+          if(settledTimer!==undefined)window.clearTimeout(settledTimer);
+          window.removeEventListener("blur",onBlur);
+          window.removeEventListener("focus",onFocus);
+          document.removeEventListener("visibilitychange",onVisibility);
+        };
+        const finish=()=>{
+          if(done)return;
+          done=true;
+          cleanup();
+          resolve();
+        };
+        const cancelStable=()=>{
+          if(settledTimer!==undefined){
+            window.clearTimeout(settledTimer);
+            settledTimer=undefined;
+          }
+        };
+        const evaluate=()=>{
+          const active=document.visibilityState==="visible"&&document.hasFocus();
+          if(!active){
+            lostControl=true;
+            cancelStable();
+            return;
+          }
+          if(lostControl&&settledTimer===undefined){
+            settledTimer=window.setTimeout(()=>{
+              const stillActive=document.visibilityState==="visible"&&document.hasFocus();
+              if(stillActive&&lostControl)finish();
+              else cancelStable();
+            },700);
+          }
+        };
+        const onBlur=()=>{lostControl=true;cancelStable();};
+        const onFocus=()=>evaluate();
+        const onVisibility=()=>evaluate();
+
+        window.addEventListener("blur",onBlur);
+        window.addEventListener("focus",onFocus);
+        document.addEventListener("visibilitychange",onVisibility);
+        poll=window.setInterval(evaluate,120);
+        evaluate();
+      });
 
       fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
         event_name:"share_reward_unlock",
         locale,
         path:window.location.pathname,
-        metadata:{placement:"news",result:"completed"}
+        metadata:{placement:"news",result:"completed_after_share_closed"}
       }),keepalive:true}).catch(()=>{});
 
       setRewardReady(true);
