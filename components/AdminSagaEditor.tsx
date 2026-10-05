@@ -196,7 +196,7 @@ export function AdminSagaEditor(){
                 />
               </div>
               <p className="note">Puedes subir una portada nueva o seleccionar una imagen ya existente en Medios. Las nuevas portadas se guardan en Medios oficiales.</p>
-              {uploadStatus[uploadKey]&&<p className={uploadStatus[uploadKey]==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":"adminSaveFeedback error"} role="status">{uploadStatus[uploadKey]}</p>}
+              {uploadStatus[uploadKey]&&<p className={uploadStatus[uploadKey]==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(uploadStatus[uploadKey].toLowerCase().includes("subiendo")?"adminSaveFeedback":"adminSaveFeedback error")} role="status">{uploadStatus[uploadKey]}</p>}
               {preview&&<div className="adminSagaCoverPreview"><img src={preview} alt={b.subtitle_es||"Portada FRAGMENTUN"}/><span>{String(ed.locale||"").toUpperCase()}</span></div>}
             </div>
           </div>
