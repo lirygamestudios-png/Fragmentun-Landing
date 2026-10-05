@@ -4673,3 +4673,113 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   color:#ff9d9d;
   box-shadow:0 0 18px rgba(255,92,92,.07)
 }
+
+
+/* FRAGMENTUN branded process system */
+.fragmentunProcessOverlay{
+  position:fixed;
+  inset:0;
+  z-index:1400;
+  display:grid;
+  place-items:center;
+  padding:24px;
+  background:
+    radial-gradient(circle at 50% 42%,rgba(74,144,217,.16),transparent 34%),
+    rgba(4,10,18,.88);
+  backdrop-filter:blur(10px);
+  animation:fragmentunProcessFade .18s ease both
+}
+.fragmentunProcessCore{
+  width:min(420px,92vw);
+  text-align:center;
+  padding:34px 28px 30px;
+  border-radius:24px;
+  border:1px solid rgba(201,168,76,.22);
+  background:
+    linear-gradient(180deg,rgba(10,22,40,.96),rgba(5,12,21,.98));
+  box-shadow:0 24px 80px rgba(0,0,0,.45),0 0 48px rgba(201,168,76,.08)
+}
+.fragmentunProcessMark{
+  width:136px;
+  height:136px;
+  margin:0 auto 18px;
+  position:relative;
+  display:grid;
+  place-items:center
+}
+.fragmentunProcessMark img{
+  position:relative;
+  z-index:4;
+  width:92px;
+  height:92px;
+  object-fit:contain;
+  filter:drop-shadow(0 0 20px rgba(201,168,76,.35));
+  animation:fragmentunLogoPulse 1.6s ease-in-out infinite
+}
+.fragmentunProcessGlow{
+  position:absolute;
+  inset:24px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,.18),rgba(201,168,76,0) 68%);
+  animation:fragmentunGlow 1.8s ease-in-out infinite
+}
+.fragmentunProcessOrbit{
+  position:absolute;
+  inset:8px;
+  border-radius:50%;
+  border:1px solid rgba(201,168,76,.18);
+  border-top-color:#d9bd62;
+  border-right-color:rgba(74,144,217,.62);
+  animation:fragmentunOrbit 1.4s linear infinite
+}
+.fragmentunProcessOrbit.orbitTwo{
+  inset:20px;
+  border-color:rgba(74,144,217,.16);
+  border-bottom-color:#c9a84c;
+  animation-duration:2.1s;
+  animation-direction:reverse
+}
+.fragmentunProcessCore strong{
+  display:block;
+  color:#f0d889;
+  font:700 .92rem/1.2 Georgia,serif;
+  letter-spacing:.16em
+}
+.fragmentunProcessCore p{
+  margin:9px auto 0;
+  max-width:320px;
+  color:#9fb0c0;
+  font-size:.75rem;
+  line-height:1.5
+}
+.fragmentunProcessLine{
+  height:3px;
+  margin:20px auto 0;
+  max-width:220px;
+  overflow:hidden;
+  border-radius:999px;
+  background:rgba(255,255,255,.06)
+}
+.fragmentunProcessLine i{
+  display:block;
+  width:38%;
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg,#4A90D9,#C9A84C,#f3dda0);
+  animation:fragmentunProcessLine 1.25s ease-in-out infinite
+}
+.fragmentunProcessOverlay.state-success .fragmentunProcessOrbit{border-top-color:#62dca5;border-right-color:#62dca5}
+.fragmentunProcessOverlay.state-success .fragmentunProcessCore strong{color:#7fe3b5}
+.fragmentunProcessOverlay.state-error .fragmentunProcessOrbit{border-top-color:#ff7272;border-right-color:#ff7272}
+.fragmentunProcessOverlay.state-error .fragmentunProcessCore strong{color:#ff9a9a}
+@keyframes fragmentunOrbit{to{transform:rotate(360deg)}}
+@keyframes fragmentunLogoPulse{0%,100%{transform:scale(.98);opacity:.9}50%{transform:scale(1.045);opacity:1}}
+@keyframes fragmentunGlow{0%,100%{transform:scale(.9);opacity:.45}50%{transform:scale(1.12);opacity:.95}}
+@keyframes fragmentunProcessLine{0%{transform:translateX(-120%)}50%{transform:translateX(85%)}100%{transform:translateX(260%)}}
+@keyframes fragmentunProcessFade{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){
+  .fragmentunProcessMark img,
+  .fragmentunProcessGlow,
+  .fragmentunProcessOrbit,
+  .fragmentunProcessLine i{animation:none}
+}
