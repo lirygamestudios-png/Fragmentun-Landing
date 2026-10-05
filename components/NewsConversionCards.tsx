@@ -3,6 +3,7 @@
 import {useState} from "react";
 import type {Locale} from "../lib/i18n";
 import {TrackLink} from "./TrackLink";
+import {FragmentunProcessOverlay} from "./FragmentunProcessOverlay";
 
 type Props={
   locale:Locale;
@@ -13,7 +14,7 @@ type Props={
 export function NewsConversionCards({locale,news,shareReward}:Props){
   const[rewardOpen,setRewardOpen]=useState(false);
   const[rewardReady,setRewardReady]=useState(false);
-  const[shareStatus,setShareStatus]=useState<"idle"|"sharing"|"unsupported"|"error">("idle");
+  const[shareStatus,setShareStatus]=useState<"idle"|"sharing"|"returning"|"unsupported"|"error">("idle");
 
   async function shareAndUnlock(){
     const url=window.location.href;
@@ -84,6 +85,8 @@ export function NewsConversionCards({locale,news,shareReward}:Props){
         poll=window.setInterval(evaluate,120);
         evaluate();
       });
+
+      setShareStatus("returning");
 
       fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
         event_name:"share_reward_unlock",
@@ -162,7 +165,7 @@ export function NewsConversionCards({locale,news,shareReward}:Props){
       </div>
     </article>
 
-    {rewardOpen&&<div className="shareRewardBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setRewardOpen(false)}}>
+    {shareStatus==="returning"&&<FragmentunProcessOverlay state="processing" title={locale==="es"?"PROCESANDO…":"PROCESSING…"} detail={locale==="es"?"Verificando tu regreso a FRAGMENTUN":"Verifying your return to FRAGMENTUN"}/>}\n\n    {rewardOpen&&<div className="shareRewardBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setRewardOpen(false)}}>
       <section className="shareRewardModal" role="dialog" aria-modal="true" aria-label={shareReward?.thank_you||(locale==="es"?"Gracias por compartir este universo":"Thank you for sharing this universe")}>
         <button className="shareRewardClose" type="button" aria-label={locale==="es"?"Cerrar":"Close"} onClick={()=>setRewardOpen(false)}>×</button>
         <div className="shareRewardArt">
