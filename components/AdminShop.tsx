@@ -155,6 +155,37 @@ export function AdminShop(){
       })}
     </section>
 
+    <section className="card adminShopPreview">
+      <div className="adminPanelHeader">
+        <div><div className="kicker">VISTA PREVIA</div><h2>Así se verá la tienda en el FrontDesk</h2><p className="note">Esta previsualización no activa la tienda pública.</p></div>
+        <span className="adminPanelBadge">PREVIEW</span>
+      </div>
+      <div className="adminShopPreviewViewport">
+        <section className="fragmentunShopSection adminEmbeddedShopPreview">
+          {es.banner_url&&<div className="fragmentunShopBackdrop" aria-hidden="true"><img src={es.banner_url} alt=""/></div>}
+          <div className="container fragmentunShopInner">
+            <div className="fragmentunShopCopy">
+              <div className="kicker">{es.eyebrow||"TIENDA FRAGMENTUN"}</div>
+              <h2>{es.title||"Objetos del universo"}</h2>
+              <p className="lead">{es.body||"Arte, ropa, coleccionables y ediciones especiales inspiradas en FRAGMENTUN."}</p>
+              <span className="btn btnPrimary">{es.cta||"Explorar tienda"} →</span>
+            </div>
+            <div className="fragmentunProductGrid">
+              {(products("es").filter(p=>p.name).length?products("es").filter(p=>p.name).slice(0,4):[
+                {name:"Edición de Colección",price_label:"Próximamente",url:"",image_url:"/fragmentun-i-cover-es.jpg"},
+                {name:"Arte de Lumen",price_label:"Próximamente",url:"",image_url:"/lumen-ciudad-oficial.webp"},
+                {name:"Coleccionable FRAGMENTUN",price_label:"Próximamente",url:"",image_url:"/elyon-hero.jpg"},
+                {name:"Edición Especial",price_label:"Próximamente",url:"",image_url:"/fragmentun-mark.png"}
+              ]).map((p:any,index:number)=><div className="fragmentunProductCard adminPreviewProduct" key={(p.name||"producto")+index}>
+                {p.image_url&&<img src={p.image_url} alt={p.name||""}/>}
+                <span><strong>{p.name}</strong>{p.price_label&&<small>{p.price_label}</small>}</span>
+              </div>)}
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
     <section className="card adminShopSave">
       <div><strong>{active?"La tienda aparecerá en el menú y en el FrontDesk.":"La tienda permanecerá oculta hasta activarla con una URL válida."}</strong><span>{msg}</span></div>
       <button className="btn btnPrimary" type="button" onClick={save} disabled={saving}>{saving?"Guardando…":"Guardar Tienda"}</button>
