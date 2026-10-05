@@ -77,6 +77,128 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
     }))
     :fallbackCharacters;
 
+  async function downloadBrandedReward(){
+    const artUrl=shareReward?.art_url||"/elyon-hero.jpg";
+    const title=shareReward?.art_title||shareReward?.title||(locale==="es"?"ARTE CONCEPTUAL OFICIAL":"OFFICIAL CONCEPT ART");
+    const subtitle=shareReward?.art_subtitle||(locale==="es"?"UNA PIEZA DEL UNIVERSO FRAGMENTUN":"A PIECE FROM THE FRAGMENTUN UNIVERSE");
+    const loadImage=async(url:string)=>{
+      const response=await fetch(url,{cache:"no-store"});
+      if(!response.ok)throw new Error("image_fetch_failed");
+      const blob=await response.blob();
+      const objectUrl=URL.createObjectURL(blob);
+      return await new Promise<{img:HTMLImageElement;url:string}>((resolve,reject)=>{
+        const img=new Image();
+        img.onload=()=>resolve({img,url:objectUrl});
+        img.onerror=()=>{URL.revokeObjectURL(objectUrl);reject(new Error("image_load_failed"))};
+        img.src=objectUrl;
+      });
+    };
+
+    try{
+      const[{img:art,url:artObjectUrl},{img:logo,url:logoObjectUrl}]=await Promise.all([
+        loadImage(artUrl),
+        loadImage("/fragmentun-logo-official.webp")
+      ]);
+
+      const maxArtWidth=1500;
+      const maxArtHeight=1900;
+      const scale=Math.min(maxArtWidth/art.naturalWidth,maxArtHeight/art.naturalHeight,1.8);
+      const artWidth=Math.max(720,Math.round(art.naturalWidth*scale));
+      const artHeight=Math.round(art.naturalHeight*(artWidth/art.naturalWidth));
+      const side=70;
+      const top=190;
+      const footer=290;
+      const canvas=document.createElement("canvas");
+      canvas.width=artWidth+side*2;
+      canvas.height=top+artHeight+footer;
+      const ctx=canvas.getContext("2d");
+      if(!ctx)throw new Error("canvas_unavailable");
+
+      ctx.fillStyle="#07111f";
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      const glow=ctx.createRadialGradient(canvas.width*.82,80,10,canvas.width*.82,80,canvas.width*.65);
+      glow.addColorStop(0,"rgba(74,144,217,.18)");
+      glow.addColorStop(1,"rgba(10,22,40,0)");
+      ctx.fillStyle=glow;
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+
+      ctx.strokeStyle="#C9A84C";
+      ctx.lineWidth=4;
+      ctx.strokeRect(18,18,canvas.width-36,canvas.height-36);
+      ctx.strokeStyle="rgba(201,168,76,.34)";
+      ctx.lineWidth=1;
+      ctx.strokeRect(34,34,canvas.width-68,canvas.height-68);
+
+      const logoHeight=122;
+      const logoWidth=Math.round(logo.naturalWidth*(logoHeight/logo.naturalHeight));
+      ctx.drawImage(logo,(canvas.width-logoWidth)/2,38,logoWidth,logoHeight);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(side,top,artWidth,artHeight);
+      ctx.clip();
+      ctx.drawImage(art,side,top,artWidth,artHeight);
+      ctx.restore();
+
+      ctx.strokeStyle="rgba(201,168,76,.75)";
+      ctx.lineWidth=2;
+      ctx.strokeRect(side,top,artWidth,artHeight);
+
+      const footerY=top+artHeight;
+      ctx.fillStyle="#0A1628";
+      ctx.fillRect(side,footerY,artWidth,footer);
+      ctx.fillStyle="#C9A84C";
+      ctx.font='700 26px Georgia, "Times New Roman", serif';
+      ctx.textAlign="left";
+      ctx.fillText(locale==="es"?"ARTE CONCEPTUAL OFICIAL":"OFFICIAL CONCEPT ART",side+34,footerY+54);
+
+      ctx.fillStyle="#F3E3A7";
+      ctx.font='700 42px Georgia, "Times New Roman", serif';
+      const cleanTitle=String(title).slice(0,58);
+      ctx.fillText(cleanTitle,side+34,footerY+112);
+
+      ctx.fillStyle="#9eb0c2";
+      ctx.font='500 20px Arial, Helvetica, sans-serif';
+      ctx.fillText(String(subtitle).slice(0,88),side+34,footerY+154);
+
+      ctx.fillStyle="#D8BF70";
+      ctx.font='700 20px Georgia, "Times New Roman", serif';
+      ctx.fillText("José Liranzo",side+34,footerY+214);
+
+      ctx.textAlign="right";
+      ctx.fillStyle="#7f93a8";
+      ctx.font='600 15px Arial, Helvetica, sans-serif';
+      ctx.fillText("FRAGMENTUN.COM",side+artWidth-34,footerY+196);
+      ctx.fillText(locale==="es"?"TODOS LOS DERECHOS RESERVADOS":"ALL RIGHTS RESERVED",side+artWidth-34,footerY+222);
+
+      const blob=await new Promise<Blob|null>(resolve=>canvas.toBlob(resolve,"image/jpeg",.94));
+      URL.revokeObjectURL(artObjectUrl);
+      URL.revokeObjectURL(logoObjectUrl);
+      if(!blob)throw new Error("export_failed");
+
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement("a");
+      a.href=url;
+      a.download="FRAGMENTUN-Arte-Conceptual-Oficial.jpg";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.setTimeout(()=>URL.revokeObjectURL(url),2000);
+
+      fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+        event_name:"share_reward_download",locale,path:window.location.pathname,...analyticsAttribution(),metadata:{placement:"value_strip",format:"branded_jpg"}
+      }),keepalive:true}).catch(()=>{});
+    }catch{
+      const a=document.createElement("a");
+      a.href=artUrl;
+      a.download="";
+      a.target="_blank";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+  }
+
   useEffect(()=>{
     if(selected===null)return;
     const onKey=(e:KeyboardEvent)=>{
@@ -312,14 +434,11 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
           <p>{locale==="es"
             ?"Tu pieza de arte conceptual de FRAGMENTUN está lista. Puedes guardarla y seguir compartiendo el universo."
             :"Your FRAGMENTUN concept art is ready. Save it and keep sharing the universe."}</p>
-          {rewardReady&&<a
+          {rewardReady&&<button
             className="btn btnPrimary"
-            href={shareReward?.art_url||"/elyon-hero.jpg"}
-            download
-            onClick={()=>fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-              event_name:"share_reward_download",locale,path:window.location.pathname,...analyticsAttribution(),metadata:{placement:"value_strip"}
-            }),keepalive:true}).catch(()=>{})}
-          >{shareReward?.reward_label||(locale==="es"?"Descargar arte conceptual":"Download concept art")}</a>}
+            type="button"
+            onClick={downloadBrandedReward}
+          >{shareReward?.reward_label||(locale==="es"?"Descargar arte conceptual":"Download concept art")}</button>}
         </div>
       </section>
     </div>}
