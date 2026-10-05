@@ -12,12 +12,27 @@ export function PageView({locale}:{locale:"es"|"en"}){
       if(value) sessionStorage.setItem(key,value);
     }
 
-    const attribution=analyticsAttribution();
+    const send=(event_name:"page_view"|"presence_ping")=>{
+      const attribution=analyticsAttribution();
+      fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+        event_name,locale,path:window.location.pathname,
+        ...attribution
+      }),keepalive:true}).catch(()=>{});
+    };
 
-    fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-      event_name:"page_view",locale,path:window.location.pathname,
-      ...attribution
-    }),keepalive:true}).catch(()=>{});
+    send("page_view");
+    send("presence_ping");
+
+    const timer=window.setInterval(()=>{
+      if(document.visibilityState==="visible")send("presence_ping");
+    },60000);
+    const onVisibility=()=>{if(document.visibilityState==="visible")send("presence_ping")};
+    document.addEventListener("visibilitychange",onVisibility);
+
+    return()=>{
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange",onVisibility);
+    };
   },[locale]);
   return null;
 }
