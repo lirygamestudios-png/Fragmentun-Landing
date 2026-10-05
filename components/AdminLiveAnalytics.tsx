@@ -58,39 +58,39 @@ export function AdminLiveAnalytics(){
       </div>
     </div>
 
-    <div className="adminLiveKpis">
-      <article><span>Usuarios en línea ahora</span><strong>{data.active_now}</strong><small>últimos 2 min</small></article>
-      <article><span>Sesiones recientes</span><strong>{data.sessions_5m}</strong><small>últimos 5 min</small></article>
-      <article><span>Sesiones recientes</span><strong>{data.sessions_30m}</strong><small>últimos 30 min</small></article>
-      <article><span>Última actualización</span><strong>{new Date(data.generated_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"})}</strong><small>{paused?"pausado":"automático"}</small></article>
+    <div className="adminLiveKpis" style={{gap:8}}>
+      <article style={{minHeight:74,padding:"10px 12px"}}><span>Usuarios en línea ahora</span><strong>{data.active_now}</strong><small>últimos 2 min</small></article>
+      <article style={{minHeight:74,padding:"10px 12px"}}><span>Sesiones recientes</span><strong>{data.sessions_5m}</strong><small>últimos 5 min</small></article>
+      <article style={{minHeight:74,padding:"10px 12px"}}><span>Sesiones recientes</span><strong>{data.sessions_30m}</strong><small>últimos 30 min</small></article>
+      <article style={{minHeight:74,padding:"10px 12px"}}><span>Última actualización</span><strong>{new Date(data.generated_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"})}</strong><small>{paused?"pausado":"automático"}</small></article>
     </div>
 
     <div className="adminLiveActions">
       {actions.map(([label,value])=><article key={label}><span>{label}</span><strong>{value}</strong><small>últimos 30 min</small></article>)}
     </div>
 
-    <div className="adminLiveGrid">
-      <div className="adminLiveBlock">
+    <div className="adminLiveGrid" style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,alignItems:"start"}}>
+      <div className="adminLiveBlock" style={{minHeight:0,maxHeight:230,overflow:"auto",padding:12}}>
         <div className="adminLiveBlockHead"><h3>Páginas activas</h3><span>{data.pages.length}</span></div>
-        {data.pages.length?data.pages.map(p=><div className="adminLiveRow" key={p.path}><span>{p.path}</span><strong>{p.active}</strong></div>):<p className="note">No hay usuarios activos en este momento.</p>}
+        {data.pages.length?data.pages.map(p=><div className="adminLiveRow" key={p.path}><span title={p.path} style={{minWidth:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{p.path}</span><strong>{p.active}</strong></div>):<p className="note">No hay usuarios activos en este momento.</p>}
       </div>
-      <div className="adminLiveBlock">
+      <div className="adminLiveBlock" style={{minHeight:0,maxHeight:230,overflow:"auto",padding:12}}>
         <div className="adminLiveBlockHead"><h3>Origen activo</h3><span>{data.sources.length}</span></div>
-        {data.sources.length?data.sources.map(s=><div className="adminLiveRow" key={s.source}><span>{s.source}</span><strong>{s.active}</strong></div>):<p className="note">Sin fuentes activas ahora.</p>}
+        {data.sources.length?data.sources.map(s=><div className="adminLiveRow" key={s.source}><span title={s.source} style={{minWidth:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.source}</span><strong>{s.active}</strong></div>):<p className="note">Sin fuentes activas ahora.</p>}
       </div>
-      <div className="adminLiveBlock">
+      <div className="adminLiveBlock" style={{minHeight:0,maxHeight:230,overflow:"auto",padding:12}}>
         <div className="adminLiveBlockHead"><h3>Leads recientes</h3><span>30 min</span></div>
         {data.recent_leads.length?data.recent_leads.map((lead,i)=><div className="adminLiveEvent" key={lead.email+lead.created_at+i}>
           <i className="eventDot lead_submit"/>
-          <div><strong>{lead.name||"Nuevo lead"}</strong><span>{lead.email}{lead.locale?` · ${lead.locale.toUpperCase()}`:""}</span></div>
+          <div style={{minWidth:0}}><strong>{lead.name||"Nuevo lead"}</strong><span title={lead.email} style={{display:"block",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{lead.email}{lead.locale?` · ${lead.locale.toUpperCase()}`:""}</span></div>
           <time>{since(lead.created_at)}</time>
         </div>):<p className="note">No hay leads recientes.</p>}
       </div>
-      <div className="adminLiveBlock adminLiveFeed">
+      <div className="adminLiveBlock adminLiveFeed" style={{minHeight:0,maxHeight:230,overflow:"auto",padding:12}}>
         <div className="adminLiveBlockHead"><h3>Eventos recientes</h3><span>30 min</span></div>
         {data.recent_events.length?data.recent_events.map((e,i)=><div className="adminLiveEvent" key={e.created_at+e.event_name+i}>
           <i className={"eventDot "+e.event_name}/>
-          <div><strong>{e.label}</strong><span>{e.path} · {e.source}{e.locale?` · ${e.locale.toUpperCase()}`:""}</span></div>
+          <div style={{minWidth:0}}><strong>{e.label}</strong><span title={`${e.path} · ${e.source}`} style={{display:"block",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{e.path} · {e.source}{e.locale?` · ${e.locale.toUpperCase()}`:""}</span></div>
           <time>{since(e.created_at)}</time>
         </div>):<p className="note">Aún no hay eventos recientes.</p>}
       </div>
