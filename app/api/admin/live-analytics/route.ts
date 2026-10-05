@@ -84,7 +84,8 @@ export async function GET(){
     sources.get(source)!.add(r.session_id);
   }
 
-  const count=(...names:string[])=>rows.filter(r=>names.includes(r.event_name)).length;
+  const isHumanAction=(r:any)=>!!r.session_id||r.metadata?.human_navigation===true;
+  const count=(...names:string[])=>rows.filter(r=>names.includes(r.event_name)&&isHumanAction(r)).length;
   const recentEvents=rows
     .filter(r=>r.event_name!=="presence_ping")
     .slice(0,18)
