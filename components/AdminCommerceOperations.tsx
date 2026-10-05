@@ -13,18 +13,18 @@ type Settings={
   stripe_enabled:boolean;
   paypal_enabled:boolean;
 };
-type Stats={products:number;active_products:number;orders:number;paid_orders:number;pending_fulfillment:number;shipping_labels:number};
+type Stats={products:number;active_products:number;orders:number;paid_orders:number;pending_fulfillment:number;shipping_labels:number};\ntype ProcessorStatus={stripe_configured:boolean;paypal_configured:boolean};
 
 export function AdminCommerceOperations(){
   const[settings,setSettings]=useState<Settings|null>(null);
   const[stats,setStats]=useState<Stats|null>(null);
-  const[msg,setMsg]=useState("");
+  const[msg,setMsg]=useState("");\n  const[processorStatus,setProcessorStatus]=useState<ProcessorStatus>({stripe_configured:false,paypal_configured:false});
   const[saving,setSaving]=useState(false);
 
   useEffect(()=>{
     fetch("/api/admin/commerce",{cache:"no-store"}).then(async r=>{
       const j=await r.json();
-      if(r.ok){setSettings(j.settings);setStats(j.stats)}
+      if(r.ok){setSettings(j.settings);setStats(j.stats);setProcessorStatus(j.processor_status||{stripe_configured:false,paypal_configured:false})}
     }).catch(()=>{});
   },[]);
 
@@ -56,10 +56,14 @@ export function AdminCommerceOperations(){
     <div className="adminShopLanguageGrid" style={{marginTop:18}}>
       <article className="card">
         <div className="kicker">PAGOS</div><h3>Stripe + PayPal</h3>
+        <div className="adminShopControlGrid">
+          <label className="adminShopToggle"><span>Activar Stripe</span><input type="checkbox" checked={settings.stripe_enabled} disabled={!processorStatus.stripe_configured} onChange={e=>patch("stripe_enabled",e.target.checked)}/><b>{settings.stripe_enabled?"ACTIVO":processorStatus.stripe_configured?"INACTIVO":"SIN CREDENCIALES"}</b></label>
+          <label className="adminShopToggle"><span>Activar PayPal</span><input type="checkbox" checked={settings.paypal_enabled} disabled={!processorStatus.paypal_configured} onChange={e=>patch("paypal_enabled",e.target.checked)}/><b>{settings.paypal_enabled?"ACTIVO":processorStatus.paypal_configured?"INACTIVO":"SIN CREDENCIALES"}</b></label>
+        </div>
         <label><span>Política predeterminada</span><select value={settings.default_payment_provider} onChange={e=>patch("default_payment_provider",e.target.value)}>
           <option value="auto">Automático</option><option value="both">Mostrar Stripe + PayPal</option><option value="stripe">Preferir Stripe</option><option value="paypal">Preferir PayPal</option>
         </select></label>
-        <p className="note">Stripe: {settings.stripe_enabled?"configurado":"NO CONFIGURADO"} · PayPal: {settings.paypal_enabled?"configurado":"NO CONFIGURADO"}. Las credenciales se conectarán antes de habilitar pagos.</p>
+        <p className="note">Los interruptores solo se habilitan cuando las credenciales del procesador existen en el entorno seguro. Tener credenciales no activa cobros automáticamente.</p>
       </article>
 
       <article className="card">
