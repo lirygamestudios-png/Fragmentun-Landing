@@ -24,7 +24,10 @@ function chartPoints(values:number[],height=180,width=760){
   return values.map((v,i)=>`${(i*step).toFixed(1)},${(height-(v/max)*(height-24)-12).toFixed(1)}`).join(" ");
 }
 
-export default async function AdminPage(){
+export default async function AdminPage({searchParams}:{searchParams:Promise<{range?:string}>}){
+  const params=await searchParams;
+  const requestedRange=Number(params?.range||30);
+  const rangeDays=[7,30,90].includes(requestedRange)?requestedRange:30;
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user) redirect("/admin/login");
@@ -32,7 +35,7 @@ export default async function AdminPage(){
   const{data:profile}=await supabase.from("admin_profiles").select("display_name,role").eq("user_id",user.id).maybeSingle();
   if(!profile) redirect("/admin/login?unauthorized=1");
 
-  const since=new Date(Date.now()-29*86400000).toISOString();
+  const since=new Date(Date.now()-(rangeDays-1)*86400000).toISOString();
   const[
     {count:leadCount},
     {count:visitorCount},
@@ -64,8 +67,8 @@ export default async function AdminPage(){
   };
   const eventRows=(events||[]) as EventRow[];
   const leadRows=(latestLeads||[]) as LeadRow[];
-  const days=Array.from({length:30},(_,i)=>{
-    const d=new Date(Date.now()-(29-i)*86400000);
+  const days=Array.from({length:rangeDays},(_,i)=>{
+    const d=new Date(Date.now()-((rangeDays-1)-i)*86400000);
     return d.toISOString().slice(0,10);
   });
   const viewsByDay=days.map(day=>eventRows.filter(e=>e.event_name==="page_view"&&e.created_at.slice(0,10)===day).length);
@@ -149,16 +152,21 @@ export default async function AdminPage(){
           <strong>FRAGMENTUN</strong>
           <span>UNA SAGA DE CIENCIA FICCIÓN EMOCIONAL</span>
         </div>
-        <div className="approvedAdminHeroActions"><span>ES</span><i>|</i><span>EN</span><a href="/es" target="_blank" rel="noreferrer">Ver Sitio ↗</a></div>
+        <div className="approvedAdminHeroActions"><a href="/es" target="_blank" rel="noreferrer">ES</a><i>|</i><a href="/en" target="_blank" rel="noreferrer">EN</a><a href="/es" target="_blank" rel="noreferrer">Ver Sitio ↗</a></div>
       </header>
 
       <div className="approvedAdminBody">
         <section className="approvedAdminKpis">
-          <article><span className="kpiIcon">♟</span><div><strong>{(leadCount??0).toLocaleString()}</strong><small>Suscriptores</small></div><em>REAL</em></article>
-          <article><span className="kpiIcon">↖</span><div><strong>{recentSessions.toLocaleString()}</strong><small>Sesiones · 30 días</small></div><em>30D</em></article>
-          <article><span className="kpiIcon amazon">a</span><div><strong>{amazonCtr.toFixed(1)}%</strong><small>CTR Amazon</small></div><em>30D</em></article>
-          <article><span className="kpiIcon">▥</span><div><strong>{leadConversion.toFixed(1)}%</strong><small>Conversión a Lead</small></div><em>30D</em></article>
-          <div className="approvedAdminRange">▣ <span>Últimos 30 días</span>⌄</div>
+          <a className="approvedAdminKpiLink" href="/admin/leads"><article><span className="kpiIcon">♟</span><div><strong>{(leadCount??0).toLocaleString()}</strong><small>Suscriptores</small></div><em>REAL</em></article></a>
+          <a className="approvedAdminKpiLink" href={`/admin/analytics?range=${rangeDays}`}><article><span className="kpiIcon">↖</span><div><strong>{recentSessions.toLocaleString()}</strong><small>Sesiones · {rangeDays} días</small></div><em>{rangeDays}D</em></article></a>
+          <a className="approvedAdminKpiLink" href={`/admin/analytics?range=${rangeDays}`}><article><span className="kpiIcon amazon">a</span><div><strong>{amazonCtr.toFixed(1)}%</strong><small>CTR Amazon</small></div><em>{rangeDays}D</em></article></a>
+          <a className="approvedAdminKpiLink" href={`/admin/analytics?range=${rangeDays}`}><article><span className="kpiIcon">▥</span><div><strong>{leadConversion.toFixed(1)}%</strong><small>Conversión a Lead</small></div><em>{rangeDays}D</em></article></a>
+          <details className="approvedAdminRange">
+            <summary>▣ <span>Últimos {rangeDays} días</span>⌄</summary>
+            <div className="approvedAdminRangeMenu">
+              {[7,30,90].map(days=><a key={days} className={days===rangeDays?"active":""} href={`/admin?range=${days}`}>Últimos {days} días</a>)}
+            </div>
+          </details>
         </section>
 
         <section className="approvedAdminUpperGrid">
@@ -182,7 +190,7 @@ export default async function AdminPage(){
 
           <div className="approvedAdminAnalyticsColumn">
             <article className="approvedAdminPanel approvedAdminPerformance">
-              <div className="approvedAdminPanelTitle"><h2>Rendimiento del Sitio</h2><div className="approvedLegend"><span className="goldDot"/>Visitas <span className="blueDot"/>Clics Amazon</div></div>
+              <div className="approvedAdminPanelTitle"><h2>Rendimiento del Sitio</h2><a className="approvedPanelAction" href="/admin/analytics">Abrir analítica →</a><div className="approvedLegend"><span className="goldDot"/>Visitas <span className="blueDot"/>Clics Amazon</div></div>
               <div className="approvedChart">
                 <svg viewBox="0 0 760 200" preserveAspectRatio="none" aria-label="Rendimiento últimos 30 días">
                   {[25,70,115,160].map(y=><line key={y} x1="0" y1={y} x2="760" y2={y} className="gridLine"/>)}
@@ -194,7 +202,7 @@ export default async function AdminPage(){
             </article>
 
             <article className="approvedAdminPanel approvedAdminTraffic">
-              <h2>Orígenes de Tráfico</h2>
+              <div className="approvedAdminPanelTitle"><h2>Orígenes de Tráfico</h2><a className="approvedPanelAction" href="/admin/analytics">Ver detalle →</a></div>
               <div className="approvedTrafficInner">
                 <div className="approvedDonut" style={{background:`conic-gradient(#13a9ee 0 ${d1}%,#40d39b ${d1}% ${d2}%,#a452e8 ${d2}% ${d3}%,#ff6953 ${d3}% ${d4}%,#f3bd37 ${d4}% 100%)`}}>
                   <div><strong>{recentViews.toLocaleString()}</strong><span>Visitas</span></div>
@@ -225,8 +233,8 @@ export default async function AdminPage(){
 
           <article className="approvedAdminPanel approvedQuick">
             <h2>Contenido Rápido</h2>
-            <a href="/admin/contenido"><b>⌂</b><span>Editar Página de Inicio</span></a>
-            <a href="/admin/contenido"><b>▣</b><span>Editar Sección de Lumen</span></a>
+            <a href="/admin/contenido?section=home.hero"><b>⌂</b><span>Editar Página de Inicio</span></a>
+            <a href="/admin/contenido?section=home.lumen"><b>▣</b><span>Editar Sección de Lumen</span></a>
             <a href="/admin/test"><b>◉</b><span>Actualizar Test Emocional</span></a>
             <a href="/admin/mapa"><b>⌘</b><span>Gestionar Mapa Interactivo</span></a>
           </article>
@@ -238,17 +246,17 @@ export default async function AdminPage(){
                 {mediaRows.length?mediaRows.map(row=>{
                   const src=mediaUrl(row);
                   const isVideo=row.kind==="video";
-                  return <div key={row.id} className={isVideo?"approvedTrailer":""}>
+                  return <a href="/admin/medios" key={row.id} className={isVideo?"approvedTrailer approvedMediaLink":"approvedMediaLink"}>
                     {src&&row.kind==="image"?<img src={src} alt={row.slug}/>:<div className="approvedMediaPlaceholder">{isVideo?"VIDEO":"MEDIA"}</div>}
                     {isVideo&&<b>▶</b>}
                     <span>{row.slug}</span>
-                  </div>;
+                  </a>;
                 }):<div className="approvedEmpty">La biblioteca multimedia aparecerá aquí cuando tenga recursos públicos.</div>}
               </div>
             </article>
             <article className="approvedAdminPanel approvedConfig">
               <h2>Configuración del Sitio</h2>
-              <div><a href="/admin/contenido">◎ Idiomas</a><a href="/admin/status">⌕ SEO</a><a href="/admin/integrations">↗ Integraciones</a><a href="/admin/status">⚙ Ajustes Generales</a></div>
+              <div><a href="/admin/contenido">◎ Idiomas</a><a href="/admin/contenido?section=home.hero">⌕ SEO / Portada</a><a href="/admin/integrations">↗ Integraciones</a><a href="/admin/status">⚙ Estado y Ajustes</a></div>
             </article>
           </div>
         </section>
