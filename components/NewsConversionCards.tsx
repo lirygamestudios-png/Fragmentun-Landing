@@ -83,8 +83,11 @@ export function NewsConversionCards({locale,news,shareReward}:Props){
       }),keepalive:true}).catch(()=>{});
 
       setRewardReady(true);
-      setRewardOpen(true);
       setShareStatus("idle");
+
+      // Unmount the FRAGMENTUN process overlay first, then reveal the reward card.
+      await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
+      setRewardOpen(true);
     }catch(error){
       const aborted=error instanceof DOMException&&error.name==="AbortError";
       if(!aborted){
