@@ -6,8 +6,8 @@ export function AdminReviews(){
  const[rows,setRows]=useState<any[]>([]);const[form,setForm]=useState<any>(empty);const[msg,setMsg]=useState("");
  const load=()=>fetch("/api/admin/reviews").then(r=>r.json()).then(j=>setRows(j.data||[]));
  useEffect(()=>{load()},[]);
- async function add(){const r=await fetch("/api/admin/reviews",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(form)});if(r.ok){setForm(empty);load();setMsg("Reseña añadida ✓")}else setMsg("Error")}
- async function save(row:any){const r=await fetch("/api/admin/reviews",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(row)});setMsg(r.ok?"Guardado ✓":"Error")}
+ async function add(){const r=await fetch("/api/admin/reviews",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(form)});if(r.ok){setForm(empty);load();setMsg("GUARDADO SATISFACTORIAMENTE")}else setMsg("ERROR: NO FUE POSIBLE GUARDAR")}
+ async function save(row:any){const r=await fetch("/api/admin/reviews",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(row)});setMsg(r.ok?"GUARDADO SATISFACTORIAMENTE":"ERROR: NO FUE POSIBLE GUARDAR")}
  return <div className="adminSecondaryModule adminReviewsModule">
   <div className="card adminSecondaryPanel"><div className="adminPanelHeader"><div><div className="kicker">Prueba social</div><h2>Nueva reseña</h2></div><span className="adminPanelBadge">Verificable</span></div><div className="adminReviewGrid">
     <input placeholder="Fuente" value={form.source} onChange={e=>setForm({...form,source:e.target.value})}/>
@@ -23,6 +23,6 @@ export function AdminReviews(){
     <label><input type="checkbox" checked={!!r.verified} onChange={e=>setRows(a=>a.map((x,n)=>n===i?{...x,verified:e.target.checked}:x))}/> Verificada</label>
     <label><input type="checkbox" checked={!!r.published} onChange={e=>setRows(a=>a.map((x,n)=>n===i?{...x,published:e.target.checked}:x))}/> Publicada</label>
     <button className="btn btnGhost" onClick={()=>save(r)}>Guardar</button>
-  </article>)}</div><p>{msg}</p>
+  </article>)}</div><p className={msg==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(msg&&(msg.toLowerCase().includes("error")||msg.toLowerCase().includes("no fue")||msg.toLowerCase().includes("no se")||msg.toLowerCase().includes("inválid")||msg.toLowerCase().includes("obligatorio")||msg.toLowerCase().includes("falta"))?"adminSaveFeedback error":"adminSaveFeedback")}>{msg}</p>
  </div>;
 }
