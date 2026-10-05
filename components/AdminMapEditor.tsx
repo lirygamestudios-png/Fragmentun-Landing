@@ -8,7 +8,7 @@ export function AdminMapEditor(){
   async function save(kind:"region"|"point",item:any){
     setMsg("Guardando…");
     const r=await fetch("/api/admin/map",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({...item,kind})});
-    setMsg(r.ok?"Guardado ✓":"Error");
+    setMsg(r.ok?"GUARDADO SATISFACTORIAMENTE":"ERROR: NO FUE POSIBLE GUARDAR");
   }
   return <div className="adminMapModule">
     <div className="adminModuleSectionHead"><div><div className="kicker">Cartografía emocional</div><h2>Territorios</h2></div><span>{regions.length} regiones</span></div>
@@ -29,6 +29,6 @@ export function AdminMapEditor(){
       <label>Posición horizontal</label><input type="number" value={p.x??50} onChange={e=>update("point",i,"x",e.target.value)}/>
       <label>Posición vertical</label><input type="number" value={p.y??50} onChange={e=>update("point",i,"y",e.target.value)}/>
       <button className="btn btnPrimary" onClick={()=>save("point",p)}>Guardar</button>
-    </article>)}</div><p>{msg}</p>
+    </article>)}</div><p className={msg==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(msg&&(msg.toLowerCase().includes("error")||msg.toLowerCase().includes("no fue")||msg.toLowerCase().includes("no se")||msg.toLowerCase().includes("inválid")||msg.toLowerCase().includes("obligatorio")||msg.toLowerCase().includes("falta"))?"adminSaveFeedback error":"adminSaveFeedback")}>{msg}</p>
   </div>;
 }
