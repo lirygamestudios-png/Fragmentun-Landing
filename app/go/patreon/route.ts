@@ -12,6 +12,9 @@ export async function GET(request:NextRequest){
   const campaign=clean(q.get("utm_campaign"))||"fragmentun_patreon";
   const content=clean(q.get("utm_content"));
 
+  const humanNavigation=request.headers.get("sec-fetch-user")==="?1";
+  const userAgent=clean(request.headers.get("user-agent"),300);
+
   const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
@@ -25,7 +28,7 @@ export async function GET(request:NextRequest){
         locale,
         path:"/go/patreon",
         source,medium,campaign,content,
-        metadata:{placement:"email_or_external_redirect",creator:"sagaFragmentun"}
+        metadata:{placement:"email_or_external_redirect",creator:"sagaFragmentun",human_navigation:humanNavigation,user_agent:userAgent}
       }),
       cache:"no-store"
     }).catch(()=>{});
