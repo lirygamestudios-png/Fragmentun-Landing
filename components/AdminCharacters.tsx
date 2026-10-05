@@ -54,7 +54,7 @@ export function AdminCharacters(){
     });
     const j=await r.json();
     if(!r.ok){setMsg(j.error||"Error al guardar");return;}
-    setMsg("Guardado ✓");
+    setMsg("GUARDADO SATISFACTORIAMENTE");
     setCreating(false);
     setDraft(empty);
     await load();
@@ -129,7 +129,7 @@ export function AdminCharacters(){
 
         <div className="adminSaveRow">
           <button className="btn btnPrimary" onClick={save}>Guardar personaje</button>
-          <span>{msg}</span>
+          <span className={msg==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(msg&&(msg.toLowerCase().includes("error")||msg.toLowerCase().includes("no fue")||msg.toLowerCase().includes("no se")||msg.toLowerCase().includes("inválid")||msg.toLowerCase().includes("obligatorio")||msg.toLowerCase().includes("falta"))?"adminSaveFeedback error":"adminSaveFeedback")}>{msg}</span>
         </div>
       </div>}
     </section>
