@@ -368,9 +368,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                     setShareStatus(aborted?"idle":"error");
                   }
                 }}>
-                  {shareStatus==="sharing"
-                    ?(locale==="es"?"Compartiendo…":"Sharing…")
-                    :item.action}
+                  {item.action}
                 </button>
                                 {shareStatus==="unsupported"&&<small className="shareRewardStatus">
                   {locale==="es"
@@ -389,7 +387,15 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
     </section>
 
 
-    {shareStatus==="returning"&&<FragmentunProcessOverlay state="processing" title={locale==="es"?"PROCESANDO…":"PROCESSING…"} detail={locale==="es"?"Verificando tu regreso a FRAGMENTUN":"Verifying your return to FRAGMENTUN"}/>}\n\n    {rewardOpen&&<div className="shareRewardBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setRewardOpen(false)}}>
+    {(shareStatus==="sharing"||shareStatus==="returning")&&<FragmentunProcessOverlay
+      state="processing"
+      title={shareStatus==="sharing"
+        ?(locale==="es"?"COMPARTIENDO…":"SHARING…")
+        :(locale==="es"?"PROCESANDO…":"PROCESSING…")}
+      detail={shareStatus==="sharing"
+        ?(locale==="es"?"Compartiendo FRAGMENTUN":"Sharing FRAGMENTUN")
+        :(locale==="es"?"Verificando tu regreso a FRAGMENTUN":"Verifying your return to FRAGMENTUN")}
+    />}\n\n    {rewardOpen&&<div className="shareRewardBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setRewardOpen(false)}}>
       <section className="shareRewardModal" role="dialog" aria-modal="true" aria-label={shareReward?.thank_you||(locale==="es"?"Gracias por compartir este universo":"Thank you for sharing this universe")}>
         <button className="shareRewardClose" type="button" aria-label={locale==="es"?"Cerrar":"Close"} onClick={()=>setRewardOpen(false)}>×</button>
         <div className="shareRewardArt">
