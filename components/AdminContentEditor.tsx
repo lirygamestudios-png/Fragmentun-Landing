@@ -60,7 +60,6 @@ export function AdminContentEditor(){
   const[media,setMedia]=useState<MediaAsset[]>([]);
   const[authorFile,setAuthorFile]=useState<File|null>(null);
   const[uploading,setUploading]=useState(false);
-  const[showAdvanced,setShowAdvanced]=useState(false);
   const[uploadingWhy,setUploadingWhy]=useState<number|null>(null);
   const[uploadingNews,setUploadingNews]=useState<string|null>(null);
   const[uploadingLumen,setUploadingLumen]=useState(false);
@@ -430,17 +429,6 @@ export function AdminContentEditor(){
             </label>
           </div>)}
         </div>
-
-        <button type="button" className="adminAdvancedToggle" onClick={()=>setShowAdvanced(v=>!v)}>
-          {showAdvanced?"Ocultar opciones avanzadas":"Opciones avanzadas"}
-        </button>
-        {showAdvanced&&<div className="adminAdvancedPanel">
-          <p className="note">Configuración técnica para mantenimiento. No necesitas abrirla para editar el contenido habitual.</p>
-          <div className="adminLangGrid">
-            <div><label>Datos técnicos · Español</label><textarea value={esText} onChange={e=>setEsText(e.target.value)} className="adminTextarea"/></div>
-            <div><label>Datos técnicos · Inglés</label><textarea value={enText} onChange={e=>setEnText(e.target.value)} className="adminTextarea"/></div>
-          </div>
-        </div>}
         <div className="adminSaveRow"><button className="btn btnPrimary" onClick={save}>Guardar cambios</button><span>{status}</span></div>
       </>}
     </section>
