@@ -39,7 +39,7 @@ export function AdminCommerceOperations(){
     const j=await r.json().catch(()=>({}));
     setSaving(false);
     if(!r.ok){setMsg(j.error||"No fue posible guardar.");return}
-    setSettings(j.data);setMsg("Configuración administrativa guardada ✓");
+    setSettings(j.data);setMsg("GUARDADO SATISFACTORIAMENTE");
   };
 
   return <section className="card adminCommerceOps">
@@ -100,7 +100,7 @@ export function AdminCommerceOperations(){
 
     <div className="adminShopActions">
       <button className="btn btnPrimary" type="button" onClick={save} disabled={saving}>{saving?"Guardando…":"Guardar administración comercial"}</button>
-      <span className="note">{msg}</span>
+      <span className={msg==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(msg&&(msg.toLowerCase().includes("error")||msg.toLowerCase().includes("no fue")||msg.toLowerCase().includes("no se")||msg.toLowerCase().includes("inválid")||msg.toLowerCase().includes("obligatorio")||msg.toLowerCase().includes("falta"))?"adminSaveFeedback error":"adminSaveFeedback")}>{msg}</span>
     </div>
   </section>;
 }
