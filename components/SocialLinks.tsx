@@ -84,6 +84,7 @@ export function SocialLinks({locale,items,placement="footer"}:{
         ↗ {locale==="es"?"Compartir":"Share"}
       </button>
       {shareOpen&&<div className="shareDropdown" role="menu">
+        <button type="button" className="shareCloseButton" aria-label={locale==="es"?"Cerrar compartir":"Close share"} onClick={()=>setShareOpen(false)}>×</button>
         <strong>{locale==="es"?"Compartir FRAGMENTUN":"Share FRAGMENTUN"}</strong>
         <small>{locale==="es"?"El enlace mostrará la tarjeta social de FRAGMENTUN cuando la plataforma lo permita.":"The link will show FRAGMENTUN's social preview card when supported."}</small>
         <div className="shareGrid">
