@@ -4,6 +4,7 @@ import {useEffect,useState} from "react";
 import type {Locale} from "../lib/i18n";
 import {TrackLink} from "./TrackLink";
 import {analyticsAttribution} from "../lib/analytics-client";
+import {FragmentunProcessOverlay} from "./FragmentunProcessOverlay";
 
 type Character={
   key:string;
@@ -61,7 +62,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
   const[selected,setSelected]=useState<number|null>(null);
   const[rewardOpen,setRewardOpen]=useState(false);
   const[rewardReady,setRewardReady]=useState(false);
-  const[shareStatus,setShareStatus]=useState<"idle"|"sharing"|"unsupported"|"error">("idle");
+  const[shareStatus,setShareStatus]=useState<"idle"|"sharing"|"returning"|"unsupported"|"error">("idle");
   const characters:Character[]=Array.isArray(charactersContent?.characters)&&charactersContent.characters.length
     ?charactersContent.characters.map((item:any)=>({
       key:item.key||item.name,
@@ -382,6 +383,8 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                       evaluate();
                     });
 
+                    setShareStatus("returning");
+
                     fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
                       event_name:"share_reward_unlock",locale,path:window.location.pathname,...analyticsAttribution(),metadata:{placement:"value_strip",result:"completed_after_share_closed"}
                     }),keepalive:true}).catch(()=>{});
@@ -422,7 +425,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
     </section>
 
 
-    {rewardOpen&&<div className="shareRewardBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setRewardOpen(false)}}>
+    {shareStatus==="returning"&&<FragmentunProcessOverlay state="processing" title={locale==="es"?"PROCESANDO…":"PROCESSING…"} detail={locale==="es"?"Verificando tu regreso a FRAGMENTUN":"Verifying your return to FRAGMENTUN"}/>}\n\n    {rewardOpen&&<div className="shareRewardBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setRewardOpen(false)}}>
       <section className="shareRewardModal" role="dialog" aria-modal="true" aria-label={shareReward?.thank_you||(locale==="es"?"Gracias por compartir este universo":"Thank you for sharing this universe")}>
         <button className="shareRewardClose" type="button" aria-label={locale==="es"?"Cerrar":"Close"} onClick={()=>setRewardOpen(false)}>×</button>
         <div className="shareRewardArt">
