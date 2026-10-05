@@ -37,6 +37,14 @@ function inferCategory(row:any){
   return "other";
 }
 function categoryLabel(key:string){return categories.find(x=>x[0]===key)?.[1]||"Otros"}
+function youtubeId(url:string){
+  try{
+    const u=new URL(url);
+    if(u.hostname.includes("youtu.be"))return u.pathname.slice(1);
+    if(u.hostname.includes("youtube.com"))return u.searchParams.get("v")||u.pathname.split("/").filter(Boolean).pop()||"";
+  }catch{}
+  return "";
+}
 function fileSize(row:any){
   const n=Number(row?.metadata?.size||0);
   if(!n)return "";
@@ -133,7 +141,7 @@ export function AdminMediaLibrary(){
             const cat=inferCategory(r);
             return <article className="adminMediaTile adminMediaTileEnhanced" key={r.id}>
               <button type="button" className="adminMediaThumb adminMediaThumbButton" onClick={()=>setSelected(r)} aria-label={`Abrir ${r.slug}`}>
-                {r.kind==="image"&&src?<img src={src} alt={r.alt_es||r.slug}/>:r.kind==="video"&&src?<video src={src} muted playsInline preload="metadata"/>:<div className="adminMediaType">{String(r.kind||"media").toUpperCase()}</div>}
+                {r.kind==="image"&&src?<img src={src} alt={r.alt_es||r.slug}/>:r.kind==="video"&&src&&youtubeId(src)?<img src={`https://i.ytimg.com/vi/${youtubeId(src)}/hqdefault.jpg`} alt={r.alt_es||r.slug}/>:r.kind==="video"&&src?<video src={src} muted playsInline preload="metadata"/>:<div className="adminMediaType">{String(r.kind||"media").toUpperCase()}</div>}
                 <span className={r.public_visible?"live":"private"}>{r.public_visible?"Público":"Privado"}</span>
                 <em>{categoryLabel(cat)}</em>
               </button>
@@ -154,7 +162,7 @@ export function AdminMediaLibrary(){
       <section className="adminMediaModal" role="dialog" aria-modal="true" aria-label={selected.slug}>
         <button className="adminMediaModalClose" type="button" onClick={()=>setSelected(null)}>×</button>
         <div className="adminMediaModalPreview">
-          {selected.kind==="image"&&publicUrl(selected)?<img src={publicUrl(selected)} alt={selected.alt_es||selected.slug}/>:selected.kind==="video"&&publicUrl(selected)?<video src={publicUrl(selected)} controls playsInline/>:<div className="adminMediaType">{String(selected.kind||"media").toUpperCase()}</div>}
+          {selected.kind==="image"&&publicUrl(selected)?<img src={publicUrl(selected)} alt={selected.alt_es||selected.slug}/>:selected.kind==="video"&&publicUrl(selected)&&youtubeId(publicUrl(selected))?<iframe className="adminMediaYoutubeFrame" src={`https://www.youtube-nocookie.com/embed/${youtubeId(publicUrl(selected))}`} title={selected.slug} allow="encrypted-media; picture-in-picture" allowFullScreen/>:selected.kind==="video"&&publicUrl(selected)?<video src={publicUrl(selected)} controls playsInline/>:<div className="adminMediaType">{String(selected.kind||"media").toUpperCase()}</div>}
         </div>
         <div className="adminMediaModalInfo">
           <div className="kicker">{categoryLabel(inferCategory(selected))}</div>
