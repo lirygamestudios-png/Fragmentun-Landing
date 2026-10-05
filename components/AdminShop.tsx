@@ -2,14 +2,14 @@
 import {useEffect,useMemo,useState} from "react";
 import {createSupabaseBrowserClient} from "../lib/supabase/browser";
 
-type Product={name:string;url:string;image_url:string;price_label:string};
+type ShopMode="external"|"internal"|"interest";\ntype Product={name:string;url?:string;image_url:string;price_label:string;mode?:ShopMode;external_url?:string;sku?:string;price_cents?:number;currency?:string;supplier?:string;supplier_product_id?:string;interest_cta?:string};
 type LangContent={
   enabled?:boolean;eyebrow?:string;title?:string;body?:string;cta?:string;
   shop_url?:string;provider?:string;banner_url?:string;campaign?:string;
   featured_products?:Product[];
 };
 
-const emptyProduct=():Product=>({name:"",url:"",image_url:"",price_label:""});
+const emptyProduct=():Product=>({name:"",url:"",image_url:"",price_label:"",mode:"interest",external_url:"",sku:"",currency:"USD",supplier:"",supplier_product_id:"",interest_cta:""});\nfunction productMode(p:Product):ShopMode{return p.mode==="external"||p.mode==="internal"||p.mode==="interest"?p.mode:(p.external_url||p.url?"external":"interest")}\nfunction productReady(p:Product){if(!p.name?.trim())return false;const mode=productMode(p);return mode!=="external"||!!(p.external_url||p.url||"").trim()}
 
 export function AdminShop(){
   const[es,setEs]=useState<LangContent|null>(null);
@@ -48,7 +48,7 @@ export function AdminShop(){
     const src=lang==="es"?es:en;
     return Array.isArray(src?.featured_products)?src!.featured_products!:[] as Product[];
   }
-  function setProduct(lang:"es"|"en",index:number,field:keyof Product,value:string){
+  function setProduct(lang:"es"|"en",index:number,field:keyof Product,value:any){
     const next=[...products(lang)];
     while(next.length<=index)next.push(emptyProduct());
     next[index]={...next[index],[field]:value};
@@ -89,7 +89,7 @@ export function AdminShop(){
   }
 
   if(!es||!en)return <p>Cargando Tienda FRAGMENTUN…</p>;
-  const active=!!es.enabled&&!!es.shop_url;
+  const active=!!es.enabled&&(!!(es.shop_url||"").trim()||products("es").some(productReady));\n  const modeCounts=products("es").reduce((a,p)=>{a[productMode(p)]++;return a},{external:0,internal:0,interest:0});
 
   return <div className="adminShopModule">
     <section className="card adminShopStatus">
@@ -106,15 +106,15 @@ export function AdminShop(){
     </section>
 
     <section className="card adminShopControl">
-      <div className="adminPanelHeader"><div><div className="kicker">CONFIGURACIÓN COMERCIAL</div><h2>Activación y destino</h2></div></div>
+      <div className="adminPanelHeader"><div><div className="kicker">CONFIGURACIÓN COMERCIAL</div><h2>Activación general</h2></div></div>
       <div className="adminShopControlGrid">
         <label className="adminShopToggle">
           <span>Activar tienda en FrontDesk</span>
           <input type="checkbox" checked={!!es.enabled} onChange={e=>{update("es","enabled",e.target.checked);update("en","enabled",e.target.checked)}}/>
           <b>{es.enabled?"ACTIVA":"INACTIVA"}</b>
         </label>
-        <label><span>Proveedor / plataforma</span><input value={es.provider||""} onChange={e=>update("es","provider",e.target.value)} placeholder="Shopify, Fourthwall, Spring, Amazon…"/></label>
-        <label className="wide"><span>URL principal de la tienda</span><input type="url" value={es.shop_url||""} onChange={e=>update("es","shop_url",e.target.value)} placeholder="https://…"/></label>
+        <label><span>Proveedor global opcional</span><input value={es.provider||""} onChange={e=>update("es","provider",e.target.value)} placeholder="Shopify, Fourthwall, Spring, Amazon…"/></label>
+        <label className="wide"><span>URL global opcional</span><input type="url" value={es.shop_url||""} onChange={e=>update("es","shop_url",e.target.value)} placeholder="Opcional: https://…"/></label>
         <label><span>Campaña analítica</span><input value={es.campaign||"merch_launch"} onChange={e=>update("es","campaign",e.target.value)}/></label>
         <label><span>Banner / imagen de fondo</span>
           <select value={es.banner_url||""} onChange={e=>{update("es","banner_url",e.target.value);update("en","banner_url",e.target.value)}}>
@@ -138,15 +138,27 @@ export function AdminShop(){
           <label><span>Título</span><input value={data.title||""} onChange={e=>update(lang,"title",e.target.value)}/></label>
           <label><span>Descripción</span><textarea value={data.body||""} onChange={e=>update(lang,"body",e.target.value)}/></label>
           <label><span>Texto del botón</span><input value={data.cta||""} onChange={e=>update(lang,"cta",e.target.value)}/></label>
-          <label><span>URL de tienda para este idioma</span><input type="url" value={data.shop_url||""} onChange={e=>update(lang,"shop_url",e.target.value)}/></label>
+          <label><span>URL global opcional para este idioma</span><input type="url" value={data.shop_url||""} onChange={e=>update(lang,"shop_url",e.target.value)}/></label>
           <label><span>Estado editorial</span><select value={lang==="es"?statusEs:statusEn} onChange={e=>lang==="es"?setStatusEs(e.target.value):setStatusEn(e.target.value)}><option value="draft">Borrador</option><option value="review">Revisión</option><option value="published">Publicado</option></select></label>
 
           <div className="adminShopProducts">
-            <div className="adminPanelHeader"><div><div className="kicker">DESTACADOS</div><h3>Productos</h3></div><button type="button" className="btn btnGhost" onClick={()=>update(lang,"featured_products",[...products(lang),emptyProduct()])}>+ Añadir producto</button></div>
+            <div className="adminPanelHeader"><div><div className="kicker">PRODUCTOS HÍBRIDOS</div><h3>Productos</h3></div><button type="button" className="btn btnGhost" onClick={()=>update(lang,"featured_products",[...products(lang),emptyProduct()])}>+ Añadir producto</button></div>
             {products(lang).length===0?<p className="note">No hay productos destacados todavía.</p>:products(lang).map((p,i)=><div className="adminShopProductEditor" key={i}>
               <label><span>Nombre</span><input value={p.name||""} onChange={e=>setProduct(lang,i,"name",e.target.value)}/></label>
-              <label><span>Precio / etiqueta</span><input value={p.price_label||""} onChange={e=>setProduct(lang,i,"price_label",e.target.value)} placeholder="$29.99"/></label>
-              <label className="wide"><span>URL de compra</span><input type="url" value={p.url||""} onChange={e=>setProduct(lang,i,"url",e.target.value)}/></label>
+              <label><span>Modo de venta</span><select value={productMode(p)} onChange={e=>setProduct(lang,i,"mode",e.target.value as ShopMode)}><option value="external">Proveedor externo</option><option value="internal">Checkout FRAGMENTUN (futuro)</option><option value="interest">Captar interés / Próximamente</option></select></label>
+              <label><span>Precio / etiqueta</span><input value={p.price_label||""} onChange={e=>setProduct(lang,i,"price_label",e.target.value)} placeholder="$29.99 / Próximamente"/></label>
+              <label><span>SKU</span><input value={p.sku||""} onChange={e=>setProduct(lang,i,"sku",e.target.value)} placeholder="FRG-..."/></label>
+              {productMode(p)==="external"&&<>
+                <label className="wide"><span>URL del proveedor</span><input type="url" value={p.external_url||p.url||""} onChange={e=>setProduct(lang,i,"external_url",e.target.value)} placeholder="https://…"/></label>
+                <label><span>Proveedor</span><input value={p.supplier||""} onChange={e=>setProduct(lang,i,"supplier",e.target.value)} placeholder="Fourthwall, Amazon…"/></label>
+                <label><span>ID producto proveedor</span><input value={p.supplier_product_id||""} onChange={e=>setProduct(lang,i,"supplier_product_id",e.target.value)}/></label>
+              </>}
+              {productMode(p)==="internal"&&<>
+                <label><span>Precio interno (centavos)</span><input type="number" min="0" value={p.price_cents??""} onChange={e=>setProduct(lang,i,"price_cents",e.target.value===""?undefined:Number(e.target.value))} placeholder="2999"/></label>
+                <label><span>Moneda</span><input value={p.currency||"USD"} onChange={e=>setProduct(lang,i,"currency",e.target.value.toUpperCase())} maxLength={3}/></label>
+                <p className="note wide">Checkout FRAGMENTUN permanece desactivado hasta configurar Stripe, webhooks y órdenes.</p>
+              </>}
+              {productMode(p)==="interest"&&<label className="wide"><span>CTA de interés</span><input value={p.interest_cta||""} onChange={e=>setProduct(lang,i,"interest_cta",e.target.value)} placeholder={lang==="es"?"Quiero recibir novedades":"Notify me about this product"}/></label>}
               <label><span>Imagen</span><select value={p.image_url||""} onChange={e=>setProduct(lang,i,"image_url",e.target.value)}><option value="">— Sin imagen —</option>{media.map(m=><option key={m.id} value={mediaUrl(m)}>{m.slug}</option>)}</select></label>
               <button type="button" className="adminShopRemove" onClick={()=>removeProduct(lang,i)}>Eliminar</button>
             </div>)}
@@ -178,7 +190,7 @@ export function AdminShop(){
                 {name:"Edición Especial",price_label:"Próximamente",url:"",image_url:"/fragmentun-mark.png"}
               ]).map((p:any,index:number)=><div className="fragmentunProductCard adminPreviewProduct" key={(p.name||"producto")+index}>
                 {p.image_url&&<img src={p.image_url} alt={p.name||""}/>}
-                <span><strong>{p.name}</strong>{p.price_label&&<small>{p.price_label}</small>}</span>
+                <span><strong>{p.name}</strong>{p.price_label&&<small>{p.price_label}</small>}<small>{productMode(p)==="external"?"Proveedor externo":productMode(p)==="internal"?"Checkout FRAGMENTUN · Futuro":"Captar interés / Próximamente"}</small></span>
               </div>)}
             </div>
           </div>
@@ -187,7 +199,7 @@ export function AdminShop(){
     </section>
 
     <section className="card adminShopSave">
-      <div><strong>{active?"La tienda aparecerá en el menú y en el FrontDesk.":"La tienda permanecerá oculta hasta activarla con una URL válida."}</strong><span>{msg}</span></div>
+      <div><strong>{active?"La tienda aparecerá en el menú y en el FrontDesk.":"La tienda permanecerá oculta hasta activarla y configurar al menos una URL o producto válido."}</strong><span>{msg}</span></div>
       <button className="btn btnPrimary" type="button" onClick={save} disabled={saving}>{saving?"Guardando…":"Guardar Tienda"}</button>
     </section>
   </div>;
