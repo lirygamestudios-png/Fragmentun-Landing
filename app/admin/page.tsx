@@ -121,7 +121,8 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{ra
     ["⌘","Mapa de Lumen","/admin/mapa"],
     ["▣","Multimedia","/admin/medios"],
     ["◎","Traducciones","/admin/contenido"],
-    ["⚙","Ajustes","/admin/status"]
+    ["⌕","SEO y Social","/admin/seo"],
+    ["⚙","Estado del Sistema","/admin/status"]
   ] as const;
 
   return <main className="approvedAdmin">
@@ -256,7 +257,7 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{ra
             </article>
             <article className="approvedAdminPanel approvedConfig">
               <h2>Configuración del Sitio</h2>
-              <div><a href="/admin/contenido">◎ Idiomas</a><a href="/admin/contenido?section=home.hero">⌕ SEO / Portada</a><a href="/admin/integrations">↗ Integraciones</a><a href="/admin/status">⚙ Estado y Ajustes</a></div>
+              <div><a href="/admin/contenido">◎ Idiomas</a><a href="/admin/seo">⌕ SEO y Social</a><a href="/admin/integrations">↗ Integraciones</a><a href="/admin/status">⚙ Estado y Ajustes</a></div>
             </article>
           </div>
         </section>
