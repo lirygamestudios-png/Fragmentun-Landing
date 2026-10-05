@@ -3852,3 +3852,14 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
     background:linear-gradient(180deg,rgba(7,17,29,.54),rgba(7,17,29,.72))!important;
   }
 }
+
+
+/* Mobile hero spacing correction — keep CTAs close to the discovery block */
+@media(max-width:560px){
+  .hero{min-height:auto!important;padding:34px 0 8px!important}
+  .heroGrid{min-height:0!important;padding-top:190px!important;padding-bottom:6px!important;gap:10px!important}
+  .approvedLandingHeroCopy{margin-bottom:0!important}
+  .approvedLandingHeroCopy .heroActions{margin-top:18px!important;margin-bottom:0!important}
+  .hero + .discoveryStrip{margin-top:0!important;top:0!important}
+  .discoveryStrip{margin-top:0!important}
+}
