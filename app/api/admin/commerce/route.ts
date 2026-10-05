@@ -58,7 +58,16 @@ export async function PUT(request:NextRequest){
   const allowedTaxStatus=["not_configured","review","configured"];
   const allowedLabel=["manual","provider","shippo","easypost"];
 
-  const stripeConfigured=!!(process.env.STRIPE_SECRET_KEY||process.env.STRIPE_API_KEY);\n  const paypalConfigured=!!(process.env.PAYPAL_CLIENT_ID&&process.env.PAYPAL_CLIENT_SECRET);\n  const requestedStripe=body.stripe_enabled===true;\n  const requestedPaypal=body.paypal_enabled===true;\n  if(requestedStripe&&!stripeConfigured)return NextResponse.json({error:"stripe_not_configured"},{status:400});\n  if(requestedPaypal&&!paypalConfigured)return NextResponse.json({error:"paypal_not_configured"},{status:400});\n\n  const payload={\n    stripe_enabled:requestedStripe,\n    paypal_enabled:requestedPaypal,
+  const stripeConfigured=!!(process.env.STRIPE_SECRET_KEY||process.env.STRIPE_API_KEY);
+  const paypalConfigured=!!(process.env.PAYPAL_CLIENT_ID&&process.env.PAYPAL_CLIENT_SECRET);
+  const requestedStripe=body.stripe_enabled===true;
+  const requestedPaypal=body.paypal_enabled===true;
+  if(requestedStripe&&!stripeConfigured)return NextResponse.json({error:"stripe_not_configured"},{status:400});
+  if(requestedPaypal&&!paypalConfigured)return NextResponse.json({error:"paypal_not_configured"},{status:400});
+
+  const payload={
+    stripe_enabled:requestedStripe,
+    paypal_enabled:requestedPaypal,
     default_payment_provider:allowedProvider.includes(body.default_payment_provider)?body.default_payment_provider:"auto",
     tax_mode:allowedTax.includes(body.tax_mode)?body.tax_mode:"manual",
     seller_legal_name:String(body.seller_legal_name||"").slice(0,200)||null,
