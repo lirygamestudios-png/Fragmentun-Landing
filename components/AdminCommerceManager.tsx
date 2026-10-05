@@ -32,7 +32,7 @@ export function AdminCommerceManager(){
     const j=await r.json().catch(()=>({}));
     setBusy(false);
     if(!r.ok){setMsg(j.error||"No fue posible crear el producto.");return}
-    setDraft(emptyProduct);setMsg("Producto creado ✓");await load();
+    setDraft(emptyProduct);setMsg("GUARDADO SATISFACTORIAMENTE");await load();
   }
 
   async function saveProduct(p:Product,patch:Partial<Product>={}){
@@ -41,7 +41,7 @@ export function AdminCommerceManager(){
     const j=await r.json().catch(()=>({}));
     setBusy(false);
     if(!r.ok){setMsg(j.error||"No fue posible actualizar el producto.");return}
-    setMsg("Producto actualizado ✓");await load();
+    setMsg("GUARDADO SATISFACTORIAMENTE");await load();
   }
 
   async function saveOrder(o:Order,patch:Partial<Order>={}){
@@ -50,7 +50,7 @@ export function AdminCommerceManager(){
     const j=await r.json().catch(()=>({}));
     setBusy(false);
     if(!r.ok){setMsg(j.error||"No fue posible actualizar la orden.");return}
-    setMsg("Orden actualizada ✓");await load();
+    setMsg("GUARDADO SATISFACTORIAMENTE");await load();
   }
 
   async function createFulfillment(orderId:string){
@@ -59,7 +59,7 @@ export function AdminCommerceManager(){
     const j=await r.json().catch(()=>({}));
     setBusy(false);
     if(!r.ok){setMsg(j.error||"No fue posible crear fulfillment.");return}
-    setMsg("Fulfillment creado ✓");await load();
+    setMsg("GUARDADO SATISFACTORIAMENTE");await load();
   }
 
   async function saveFulfillment(f:Fulfillment){
@@ -68,7 +68,7 @@ export function AdminCommerceManager(){
     const j=await r.json().catch(()=>({}));
     setBusy(false);
     if(!r.ok){setMsg(j.error||"No fue posible actualizar fulfillment.");return}
-    setMsg("Fulfillment actualizado ✓");await load();
+    setMsg("GUARDADO SATISFACTORIAMENTE");await load();
   }
 
   return <div className="adminShopModule">
@@ -84,7 +84,7 @@ export function AdminCommerceManager(){
         <label><span>Moneda</span><input maxLength={3} value={draft.currency} onChange={e=>setDraft({...draft,currency:e.target.value.toUpperCase()})}/></label>
         <label className="wide"><span>URL externa</span><input type="url" value={draft.external_url} onChange={e=>setDraft({...draft,external_url:e.target.value})}/></label>
       </div>
-      <div className="adminShopActions"><button className="btn btnPrimary" type="button" disabled={busy} onClick={createProduct}>+ Crear producto</button><span className="note">{msg}</span></div>
+      <div className="adminShopActions"><button className="btn btnPrimary" type="button" disabled={busy} onClick={createProduct}>+ Crear producto</button><span className={msg==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(msg&&(msg.toLowerCase().includes("error")||msg.toLowerCase().includes("no fue")||msg.toLowerCase().includes("no se")||msg.toLowerCase().includes("inválid")||msg.toLowerCase().includes("obligatorio")||msg.toLowerCase().includes("falta"))?"adminSaveFeedback error":"adminSaveFeedback")}>{msg}</span></div>
 
       <div className="adminShopProducts">
         {products.map(p=><div className="adminShopProductEditor" key={p.id}>
