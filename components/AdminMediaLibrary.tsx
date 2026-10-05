@@ -116,7 +116,7 @@ export function AdminMediaLibrary(){
         <label className="adminMediaFileInput"><span>Archivo</span><input type="file" onChange={e=>setFile(e.target.files?.[0]||null)}/><small>{file?file.name:"Ningún archivo seleccionado"}</small></label>
         <label><span>Descripción ES</span><input placeholder="Descripción accesible en español" value={form.alt_es} onChange={e=>setForm({...form,alt_es:e.target.value})}/></label>
         <label><span>Descripción EN</span><input placeholder="Accessible description in English" value={form.alt_en} onChange={e=>setForm({...form,alt_en:e.target.value})}/></label>
-        <div className="adminMediaUploadAction"><button className="btn btnPrimary" onClick={upload}>Subir a Biblioteca</button><span className={msg==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(msg?"adminSaveFeedback error":"adminSaveFeedback")}>{msg||"El original se conserva sin modificaciones."}</span></div>
+        <div className="adminMediaUploadAction"><button className="btn btnPrimary" onClick={upload}>Subir a Biblioteca</button><span className={msg==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(msg&&msg!=="Subiendo…"?"adminSaveFeedback error":"adminSaveFeedback")}>{msg||"El original se conserva sin modificaciones."}</span></div>
       </div>
     </section>
 
