@@ -16,10 +16,35 @@ export function AdminAnalytics(){
   const community=data.community||{};
 
   function exportCsv(){window.location.href="/api/admin/analytics?format=csv"}
+  function printReport(){window.print()}
+  const funnelSteps=[
+    ["Sesiones",data.funnel?.sessions||0],
+    ["Capítulo",data.funnel?.chapter_sessions||0],
+    ["Suscriptores",data.funnel?.lead_sessions||0],
+    ["Amazon",data.funnel?.amazon_sessions||0]
+  ] as const;
+  const funnelMax=Math.max(1,...funnelSteps.map(x=>Number(x[1]||0)));
 
   return <div className="adminAnalyticsModule">
-    <div className="adminModuleToolbar"><div><div className="kicker">Inteligencia del embudo</div><h2>Rendimiento y conversión</h2></div><button className="btn btnGhost" onClick={exportCsv}>Descargar informe</button></div><div style={{display:"none"}}>
-    </div>
+    <div className="adminModuleToolbar adminNoPrint"><div><div className="kicker">Inteligencia del embudo</div><h2>Rendimiento y conversión</h2></div><div className="adminReportActions"><button className="btn btnGhost" onClick={printReport}>Imprimir / Guardar PDF</button><button className="btn btnGhost" onClick={exportCsv}>Descargar CSV</button></div></div>
+    <section className="adminReportCover" id="reportes">
+      <div className="adminReportBrand"><img src="/fragmentun-mark.png" alt="" width="48" height="48"/><div><strong>FRAGMENTUN</strong><span>REPORTE EJECUTIVO · ANALÍTICA</span></div></div>
+      <div className="adminReportSummary">
+        <div><span>Sesiones · 30 días</span><strong>{data.sessions||0}</strong></div>
+        <div><span>Conversión a lead</span><strong>{pct(data.conversion_rate)}</strong></div>
+        <div><span>CTR Amazon</span><strong>{pct(data.amazon_ctr)}</strong></div>
+        <div><span>Test completados</span><strong>{t.test_complete||0}</strong></div>
+      </div>
+    </section>
+    <section className="card adminInsightPanel adminFunnelVisual">
+      <div className="adminPanelHeader"><div><div className="kicker">Visualización ejecutiva</div><h2>Embudo principal</h2></div><span className="adminPanelBadge">30 días</span></div>
+      <div className="adminFunnelBars">
+        {funnelSteps.map(([label,value])=><div className="adminFunnelRow" key={label}>
+          <div><span>{label}</span><strong>{value}</strong></div>
+          <i><b style={{width:`${Math.max(4,(Number(value||0)/funnelMax)*100)}%`}}/></i>
+        </div>)}
+      </div>
+    </section>
     <div className="kpis">
       <div className="kpi"><span>Sesiones · 30 días</span><strong>{data.sessions||0}</strong></div>
       <div className="kpi"><span>Vistas de página</span><strong>{t.page_view||0}</strong></div>
