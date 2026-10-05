@@ -8,6 +8,8 @@ type LiveData={
   sessions_30m:number;
   pages:{path:string;active:number}[];
   sources:{source:string;active:number}[];
+  action_counts:{leads:number;amazon:number;patreon:number;test:number;share:number;merch:number};
+  recent_leads:{name:string;email:string;locale:string;created_at:string}[];
   recent_events:{event_name:string;label:string;path:string;source:string;locale:string;created_at:string}[];
   error?:string;
 };
@@ -34,6 +36,15 @@ export function AdminLiveAnalytics(){
   if(!data)return <section className="card adminLivePanel"><p>Cargando actividad en vivo…</p></section>;
   if(data.error)return <section className="card adminLivePanel"><p>No fue posible cargar la actividad en vivo.</p></section>;
 
+  const actions=[
+    ["Leads",data.action_counts.leads],
+    ["Amazon",data.action_counts.amazon],
+    ["Patreon",data.action_counts.patreon],
+    ["Test",data.action_counts.test],
+    ["Share",data.action_counts.share],
+    ["Merch",data.action_counts.merch]
+  ] as const;
+
   return <section className="card adminLivePanel">
     <div className="adminPanelHeader">
       <div>
@@ -54,6 +65,10 @@ export function AdminLiveAnalytics(){
       <article><span>Última actualización</span><strong>{new Date(data.generated_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"})}</strong><small>{paused?"pausado":"automático"}</small></article>
     </div>
 
+    <div className="adminLiveActions">
+      {actions.map(([label,value])=><article key={label}><span>{label}</span><strong>{value}</strong><small>últimos 30 min</small></article>)}
+    </div>
+
     <div className="adminLiveGrid">
       <div className="adminLiveBlock">
         <div className="adminLiveBlockHead"><h3>Páginas activas</h3><span>{data.pages.length}</span></div>
@@ -62,6 +77,14 @@ export function AdminLiveAnalytics(){
       <div className="adminLiveBlock">
         <div className="adminLiveBlockHead"><h3>Origen activo</h3><span>{data.sources.length}</span></div>
         {data.sources.length?data.sources.map(s=><div className="adminLiveRow" key={s.source}><span>{s.source}</span><strong>{s.active}</strong></div>):<p className="note">Sin fuentes activas ahora.</p>}
+      </div>
+      <div className="adminLiveBlock">
+        <div className="adminLiveBlockHead"><h3>Leads recientes</h3><span>30 min</span></div>
+        {data.recent_leads.length?data.recent_leads.map((lead,i)=><div className="adminLiveEvent" key={lead.email+lead.created_at+i}>
+          <i className="eventDot lead_submit"/>
+          <div><strong>{lead.name||"Nuevo lead"}</strong><span>{lead.email}{lead.locale?` · ${lead.locale.toUpperCase()}`:""}</span></div>
+          <time>{since(lead.created_at)}</time>
+        </div>):<p className="note">No hay leads recientes.</p>}
       </div>
       <div className="adminLiveBlock adminLiveFeed">
         <div className="adminLiveBlockHead"><h3>Eventos recientes</h3><span>30 min</span></div>
