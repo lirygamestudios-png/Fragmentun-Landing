@@ -4,7 +4,7 @@ import { useEffect,useState } from "react";
 export function AdminTestEditor(){
  const[questions,setQuestions]=useState<any[]>([]);const[profiles,setProfiles]=useState<any[]>([]);const[msg,setMsg]=useState("");
  useEffect(()=>{fetch("/api/admin/test").then(r=>r.json()).then(j=>{setQuestions(j.questions||[]);setProfiles(j.profiles||[])})},[]);
- async function save(kind:string,item:any){setMsg("Guardando…");const r=await fetch("/api/admin/test",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({...item,kind})});setMsg(r.ok?"Guardado ✓":"Error")}
+ async function save(kind:string,item:any){setMsg("Guardando…");const r=await fetch("/api/admin/test",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({...item,kind})});setMsg(r.ok?"GUARDADO SATISFACTORIAMENTE":"ERROR: NO FUE POSIBLE GUARDAR")}
  return <div className="adminSecondaryModule adminTestModule">
    <div className="adminModuleSectionHead"><div><div className="kicker">Experiencia emocional</div><h2>Preguntas</h2></div><span>{questions.length} preguntas</span></div>
    <div className="adminQuestionList">{questions.map((q,qi)=><article className="card" key={q.id}>
@@ -29,6 +29,6 @@ export function AdminTestEditor(){
      <label>Fortaleza · Español</label><input value={p.superpower_es||""} onChange={e=>setProfiles(a=>a.map((x,n)=>n===i?{...x,superpower_es:e.target.value}:x))}/>
      <label>Fortaleza · Inglés</label><input value={p.superpower_en||""} onChange={e=>setProfiles(a=>a.map((x,n)=>n===i?{...x,superpower_en:e.target.value}:x))}/>
      <button className="btn btnPrimary" onClick={()=>save("profile",p)}>Guardar perfil</button>
-   </article>)}</div><p>{msg}</p>
+   </article>)}</div><p className={msg==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(msg&&(msg.toLowerCase().includes("error")||msg.toLowerCase().includes("no fue")||msg.toLowerCase().includes("no se")||msg.toLowerCase().includes("inválid")||msg.toLowerCase().includes("obligatorio")||msg.toLowerCase().includes("falta"))?"adminSaveFeedback error":"adminSaveFeedback")}>{msg}</p>
  </div>;
 }
