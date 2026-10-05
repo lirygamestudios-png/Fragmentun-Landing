@@ -5,7 +5,8 @@ import { AdminLiveAnalytics } from "../../components/AdminLiveAnalytics";
 
 type EventRow={event_name:string;source:string|null;medium:string|null;session_id:string|null;created_at:string};
 type LeadRow={name:string|null;email:string;locale:string|null;session_id:string|null;created_at:string};
-type BookRow={slug:string;volume:number;title_es:string|null;subtitle_es:string|null;status:string|null;amazon_url_es:string|null};
+type BookRow={id?:string;slug:string;volume:number;title_es:string|null;subtitle_es:string|null;status:string|null;amazon_url_es:string|null};
+type EditionRow={book_id:string;locale:string;status:string|null;amazon_url:string|null;cover_media_slug:string|null};
 type MediaRow={id:string;slug:string;kind:string;storage_path:string;public_visible:boolean};
 
 function ago(value:string){
@@ -46,17 +47,21 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{ra
     {data:events},
     {data:latestLeads},
     {data:recentLeadRows},
-    {data:recentMedia}
+    {data:recentMedia},
+    {data:bookEditions},
+    {data:coverMedia}
   ]=await Promise.all([
     supabase.from("leads").select("*",{count:"exact",head:true}),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","page_view"),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","amazon_click"),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","test_complete"),
-    supabase.from("books").select("slug,volume,title_es,subtitle_es,status,amazon_url_es").order("sort_order",{ascending:true}).limit(4),
+    supabase.from("books").select("id,slug,volume,title_es,subtitle_es,status,amazon_url_es").order("sort_order",{ascending:true}).limit(4),
     supabase.from("analytics_events").select("event_name,source,medium,session_id,created_at").gte("created_at",since).order("created_at",{ascending:true}).limit(5000),
     supabase.from("leads").select("name,email,locale,session_id,created_at").order("created_at",{ascending:false}).limit(5),
     supabase.from("leads").select("session_id,created_at").gte("created_at",since).limit(5000),
-    supabase.from("media_assets").select("id,slug,kind,storage_path,public_visible").eq("public_visible",true).order("created_at",{ascending:false}).limit(4)
+    supabase.from("media_assets").select("id,slug,kind,storage_path,public_visible").eq("public_visible",true).order("created_at",{ascending:false}).limit(4),
+    supabase.from("book_editions").select("book_id,locale,status,amazon_url,cover_media_slug"),
+    supabase.from("media_assets").select("id,slug,kind,storage_path,public_visible").eq("public_visible",true).eq("kind","image").limit(250)
   ]);
 
   const displayName=profile.display_name||"José Liranzo";
@@ -106,6 +111,19 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{ra
   ];
   const sourceBooks=((books||[]) as BookRow[]);
   const displayBooks=fallbackBooks.map(f=>sourceBooks.find(b=>b.volume===f.volume)||f);
+  const editionRows=(bookEditions||[]) as EditionRow[];
+  const coverRows=(coverMedia||[]) as MediaRow[];
+  const bookCoverUrl=(book:BookRow)=>{
+    if(!book.id)return book.volume===1?"/fragmentun-i-cover-es.jpg":"";
+    const editions=editionRows.filter(ed=>ed.book_id===book.id);
+    const preferred=editions.find(ed=>ed.locale==="es"&&ed.status==="published"&&ed.cover_media_slug)
+      ||editions.find(ed=>ed.status==="published"&&ed.cover_media_slug)
+      ||editions.find(ed=>ed.locale==="es"&&ed.cover_media_slug)
+      ||editions.find(ed=>ed.cover_media_slug);
+    if(!preferred?.cover_media_slug)return book.volume===1?"/fragmentun-i-cover-es.jpg":"";
+    const media=coverRows.find(m=>m.slug===preferred.cover_media_slug);
+    return media?mediaUrl(media):"";
+  };
 
   const nav=[
     ["⌂","Inicio","/admin"],
@@ -178,10 +196,10 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{ra
           <article className="approvedAdminPanel approvedAdminSaga">
             <div className="approvedAdminPanelTitle"><h2>Libros de la Saga</h2><a href="/admin/saga">Gestionar libros</a></div>
             <div className="approvedAdminBookGrid">
-              {displayBooks.map(book=><div className="approvedAdminBook" key={book.slug}>
+              {displayBooks.map(book=>{const cover=bookCoverUrl(book);return <div className="approvedAdminBook" key={book.slug}>
                 <h3>{book.volume}. {book.subtitle_es}</h3>
                 <div className={`approvedBookCover approvedBookCover${book.volume}`}>
-                  {book.volume===1?<img src="/fragmentun-i-cover-es.jpg" alt="FRAGMENTUN I"/>:<><span>FRAGMENTUN</span><b>{book.subtitle_es}</b><i>✦</i></>}
+                  {cover?<img src={cover} alt={`Portada ${book.title_es||"FRAGMENTUN"} ${book.subtitle_es||""}`.trim()}/>:<><span>FRAGMENTUN</span><b>{book.subtitle_es}</b><i>✦</i></>}
                   <em className={book.status==="published"||book.amazon_url_es?"published":book.volume===4?"development":"soon"}>
                     {book.status==="published"||book.amazon_url_es?"Publicado":book.volume===4?"En desarrollo":"Próximamente"}
                   </em>
@@ -189,7 +207,7 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{ra
                 <div className="approvedBookLang"><span>🇪🇸 ES</span><span>🇺🇸 EN</span></div>
                 {book.amazon_url_es?<a className="approvedBookAmazon" href={book.amazon_url_es} target="_blank" rel="noreferrer">a&nbsp;&nbsp; Ver en Amazon</a>:<span className="approvedBookAmazon disabled">a&nbsp;&nbsp; Ver en Amazon</span>}
                 <a className="approvedBookEdit" href="/admin/saga">Editar</a>
-              </div>)}
+              </div>})}
             </div>
           </article>
 
