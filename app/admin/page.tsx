@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "../../lib/supabase/server";
 import { LogoutButton } from "../../components/LogoutButton";
+import { AdminLiveAnalytics } from "../../components/AdminLiveAnalytics";
 
 type EventRow={event_name:string;source:string|null;medium:string|null;session_id:string|null;created_at:string};
 type LeadRow={name:string|null;email:string;locale:string|null;session_id:string|null;created_at:string};
@@ -170,6 +171,8 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{ra
             </div>
           </details>
         </section>
+
+        <AdminLiveAnalytics/>
 
         <section className="approvedAdminUpperGrid">
           <article className="approvedAdminPanel approvedAdminSaga">
