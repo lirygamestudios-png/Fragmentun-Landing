@@ -110,9 +110,7 @@ export function NewsConversionCards({locale,news,shareReward}:Props){
           ?"Comparte FRAGMENTUN y desbloquea una pieza de arte conceptual del universo."
           :"Share FRAGMENTUN and unlock a piece of concept art from the universe.")}</p>
         <button type="button" className="newsLink newsActionButton" disabled={shareStatus==="sharing"} onClick={shareAndUnlock}>
-          {shareStatus==="sharing"
-            ?(locale==="es"?"Compartiendo…":"Sharing…")
-            :(news?.card_share_cta||(locale==="es"?"Compartir y desbloquear arte →":"Share and unlock art →"))}
+          {news?.card_share_cta||(locale==="es"?"Compartir y desbloquear arte →":"Share and unlock art →")}
         </button>
         {shareStatus==="unsupported"&&<small className="shareRewardStatus">
           {locale==="es"
@@ -149,7 +147,15 @@ export function NewsConversionCards({locale,news,shareReward}:Props){
       </div>
     </article>
 
-    {shareStatus==="returning"&&<FragmentunProcessOverlay state="processing" title={locale==="es"?"PROCESANDO…":"PROCESSING…"} detail={locale==="es"?"Verificando tu regreso a FRAGMENTUN":"Verifying your return to FRAGMENTUN"}/>}\n\n    {rewardOpen&&<div className="shareRewardBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setRewardOpen(false)}}>
+    {(shareStatus==="sharing"||shareStatus==="returning")&&<FragmentunProcessOverlay
+      state="processing"
+      title={shareStatus==="sharing"
+        ?(locale==="es"?"COMPARTIENDO…":"SHARING…")
+        :(locale==="es"?"PROCESANDO…":"PROCESSING…")}
+      detail={shareStatus==="sharing"
+        ?(locale==="es"?"Compartiendo FRAGMENTUN":"Sharing FRAGMENTUN")
+        :(locale==="es"?"Verificando tu regreso a FRAGMENTUN":"Verifying your return to FRAGMENTUN")}
+    />}\n\n    {rewardOpen&&<div className="shareRewardBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setRewardOpen(false)}}>
       <section className="shareRewardModal" role="dialog" aria-modal="true" aria-label={shareReward?.thank_you||(locale==="es"?"Gracias por compartir este universo":"Thank you for sharing this universe")}>
         <button className="shareRewardClose" type="button" aria-label={locale==="es"?"Cerrar":"Close"} onClick={()=>setRewardOpen(false)}>×</button>
         <div className="shareRewardArt">
