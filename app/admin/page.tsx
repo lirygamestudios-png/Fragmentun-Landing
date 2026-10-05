@@ -113,6 +113,7 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{ra
     ["▦","Secciones","/admin/contenido"],
     ["♙","Personajes","/admin/personajes"],
     ["a","Amazon (Enlaces)","/admin/marketing"],
+    ["▦","Tienda FRAGMENTUN","/admin/tienda"],
     ["♟","Suscriptores","/admin/leads"],
     ["↗","Integraciones","/admin/integrations"],
     ["▥","Analítica","/admin/analytics"],
