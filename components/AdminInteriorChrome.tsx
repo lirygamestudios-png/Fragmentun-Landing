@@ -9,6 +9,7 @@ const items=[
   ["Personajes","/admin/personajes"],
   ["Medios","/admin/medios"],
   ["Analítica","/admin/analytics"],
+  ["Reportes","/admin/analytics#reportes"],
   ["Suscriptores","/admin/leads"],
   ["Integraciones","/admin/integrations"],
   ["Mapa","/admin/mapa"],
@@ -29,7 +30,7 @@ export function AdminInteriorChrome({children}:{children:React.ReactNode}){
   return <div className="adminInteriorShell">
     <div className="adminInteriorBrandbar">
       <Link href="/admin" className="adminInteriorBrand">
-        <span className="adminInteriorSigil">✦</span>
+        <span className="adminInteriorSigil"><img src="/fragmentun-mark.png" alt="" width="28" height="28"/></span>
         <div><strong>FRAGMENTUN</strong><small>PANEL DE ADMINISTRACIÓN</small></div>
       </Link>
       <nav className="adminInteriorNav" aria-label="Navegación del panel">
