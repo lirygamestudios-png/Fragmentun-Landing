@@ -57,7 +57,6 @@ export function AdminContentEditor(){
   const[enText,setEnText]=useState("");
   const[status,setStatus]=useState("");
   const[loading,setLoading]=useState(true);
-  const[requestedSection,setRequestedSection]=useState("");
   const[media,setMedia]=useState<MediaAsset[]>([]);
   const[authorFile,setAuthorFile]=useState<File|null>(null);
   const[uploading,setUploading]=useState(false);
@@ -68,7 +67,6 @@ export function AdminContentEditor(){
 
   useEffect(()=>{
     const qs=new URLSearchParams(window.location.search);
-    setRequestedSection(qs.get("section")||"");
     Promise.all([fetch("/api/admin/content"),fetch("/api/admin/media")])
       .then(async([a,b])=>[await a.json(),await b.json()])
       .then(([content,assets])=>{
