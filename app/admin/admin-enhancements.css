@@ -91,3 +91,24 @@
 .adminSeoActions{margin-top:20px;display:flex;justify-content:space-between;align-items:center;gap:20px}.adminSeoActions>div:last-child{display:flex;gap:10px;flex-wrap:wrap}
 @media(max-width:900px){.adminSeoGrid{grid-template-columns:1fr}.adminSeoStatus{grid-template-columns:1fr 1fr}.adminSeoActions{align-items:flex-start;flex-direction:column}}
 @media(max-width:520px){.adminSeoStatus{grid-template-columns:1fr}}
+
+
+/* Admin shop manager */
+.adminShopModule{display:grid;gap:22px}
+.adminShopStatus,.adminShopControl,.adminShopPreview,.adminShopSave,.adminShopLanguage{border-color:rgba(201,168,76,.12)!important;background:radial-gradient(circle at 88% 5%,rgba(74,144,217,.06),transparent 30%),linear-gradient(180deg,rgba(13,31,50,.97),rgba(7,18,30,.99))!important}
+.adminShopLive,.adminShopOffline{padding:7px 10px;border-radius:999px;font-size:.62rem;font-weight:900;letter-spacing:.08em}
+.adminShopLive{background:rgba(64,211,155,.10);border:1px solid rgba(64,211,155,.28);color:#77e0b5}
+.adminShopOffline{background:rgba(255,105,83,.08);border:1px solid rgba(255,105,83,.22);color:#ff8e7d}
+.adminShopStatusGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px}
+.adminShopStatusGrid>div{padding:14px;border-radius:14px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06)}
+.adminShopStatusGrid span,.adminShopStatusGrid strong{display:block}.adminShopStatusGrid span{font-size:.62rem;color:#778b9d}.adminShopStatusGrid strong{margin-top:5px;color:#e4c66d}
+.adminShopControlGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.adminShopControlGrid label,.adminShopLanguage label,.adminShopProductEditor label{display:grid;gap:7px}.adminShopControlGrid label>span,.adminShopLanguage label>span,.adminShopProductEditor label>span{font-size:.65rem;font-weight:800;color:#91a3b4}.adminShopControlGrid .wide,.adminShopProductEditor .wide{grid-column:1/-1}
+.adminShopToggle{display:flex!important;align-items:center;gap:10px}.adminShopToggle input{width:auto}.adminShopToggle b{font-size:.66rem;color:#e2c46d}
+.adminShopActions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.adminShopLanguageGrid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.adminShopLanguage{display:grid;gap:12px}.adminShopLanguage textarea{min-height:110px}.adminShopLanguageHead{display:flex;align-items:center;gap:10px}.adminShopLanguageHead>span{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:rgba(74,144,217,.1);border:1px solid rgba(74,144,217,.22);color:#9ec6ea;font-weight:900}.adminShopLanguageHead h2{margin:0}
+.adminShopProducts{margin-top:8px}.adminShopProductEditor{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding:13px;border-radius:14px;background:rgba(255,255,255,.022);border:1px solid rgba(255,255,255,.055)}.adminShopRemove{align-self:end;justify-self:start;border:0;background:none;color:#ff8d7b;font-size:.68rem;font-weight:800;cursor:pointer}
+.adminShopSave{display:flex;align-items:center;justify-content:space-between;gap:18px}.adminShopSave>div{display:grid;gap:4px}.adminShopSave span{color:#8396a8;font-size:.72rem}
+.adminShopPreviewViewport{overflow:hidden;border-radius:20px;border:1px solid rgba(201,168,76,.14);background:#06111c}
+.adminEmbeddedShopPreview{margin:0;min-height:470px}.adminEmbeddedShopPreview .container{width:min(1180px,94%)}.adminPreviewProduct{pointer-events:none}
+@media(max-width:900px){.adminShopLanguageGrid{grid-template-columns:1fr}.adminShopStatusGrid{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.adminShopControlGrid,.adminShopProductEditor{grid-template-columns:1fr}.adminShopControlGrid .wide,.adminShopProductEditor .wide{grid-column:auto}.adminShopStatusGrid{grid-template-columns:1fr 1fr}.adminShopSave{align-items:flex-start;flex-direction:column}.adminEmbeddedShopPreview{min-height:620px}}
