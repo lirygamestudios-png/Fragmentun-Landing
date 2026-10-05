@@ -1,0 +1,100 @@
+"use client";
+import {useEffect,useState} from "react";
+
+type Settings={
+  default_payment_provider:"stripe"|"paypal"|"both"|"auto";
+  tax_mode:"manual"|"stripe_tax"|"external_tax";
+  seller_legal_name:string|null;
+  seller_country:string|null;
+  seller_region:string|null;
+  tax_registration_status:"not_configured"|"review"|"configured";
+  returns_policy_url:string|null;
+  shipping_label_mode:"manual"|"provider"|"shippo"|"easypost";
+  stripe_enabled:boolean;
+  paypal_enabled:boolean;
+};
+type Stats={products:number;active_products:number;orders:number;paid_orders:number;pending_fulfillment:number;shipping_labels:number};
+
+export function AdminCommerceOperations(){
+  const[settings,setSettings]=useState<Settings|null>(null);
+  const[stats,setStats]=useState<Stats|null>(null);
+  const[msg,setMsg]=useState("");
+  const[saving,setSaving]=useState(false);
+
+  useEffect(()=>{
+    fetch("/api/admin/commerce",{cache:"no-store"}).then(async r=>{
+      const j=await r.json();
+      if(r.ok){setSettings(j.settings);setStats(j.stats)}
+    }).catch(()=>{});
+  },[]);
+
+  if(!settings||!stats)return <section className="card"><div className="kicker">OPERACIÓN</div><h2>Administración comercial</h2><p className="note">Cargando configuración…</p></section>;
+
+  const patch=(key:keyof Settings,value:any)=>setSettings(v=>v?{...v,[key]:value}:v);
+  const save=async()=>{
+    setSaving(true);setMsg("Guardando…");
+    const r=await fetch("/api/admin/commerce",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(settings)});
+    const j=await r.json().catch(()=>({}));
+    setSaving(false);
+    if(!r.ok){setMsg(j.error||"No fue posible guardar.");return}
+    setSettings(j.data);setMsg("Configuración administrativa guardada ✓");
+  };
+
+  return <section className="card adminCommerceOps">
+    <div className="adminPanelHeader">
+      <div><div className="kicker">OPERACIÓN COMERCIAL</div><h2>Pagos, impuestos y fulfillment</h2><p className="note">Preparación administrativa. No activa cobros reales.</p></div>
+      <span className="adminPanelBadge">PRE-CHECKOUT</span>
+    </div>
+
+    <div className="adminShopStatusGrid">
+      <div><span>Catálogo</span><strong>{stats.products}</strong></div>
+      <div><span>Productos activos</span><strong>{stats.active_products}</strong></div>
+      <div><span>Órdenes</span><strong>{stats.orders}</strong></div>
+      <div><span>Etiquetas creadas</span><strong>{stats.shipping_labels}</strong></div>
+    </div>
+
+    <div className="adminShopLanguageGrid" style={{marginTop:18}}>
+      <article className="card">
+        <div className="kicker">PAGOS</div><h3>Stripe + PayPal</h3>
+        <label><span>Política predeterminada</span><select value={settings.default_payment_provider} onChange={e=>patch("default_payment_provider",e.target.value)}>
+          <option value="auto">Automático</option><option value="both">Mostrar Stripe + PayPal</option><option value="stripe">Preferir Stripe</option><option value="paypal">Preferir PayPal</option>
+        </select></label>
+        <p className="note">Stripe: {settings.stripe_enabled?"configurado":"NO CONFIGURADO"} · PayPal: {settings.paypal_enabled?"configurado":"NO CONFIGURADO"}. Las credenciales se conectarán antes de habilitar pagos.</p>
+      </article>
+
+      <article className="card">
+        <div className="kicker">IMPUESTOS</div><h3>Configuración fiscal</h3>
+        <label><span>Modo fiscal</span><select value={settings.tax_mode} onChange={e=>patch("tax_mode",e.target.value)}>
+          <option value="manual">Manual / revisión contable</option><option value="stripe_tax">Stripe Tax (futuro)</option><option value="external_tax">Motor fiscal externo (futuro)</option>
+        </select></label>
+        <label><span>Estado de registros</span><select value={settings.tax_registration_status} onChange={e=>patch("tax_registration_status",e.target.value)}>
+          <option value="not_configured">No configurado</option><option value="review">En revisión</option><option value="configured">Configurado</option>
+        </select></label>
+      </article>
+
+      <article className="card">
+        <div className="kicker">VENDEDOR</div><h3>Entidad comercial</h3>
+        <label><span>Nombre legal</span><input value={settings.seller_legal_name||""} onChange={e=>patch("seller_legal_name",e.target.value)}/></label>
+        <label><span>País</span><input value={settings.seller_country||""} onChange={e=>patch("seller_country",e.target.value)}/></label>
+        <label><span>Estado / región</span><input value={settings.seller_region||""} onChange={e=>patch("seller_region",e.target.value)}/></label>
+      </article>
+
+      <article className="card">
+        <div className="kicker">FULFILLMENT</div><h3>Etiquetas de envío</h3>
+        <label><span>Método de etiqueta</span><select value={settings.shipping_label_mode} onChange={e=>patch("shipping_label_mode",e.target.value)}>
+          <option value="manual">Manual</option><option value="provider">Proveedor / POD</option><option value="shippo">Shippo (futuro)</option><option value="easypost">EasyPost (futuro)</option>
+        </select></label>
+        <p className="note">Cada fulfillment puede guardar transportista, servicio, tracking, URL de seguimiento, costo, formato y URL de la etiqueta.</p>
+      </article>
+    </div>
+
+    <div className="adminShopControlGrid" style={{marginTop:18}}>
+      <label className="wide"><span>Política de devoluciones</span><input type="url" value={settings.returns_policy_url||""} onChange={e=>patch("returns_policy_url",e.target.value)} placeholder="https://…"/></label>
+    </div>
+
+    <div className="adminShopActions">
+      <button className="btn btnPrimary" type="button" onClick={save} disabled={saving}>{saving?"Guardando…":"Guardar administración comercial"}</button>
+      <span className="note">{msg}</span>
+    </div>
+  </section>;
+}
