@@ -44,7 +44,10 @@ export default async function Home({
   const community=cms["home.community"]||{};
   const shareReward=cms["home.share_reward"]||{};
   const officialVideo=cms["home.official_video"]||{};
-  const shop=cms["home.shop"]||{};\n  const shopProducts=Array.isArray(shop.featured_products)?shop.featured_products:[];\n  const shopHasProduct=shopProducts.some((p:any)=>{if(!p?.name)return false;const mode=p.mode||(p.external_url||p.url?"external":"interest");return mode!=="external"||!!(p.external_url||p.url);});\n  const shopPublicEnabled=!!shop.enabled&&(!!shop.shop_url||shopHasProduct);
+  const shop=cms["home.shop"]||{};
+  const shopProducts=Array.isArray(shop.featured_products)?shop.featured_products:[];
+  const shopHasProduct=shopProducts.some((p:any)=>{if(!p?.name)return false;const mode=p.mode||(p.external_url||p.url?"external":"interest");return mode!=="external"||!!(p.external_url||p.url);});
+  const shopPublicEnabled=!!shop.enabled&&(!!shop.shop_url||shopHasProduct);
   const charactersCms={...(cms["home.characters"]||{}),characters:characters.length?characters:(cms["home.characters"]?.characters||[])};
   const footerCms=cms["home.footer"]||{};
   const mapCms=cms["home.map"]||{};
