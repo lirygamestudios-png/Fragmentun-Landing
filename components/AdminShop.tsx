@@ -88,7 +88,7 @@ export function AdminShop(){
     const j=await r.json().catch(()=>({}));
     setSaving(false);
     if(!r.ok){setMsg(j.error||"No fue posible guardar.");return}
-    setEs(j.data.es);setEn(j.data.en);setMsg("Tienda guardada ✓");
+    setEs(j.data.es);setEn(j.data.en);setMsg("GUARDADO SATISFACTORIAMENTE");
   }
 
   if(!es||!en)return <p>Cargando Tienda FRAGMENTUN…</p>;
@@ -203,7 +203,7 @@ export function AdminShop(){
     </section>
 
     <section className="card adminShopSave">
-      <div><strong>{active?"La tienda aparecerá en el menú y en el FrontDesk.":"La tienda permanecerá oculta hasta activarla y configurar al menos una URL o producto válido."}</strong><span>{msg}</span></div>
+      <div><strong>{active?"La tienda aparecerá en el menú y en el FrontDesk.":"La tienda permanecerá oculta hasta activarla y configurar al menos una URL o producto válido."}</strong><span className={msg==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(msg&&(msg.toLowerCase().includes("error")||msg.toLowerCase().includes("no fue")||msg.toLowerCase().includes("no se")||msg.toLowerCase().includes("inválid")||msg.toLowerCase().includes("obligatorio")||msg.toLowerCase().includes("falta"))?"adminSaveFeedback error":"adminSaveFeedback")}>{msg}</span></div>
       <button className="btn btnPrimary" type="button" onClick={save} disabled={saving}>{saving?"Guardando…":"Guardar Tienda"}</button>
     </section>
   </div>;
