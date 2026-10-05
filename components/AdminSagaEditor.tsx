@@ -51,7 +51,7 @@ export function AdminSagaEditor(){
     setMsg("Guardando…");
     try{
       await persistBook(books[i]);
-      setMsg("Guardado ✓");
+      setMsg("GUARDADO SATISFACTORIAMENTE");
     }catch(error:any){
       setMsg(error?.message||"Error al guardar");
     }
@@ -118,7 +118,7 @@ export function AdminSagaEditor(){
     await loadMedia();
     try{
       await persistBook(nextBook);
-      setUploadStatus(s=>({...s,[key]:"Portada guardada correctamente ✓"}));
+      setUploadStatus(s=>({...s,[key]:"GUARDADO SATISFACTORIAMENTE"}));
     }catch(error:any){
       setUploadStatus(s=>({...s,[key]:error?.message||"La portada subió, pero no pudo vincularse a la edición."}));
     }finally{
@@ -196,7 +196,7 @@ export function AdminSagaEditor(){
                 />
               </div>
               <p className="note">Puedes subir una portada nueva o seleccionar una imagen ya existente en Medios. Las nuevas portadas se guardan en Medios oficiales.</p>
-              {uploadStatus[uploadKey]&&<p className={uploadStatus[uploadKey].includes("✓")?"adminInlineStatus success":"adminInlineStatus"} role="status">{uploadStatus[uploadKey]}</p>}
+              {uploadStatus[uploadKey]&&<p className={uploadStatus[uploadKey]==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":"adminSaveFeedback error"} role="status">{uploadStatus[uploadKey]}</p>}
               {preview&&<div className="adminSagaCoverPreview"><img src={preview} alt={b.subtitle_es||"Portada FRAGMENTUN"}/><span>{String(ed.locale||"").toUpperCase()}</span></div>}
             </div>
           </div>
@@ -209,6 +209,6 @@ export function AdminSagaEditor(){
 
       <button className="btn btnPrimary" onClick={()=>save(i)}>Guardar libro</button>
     </article>)}
-    <p>{msg}</p>
+    <p className={msg==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(msg&&(msg.toLowerCase().includes("error")||msg.toLowerCase().includes("no fue")||msg.toLowerCase().includes("no se")||msg.toLowerCase().includes("inválid")||msg.toLowerCase().includes("obligatorio")||msg.toLowerCase().includes("falta"))?"adminSaveFeedback error":"adminSaveFeedback")}>{msg}</p>
   </div>;
 }
