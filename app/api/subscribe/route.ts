@@ -3,6 +3,7 @@ import { consumePublicRateLimit } from "../../../lib/rate-limit";
 
 const ML="https://connect.mailerlite.com/api/subscribers";
 const ML_GROUPS="https://connect.mailerlite.com/api/groups";
+// MailerLite routing uses production environment group IDs configured in Vercel.
 
 function normalizeGroupName(value:string){
   return value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
