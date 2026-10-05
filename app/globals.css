@@ -4224,3 +4224,212 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   .adminShopModule>.card,
   .adminCommerceOps{padding:16px}
 }
+
+
+/* Store reports */
+.adminStoreReport{
+  position:relative;
+  overflow:hidden;
+  min-height:0;
+  border:1px solid rgba(255,255,255,.08)!important;
+  border-radius:20px!important;
+  background:
+    radial-gradient(circle at 88% 4%,rgba(201,168,76,.08),transparent 28%),
+    linear-gradient(180deg,rgba(11,25,42,.98),rgba(6,16,28,.99))!important;
+  box-shadow:0 18px 46px rgba(0,0,0,.24)!important;
+  padding:22px!important
+}
+.adminStoreReport::before{
+  content:"";
+  position:absolute;inset:0 auto 0 0;width:2px;
+  background:linear-gradient(180deg,transparent,rgba(201,168,76,.72),transparent)
+}
+.adminReportToolbar{
+  display:grid;
+  grid-template-columns:180px 180px auto auto auto;
+  gap:10px;
+  align-items:end;
+  margin-bottom:18px
+}
+.adminReportToolbar label{
+  display:grid;gap:6px;
+  color:#8394a7;
+  font-size:.68rem;
+  font-weight:800
+}
+.adminReportToolbar input{
+  min-height:38px;
+  padding:8px 10px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(4,13,23,.72);
+  color:#e9f0f6
+}
+.adminReportToolbar .btn{min-height:38px;padding:8px 14px;font-size:.7rem}
+.adminReportKpis{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-bottom:14px
+}
+.adminReportKpis>div{
+  padding:15px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.07);
+  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015))
+}
+.adminReportKpis span,.adminReportKpis strong,.adminReportKpis small{display:block}
+.adminReportKpis span{
+  color:#75879b;
+  font-size:.62rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:800
+}
+.adminReportKpis strong{
+  margin-top:5px;
+  color:#f0d77c;
+  font-size:1.25rem
+}
+.adminReportKpis small{margin-top:3px;color:#6f8296;font-size:.62rem}
+.adminReportGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:12px
+}
+.adminReportPanel{
+  padding:16px;
+  border-radius:15px;
+  border:1px solid rgba(255,255,255,.07);
+  background:rgba(255,255,255,.02)
+}
+.adminReportPanel h3{margin:.2rem 0 1rem;font-size:1rem}
+.adminReportWide{grid-column:1/-1}
+.adminReportBarRow{display:grid;gap:7px;margin:11px 0}
+.adminReportBarRow>div:first-child{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.adminReportBarRow strong{font-size:.72rem;color:#e8eef4}
+.adminReportBarRow span{font-size:.65rem;color:#718397}
+.adminReportBar{
+  height:7px;
+  overflow:hidden;
+  border-radius:999px;
+  background:rgba(255,255,255,.06)
+}
+.adminReportBar i{
+  display:block;height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg,#4A90D9,#C9A84C)
+}
+.adminReportStatusList{display:grid;gap:7px}
+.adminReportStatusList>div{
+  display:flex;justify-content:space-between;gap:12px;
+  padding:8px 10px;
+  border-radius:10px;
+  background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.05)
+}
+.adminReportStatusList span{color:#8294a7;font-size:.67rem}
+.adminReportStatusList strong{color:#edf3f8;font-size:.76rem}
+.adminReportMiniKpis{
+  display:flex;flex-wrap:wrap;gap:8px;margin-top:12px
+}
+.adminReportMiniKpis span{
+  padding:7px 9px;border-radius:999px;
+  background:rgba(201,168,76,.06);
+  border:1px solid rgba(201,168,76,.16);
+  color:#899aae;font-size:.64rem
+}
+.adminReportMiniKpis b{color:#e5cb72}
+.adminReportLedger{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px 14px
+}
+.adminReportLedger span{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,.055);
+  color:#8394a7;
+  font-size:.69rem
+}
+.adminReportLedger b{color:#e9f0f6}
+.adminReportLedger .total{
+  grid-column:1/-1;
+  margin-top:4px;
+  padding:11px 12px;
+  border:1px solid rgba(201,168,76,.18);
+  border-radius:10px;
+  background:rgba(201,168,76,.055);
+  color:#d9bf68;
+  font-weight:900
+}
+.adminReportProducts,.adminReportOrders{margin-top:12px}
+.adminReportTableWrap{overflow:auto}
+.adminReportTable{width:100%;border-collapse:collapse;font-size:.69rem}
+.adminReportTable th,.adminReportTable td{
+  padding:9px 10px;
+  text-align:left;
+  border-bottom:1px solid rgba(255,255,255,.055);
+  white-space:nowrap
+}
+.adminReportTable th{
+  color:#cbb667;
+  font-size:.6rem;
+  letter-spacing:.07em;
+  text-transform:uppercase
+}
+.adminReportTable td{color:#b9c6d3}
+.adminReportFoot{
+  margin:14px 0 0!important;
+  color:#63778c!important;
+  font-size:.62rem!important;
+  text-align:center
+}
+.printOnly{display:none}
+@media(max-width:1100px){
+  .adminReportToolbar{grid-template-columns:1fr 1fr auto}
+  .adminReportKpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .adminReportToolbar,.adminReportGrid,.adminReportLedger{grid-template-columns:1fr}
+  .adminReportKpis{grid-template-columns:1fr}
+  .adminReportWide,.adminReportLedger .total{grid-column:auto}
+}
+@media print{
+  body{background:white!important;color:#111!important}
+  .controlSidebar,.adminTopbar,.noPrint,.adminCommerceOps,.adminShopModule{display:none!important}
+  .adminMain{padding:0!important}
+  .adminStoreReport{
+    box-shadow:none!important;
+    border:none!important;
+    background:white!important;
+    color:#111!important;
+    padding:0!important
+  }
+  .adminStoreReport::before{display:none}
+  .printOnly{display:block!important}
+  .adminReportPrintHead{margin-bottom:18px;border-bottom:2px solid #111;padding-bottom:10px}
+  .adminReportPrintHead h1{font-size:24px;margin:4px 0}
+  .adminReportPrintHead .kicker{color:#555!important}
+  .adminReportKpis>div,.adminReportPanel{
+    break-inside:avoid;
+    background:white!important;
+    color:#111!important;
+    border:1px solid #ccc!important;
+    box-shadow:none!important
+  }
+  .adminReportKpis span,.adminReportKpis small,
+  .adminReportStatusList span,.adminReportBarRow span,
+  .adminReportLedger span,.adminReportTable td,.adminReportFoot{
+    color:#333!important
+  }
+  .adminReportKpis strong,.adminReportPanel h3,.adminReportBarRow strong,
+  .adminReportLedger b,.adminReportStatusList strong,.adminReportTable th{
+    color:#111!important
+  }
+  .adminReportBar i{background:#444!important}
+  .adminReportTable th,.adminReportTable td{border-color:#ccc!important}
+}
