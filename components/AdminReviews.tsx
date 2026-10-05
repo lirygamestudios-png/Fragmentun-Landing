@@ -14,12 +14,22 @@ export function AdminReviews(){
     <input placeholder="Autor mostrado" value={form.author_display} onChange={e=>setForm({...form,author_display:e.target.value})}/>
     <input placeholder="URL de origen" value={form.source_url} onChange={e=>setForm({...form,source_url:e.target.value})}/>
     <textarea placeholder="Texto original" value={form.body_original} onChange={e=>setForm({...form,body_original:e.target.value})}/>
+    <textarea placeholder="Versión en español (opcional)" value={form.body_es} onChange={e=>setForm({...form,body_es:e.target.value})}/>
+    <textarea placeholder="English version (optional)" value={form.body_en} onChange={e=>setForm({...form,body_en:e.target.value})}/>
     <label><input type="checkbox" checked={form.verified} onChange={e=>setForm({...form,verified:e.target.checked})}/> Verificada</label>
     <label><input type="checkbox" checked={form.published} onChange={e=>setForm({...form,published:e.target.checked})}/> Publicada</label>
     <button className="btn btnPrimary" onClick={add}>Añadir reseña</button>
   </div><p className="note">Solo publica reseñas auténticas y verificables. No se generan testimonios ficticios.</p></div>
   <div className="adminQuestionList" style={{marginTop:22}}>{rows.map((r,i)=><article className="card" key={r.id}>
-    <div className="kicker">{r.source}</div><h3>{r.author_display||"Sin nombre"}</h3><textarea className="adminSmallArea" value={r.body_original||""} onChange={e=>setRows(a=>a.map((x,n)=>n===i?{...x,body_original:e.target.value}:x))}/>
+    <div className="kicker">{r.source}</div><h3>{r.author_display||"Sin nombre"}</h3>
+    <div className="adminReviewGrid">
+      <input placeholder="Fuente" value={r.source||""} onChange={e=>setRows(a=>a.map((x,n)=>n===i?{...x,source:e.target.value}:x))}/>
+      <input placeholder="Autor mostrado" value={r.author_display||""} onChange={e=>setRows(a=>a.map((x,n)=>n===i?{...x,author_display:e.target.value}:x))}/>
+      <input placeholder="URL de origen" value={r.source_url||""} onChange={e=>setRows(a=>a.map((x,n)=>n===i?{...x,source_url:e.target.value}:x))}/>
+      <textarea placeholder="Texto original" value={r.body_original||""} onChange={e=>setRows(a=>a.map((x,n)=>n===i?{...x,body_original:e.target.value}:x))}/>
+      <textarea placeholder="Versión en español (opcional)" value={r.body_es||""} onChange={e=>setRows(a=>a.map((x,n)=>n===i?{...x,body_es:e.target.value}:x))}/>
+      <textarea placeholder="English version (optional)" value={r.body_en||""} onChange={e=>setRows(a=>a.map((x,n)=>n===i?{...x,body_en:e.target.value}:x))}/>
+    </div>
     <label><input type="checkbox" checked={!!r.verified} onChange={e=>setRows(a=>a.map((x,n)=>n===i?{...x,verified:e.target.checked}:x))}/> Verificada</label>
     <label><input type="checkbox" checked={!!r.published} onChange={e=>setRows(a=>a.map((x,n)=>n===i?{...x,published:e.target.checked}:x))}/> Publicada</label>
     <button className="btn btnGhost" onClick={()=>save(r)}>Guardar</button>
