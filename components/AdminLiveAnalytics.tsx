@@ -65,8 +65,32 @@ export function AdminLiveAnalytics(){
       <article style={{minHeight:74,padding:"10px 12px"}}><span>Última actualización</span><strong>{new Date(data.generated_at).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",second:"2-digit"})}</strong><small>{paused?"pausado":"automático"}</small></article>
     </div>
 
-    <div className="adminLiveActions">
-      {actions.map(([label,value])=><article key={label}><span>{label}</span><strong>{value}</strong><small>últimos 30 min</small></article>)}
+    <div
+      className="adminLiveActions"
+      style={{
+        display:"grid",
+        gridTemplateColumns:"repeat(3,minmax(0,1fr))",
+        gap:6,
+        margin:"8px 0 10px"
+      }}
+    >
+      {actions.map(([label,value])=><article
+        key={label}
+        style={{
+          minHeight:46,
+          padding:"6px 8px",
+          display:"grid",
+          gridTemplateColumns:"minmax(0,1fr) auto",
+          gridTemplateRows:"auto auto",
+          columnGap:6,
+          rowGap:0,
+          alignItems:"center"
+        }}
+      >
+        <span style={{fontSize:".62rem",lineHeight:1.1,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{label}</span>
+        <strong style={{fontSize:"1.05rem",lineHeight:1,textAlign:"right"}}>{value}</strong>
+        <small style={{gridColumn:"1 / -1",fontSize:".50rem",lineHeight:1.1,marginTop:1}}>30 min</small>
+      </article>)}
     </div>
 
     <div className="adminLiveGrid" style={{display:"grid",gridTemplateColumns:"repeat(2,minmax(0,1fr))",gap:10,alignItems:"start"}}>
