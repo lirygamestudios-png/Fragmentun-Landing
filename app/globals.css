@@ -5293,3 +5293,70 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   .testViralActions .btn{width:100%}
   .adminDecisionGrid{grid-template-columns:1fr}
 }
+
+
+/* Admin password recovery — balanced compact composition */
+.authRecoveryShell{
+  padding:clamp(18px,4vw,36px)
+}
+.authRecoveryCard{
+  width:min(520px,94vw);
+  padding:clamp(28px,5vw,42px);
+  border-color:rgba(201,168,76,.22);
+  box-shadow:0 28px 80px rgba(0,0,0,.42),0 0 42px rgba(201,168,76,.05)
+}
+.authRecoveryCard .kicker{
+  font-size:.68rem;
+  letter-spacing:.16em
+}
+.authRecoveryCard h1{
+  margin:.65rem 0 .75rem;
+  font-size:clamp(2rem,5vw,2.9rem);
+  line-height:1.02;
+  letter-spacing:-.025em;
+  max-width:11ch
+}
+.authRecoveryLead{
+  margin:0 0 22px;
+  max-width:44ch;
+  font-size:.98rem;
+  line-height:1.55;
+  color:#aebdcb
+}
+.authRecoveryForm{
+  display:grid;
+  gap:16px
+}
+.authRecoveryForm label{
+  display:grid;
+  gap:7px
+}
+.authRecoveryForm .btn{
+  width:100%;
+  min-height:48px;
+  margin-top:2px
+}
+.authRecoveryCard .authLinks{
+  margin-top:20px;
+  padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.08)
+}
+.authRecoveryCard .formNotice,
+.authRecoveryCard .note{
+  margin-top:16px;
+  line-height:1.5
+}
+@media(max-width:560px){
+  .authRecoveryCard{
+    width:100%;
+    padding:24px 20px;
+    border-radius:20px
+  }
+  .authRecoveryCard h1{
+    font-size:clamp(1.9rem,10vw,2.45rem);
+    max-width:12ch
+  }
+  .authRecoveryLead{
+    font-size:.92rem
+  }
+}
