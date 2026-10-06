@@ -21,7 +21,7 @@ export function AdminAuditLog(){
   },[]);
 
   if(!data)return <FragmentunProcessOverlay compact state="loading" title="CARGANDO AUDITORÍA…"/>;
-  if(data.error)return <p>No fue posible cargar la auditoría.</p>;
+  if(data.error)return <p className="adminSaveFeedback error">No fue posible cargar la auditoría.</p>;
 
   return <div className="card">
     <h2>Actividad administrativa reciente</h2>
