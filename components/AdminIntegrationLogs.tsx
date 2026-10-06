@@ -3,6 +3,47 @@ import { useEffect,useState } from "react";
 import { FRAGMENTUN_EMAIL_SEQUENCE,FRAGMENTUN_EMAIL_SEQUENCE_EN,FRAGMENTUN_EMAIL_BRAND } from "../lib/fragmentun-email-sequence";
 import {FragmentunProcessOverlay} from "./FragmentunProcessOverlay";
 
+function AdIntegrationCard({ad,label,saving,feedback,onSave}:any){
+  const[enabled,setEnabled]=useState(!!ad.enabled);
+  const[publicId,setPublicId]=useState(ad.public_id||"");
+  const[secondaryId,setSecondaryId]=useState(ad.secondary_id||"");
+
+  useEffect(()=>{
+    setEnabled(!!ad.enabled);
+    setPublicId(ad.public_id||"");
+    setSecondaryId(ad.secondary_id||"");
+  },[ad.enabled,ad.public_id,ad.secondary_id]);
+
+  return <div style={{padding:"18px",border:"1px solid rgba(201,168,76,.22)",borderRadius:"18px",background:"rgba(7,17,31,.72)"}}>
+    <div style={{display:"flex",justifyContent:"space-between",gap:"12px",alignItems:"center",flexWrap:"wrap"}}>
+      <div>
+        <strong style={{fontSize:"1rem"}}>{label.name}</strong>
+        <div style={{marginTop:"4px",fontSize:".8rem",opacity:.68}}>{enabled?"Activo al existir consentimiento":"Desactivado"}</div>
+      </div>
+      <label style={{display:"flex",alignItems:"center",gap:"8px",fontSize:".88rem",fontWeight:800}}>
+        <input type="checkbox" checked={enabled} onChange={e=>setEnabled(e.target.checked)}/>
+        Activar
+      </label>
+    </div>
+    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:"12px",marginTop:"14px"}}>
+      <label style={{display:"grid",gap:"6px"}}>
+        <span style={{fontSize:".78rem",fontWeight:800,opacity:.78}}>{label.main}</span>
+        <input className="input" value={publicId} onChange={e=>setPublicId(e.target.value)} placeholder="Pegar aquí"/>
+      </label>
+      <label style={{display:"grid",gap:"6px"}}>
+        <span style={{fontSize:".78rem",fontWeight:800,opacity:.78}}>{label.secondary}</span>
+        <input className="input" value={secondaryId} onChange={e=>setSecondaryId(e.target.value)} placeholder="Opcional"/>
+      </label>
+    </div>
+    <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",gap:"10px",marginTop:"14px"}}>
+      {feedback?<span className={feedback==="Guardado"?"adminSaveFeedback success":"adminSaveFeedback error"}>{feedback}</span>:null}
+      <button className="btn btnPrimary" type="button" disabled={saving} onClick={()=>onSave(ad.provider,enabled,publicId,secondaryId)}>
+        {saving?"Guardando…":"Guardar"}
+      </button>
+    </div>
+  </div>;
+}
+
 function formatAutomationTrigger(trigger:any){
   if(!trigger||typeof trigger!=="object")return "Automático";
   const type=String(trigger.type||trigger.event||"").toLowerCase();
@@ -21,6 +62,8 @@ export function AdminIntegrationLogs(){
   const[provisioning,setProvisioning]=useState(false);
   const[provisionResult,setProvisionResult]=useState<any>(null);
   const[blueprintStatus,setBlueprintStatus]=useState<"idle"|"copied"|"error">("idle");
+  const[adSaving,setAdSaving]=useState<string>("");
+  const[adFeedback,setAdFeedback]=useState<Record<string,string>>({});
   useEffect(()=>{fetch("/api/admin/integrations").then(r=>r.json()).then(setData)},[]);
 
   if(!data)return <FragmentunProcessOverlay compact state="loading" title="CARGANDO INTEGRACIONES…"/>;
@@ -71,6 +114,31 @@ export function AdminIntegrationLogs(){
     }
   }
 
+  async function saveAdIntegration(provider:string,enabled:boolean,public_id:string,secondary_id:string){
+    setAdSaving(provider);
+    setAdFeedback(x=>({...x,[provider]:""}));
+    try{
+      const r=await fetch("/api/admin/integrations",{
+        method:"PUT",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({provider,enabled,public_id,secondary_id})
+      });
+      const j=await r.json();
+      if(!r.ok){
+        setAdFeedback(x=>({...x,[provider]:j.error==="missing_id"?"Agrega el ID antes de activar.":"No fue posible guardar."}));
+        return;
+      }
+      const refreshed=await fetch("/api/admin/integrations").then(x=>x.json());
+      setData(refreshed);
+      setAdFeedback(x=>({...x,[provider]:"Guardado"}));
+      window.setTimeout(()=>setAdFeedback(x=>({...x,[provider]:""})),2500);
+    }catch{
+      setAdFeedback(x=>({...x,[provider]:"No fue posible guardar."}));
+    }finally{
+      setAdSaving("");
+    }
+  }
+
   return <div className="adminSecondaryModule adminIntegrationsModule">
     <div className="kpis">
       <div className="kpi"><span>Estado MailerLite</span><strong>{health.state||"—"}</strong></div>
@@ -80,6 +148,35 @@ export function AdminIntegrationLogs(){
       <div className="kpi"><span>Eventos recientes</span><strong>{items.length}</strong></div>
       <div className="kpi"><span>Éxitos</span><strong>{success}</strong></div>
       <div className="kpi"><span>Errores</span><strong>{errors}</strong></div>
+    </div>
+
+    <div className="card adminSecondaryPanel">
+      <div className="adminPanelHeader">
+        <div>
+          <div className="kicker">Publicidad</div>
+          <h2>Meta, Google y TikTok</h2>
+        </div>
+        <span className="adminPanelBadge">LISTO PARA CONFIGURAR</span>
+      </div>
+      <p className="note">Configura aquí los identificadores públicos de cada plataforma. Los seguimientos permanecerán inactivos hasta que también exista consentimiento de publicidad en la web.</p>
+      <div style={{display:"grid",gap:"14px"}}>
+        {(data.ads||[]).map((ad:any)=>{
+          const labels:any={
+            meta:{name:"Meta Ads",main:"ID del píxel",secondary:"ID adicional (opcional)"},
+            google:{name:"Google Ads",main:"ID de seguimiento",secondary:"ID de conversión (opcional)"},
+            tiktok:{name:"TikTok Ads",main:"ID del píxel",secondary:"ID adicional (opcional)"}
+          };
+          const label=labels[ad.provider]||{name:ad.provider,main:"ID",secondary:"ID adicional"};
+          return <AdIntegrationCard
+            key={ad.provider}
+            ad={ad}
+            label={label}
+            saving={adSaving===ad.provider}
+            feedback={adFeedback[ad.provider]||""}
+            onSave={saveAdIntegration}
+          />;
+        })}
+      </div>
     </div>
 
     <div className="card adminSecondaryPanel">
