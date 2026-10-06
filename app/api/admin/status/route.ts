@@ -18,7 +18,7 @@ export async function GET(){
   const checks:any[]=[
     {key:"supabase_url",label:"Supabase URL",ok:!!process.env.NEXT_PUBLIC_SUPABASE_URL,required:true,category:"Infraestructura"},
     {key:"supabase_key",label:"Supabase publishable key",ok:!!process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,required:true,category:"Infraestructura"},
-    {key:"supabase_service",label:"Supabase service role",ok:!!process.env.SUPABASE_SECRET_KEY,required:true,category:"Infraestructura"},
+    {key:"supabase_service",label:"Diagnóstico avanzado Supabase",ok:!!process.env.SUPABASE_SECRET_KEY,required:false,category:"Infraestructura",detail:process.env.SUPABASE_SECRET_KEY?"Disponible":"No configurado · no afecta el FrontDesk"},
     {key:"site_url",label:"URL pública del sitio",ok:!!env("NEXT_PUBLIC_SITE_URL","next_public_site_url"),required:true,category:"Infraestructura"},
     {key:"patreon",label:"Patreon",ok:!!env("NEXT_PUBLIC_PATREON_URL","next_public_patreon_url"),required:false,category:"Canales"},
     {key:"instagram",label:"Instagram oficial",ok:!!env("NEXT_PUBLIC_INSTAGRAM_URL","next_public_instagram_url"),required:false,category:"Canales"},
@@ -38,30 +38,33 @@ export async function GET(){
   let latestAnalytics:any=null,latestLead:any=null,leadHealth:any[]=[];
   let buckets:any[]=[];
 
+  const dbClient=serviceConfigured?createSupabaseServiceClient():x.supabase;
+  const dbResults=await Promise.all([
+    dbClient.from("localized_content").select("*",{count:"exact",head:true}),
+    dbClient.from("characters").select("*",{count:"exact",head:true}).eq("status","published"),
+    dbClient.from("media_assets").select("*",{count:"exact",head:true}).eq("public_visible",true),
+    dbClient.from("analytics_events").select("*",{count:"exact",head:true}),
+    dbClient.from("leads").select("*",{count:"exact",head:true}),
+    dbClient.from("analytics_events").select("created_at,event_name").order("created_at",{ascending:false}).limit(1).maybeSingle(),
+    dbClient.from("leads").select("created_at,mailerlite_status").order("created_at",{ascending:false}).limit(1).maybeSingle(),
+    dbClient.from("leads").select("mailerlite_status")
+  ]);
+  contentCount=dbResults[0].count||0;contentError=dbResults[0].error;
+  characterCount=dbResults[1].count||0;characterError=dbResults[1].error;
+  mediaCount=dbResults[2].count||0;mediaError=dbResults[2].error;
+  analyticsCount=dbResults[3].count||0;analyticsError=dbResults[3].error;
+  leadCount=dbResults[4].count||0;leadError=dbResults[4].error;
+  latestAnalytics=dbResults[5].data||null;
+  latestLead=dbResults[6].data||null;
+  leadHealth=dbResults[7].data||[];
+
   if(serviceConfigured){
     const service=createSupabaseServiceClient();
-    const results=await Promise.all([
-      service.from("localized_content").select("*",{count:"exact",head:true}),
-      service.from("characters").select("*",{count:"exact",head:true}).eq("status","published"),
-      service.from("media_assets").select("*",{count:"exact",head:true}).eq("public_visible",true),
-      service.from("analytics_events").select("*",{count:"exact",head:true}),
-      service.from("leads").select("*",{count:"exact",head:true}),
-      service.from("analytics_events").select("created_at,event_name").order("created_at",{ascending:false}).limit(1).maybeSingle(),
-      service.from("leads").select("created_at,mailerlite_status").order("created_at",{ascending:false}).limit(1).maybeSingle(),
-      service.from("leads").select("mailerlite_status"),
-      service.storage.listBuckets()
-    ]);
-    contentCount=results[0].count||0;contentError=results[0].error;
-    characterCount=results[1].count||0;characterError=results[1].error;
-    mediaCount=results[2].count||0;mediaError=results[2].error;
-    analyticsCount=results[3].count||0;analyticsError=results[3].error;
-    leadCount=results[4].count||0;leadError=results[4].error;
-    latestAnalytics=results[5].data||null;
-    latestLead=results[6].data||null;
-    leadHealth=results[7].data||[];
-    buckets=results[8].data||[];bucketsError=results[8].error;
+    const storageResult=await service.storage.listBuckets();
+    buckets=storageResult.data||[];
+    bucketsError=storageResult.error;
   }else{
-    contentError=characterError=mediaError=analyticsError=leadError=bucketsError={message:"service_not_configured"};
+    bucketsError={message:"advanced_diagnostics_not_configured"};
   }
 
   const queryMs=Date.now()-started;
@@ -75,7 +78,7 @@ export async function GET(){
     {key:"db_media",label:"Biblioteca multimedia pública",ok:!mediaError&&(mediaCount||0)>0,required:true,category:"Datos",detail:`${mediaCount||0} recursos`},
     {key:"analytics_pipeline",label:"Pipeline Analytics",ok:!analyticsError,required:true,category:"Operación",detail:`${analyticsCount||0} eventos · último ${latestAnalytics?.created_at||"—"}`},
     {key:"lead_pipeline",label:"Pipeline Leads",ok:!leadError,required:true,category:"Operación",detail:`${leadCount||0} leads · último ${latestLead?.created_at||"—"}`},
-    {key:"storage",label:"Supabase Storage",ok:storageReady,required:true,category:"Infraestructura",detail:storageReady?"Buckets esperados disponibles":"Revisar buckets"},
+    {key:"storage",label:"Supabase Storage",ok:serviceConfigured?storageReady:true,required:false,category:"Infraestructura",detail:serviceConfigured?(storageReady?"Buckets esperados disponibles":"Revisar buckets"):"Diagnóstico avanzado no configurado"},
     {key:"db_latency",label:"Latencia de comprobación Backend",ok:queryMs<3000,required:false,category:"Operación",detail:`${queryMs} ms`}
   );
 
