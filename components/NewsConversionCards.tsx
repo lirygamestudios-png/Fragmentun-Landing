@@ -1,6 +1,6 @@
 "use client";
 
-import {useState} from "react";
+import {useEffect,useState} from "react";
 import type {Locale} from "../lib/i18n";
 import {TrackLink} from "./TrackLink";
 import {FragmentunProcessOverlay} from "./FragmentunProcessOverlay";
@@ -13,6 +13,15 @@ type Props={
 
 export function NewsConversionCards({locale,news,shareReward}:Props){
   const[rewardOpen,setRewardOpen]=useState(false);
+
+  useEffect(()=>{
+    if(!rewardOpen)return;
+    const previous=document.body.style.overflow;
+    document.body.style.overflow="hidden";
+    const onKey=(event:KeyboardEvent)=>{if(event.key==="Escape")setRewardOpen(false)};
+    window.addEventListener("keydown",onKey);
+    return()=>{document.body.style.overflow=previous;window.removeEventListener("keydown",onKey)};
+  },[rewardOpen]);
   const[rewardReady,setRewardReady]=useState(false);
   const[shareStatus,setShareStatus]=useState<"idle"|"prompting"|"sharing"|"preparing"|"unsupported"|"error">("idle");
 
