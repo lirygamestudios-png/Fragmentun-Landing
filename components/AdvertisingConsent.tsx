@@ -137,7 +137,7 @@ export function AdvertisingConsent(){
           {en
             ?"With your permission, we can use advertising measurement from Meta, Google and TikTok. Essential site functions work either way."
             :"Con tu permiso, podemos usar medición publicitaria de Meta, Google y TikTok. Las funciones esenciales del sitio funcionan de cualquier manera."}
-          {" "}<a href={en?"/en/privacy":"/es/privacidad"} style={{color:"#4A90D9"}}>{en?"Privacy":"Privacidad"}</a>
+          {" "}<a href={en?"/en/privacidad":"/es/privacidad"} style={{color:"#4A90D9"}}>{en?"Privacy":"Privacidad"}</a>
         </p>
       </div>
       <div style={{display:"flex",gap:"9px",flexWrap:"wrap"}}>
