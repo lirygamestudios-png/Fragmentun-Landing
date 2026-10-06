@@ -3,6 +3,7 @@ import { locales, type Locale } from "../../../lib/i18n";
 import { notFound } from "next/navigation";
 import { RegistrationAdvertisingTracker } from "../../../components/RegistrationAdvertisingTracker";
 import { TrackLink } from "../../../components/TrackLink";
+import { PageView } from "../../../components/PageView";
 
 export default async function Gracias({
   params,
