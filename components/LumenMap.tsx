@@ -2,6 +2,7 @@
 
 import {useMemo,useRef,useState} from "react";
 import type {Locale} from "../lib/i18n";
+import {analyticsAttribution} from "../lib/analytics-client";
 
 type Region={slug:string;name_es:string;name_en:string;description_es:string|null;description_en:string|null;color:string|null};
 type Point={slug:string;name_es:string;name_en:string;description_es:string|null;description_en:string|null;x:number|null;y:number|null;icon:string|null};
@@ -94,7 +95,7 @@ export function LumenMap({locale,regions,points}:{locale:Locale;regions:Region[]
 
   function track(kind:string,slug:string){
     fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-      event_name:"map_interaction",locale,path:`/${locale}/mapa`,metadata:{kind,slug,version:"lumen_post_pulse"}
+      event_name:"map_interaction",locale,path:`/${locale}/mapa`,...analyticsAttribution(),metadata:{kind,slug,version:"lumen_post_pulse"}
     }),keepalive:true}).catch(()=>{});
   }
 
