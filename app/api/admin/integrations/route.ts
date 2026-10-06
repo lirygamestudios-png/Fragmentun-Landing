@@ -57,6 +57,7 @@ export async function GET(){
   const{data:{user}}=await supabase.auth.getUser();
   if(!user)return NextResponse.json({error:"forbidden"},{status:403});
   if(!(await hasSatisfiedMfa(supabase)))return NextResponse.json({error:"mfa_required"},{status:403});
+  if(!(await hasSatisfiedMfa(supabase)))return NextResponse.json({error:"mfa_required"},{status:403});
 
   const{data:profile}=await supabase
     .from("admin_profiles")
