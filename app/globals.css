@@ -5066,3 +5066,88 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
     overflow:auto;
   }
 }
+
+
+/* Emotional Test — viral result card */
+.testViralCard{
+  --profile-color:#C9A84C;
+  position:relative;
+  overflow:hidden;
+  display:grid;
+  gap:12px;
+  margin:28px 0 16px;
+  padding:28px;
+  border:1px solid color-mix(in srgb,var(--profile-color) 55%,transparent);
+  border-radius:24px;
+  background:
+    radial-gradient(circle at 82% 18%,color-mix(in srgb,var(--profile-color) 28%,transparent),transparent 34%),
+    linear-gradient(145deg,#0A1628,#07101d 72%);
+  box-shadow:0 24px 70px rgba(0,0,0,.34)
+}
+.testViralGlow{
+  position:absolute;
+  inset:auto -80px -130px auto;
+  width:310px;
+  height:310px;
+  border-radius:50%;
+  background:var(--profile-color);
+  filter:blur(90px);
+  opacity:.14;
+  pointer-events:none
+}
+.testViralBrand{
+  position:relative;
+  color:#C9A84C;
+  font-weight:900;
+  letter-spacing:.12em
+}
+.testViralBrand span{
+  margin-left:10px;
+  color:#8da2b6;
+  font-size:.68rem
+}
+.testViralLabel{
+  position:relative;
+  margin-top:10px;
+  color:#8fa3b8;
+  font-size:.72rem;
+  letter-spacing:.15em;
+  font-weight:800
+}
+.testViralCard>strong{
+  position:relative;
+  color:var(--profile-color);
+  font-family:Georgia,serif;
+  font-size:clamp(2rem,7vw,4rem);
+  line-height:1;
+  text-transform:uppercase
+}
+.testViralStrength{
+  position:relative;
+  display:grid;
+  gap:5px;
+  color:#eef4fa;
+  font-size:1rem
+}
+.testViralStrength span{
+  color:#8fa3b8;
+  font-size:.65rem;
+  letter-spacing:.14em;
+  font-weight:800
+}
+.testViralCard small{
+  position:relative;
+  color:#9fb0c1;
+  line-height:1.5
+}
+.testViralActions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:4px
+}
+.testShareStatus{margin:6px 0 18px}
+@media(max-width:560px){
+  .testViralCard{padding:22px}
+  .testViralActions .btn{width:100%}
+}
