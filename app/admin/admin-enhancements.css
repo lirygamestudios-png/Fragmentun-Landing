@@ -307,3 +307,28 @@
 @media(max-width:760px){
   .campaignFilterGrid{grid-template-columns:1fr}
 }
+
+.adminCampaignToast{
+  position:fixed;
+  top:86px;
+  right:28px;
+  z-index:1200;
+  max-width:min(420px,calc(100vw - 32px));
+  padding:12px 16px;
+  border-radius:12px;
+  border:1px solid rgba(64,211,155,.42);
+  background:rgba(7,17,31,.96);
+  color:#8ff0c5;
+  font-weight:800;
+  letter-spacing:.025em;
+  box-shadow:0 18px 48px rgba(0,0,0,.35),0 0 22px rgba(64,211,155,.10);
+  backdrop-filter:blur(14px)
+}
+.adminCampaignToast.error{
+  border-color:rgba(255,92,92,.45);
+  color:#ffaaaa;
+  box-shadow:0 18px 48px rgba(0,0,0,.35),0 0 22px rgba(255,92,92,.10)
+}
+@media(max-width:700px){
+  .adminCampaignToast{top:72px;right:16px;left:16px;max-width:none}
+}
