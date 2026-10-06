@@ -14,6 +14,7 @@ import { FragmentunShop } from "../../components/FragmentunShop";
 import { CmsSectionMedia } from "../../components/CmsSectionMedia";
 import { NewsConversionCards } from "../../components/NewsConversionCards";
 import { ScrollTopOnEntry } from "../../components/ScrollTopOnEntry";
+import { AdvertisingPreferencesLink } from "../../components/AdvertisingPreferencesLink";
 import { copy,locales,type Locale } from "../../lib/i18n";
 import { getBooks,getLocalizedContent,getPublishedReviews,getPublishedCharacters } from "../../lib/content";
 
@@ -458,6 +459,7 @@ export default async function Home({
         <div className="approvedFooterCol">
           <h3>{locale==="es"?"Legal":"Legal"}</h3>
           <a href={`/${locale}/privacidad`}>{locale==="es"?"Política de Privacidad":"Privacy Policy"}</a>
+          <AdvertisingPreferencesLink locale={locale}/>
           <span>{t.footer}</span>
         </div>
         <div className="approvedFooterJoin">
