@@ -26,6 +26,7 @@ export function AdminAnalytics(){
     ["Patreon",data.funnel?.patreon_sessions||0]
   ] as const;
   const funnelMax=Math.max(1,...funnelSteps.map(x=>Number(x[1]||0)));
+  const paidChannels=(data.by_source||[]).filter((r:any)=>["cpc","paid_social"].includes(String(r.medium||"").toLowerCase()));
 
   return <div className="adminAnalyticsModule">
     <div className="adminModuleToolbar adminNoPrint"><div><div className="kicker">Inteligencia del embudo</div><h2>Rendimiento y conversión</h2></div><div className="adminReportActions"><button className="btn btnGhost" onClick={printReport}>Imprimir / Guardar PDF</button><button className="btn btnGhost" onClick={exportCsv}>Descargar CSV</button></div></div>
@@ -132,6 +133,18 @@ export function AdminAnalytics(){
         <div className="kpi"><span>Pendientes / sin configurar</span><strong>{(ml.pending||0)+(ml.unconfigured||0)}</strong></div>
         <div className="kpi"><span>Errores de sincronización</span><strong>{ml.error||0}</strong></div>
       </div>
+    </div>
+
+    <div className="card adminInsightPanel">
+      <div className="adminPanelHeader"><div><div className="kicker">Adquisición pagada</div><h2>Meta + Google Ads</h2></div><span className="adminPanelBadge">ATRIBUCIÓN LISTA</span></div>
+      {paidChannels.length===0
+        ?<p className="note">Todavía no hay tráfico pagado registrado. Cuando entren campañas con gclid/gbraid/wbraid/fbclid o UTMs, aparecerán aquí automáticamente.</p>
+        :<div className="adminTableWrap"><table className="adminTable">
+          <thead><tr><th>Canal</th><th>Medio</th><th>Visitas</th><th>Leads</th><th>Conv.</th><th>Amazon</th><th>Patreon</th></tr></thead>
+          <tbody>{paidChannels.map((r:any)=><tr key={`${r.source}:${r.medium}`}>
+            <td>{r.source}</td><td>{r.medium}</td><td>{r.visits}</td><td>{r.leads}</td><td>{pct(r.conversion)}</td><td>{r.amazonClicks||0}</td><td>{r.patreonClicks||0}</td>
+          </tr>)}</tbody>
+        </table></div>}
     </div>
 
     <div className="card adminInsightPanel">
