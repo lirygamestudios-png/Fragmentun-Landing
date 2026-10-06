@@ -157,6 +157,16 @@ export function AdminAnalytics(){
     </div>
 
     <div className="card adminInsightPanel">
+      <h2>Rendimiento por campaña</h2>
+      <div className="adminTableWrap"><table className="adminTable">
+        <thead><tr><th>Campaña</th><th>Fuente</th><th>Medio</th><th>Creativo</th><th>Visitas</th><th>Leads</th><th>Conv.</th><th>Amazon</th><th>Patreon</th></tr></thead>
+        <tbody>{(data.by_campaign||[]).map((r:any)=><tr key={`${r.source}:${r.medium}:${r.campaign}:${r.content}`}>
+          <td>{r.campaign}</td><td>{r.source}</td><td>{r.medium}</td><td>{r.content||"—"}</td><td>{r.visits}</td><td>{r.leads}</td><td>{pct(r.conversion)}</td><td>{r.amazonClicks||0}</td><td>{r.patreonClicks||0}</td>
+        </tr>)}</tbody>
+      </table></div>
+    </div>
+
+    <div className="card adminInsightPanel">
       <h2>Rendimiento por idioma</h2>
       <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Idioma</th><th>Visitas</th><th>Suscriptores</th><th>Conv.</th><th>Amazon</th><th>Patreon</th></tr></thead><tbody>
         {(data.by_locale||[]).map((r:any)=><tr key={r.locale}>
