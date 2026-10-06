@@ -30,10 +30,10 @@ function AdIntegrationCard({ad,label,saving,feedback,onSave}:any){
         <span style={{fontSize:".78rem",fontWeight:800,opacity:.78}}>{label.main}</span>
         <input className="input" value={publicId} onChange={e=>setPublicId(e.target.value)} placeholder="Pegar aquí"/>
       </label>
-      <label style={{display:"grid",gap:"6px"}}>
+      {ad.provider==="google"?<label style={{display:"grid",gap:"6px"}}>
         <span style={{fontSize:".78rem",fontWeight:800,opacity:.78}}>{label.secondary}</span>
         <input className="input" value={secondaryId} onChange={e=>setSecondaryId(e.target.value)} placeholder="Opcional"/>
-      </label>
+      </label>:null}
     </div>
     <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",gap:"10px",marginTop:"14px"}}>
       {feedback?<span className={feedback==="Guardado"?"adminSaveFeedback success":"adminSaveFeedback error"}>{feedback}</span>:null}
@@ -162,9 +162,9 @@ export function AdminIntegrationLogs(){
       <div style={{display:"grid",gap:"14px"}}>
         {(data.ads||[]).map((ad:any)=>{
           const labels:any={
-            meta:{name:"Meta Ads",main:"ID del píxel",secondary:"ID adicional (opcional)"},
+            meta:{name:"Meta Ads",main:"ID del píxel",secondary:""},
             google:{name:"Google Ads",main:"ID de seguimiento",secondary:"ID de conversión (opcional)"},
-            tiktok:{name:"TikTok Ads",main:"ID del píxel",secondary:"ID adicional (opcional)"}
+            tiktok:{name:"TikTok Ads",main:"ID del píxel",secondary:""}
           };
           const label=labels[ad.provider]||{name:ad.provider,main:"ID",secondary:"ID adicional"};
           return <AdIntegrationCard
