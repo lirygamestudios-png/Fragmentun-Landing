@@ -81,6 +81,40 @@ function loadTikTok(pixelId:string){
   ttq.load(pixelId); ttq.page();
 }
 
+function sendAdvertisingEvent(payload:any){
+  if(readChoice()!=="accepted")return;
+  const w=window as any;
+  const name=String(payload?.name||"");
+  if(!name)return;
+
+  if(typeof w.fbq==="function"){
+    const metaEvent=
+      name==="registration"?"Lead":
+      name==="chapter_read"?"ViewContent":
+      name==="amazon_click"?"InitiateCheckout":
+      name==="patreon_click"?"Contact":"";
+    if(metaEvent)w.fbq("track",metaEvent);
+  }
+
+  if(typeof w.gtag==="function"){
+    const googleEvent=
+      name==="registration"?"generate_lead":
+      name==="chapter_read"?"view_item":
+      name==="amazon_click"?"begin_checkout":
+      name==="patreon_click"?"select_content":"";
+    if(googleEvent)w.gtag("event",googleEvent,{event_category:"FRAGMENTUN"});
+  }
+
+  if(w.ttq?.track){
+    const tiktokEvent=
+      name==="registration"?"SubmitForm":
+      name==="chapter_read"?"ViewContent":
+      name==="amazon_click"?"ClickButton":
+      name==="patreon_click"?"Contact":"";
+    if(tiktokEvent)w.ttq.track(tiktokEvent);
+  }
+}
+
 async function loadConfiguredAds(){
   try{
     const r=await fetch("/api/ad-settings",{cache:"no-store"});
@@ -109,9 +143,15 @@ export function AdvertisingConsent(){
     setReady(true);
     if(saved==="accepted")loadConfiguredAds();
 
+    const onAdEvent=(event:Event)=>sendAdvertisingEvent((event as CustomEvent).detail||{});
+    window.addEventListener("fragmentun:ad-event",onAdEvent as EventListener);
+
     const reopen=()=>setChoice(null);
     window.addEventListener("fragmentun:ad-consent-open",reopen);
-    return()=>window.removeEventListener("fragmentun:ad-consent-open",reopen);
+    return()=>{
+      window.removeEventListener("fragmentun:ad-consent-open",reopen);
+      window.removeEventListener("fragmentun:ad-event",onAdEvent as EventListener);
+    };
   },[isAdmin]);
 
   if(!ready||isAdmin||choice)return null;
