@@ -454,7 +454,7 @@ export default async function Home({
           <a href="#comunidad-publica">{locale==="es"?"Comunidad":"Community"}</a>
           <a href="#lectores">{locale==="es"?"Reseñas":"Reviews"}</a>
           <a href="#capitulo">{locale==="es"?"Capítulo 1":"Chapter 1"}</a>
-          {!!shop.enabled&&!!shop.shop_url&&<a href="#tienda">{locale==="es"?"Tienda FRAGMENTUN":"FRAGMENTUN Store"}</a>}
+          {shopPublicEnabled&&<a href="#tienda">{locale==="es"?"Tienda FRAGMENTUN":"FRAGMENTUN Store"}</a>}
         </div>
         <div className="approvedFooterCol">
           <h3>{locale==="es"?"Legal":"Legal"}</h3>
