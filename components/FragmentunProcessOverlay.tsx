@@ -5,11 +5,13 @@ type ProcessState="loading"|"processing"|"uploading"|"success"|"error";
 export function FragmentunProcessOverlay({
   state="processing",
   title,
-  detail
+  detail,
+  compact=false
 }:{
   state?:ProcessState;
   title?:string;
   detail?:string;
+  compact?:boolean;
 }){
   const labels={
     loading:"CARGANDO…",
@@ -18,7 +20,7 @@ export function FragmentunProcessOverlay({
     success:"GUARDADO SATISFACTORIAMENTE",
     error:"ERROR"
   };
-  return <div className={"fragmentunProcessOverlay state-"+state} role="status" aria-live="polite">
+  return <div className={"fragmentunProcessOverlay state-"+state+(compact?" compact":"")} role="status" aria-live="polite">
     <div className="fragmentunProcessCore">
       <div className="fragmentunProcessMark">
         <span className="fragmentunProcessOrbit orbitOne"/>
