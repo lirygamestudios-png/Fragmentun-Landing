@@ -3,7 +3,7 @@ import {useEffect,useMemo,useState} from "react";
 
 type Product={id:string;sku:string|null;name_es:string;name_en:string|null;mode:string;payment_provider:string;external_url:string|null;price_cents:number|null;currency:string;active:boolean;featured:boolean;stock_status:string};
 type Order={id:string;order_number:string;customer_email:string|null;payment_provider:string|null;payment_status:string;fulfillment_status:string;refund_status:string;total_cents:number;currency:string;created_at:string;notes:string|null};
-type Fulfillment={id:string;order_id:string;supplier:string|null;carrier:string|null;service:string|null;tracking_number:string|null;tracking_url:string|null;shipment_status:string;package_weight_grams:number|null;package_dimensions:{length_cm?:number;width_cm?:number;height_cm?:number}|null;label_provider:string|null;shipping_label_url:string|null;shipping_label_format:string|null;label_cost_cents:number;label_created_at:string|null};
+type Fulfillment={id:string;order_id:string;supplier:string|null;carrier:string|null;service:string|null;tracking_number:string|null;tracking_url:string|null;shipment_status:string;package_weight_grams:number|null;package_dimensions:{length_cm?:number;width_cm?:number;height_cm?:number}|null;label_provider:string|null;shipping_label_url:string|null;shipping_label_format:string|null;label_cost_cents:number;label_created_at:string|null;shipped_at?:string|null;delivered_at?:string|null};
 
 const emptyProduct={sku:"",name_es:"",name_en:"",mode:"interest",payment_provider:"auto",external_url:"",price_cents:"",currency:"USD",active:false,featured:false,stock_status:"unknown"};
 
@@ -66,9 +66,10 @@ export function AdminCommerceManager(){
     setMsg("GUARDADO SATISFACTORIAMENTE");await load();
   }
 
-  async function saveFulfillment(f:Fulfillment){
+  async function saveFulfillment(f:Fulfillment,patch:Partial<Fulfillment>={}){
     setBusy(true);
-    const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"fulfillment",...f})});
+    const payload={...f,...patch};
+    const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"fulfillment",...payload})});
     const j=await r.json().catch(()=>({}));
     setBusy(false);
     if(!r.ok){setMsg(j.error||"No fue posible actualizar fulfillment.");return}
@@ -160,6 +161,7 @@ export function AdminCommerceManager(){
         <label><span>Costo etiqueta (¢)</span><input type="number" min="0" value={f.label_cost_cents||0} onChange={e=>setFulfillments(v=>v.map(x=>x.id===f.id?{...x,label_cost_cents:Number(e.target.value)}:x))}/></label>
         <div className="adminShopActions">
           <button className="btn btnPrimary" type="button" disabled={busy} onClick={()=>saveFulfillment(f)}>Guardar envío</button>
+          {f.shipment_status!=="shipped"&&f.shipment_status!=="delivered"&&<button className="btn btnGhost" type="button" disabled={busy} onClick={()=>saveFulfillment(f,{shipment_status:"shipped",shipped_at:new Date().toISOString()})}>Marcar como enviado</button>}
           {f.shipping_label_url&&<a className="btn btnGhost" href={f.shipping_label_url} target="_blank" rel="noreferrer">Abrir / Reimprimir etiqueta ↗</a>}
           {f.tracking_url&&<a className="btn btnGhost" href={f.tracking_url} target="_blank" rel="noreferrer">Abrir tracking ↗</a>}
         </div>
