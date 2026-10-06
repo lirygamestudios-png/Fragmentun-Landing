@@ -1,5 +1,6 @@
 "use client";
 import {useEffect,useState} from "react";
+import {FragmentunProcessOverlay} from "./FragmentunProcessOverlay";
 
 type Settings={
   default_payment_provider:"stripe"|"paypal"|"both"|"auto";
@@ -30,7 +31,7 @@ export function AdminCommerceOperations(){
     }).catch(()=>{});
   },[]);
 
-  if(!settings||!stats)return <section className="card"><div className="kicker">OPERACIÓN</div><h2>Administración comercial</h2><p className="note">Cargando configuración…</p></section>;
+  if(!settings||!stats)return <section className="card"><FragmentunProcessOverlay compact state="loading" title="CARGANDO CONFIGURACIÓN…"/></section>;
 
   const patch=(key:keyof Settings,value:any)=>setSettings(v=>v?{...v,[key]:value}:v);
   const save=async()=>{
@@ -43,6 +44,7 @@ export function AdminCommerceOperations(){
   };
 
   return <section className="card adminCommerceOps">
+    {saving&&<FragmentunProcessOverlay compact state="processing" title="GUARDANDO CONFIGURACIÓN…"/>}
     <div className="adminPanelHeader">
       <div><div className="kicker">OPERACIÓN COMERCIAL</div><h2>Pagos, impuestos y fulfillment</h2><p className="note">Preparación administrativa. No activa cobros reales.</p></div>
       <span className="adminPanelBadge">PRE-CHECKOUT</span>
