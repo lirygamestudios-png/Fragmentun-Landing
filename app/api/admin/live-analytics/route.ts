@@ -5,6 +5,7 @@ async function requireAnalytics(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user)return {ok:false,supabase};
+  if(!(await hasSatisfiedMfa(supabase)))return {ok:false,supabase};
   const{data:p}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   return {ok:!!p&&["admin","marketing","editor"].includes(p.role),supabase};
 }
