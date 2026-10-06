@@ -35,7 +35,7 @@ export function AdminLiveAnalytics(){
   },[paused]);
 
   if(!data)return <section className="card adminLivePanel"><FragmentunProcessOverlay compact state="loading" title="CARGANDO ACTIVIDAD…"/></section>;
-  if(data.error)return <section className="card adminLivePanel"><p>No fue posible cargar la actividad en vivo.</p></section>;
+  if(data.error)return <section className="card adminLivePanel"><p className="adminSaveFeedback error">No fue posible cargar la actividad en vivo.</p></section>;
 
   const actions=[
     ["Leads",data.action_counts.leads],
