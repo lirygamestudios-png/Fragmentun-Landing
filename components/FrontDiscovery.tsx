@@ -61,6 +61,15 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
   const[openValue,setOpenValue]=useState<string|null>(null);
   const[selected,setSelected]=useState<number|null>(null);
   const[rewardOpen,setRewardOpen]=useState(false);
+
+  useEffect(()=>{
+    if(!rewardOpen)return;
+    const previous=document.body.style.overflow;
+    document.body.style.overflow="hidden";
+    const onKey=(event:KeyboardEvent)=>{if(event.key==="Escape")setRewardOpen(false)};
+    window.addEventListener("keydown",onKey);
+    return()=>{document.body.style.overflow=previous;window.removeEventListener("keydown",onKey)};
+  },[rewardOpen]);
   const[rewardReady,setRewardReady]=useState(false);
   const[shareStatus,setShareStatus]=useState<"idle"|"prompting"|"sharing"|"preparing"|"unsupported"|"error">("idle");
   const characters:Character[]=Array.isArray(charactersContent?.characters)&&charactersContent.characters.length
