@@ -2,7 +2,6 @@
 import type { MouseEvent,ReactNode } from "react";
 import { analyticsAttribution } from "../lib/analytics-client";
 import { advertisingEvent } from "../lib/advertising-events";
-import { advertisingEvent } from "../lib/advertising-events";
 
 export function TrackLink({
   href,eventName,locale,className,children,newTab=false,metadata
@@ -18,8 +17,6 @@ export function TrackLink({
   async function track(_e:MouseEvent<HTMLAnchorElement>){
     try{
       const attribution=analyticsAttribution();
-      if(eventName==="amazon_click")advertisingEvent("amazon_click",{locale});
-      if(eventName==="patreon_click")advertisingEvent("patreon_click",{locale});
       if(eventName==="amazon_click")advertisingEvent("amazon_click",{locale});
       if(eventName==="patreon_click")advertisingEvent("patreon_click",{locale});
       await fetch("/api/analytics",{
