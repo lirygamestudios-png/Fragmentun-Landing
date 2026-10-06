@@ -36,7 +36,7 @@ export function AdminCampaigns(){
  function organicMedium(platform:string){return platform==="youtube"?"organic_video":"organic_social"}
  function destinationFor(kind:string){
    const locale=organic.locale==="en"?"en":"es";
-   if(kind==="chapter")return `https://www.fragmentun.com/${locale}/capitulo-1`;
+   if(kind==="chapter")return `https://www.fragmentun.com/${locale}#capitulo`;
    if(kind==="test")return `https://www.fragmentun.com/${locale}/test`;
    if(kind==="map")return `https://www.fragmentun.com/${locale}/mapa`;
    if(kind==="amazon")return `https://www.fragmentun.com/go/amazon?locale=${locale}`;
