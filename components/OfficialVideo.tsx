@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect,useMemo,useState} from "react";
+import {useEffect,useMemo,useRef,useState} from "react";
 import type {Locale} from "../lib/i18n";
 import {TrackLink} from "./TrackLink";
 
@@ -40,6 +40,7 @@ export function OfficialVideo({
   amazonUrl:string|null;
 }){
   const[open,setOpen]=useState(false);
+  const modalRef=useRef<HTMLElement|null>(null);
   const videoId=useMemo(()=>youtubeEmbed(content.youtube_url||""),[content.youtube_url]);
   const poster=content.poster_url||"/elyon-hero.jpg";
   const enabled=!!videoId;
@@ -49,6 +50,7 @@ export function OfficialVideo({
     const onKey=(e:KeyboardEvent)=>{if(e.key==="Escape")setOpen(false)};
     document.body.style.overflow="hidden";
     window.addEventListener("keydown",onKey);
+    requestAnimationFrame(()=>modalRef.current?.focus());
     return()=>{document.body.style.overflow="";window.removeEventListener("keydown",onKey)};
   },[open]);
 
@@ -91,7 +93,7 @@ export function OfficialVideo({
     </section>
 
     {open&&enabled&&<div className="officialVideoBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setOpen(false)}}>
-      <section className="officialVideoModal" role="dialog" aria-modal="true" aria-label={content.title||"FRAGMENTUN I"}>
+      <section ref={modalRef} tabIndex={-1} className="officialVideoModal" role="dialog" aria-modal="true" aria-label={content.title||"FRAGMENTUN I"}>
         <button className="officialVideoClose" type="button" aria-label={locale==="es"?"Cerrar video":"Close video"} onClick={()=>setOpen(false)}>×</button>
         <div className="officialVideoFrame">
           <iframe
