@@ -151,7 +151,38 @@ export function AdminShop(){
             <div className="adminPanelHeader"><div><div className="kicker">PRODUCTOS HÍBRIDOS</div><h3>Productos</h3></div><button type="button" className="btn btnGhost" onClick={()=>update(lang,"featured_products",[...products(lang),emptyProduct()])}>+ Añadir producto</button></div>
             {products(lang).length===0?<p className="note">No hay productos destacados todavía.</p>:products(lang).map((p,i)=><div className="adminShopProductEditor" key={i}>
               <label><span>Nombre</span><input value={p.name||""} onChange={e=>setProduct(lang,i,"name",e.target.value)}/></label>
-              <label><span>Modo de venta</span><select value={productMode(p)} onChange={e=>setProduct(lang,i,"mode",e.target.value as ShopMode)}><option value="external">Proveedor externo</option><option value="internal">Checkout FRAGMENTUN (futuro)</option><option value="interest">Captar interés / Próximamente</option></select></label>
+              <div className="adminSaleMode wide">
+                <span className="adminSaleModeLabel">MODALIDAD DE VENTA</span>
+                <div className="adminSaleModeChoices" role="group" aria-label="Modalidad de venta">
+                  <button
+                    type="button"
+                    className={productMode(p)==="internal"?"active":""}
+                    onClick={()=>setProduct(lang,i,"mode","internal")}
+                    aria-pressed={productMode(p)==="internal"}
+                  >
+                    <strong>COBRAR EN FRAGMENTUN</strong>
+                    <small>Factura propia · pedido al suplidor</small>
+                  </button>
+                  <button
+                    type="button"
+                    className={productMode(p)==="external"?"active":""}
+                    onClick={()=>setProduct(lang,i,"mode","external")}
+                    aria-pressed={productMode(p)==="external"}
+                  >
+                    <strong>ENVIAR AL PROVEEDOR</strong>
+                    <small>Redirección a tienda externa</small>
+                  </button>
+                  <button
+                    type="button"
+                    className={productMode(p)==="interest"?"active secondary":""}
+                    onClick={()=>setProduct(lang,i,"mode","interest")}
+                    aria-pressed={productMode(p)==="interest"}
+                  >
+                    <strong>PRÓXIMAMENTE</strong>
+                    <small>Captar interés · sin venta</small>
+                  </button>
+                </div>
+              </div>
               <label><span>Precio / etiqueta</span><input value={p.price_label||""} onChange={e=>setProduct(lang,i,"price_label",e.target.value)} placeholder="$29.99 / Próximamente"/></label>
               <label><span>SKU</span><input value={p.sku||""} onChange={e=>setProduct(lang,i,"sku",e.target.value)} placeholder="FRG-..."/></label>
               {productMode(p)==="external"&&<>
