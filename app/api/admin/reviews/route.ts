@@ -25,3 +25,10 @@ export async function PUT(request:NextRequest){
  const{data,error}=await x.supabase.from("reviews").update({source:String(b.source||"").trim()||"Otro",author_display:b.author_display||null,body_original:String(b.body_original).trim(),body_es:b.body_es||null,body_en:b.body_en||null,source_url:b.source_url||null,verified:!!b.verified,published:!!b.published}).eq("id",b.id).select().single();
  return NextResponse.json(error?{error:error.message}:{data},{status:error?500:200});
 }
+
+export async function DELETE(request:NextRequest){
+ const x=await marketing();if(!x.ok)return NextResponse.json({error:"forbidden"},{status:403});
+ const b=await request.json().catch(()=>null);if(!b?.id)return NextResponse.json({error:"invalid_request"},{status:400});
+ const{error}=await x.supabase.from("reviews").delete().eq("id",b.id);
+ return NextResponse.json(error?{error:error.message}:{ok:true},{status:error?500:200});
+}
