@@ -229,3 +229,23 @@
 @media(max-width:760px){
   .organicGeneratorGrid .wide{grid-column:auto}
 }
+
+
+.organicDestinationShortcuts{
+  margin:14px 0 4px;
+}
+.organicDestinationShortcuts>span{
+  display:block;
+  margin-bottom:8px;
+  color:#7f93a5;
+  font-size:.62rem;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.organicDestinationShortcuts .heroActions{
+  gap:8px;
+}
+.organicDestinationShortcuts .btn{
+  min-width:0;
+}
