@@ -105,8 +105,9 @@ export function AdminSagaEditor(){
     });
     const meta=await metaResponse.json().catch(()=>({}));
     if(!metaResponse.ok){
+      await supabase.storage.from("official-media").remove([path]).catch(()=>{});
       setUploading("");
-      setUploadStatus(s=>({...s,[key]:meta.error||"La imagen subió, pero no pudo registrarse en la biblioteca."}));
+      setUploadStatus(s=>({...s,[key]:meta.error||"No fue posible registrar la portada. La subida fue revertida."}));
       return;
     }
 
@@ -120,7 +121,10 @@ export function AdminSagaEditor(){
       await persistBook(nextBook);
       setUploadStatus(s=>({...s,[key]:"GUARDADO SATISFACTORIAMENTE"}));
     }catch(error:any){
-      setUploadStatus(s=>({...s,[key]:error?.message||"La portada subió, pero no pudo vincularse a la edición."}));
+      await fetch("/api/admin/media?id="+encodeURIComponent(meta.data?.id||""),{method:"DELETE"}).catch(()=>{});
+      await supabase.storage.from("official-media").remove([path]).catch(()=>{});
+      setBooks(bs=>bs.map((b,n)=>n===i?book:b));
+      setUploadStatus(s=>({...s,[key]:error?.message||"No fue posible vincular la portada. La subida fue revertida."}));
     }finally{
       setUploading("");
     }
