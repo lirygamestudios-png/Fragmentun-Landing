@@ -13,6 +13,7 @@ import { OfficialVideo } from "../../components/OfficialVideo";
 import { FragmentunShop } from "../../components/FragmentunShop";
 import { CmsSectionMedia } from "../../components/CmsSectionMedia";
 import { NewsConversionCards } from "../../components/NewsConversionCards";
+import { ScrollTopOnEntry } from "../../components/ScrollTopOnEntry";
 import { copy,locales,type Locale } from "../../lib/i18n";
 import { getBooks,getLocalizedContent,getPublishedReviews,getPublishedCharacters } from "../../lib/content";
 
@@ -149,6 +150,7 @@ export default async function Home({
 
   return <>
     <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(structuredData)}}/>
+    <ScrollTopOnEntry/>
     <PageView locale={locale}/>
     <MotionEffects/>
     <PublicHeader locale={locale} amazonUrl={amazonUrl} patreonUrl={patreonUrl} shopEnabled={shopPublicEnabled}/>
