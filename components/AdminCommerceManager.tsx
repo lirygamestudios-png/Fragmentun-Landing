@@ -35,6 +35,10 @@ export function AdminCommerceManager(){
     setDraft(emptyProduct);setMsg("GUARDADO SATISFACTORIAMENTE");await load();
   }
 
+  function patchProduct(id:string,patch:Partial<Product>){
+    setProducts(v=>v.map(p=>p.id===id?{...p,...patch}:p));
+  }
+
   async function saveProduct(p:Product,patch:Partial<Product>={}){
     setBusy(true);
     const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"product",...p,...patch})});
@@ -88,10 +92,42 @@ export function AdminCommerceManager(){
 
       <div className="adminShopProducts">
         {products.map(p=><div className="adminShopProductEditor" key={p.id}>
-          <div><strong>{p.name_es}</strong><div className="note">{p.sku||"Sin SKU"} · {p.mode} · {p.payment_provider}</div></div>
-          <label><span>Stock</span><select value={p.stock_status} onChange={e=>saveProduct(p,{stock_status:e.target.value})}><option value="unknown">Sin definir</option><option value="in_stock">Disponible</option><option value="out_of_stock">Agotado</option><option value="preorder">Preorden</option><option value="unlimited">Ilimitado</option></select></label>
-          <label><span>Activo</span><select value={p.active?"yes":"no"} onChange={e=>saveProduct(p,{active:e.target.value==="yes"})}><option value="no">No</option><option value="yes">Sí</option></select></label>
-          <label><span>Destacado</span><select value={p.featured?"yes":"no"} onChange={e=>saveProduct(p,{featured:e.target.value==="yes"})}><option value="no">No</option><option value="yes">Sí</option></select></label>
+          <div className="wide">
+            <strong>{p.name_es||"Producto sin nombre"}</strong>
+            <div className="note">{p.sku||"Sin SKU"} · {p.mode} · {p.payment_provider}</div>
+          </div>
+
+          <div className="adminSaleMode wide">
+            <span className="adminSaleModeLabel">MODALIDAD DE VENTA</span>
+            <div className="adminSaleModeChoices" role="group" aria-label="Modalidad de venta del producto">
+              <button type="button" className={p.mode==="internal"?"active":""} aria-pressed={p.mode==="internal"} onClick={()=>patchProduct(p.id,{mode:"internal"})}>
+                <strong>COBRAR EN FRAGMENTUN</strong>
+                <small>Factura propia · pedido al suplidor</small>
+              </button>
+              <button type="button" className={p.mode==="external"?"active":""} aria-pressed={p.mode==="external"} onClick={()=>patchProduct(p.id,{mode:"external"})}>
+                <strong>ENVIAR AL PROVEEDOR</strong>
+                <small>Redirección a tienda externa</small>
+              </button>
+              <button type="button" className={p.mode==="interest"?"active secondary":""} aria-pressed={p.mode==="interest"} onClick={()=>patchProduct(p.id,{mode:"interest"})}>
+                <strong>PRÓXIMAMENTE</strong>
+                <small>Captar interés · sin venta</small>
+              </button>
+            </div>
+          </div>
+
+          <label><span>SKU</span><input value={p.sku||""} onChange={e=>patchProduct(p.id,{sku:e.target.value})}/></label>
+          <label><span>Nombre ES</span><input value={p.name_es||""} onChange={e=>patchProduct(p.id,{name_es:e.target.value})}/></label>
+          <label><span>Nombre EN</span><input value={p.name_en||""} onChange={e=>patchProduct(p.id,{name_en:e.target.value})}/></label>
+          <label><span>Procesador</span><select value={p.payment_provider} onChange={e=>patchProduct(p.id,{payment_provider:e.target.value})}><option value="auto">Automático</option><option value="both">Stripe + PayPal</option><option value="stripe">Stripe</option><option value="paypal">PayPal</option></select></label>
+          <label><span>Precio (centavos)</span><input type="number" min="0" value={p.price_cents??""} onChange={e=>patchProduct(p.id,{price_cents:e.target.value===""?null:Number(e.target.value)})}/></label>
+          <label><span>Moneda</span><input maxLength={3} value={p.currency||"USD"} onChange={e=>patchProduct(p.id,{currency:e.target.value.toUpperCase()})}/></label>
+          <label className="wide"><span>URL externa</span><input type="url" value={p.external_url||""} disabled={p.mode!=="external"} onChange={e=>patchProduct(p.id,{external_url:e.target.value})} placeholder={p.mode==="external"?"https://proveedor…":"Disponible cuando la modalidad es ENVIAR AL PROVEEDOR"}/></label>
+          <label><span>Stock</span><select value={p.stock_status} onChange={e=>patchProduct(p.id,{stock_status:e.target.value})}><option value="unknown">Sin definir</option><option value="in_stock">Disponible</option><option value="out_of_stock">Agotado</option><option value="preorder">Preorden</option><option value="unlimited">Ilimitado</option></select></label>
+          <label><span>Activo</span><select value={p.active?"yes":"no"} onChange={e=>patchProduct(p.id,{active:e.target.value==="yes"})}><option value="no">No</option><option value="yes">Sí</option></select></label>
+          <label><span>Destacado</span><select value={p.featured?"yes":"no"} onChange={e=>patchProduct(p.id,{featured:e.target.value==="yes"})}><option value="no">No</option><option value="yes">Sí</option></select></label>
+          <div className="adminShopActions wide">
+            <button className="btn btnPrimary" type="button" disabled={busy} onClick={()=>saveProduct(p)}>Guardar producto</button>
+          </div>
         </div>)}
         {products.length===0&&<p className="note">Todavía no hay productos en el catálogo operativo.</p>}
       </div>
