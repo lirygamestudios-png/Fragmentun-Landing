@@ -25,7 +25,7 @@ const presets=[
 
 export function AdminCampaigns(){
  const[rows,setRows]=useState<any[]>([]);const[form,setForm]=useState<any>(empty);const[msg,setMsg]=useState("");const[filterSource,setFilterSource]=useState("all");const[filterText,setFilterText]=useState("");
- const[organic,setOrganic]=useState({platform:"instagram",campaign:"lanzamiento_fragmentun",content:"post_01",locale:"es",destination_url:"https://www.fragmentun.com/es"});
+ const[organic,setOrganic]=useState({code:"",platform:"instagram",campaign:"lanzamiento_fragmentun",content:"post_01",locale:"es",destination_url:"https://www.fragmentun.com/es"});
  const load=()=>fetch("/api/admin/campaigns").then(r=>r.json()).then(j=>setRows(j.data||[]));
  useEffect(()=>{load()},[]);
  useEffect(()=>{if(!msg)return;const t=window.setTimeout(()=>setMsg(""),3600);return()=>window.clearTimeout(t)},[msg]);
@@ -68,10 +68,10 @@ export function AdminCampaigns(){
    await navigator.clipboard.writeText(u);setMsg("Enlace orgánico copiado ✓")
  }
  async function saveOrganic(){
-   const campaign=clean(organic.campaign),content=clean(organic.content);
-   if(!campaign||!content){setMsg("ERROR: COMPLETA CAMPAÑA Y PUBLICACIÓN");return}
+   const code=String(organic.code||"").trim(),campaign=clean(organic.campaign),content=clean(organic.content);
+   if(!code||!campaign||!content){setMsg("ERROR: COMPLETA NOMBRE INTERNO, CAMPAÑA Y PUBLICACIÓN");return}
    const payload={
-     code:`${organic.platform}_${campaign}_${content}_${Date.now()}`,
+     code,
      locale:organic.locale,
      source:organic.platform,
      medium:organicMedium(organic.platform),
@@ -94,6 +94,7 @@ export function AdminCampaigns(){
    const source=String(r.source||"instagram").toLowerCase();
    const allowed=["instagram","facebook","tiktok","youtube","x","linkedin","reddit"];
    setOrganic({
+     code:"",
      platform:allowed.includes(source)?source:"instagram",
      campaign:r.campaign||"lanzamiento_fragmentun",
      content:r.content||"post_01",
@@ -118,6 +119,9 @@ export function AdminCampaigns(){
      </div>
      <p className="note">Elige la red, identifica la campaña y la publicación. FRAGMENTUN añade el seguimiento automáticamente para que luego puedas ver qué contenido produjo visitas, registros y clics a Amazon o Patreon.</p>
      <div className="adminFormGrid organicGeneratorGrid">
+       <label>Nombre interno
+         <input value={organic.code} onChange={e=>setOrganic({...organic,code:e.target.value})} placeholder="Ej.: ORG-AD01-FB"/>
+       </label>
        <label>Red social
          <select value={organic.platform} onChange={e=>setOrganic({...organic,platform:e.target.value})}>
            <option value="instagram">Instagram</option>
@@ -157,6 +161,7 @@ export function AdminCampaigns(){
        </div>
      </div>
      <div className="organicTrackingSummary">
+       <div><span>Nombre interno</span><strong>{organic.code||"—"}</strong></div>
        <div><span>Red social</span><strong>{organic.platform==="x"?"X":organic.platform.charAt(0).toUpperCase()+organic.platform.slice(1)}</strong></div>
        <div><span>Campaña</span><strong>{clean(organic.campaign)||"—"}</strong></div>
        <div><span>Publicación</span><strong>{clean(organic.content)||"—"}</strong></div>
