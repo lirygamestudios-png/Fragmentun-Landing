@@ -5151,3 +5151,145 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   .testViralCard{padding:22px}
   .testViralActions .btn{width:100%}
 }
+
+
+/* Emotional Test — official FRAGMENTUN visual frame */
+.testViralCard{
+  --profile-color:#C9A84C;
+  position:relative;
+  margin:28px 0 16px;
+  padding:18px;
+  border:4px solid #C9A84C;
+  background:#07111f;
+  box-shadow:0 24px 70px rgba(0,0,0,.36),inset 0 0 0 1px rgba(201,168,76,.28)
+}
+.testViralInnerFrame{
+  position:relative;
+  display:grid;
+  gap:12px;
+  padding:16px 16px 22px;
+  border:1px solid rgba(201,168,76,.34);
+  background:
+    radial-gradient(circle at 82% 16%,color-mix(in srgb,var(--profile-color) 20%,transparent),transparent 34%),
+    linear-gradient(145deg,#0A1628,#07101d 74%);
+  overflow:hidden
+}
+.testViralOfficialLogo{
+  display:block;
+  width:min(360px,72%);
+  max-height:92px;
+  object-fit:contain;
+  margin:0 auto 8px
+}
+.testViralCharacter{
+  position:relative;
+  min-height:360px;
+  overflow:hidden;
+  border:2px solid rgba(201,168,76,.72);
+  background:#07101d
+}
+.testViralCharacter>img{
+  width:100%;
+  height:100%;
+  min-height:360px;
+  max-height:460px;
+  object-fit:cover;
+  display:block
+}
+.testViralCharacter:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,transparent 62%,rgba(7,17,31,.72))
+}
+.testViralCharacter.balance{
+  display:grid;
+  grid-template-columns:1fr 1fr
+}
+.testViralCharacter.balance>img{
+  min-height:190px;
+  height:190px
+}
+.testViralLabel{
+  margin-top:6px;
+  color:#8fa3b8;
+  font-size:.72rem;
+  letter-spacing:.15em;
+  font-weight:800;
+  text-align:center
+}
+.testViralCard strong{
+  color:var(--profile-color);
+  font-family:Georgia,serif;
+  font-size:clamp(2rem,7vw,4rem);
+  line-height:1;
+  text-transform:uppercase;
+  text-align:center
+}
+.testViralStrength{
+  display:grid;
+  gap:5px;
+  color:#eef4fa;
+  font-size:1rem;
+  text-align:center
+}
+.testViralStrength span{
+  color:#D8BF70;
+  font-size:.65rem;
+  letter-spacing:.14em;
+  font-weight:800
+}
+.testViralCard small{
+  color:#9fb0c1;
+  line-height:1.5;
+  text-align:center
+}
+.testViralActions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:4px
+}
+.testShareStatus{margin:6px 0 18px}
+.adminDecisionGrid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin-top:18px
+}
+.adminDecisionGrid article{
+  min-height:132px;
+  padding:16px;
+  border:1px solid rgba(201,168,76,.18);
+  border-radius:14px;
+  background:linear-gradient(180deg,rgba(201,168,76,.06),rgba(10,22,40,.72))
+}
+.adminDecisionGrid span,.adminDecisionGrid strong,.adminDecisionGrid small{display:block}
+.adminDecisionGrid span{
+  color:#8fa3b8;
+  font-size:.68rem;
+  letter-spacing:.08em;
+  text-transform:uppercase
+}
+.adminDecisionGrid strong{
+  margin-top:8px;
+  color:#f0d27e;
+  font-size:1.05rem
+}
+.adminDecisionGrid small{
+  margin-top:7px;
+  color:#9fb0c1;
+  line-height:1.4
+}
+@media(max-width:980px){
+  .adminDecisionGrid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .testViralCard{padding:10px}
+  .testViralInnerFrame{padding:12px}
+  .testViralCharacter{min-height:280px}
+  .testViralCharacter>img{min-height:280px;max-height:360px}
+  .testViralCharacter.balance>img{min-height:145px;height:145px}
+  .testViralActions .btn{width:100%}
+  .adminDecisionGrid{grid-template-columns:1fr}
+}
