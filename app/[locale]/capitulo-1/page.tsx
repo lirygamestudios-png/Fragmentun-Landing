@@ -4,6 +4,7 @@ import { notFound,redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { locales,type Locale } from "../../../lib/i18n";
 import { TrackLink } from "../../../components/TrackLink";
+import {ChapterReadTracker} from "../../../components/ChapterReadTracker";
 import {chapterAccessCookieName,verifyChapterAccessToken} from "../../../lib/chapter-access";
 
 export const metadata:Metadata={
@@ -40,7 +41,8 @@ export default async function ChapterOne({params}:{params:Promise<{locale:string
   const patreonUrl=process.env.NEXT_PUBLIC_PATREON_URL||"https://patreon.com/sagaFragmentun?utm_source=fragmentun&utm_medium=website&utm_campaign=patreon_support&utm_content=chapter_end";
 
   if(locale==="en"){
-    return <main className="section"><div className="container" style={{maxWidth:760,textAlign:"center"}}>
+    return <main className="section">
+    <ChapterReadTracker locale={locale}/><div className="container" style={{maxWidth:760,textAlign:"center"}}>
       <div className="kicker">FRAGMENTUN I</div>
       <h1>Chapter 1</h1>
       <p className="lead">The English reading sample is being prepared. The published Spanish edition is currently available.</p>
