@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { locales, type Locale } from "../../../lib/i18n";
 import { notFound } from "next/navigation";
+import { RegistrationAdvertisingTracker } from "../../../components/RegistrationAdvertisingTracker";
 
 export default async function Gracias({
   params,
@@ -15,6 +16,7 @@ export default async function Gracias({
   const emailReady=delivery==="email";
 
   return <main className="hero">
+    <RegistrationAdvertisingTracker locale={locale}/>
     <div className="container" style={{maxWidth:760,textAlign:"center"}}>
       <div className="kicker">FRAGMENTUN</div>
       <h1 style={{fontSize:"clamp(2.6rem,7vw,5rem)"}}>
