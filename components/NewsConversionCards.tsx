@@ -139,7 +139,9 @@ export function NewsConversionCards({locale,news,shareReward}:Props){
       detail={shareStatus==="prompting"
         ?(locale==="es"?"La ventana para compartir se abrirá a continuación.":"The sharing window will open next.")
         :(locale==="es"?"ESPERA…":"PLEASE WAIT…")}
-    />}\n\n    {rewardOpen&&<div className="shareRewardBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setRewardOpen(false)}}>
+    />}
+
+    {rewardOpen&&<div className="shareRewardBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setRewardOpen(false)}}>
       <section className="shareRewardModal" role="dialog" aria-modal="true" aria-label={shareReward?.thank_you||(locale==="es"?"Gracias por compartir este universo":"Thank you for sharing this universe")}>
         <button className="shareRewardClose" type="button" aria-label={locale==="es"?"Cerrar":"Close"} onClick={()=>setRewardOpen(false)}>×</button>
         <div className="shareRewardArt">
