@@ -41,10 +41,10 @@ export function AdminLeads(){
   }
 
   async function deleteLead(id:string,email:string){
-    const ok=window.confirm(`Eliminar permanentemente el lead ${email}? Esta acción no se puede deshacer.`);
+    const ok=window.confirm(`Eliminar permanentemente el registro ${email}? Esta acción no se puede deshacer.`);
     if(!ok)return;
 
-    setActionMsg("Eliminando lead…");
+    setActionMsg("Eliminando registro…");
     const r=await fetch("/api/admin/leads/delete",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
@@ -54,11 +54,11 @@ export function AdminLeads(){
 
     if(r.ok){
       setActionMsg(j.warning
-        ?"Lead eliminado de Supabase. MailerLite devolvió una advertencia; revisa Integraciones."
-        :"Lead eliminado correctamente.");
+        ?"Registro eliminado de Supabase. MailerLite devolvió una advertencia; revisa Integraciones."
+        :"Registro eliminado correctamente.");
       await load();
     }else{
-      setActionMsg("No se pudo eliminar el lead.");
+      setActionMsg("No se pudo eliminar el registro.");
     }
   }
 
@@ -80,7 +80,7 @@ export function AdminLeads(){
     </div>
 
     <div className="card adminFilterPanel">
-      <div className="adminPanelHeader"><div><div className="kicker">Segmentación</div><h2>Buscar y filtrar</h2></div><span className="adminPanelBadge">{summary.total||0} leads</span></div>
+      <div className="adminPanelHeader"><div><div className="kicker">Segmentación</div><h2>Buscar y filtrar</h2></div><span className="adminPanelBadge">{summary.total||0} registros</span></div>
       <div className="adminFormGrid">
         <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Correo o nombre"/>
         <select value={locale} onChange={e=>setLocale(e.target.value)}>
@@ -107,8 +107,8 @@ export function AdminLeads(){
     </div>
 
     <div className="card adminLeadTableCard">
-      <div className="adminPanelHeader"><div><div className="kicker">Base de datos</div><h2>Leads</h2></div><span className="adminPanelBadge">{loading?"Cargando":rows.length+" visibles"}</span></div>
-      {loading?<FragmentunProcessOverlay compact state="loading" title="CARGANDO LEADS…"/>:<div className="adminTableWrap"><table className="adminTable">
+      <div className="adminPanelHeader"><div><div className="kicker">Base de datos</div><h2>Registros</h2></div><span className="adminPanelBadge">{loading?"Cargando":rows.length+" visibles"}</span></div>
+      {loading?<FragmentunProcessOverlay compact state="loading" title="CARGANDO REGISTROS…"/>:<div className="adminTableWrap"><table className="adminTable">
         <thead><tr><th>Fecha</th><th>Correo</th><th>Nombre</th><th>Idioma</th><th>Fuente</th><th>Campaña</th><th>Perfil</th><th>MailerLite</th><th>Consentimiento</th><th></th></tr></thead>
         <tbody>{rows.map((r:any)=><tr key={r.id}>
           <td>{new Date(r.created_at).toLocaleDateString()}</td>
