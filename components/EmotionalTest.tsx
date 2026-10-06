@@ -39,6 +39,7 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
   const [email,setEmail]=useState("");
   const [name,setName]=useState("");
   const [consent,setConsent]=useState(false);
+  const [shareStatus,setShareStatus]=useState("");
   const [utm,setUtm]=useState({source:"",medium:"",campaign:"",content:""});
 
   useEffect(()=>{
@@ -101,6 +102,154 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
 
   const result=profileMap[resultKey];
 
+  function roundedRect(ctx:CanvasRenderingContext2D,x:number,y:number,w:number,h:number,r:number){
+    const radius=Math.min(r,w/2,h/2);
+    ctx.beginPath();
+    ctx.moveTo(x+radius,y);
+    ctx.arcTo(x+w,y,x+w,y+h,radius);
+    ctx.arcTo(x+w,y+h,x,y+h,radius);
+    ctx.arcTo(x,y+h,x,y,radius);
+    ctx.arcTo(x,y,x+w,y,radius);
+    ctx.closePath();
+  }
+
+  function wrapCanvasText(ctx:CanvasRenderingContext2D,text:string,maxWidth:number){
+    const words=text.split(/\s+/);
+    const lines:string[]=[];
+    let line="";
+    for(const word of words){
+      const test=line?line+" "+word:word;
+      if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word;}
+      else line=test;
+    }
+    if(line)lines.push(line);
+    return lines;
+  }
+
+  async function createResultCard(){
+    if(!result)return null;
+    const canvas=document.createElement("canvas");
+    canvas.width=1080;
+    canvas.height=1350;
+    const ctx=canvas.getContext("2d");
+    if(!ctx)return null;
+
+    const profileName=locale==="es"?result.name_es:result.name_en;
+    const strength=locale==="es"?result.superpower_es:result.superpower_en;
+    const description=locale==="es"?result.description_es:result.description_en;
+    const total=Object.values(scores).reduce((a,b)=>a+b,0);
+    const dominant=Math.max(...Object.values(scores));
+    const affinity=total?Math.round(dominant/total*100):0;
+    const accent=result.color||"#C9A84C";
+
+    const bg=ctx.createLinearGradient(0,0,1080,1350);
+    bg.addColorStop(0,"#07101d");
+    bg.addColorStop(.55,"#0A1628");
+    bg.addColorStop(1,"#050a12");
+    ctx.fillStyle=bg;
+    ctx.fillRect(0,0,1080,1350);
+
+    const glow=ctx.createRadialGradient(790,300,0,790,300,520);
+    glow.addColorStop(0,accent+"55");
+    glow.addColorStop(1,"transparent");
+    ctx.fillStyle=glow;
+    ctx.fillRect(0,0,1080,900);
+
+    ctx.strokeStyle="#C9A84C88";
+    ctx.lineWidth=3;
+    roundedRect(ctx,55,55,970,1240,34);
+    ctx.stroke();
+
+    ctx.fillStyle="#C9A84C";
+    ctx.font="700 32px Georgia, serif";
+    ctx.textAlign="center";
+    ctx.fillText("FRAGMENTUN",540,135);
+    ctx.font="600 18px Arial, sans-serif";
+    ctx.letterSpacing="4px" as any;
+    ctx.fillText(locale==="es"?"TEST EMOCIONAL":"EMOTIONAL TEST",540,177);
+
+    ctx.fillStyle="#ffffff";
+    ctx.font="700 30px Arial, sans-serif";
+    ctx.fillText(locale==="es"?"MI PERFIL EMOCIONAL ES":"MY EMOTIONAL PROFILE IS",540,300);
+
+    ctx.fillStyle=accent;
+    ctx.font="700 92px Georgia, serif";
+    const nameLines=wrapCanvasText(ctx,profileName.toUpperCase(),850);
+    nameLines.slice(0,2).forEach((line,i)=>ctx.fillText(line,540,410+i*105));
+
+    ctx.fillStyle="#ffffff";
+    ctx.font="600 25px Arial, sans-serif";
+    ctx.fillText(locale==="es"?"AFINIDAD DOMINANTE":"DOMINANT AFFINITY",540,625);
+    ctx.fillStyle="#C9A84C";
+    ctx.font="700 72px Arial, sans-serif";
+    ctx.fillText(affinity+"%",540,705);
+
+    ctx.fillStyle="#dbe6f1";
+    ctx.font="400 30px Arial, sans-serif";
+    const descLines=wrapCanvasText(ctx,description,820).slice(0,4);
+    descLines.forEach((line,i)=>ctx.fillText(line,540,805+i*44));
+
+    ctx.fillStyle="#ffffff";
+    ctx.font="700 23px Arial, sans-serif";
+    ctx.fillText(locale==="es"?"FORTALEZA":"STRENGTH",540,1030);
+    ctx.fillStyle=accent;
+    ctx.font="700 34px Arial, sans-serif";
+    wrapCanvasText(ctx,strength,780).slice(0,2).forEach((line,i)=>ctx.fillText(line,540,1080+i*42));
+
+    ctx.strokeStyle="#ffffff22";
+    ctx.beginPath();ctx.moveTo(170,1192);ctx.lineTo(910,1192);ctx.stroke();
+    ctx.fillStyle="#C9A84C";
+    ctx.font="700 25px Arial, sans-serif";
+    ctx.fillText(locale==="es"?"DESCUBRE EL TUYO":"DISCOVER YOURS",540,1245);
+    ctx.fillStyle="#ffffff";
+    ctx.font="600 24px Arial, sans-serif";
+    ctx.fillText("fragmentun.com/"+locale+"/test",540,1283);
+
+    return await new Promise<Blob|null>(resolve=>canvas.toBlob(resolve,"image/png",.95));
+  }
+
+  async function shareResultCard(){
+    const blob=await createResultCard();
+    if(!blob)return;
+    const profileName=locale==="es"?result?.name_es:result?.name_en;
+    const file=new File([blob],`fragmentun-perfil-${String(resultKey)}.png`,{type:"image/png"});
+    const url=`${window.location.origin}/${locale}/test`;
+    const text=locale==="es"
+      ?`Mi perfil emocional en FRAGMENTUN es ${profileName}. ¿Cuál es el tuyo?`
+      :`My FRAGMENTUN emotional profile is ${profileName}. What's yours?`;
+    try{
+      if(navigator.share&&navigator.canShare?.({files:[file]})){
+        await navigator.share({title:"FRAGMENTUN · Test Emocional",text,url,files:[file]});
+        track("test_result_share",{profile:resultKey,method:"image"});
+        setShareStatus(locale==="es"?"Tarjeta compartida.":"Card shared.");
+        return;
+      }
+      if(navigator.share){
+        await navigator.share({title:"FRAGMENTUN · Test Emocional",text,url});
+        track("test_result_share",{profile:resultKey,method:"link"});
+        setShareStatus(locale==="es"?"Resultado compartido.":"Result shared.");
+        return;
+      }
+      await downloadResultCard(blob);
+      setShareStatus(locale==="es"?"Tu tarjeta se descargó para que puedas compartirla.":"Your card was downloaded so you can share it.");
+    }catch(err:any){
+      if(err?.name!=="AbortError")setShareStatus(locale==="es"?"No fue posible compartir. Puedes descargar la tarjeta.":"Could not share. You can download the card.");
+    }
+  }
+
+  async function downloadResultCard(existing?:Blob){
+    const blob=existing||await createResultCard();
+    if(!blob)return;
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download=`fragmentun-perfil-${String(resultKey)}.png`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    track("test_result_download",{profile:resultKey});
+  }
+
   if(!questions.length){
     return <section className="testPanel">
       <div className="kicker">{locale==="es"?"Experiencia narrativa":"Narrative experience"}</div>
@@ -134,6 +283,21 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
           <span>{scores[key]}</span>
         </div>)}
       </div>
+
+      <div className="testViralCard" style={{"--profile-color":result.color||"#C9A84C"} as React.CSSProperties}>
+        <div className="testViralGlow"/>
+        <div className="testViralBrand">FRAGMENTUN <span>{locale==="es"?"TEST EMOCIONAL":"EMOTIONAL TEST"}</span></div>
+        <div className="testViralLabel">{locale==="es"?"MI PERFIL EMOCIONAL ES":"MY EMOTIONAL PROFILE IS"}</div>
+        <strong>{locale==="es"?result.name_es:result.name_en}</strong>
+        <div className="testViralStrength"><span>{locale==="es"?"FORTALEZA":"STRENGTH"}</span>{locale==="es"?result.superpower_es:result.superpower_en}</div>
+        <small>{locale==="es"?"Comparte tu resultado y reta a alguien a descubrir el suyo.":"Share your result and challenge someone to discover theirs."}</small>
+      </div>
+      <div className="testViralActions">
+        <button className="btn btnPrimary" type="button" onClick={shareResultCard}>{locale==="es"?"Compartir mi resultado":"Share my result"}</button>
+        <button className="btn btnGhost" type="button" onClick={()=>downloadResultCard()}>{locale==="es"?"Descargar tarjeta PNG":"Download PNG card"}</button>
+      </div>
+      {shareStatus&&<p className="note testShareStatus" role="status">{shareStatus}</p>}
+
       <div className="profileCapture card">
         <div className="kicker">{locale==="es"?"Guarda tu resultado":"Save your result"}</div>
         <h3>{locale==="es"?"Recibe novedades según tu perfil emocional":"Get updates based on your emotional profile"}</h3>
