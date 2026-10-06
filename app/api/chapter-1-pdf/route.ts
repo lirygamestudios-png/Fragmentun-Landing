@@ -124,7 +124,7 @@ export async function GET(){
     headers:{
       "Content-Type":"application/pdf",
       "Content-Disposition":'attachment; filename="FRAGMENTUN-Capitulo-1-El-Silencio-Perfecto.pdf"',
-      "Cache-Control":"public, max-age=3600, s-maxage=86400"
+      "Cache-Control":"private, no-store, max-age=0"
     }
   });
 }
