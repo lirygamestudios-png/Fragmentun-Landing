@@ -30,6 +30,14 @@ export function AdminCampaigns(){
  useEffect(()=>{load()},[]);
  async function create(){setMsg("Creando…");const r=await fetch("/api/admin/campaigns",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(form)});if(r.ok){setForm(empty);load();setMsg("GUARDADO SATISFACTORIAMENTE")}else setMsg("ERROR: NO FUE POSIBLE GUARDAR")}
  async function save(row:any){const r=await fetch("/api/admin/campaigns",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(row)});setMsg(r.ok?"GUARDADO SATISFACTORIAMENTE":"ERROR: NO FUE POSIBLE GUARDAR")}
+ async function removeCampaign(row:any){
+   if(!window.confirm(`¿Eliminar definitivamente la campaña "${row.code}"?`))return;
+   setMsg("Eliminando…");
+   const r=await fetch("/api/admin/campaigns",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:row.id})});
+   if(!r.ok){setMsg("ERROR: NO FUE POSIBLE ELIMINAR");return}
+   setRows(a=>a.filter(x=>x.id!==row.id));
+   setMsg("CAMPAÑA ELIMINADA");
+ }
  const url=(r:any)=>{try{const u=new URL(r.destination_url||"https://www.fragmentun.com/es");if(r.source)u.searchParams.set("utm_source",r.source);if(r.medium)u.searchParams.set("utm_medium",r.medium);if(r.campaign)u.searchParams.set("utm_campaign",r.campaign);if(r.content)u.searchParams.set("utm_content",r.content);return u.toString()}catch{return ""}}
  async function copyUrl(r:any){const u=url(r);if(!u)return;await navigator.clipboard.writeText(u);setMsg("Enlace copiado ✓")}
  function clean(value:string){return value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"")}
@@ -232,6 +240,7 @@ export function AdminCampaigns(){
        <button className="btn btnGhost" onClick={()=>copyUrl(r)}>Copiar enlace</button>
        <button className="btn btnGhost" onClick={()=>copyAmazon(r)}>Copiar enlace Amazon</button>
        <button className="btn btnGhost" onClick={()=>copyPatreon(r)}>Copiar enlace Patreon</button>
+       <button className="btn btnGhost" type="button" onClick={()=>removeCampaign(r)}>Eliminar</button>
      </div>
    </article>)}</div><p className={msg==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(msg&&(msg.toLowerCase().includes("error")||msg.toLowerCase().includes("no fue")||msg.toLowerCase().includes("no se")||msg.toLowerCase().includes("inválid")||msg.toLowerCase().includes("obligatorio")||msg.toLowerCase().includes("falta"))?"adminSaveFeedback error":"adminSaveFeedback")}>{msg}</p>
  </div>;
