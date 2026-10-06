@@ -4938,3 +4938,87 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   .fragmentunShopPreviewCards>div{min-height:120px;padding:12px}
   .fragmentunShopPreviewCards strong{font-size:.68rem}
 }
+
+
+/* Admin reviews — editorial workflow */
+.adminReviewWorkflow{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:8px;
+  margin:16px 0 18px
+}
+.adminReviewStep{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-height:48px;
+  padding:10px 12px;
+  border:1px solid rgba(74,144,217,.18);
+  border-radius:10px;
+  background:rgba(8,21,34,.72)
+}
+.adminReviewStep span{
+  width:24px;height:24px;border-radius:50%;
+  display:grid;place-items:center;
+  background:#102b43;color:#8ebceb;
+  font-size:.68rem;font-weight:800
+}
+.adminReviewStep strong{font-size:.72rem;color:#c9d5df}
+.adminReviewStep.isActive{border-color:rgba(201,168,76,.42)}
+.adminReviewStep.isActive span{background:#c9a84c;color:#07111d}
+.adminReviewGrid label{
+  display:grid;
+  gap:6px;
+  color:#aebdcc;
+  font-size:.68rem
+}
+.adminReviewGrid label>span{
+  color:#d7c47a;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase
+}
+.adminReviewGrid select{
+  width:100%;
+  padding:11px;
+  border-radius:10px;
+  background:#07101d;
+  color:white;
+  border:1px solid #ffffff20
+}
+.adminReviewGrid .wide{grid-column:1/-1}
+.adminReviewActions{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-top:16px
+}
+.adminReviewEditor{display:grid;gap:14px}
+.adminReviewState{
+  align-self:flex-start;
+  padding:6px 9px;
+  border-radius:999px;
+  font-size:.6rem;
+  letter-spacing:.1em;
+  font-weight:900;
+  border:1px solid rgba(255,255,255,.12)
+}
+.adminReviewState.borrador{color:#9fb1c1;background:#13202e}
+.adminReviewState.verificada{color:#8ec2f0;background:#0d2940;border-color:#4a90d955}
+.adminReviewState.publicada{color:#b9e6bf;background:#133522;border-color:#63c27455}
+.adminReviewStatusLine{
+  display:flex;
+  gap:18px;
+  flex-wrap:wrap
+}
+.adminReviewsEmpty{
+  display:grid;
+  gap:5px;
+  padding:22px
+}
+.adminReviewsEmpty strong{color:#e9d28c}
+.adminReviewsEmpty span{color:#8496a8;font-size:.75rem}
+@media(max-width:760px){
+  .adminReviewWorkflow{grid-template-columns:1fr 1fr}
+  .adminReviewActions .btn{flex:1 1 100%}
+}
