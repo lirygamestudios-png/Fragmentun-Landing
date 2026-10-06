@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound,redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { locales,type Locale } from "../../../lib/i18n";
 import { TrackLink } from "../../../components/TrackLink";
+import {chapterAccessCookieName,verifyChapterAccessToken} from "../../../lib/chapter-access";
 
 export const metadata:Metadata={
   title:"Capítulo 1 · FRAGMENTUN I",
@@ -32,6 +34,9 @@ export default async function ChapterOne({params}:{params:Promise<{locale:string
   const {locale:raw}=await params;
   if(!locales.includes(raw as Locale)) notFound();
   const locale=raw as Locale;
+  const cookieStore=await cookies();
+  const access=verifyChapterAccessToken(cookieStore.get(chapterAccessCookieName())?.value);
+  if(!access)redirect(`/${locale}?signup=required#capitulo`);
   const patreonUrl=process.env.NEXT_PUBLIC_PATREON_URL||"https://patreon.com/sagaFragmentun?utm_source=fragmentun&utm_medium=website&utm_campaign=patreon_support&utm_content=chapter_end";
 
   if(locale==="en"){
