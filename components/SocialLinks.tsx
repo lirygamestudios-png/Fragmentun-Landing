@@ -79,7 +79,7 @@ export function SocialLinks({locale,items,placement="footer"}:{
         className="socialLink shareButton"
         aria-haspopup="menu"
         aria-expanded={shareOpen}
-        onClick={()=>{if(typeof navigator!=="undefined"&&typeof navigator.share==="function"){nativeShare()}else setShareOpen(v=>!v)}}
+        onClick={()=>setShareOpen(v=>!v)}
       >
         ↗ {locale==="es"?"Compartir":"Share"}
       </button>
@@ -99,6 +99,9 @@ export function SocialLinks({locale,items,placement="footer"}:{
           <button type="button" onClick={async()=>{
             try{await navigator.clipboard.writeText(pageUrl);trackShare("copy_link")}catch{}
           }}>{locale==="es"?"Copiar enlace":"Copy link"}</button>
+          {typeof navigator!=="undefined"&&typeof navigator.share==="function"&&<button type="button" onClick={nativeShare}>
+            {locale==="es"?"Más opciones…":"More options…"}
+          </button>}
         </div>
       </div>}
     </div>
