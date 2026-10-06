@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
+import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 
 async function requireEditor(){
   const supabase=await createSupabaseServerClient();
