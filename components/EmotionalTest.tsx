@@ -101,6 +101,13 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
   },[scores]);
 
   const result=profileMap[resultKey];
+  const profileImage:Record<string,string>={
+    vorax:"/vorax-hd.webp",
+    umbral:"/umbral-hd.webp",
+    ethelis:"/ethelis-hd.webp",
+    nara:"/nara-hd.webp"
+  };
+  const resultImage=profileImage[resultKey]||"";
 
   function roundedRect(ctx:CanvasRenderingContext2D,x:number,y:number,w:number,h:number,r:number){
     const radius=Math.min(r,w/2,h/2);
@@ -128,11 +135,19 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
 
   async function createResultCard(){
     if(!result)return null;
-    const canvas=document.createElement("canvas");
-    canvas.width=1080;
-    canvas.height=1350;
-    const ctx=canvas.getContext("2d");
-    if(!ctx)return null;
+
+    const loadImage=async(url:string)=>{
+      const response=await fetch(url,{cache:"no-store"});
+      if(!response.ok)throw new Error("image_fetch_failed");
+      const blob=await response.blob();
+      const objectUrl=URL.createObjectURL(blob);
+      return await new Promise<{img:HTMLImageElement;url:string}>((resolve,reject)=>{
+        const img=new Image();
+        img.onload=()=>resolve({img,url:objectUrl});
+        img.onerror=()=>{URL.revokeObjectURL(objectUrl);reject(new Error("image_load_failed"))};
+        img.src=objectUrl;
+      });
+    };
 
     const profileName=locale==="es"?result.name_es:result.name_en;
     const strength=locale==="es"?result.superpower_es:result.superpower_en;
@@ -142,70 +157,128 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
     const affinity=total?Math.round(dominant/total*100):0;
     const accent=result.color||"#C9A84C";
 
-    const bg=ctx.createLinearGradient(0,0,1080,1350);
-    bg.addColorStop(0,"#07101d");
-    bg.addColorStop(.55,"#0A1628");
-    bg.addColorStop(1,"#050a12");
-    ctx.fillStyle=bg;
-    ctx.fillRect(0,0,1080,1350);
+    const canvas=document.createElement("canvas");
+    canvas.width=1080;
+    canvas.height=1350;
+    const ctx=canvas.getContext("2d");
+    if(!ctx)return null;
 
-    const glow=ctx.createRadialGradient(790,300,0,790,300,520);
-    glow.addColorStop(0,accent+"55");
-    glow.addColorStop(1,"transparent");
-    ctx.fillStyle=glow;
-    ctx.fillRect(0,0,1080,900);
+    const loaded:{img:HTMLImageElement;url:string}[]=[];
+    try{
+      const logo=await loadImage("/fragmentun-logo-official.webp");
+      loaded.push(logo);
 
-    ctx.strokeStyle="#C9A84C88";
-    ctx.lineWidth=3;
-    roundedRect(ctx,55,55,970,1240,34);
-    ctx.stroke();
+      const characterImages:{img:HTMLImageElement;url:string}[]=[];
+      if(resultKey==="balance"){
+        for(const key of ["vorax","umbral","ethelis","nara"]){
+          const item=await loadImage(profileImage[key]);
+          loaded.push(item);
+          characterImages.push(item);
+        }
+      }else if(resultImage){
+        const item=await loadImage(resultImage);
+        loaded.push(item);
+        characterImages.push(item);
+      }
 
-    ctx.fillStyle="#C9A84C";
-    ctx.font="700 32px Georgia, serif";
-    ctx.textAlign="center";
-    ctx.fillText("FRAGMENTUN",540,135);
-    ctx.font="600 18px Arial, sans-serif";
-    ctx.letterSpacing="4px" as any;
-    ctx.fillText(locale==="es"?"TEST EMOCIONAL":"EMOTIONAL TEST",540,177);
+      ctx.fillStyle="#07111f";
+      ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    ctx.fillStyle="#ffffff";
-    ctx.font="700 30px Arial, sans-serif";
-    ctx.fillText(locale==="es"?"MI PERFIL EMOCIONAL ES":"MY EMOTIONAL PROFILE IS",540,300);
+      const glow=ctx.createRadialGradient(860,150,20,860,150,720);
+      glow.addColorStop(0,accent+"33");
+      glow.addColorStop(1,"rgba(10,22,40,0)");
+      ctx.fillStyle=glow;
+      ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    ctx.fillStyle=accent;
-    ctx.font="700 92px Georgia, serif";
-    const nameLines=wrapCanvasText(ctx,profileName.toUpperCase(),850);
-    nameLines.slice(0,2).forEach((line,i)=>ctx.fillText(line,540,410+i*105));
+      // Marco FRAGMENTUN: misma línea visual del descargable oficial ya aprobado.
+      ctx.strokeStyle="#C9A84C";
+      ctx.lineWidth=4;
+      ctx.strokeRect(18,18,canvas.width-36,canvas.height-36);
+      ctx.strokeStyle="rgba(201,168,76,.34)";
+      ctx.lineWidth=1;
+      ctx.strokeRect(34,34,canvas.width-68,canvas.height-68);
 
-    ctx.fillStyle="#ffffff";
-    ctx.font="600 25px Arial, sans-serif";
-    ctx.fillText(locale==="es"?"AFINIDAD DOMINANTE":"DOMINANT AFFINITY",540,625);
-    ctx.fillStyle="#C9A84C";
-    ctx.font="700 72px Arial, sans-serif";
-    ctx.fillText(affinity+"%",540,705);
+      const logoHeight=116;
+      const logoWidth=Math.round(logo.img.naturalWidth*(logoHeight/logo.img.naturalHeight));
+      ctx.drawImage(logo.img,(canvas.width-logoWidth)/2,42,logoWidth,logoHeight);
 
-    ctx.fillStyle="#dbe6f1";
-    ctx.font="400 30px Arial, sans-serif";
-    const descLines=wrapCanvasText(ctx,description,820).slice(0,4);
-    descLines.forEach((line,i)=>ctx.fillText(line,540,805+i*44));
+      const imageX=72;
+      const imageY=195;
+      const imageW=936;
+      const imageH=595;
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(imageX,imageY,imageW,imageH);
+      ctx.clip();
 
-    ctx.fillStyle="#ffffff";
-    ctx.font="700 23px Arial, sans-serif";
-    ctx.fillText(locale==="es"?"FORTALEZA":"STRENGTH",540,1030);
-    ctx.fillStyle=accent;
-    ctx.font="700 34px Arial, sans-serif";
-    wrapCanvasText(ctx,strength,780).slice(0,2).forEach((line,i)=>ctx.fillText(line,540,1080+i*42));
+      if(resultKey==="balance"&&characterImages.length===4){
+        const tileW=imageW/2;
+        const tileH=imageH/2;
+        characterImages.forEach((asset,i)=>{
+          const img=asset.img;
+          const tx=imageX+(i%2)*tileW;
+          const ty=imageY+Math.floor(i/2)*tileH;
+          const scale=Math.max(tileW/img.naturalWidth,tileH/img.naturalHeight);
+          const dw=img.naturalWidth*scale;
+          const dh=img.naturalHeight*scale;
+          ctx.drawImage(img,tx+(tileW-dw)/2,ty+(tileH-dh)/2,dw,dh);
+        });
+      }else if(characterImages[0]){
+        const img=characterImages[0].img;
+        const scale=Math.max(imageW/img.naturalWidth,imageH/img.naturalHeight);
+        const dw=img.naturalWidth*scale;
+        const dh=img.naturalHeight*scale;
+        ctx.drawImage(img,imageX+(imageW-dw)/2,imageY+(imageH-dh)/2,dw,dh);
+      }
 
-    ctx.strokeStyle="#ffffff22";
-    ctx.beginPath();ctx.moveTo(170,1192);ctx.lineTo(910,1192);ctx.stroke();
-    ctx.fillStyle="#C9A84C";
-    ctx.font="700 25px Arial, sans-serif";
-    ctx.fillText(locale==="es"?"DESCUBRE EL TUYO":"DISCOVER YOURS",540,1245);
-    ctx.fillStyle="#ffffff";
-    ctx.font="600 24px Arial, sans-serif";
-    ctx.fillText("fragmentun.com/"+locale+"/test",540,1283);
+      const shade=ctx.createLinearGradient(imageX,imageY,imageX,imageY+imageH);
+      shade.addColorStop(0,"rgba(7,17,31,.02)");
+      shade.addColorStop(.7,"rgba(7,17,31,.12)");
+      shade.addColorStop(1,"rgba(7,17,31,.72)");
+      ctx.fillStyle=shade;
+      ctx.fillRect(imageX,imageY,imageW,imageH);
+      ctx.restore();
 
-    return await new Promise<Blob|null>(resolve=>canvas.toBlob(resolve,"image/png",.95));
+      ctx.strokeStyle="rgba(201,168,76,.75)";
+      ctx.lineWidth=2;
+      ctx.strokeRect(imageX,imageY,imageW,imageH);
+
+      ctx.textAlign="center";
+      ctx.fillStyle="#C9A84C";
+      ctx.font='700 23px Arial, Helvetica, sans-serif';
+      ctx.fillText(locale==="es"?"MI PERFIL EMOCIONAL ES":"MY EMOTIONAL PROFILE IS",540,850);
+
+      ctx.fillStyle=accent;
+      ctx.font='700 74px Georgia, "Times New Roman", serif';
+      wrapCanvasText(ctx,profileName.toUpperCase(),850).slice(0,2).forEach((line,i)=>ctx.fillText(line,540,940+i*80));
+
+      ctx.fillStyle="#F3E3A7";
+      ctx.font='700 23px Arial, Helvetica, sans-serif';
+      ctx.fillText((locale==="es"?"AFINIDAD DOMINANTE ":"DOMINANT AFFINITY ")+affinity+"%",540,1035);
+
+      ctx.fillStyle="#D8BF70";
+      ctx.font='700 18px Arial, Helvetica, sans-serif';
+      ctx.fillText(locale==="es"?"FORTALEZA":"STRENGTH",540,1090);
+
+      ctx.fillStyle="#ffffff";
+      ctx.font='700 28px Arial, Helvetica, sans-serif';
+      wrapCanvasText(ctx,strength,820).slice(0,2).forEach((line,i)=>ctx.fillText(line,540,1132+i*36));
+
+      ctx.fillStyle="#9eb0c2";
+      ctx.font='500 20px Arial, Helvetica, sans-serif';
+      wrapCanvasText(ctx,description,820).slice(0,2).forEach((line,i)=>ctx.fillText(line,540,1210+i*30));
+
+      ctx.fillStyle="#D8BF70";
+      ctx.font='700 18px Arial, Helvetica, sans-serif';
+      ctx.fillText(locale==="es"?"DESCUBRE TU PERFIL EMOCIONAL":"DISCOVER YOUR EMOTIONAL PROFILE",540,1282);
+      ctx.fillStyle="#7f93a8";
+      ctx.font='600 16px Arial, Helvetica, sans-serif';
+      ctx.fillText("FRAGMENTUN.COM/"+locale.toUpperCase()+"/TEST",540,1314);
+
+      return await new Promise<Blob|null>(resolve=>canvas.toBlob(resolve,"image/png",.95));
+    }finally{
+      loaded.forEach(item=>URL.revokeObjectURL(item.url));
+    }
   }
 
   async function shareResultCard(){
@@ -285,12 +358,18 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
       </div>
 
       <div className="testViralCard" style={{"--profile-color":result.color||"#C9A84C"} as React.CSSProperties}>
-        <div className="testViralGlow"/>
-        <div className="testViralBrand">FRAGMENTUN <span>{locale==="es"?"TEST EMOCIONAL":"EMOTIONAL TEST"}</span></div>
-        <div className="testViralLabel">{locale==="es"?"MI PERFIL EMOCIONAL ES":"MY EMOTIONAL PROFILE IS"}</div>
-        <strong>{locale==="es"?result.name_es:result.name_en}</strong>
-        <div className="testViralStrength"><span>{locale==="es"?"FORTALEZA":"STRENGTH"}</span>{locale==="es"?result.superpower_es:result.superpower_en}</div>
-        <small>{locale==="es"?"Comparte tu resultado y reta a alguien a descubrir el suyo.":"Share your result and challenge someone to discover theirs."}</small>
+        <div className="testViralInnerFrame">
+          <img className="testViralOfficialLogo" src="/fragmentun-logo-official.webp" alt="FRAGMENTUN"/>
+          <div className={"testViralCharacter "+(resultKey==="balance"?"balance":"")}>
+            {resultKey==="balance"
+              ?(["vorax","umbral","ethelis","nara"] as const).map(key=><img key={key} src={profileImage[key]} alt={profileMap[key]?.[locale==="es"?"name_es":"name_en"]||key}/>)
+              :resultImage&&<img src={resultImage} alt={locale==="es"?result.name_es:result.name_en}/>}
+          </div>
+          <div className="testViralLabel">{locale==="es"?"MI PERFIL EMOCIONAL ES":"MY EMOTIONAL PROFILE IS"}</div>
+          <strong>{locale==="es"?result.name_es:result.name_en}</strong>
+          <div className="testViralStrength"><span>{locale==="es"?"FORTALEZA":"STRENGTH"}</span>{locale==="es"?result.superpower_es:result.superpower_en}</div>
+          <small>{locale==="es"?"Comparte tu resultado y reta a alguien a descubrir el suyo.":"Share your result and challenge someone to discover theirs."}</small>
+        </div>
       </div>
       <div className="testViralActions">
         <button className="btn btnPrimary" type="button" onClick={shareResultCard}>{locale==="es"?"Compartir mi resultado":"Share my result"}</button>
