@@ -1,4 +1,4 @@
-import { createHmac } from "node:crypto";
+import { createHash,createHmac } from "node:crypto";
 import { createSupabaseServiceClient } from "./supabase/service";
 
 function clientAddress(request:Request){
@@ -9,8 +9,9 @@ function clientAddress(request:Request){
 
 function hashKey(value:string){
   const secret=process.env.RATE_LIMIT_SECRET||process.env.SUPABASE_SECRET_KEY;
-  if(!secret) throw new Error("rate_limit_secret_missing");
-  return createHmac("sha256",secret).update(value).digest("hex");
+  return secret
+    ?createHmac("sha256",secret).update(value).digest("hex")
+    :createHash("sha256").update(value).digest("hex");
 }
 
 type LocalBucket={windowStart:number;count:number};
@@ -42,9 +43,10 @@ export async function consumePublicRateLimit(
   windowSeconds:number,
   limit:number
 ){
+  const ip=clientAddress(request);
+  const keyHash=hashKey(`${route}|${ip}|${discriminator}`);
+
   try{
-    const ip=clientAddress(request);
-    const keyHash=hashKey(`${route}|${ip}|${discriminator}`);
     const supabase=createSupabaseServiceClient();
     const {data,error}=await supabase.rpc("consume_rate_limit",{
       p_route:route,
@@ -55,8 +57,6 @@ export async function consumePublicRateLimit(
     if(error)return {allowed:localFallback(keyHash,windowSeconds,limit),degraded:true};
     return {allowed:data===true,degraded:false};
   }catch{
-    const ip=clientAddress(request);
-    const emergencyKey=hashKey(`${route}|${ip}|${discriminator}`);
-    return {allowed:localFallback(emergencyKey,windowSeconds,limit),degraded:true};
+    return {allowed:localFallback(keyHash,windowSeconds,limit),degraded:true};
   }
 }
