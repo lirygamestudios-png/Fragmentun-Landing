@@ -36,13 +36,13 @@ export function AdminSystemStatus(){
         <div className="kpi"><span>Personajes</span><strong>{ops.published_characters||0}</strong><small>publicados</small></div>
         <div className="kpi"><span>Medios</span><strong>{ops.public_media||0}</strong><small>recursos</small></div>
         <div className="kpi"><span>Analítica</span><strong>{ops.analytics_events||0}</strong><small>eventos</small></div>
-        <div className="kpi"><span>Suscriptores</span><strong>{ops.leads||0}</strong></div>
+        <div className="kpi"><span>Registros</span><strong>{ops.leads||0}</strong></div>
         <div className="kpi"><span>MailerLite</span><strong>{ops.mailerlite_reachable?"EN LÍNEA":"REVISAR"}</strong></div>
       </div>
       <div className="adminTableWrap" style={{marginTop:18}}>
         <table className="adminTable"><tbody>
           <tr><td>Último evento de analítica</td><td>{ops.latest_analytics_at?new Date(ops.latest_analytics_at).toLocaleString():"—"}</td></tr>
-          <tr><td>Último suscriptor</td><td>{ops.latest_lead_at?new Date(ops.latest_lead_at).toLocaleString():"—"}</td></tr>
+          <tr><td>Último registro</td><td>{ops.latest_lead_at?new Date(ops.latest_lead_at).toLocaleString():"—"}</td></tr>
           <tr><td>Tiempo de respuesta</td><td>{ops.query_ms??"—"} ms</td></tr>
           <tr><td>Almacenamiento</td><td>{(ops.storage_buckets||[]).join(", ")||"—"}</td></tr>
         </tbody></table>
