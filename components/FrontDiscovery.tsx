@@ -62,7 +62,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
   const[selected,setSelected]=useState<number|null>(null);
   const[rewardOpen,setRewardOpen]=useState(false);
   const[rewardReady,setRewardReady]=useState(false);
-  const[shareStatus,setShareStatus]=useState<"idle"|"sharing"|"returning"|"unsupported"|"error">("idle");
+  const[shareStatus,setShareStatus]=useState<"idle"|"prompting"|"sharing"|"preparing"|"unsupported"|"error">("idle");
   const characters:Character[]=Array.isArray(charactersContent?.characters)&&charactersContent.characters.length
     ?charactersContent.characters.map((item:any)=>({
       key:item.key||item.name,
@@ -297,7 +297,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
             </div>
             :item.key==="free-art"
               ?<div className="shareRewardAction">
-                <button className="btn btnSecondary" type="button" disabled={shareStatus==="sharing"} onClick={async()=>{
+                <button className="btn btnSecondary" type="button" disabled={shareStatus==="prompting"||shareStatus==="sharing"||shareStatus==="preparing"} onClick={async()=>{
                   const url=window.location.href;
                   const text=locale==="es"
                     ?"Descubre FRAGMENTUN, una saga de ciencia ficción emocional."
@@ -309,60 +309,32 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                   }
 
                   try{
-                    setRewardReady(false);
-                    setRewardOpen(false);
-                    setShareStatus("sharing");
 
-                    // Let React paint the branded COMPARTIENDO state before the OS share sheet takes control.
-                    await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
+                  setRewardReady(false);
+                  setRewardOpen(false);
 
-                    await navigator.share({title:"FRAGMENTUN",text,url});
+                  // Stage 1: FRAGMENTUN owns the interaction before the native share sheet opens.
+                  setShareStatus("prompting");
+                  await new Promise<void>(resolve=>window.setTimeout(resolve,1400));
+                  setShareStatus("sharing");
+                  await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
 
-                    setShareStatus("returning");
+                  // Stage 2: hand control to the browser/OS share surface.
+                  await navigator.share({title:"FRAGMENTUN",text,url});
 
-                    await new Promise<void>(resolve=>{
-                      let stableTimer:number|undefined;
-                      let hardTimer:number|undefined;
-                      let poll:number|undefined;
-                      let done=false;
-
-                      const finish=()=>{
-                        if(done)return;
-                        done=true;
-                        if(stableTimer!==undefined)window.clearTimeout(stableTimer);
-                        if(hardTimer!==undefined)window.clearTimeout(hardTimer);
-                        if(poll!==undefined)window.clearInterval(poll);
-                        resolve();
-                      };
-
-                      const evaluate=()=>{
-                        const active=document.visibilityState==="visible"&&document.hasFocus();
-                        if(active&&stableTimer===undefined){
-                          stableTimer=window.setTimeout(finish,1100);
-                        }else if(!active&&stableTimer!==undefined){
-                          window.clearTimeout(stableTimer);
-                          stableTimer=undefined;
-                        }
-                      };
-
-                      poll=window.setInterval(evaluate,120);
-                      hardTimer=window.setTimeout(finish,4200);
-                      evaluate();
-                    });
-
-                    setShareStatus("returning");
-
+                  // Stage 3: once control returns to FRAGMENTUN, show a second branded state.
+                  // Keep it on screen for a deliberate minimum interval; only after it is
+                  // completely unmounted can the thank-you card appear.
+                  setShareStatus("preparing");
+                  await new Promise<void>(resolve=>window.setTimeout(resolve,2400));
                     fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
                       event_name:"share_reward_unlock",locale,path:window.location.pathname,...analyticsAttribution(),metadata:{placement:"value_strip",result:"completed_after_share_closed"}
                     }),keepalive:true}).catch(()=>{});
 
                     setRewardReady(true);
                     setShareStatus("idle");
-
-                    // Ensure the branded process overlay is fully removed before
-                    // opening the thank-you reward card. This prevents overlap
-                    // even when the native share sheet is still visually present.
                     await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
+                    await new Promise<void>(resolve=>window.setTimeout(resolve,280));
                     setRewardOpen(true);
                   }catch(error){
                     const aborted=error instanceof DOMException&&error.name==="AbortError";
@@ -395,14 +367,14 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
     </section>
 
 
-    {(shareStatus==="sharing"||shareStatus==="returning")&&<FragmentunProcessOverlay
+    {(shareStatus==="prompting"||shareStatus==="preparing")&&<FragmentunProcessOverlay
       state="processing"
-      title={shareStatus==="sharing"
-        ?(locale==="es"?"COMPARTIENDO…":"SHARING…")
-        :(locale==="es"?"PROCESANDO…":"PROCESSING…")}
-      detail={shareStatus==="sharing"
-        ?(locale==="es"?"Compartiendo FRAGMENTUN":"Sharing FRAGMENTUN")
-        :(locale==="es"?"Verificando tu regreso a FRAGMENTUN":"Verifying your return to FRAGMENTUN")}
+      title={shareStatus==="prompting"
+        ?(locale==="es"?"POR FAVOR SELECCIONA UNA OPCIÓN PARA COMPARTIR":"PLEASE SELECT A SHARING OPTION")
+        :(locale==="es"?"PREPARANDO TU ARTE CONCEPTUAL…":"PREPARING YOUR CONCEPT ART…")}
+      detail={shareStatus==="prompting"
+        ?(locale==="es"?"La ventana para compartir se abrirá a continuación.":"The sharing window will open next.")
+        :(locale==="es"?"ESPERA… estamos preparando tu recompensa FRAGMENTUN.":"PLEASE WAIT… we are preparing your FRAGMENTUN reward.")}
     />}\n\n    {rewardOpen&&<div className="shareRewardBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setRewardOpen(false)}}>
       <section className="shareRewardModal" role="dialog" aria-modal="true" aria-label={shareReward?.thank_you||(locale==="es"?"Gracias por compartir este universo":"Thank you for sharing this universe")}>
         <button className="shareRewardClose" type="button" aria-label={locale==="es"?"Cerrar":"Close"} onClick={()=>setRewardOpen(false)}>×</button>
