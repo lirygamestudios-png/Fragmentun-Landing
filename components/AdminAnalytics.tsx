@@ -26,7 +26,11 @@ export function AdminAnalytics(){
     ["Patreon",data.funnel?.patreon_sessions||0]
   ] as const;
   const funnelMax=Math.max(1,...funnelSteps.map(x=>Number(x[1]||0)));
-  const paidChannels=(data.by_source||[]).filter((r:any)=>["cpc","paid_social"].includes(String(r.medium||"").toLowerCase()));
+  const paidMedium=(value:unknown)=>{
+    const medium=String(value||"").toLowerCase().replace(/[\s-]+/g,"_");
+    return ["cpc","ppc","paid","paid_search","paid_social","social_paid","display","retargeting","remarketing"].includes(medium);
+  };
+  const paidChannels=(data.by_source||[]).filter((r:any)=>paidMedium(r.medium));
 
   return <div className="adminAnalyticsModule">
     <div className="adminModuleToolbar adminNoPrint"><div><div className="kicker">Inteligencia del embudo</div><h2>Rendimiento y conversión</h2></div><div className="adminReportActions"><button className="btn btnGhost" onClick={printReport}>Imprimir / Guardar PDF</button><button className="btn btnGhost" onClick={exportCsv}>Descargar CSV</button></div></div>
