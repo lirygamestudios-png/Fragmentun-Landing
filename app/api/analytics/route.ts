@@ -3,7 +3,15 @@ import { consumePublicRateLimit } from "../../../lib/rate-limit";
 
 const allowed=new Set(["page_view","amazon_click","chapter_click","chapter_read","test_start","test_complete","test_result_share","test_result_download","map_interaction","community_click","lead_submit","patreon_click","experiment_view","share_reward_unlock","share_reward_error","share_reward_download","share_click","merch_click","official_video_open","presence_ping"]);
 
+function isLikelyAutomated(request:NextRequest){
+  const ua=(request.headers.get("user-agent")||"").toLowerCase();
+  if(!ua)return false;
+  return /(bot|crawler|spider|slurp|bingpreview|facebookexternalhit|headlesschrome|lighthouse|pagespeed|vercel-screenshot|uptime|monitoring|synthetic)/i.test(ua);
+}
+
 export async function POST(request:NextRequest){
+  if(isLikelyAutomated(request)) return new NextResponse(null,{status:204});
+
   const length=Number(request.headers.get("content-length")||"0");
   if(length>12000) return NextResponse.json({ok:false,error:"payload_too_large"},{status:413});
 
