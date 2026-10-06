@@ -139,6 +139,8 @@ export async function PUT(request:NextRequest){
       shipping_label_format:String(body.shipping_label_format||"").trim()||null,
       label_cost_cents:Number.isFinite(Number(body.label_cost_cents))?Math.max(0,Number(body.label_cost_cents)):0,
       label_created_at:body.shipping_label_url?(body.label_created_at||new Date().toISOString()):null,
+      shipped_at:body.shipment_status==="shipped"?(body.shipped_at||new Date().toISOString()):(body.shipped_at||null),
+      delivered_at:body.shipment_status==="delivered"?(body.delivered_at||new Date().toISOString()):(body.delivered_at||null),
       updated_at:new Date().toISOString()
     };
     const{data,error}=await x.supabase.from("shop_fulfillments").update(payload).eq("id",body.id).select().single();
