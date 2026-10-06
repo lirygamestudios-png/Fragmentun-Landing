@@ -13,7 +13,7 @@ const presets=[
 ];
 
 export function AdminCampaigns(){
- const[rows,setRows]=useState<any[]>([]);const[form,setForm]=useState<any>(empty);const[msg,setMsg]=useState("");
+ const[rows,setRows]=useState<any[]>([]);const[form,setForm]=useState<any>(empty);const[msg,setMsg]=useState("");const[filterSource,setFilterSource]=useState("all");const[filterText,setFilterText]=useState("");
  const[organic,setOrganic]=useState({platform:"instagram",campaign:"lanzamiento_fragmentun",content:"post_01",locale:"es",destination_url:"https://www.fragmentun.com/es"});
  const load=()=>fetch("/api/admin/campaigns").then(r=>r.json()).then(j=>setRows(j.data||[]));
  useEffect(()=>{load()},[]);
@@ -83,6 +83,12 @@ export function AdminCampaigns(){
    setMsg("Campaña cargada como base ✓");
    window.scrollTo({top:0,behavior:"smooth"});
  }
+ const filteredRows=rows.filter((r:any)=>{
+   const sourceOk=filterSource==="all"||String(r.source||"").toLowerCase()===filterSource;
+   const q=filterText.trim().toLowerCase();
+   const textOk=!q||[r.code,r.campaign,r.content,r.source,r.destination_url].some(v=>String(v||"").toLowerCase().includes(q));
+   return sourceOk&&textOk;
+ });
  return <div className="adminSecondaryModule adminCampaignModule">
    <div className="card adminSecondaryPanel organicLinkGenerator">
      <div className="adminPanelHeader">
@@ -163,7 +169,33 @@ export function AdminCampaigns(){
      <select value={form.locale} onChange={e=>setForm({...form,locale:e.target.value})}><option value="es">ES</option><option value="en">EN</option></select>
      <button className="btn btnPrimary" onClick={create}>Crear campaña</button>
    </div></div>
-   <div className="adminQuestionList" style={{marginTop:22}}>{rows.map((r,i)=><article className="card" key={r.id}>
+   <div className="card adminSecondaryPanel campaignHistoryTools" style={{marginTop:22}}>
+     <div className="adminPanelHeader">
+       <div><div className="kicker">Historial</div><h2>Campañas guardadas</h2></div>
+       <span className="adminPanelBadge">{filteredRows.length} RESULTADOS</span>
+     </div>
+     <div className="campaignFilterGrid">
+       <label>Buscar
+         <input value={filterText} onChange={e=>setFilterText(e.target.value)} placeholder="Campaña, publicación o destino"/>
+       </label>
+       <label>Red social
+         <select value={filterSource} onChange={e=>setFilterSource(e.target.value)}>
+           <option value="all">Todas</option>
+           <option value="instagram">Instagram</option>
+           <option value="facebook">Facebook</option>
+           <option value="tiktok">TikTok</option>
+           <option value="youtube">YouTube</option>
+           <option value="x">X</option>
+           <option value="linkedin">LinkedIn</option>
+           <option value="reddit">Reddit</option>
+           <option value="meta">Meta Ads</option>
+           <option value="google">Google Ads</option>
+         </select>
+       </label>
+       <button className="btn btnGhost" type="button" onClick={()=>{setFilterText("");setFilterSource("all")}}>Limpiar</button>
+     </div>
+   </div>
+   <div className="adminQuestionList" style={{marginTop:14}}>{filteredRows.map((r)=><article className="card" key={r.id}>
      <div className="kicker">{r.code}</div><div className="adminFormGrid">
      {[
   ["source","Origen"],
@@ -171,8 +203,8 @@ export function AdminCampaigns(){
   ["campaign","Campaña"],
   ["content","Contenido"],
   ["destination_url","Página de destino"]
-].map(([k,label])=><label key={k}>{label}<input value={r[k]||""} onChange={e=>setRows(a=>a.map((x,n)=>n===i?{...x,[k]:e.target.value}:x))}/></label>)}
-     <select value={r.locale} onChange={e=>setRows(a=>a.map((x,n)=>n===i?{...x,locale:e.target.value}:x))}><option value="es">ES</option><option value="en">EN</option></select>
+].map(([k,label])=><label key={k}>{label}<input value={r[k]||""} onChange={e=>setRows(a=>a.map((x)=>x.id===r.id?{...x,[k]:e.target.value}:x))}/></label>)}
+     <select value={r.locale} onChange={e=>setRows(a=>a.map((x)=>x.id===r.id?{...x,locale:e.target.value}:x))}><option value="es">ES</option><option value="en">EN</option></select>
      <button className="btn btnGhost" onClick={()=>save(r)}>Guardar</button></div>
      <p className="note" style={{wordBreak:"break-all"}}>{url(r)}</p>
      <div className="heroActions">
