@@ -108,14 +108,20 @@ export function AdvertisingConsent(){
     setChoice(saved);
     setReady(true);
     if(saved==="accepted")loadConfiguredAds();
+
+    const reopen=()=>setChoice(null);
+    window.addEventListener("fragmentun:ad-consent-open",reopen);
+    return()=>window.removeEventListener("fragmentun:ad-consent-open",reopen);
   },[isAdmin]);
 
   if(!ready||isAdmin||choice)return null;
 
   const choose=(value:Exclude<Choice,null>)=>{
+    const previous=readChoice();
     writeChoice(value);
     setChoice(value);
     if(value==="accepted")loadConfiguredAds();
+    if(previous==="accepted"&&value==="rejected")window.location.reload();
   };
 
   return <aside style={{
