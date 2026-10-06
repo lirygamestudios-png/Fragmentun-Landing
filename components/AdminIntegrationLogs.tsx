@@ -61,7 +61,7 @@ export function AdminIntegrationLogs(){
   const[emailLocale,setEmailLocale]=useState<"es"|"en">("es");
   const[provisioning,setProvisioning]=useState(false);
   const[provisionResult,setProvisionResult]=useState<any>(null);
-  const[blueprintStatus,setBlueprintStatus]=useState<"idle"|"copied"|"error">("idle");
+  const[plantillaStatus,setPlantillaStatus]=useState<"idle"|"copied"|"error">("idle");
   const[adSaving,setAdSaving]=useState<string>("");
   const[adFeedback,setAdFeedback]=useState<Record<string,string>>({});
   useEffect(()=>{fetch("/api/admin/integrations").then(r=>r.json()).then(setData)},[]);
@@ -75,13 +75,13 @@ export function AdminIntegrationLogs(){
   const success=items.filter((x:any)=>x.status==="success").length;
   const approvedSequence=emailLocale==="es"?FRAGMENTUN_EMAIL_SEQUENCE:FRAGMENTUN_EMAIL_SEQUENCE_EN;
 
-  async function copyBlueprint(){
-    setBlueprintStatus("idle");
+  async function copyPlantilla(){
+    setPlantillaStatus("idle");
     const lines=approvedSequence.map((mail:any)=>[
       `${mail.order}. ${mail.subject}`,
       `   Fase: ${mail.phase}`,
       `   Espera: ${mail.delay}`,
-      `   Trigger: ${mail.trigger}`,
+      `   Inicio: ${mail.trigger}`,
       `   CTA principal: ${mail.primaryCta.label} → ${mail.primaryCta.href}`,
       `   CTA secundario: ${mail.secondaryCta.label} → ${mail.secondaryCta.href}`,
       mail.downloadCta?`   Descarga: ${mail.downloadCta.label} → ${mail.downloadCta.href}`:"",
@@ -89,10 +89,10 @@ export function AdminIntegrationLogs(){
     ].filter(Boolean).join("\n")).join("\n\n");
     try{
       await navigator.clipboard.writeText(lines);
-      setBlueprintStatus("copied");
-      window.setTimeout(()=>setBlueprintStatus("idle"),3000);
+      setPlantillaStatus("copied");
+      window.setTimeout(()=>setPlantillaStatus("idle"),3000);
     }catch{
-      setBlueprintStatus("error");
+      setPlantillaStatus("error");
     }
   }
 
@@ -141,7 +141,7 @@ export function AdminIntegrationLogs(){
 
   return <div className="adminSecondaryModule adminIntegrationsModule">
     <div className="kpis">
-      <div className="kpi"><span>Estado MailerLite</span><strong>{health.state||"—"}</strong></div>
+      <div className="kpi"><span>Estado del correo</span><strong>{health.state||"—"}</strong></div>
       <div className="kpi"><span>Suscriptores sincronizados</span><strong>{health.leads?.synced||0}</strong></div>
       <div className="kpi"><span>Pendientes / sin configurar</span><strong>{(health.leads?.pending||0)+(health.leads?.unconfigured||0)}</strong></div>
       <div className="kpi"><span>Errores de sincronización</span><strong>{health.leads?.error||0}</strong></div>
@@ -180,11 +180,11 @@ export function AdminIntegrationLogs(){
     </div>
 
     <div className="card adminSecondaryPanel">
-      <h2>Salud de MailerLite</h2>
+      <h2>Estado de la conexión de correo</h2>
       <div className="adminTableWrap">
         <table className="adminTable">
           <tbody>
-            <tr><td>Clave de conexión API</td><td><strong>{health.configured?.token?"✓ Configurado":"✕ Pendiente"}</strong></td></tr>
+            <tr><td>Conexión con MailerLite</td><td><strong>{health.configured?.token?"✓ Configurado":"✕ Pendiente"}</strong></td></tr>
             <tr><td>Grupo Español</td><td><strong>{health.configured?.group_es?"✓ Configurado":"✕ Pendiente"}</strong></td></tr>
             <tr><td>Grupo Inglés</td><td><strong>{health.configured?.group_en?"✓ Configurado":"— Opcional / pendiente"}</strong></td></tr>
             <tr><td>Último éxito</td><td>{health.last_success_at?new Date(health.last_success_at).toLocaleString():"—"}</td></tr>
@@ -197,7 +197,7 @@ export function AdminIntegrationLogs(){
     <div className="card adminSecondaryPanel">
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:"12px",flexWrap:"wrap"}}>
         <div>
-          <h2 style={{marginBottom:".25rem"}}>Secuencia de correos · MailerLite</h2>
+          <h2 style={{marginBottom:".25rem"}}>Secuencia de correos</h2>
           <p style={{marginTop:0,opacity:.75}}>Automatizaciones reales detectadas en la cuenta conectada.</p>
         </div>
         <button type="button" className="btn btnPrimary" onClick={provisionAutomations} disabled={provisioning}>
@@ -250,9 +250,9 @@ export function AdminIntegrationLogs(){
         </div>
       </div>
       <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",gap:"10px",marginBottom:"12px",flexWrap:"wrap"}}>
-        {blueprintStatus==="copied"?<span style={{fontSize:".82rem",color:FRAGMENTUN_EMAIL_BRAND.gold,fontWeight:800}}>✓ Blueprint {emailLocale.toUpperCase()} copiado al portapapeles</span>:null}
-        {blueprintStatus==="error"?<span style={{fontSize:".82rem",color:"#ff8a8a",fontWeight:800}}>No fue posible copiar automáticamente. Revisa los permisos del portapapeles.</span>:null}
-        <button type="button" className="btn btnGhost" onClick={copyBlueprint}>Copiar blueprint MailerLite</button>
+        {plantillaStatus==="copied"?<span style={{fontSize:".82rem",color:FRAGMENTUN_EMAIL_BRAND.gold,fontWeight:800}}>✓ Plantilla {emailLocale.toUpperCase()} copiado al portapapeles</span>:null}
+        {plantillaStatus==="error"?<span style={{fontSize:".82rem",color:"#ff8a8a",fontWeight:800}}>No fue posible copiar automáticamente. Revisa los permisos del portapapeles.</span>:null}
+        <button type="button" className="btn btnGhost" onClick={copyPlantilla}>Copiar plantilla</button>
       </div>
       <div style={{display:"grid",gap:"1rem"}}>
         {approvedSequence.map((mail:any)=><div key={mail.id} style={{
@@ -352,7 +352,7 @@ export function AdminIntegrationLogs(){
             </div>
 
             <div style={{marginTop:"24px",fontSize:".8rem",color:"rgba(255,255,255,.58)"}}>
-              <strong style={{color:"rgba(255,255,255,.78)"}}>Trigger:</strong> {mail.trigger}
+              <strong style={{color:"rgba(255,255,255,.78)"}}>Inicio:</strong> {mail.trigger}
             </div>
           </div>
 
@@ -381,7 +381,7 @@ export function AdminIntegrationLogs(){
       <h2>Historial de integraciones</h2>
       <div className="adminTableWrap">
         <table className="adminTable">
-          <thead><tr><th>Fecha</th><th>Integración</th><th>Evento</th><th>Estado</th><th>Entidad</th><th>Mensaje</th></tr></thead>
+          <thead><tr><th>Fecha</th><th>Servicio</th><th>Evento</th><th>Estado</th><th>Referencia</th><th>Mensaje</th></tr></thead>
           <tbody>{items.map((r:any)=><tr key={r.id}>
             <td>{new Date(r.created_at).toLocaleString()}</td>
             <td>{r.integration}</td>
