@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { chapterAccessCookieName,verifyChapterAccessToken } from "../../../lib/chapter-access";
 
 export const runtime="nodejs";
 
@@ -110,6 +112,12 @@ function buildPdf(){
 }
 
 export async function GET(){
+  const cookieStore=await cookies();
+  const access=verifyChapterAccessToken(cookieStore.get(chapterAccessCookieName())?.value);
+  if(!access){
+    return NextResponse.json({error:"chapter_access_required"},{status:403});
+  }
+
   const pdf=buildPdf();
   return new NextResponse(pdf,{
     status:200,
