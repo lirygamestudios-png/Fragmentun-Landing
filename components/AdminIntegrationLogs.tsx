@@ -1,6 +1,7 @@
 "use client";
 import { useEffect,useState } from "react";
 import { FRAGMENTUN_EMAIL_SEQUENCE,FRAGMENTUN_EMAIL_SEQUENCE_EN,FRAGMENTUN_EMAIL_BRAND } from "../lib/fragmentun-email-sequence";
+import {FragmentunProcessOverlay} from "./FragmentunProcessOverlay";
 
 function formatAutomationTrigger(trigger:any){
   if(!trigger||typeof trigger!=="object")return "Automático";
@@ -22,7 +23,7 @@ export function AdminIntegrationLogs(){
   const[blueprintStatus,setBlueprintStatus]=useState<"idle"|"copied"|"error">("idle");
   useEffect(()=>{fetch("/api/admin/integrations").then(r=>r.json()).then(setData)},[]);
 
-  if(!data)return <p>Cargando integraciones…</p>;
+  if(!data)return <FragmentunProcessOverlay compact state="loading" title="CARGANDO INTEGRACIONES…"/>;
   if(data.error)return <p>No fue posible cargar el historial de integraciones.</p>;
 
   const items=data.items||[];
