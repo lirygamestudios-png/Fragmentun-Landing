@@ -4840,3 +4840,45 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
 @media(max-width:760px){
   .adminSaleModeChoices{grid-template-columns:1fr}
 }
+
+
+/* FRAGMENTUN compact process loader for controlled internal operations */
+.fragmentunProcessOverlay.compact{
+  position:relative;
+  inset:auto;
+  z-index:auto;
+  min-height:110px;
+  padding:12px;
+  background:transparent;
+  backdrop-filter:none
+}
+.fragmentunProcessOverlay.compact .fragmentunProcessCore{
+  width:min(260px,100%);
+  padding:14px 16px 12px;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.18),0 0 24px rgba(201,168,76,.05)
+}
+.fragmentunProcessOverlay.compact .fragmentunProcessMark{
+  width:68px;
+  height:68px;
+  margin:0 auto 8px
+}
+.fragmentunProcessOverlay.compact .fragmentunProcessMark img{
+  width:44px;
+  height:44px
+}
+.fragmentunProcessOverlay.compact .fragmentunProcessGlow{inset:12px}
+.fragmentunProcessOverlay.compact .fragmentunProcessOrbit{inset:4px}
+.fragmentunProcessOverlay.compact .fragmentunProcessOrbit.orbitTwo{inset:10px}
+.fragmentunProcessOverlay.compact .fragmentunProcessCore strong{
+  font-size:.72rem;
+  letter-spacing:.12em
+}
+.fragmentunProcessOverlay.compact .fragmentunProcessCore p{
+  margin-top:5px;
+  font-size:.68rem
+}
+.fragmentunProcessOverlay.compact .fragmentunProcessLine{
+  margin-top:10px;
+  max-width:140px
+}
