@@ -36,6 +36,7 @@ export async function GET(request:Request){
   const totals:Record<string,number>={};
   const byLocale:Record<string,{visits:number;leads:number;amazonClicks:number;patreonClicks:number}>={};
   const bySource:Record<string,{source:string;medium:string;visits:number;leads:number;amazonClicks:number;patreonClicks:number}>={};
+  const byCampaign:Record<string,{campaign:string;source:string;medium:string;content:string;visits:number;leads:number;amazonClicks:number;patreonClicks:number}>={};
   const mailerlite:Record<string,number>={};
   const testProfiles:Record<string,number>={};
   const experiments:Record<string,{views:Record<string,number>;leads:Record<string,number>}>= {};
@@ -46,12 +47,16 @@ export async function GET(request:Request){
     const source=e.source||"direct";
     const medium=e.medium||"none";
     const sourceKey=`${source}::${medium}`;
+    const campaign=e.campaign||"(sin campaña)";
+    const content=e.content||"";
+    const campaignKey=`${source}::${medium}::${campaign}::${content}`;
     const locale=e.locale||"unknown";
     bySource[sourceKey]??={source,medium,visits:0,leads:0,amazonClicks:0,patreonClicks:0};
+    byCampaign[campaignKey]??={campaign,source,medium,content,visits:0,leads:0,amazonClicks:0,patreonClicks:0};
     byLocale[locale]??={visits:0,leads:0,amazonClicks:0,patreonClicks:0};
-    if(e.event_name==="page_view"){bySource[sourceKey].visits++;byLocale[locale].visits++;}
-    if(e.event_name==="amazon_click"){bySource[sourceKey].amazonClicks++;byLocale[locale].amazonClicks++;}
-    if(e.event_name==="patreon_click"){bySource[sourceKey].patreonClicks++;byLocale[locale].patreonClicks++;}
+    if(e.event_name==="page_view"){bySource[sourceKey].visits++;byCampaign[campaignKey].visits++;byLocale[locale].visits++;}
+    if(e.event_name==="amazon_click"){bySource[sourceKey].amazonClicks++;byCampaign[campaignKey].amazonClicks++;byLocale[locale].amazonClicks++;}
+    if(e.event_name==="patreon_click"){bySource[sourceKey].patreonClicks++;byCampaign[campaignKey].patreonClicks++;byLocale[locale].patreonClicks++;}
     if(e.event_name==="community_click"){
       const network=String((e.metadata as any)?.network||"unknown");
       community[network]=(community[network]||0)+1;
@@ -80,10 +85,15 @@ export async function GET(request:Request){
     const source=l.source||"direct";
     const medium=l.medium||"none";
     const sourceKey=`${source}::${medium}`;
+    const campaign=l.campaign||"(sin campaña)";
+    const content=l.content||"";
+    const campaignKey=`${source}::${medium}::${campaign}::${content}`;
     const locale=l.locale||"unknown";
     bySource[sourceKey]??={source,medium,visits:0,leads:0,amazonClicks:0,patreonClicks:0};
+    byCampaign[campaignKey]??={campaign,source,medium,content,visits:0,leads:0,amazonClicks:0,patreonClicks:0};
     byLocale[locale]??={visits:0,leads:0,amazonClicks:0,patreonClicks:0};
     bySource[sourceKey].leads++;
+    byCampaign[campaignKey].leads++;
     byLocale[locale].leads++;
     const status=l.mailerlite_status||"unknown";
     mailerlite[status]=(mailerlite[status]||0)+1;
@@ -155,6 +165,14 @@ export async function GET(request:Request){
     experiments,
     community,
     by_source:Object.values(bySource)
+      .map((v)=>({
+        ...v,
+        conversion:v.visits?v.leads/v.visits*100:0,
+        amazon_ctr:v.visits?v.amazonClicks/v.visits*100:0,
+        patreon_ctr:v.visits?v.patreonClicks/v.visits*100:0
+      }))
+      .sort((a,b)=>b.visits-a.visits),
+    by_campaign:Object.values(byCampaign)
       .map((v)=>({
         ...v,
         conversion:v.visits?v.leads/v.visits*100:0,
