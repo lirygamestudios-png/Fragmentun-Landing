@@ -51,7 +51,7 @@ export function AdminSystemStatus(){
 
     <div className="card adminSecondaryPanel">
       <h2>Recuperación</h2>
-      <p className="note">Genera un backup versionado del contenido y metadatos públicos. No incluye leads, credenciales ni otros datos sensibles.</p>
+      <p className="note">Genera una copia de seguridad versionada del contenido y metadatos públicos. No incluye registros de usuarios, credenciales ni otros datos sensibles.</p>
       <a className="btn btnPrimary" href="/api/admin/backup">Descargar copia de seguridad</a>
     </div>
 
