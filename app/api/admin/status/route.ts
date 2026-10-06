@@ -31,34 +31,43 @@ export async function GET(){
   ];
 
   const started=Date.now();
-  const service=createSupabaseServiceClient();
+  const serviceConfigured=!!process.env.SUPABASE_SECRET_KEY;
 
-  const[
-    {count:contentCount,error:contentError},
-    {count:characterCount,error:characterError},
-    {count:mediaCount,error:mediaError},
-    {count:analyticsCount,error:analyticsError},
-    {count:leadCount,error:leadError},
-    {data:latestAnalytics},
-    {data:latestLead},
-    {data:leadHealth},
-    {data:buckets,error:bucketsError}
-  ]=await Promise.all([
-    service.from("localized_content").select("*",{count:"exact",head:true}),
-    service.from("characters").select("*",{count:"exact",head:true}).eq("status","published"),
-    service.from("media_assets").select("*",{count:"exact",head:true}).eq("public_visible",true),
-    service.from("analytics_events").select("*",{count:"exact",head:true}),
-    service.from("leads").select("*",{count:"exact",head:true}),
-    service.from("analytics_events").select("created_at,event_name").order("created_at",{ascending:false}).limit(1).maybeSingle(),
-    service.from("leads").select("created_at,mailerlite_status").order("created_at",{ascending:false}).limit(1).maybeSingle(),
-    service.from("leads").select("mailerlite_status"),
-    service.storage.listBuckets()
-  ]);
+  let contentCount=0,characterCount=0,mediaCount=0,analyticsCount=0,leadCount=0;
+  let contentError:any=null,characterError:any=null,mediaError:any=null,analyticsError:any=null,leadError:any=null,bucketsError:any=null;
+  let latestAnalytics:any=null,latestLead:any=null,leadHealth:any[]=[];
+  let buckets:any[]=[];
+
+  if(serviceConfigured){
+    const service=createSupabaseServiceClient();
+    const results=await Promise.all([
+      service.from("localized_content").select("*",{count:"exact",head:true}),
+      service.from("characters").select("*",{count:"exact",head:true}).eq("status","published"),
+      service.from("media_assets").select("*",{count:"exact",head:true}).eq("public_visible",true),
+      service.from("analytics_events").select("*",{count:"exact",head:true}),
+      service.from("leads").select("*",{count:"exact",head:true}),
+      service.from("analytics_events").select("created_at,event_name").order("created_at",{ascending:false}).limit(1).maybeSingle(),
+      service.from("leads").select("created_at,mailerlite_status").order("created_at",{ascending:false}).limit(1).maybeSingle(),
+      service.from("leads").select("mailerlite_status"),
+      service.storage.listBuckets()
+    ]);
+    contentCount=results[0].count||0;contentError=results[0].error;
+    characterCount=results[1].count||0;characterError=results[1].error;
+    mediaCount=results[2].count||0;mediaError=results[2].error;
+    analyticsCount=results[3].count||0;analyticsError=results[3].error;
+    leadCount=results[4].count||0;leadError=results[4].error;
+    latestAnalytics=results[5].data||null;
+    latestLead=results[6].data||null;
+    leadHealth=results[7].data||[];
+    buckets=results[8].data||[];bucketsError=results[8].error;
+  }else{
+    contentError=characterError=mediaError=analyticsError=leadError=bucketsError={message:"service_not_configured"};
+  }
 
   const queryMs=Date.now()-started;
   const storageNames=new Set((buckets||[]).map((b:any)=>b.name));
   const expectedBuckets=["editorial-media","official-media","press-kit"];
-  const storageReady=!bucketsError&&expectedBuckets.every(name=>storageNames.has(name));
+  const storageReady=serviceConfigured&&!bucketsError&&expectedBuckets.every(name=>storageNames.has(name));
 
   checks.push(
     {key:"db_content",label:"CMS localizado accesible",ok:!contentError&&(contentCount||0)>0,required:true,category:"Datos",detail:`${contentCount||0} bloques`},
