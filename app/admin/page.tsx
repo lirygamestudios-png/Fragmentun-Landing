@@ -133,7 +133,8 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{ra
     ["♙","Personajes","/admin/personajes"],
     ["a","Amazon (Enlaces)","/admin/marketing"],
     ["▦","Tienda FRAGMENTUN","/admin/tienda"],
-    ["♟","Suscriptores","/admin/leads"],
+    ["♟","Registros","/admin/leads"],
+    ["♜","Usuarios y roles","/admin/usuarios"],
     ["↗","Integraciones","/admin/integrations"],
     ["▥","Analítica","/admin/analytics"],
     ["▤","Reportes","/admin/reportes"],
@@ -244,13 +245,13 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{ra
 
         <section className="approvedAdminLowerGrid">
           <article className="approvedAdminPanel approvedSubscribers">
-            <div className="approvedAdminPanelTitle"><h2>Últimos Suscriptores</h2><a href="/admin/leads">Ver todos</a></div>
+            <div className="approvedAdminPanelTitle"><h2>Últimos Registros</h2><a href="/admin/leads">Ver todos</a></div>
             <div className="approvedSubscriberList">
               {leadRows.length?leadRows.map(lead=><div key={lead.email}>
                 <span className="subscriberAvatar">{initials(lead.name,lead.email)}</span>
-                <p><strong>{lead.name||"Suscriptor FRAGMENTUN"}</strong><small>{lead.email}</small></p>
+                <p><strong>{lead.name||"Registro FRAGMENTUN"}</strong><small>{lead.email}</small></p>
                 <em>{lead.locale==="en"?"🇺🇸":"🇪🇸"}</em><time>{ago(lead.created_at)}</time>
-              </div>):<div className="approvedEmpty">Los primeros suscriptores aparecerán aquí cuando lleguen registros reales.</div>}
+              </div>):<div className="approvedEmpty">Los primeros registros aparecerán aquí cuando lleguen datos reales.</div>}
             </div>
           </article>
 
