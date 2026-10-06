@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect,useState } from "react";
 import type { Locale } from "../lib/i18n";
 import { copy } from "../lib/i18n";
 import { TrackLink } from "./TrackLink";
@@ -11,6 +11,16 @@ export function PublicHeader({locale,amazonUrl,patreonUrl,shopEnabled=false}:{lo
   const t=copy[locale];
   const pathname=usePathname();
   const[open,setOpen]=useState(false);
+
+  useEffect(()=>{
+    if(!open)return;
+    const previous=document.body.style.overflow;
+    document.body.style.overflow="hidden";
+    const onKey=(event:KeyboardEvent)=>{if(event.key==="Escape")setOpen(false)};
+    window.addEventListener("keydown",onKey);
+    return()=>{document.body.style.overflow=previous;window.removeEventListener("keydown",onKey)};
+  },[open]);
+
   const items=[
     [locale==="es"?"Inicio":"Home",`/${locale}`],
     [t.nav.story,`/${locale}#historia`],
@@ -43,7 +53,7 @@ export function PublicHeader({locale,amazonUrl,patreonUrl,shopEnabled=false}:{lo
         {amazonUrl
           ? <TrackLink className="btn btnPrimary desktopBuy" href={amazonUrl} eventName="amazon_click" locale={locale} metadata={{book:"fragmentun-i",edition_locale:locale}} newTab>{t.buy}</TrackLink>
           : <span className="btn btnGhost desktopBuy">{locale==="es"?"Próximamente":"Coming soon"}</span>}
-        <button className="menuButton" onClick={()=>setOpen(v=>!v)} aria-expanded={open} aria-label={locale==="es"?"Abrir menú":"Open menu"}>☰</button>
+        <button className="menuButton" onClick={()=>setOpen(v=>!v)} aria-expanded={open} aria-label={open?(locale==="es"?"Cerrar menú":"Close menu"):(locale==="es"?"Abrir menú":"Open menu")}>{open?"×":"☰"}</button>
       </div>
     </div>
     {open&&<div className="mobileMenu"><div className="container mobileMenuInner">
