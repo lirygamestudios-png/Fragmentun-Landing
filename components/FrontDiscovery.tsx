@@ -190,7 +190,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
       const url=URL.createObjectURL(blob);
       const a=document.createElement("a");
       a.href=url;
-      a.download="FRAGMENTUN-Arte-Conceptual-Oficial.jpg";
+      a.download=locale==="es"?"FRAGMENTUN-Arte-Conceptual-Oficial.jpg":"FRAGMENTUN-Official-Concept-Art.jpg";
       document.body.appendChild(a);
       a.click();
       a.remove();
