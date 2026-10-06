@@ -48,7 +48,14 @@ export async function GET(){
     return NextResponse.json({error:"forbidden"},{status:403});
   }
 
-  const supabase=createSupabaseServiceClient();
+  let supabase:any=session;
+  try{
+    supabase=createSupabaseServiceClient();
+  }catch{
+    // La copia de contenido debe seguir disponible para un administrador autenticado
+    // aunque el diagnóstico avanzado con clave de servicio no esté configurado.
+    supabase=session;
+  }
   const backup:Record<string,unknown[]|{error:string}>={};
   const counts:Record<string,number>={};
   const failures:string[]=[];
