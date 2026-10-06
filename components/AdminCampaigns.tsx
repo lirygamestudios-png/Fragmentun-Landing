@@ -2,6 +2,17 @@
 import { useEffect,useState } from "react";
 const empty={code:"",locale:"es",source:"instagram",medium:"paid_social",campaign:"fragmentun_cap1",content:"",destination_url:"https://www.fragmentun.com/es",active:true};
 
+const trafficOptions=[
+  {value:"paid_social",label:"Anuncios en redes"},
+  {value:"cpc",label:"Anuncios en buscadores"},
+  {value:"organic_social",label:"Orgánico en redes"},
+  {value:"organic_video",label:"Video orgánico"},
+  {value:"organic",label:"Orgánico"},
+  {value:"email",label:"Email"},
+  {value:"referral",label:"Referido"},
+  {value:"direct",label:"Directo"}
+];
+
 const presets=[
   {label:"Instagram orgánico",source:"instagram",medium:"organic_social",campaign:"fragmentun_cap1",content:"post_01"},
   {label:"Meta Ads",source:"meta",medium:"paid_social",campaign:"fragmentun_cap1",content:"ad_01"},
@@ -161,11 +172,15 @@ export function AdminCampaigns(){
      {[
   ["code","Nombre interno"],
   ["source","Origen"],
-  ["medium","Canal"],
   ["campaign","Campaña"],
-  ["content","Contenido"],
+  ["content","Anuncio / publicación"],
   ["destination_url","Página de destino"]
 ].map(([k,label])=><label key={k}>{label}<input value={form[k]} onChange={e=>setForm({...form,[k]:e.target.value})}/></label>)}
+     <label>Tipo de tráfico
+       <select value={form.medium} onChange={e=>setForm({...form,medium:e.target.value})}>
+         {trafficOptions.map(o=><option key={o.value} value={o.value}>{o.label}</option>)}
+       </select>
+     </label>
      <select value={form.locale} onChange={e=>setForm({...form,locale:e.target.value})}><option value="es">ES</option><option value="en">EN</option></select>
      <button className="btn btnPrimary" onClick={create}>Crear campaña</button>
    </div></div>
@@ -199,11 +214,16 @@ export function AdminCampaigns(){
      <div className="kicker">{r.code}</div><div className="adminFormGrid">
      {[
   ["source","Origen"],
-  ["medium","Canal"],
   ["campaign","Campaña"],
-  ["content","Contenido"],
+  ["content","Anuncio / publicación"],
   ["destination_url","Página de destino"]
 ].map(([k,label])=><label key={k}>{label}<input value={r[k]||""} onChange={e=>setRows(a=>a.map((x)=>x.id===r.id?{...x,[k]:e.target.value}:x))}/></label>)}
+     <label>Tipo de tráfico
+       <select value={r.medium||""} onChange={e=>setRows(a=>a.map((x)=>x.id===r.id?{...x,medium:e.target.value}:x))}>
+         {!trafficOptions.some(o=>o.value===r.medium)&&r.medium&&<option value={r.medium}>Otro</option>}
+         {trafficOptions.map(o=><option key={o.value} value={o.value}>{o.label}</option>)}
+       </select>
+     </label>
      <select value={r.locale} onChange={e=>setRows(a=>a.map((x)=>x.id===r.id?{...x,locale:e.target.value}:x))}><option value="es">ES</option><option value="en">EN</option></select>
      <button className="btn btnGhost" onClick={()=>save(r)}>Guardar</button></div>
      <p className="note" style={{wordBreak:"break-all"}}>{url(r)}</p>
