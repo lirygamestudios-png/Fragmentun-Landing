@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 
 const STORAGE_KEY="fragmentun_ad_consent_v1";
 const MAX_AGE=180*24*60*60*1000;
+let googleConversionTarget="";
 
 type Choice="accepted"|"rejected"|null;
 
@@ -103,6 +104,9 @@ function sendAdvertisingEvent(payload:any){
       name==="amazon_click"?"begin_checkout":
       name==="patreon_click"?"select_content":"";
     if(googleEvent)w.gtag("event",googleEvent,{event_category:"FRAGMENTUN"});
+    if(name==="registration"&&googleConversionTarget){
+      w.gtag("event","conversion",{send_to:googleConversionTarget});
+    }
   }
 
   if(w.ttq?.track){
@@ -123,7 +127,13 @@ async function loadConfiguredAds(){
       const id=String(item.public_id||"").trim();
       if(!id)continue;
       if(item.provider==="meta")loadMeta(id);
-      if(item.provider==="google")loadGoogle(id);
+      if(item.provider==="google"){
+        const secondary=String(item.secondary_id||"").trim();
+        googleConversionTarget=secondary
+          ?(secondary.includes("/")?secondary:`${id}/${secondary}`)
+          :"";
+        loadGoogle(id);
+      }
       if(item.provider==="tiktok")loadTikTok(id);
     }
   }catch{}
