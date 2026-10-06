@@ -19,10 +19,18 @@ export async function POST(request:NextRequest){
   const key=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   if(!url||!key) return NextResponse.json({ok:false,error:"supabase_not_configured"},{status:503});
 
+  const normalizedBody={
+    ...body,
+    metadata:{
+      ...(body?.metadata&&typeof body.metadata==="object"?body.metadata:{}),
+      ...(body?.ad_metadata&&typeof body.ad_metadata==="object"?{ad_attribution:body.ad_metadata}:{})
+    }
+  };
+
   const r=await fetch(`${url}/functions/v1/collect-analytics`,{
     method:"POST",
     headers:{"Content-Type":"application/json","apikey":key,"Authorization":`Bearer ${key}`},
-    body:JSON.stringify(body),
+    body:JSON.stringify(normalizedBody),
     cache:"no-store"
   });
 
