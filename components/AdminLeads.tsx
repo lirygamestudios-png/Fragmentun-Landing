@@ -1,5 +1,6 @@
 "use client";
 import { useEffect,useState } from "react";
+import {FragmentunProcessOverlay} from "./FragmentunProcessOverlay";
 
 export function AdminLeads(){
   const[rows,setRows]=useState<any[]>([]);
@@ -107,7 +108,7 @@ export function AdminLeads(){
 
     <div className="card adminLeadTableCard">
       <div className="adminPanelHeader"><div><div className="kicker">Base de datos</div><h2>Leads</h2></div><span className="adminPanelBadge">{loading?"Cargando":rows.length+" visibles"}</span></div>
-      {loading?<p>Cargando…</p>:<div className="adminTableWrap"><table className="adminTable">
+      {loading?<FragmentunProcessOverlay compact state="loading" title="CARGANDO LEADS…"/>:<div className="adminTableWrap"><table className="adminTable">
         <thead><tr><th>Fecha</th><th>Correo</th><th>Nombre</th><th>Idioma</th><th>Fuente</th><th>Campaña</th><th>Perfil</th><th>MailerLite</th><th>Consentimiento</th><th></th></tr></thead>
         <tbody>{rows.map((r:any)=><tr key={r.id}>
           <td>{new Date(r.created_at).toLocaleDateString()}</td>
