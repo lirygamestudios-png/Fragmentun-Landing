@@ -51,6 +51,7 @@ export default async function ChapterOne({params}:{params:Promise<{locale:string
   }
 
   return <main className="section">
+    <ChapterReadTracker locale={locale}/>
     <article className="container chapterReader">
       <div className="kicker">FRAGMENTUN I · EL DESPERTAR EMOCIONAL</div>
       <h1>CAPÍTULO 1: EL SILENCIO PERFECTO</h1>
