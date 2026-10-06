@@ -3,6 +3,7 @@
 import { useEffect,useMemo,useState } from "react";
 import Link from "next/link";
 import type { Locale } from "../lib/i18n";
+import { analyticsAttribution } from "../lib/analytics-client";
 
 type ScoreKey="vorax"|"umbral"|"ethelis"|"nara";
 type Option={
@@ -40,15 +41,18 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
   const [name,setName]=useState("");
   const [consent,setConsent]=useState(false);
   const [shareStatus,setShareStatus]=useState("");
+  const [sessionId,setSessionId]=useState("");
   const [utm,setUtm]=useState({source:"",medium:"",campaign:"",content:""});
 
   useEffect(()=>{
+    const attribution=analyticsAttribution();
     setUtm({
-      source:sessionStorage.getItem("utm_source")||"",
-      medium:sessionStorage.getItem("utm_medium")||"",
-      campaign:sessionStorage.getItem("utm_campaign")||"",
-      content:sessionStorage.getItem("utm_content")||""
+      source:attribution.source||"",
+      medium:attribution.medium||"",
+      campaign:attribution.campaign||"",
+      content:attribution.content||""
     });
+    setSessionId(attribution.session_id||"");
   },[]);
 
   const profileMap=useMemo(()=>Object.fromEntries(profiles.map(p=>[p.profile_key,p])),[profiles]);
@@ -392,6 +396,7 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
           <input type="hidden" name="utm_medium" value={utm.medium}/>
           <input type="hidden" name="utm_campaign" value={utm.campaign}/>
           <input type="hidden" name="utm_content" value={utm.content}/>
+          <input type="hidden" name="session_id" value={sessionId}/>
           <input aria-label={locale==="es"?"Tu nombre":"Your name"} name="name" value={name} onChange={e=>setName(e.target.value)} placeholder={locale==="es"?"Tu nombre (opcional)":"Your name (optional)"}/>
           <input aria-label={locale==="es"?"Tu correo electrónico":"Your email"} name="email" type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder={locale==="es"?"Tu correo electrónico":"Your email"} required/>
           <label className="consentRow">
