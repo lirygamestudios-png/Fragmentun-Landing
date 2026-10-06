@@ -8,7 +8,7 @@ export function AdminReports(){
   const[data,setData]=useState<any>(null);
   useEffect(()=>{fetch("/api/admin/analytics").then(r=>r.json()).then(setData)},[]);
   if(!data)return <FragmentunProcessOverlay compact state="loading" title="PREPARANDO REPORTE…"/>;
-  if(data.error)return <div className="formNotice">No fue posible preparar el reporte.</div>;
+  if(data.error)return <div className="adminSaveFeedback error">No fue posible preparar el reporte.</div>;
 
   const t=data.totals||{};
   const community=data.community||{};
