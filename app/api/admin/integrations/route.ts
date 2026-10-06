@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
+import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 
 async function fetchMailerLiteAutomations(){
   const token=process.env.MAILERLITE_API_TOKEN;
@@ -55,6 +56,7 @@ export async function GET(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user)return NextResponse.json({error:"forbidden"},{status:403});
+  if(!(await hasSatisfiedMfa(supabase)))return NextResponse.json({error:"mfa_required"},{status:403});
 
   const{data:profile}=await supabase
     .from("admin_profiles")
@@ -131,6 +133,7 @@ export async function POST(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user)return NextResponse.json({error:"forbidden"},{status:403});
+  if(!(await hasSatisfiedMfa(supabase)))return NextResponse.json({error:"mfa_required"},{status:403});
 
   const{data:profile}=await supabase
     .from("admin_profiles")
@@ -194,6 +197,7 @@ export async function PUT(request:Request){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user)return NextResponse.json({error:"forbidden"},{status:403});
+  if(!(await hasSatisfiedMfa(supabase)))return NextResponse.json({error:"mfa_required"},{status:403});
 
   const{data:profile}=await supabase
     .from("admin_profiles")
