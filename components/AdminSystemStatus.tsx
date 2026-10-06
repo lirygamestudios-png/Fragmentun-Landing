@@ -13,13 +13,27 @@ export function AdminSystemStatus(){
   if(data.error)return <p>No fue posible cargar el estado.</p>;
 
   const ops=data.operations||{};
+  const checks=data.checks||[];
+  const emailEs=checks.find((c:any)=>c.key==="mailerlite_automation_es");
+  const emailEn=checks.find((c:any)=>c.key==="mailerlite_automation_en");
+  const emailReady=!!emailEs?.ok&&!!emailEn?.ok;
 
   return <div className="adminSecondaryModule adminStatusModule">
     <div className="kpis">
-      <div className="kpi"><span>Estado lanzamiento</span><strong>{data.launch_status==="GO"?"LISTO":"NO LISTO"}</strong></div>
-      <div className="kpi"><span>Bloqueos críticos</span><strong>{data.blocker_count||0}</strong></div>
-      <div className="kpi"><span>Configuraciones detectadas</span><strong>{data.configured}/{data.total}</strong></div>
-      <div className="kpi"><span>Requisitos críticos</span><strong>{data.ready_required?"OK":"Pendientes"}</strong></div>
+      <div className="kpi"><span>Web</span><strong>{data.launch_status==="GO"?"LISTA":"NO LISTA"}</strong></div>
+      <div className="kpi"><span>Email</span><strong>{emailReady?"LISTO":"PENDIENTE"}</strong></div>
+      <div className="kpi"><span>Bloqueos críticos web</span><strong>{data.blocker_count||0}</strong></div>
+      <div className="kpi"><span>Configuración</span><strong>{data.configured}/{data.total}</strong></div>
+    </div>
+
+    <div className="card adminSecondaryPanel">
+      <h2>Lectura rápida</h2>
+      <p className="note">{data.launch_status==="GO"
+        ?"La web puede operar y captar registros. "
+        :"La web todavía tiene requisitos críticos pendientes. "}
+        {emailReady
+          ?"La secuencia automática de email está activa."
+          :"La secuencia automática de email permanece inactiva deliberadamente hasta cerrar el acceso multidispositivo y el remitente institucional."}</p>
     </div>
 
     {(data.blockers||[]).length>0&&<div className="card adminSecondaryPanel">
