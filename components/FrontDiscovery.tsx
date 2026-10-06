@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect,useState} from "react";
+import {useEffect,useRef,useState} from "react";
 import type {Locale} from "../lib/i18n";
 import {TrackLink} from "./TrackLink";
 import {analyticsAttribution} from "../lib/analytics-client";
@@ -60,6 +60,7 @@ const fallbackCharacters:Character[]=[
 export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:{locale:Locale;amazonUrl:string|null;shareReward?:any;charactersContent?:any}){
   const[openValue,setOpenValue]=useState<string|null>(null);
   const[selected,setSelected]=useState<number|null>(null);
+  const characterModalRef=useRef<HTMLElement|null>(null);
   const[rewardOpen,setRewardOpen]=useState(false);
 
   useEffect(()=>{
@@ -430,7 +431,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
     {selected!==null&&(()=>{
       const char=characters[selected];
       return <div className="characterModalBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setSelected(null)}}>
-        <section className="characterModal" role="dialog" aria-modal="true" aria-label={char.name} tabIndex={-1}>
+        <section ref={characterModalRef} className="characterModal" role="dialog" aria-modal="true" aria-label={char.name} tabIndex={-1}>
           <button className="characterModalClose" type="button" aria-label={locale==="es"?"Cerrar":"Close"} onClick={()=>setSelected(null)}>×</button>
           <div className={`characterModalArt ${char.tone}`}>
             {char.image&&<img className="characterPhoto" src={char.image} alt={char.name} decoding="async" onError={e=>{if(char.fallbackImage){e.currentTarget.onerror=null;e.currentTarget.src=char.fallbackImage}}}/>}
