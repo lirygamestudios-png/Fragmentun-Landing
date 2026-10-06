@@ -107,11 +107,11 @@ export function AdminShop(){
         <div><span>Visibilidad pública</span><strong>{active?"Visible":"Oculta"}</strong></div>
         <div><span>Proveedor</span><strong>{es.provider||"Sin configurar"}</strong></div>
         <div><span>Productos destacados</span><strong>{products("es").filter(productReady).length}</strong></div>
-        <div><span>Seguimiento</span><strong>merch_click</strong></div>
+        <div><span>Seguimiento</span><strong>merch_click</strong></div>\n        <div><span>Cobros reales</span><strong>DESACTIVADOS</strong></div>
       </div>
     </section>
 
-    <section className="card adminShopControl">
+    <section className="card adminInsightPanel">\n      <div className="adminPanelHeader"><div><div className="kicker">MODO SEGURO</div><h2>Pagos desactivados</h2></div><span className="adminPanelBadge">SIN COBROS</span></div>\n      <p className="note">La tienda puede mostrarse, captar interés o enviar al proveedor externo. La opción “Checkout FRAGMENTUN · Futuro” solo prepara datos del producto y no procesa pagos.</p>\n    </section>\n\n    <section className="card adminShopControl">
       <div className="adminPanelHeader"><div><div className="kicker">CONFIGURACIÓN COMERCIAL</div><h2>Activación general</h2></div></div>
       <div className="adminShopControlGrid">
         <label className="adminShopToggle">
@@ -160,8 +160,8 @@ export function AdminShop(){
                     onClick={()=>setProduct(lang,i,"mode","internal")}
                     aria-pressed={productMode(p)==="internal"}
                   >
-                    <strong>COBRAR EN FRAGMENTUN</strong>
-                    <small>Factura propia · pedido al suplidor</small>
+                    <strong>CHECKOUT FRAGMENTUN · FUTURO</strong>
+                    <small>Sin cobro activo · preparar producto</small>
                   </button>
                   <button
                     type="button"
@@ -193,7 +193,7 @@ export function AdminShop(){
               {productMode(p)==="internal"&&<>
                 <label><span>Precio interno (centavos)</span><input type="number" min="0" value={p.price_cents??""} onChange={e=>setProduct(lang,i,"price_cents",e.target.value===""?undefined:Number(e.target.value))} placeholder="2999"/></label>
                 <label><span>Moneda</span><input value={p.currency||"USD"} onChange={e=>setProduct(lang,i,"currency",e.target.value.toUpperCase())} maxLength={3}/></label>
-                <p className="note wide">Checkout FRAGMENTUN permanece desactivado hasta configurar Stripe, webhooks y órdenes.</p>
+                <p className="note wide">Modo de preparación solamente. No genera cobros ni pedidos. El checkout FRAGMENTUN permanecerá desactivado hasta que existan credenciales legítimas, webhooks, órdenes y una activación operativa expresa.</p>
               </>}
               {productMode(p)==="interest"&&<label className="wide"><span>CTA de interés</span><input value={p.interest_cta||""} onChange={e=>setProduct(lang,i,"interest_cta",e.target.value)} placeholder={lang==="es"?"Quiero recibir novedades":"Notify me about this product"}/></label>}
               <label><span>Imagen</span><select value={p.image_url||""} onChange={e=>setProduct(lang,i,"image_url",e.target.value)}><option value="">— Sin imagen —</option>{media.map(m=><option key={m.id} value={mediaUrl(m)}>{m.slug}</option>)}</select></label>
