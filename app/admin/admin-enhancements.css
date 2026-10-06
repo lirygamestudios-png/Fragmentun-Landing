@@ -249,3 +249,36 @@
 .organicDestinationShortcuts .btn{
   min-width:0;
 }
+
+
+.organicTrackingSummary{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin:16px 0 4px;
+}
+.organicTrackingSummary>div{
+  padding:12px 13px;
+  border-radius:13px;
+  border:1px solid rgba(255,255,255,.06);
+  background:rgba(255,255,255,.022);
+}
+.organicTrackingSummary span,
+.organicTrackingSummary strong{display:block}
+.organicTrackingSummary span{
+  color:#778b9d;
+  font-size:.6rem;
+  font-weight:800;
+}
+.organicTrackingSummary strong{
+  margin-top:5px;
+  color:#e4c66d;
+  font-size:.76rem;
+  word-break:break-word;
+}
+@media(max-width:900px){
+  .organicTrackingSummary{grid-template-columns:1fr 1fr}
+}
+@media(max-width:520px){
+  .organicTrackingSummary{grid-template-columns:1fr}
+}
