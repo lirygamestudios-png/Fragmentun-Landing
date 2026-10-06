@@ -58,6 +58,12 @@ export function AdminAnalytics(){
     return ["cpc","ppc","paid","paid_search","paid_social","social_paid","display","retargeting","remarketing"].includes(medium);
   };
   const paidChannels=(data.by_source||[]).filter((r:any)=>paidMedium(r.medium));
+  const organicMedium=(value:unknown)=>{
+    const medium=String(value||"").toLowerCase().replace(/[\\s-]+/g,"_");
+    return ["organic","organic_search","organic_social","organic_video","social"].includes(medium);
+  };
+  const organicChannels=(data.by_source||[]).filter((r:any)=>organicMedium(r.medium));
+  const organicCampaigns=(data.by_campaign||[]).filter((r:any)=>organicMedium(r.medium));
 
   return <div className="adminAnalyticsModule">
     <div className="adminModuleToolbar adminNoPrint"><div><div className="kicker">Inteligencia del embudo</div><h2>Rendimiento y conversión</h2></div><div className="adminReportActions"><button className="btn btnGhost" onClick={printReport}>Imprimir / Guardar PDF</button><button className="btn btnGhost" onClick={exportCsv}>Descargar CSV</button></div></div>
@@ -164,6 +170,29 @@ export function AdminAnalytics(){
         <div className="kpi"><span>Pendientes / sin configurar</span><strong>{(ml.pending||0)+(ml.unconfigured||0)}</strong></div>
         <div className="kpi"><span>Errores de sincronización</span><strong>{ml.error||0}</strong></div>
       </div>
+    </div>
+
+    <div className="card adminInsightPanel">
+      <div className="adminPanelHeader"><div><div className="kicker">Tráfico orgánico</div><h2>Redes y contenido orgánico</h2></div><span className="adminPanelBadge">DATOS REALES</span></div>
+      {organicChannels.length===0
+        ?<p className="note">Todavía no hay tráfico orgánico identificado con seguimiento de campaña. Los enlaces generados desde “Campañas y enlaces” aparecerán aquí cuando reciban visitas reales.</p>
+        :<>
+          <div className="adminTableWrap"><table className="adminTable">
+            <thead><tr><th>Origen</th><th>Tipo de tráfico</th><th>Visitas</th><th>Registros</th><th>Conversión</th><th>Amazon</th><th>Patreon</th></tr></thead>
+            <tbody>{organicChannels.map((r:any)=><tr key={`organic:${r.source}:${r.medium}`}>
+              <td>{sourceLabel(r.source)}</td><td>{trafficLabel(r.medium)}</td><td>{r.visits}</td><td>{r.leads}</td><td>{pct(r.conversion)}</td><td>{r.amazonClicks||0}</td><td>{r.patreonClicks||0}</td>
+            </tr>)}</tbody>
+          </table></div>
+          {organicCampaigns.length>0&&<div style={{marginTop:18}}>
+            <div className="kicker">Por campaña / publicación</div>
+            <div className="adminTableWrap"><table className="adminTable">
+              <thead><tr><th>Campaña</th><th>Origen</th><th>Publicación / video</th><th>Visitas</th><th>Registros</th><th>Conversión</th><th>Amazon</th><th>Patreon</th></tr></thead>
+              <tbody>{organicCampaigns.map((r:any)=><tr key={`organic-campaign:${r.source}:${r.medium}:${r.campaign}:${r.content}`}>
+                <td>{r.campaign}</td><td>{sourceLabel(r.source)}</td><td>{r.content||"—"}</td><td>{r.visits}</td><td>{r.leads}</td><td>{pct(r.conversion)}</td><td>{r.amazonClicks||0}</td><td>{r.patreonClicks||0}</td>
+              </tr>)}</tbody>
+            </table></div>
+          </div>}
+        </>}
     </div>
 
     <div className="card adminInsightPanel">
