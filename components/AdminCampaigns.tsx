@@ -116,6 +116,12 @@ export function AdminCampaigns(){
          <button type="button" className="btn btnGhost" onClick={()=>setOrganic({...organic,destination_url:destinationFor("patreon")})}>Patreon</button>
        </div>
      </div>
+     <div className="organicTrackingSummary">
+       <div><span>Red social</span><strong>{organic.platform==="x"?"X":organic.platform.charAt(0).toUpperCase()+organic.platform.slice(1)}</strong></div>
+       <div><span>Campaña</span><strong>{clean(organic.campaign)||"—"}</strong></div>
+       <div><span>Publicación</span><strong>{clean(organic.content)||"—"}</strong></div>
+       <div><span>Tipo de tráfico</span><strong>{organic.platform==="youtube"?"Video orgánico":"Orgánico"}</strong></div>
+     </div>
      <div className="organicLinkPreview">
        <span>Enlace generado</span>
        <strong>{organicUrl()||"Revisa la página de destino"}</strong>
