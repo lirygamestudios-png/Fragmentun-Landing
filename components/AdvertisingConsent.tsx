@@ -91,18 +91,18 @@ function sendAdvertisingEvent(payload:any){
   if(typeof w.fbq==="function"){
     const metaEvent=
       name==="registration"?"Lead":
-      name==="chapter_read"?"ViewContent":
-      name==="amazon_click"?"InitiateCheckout":
-      name==="patreon_click"?"Contact":"";
+      name==="chapter_read"?"ViewContent":"";
     if(metaEvent)w.fbq("track",metaEvent);
+    if(name==="amazon_click")w.fbq("trackCustom","AmazonClick");
+    if(name==="patreon_click")w.fbq("trackCustom","PatreonClick");
   }
 
   if(typeof w.gtag==="function"){
     const googleEvent=
       name==="registration"?"generate_lead":
       name==="chapter_read"?"view_item":
-      name==="amazon_click"?"begin_checkout":
-      name==="patreon_click"?"select_content":"";
+      name==="amazon_click"?"amazon_click":
+      name==="patreon_click"?"patreon_click":"";
     if(googleEvent)w.gtag("event",googleEvent,{event_category:"FRAGMENTUN"});
     if(name==="registration"&&googleConversionTarget){
       w.gtag("event","conversion",{send_to:googleConversionTarget});
@@ -110,12 +110,10 @@ function sendAdvertisingEvent(payload:any){
   }
 
   if(w.ttq?.track){
-    const tiktokEvent=
-      name==="registration"?"SubmitForm":
-      name==="chapter_read"?"ViewContent":
-      name==="amazon_click"?"ClickButton":
-      name==="patreon_click"?"Contact":"";
-    if(tiktokEvent)w.ttq.track(tiktokEvent);
+    if(name==="registration")w.ttq.track("Subscribe");
+    if(name==="chapter_read")w.ttq.track("ViewContent",{description:"FRAGMENTUN Chapter 1"});
+    if(name==="amazon_click")w.ttq.track("ClickButton",{description:"Amazon"});
+    if(name==="patreon_click")w.ttq.track("ClickButton",{description:"Patreon"});
   }
 }
 
