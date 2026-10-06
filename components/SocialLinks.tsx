@@ -12,9 +12,13 @@ export function SocialLinks({locale,items,placement="footer"}:{
 }){
   const visible=items.filter(x=>x.url);
   const[shareOpen,setShareOpen]=useState(false);
+  const[pageUrl,setPageUrl]=useState("");
+  const[canNativeShare,setCanNativeShare]=useState(false);
   const shareRef=useRef<HTMLDivElement>(null);
 
   useEffect(()=>{
+    setPageUrl(window.location.href);
+    setCanNativeShare(typeof navigator.share==="function");
     const onPointer=(e:MouseEvent)=>{
       if(shareRef.current&&!shareRef.current.contains(e.target as Node)) setShareOpen(false);
     };
@@ -24,7 +28,6 @@ export function SocialLinks({locale,items,placement="footer"}:{
     return()=>{document.removeEventListener("mousedown",onPointer);document.removeEventListener("keydown",onKey)};
   },[]);
 
-  const pageUrl=typeof window!=="undefined"?window.location.href:"";
   const title=locale==="es"?"FRAGMENTUN I — El Despertar Emocional":"FRAGMENTUN I — The Emotional Awakening";
   const text=locale==="es"
     ?"Descubre FRAGMENTUN, el universo de ciencia ficción emocional de José Liranzo."
@@ -96,10 +99,10 @@ export function SocialLinks({locale,items,placement="footer"}:{
             role="menuitem"
             onClick={()=>trackShare(item.key)}
           >{item.label}</a>)}
-          <button type="button" onClick={async()=>{
+          <button type="button" role="menuitem" onClick={async()=>{
             try{await navigator.clipboard.writeText(pageUrl);trackShare("copy_link")}catch{}
           }}>{locale==="es"?"Copiar enlace":"Copy link"}</button>
-          {typeof navigator!=="undefined"&&typeof navigator.share==="function"&&<button type="button" onClick={nativeShare}>
+          {canNativeShare&&<button type="button" role="menuitem" onClick={nativeShare}>
             {locale==="es"?"Más opciones…":"More options…"}
           </button>}
         </div>
