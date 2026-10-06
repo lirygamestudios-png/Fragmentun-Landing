@@ -2,6 +2,7 @@ import Link from "next/link";
 import { locales, type Locale } from "../../../lib/i18n";
 import { notFound } from "next/navigation";
 import { RegistrationAdvertisingTracker } from "../../../components/RegistrationAdvertisingTracker";
+import { TrackLink } from "../../../components/TrackLink";
 
 export default async function Gracias({
   params,
@@ -32,9 +33,9 @@ export default async function Gracias({
             :"Your signup was received successfully. Your Chapter 1 access will remain associated with this email while automated delivery is being activated.")}
       </p>
       <div className="heroActions" style={{justifyContent:"center"}}>
-        <Link className="btn btnPrimary" href={`/${locale}/capitulo-1`}>
+        <TrackLink className="btn btnPrimary" href={`/${locale}/capitulo-1`} eventName="chapter_click" locale={locale} metadata={{placement:"thank_you"}}>
           {locale==="es"?"Leer el Capítulo 1 ahora":"Read Chapter 1 now"}
-        </Link>
+        </TrackLink>
         <Link className="btn btnSecondary" href={`/${locale}/test`}>
           {locale==="es"?"Descubrir mi perfil emocional":"Discover my emotional profile"}
         </Link>
