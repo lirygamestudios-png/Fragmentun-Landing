@@ -61,7 +61,7 @@ export async function getPublishedReviews(locale:Locale){
     .eq("published",true)
     .eq("verified",true)
     .order("created_at",{ascending:false})
-    .limit(6);
+    .limit(12);
 
   return (data||[]).map((r:any)=>({
     ...r,
