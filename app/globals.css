@@ -4882,3 +4882,59 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   margin-top:10px;
   max-width:140px
 }
+
+
+/* FrontDesk store preview — visible design without enabling checkout */
+.fragmentunShopPreviewState{
+  margin-top:18px;
+  display:inline-grid;
+  gap:4px;
+  padding:11px 14px;
+  border:1px solid rgba(201,168,76,.38);
+  border-radius:10px;
+  background:rgba(6,17,29,.72);
+  box-shadow:0 12px 34px rgba(0,0,0,.22)
+}
+.fragmentunShopPreviewState strong{
+  color:#f0cf78;
+  font-size:.68rem;
+  letter-spacing:.15em
+}
+.fragmentunShopPreviewState span{
+  color:#9fb1c1;
+  font-size:.7rem
+}
+.fragmentunShopPreviewCards{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px
+}
+.fragmentunShopPreviewCards>div{
+  min-height:190px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:18px;
+  border:1px solid rgba(201,168,76,.20);
+  border-radius:16px;
+  background:
+    radial-gradient(circle at 70% 18%,rgba(201,168,76,.12),transparent 32%),
+    linear-gradient(145deg,#0b2136,#07121f);
+  box-shadow:0 18px 42px rgba(0,0,0,.28)
+}
+.fragmentunShopPreviewCards span{
+  color:#4a90d9;
+  font-size:.65rem;
+  letter-spacing:.2em
+}
+.fragmentunShopPreviewCards strong{
+  margin-top:5px;
+  color:#e8d18b;
+  font-size:.9rem;
+  letter-spacing:.12em
+}
+@media(max-width:760px){
+  .fragmentunShopPreviewCards{grid-template-columns:1fr 1fr 1fr;gap:7px}
+  .fragmentunShopPreviewCards>div{min-height:120px;padding:12px}
+  .fragmentunShopPreviewCards strong{font-size:.68rem}
+}
