@@ -1816,7 +1816,18 @@ input::placeholder{color:#8090a5}
   .container{width:min(100% - 24px,1180px)}
   .headerInner{min-height:52px}
   .logo{font-size:1.05rem}
-  .lang{display:none}
+  .lang{
+    display:flex;
+    gap:2px;
+    padding:2px;
+    flex:0 0 auto;
+  }
+  .lang a{
+    min-width:30px;
+    padding:5px 6px;
+    font-size:.62rem;
+    text-align:center;
+  }
   .headerActions .desktopBuy{display:none}
 
   .hero{min-height:720px;padding:46px 0 20px}
