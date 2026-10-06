@@ -21,7 +21,10 @@ function trafficLabel(value:unknown){
   if(["cpc","ppc","paid","paid_search"].includes(medium))return "Anuncios";
   if(["paid_social","social_paid"].includes(medium))return "Anuncios en redes";
   if(["display","retargeting","remarketing"].includes(medium))return "Publicidad";
-  if(medium==="organic")return "Orgánico";
+  if(["organic","organic_search"].includes(medium))return "Orgánico";
+  if(medium==="organic_social")return "Orgánico en redes";
+  if(medium==="organic_video")return "Video orgánico";
+  if(medium==="email")return "Email";
   if(medium==="social")return "Redes sociales";
   if(medium==="referral")return "Referido";
   if(medium==="none")return "Directo";
@@ -44,7 +47,7 @@ export function AdminAnalytics(){
   function printReport(){window.print()}
   const funnelSteps=[
     ["Sesiones",data.funnel?.sessions||0],
-    ["Suscriptores",data.funnel?.lead_sessions||0],
+    ["Registros",data.funnel?.lead_sessions||0],
     ["Lectores Cap. 1",data.funnel?.chapter_read_sessions||0],
     ["Amazon",data.funnel?.amazon_sessions||0],
     ["Patreon",data.funnel?.patreon_sessions||0]
@@ -62,7 +65,7 @@ export function AdminAnalytics(){
       <div className="adminReportBrand"><img src="/fragmentun-mark.png" alt="" width="48" height="48"/><div><strong>FRAGMENTUN</strong><span>REPORTE EJECUTIVO · ANALÍTICA</span></div></div>
       <div className="adminReportSummary">
         <div><span>Sesiones · 30 días</span><strong>{data.sessions||0}</strong></div>
-        <div><span>Conversión a lead</span><strong>{pct(data.conversion_rate)}</strong></div>
+        <div><span>Conversión a registro</span><strong>{pct(data.conversion_rate)}</strong></div>
         <div><span>Paso a Amazon</span><strong>{pct(data.amazon_ctr)}</strong></div>
         <div><span>Test completados</span><strong>{t.test_complete||0}</strong></div>
       </div>
@@ -79,8 +82,8 @@ export function AdminAnalytics(){
     <div className="kpis">
       <div className="kpi"><span>Sesiones · 30 días</span><strong>{data.sessions||0}</strong></div>
       <div className="kpi"><span>Vistas de página</span><strong>{t.page_view||0}</strong></div>
-      <div className="kpi"><span>Suscriptores</span><strong>{data.lead_count||0}</strong></div>
-      <div className="kpi"><span>Conversión sesión → suscriptor</span><strong>{pct(data.conversion_rate)}</strong></div>
+      <div className="kpi"><span>Registros</span><strong>{data.lead_count||0}</strong></div>
+      <div className="kpi"><span>Conversión sesión → registro</span><strong>{pct(data.conversion_rate)}</strong></div>
       <div className="kpi"><span>Lecturas Capítulo 1</span><strong>{t.chapter_read||0}</strong></div>
       <div className="kpi"><span>Clics Amazon</span><strong>{t.amazon_click||0}</strong></div>
       <div className="kpi"><span>Paso a Amazon</span><strong>{pct(data.amazon_ctr)}</strong></div>
@@ -97,9 +100,9 @@ export function AdminAnalytics(){
       <div className="kpis">
         <div className="kpi"><span>Sesiones</span><strong>{data.funnel?.sessions||0}</strong></div>
         <div className="kpi"><span>Clics al Capítulo</span><strong>{data.funnel?.chapter_click_sessions||0}</strong></div>
-        <div className="kpi"><span>Suscriptores</span><strong>{data.funnel?.lead_sessions||0}</strong></div>
+        <div className="kpi"><span>Registros</span><strong>{data.funnel?.lead_sessions||0}</strong></div>
         <div className="kpi"><span>Lectores Cap. 1</span><strong>{data.funnel?.chapter_read_sessions||0}</strong></div>
-        <div className="kpi"><span>Lead → lectura</span><strong>{pct(data.lead_to_chapter_read_ratio)}</strong></div>
+        <div className="kpi"><span>Registro → lectura</span><strong>{pct(data.lead_to_chapter_read_ratio)}</strong></div>
         <div className="kpi"><span>Lectura → Amazon</span><strong>{pct(data.chapter_read_to_amazon_ratio)}</strong></div>
         <div className="kpi"><span>Amazon</span><strong>{data.funnel?.amazon_sessions||0}</strong></div>
         <div className="kpi"><span>Patreon</span><strong>{data.funnel?.patreon_sessions||0}</strong></div>
@@ -132,7 +135,7 @@ export function AdminAnalytics(){
     {Object.keys(experiments).length>0&&<div className="card adminInsightPanel">
       <h2>Pruebas comparativas</h2>
       <div className="adminTableWrap"><table className="adminTable">
-        <thead><tr><th>Experimento</th><th>Variante</th><th>Vistas</th><th>Suscriptores</th><th>Conversión</th></tr></thead>
+        <thead><tr><th>Experimento</th><th>Variante</th><th>Vistas</th><th>Registros</th><th>Conversión</th></tr></thead>
         <tbody>{Object.entries(experiments).flatMap(([exp,v]:any)=>
           Array.from(new Set([...Object.keys(v.views||{}),...Object.keys(v.leads||{})])).map((variant:any)=>{
             const views=v.views?.[variant]||0;
@@ -168,7 +171,7 @@ export function AdminAnalytics(){
       {paidChannels.length===0
         ?<p className="note">Todavía no hay campañas pagadas registradas. Cuando comiencen Google, Meta o TikTok Ads, sus resultados aparecerán aquí automáticamente.</p>
         :<div className="adminTableWrap"><table className="adminTable">
-          <thead><tr><th>Canal</th><th>Tipo de tráfico</th><th>Visitas</th><th>Leads</th><th>Conversión</th><th>Amazon</th><th>Patreon</th></tr></thead>
+          <thead><tr><th>Plataforma</th><th>Tipo de tráfico</th><th>Visitas</th><th>Registros</th><th>Conversión</th><th>Amazon</th><th>Patreon</th></tr></thead>
           <tbody>{paidChannels.map((r:any)=><tr key={`${r.source}:${r.medium}`}>
             <td>{sourceLabel(r.source)}</td><td>{trafficLabel(r.medium)}</td><td>{r.visits}</td><td>{r.leads}</td><td>{pct(r.conversion)}</td><td>{r.amazonClicks||0}</td><td>{r.patreonClicks||0}</td>
           </tr>)}</tbody>
@@ -176,8 +179,8 @@ export function AdminAnalytics(){
     </div>
 
     <div className="card adminInsightPanel">
-      <h2>Conversión por fuente</h2>
-      <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Fuente</th><th>Tipo de tráfico</th><th>Visitas</th><th>Suscriptores</th><th>Conversión</th><th>Amazon</th><th>Paso a Amazon</th><th>Patreon</th></tr></thead><tbody>
+      <h2>Conversión por origen</h2>
+      <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Origen</th><th>Tipo de tráfico</th><th>Visitas</th><th>Registros</th><th>Conversión</th><th>Amazon</th><th>Paso a Amazon</th><th>Patreon</th></tr></thead><tbody>
         {(data.by_source||[]).map((r:any)=><tr key={`${r.source}:${r.medium}`}>
           <td>{sourceLabel(r.source)}</td><td>{trafficLabel(r.medium)}</td><td>{r.visits}</td><td>{r.leads}</td><td>{pct(r.conversion)}</td><td>{r.amazonClicks}</td><td>{pct(r.amazon_ctr)}</td><td>{r.patreonClicks||0}</td>
         </tr>)}
@@ -187,7 +190,7 @@ export function AdminAnalytics(){
     <div className="card adminInsightPanel">
       <h2>Rendimiento por campaña</h2>
       <div className="adminTableWrap"><table className="adminTable">
-        <thead><tr><th>Campaña</th><th>Fuente</th><th>Tipo de tráfico</th><th>Anuncio</th><th>Visitas</th><th>Leads</th><th>Conversión</th><th>Amazon</th><th>Patreon</th></tr></thead>
+        <thead><tr><th>Campaña</th><th>Origen</th><th>Tipo de tráfico</th><th>Anuncio / publicación</th><th>Visitas</th><th>Registros</th><th>Conversión</th><th>Amazon</th><th>Patreon</th></tr></thead>
         <tbody>{(data.by_campaign||[]).map((r:any)=><tr key={`${r.source}:${r.medium}:${r.campaign}:${r.content}`}>
           <td>{r.campaign}</td><td>{sourceLabel(r.source)}</td><td>{trafficLabel(r.medium)}</td><td>{r.content||"—"}</td><td>{r.visits}</td><td>{r.leads}</td><td>{pct(r.conversion)}</td><td>{r.amazonClicks||0}</td><td>{r.patreonClicks||0}</td>
         </tr>)}</tbody>
@@ -196,7 +199,7 @@ export function AdminAnalytics(){
 
     <div className="card adminInsightPanel">
       <h2>Rendimiento por idioma</h2>
-      <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Idioma</th><th>Visitas</th><th>Suscriptores</th><th>Conversión</th><th>Amazon</th><th>Patreon</th></tr></thead><tbody>
+      <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Idioma</th><th>Visitas</th><th>Registros</th><th>Conversión</th><th>Amazon</th><th>Patreon</th></tr></thead><tbody>
         {(data.by_locale||[]).map((r:any)=><tr key={r.locale}>
           <td>{String(r.locale).toUpperCase()}</td><td>{r.visits}</td><td>{r.leads}</td><td>{pct(r.conversion)}</td><td>{r.amazonClicks}</td><td>{r.patreonClicks||0}</td>
         </tr>)}
