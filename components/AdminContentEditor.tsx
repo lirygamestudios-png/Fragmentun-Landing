@@ -1,6 +1,7 @@
 "use client";
 import { useEffect,useMemo,useState } from "react";
 import { createSupabaseBrowserClient } from "../lib/supabase/browser";
+import {FragmentunProcessOverlay} from "./FragmentunProcessOverlay";
 
 type Row={
   content_key:string;section:string;es:any;en:any;
@@ -268,7 +269,7 @@ export function AdminContentEditor(){
     }catch(e){setStatus("No fue posible guardar. Revisa los campos e inténtalo de nuevo.");}
   }
 
-  if(loading)return <p>Cargando contenido…</p>;
+  if(loading)return <FragmentunProcessOverlay compact state="loading" title="CARGANDO CONTENIDO…"/>;
   return <div className="adminEditorGrid">
     <aside className="adminList">
       {rows.map(row=><button key={row.content_key} onClick={()=>choose(row)} className={selected?.content_key===row.content_key?"active":""}>
