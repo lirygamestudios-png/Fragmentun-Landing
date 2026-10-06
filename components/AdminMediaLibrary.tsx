@@ -18,6 +18,7 @@ const categories=[
 function publicUrl(row:any){
   if(!row?.storage_path)return "";
   if(row.storage_path.startsWith("/")||/^https?:\/\//i.test(row.storage_path))return row.storage_path;
+  if(row.protected===true||row.public_visible===false||String(row.storage_path).startsWith("editorial-media/"))return "";
   const base=process.env.NEXT_PUBLIC_SUPABASE_URL||"";
   return base?`${base}/storage/v1/object/public/${row.storage_path}`:"";
 }
@@ -88,8 +89,13 @@ export function AdminMediaLibrary(){
       protected:form.bucket==="editorial-media",public_visible:form.public_visible&&form.bucket!=="editorial-media",
       metadata:{filename:file.name,size:file.size,mime:file.type,bucket:form.bucket,path,category:form.category}
     })});
-    setMsg(r.ok?"GUARDADO SATISFACTORIAMENTE":"El archivo subió, pero faltó registrar su metadata.");
-    if(r.ok){setFile(null);setForm(v=>({...v,slug:"",alt_es:"",alt_en:""}));load()}
+    if(!r.ok){
+      await supabase.storage.from(form.bucket).remove([path]).catch(()=>{});
+      setMsg("No fue posible registrar el recurso. La subida fue revertida.");
+      return;
+    }
+    setMsg("GUARDADO SATISFACTORIAMENTE");
+    setFile(null);setForm(v=>({...v,slug:"",alt_es:"",alt_en:""}));load()
   }
 
   async function copyUrl(row:any){
@@ -150,7 +156,7 @@ export function AdminMediaLibrary(){
                 <small>{categoryLabel(cat)} · {String(r.kind||"media").toUpperCase()}{fileSize(r)?` · ${fileSize(r)}`:""}</small>
                 <div className="adminMediaTileActions">
                   <button type="button" onClick={()=>setSelected(r)}>Previsualizar</button>
-                  {src&&<button type="button" onClick={()=>copyUrl(r)}>Copiar URL</button>}
+                  {src?<button type="button" onClick={()=>copyUrl(r)}>Copiar URL</button>:<span className="note">Recurso privado</span>}
                 </div>
               </div>
             </article>
@@ -176,8 +182,10 @@ export function AdminMediaLibrary(){
           {selected.alt_es&&<p><strong>ES:</strong> {selected.alt_es}</p>}
           {selected.alt_en&&<p><strong>EN:</strong> {selected.alt_en}</p>}
           <div className="adminMediaModalActions">
-            {publicUrl(selected)&&<a className="btn btnPrimary" href={publicUrl(selected)} target="_blank" rel="noreferrer">Abrir original</a>}
-            {publicUrl(selected)&&<button className="btn btnGhost" type="button" onClick={()=>copyUrl(selected)}>{copied?"URL copiada ✓":"Copiar URL"}</button>}
+            {publicUrl(selected)?<>
+              <a className="btn btnPrimary" href={publicUrl(selected)} target="_blank" rel="noreferrer">Abrir original</a>
+              <button className="btn btnGhost" type="button" onClick={()=>copyUrl(selected)}>{copied?"URL copiada ✓":"Copiar URL"}</button>
+            </>:<span className="adminSaveFeedback">Recurso privado · sin URL pública</span>}
           </div>
         </div>
       </section>
