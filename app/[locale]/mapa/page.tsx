@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import { PublicHeader } from "../../../components/PublicHeader";
 import { LumenMap } from "../../../components/LumenMap";
+import { PageView } from "../../../components/PageView";
 import { locales,type Locale } from "../../../lib/i18n";
 import { getBooks } from "../../../lib/content";
 import { createClient } from "@supabase/supabase-js";
@@ -27,6 +28,7 @@ export default async function MapPage({params}:{params:Promise<{locale:string}>}
   const amazonUrl=firstBook?.edition_status==="published"?firstBook?.amazon_url:null;
 
   return <>
+    <PageView locale={locale}/>
     <PublicHeader locale={locale} amazonUrl={amazonUrl}/>
     <main className="section">
       <div className="container">
