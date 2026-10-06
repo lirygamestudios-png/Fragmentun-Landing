@@ -36,11 +36,9 @@ async function createMailerLiteGroup(token:string,name:string){
 async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
   const value=String(raw||"").trim();
 
-  if(value && !isLikelySecret(value)){
-    if(/^\d+$/.test(value)) return {id:value,debug:null};
-    const embedded=value.match(/(?:^|\D)(\d{8,})(?:\D|$)/);
-    if(embedded?.[1]) return {id:embedded[1],debug:null};
-  }
+  const configuredId=value && !isLikelySecret(value)
+    ?(/^\d+$/.test(value)?value:(value.match(/(?:^|\D)(\d{8,})(?:\D|$)/)?.[1]||""))
+    :"";
 
   const res=await fetch(`${ML_GROUPS}?limit=100`,{
     headers:{Authorization:`Bearer ${token}`,Accept:"application/json"},
@@ -55,7 +53,12 @@ async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
   const data=await res.json().catch(()=>({}));
   const groups=Array.isArray(data?.data)?data.data:[];
 
-  if(value && !isLikelySecret(value)){
+  if(configuredId){
+    const byId=groups.find((g:any)=>String(g?.id||"")===configuredId);
+    if(byId?.id)return {id:String(byId.id),debug:null};
+  }
+
+  if(value && !isLikelySecret(value) && !configuredId){
     const normalizedConfigured=normalizeGroupName(value);
     const exact=groups.find((g:any)=>normalizeGroupName(String(g?.name||""))===normalizedConfigured);
     if(exact?.id) return {id:String(exact.id),debug:null};
