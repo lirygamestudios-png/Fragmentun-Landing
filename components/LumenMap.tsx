@@ -143,7 +143,7 @@ export function LumenMap({locale,regions,points}:{locale:Locale;regions:Region[]
   return <div className="lumenCanonicalShell">
     <div className="lumenCanonicalTopline">
       <div>
-        <div className="kicker">LUMEN DESPUÉS DEL PULSO</div>
+        <div className="kicker">{locale==="es"?"LUMEN DESPUÉS DEL PULSO":"LUMEN AFTER THE PULSE"}</div>
         <h2>{locale==="es"?"Mapa emocional de territorios fracturados":"Emotional map of fractured territories"}</h2>
       </div>
       <div className="lumenFlowLegend" aria-label={locale==="es"?"Flujos emocionales":"Emotional flows"}>
