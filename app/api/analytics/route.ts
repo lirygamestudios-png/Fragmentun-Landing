@@ -1,7 +1,7 @@
 import { NextRequest,NextResponse } from "next/server";
 import { consumePublicRateLimit } from "../../../lib/rate-limit";
 
-const allowed=new Set(["page_view","amazon_click","chapter_click","chapter_read","test_start","test_complete","map_interaction","community_click","lead_submit","patreon_click","experiment_view","share_reward_unlock","share_reward_error","share_reward_download","share_click","merch_click","official_video_open","presence_ping"]);
+const allowed=new Set(["page_view","amazon_click","chapter_click","chapter_read","test_start","test_complete","test_result_share","test_result_download","map_interaction","community_click","lead_submit","patreon_click","experiment_view","share_reward_unlock","share_reward_error","share_reward_download","share_click","merch_click","official_video_open","presence_ping"]);
 
 export async function POST(request:NextRequest){
   const length=Number(request.headers.get("content-length")||"0");
