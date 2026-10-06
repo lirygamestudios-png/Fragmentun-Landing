@@ -1,12 +1,13 @@
 "use client";
 import {useEffect,useState} from "react";
+import {FragmentunProcessOverlay} from "./FragmentunProcessOverlay";
 
 function pct(v:any){return Number(v||0).toFixed(1)+"%";}
 
 export function AdminReports(){
   const[data,setData]=useState<any>(null);
   useEffect(()=>{fetch("/api/admin/analytics").then(r=>r.json()).then(setData)},[]);
-  if(!data)return <div className="adminReportLoading">Preparando reporte ejecutivo…</div>;
+  if(!data)return <FragmentunProcessOverlay compact state="loading" title="PREPARANDO REPORTE…"/>;
   if(data.error)return <div className="formNotice">No fue posible preparar el reporte.</div>;
 
   const t=data.totals||{};
