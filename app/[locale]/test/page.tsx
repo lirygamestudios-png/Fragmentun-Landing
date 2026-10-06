@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import { PublicHeader } from "../../../components/PublicHeader";
 import { EmotionalTest } from "../../../components/EmotionalTest";
+import { PageView } from "../../../components/PageView";
 import { locales,type Locale } from "../../../lib/i18n";
 import { getBooks } from "../../../lib/content";
 import { createClient } from "@supabase/supabase-js";
@@ -32,6 +33,7 @@ export default async function TestPage({params}:{params:Promise<{locale:string}>
   const patreonUrl=process.env.NEXT_PUBLIC_PATREON_URL||null;
 
   return <>
+    <PageView locale={locale}/>
     <PublicHeader locale={locale} amazonUrl={amazonUrl} patreonUrl={patreonUrl}/>
     <main className="section">
       <div className="container">
