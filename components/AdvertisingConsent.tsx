@@ -124,8 +124,8 @@ export function AdvertisingConsent(){
     if(previous==="accepted"&&value==="rejected")window.location.reload();
   };
 
-  return <aside style={{
-    position:"fixed",left:"18px",right:"18px",bottom:"18px",zIndex:9999,
+  return <aside className="advertisingConsentPanel" style={{
+    position:"fixed",left:"18px",right:"18px",zIndex:9999,
     maxWidth:"920px",margin:"0 auto",padding:"18px 20px",borderRadius:"20px",
     border:"1px solid rgba(201,168,76,.38)",background:"rgba(7,17,31,.97)",
     boxShadow:"0 24px 70px rgba(0,0,0,.48)",backdropFilter:"blur(16px)",
