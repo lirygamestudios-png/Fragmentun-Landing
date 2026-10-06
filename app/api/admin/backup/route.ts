@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { createSupabaseServiceClient } from "../../../../lib/supabase/service";
+import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 
 const TABLES=[
   "localized_content",
@@ -37,6 +38,7 @@ export async function GET(){
   const session=await createSupabaseServerClient();
   const{data:{user}}=await session.auth.getUser();
   if(!user)return NextResponse.json({error:"forbidden"},{status:403});
+  if(!(await hasSatisfiedMfa(supabase)))return NextResponse.json({error:"mfa_required"},{status:403});
 
   const{data:profile}=await session
     .from("admin_profiles")
