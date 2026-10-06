@@ -28,6 +28,7 @@ export function AdminCampaigns(){
  const[organic,setOrganic]=useState({platform:"instagram",campaign:"lanzamiento_fragmentun",content:"post_01",locale:"es",destination_url:"https://www.fragmentun.com/es"});
  const load=()=>fetch("/api/admin/campaigns").then(r=>r.json()).then(j=>setRows(j.data||[]));
  useEffect(()=>{load()},[]);
+ useEffect(()=>{if(!msg)return;const t=window.setTimeout(()=>setMsg(""),3600);return()=>window.clearTimeout(t)},[msg]);
  async function create(){setMsg("Creando…");const r=await fetch("/api/admin/campaigns",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(form)});if(r.ok){setForm(empty);load();setMsg("GUARDADO SATISFACTORIAMENTE")}else setMsg("ERROR: NO FUE POSIBLE GUARDAR")}
  async function save(row:any){const r=await fetch("/api/admin/campaigns",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(row)});setMsg(r.ok?"GUARDADO SATISFACTORIAMENTE":"ERROR: NO FUE POSIBLE GUARDAR")}
  async function removeCampaign(row:any){
@@ -109,6 +110,7 @@ export function AdminCampaigns(){
    return sourceOk&&textOk;
  });
  return <div className="adminSecondaryModule adminCampaignModule">
+   {msg&&<div className={`adminCampaignToast ${msg.toLowerCase().includes("error")?"error":"success"}`} role="status" aria-live="polite">{msg}</div>}
    <div className="card adminSecondaryPanel organicLinkGenerator">
      <div className="adminPanelHeader">
        <div><div className="kicker">Tráfico orgánico</div><h2>Generador de enlaces para redes</h2></div>
@@ -242,6 +244,6 @@ export function AdminCampaigns(){
        <button className="btn btnGhost" onClick={()=>copyPatreon(r)}>Copiar enlace Patreon</button>
        <button className="btn btnGhost" type="button" onClick={()=>removeCampaign(r)}>Eliminar</button>
      </div>
-   </article>)}</div><p className={msg==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(msg&&(msg.toLowerCase().includes("error")||msg.toLowerCase().includes("no fue")||msg.toLowerCase().includes("no se")||msg.toLowerCase().includes("inválid")||msg.toLowerCase().includes("obligatorio")||msg.toLowerCase().includes("falta"))?"adminSaveFeedback error":"adminSaveFeedback")}>{msg}</p>
+   </article>)}</div>
  </div>;
 }
