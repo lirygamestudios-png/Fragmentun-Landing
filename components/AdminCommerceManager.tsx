@@ -3,7 +3,7 @@ import {useEffect,useMemo,useState} from "react";
 
 type Product={id:string;sku:string|null;name_es:string;name_en:string|null;mode:string;payment_provider:string;external_url:string|null;price_cents:number|null;currency:string;active:boolean;featured:boolean;stock_status:string};
 type Order={id:string;order_number:string;customer_email:string|null;payment_provider:string|null;payment_status:string;fulfillment_status:string;refund_status:string;total_cents:number;currency:string;created_at:string;notes:string|null};
-type Fulfillment={id:string;order_id:string;supplier:string|null;carrier:string|null;service:string|null;tracking_number:string|null;tracking_url:string|null;shipment_status:string;label_provider:string|null;shipping_label_url:string|null;shipping_label_format:string|null;label_cost_cents:number;label_created_at:string|null};
+type Fulfillment={id:string;order_id:string;supplier:string|null;carrier:string|null;service:string|null;tracking_number:string|null;tracking_url:string|null;shipment_status:string;package_weight_grams:number|null;package_dimensions:{length_cm?:number;width_cm?:number;height_cm?:number}|null;label_provider:string|null;shipping_label_url:string|null;shipping_label_format:string|null;label_cost_cents:number;label_created_at:string|null};
 
 const emptyProduct={sku:"",name_es:"",name_en:"",mode:"interest",payment_provider:"auto",external_url:"",price_cents:"",currency:"USD",active:false,featured:false,stock_status:"unknown"};
 
@@ -114,10 +114,19 @@ export function AdminCommerceManager(){
         <label><span>Servicio</span><input value={f.service||""} onChange={e=>setFulfillments(v=>v.map(x=>x.id===f.id?{...x,service:e.target.value}:x))}/></label>
         <label><span>Tracking</span><input value={f.tracking_number||""} onChange={e=>setFulfillments(v=>v.map(x=>x.id===f.id?{...x,tracking_number:e.target.value}:x))}/></label>
         <label><span>Estado</span><select value={f.shipment_status} onChange={e=>setFulfillments(v=>v.map(x=>x.id===f.id?{...x,shipment_status:e.target.value}:x))}><option>pending</option><option>label_created</option><option>shipped</option><option>in_transit</option><option>delivered</option><option>exception</option><option>returned</option><option>canceled</option></select></label>
+        <label><span>Peso (g)</span><input type="number" min="0" value={f.package_weight_grams??""} onChange={e=>setFulfillments(v=>v.map(x=>x.id===f.id?{...x,package_weight_grams:e.target.value===""?null:Number(e.target.value)}:x))}/></label>
+        <label><span>Largo (cm)</span><input type="number" min="0" step="0.1" value={f.package_dimensions?.length_cm??""} onChange={e=>setFulfillments(v=>v.map(x=>x.id===f.id?{...x,package_dimensions:{...(x.package_dimensions||{}),length_cm:e.target.value===""?undefined:Number(e.target.value)}}:x))}/></label>
+        <label><span>Ancho (cm)</span><input type="number" min="0" step="0.1" value={f.package_dimensions?.width_cm??""} onChange={e=>setFulfillments(v=>v.map(x=>x.id===f.id?{...x,package_dimensions:{...(x.package_dimensions||{}),width_cm:e.target.value===""?undefined:Number(e.target.value)}}:x))}/></label>
+        <label><span>Alto (cm)</span><input type="number" min="0" step="0.1" value={f.package_dimensions?.height_cm??""} onChange={e=>setFulfillments(v=>v.map(x=>x.id===f.id?{...x,package_dimensions:{...(x.package_dimensions||{}),height_cm:e.target.value===""?undefined:Number(e.target.value)}}:x))}/></label>
+        <label className="wide"><span>URL tracking</span><input type="url" value={f.tracking_url||""} onChange={e=>setFulfillments(v=>v.map(x=>x.id===f.id?{...x,tracking_url:e.target.value}:x))}/></label>
         <label className="wide"><span>URL etiqueta de envío</span><input type="url" value={f.shipping_label_url||""} onChange={e=>setFulfillments(v=>v.map(x=>x.id===f.id?{...x,shipping_label_url:e.target.value}:x))}/></label>
         <label><span>Formato</span><input value={f.shipping_label_format||""} onChange={e=>setFulfillments(v=>v.map(x=>x.id===f.id?{...x,shipping_label_format:e.target.value}:x))} placeholder="PDF / PNG / ZPL"/></label>
         <label><span>Costo etiqueta (¢)</span><input type="number" min="0" value={f.label_cost_cents||0} onChange={e=>setFulfillments(v=>v.map(x=>x.id===f.id?{...x,label_cost_cents:Number(e.target.value)}:x))}/></label>
-        <button className="btn btnPrimary" type="button" disabled={busy} onClick={()=>saveFulfillment(f)}>Guardar envío</button>
+        <div className="adminShopActions">
+          <button className="btn btnPrimary" type="button" disabled={busy} onClick={()=>saveFulfillment(f)}>Guardar envío</button>
+          {f.shipping_label_url&&<a className="btn btnGhost" href={f.shipping_label_url} target="_blank" rel="noreferrer">Abrir / Reimprimir etiqueta ↗</a>}
+          {f.tracking_url&&<a className="btn btnGhost" href={f.tracking_url} target="_blank" rel="noreferrer">Abrir tracking ↗</a>}
+        </div>
       </div>)}
     </section>
   </div>;
