@@ -2,7 +2,7 @@
 import { useEffect,useState } from "react";
 import Link from "next/link";
 import type { Locale } from "../lib/i18n";
-import { analyticsSessionId } from "../lib/analytics-client";
+import { analyticsAttribution } from "../lib/analytics-client";
 
 type Utm={
   source:string;
@@ -25,14 +25,14 @@ export function LeadForm({
   const[sessionId,setSessionId]=useState("");
 
   useEffect(()=>{
-    const qs=new URLSearchParams(window.location.search);
+    const attribution=analyticsAttribution();
     setUtm({
-      source:qs.get("utm_source")||sessionStorage.getItem("utm_source")||"",
-      medium:qs.get("utm_medium")||sessionStorage.getItem("utm_medium")||"",
-      campaign:qs.get("utm_campaign")||sessionStorage.getItem("utm_campaign")||"",
-      content:qs.get("utm_content")||sessionStorage.getItem("utm_content")||""
+      source:attribution.source||"",
+      medium:attribution.medium||"",
+      campaign:attribution.campaign||"",
+      content:attribution.content||""
     });
-    setSessionId(analyticsSessionId());
+    setSessionId(attribution.session_id||"");
   },[]);
 
   return <form className="leadCaptureForm" action="/api/subscribe" method="post">
