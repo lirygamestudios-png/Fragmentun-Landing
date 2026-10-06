@@ -89,6 +89,7 @@ export async function GET(){
   const mlToken=process.env.MAILERLITE_API_TOKEN;
   let mailerliteReachable=false;
   let mailerliteHttp:number|null=null;
+  let mailerliteAutomations:any[]=[];
   if(mlToken){
     const ml=await fetch("https://connect.mailerlite.com/api/subscribers?limit=1",{
       headers:{Authorization:`Bearer ${mlToken}`,Accept:"application/json"},
@@ -97,6 +98,18 @@ export async function GET(){
     }).catch(()=>null);
     mailerliteHttp=ml?.status??null;
     mailerliteReachable=!!ml?.ok;
+
+    if(mailerliteReachable){
+      const automationResponse=await fetch("https://connect.mailerlite.com/api/automations?limit=100",{
+        headers:{Authorization:`Bearer ${mlToken}`,Accept:"application/json"},
+        cache:"no-store",
+        signal:AbortSignal.timeout(6000)
+      }).catch(()=>null);
+      if(automationResponse?.ok){
+        const automationJson=await automationResponse.json().catch(()=>({}));
+        mailerliteAutomations=Array.isArray(automationJson?.data)?automationJson.data:[];
+      }
+    }
   }
   checks.push({
     key:"mailerlite_health",
@@ -106,6 +119,30 @@ export async function GET(){
     category:"Integraciones",
     detail:mailerliteHttp?`HTTP ${mailerliteHttp}`:(mlToken?"Sin respuesta":"Sin token")
   });
+
+  const automationById=(id:string)=>mailerliteAutomations.find((a:any)=>String(a?.id||"")===id);
+  const esAutomation=automationById("200513201488528389");
+  const enAutomation=automationById("200513245943957201");
+  const automationEnabled=(a:any)=>!!(a?.enabled===true||a?.status==="active");
+
+  checks.push(
+    {
+      key:"mailerlite_automation_es",
+      label:"Automatización email ES",
+      ok:automationEnabled(esAutomation),
+      required:false,
+      category:"Integraciones",
+      detail:esAutomation?(automationEnabled(esAutomation)?"Activa":"Inactiva · mantener así hasta cerrar acceso multidispositivo"):"No encontrada"
+    },
+    {
+      key:"mailerlite_automation_en",
+      label:"Automatización email EN",
+      ok:automationEnabled(enAutomation),
+      required:false,
+      category:"Integraciones",
+      detail:enAutomation?(automationEnabled(enAutomation)?"Activa":"Inactiva · mantener así hasta cerrar acceso multidispositivo"):"No encontrada"
+    }
+  );
 
   const leadStatuses=(leadHealth||[]).reduce((acc:any,row:any)=>{
     const key=row.mailerlite_status||"unknown";
