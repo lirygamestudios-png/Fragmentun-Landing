@@ -1,5 +1,6 @@
 "use client";
 import {useEffect,useState} from "react";
+import {FragmentunProcessOverlay} from "./FragmentunProcessOverlay";
 
 type LiveData={
   generated_at:string;
@@ -33,7 +34,7 @@ export function AdminLiveAnalytics(){
     return()=>{if(timer)window.clearInterval(timer)};
   },[paused]);
 
-  if(!data)return <section className="card adminLivePanel"><p>Cargando actividad en vivo…</p></section>;
+  if(!data)return <section className="card adminLivePanel"><FragmentunProcessOverlay compact state="loading" title="CARGANDO ACTIVIDAD…"/></section>;
   if(data.error)return <section className="card adminLivePanel"><p>No fue posible cargar la actividad en vivo.</p></section>;
 
   const actions=[
