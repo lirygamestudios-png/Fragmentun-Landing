@@ -59,11 +59,23 @@ export function AdminAnalytics(){
   };
   const paidChannels=(data.by_source||[]).filter((r:any)=>paidMedium(r.medium));
   const organicMedium=(value:unknown)=>{
-    const medium=String(value||"").toLowerCase().replace(/[\\s-]+/g,"_");
+    const medium=String(value||"").toLowerCase().replace(/[\s-]+/g,"_");
     return ["organic","organic_search","organic_social","organic_video","social"].includes(medium);
   };
   const organicChannels=(data.by_source||[]).filter((r:any)=>organicMedium(r.medium));
   const organicCampaigns=(data.by_campaign||[]).filter((r:any)=>organicMedium(r.medium));
+
+  const evidenceMin=5;
+  const sourceRows=(data.by_source||[]).filter((r:any)=>Number(r.visits||0)>0);
+  const campaignRows=(data.by_campaign||[]).filter((r:any)=>Number(r.visits||0)>0&&r.campaign!=="(sin campaña)");
+  const sourceEvidence=sourceRows.filter((r:any)=>Number(r.visits||0)>=evidenceMin);
+  const campaignEvidence=campaignRows.filter((r:any)=>Number(r.visits||0)>=evidenceMin);
+  const maxBy=(rows:any[],field:string)=>rows.length?rows.reduce((best:any,row:any)=>Number(row[field]||0)>Number(best[field]||0)?row:best):null;
+  const bestTraffic=maxBy(sourceRows,"visits");
+  const bestConversion=maxBy(sourceEvidence,"conversion");
+  const bestAmazon=maxBy(sourceEvidence,"amazon_ctr");
+  const bestCampaign=maxBy(campaignEvidence,"conversion");
+  const hasDecisionData=!!(bestTraffic||bestConversion||bestAmazon||bestCampaign);
 
   return <div className="adminAnalyticsModule">
     <div className="adminModuleToolbar adminNoPrint"><div><div className="kicker">Inteligencia del embudo</div><h2>Rendimiento y conversión</h2></div><div className="adminReportActions"><button className="btn btnGhost" onClick={printReport}>Imprimir / Guardar PDF</button><button className="btn btnGhost" onClick={exportCsv}>Descargar CSV</button></div></div>
@@ -76,6 +88,38 @@ export function AdminAnalytics(){
         <div><span>Test completados</span><strong>{t.test_complete||0}</strong></div>
       </div>
     </section>
+    <section className="card adminInsightPanel adminDecisionPanel">
+      <div className="adminPanelHeader">
+        <div><div className="kicker">Lectura ejecutiva</div><h2>Qué está funcionando</h2></div>
+        <span className="adminPanelBadge">DATOS REALES</span>
+      </div>
+      <p className="note">Las comparaciones de conversión usan un mínimo de {evidenceMin} visitas por origen o campaña para evitar conclusiones con muestras demasiado pequeñas.</p>
+      {!hasDecisionData
+        ?<p className="note">Todavía no hay suficiente actividad para generar conclusiones automáticas.</p>
+        :<div className="adminDecisionGrid">
+          <article>
+            <span>Mayor tráfico</span>
+            <strong>{bestTraffic?sourceLabel(bestTraffic.source):"—"}</strong>
+            <small>{bestTraffic?`${bestTraffic.visits} visitas · ${trafficLabel(bestTraffic.medium)}`:"Sin datos"}</small>
+          </article>
+          <article>
+            <span>Mejor conversión</span>
+            <strong>{bestConversion?sourceLabel(bestConversion.source):"Muestra insuficiente"}</strong>
+            <small>{bestConversion?`${pct(bestConversion.conversion)} · ${bestConversion.visits} visitas`:`Se requieren al menos ${evidenceMin} visitas`}</small>
+          </article>
+          <article>
+            <span>Mejor paso a Amazon</span>
+            <strong>{bestAmazon?sourceLabel(bestAmazon.source):"Muestra insuficiente"}</strong>
+            <small>{bestAmazon?`${pct(bestAmazon.amazon_ctr)} · ${bestAmazon.amazonClicks||0} clics`:`Se requieren al menos ${evidenceMin} visitas`}</small>
+          </article>
+          <article>
+            <span>Mejor campaña</span>
+            <strong>{bestCampaign?bestCampaign.campaign:"Muestra insuficiente"}</strong>
+            <small>{bestCampaign?`${pct(bestCampaign.conversion)} conversión · ${sourceLabel(bestCampaign.source)}`:`Se requieren al menos ${evidenceMin} visitas por campaña`}</small>
+          </article>
+        </div>}
+    </section>
+
     <section className="card adminInsightPanel adminFunnelVisual">
       <div className="adminPanelHeader"><div><div className="kicker">Visualización ejecutiva</div><h2>Embudo principal</h2></div><span className="adminPanelBadge">30 días</span></div>
       <div className="adminFunnelBars">
