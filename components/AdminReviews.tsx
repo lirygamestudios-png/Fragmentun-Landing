@@ -50,6 +50,14 @@ export function AdminReviews(){
     setRows(a=>a.map((x,n)=>n===i?{...x,[key]:value}:x));
   }
 
+  async function remove(row:any){
+    const label=row.author_display||row.source||"esta reseña";
+    if(!window.confirm(`¿Eliminar definitivamente ${label}? Esta acción no se puede deshacer.`))return;
+    const r=await fetch("/api/admin/reviews",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:row.id})});
+    if(r.ok){setMsg("GUARDADO SATISFACTORIAMENTE");load()}
+    else setMsg("ERROR: NO FUE POSIBLE ELIMINAR");
+  }
+
   return <div className="adminSecondaryModule adminReviewsModule">
     <div className="card adminSecondaryPanel">
       <div className="adminPanelHeader">
@@ -109,6 +117,7 @@ export function AdminReviews(){
           <button className="btn btnSecondary" onClick={()=>save(r,"verified")}>Marcar verificada</button>
           <button className="btn btnPrimary" onClick={()=>save(r,"published")}>Verificar y publicar</button>
           <button className="btn btnGhost" onClick={()=>save(r)}>Guardar cambios</button>
+          <button className="btn adminReviewDelete" onClick={()=>remove(r)}>Eliminar reseña</button>
         </div>
       </article>)}
     </div>
