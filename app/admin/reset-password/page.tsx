@@ -45,7 +45,8 @@ export default function ResetPasswordPage(){
 
   return <main className="authShell authRecoveryShell">
     <section className="authCard authRecoveryCard">
-      <div className="kicker">FRAGMENTUN · PANEL DE ADMINISTRACIÓN</div>
+      <div className="authRecoveryMark"><img src="/fragmentun-mark.png" alt="FRAGMENTUN" width="48" height="48"/></div>
+      <div className="kicker">ACCESO SEGURO · FRAGMENTUN</div>
       <h1>Nueva contraseña</h1>
       <p className="lead authRecoveryLead">Crea una contraseña nueva para tu cuenta administrativa. Debe tener al menos 12 caracteres.</p>
 
