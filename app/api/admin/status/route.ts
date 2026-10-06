@@ -20,7 +20,9 @@ export async function GET(){
   const checks:any[]=[
     {key:"supabase_url",label:"Supabase URL",ok:!!process.env.NEXT_PUBLIC_SUPABASE_URL,required:true,category:"Infraestructura"},
     {key:"supabase_key",label:"Supabase publishable key",ok:!!process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,required:true,category:"Infraestructura"},
-    {key:"supabase_service",label:"Diagnóstico avanzado Supabase",ok:!!process.env.SUPABASE_SECRET_KEY,required:false,category:"Infraestructura",detail:process.env.SUPABASE_SECRET_KEY?"Disponible":"No configurado · no afecta el FrontDesk"},
+    {key:"supabase_service",label:"Supabase servicio privado",ok:!!process.env.SUPABASE_SECRET_KEY,required:false,category:"Seguridad",detail:process.env.SUPABASE_SECRET_KEY?"Disponible · rate limiting central habilitable":"No configurado · rate limiting usa fallback local"},
+    {key:"rate_limit_secret",label:"Secreto dedicado antiabuso",ok:!!process.env.RATE_LIMIT_SECRET,required:false,category:"Seguridad",detail:process.env.RATE_LIMIT_SECRET?"Configurado":"No configurado · se usa fallback seguro"},
+    {key:"chapter_access",label:"Protección Capítulo 1",ok:!!(process.env.CHAPTER_ACCESS_SECRET||process.env.MAILERLITE_API_TOKEN||process.env.SUPABASE_SECRET_KEY),required:true,category:"Seguridad",detail:(process.env.CHAPTER_ACCESS_SECRET||process.env.MAILERLITE_API_TOKEN||process.env.SUPABASE_SECRET_KEY)?"Firma HMAC disponible":"Falta secreto de firma"},
     {key:"site_url",label:"URL pública del sitio",ok:!!env("NEXT_PUBLIC_SITE_URL","next_public_site_url"),required:true,category:"Infraestructura"},
     {key:"patreon",label:"Patreon",ok:!!env("NEXT_PUBLIC_PATREON_URL","next_public_patreon_url"),required:false,category:"Canales"},
     {key:"instagram",label:"Instagram oficial",ok:!!env("NEXT_PUBLIC_INSTAGRAM_URL","next_public_instagram_url"),required:false,category:"Canales"},
