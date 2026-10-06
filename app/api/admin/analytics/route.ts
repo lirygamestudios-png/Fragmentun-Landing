@@ -112,8 +112,9 @@ export async function GET(request:Request){
   const leadSessions=new Set((leads||[]).map((l:any)=>l.session_id).filter(Boolean)).size;
   const funnel={
     sessions,
-    chapter_sessions:sessionCountFor("chapter_click"),
+    chapter_click_sessions:sessionCountFor("chapter_click"),
     lead_sessions:leadSessions,
+    chapter_read_sessions:sessionCountFor("chapter_read"),
     amazon_sessions:sessionCountFor("amazon_click"),
     patreon_sessions:sessionCountFor("patreon_click"),
     share_unlock_sessions:sessionCountFor("share_reward_unlock"),
@@ -142,6 +143,8 @@ export async function GET(request:Request){
     community_ctr:sessions?(sessionCountFor("community_click")/sessions)*100:0,
     share_unlock_rate:sessions?(funnel.share_unlock_sessions/sessions)*100:0,
     share_download_rate:funnel.share_unlock_sessions?(funnel.share_download_sessions/funnel.share_unlock_sessions)*100:0,
+    lead_to_chapter_read_ratio:leadSessions?(funnel.chapter_read_sessions/leadSessions)*100:0,
+    chapter_read_to_amazon_ratio:funnel.chapter_read_sessions?(funnel.amazon_sessions/funnel.chapter_read_sessions)*100:0,
     lead_to_amazon_ratio:leadSessions?(funnel.amazon_sessions/leadSessions)*100:0,
     mailerlite,
     test_profiles:testProfiles,
