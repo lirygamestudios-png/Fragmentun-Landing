@@ -81,10 +81,18 @@ export function analyticsAttribution(){
   const googleWbraId=wbraid||sessionStorage.getItem(ATTR_WBRAID)||"";
   const facebookClickId=fbclid||sessionStorage.getItem(ATTR_FBCLID)||"";
 
-  if(!source&&!medium){
-    const inferred=classifyReferrer();
-    source=inferred.source;
-    medium=inferred.medium;
+  if(!utmSource&&!utmMedium){
+    if(googleClickId||googleBraId||googleWbraId){
+      source="google";
+      medium="cpc";
+    }else if(facebookClickId){
+      source="facebook";
+      medium="paid_social";
+    }else if(!source&&!medium){
+      const inferred=classifyReferrer();
+      source=inferred.source;
+      medium=inferred.medium;
+    }
     if(source)sessionStorage.setItem(ATTR_SOURCE,source);
     if(medium)sessionStorage.setItem(ATTR_MEDIUM,medium);
   }
