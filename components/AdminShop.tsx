@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useMemo,useState} from "react";
 import {createSupabaseBrowserClient} from "../lib/supabase/browser";
+import {FragmentunProcessOverlay} from "./FragmentunProcessOverlay";
 
 type ShopMode="external"|"internal"|"interest";
 type Product={name:string;url?:string;image_url:string;price_label:string;mode?:ShopMode;external_url?:string;sku?:string;price_cents?:number;currency?:string;supplier?:string;supplier_product_id?:string;interest_cta?:string};
@@ -73,12 +74,12 @@ export function AdminShop(){
   }
   async function save(){
     if(!es||!en)return;
-    if(es.enabled&&!(es.shop_url||"").trim()){
-      setMsg("Para activar la tienda debes indicar una URL principal de compra.");
+    if(es.enabled&&!(es.shop_url||"").trim()&&!products("es").some(productReady)){
+      setMsg("Error: para activar la tienda ES debes indicar una URL global o configurar al menos un producto válido.");
       return;
     }
-    if(en.enabled&&!(en.shop_url||"").trim()){
-      setMsg("La versión EN está activa pero no tiene URL de tienda.");
+    if(en.enabled&&!(en.shop_url||"").trim()&&!products("en").some(productReady)){
+      setMsg("Error: la tienda EN está activa pero no tiene URL global ni productos válidos.");
       return;
     }
     setSaving(true);setMsg("Guardando tienda…");
@@ -91,11 +92,12 @@ export function AdminShop(){
     setEs(j.data.es);setEn(j.data.en);setMsg("GUARDADO SATISFACTORIAMENTE");
   }
 
-  if(!es||!en)return <p>Cargando Tienda FRAGMENTUN…</p>;
+  if(!es||!en)return <FragmentunProcessOverlay compact state="loading" title="CARGANDO TIENDA…"/>;
   const active=!!es.enabled&&(!!(es.shop_url||"").trim()||products("es").some(productReady));
   const modeCounts=products("es").reduce((a,p)=>{a[productMode(p)]++;return a},{external:0,internal:0,interest:0});
 
   return <div className="adminShopModule">
+    {saving&&<FragmentunProcessOverlay compact state="processing" title="GUARDANDO TIENDA…"/>}
     <section className="card adminShopStatus">
       <div className="adminPanelHeader">
         <div><div className="kicker">COMERCIO</div><h2>Tienda FRAGMENTUN</h2><p className="note">Controla la presencia comercial pública sin tocar código.</p></div>
@@ -104,7 +106,7 @@ export function AdminShop(){
       <div className="adminShopStatusGrid">
         <div><span>Visibilidad pública</span><strong>{active?"Visible":"Oculta"}</strong></div>
         <div><span>Proveedor</span><strong>{es.provider||"Sin configurar"}</strong></div>
-        <div><span>Productos destacados</span><strong>{products("es").filter(p=>p.name&&p.url).length}</strong></div>
+        <div><span>Productos destacados</span><strong>{products("es").filter(productReady).length}</strong></div>
         <div><span>Seguimiento</span><strong>merch_click</strong></div>
       </div>
     </section>
