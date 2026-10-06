@@ -8,7 +8,7 @@ export function AdminAnalytics(){
   const[data,setData]=useState<any>(null);
   useEffect(()=>{fetch("/api/admin/analytics").then(r=>r.json()).then(setData)},[]);
   if(!data)return <FragmentunProcessOverlay compact state="loading" title="CARGANDO ANALÍTICA…"/>;
-  if(data.error)return <p>No fue posible cargar la analítica.</p>;
+  if(data.error)return <p className="adminSaveFeedback error">No fue posible cargar la analítica.</p>;
 
   const t=data.totals||{};
   const ml=data.mailerlite||{};
