@@ -6,6 +6,7 @@ async function requireEditor(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user) return {supabase,user:null,role:null};
+  if(!(await hasSatisfiedMfa(supabase))) return {supabase,user:null,role:null};
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   return {supabase,user,role:profile?.role??null};
 }
