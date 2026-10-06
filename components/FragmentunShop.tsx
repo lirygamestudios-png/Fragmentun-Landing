@@ -37,7 +37,8 @@ function anchorFor(product:ShopProduct,index:number){
 export function FragmentunShop({locale,content}:{locale:Locale;content?:ShopContent}){
   const products=Array.isArray(content?.featured_products)?content!.featured_products!.filter(usable).slice(0,4):[];
   const hasGlobalUrl=!!content?.shop_url;
-  if(!content?.enabled||(!hasGlobalUrl&&products.length===0))return null;
+  if(!content?.enabled)return null;
+  const previewOnly=!hasGlobalUrl&&products.length===0;
 
   return <section className="fragmentunShopSection" id="tienda">
     {content.banner_url&&<div className="fragmentunShopBackdrop" aria-hidden="true"><img src={content.banner_url} alt=""/></div>}
@@ -48,9 +49,19 @@ export function FragmentunShop({locale,content}:{locale:Locale;content?:ShopCont
         <p className="lead">{content.body||(locale==="es"?"Arte, ropa, coleccionables y ediciones especiales inspiradas en FRAGMENTUN.":"Art, apparel, collectibles and special editions inspired by FRAGMENTUN.")}</p>
         {hasGlobalUrl
           ?<TrackLink className="btn btnPrimary" href={content.shop_url!} eventName="merch_click" locale={locale} metadata={{placement:"shop_section",mode:"external",provider:content.provider||"external",campaign:content.campaign||"merch_launch"}} newTab>{content.cta||(locale==="es"?"Explorar tienda":"Explore store")} →</TrackLink>
-          :products.length>0&&<a className="btn btnPrimary" href="#productos-fragmentun">{content.cta||(locale==="es"?"Explorar productos":"Explore products")} →</a>}
+          :products.length>0
+            ?<a className="btn btnPrimary" href="#productos-fragmentun">{content.cta||(locale==="es"?"Explorar productos":"Explore products")} →</a>
+            :<div className="fragmentunShopPreviewState" aria-live="polite">
+              <strong>{locale==="es"?"PRÓXIMAMENTE":"COMING SOON"}</strong>
+              <span>{locale==="es"?"La tienda está en preparación. No hay compras activas todavía.":"The store is being prepared. Purchases are not active yet."}</span>
+            </div>}
       </div>
 
+      {previewOnly&&<div className="fragmentunShopPreviewCards" aria-hidden="true">
+        <div><span>01</span><strong>{locale==="es"?"ARTE":"ART"}</strong></div>
+        <div><span>02</span><strong>{locale==="es"?"COLECCIONABLES":"COLLECTIBLES"}</strong></div>
+        <div><span>03</span><strong>{locale==="es"?"EDICIONES":"EDITIONS"}</strong></div>
+      </div>}
       {products.length>0&&<div className="fragmentunProductGrid" id="productos-fragmentun">
         {products.map((product,index)=>{
           const mode=modeOf(product);
