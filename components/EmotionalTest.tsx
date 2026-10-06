@@ -69,6 +69,7 @@ export function EmotionalTest({locale,questions,profiles}:{locale:Locale;questio
         medium:utm.medium,
         campaign:utm.campaign,
         content:utm.content,
+        session_id:sessionId,
         metadata
       }),
       keepalive:true
