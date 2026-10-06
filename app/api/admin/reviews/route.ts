@@ -13,13 +13,15 @@ export async function GET(){
 export async function POST(request:NextRequest){
  const x=await marketing();if(!x.ok)return NextResponse.json({error:"forbidden"},{status:403});
  const b=await request.json().catch(()=>null);if(!b?.source||!b?.body_original)return NextResponse.json({error:"invalid_request"},{status:400});
- const payload={source:b.source,author_display:b.author_display||null,body_original:b.body_original,body_es:b.body_es||null,body_en:b.body_en||null,source_url:b.source_url||null,verified:!!b.verified,published:!!b.published};
+ if(!!b.published&&!b.verified)return NextResponse.json({error:"publication_requires_verification"},{status:409});
+ const payload={source:String(b.source).trim(),author_display:b.author_display||null,body_original:String(b.body_original).trim(),body_es:b.body_es||null,body_en:b.body_en||null,source_url:b.source_url||null,verified:!!b.verified,published:!!b.published};
  const{data,error}=await x.supabase.from("reviews").insert(payload).select().single();
  return NextResponse.json(error?{error:error.message}:{data},{status:error?500:200});
 }
 export async function PUT(request:NextRequest){
  const x=await marketing();if(!x.ok)return NextResponse.json({error:"forbidden"},{status:403});
- const b=await request.json().catch(()=>null);if(!b?.id)return NextResponse.json({error:"invalid_request"},{status:400});
- const{data,error}=await x.supabase.from("reviews").update({author_display:b.author_display||null,body_original:b.body_original,body_es:b.body_es||null,body_en:b.body_en||null,source_url:b.source_url||null,verified:!!b.verified,published:!!b.published}).eq("id",b.id).select().single();
+ const b=await request.json().catch(()=>null);if(!b?.id||!b?.body_original)return NextResponse.json({error:"invalid_request"},{status:400});
+ if(!!b.published&&!b.verified)return NextResponse.json({error:"publication_requires_verification"},{status:409});
+ const{data,error}=await x.supabase.from("reviews").update({source:String(b.source||"").trim()||"Otro",author_display:b.author_display||null,body_original:String(b.body_original).trim(),body_es:b.body_es||null,body_en:b.body_en||null,source_url:b.source_url||null,verified:!!b.verified,published:!!b.published}).eq("id",b.id).select().single();
  return NextResponse.json(error?{error:error.message}:{data},{status:error?500:200});
 }
