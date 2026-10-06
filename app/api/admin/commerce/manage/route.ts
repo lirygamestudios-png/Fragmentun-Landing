@@ -132,6 +132,8 @@ export async function PUT(request:NextRequest){
       tracking_number:String(body.tracking_number||"").trim()||null,
       tracking_url:String(body.tracking_url||"").trim()||null,
       shipment_status:["pending","label_created","shipped","in_transit","delivered","exception","returned","canceled"].includes(body.shipment_status)?body.shipment_status:"pending",
+      package_weight_grams:Number.isFinite(Number(body.package_weight_grams))?Math.max(0,Math.round(Number(body.package_weight_grams))):null,
+      package_dimensions:body.package_dimensions&&typeof body.package_dimensions==="object"?body.package_dimensions:{},
       label_provider:String(body.label_provider||"").trim()||null,
       shipping_label_url:String(body.shipping_label_url||"").trim()||null,
       shipping_label_format:String(body.shipping_label_format||"").trim()||null,
