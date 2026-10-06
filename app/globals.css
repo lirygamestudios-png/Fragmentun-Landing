@@ -5360,3 +5360,26 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
     font-size:.92rem
   }
 }
+
+
+.authRecoveryMark{
+  width:54px;
+  height:54px;
+  display:grid;
+  place-items:center;
+  margin-bottom:14px;
+  border:1px solid rgba(201,168,76,.22);
+  border-radius:15px;
+  background:rgba(201,168,76,.06);
+  box-shadow:0 10px 26px rgba(0,0,0,.18)
+}
+.authRecoveryMark img{
+  width:38px;
+  height:38px;
+  object-fit:contain;
+  filter:drop-shadow(0 0 12px rgba(201,168,76,.24))
+}
+.authRecoveryCard .authLinks a{
+  font-size:.86rem;
+  font-weight:700
+}
