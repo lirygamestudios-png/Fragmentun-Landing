@@ -6,6 +6,7 @@ import { locales,type Locale } from "../../../lib/i18n";
 import { TrackLink } from "../../../components/TrackLink";
 import {ChapterReadTracker} from "../../../components/ChapterReadTracker";
 import {chapterAccessCookieName,verifyChapterAccessToken} from "../../../lib/chapter-access";
+import { PageView } from "../../../components/PageView";
 
 export const metadata:Metadata={
   title:"Capítulo 1 · FRAGMENTUN I",
