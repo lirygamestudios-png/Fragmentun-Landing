@@ -2,6 +2,7 @@
 import {useEffect,useRef,useState} from "react";
 import type { Locale } from "../lib/i18n";
 import { TrackLink } from "./TrackLink";
+import { analyticsAttribution } from "../lib/analytics-client";
 
 type SocialItem={key:string;label:string;url:string};
 
@@ -38,15 +39,18 @@ export function SocialLinks({locale,items,placement="footer"}:{
     try{
       if(typeof navigator.share==="function"){
         await navigator.share({title,text,url:pageUrl});
-        setShareOpen(false);
+        trackShare("native_share");
         return;
       }
     }catch{}
     setShareOpen(v=>!v);
   }
   function trackShare(network:string){
+    const attribution=analyticsAttribution();
     fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-      event_name:"share_click",locale,path:window.location.pathname,metadata:{network,placement}
+      event_name:"share_click",locale,path:window.location.pathname,
+      ...attribution,
+      metadata:{network,placement}
     }),keepalive:true}).catch(()=>{});
     setShareOpen(false);
   }
