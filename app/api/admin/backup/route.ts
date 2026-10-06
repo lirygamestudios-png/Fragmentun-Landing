@@ -39,6 +39,7 @@ export async function GET(){
   const{data:{user}}=await session.auth.getUser();
   if(!user)return NextResponse.json({error:"forbidden"},{status:403});
   if(!(await hasSatisfiedMfa(supabase)))return NextResponse.json({error:"mfa_required"},{status:403});
+  if(!(await hasSatisfiedMfa(supabase)))return NextResponse.json({error:"mfa_required"},{status:403});
 
   const{data:profile}=await session
     .from("admin_profiles")
