@@ -1,5 +1,6 @@
 import {NextResponse} from "next/server";
 import {createSupabaseServerClient} from "../../../../lib/supabase/server";
+import {hasSatisfiedMfa} from "../../../../lib/supabase/mfa";
 
 async function requireAnalytics(){
   const supabase=await createSupabaseServerClient();
