@@ -14,7 +14,7 @@ type Props={
 export function NewsConversionCards({locale,news,shareReward}:Props){
   const[rewardOpen,setRewardOpen]=useState(false);
   const[rewardReady,setRewardReady]=useState(false);
-  const[shareStatus,setShareStatus]=useState<"idle"|"sharing"|"returning"|"unsupported"|"error">("idle");
+  const[shareStatus,setShareStatus]=useState<"idle"|"prompting"|"sharing"|"preparing"|"unsupported"|"error">("idle");
 
   async function shareAndUnlock(){
     const url=window.location.href;
@@ -28,53 +28,24 @@ export function NewsConversionCards({locale,news,shareReward}:Props){
     }
 
     try{
-      setRewardReady(false);
-      setRewardOpen(false);
-      setShareStatus("sharing");
 
-      // Let React paint the branded COMPARTIENDO state before the OS share sheet takes control.
-      await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
+    setRewardReady(false);
+    setRewardOpen(false);
 
-      await navigator.share({title:"FRAGMENTUN",text,url});
+    // Stage 1: FRAGMENTUN owns the interaction before the native share sheet opens.
+    setShareStatus("prompting");
+    await new Promise<void>(resolve=>window.setTimeout(resolve,1400));
+    setShareStatus("sharing");
+    await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
 
-      // Native share behavior differs by browser/OS. Once navigator.share()
-      // resolves, immediately move into the branded FRAGMENTUN processing state.
-      // Then wait for the page to be visibly active for a short stable window,
-      // with a hard fallback so the UI can never remain stuck on "Compartiendo…".
-      setShareStatus("returning");
+    // Stage 2: hand control to the browser/OS share surface.
+    await navigator.share({title:"FRAGMENTUN",text,url});
 
-      await new Promise<void>(resolve=>{
-        let stableTimer:number|undefined;
-        let hardTimer:number|undefined;
-        let poll:number|undefined;
-        let done=false;
-
-        const finish=()=>{
-          if(done)return;
-          done=true;
-          if(stableTimer!==undefined)window.clearTimeout(stableTimer);
-          if(hardTimer!==undefined)window.clearTimeout(hardTimer);
-          if(poll!==undefined)window.clearInterval(poll);
-          resolve();
-        };
-
-        const evaluate=()=>{
-          const active=document.visibilityState==="visible"&&document.hasFocus();
-          if(active&&stableTimer===undefined){
-            stableTimer=window.setTimeout(finish,1100);
-          }else if(!active&&stableTimer!==undefined){
-            window.clearTimeout(stableTimer);
-            stableTimer=undefined;
-          }
-        };
-
-        poll=window.setInterval(evaluate,120);
-        hardTimer=window.setTimeout(finish,4200);
-        evaluate();
-      });
-
-      setShareStatus("returning");
-
+    // Stage 3: once control returns to FRAGMENTUN, show a second branded state.
+    // Keep it on screen for a deliberate minimum interval; only after it is
+    // completely unmounted can the thank-you card appear.
+    setShareStatus("preparing");
+    await new Promise<void>(resolve=>window.setTimeout(resolve,2400));
       fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
         event_name:"share_reward_unlock",
         locale,
@@ -84,9 +55,8 @@ export function NewsConversionCards({locale,news,shareReward}:Props){
 
       setRewardReady(true);
       setShareStatus("idle");
-
-      // Unmount the FRAGMENTUN process overlay first, then reveal the reward card.
       await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
+      await new Promise<void>(resolve=>window.setTimeout(resolve,280));
       setRewardOpen(true);
     }catch(error){
       const aborted=error instanceof DOMException&&error.name==="AbortError";
@@ -115,7 +85,7 @@ export function NewsConversionCards({locale,news,shareReward}:Props){
         <p>{news?.card_share_body||(locale==="es"
           ?"Comparte FRAGMENTUN y desbloquea una pieza de arte conceptual del universo."
           :"Share FRAGMENTUN and unlock a piece of concept art from the universe.")}</p>
-        <button type="button" className="newsLink newsActionButton" disabled={shareStatus==="sharing"} onClick={shareAndUnlock}>
+        <button type="button" className="newsLink newsActionButton" disabled={shareStatus==="prompting"||shareStatus==="sharing"||shareStatus==="preparing"} onClick={shareAndUnlock}>
           {news?.card_share_cta||(locale==="es"?"Compartir y desbloquear arte →":"Share and unlock art →")}
         </button>
         {shareStatus==="unsupported"&&<small className="shareRewardStatus">
@@ -153,14 +123,14 @@ export function NewsConversionCards({locale,news,shareReward}:Props){
       </div>
     </article>
 
-    {(shareStatus==="sharing"||shareStatus==="returning")&&<FragmentunProcessOverlay
+    {(shareStatus==="prompting"||shareStatus==="preparing")&&<FragmentunProcessOverlay
       state="processing"
-      title={shareStatus==="sharing"
-        ?(locale==="es"?"COMPARTIENDO…":"SHARING…")
-        :(locale==="es"?"PROCESANDO…":"PROCESSING…")}
-      detail={shareStatus==="sharing"
-        ?(locale==="es"?"Compartiendo FRAGMENTUN":"Sharing FRAGMENTUN")
-        :(locale==="es"?"Verificando tu regreso a FRAGMENTUN":"Verifying your return to FRAGMENTUN")}
+      title={shareStatus==="prompting"
+        ?(locale==="es"?"POR FAVOR SELECCIONA UNA OPCIÓN PARA COMPARTIR":"PLEASE SELECT A SHARING OPTION")
+        :(locale==="es"?"PREPARANDO TU ARTE CONCEPTUAL…":"PREPARING YOUR CONCEPT ART…")}
+      detail={shareStatus==="prompting"
+        ?(locale==="es"?"La ventana para compartir se abrirá a continuación.":"The sharing window will open next.")
+        :(locale==="es"?"ESPERA… estamos preparando tu recompensa FRAGMENTUN.":"PLEASE WAIT… we are preparing your FRAGMENTUN reward.")}
     />}\n\n    {rewardOpen&&<div className="shareRewardBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setRewardOpen(false)}}>
       <section className="shareRewardModal" role="dialog" aria-modal="true" aria-label={shareReward?.thank_you||(locale==="es"?"Gracias por compartir este universo":"Thank you for sharing this universe")}>
         <button className="shareRewardClose" type="button" aria-label={locale==="es"?"Cerrar":"Close"} onClick={()=>setRewardOpen(false)}>×</button>
