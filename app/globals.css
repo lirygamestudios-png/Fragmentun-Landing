@@ -5022,3 +5022,14 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   .adminReviewWorkflow{grid-template-columns:1fr 1fr}
   .adminReviewActions .btn{flex:1 1 100%}
 }
+
+
+.adminReviewDelete{
+  background:rgba(190,62,62,.08);
+  color:#ef9a9a;
+  border:1px solid rgba(239,111,111,.34)
+}
+.adminReviewDelete:hover{
+  background:rgba(190,62,62,.16);
+  border-color:rgba(239,111,111,.62)
+}
