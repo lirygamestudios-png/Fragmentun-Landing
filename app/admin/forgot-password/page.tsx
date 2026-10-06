@@ -22,13 +22,13 @@ export default function ForgotPasswordPage(){
     setStatus("Si existe una cuenta asociada a ese correo, recibirás un enlace seguro para restablecer la contraseña.");
   }
 
-  return <main className="authShell">
-    <section className="authCard">
+  return <main className="authShell authRecoveryShell">
+    <section className="authCard authRecoveryCard">
       <div className="kicker">FRAGMENTUN · PANEL DE ADMINISTRACIÓN</div>
       <h1>Recuperar contraseña</h1>
-      <p className="lead">Escribe el correo de tu cuenta administrativa.</p>
+      <p className="lead authRecoveryLead">Escribe el correo de tu cuenta administrativa y te enviaremos un enlace seguro para restablecer el acceso.</p>
 
-      <form onSubmit={submit} className="formGrid">
+      <form onSubmit={submit} className="authRecoveryForm">
         <label>
           <span>Correo electrónico</span>
           <input type="email" required value={email} onChange={e=>setEmail(e.target.value)} autoComplete="email"/>
