@@ -26,10 +26,11 @@ export default async function MapPage({params}:{params:Promise<{locale:string}>}
 
   const firstBook=(books as any[]).find((b:any)=>b.slug==="fragmentun-i")||(books as any[])[0];
   const amazonUrl=firstBook?.edition_status==="published"?firstBook?.amazon_url:null;
+  const patreonUrl=(process.env.NEXT_PUBLIC_PATREON_URL||process.env.next_public_patreon_url||"").trim()||null;
 
   return <>
     <PageView locale={locale}/>
-    <PublicHeader locale={locale} amazonUrl={amazonUrl}/>
+    <PublicHeader locale={locale} amazonUrl={amazonUrl} patreonUrl={patreonUrl}/>
     <main className="section">
       <div className="container">
         <div className="sectionIntro">
