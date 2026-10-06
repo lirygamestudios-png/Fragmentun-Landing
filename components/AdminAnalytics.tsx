@@ -20,9 +20,10 @@ export function AdminAnalytics(){
   function printReport(){window.print()}
   const funnelSteps=[
     ["Sesiones",data.funnel?.sessions||0],
-    ["Capítulo",data.funnel?.chapter_sessions||0],
     ["Suscriptores",data.funnel?.lead_sessions||0],
-    ["Amazon",data.funnel?.amazon_sessions||0]
+    ["Lectores Cap. 1",data.funnel?.chapter_read_sessions||0],
+    ["Amazon",data.funnel?.amazon_sessions||0],
+    ["Patreon",data.funnel?.patreon_sessions||0]
   ] as const;
   const funnelMax=Math.max(1,...funnelSteps.map(x=>Number(x[1]||0)));
 
@@ -51,6 +52,7 @@ export function AdminAnalytics(){
       <div className="kpi"><span>Vistas de página</span><strong>{t.page_view||0}</strong></div>
       <div className="kpi"><span>Suscriptores</span><strong>{data.lead_count||0}</strong></div>
       <div className="kpi"><span>Conversión sesión → suscriptor</span><strong>{pct(data.conversion_rate)}</strong></div>
+      <div className="kpi"><span>Lecturas Capítulo 1</span><strong>{t.chapter_read||0}</strong></div>
       <div className="kpi"><span>Clics Amazon</span><strong>{t.amazon_click||0}</strong></div>
       <div className="kpi"><span>CTR Amazon</span><strong>{pct(data.amazon_ctr)}</strong></div>
       <div className="kpi"><span>Clics Patreon</span><strong>{t.patreon_click||0}</strong></div>
@@ -65,8 +67,11 @@ export function AdminAnalytics(){
       <p className="note">Cobertura del nuevo seguimiento por sesión: {pct(data.session_tracking_coverage)}. Los eventos históricos anteriores se conservan por separado y no se mezclan con este embudo.</p>
       <div className="kpis">
         <div className="kpi"><span>Sesiones</span><strong>{data.funnel?.sessions||0}</strong></div>
-        <div className="kpi"><span>Capítulo</span><strong>{data.funnel?.chapter_sessions||0}</strong></div>
+        <div className="kpi"><span>Clics al Capítulo</span><strong>{data.funnel?.chapter_click_sessions||0}</strong></div>
         <div className="kpi"><span>Suscriptores</span><strong>{data.funnel?.lead_sessions||0}</strong></div>
+        <div className="kpi"><span>Lectores Cap. 1</span><strong>{data.funnel?.chapter_read_sessions||0}</strong></div>
+        <div className="kpi"><span>Lead → lectura</span><strong>{pct(data.lead_to_chapter_read_ratio)}</strong></div>
+        <div className="kpi"><span>Lectura → Amazon</span><strong>{pct(data.chapter_read_to_amazon_ratio)}</strong></div>
         <div className="kpi"><span>Amazon</span><strong>{data.funnel?.amazon_sessions||0}</strong></div>
         <div className="kpi"><span>Patreon</span><strong>{data.funnel?.patreon_sessions||0}</strong></div>
         <div className="kpi"><span>Recompensa desbloqueada</span><strong>{data.funnel?.share_unlock_sessions||0}</strong></div>
