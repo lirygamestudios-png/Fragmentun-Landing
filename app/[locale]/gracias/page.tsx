@@ -26,11 +26,11 @@ export default async function Gracias({
       <p className="lead">
         {emailReady
           ?(locale==="es"
-            ?"Registro confirmado. Revisa tu correo para recibir el Capítulo 1 y las próximas comunicaciones de FRAGMENTUN."
-            :"Signup confirmed. Check your inbox for Chapter 1 and upcoming FRAGMENTUN communications.")
+            ?"Registro confirmado. Tu acceso al Capítulo 1 ya está disponible aquí. La secuencia de correos de FRAGMENTUN se activará cuando finalicemos la configuración de entrega."
+            :"Signup confirmed. Your Chapter 1 access is available here now. The FRAGMENTUN email sequence will begin once delivery setup is finalized.")
           :(locale==="es"
-            ?"Tu registro fue recibido correctamente. Tu acceso al Capítulo 1 quedará asociado a este correo mientras terminamos de activar la entrega automática."
-            :"Your signup was received successfully. Your Chapter 1 access will remain associated with this email while automated delivery is being activated.")}
+            ?"Tu registro fue recibido correctamente. Puedes leer el Capítulo 1 ahora desde este dispositivo."
+            :"Your signup was received successfully. You can read Chapter 1 now from this device.")}
       </p>
       <div className="heroActions" style={{justifyContent:"center"}}>
         <TrackLink className="btn btnPrimary" href={`/${locale}/capitulo-1`} eventName="chapter_click" locale={locale} metadata={{placement:"thank_you"}}>
