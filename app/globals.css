@@ -4783,3 +4783,60 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   .fragmentunProcessOrbit,
   .fragmentunProcessLine i{animation:none}
 }
+
+
+/* Admin shop: explicit per-product sales mode selector */
+.adminSaleMode{
+  display:grid;
+  gap:10px
+}
+.adminSaleModeLabel{
+  font-size:.72rem;
+  letter-spacing:.13em;
+  color:#c9a84c;
+  font-weight:700
+}
+.adminSaleModeChoices{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px
+}
+.adminSaleModeChoices button{
+  appearance:none;
+  border:1px solid rgba(201,168,76,.18);
+  background:rgba(10,22,40,.72);
+  border-radius:14px;
+  padding:14px 12px;
+  text-align:left;
+  color:#dce7f2;
+  cursor:pointer;
+  transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease,background .16s ease
+}
+.adminSaleModeChoices button:hover{
+  transform:translateY(-1px);
+  border-color:rgba(201,168,76,.55);
+  box-shadow:0 8px 24px rgba(0,0,0,.18)
+}
+.adminSaleModeChoices button.active{
+  border-color:#c9a84c;
+  background:linear-gradient(180deg,rgba(201,168,76,.13),rgba(10,22,40,.88));
+  box-shadow:0 0 0 1px rgba(201,168,76,.08),0 10px 30px rgba(0,0,0,.22)
+}
+.adminSaleModeChoices button.active.secondary{
+  border-color:rgba(74,144,217,.7);
+  background:linear-gradient(180deg,rgba(74,144,217,.14),rgba(10,22,40,.88))
+}
+.adminSaleModeChoices strong{
+  display:block;
+  font-size:.78rem;
+  letter-spacing:.04em
+}
+.adminSaleModeChoices small{
+  display:block;
+  margin-top:4px;
+  color:#94a6b8;
+  line-height:1.35
+}
+@media(max-width:760px){
+  .adminSaleModeChoices{grid-template-columns:1fr}
+}
