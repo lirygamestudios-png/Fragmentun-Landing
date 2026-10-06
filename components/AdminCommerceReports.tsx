@@ -1,5 +1,6 @@
 "use client";
 import {useEffect,useMemo,useState} from "react";
+import {FragmentunProcessOverlay} from "./FragmentunProcessOverlay";
 
 type ReportData={summary:any;by_provider:Record<string,{orders:number;revenue_cents:number}>;by_product:Array<{name:string;sku:string|null;quantity:number;revenue_cents:number;tax_cents:number;supplier_cost_cents:number}>;fulfillment_status:Record<string,number>;orders:any[]};
 
@@ -33,7 +34,8 @@ export function AdminCommerceReports(){
     a.href=url;a.download="fragmentun-reporte-tienda-"+(from||"inicio")+"-"+(to||"actualidad")+".csv";document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
   }
 
-  if(!data&&!loading)return <section className="card adminStoreReport"><p className="note">{msg||"No fue posible cargar reportes."}</p></section>;
+  if(loading&&!data)return <section className="card adminStoreReport"><FragmentunProcessOverlay compact state="loading" title="GENERANDO REPORTE…"/></section>;
+  if(!data&&!loading)return <section className="card adminStoreReport"><p className="adminSaveFeedback error">{msg||"No fue posible cargar reportes."}</p></section>;
 
   return <section className="card adminStoreReport" id="reporte-tienda">
     <div className="adminPanelHeader noPrint"><div><div className="kicker">REPORTES DE TIENDA</div><h2>Ventas, impuestos y operación</h2><p className="note">Dashboard visual y reporte imprimible para administración de la franquicia.</p></div><span className="adminPanelBadge">REPORTING</span></div>
