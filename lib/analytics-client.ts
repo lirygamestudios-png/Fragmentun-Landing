@@ -8,6 +8,7 @@ const ATTR_GCLID="fragmentun_gclid_v1";
 const ATTR_GBRAID="fragmentun_gbraid_v1";
 const ATTR_WBRAID="fragmentun_wbraid_v1";
 const ATTR_FBCLID="fragmentun_fbclid_v1";
+const ATTR_TTCLID="fragmentun_ttclid_v1";
 
 export function analyticsSessionId(){
   if(typeof window==="undefined")return "";
@@ -60,6 +61,7 @@ export function analyticsAttribution(){
   const gbraid=url.searchParams.get("gbraid")||"";
   const wbraid=url.searchParams.get("wbraid")||"";
   const fbclid=url.searchParams.get("fbclid")||"";
+  const ttclid=url.searchParams.get("ttclid")||"";
 
   if(utmSource)sessionStorage.setItem(ATTR_SOURCE,utmSource);
   if(utmMedium)sessionStorage.setItem(ATTR_MEDIUM,utmMedium);
@@ -70,6 +72,7 @@ export function analyticsAttribution(){
   if(gbraid)sessionStorage.setItem(ATTR_GBRAID,gbraid);
   if(wbraid)sessionStorage.setItem(ATTR_WBRAID,wbraid);
   if(fbclid)sessionStorage.setItem(ATTR_FBCLID,fbclid);
+  if(ttclid)sessionStorage.setItem(ATTR_TTCLID,ttclid);
 
   let source=utmSource||sessionStorage.getItem(ATTR_SOURCE)||sessionStorage.getItem("utm_source")||"";
   let medium=utmMedium||sessionStorage.getItem(ATTR_MEDIUM)||sessionStorage.getItem("utm_medium")||"";
@@ -80,13 +83,17 @@ export function analyticsAttribution(){
   const googleBraId=gbraid||sessionStorage.getItem(ATTR_GBRAID)||"";
   const googleWbraId=wbraid||sessionStorage.getItem(ATTR_WBRAID)||"";
   const facebookClickId=fbclid||sessionStorage.getItem(ATTR_FBCLID)||"";
+  const tiktokClickId=ttclid||sessionStorage.getItem(ATTR_TTCLID)||"";
 
   if(!utmSource&&!utmMedium){
     if(googleClickId||googleBraId||googleWbraId){
       source="google";
       medium="cpc";
+    }else if(tiktokClickId){
+      source="tiktok";
+      medium="paid_social";
     }else if(facebookClickId){
-      source="facebook";
+      source="meta";
       medium="paid_social";
     }else if(!source&&!medium){
       const inferred=classifyReferrer();
@@ -104,7 +111,8 @@ export function analyticsAttribution(){
       gclid:googleClickId||null,
       gbraid:googleBraId||null,
       wbraid:googleWbraId||null,
-      fbclid:facebookClickId||null
+      fbclid:facebookClickId||null,
+      ttclid:tiktokClickId||null
     }
   };
 }
