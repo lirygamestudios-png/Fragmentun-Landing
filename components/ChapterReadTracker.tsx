@@ -4,12 +4,14 @@ import {useEffect} from "react";
 import type {Locale} from "../lib/i18n";
 import {analyticsAttribution} from "../lib/analytics-client";
 import {advertisingEvent} from "../lib/advertising-events";
+import {advertisingEvent} from "../lib/advertising-events";
 
 export function ChapterReadTracker({locale}:{locale:Locale}){
   useEffect(()=>{
     const key=`fragmentun_chapter_read_${locale}`;
     if(sessionStorage.getItem(key)==="1")return;
     sessionStorage.setItem(key,"1");
+    advertisingEvent("chapter_read",{locale,chapter:1});
     advertisingEvent("chapter_read",{locale,chapter:1});
     fetch("/api/analytics",{
       method:"POST",
