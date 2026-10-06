@@ -1,5 +1,6 @@
 import { NextRequest,NextResponse } from "next/server";
 import { consumePublicRateLimit } from "../../../lib/rate-limit";
+import {chapterAccessCookieName,chapterAccessMaxAge,createChapterAccessToken} from "../../../lib/chapter-access";
 
 const ML="https://connect.mailerlite.com/api/subscribers";
 const ML_GROUPS="https://connect.mailerlite.com/api/groups";
@@ -238,5 +239,16 @@ export async function POST(request:NextRequest){
 
   const delivery=mailerliteStatus==="synced"?"email":"pending";
   const next=emotionalProfile? `/${locale}/gracias?delivery=${delivery}&profile=${encodeURIComponent(emotionalProfile)}` : `/${locale}/gracias?delivery=${delivery}`;
-  return NextResponse.redirect(new URL(next,request.url),303);
+  const response=NextResponse.redirect(new URL(next,request.url),303);
+  const chapterToken=createChapterAccessToken();
+  if(chapterToken){
+    response.cookies.set(chapterAccessCookieName(),chapterToken,{
+      httpOnly:true,
+      sameSite:"lax",
+      secure:process.env.NODE_ENV==="production",
+      maxAge:chapterAccessMaxAge(),
+      path:"/"
+    });
+  }
+  return response;
 }
