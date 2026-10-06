@@ -27,13 +27,13 @@ export const metadata: Metadata = {
     title:"FRAGMENTUN I — El Despertar Emocional",
     description:"Universo de ciencia ficción emocional de José Liranzo.",
     url:site,
-    images:[{url:"/fragmentun-i-cover-es.jpg",width:1200,height:1800,alt:"FRAGMENTUN I — El Despertar Emocional"}]
+    images:[{url:"/lumen-frontdesk.webp",width:1152,height:648,alt:"Ciudad de Lumen — universo FRAGMENTUN"}]
   },
   twitter:{
     card:"summary_large_image",
     title:"FRAGMENTUN I — El Despertar Emocional",
     description:"Universo de ciencia ficción emocional de José Liranzo.",
-    images:["/fragmentun-i-cover-es.jpg"]
+    images:["/lumen-frontdesk.webp"]
   },
   robots:{
     index:true,
