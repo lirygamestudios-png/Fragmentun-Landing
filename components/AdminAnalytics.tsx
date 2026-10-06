@@ -136,9 +136,9 @@ export function AdminAnalytics(){
     </div>
 
     <div className="card adminInsightPanel">
-      <div className="adminPanelHeader"><div><div className="kicker">Adquisición pagada</div><h2>Meta + Google Ads</h2></div><span className="adminPanelBadge">ATRIBUCIÓN LISTA</span></div>
+      <div className="adminPanelHeader"><div><div className="kicker">Adquisición pagada</div><h2>Google + Meta + TikTok Ads</h2></div><span className="adminPanelBadge">ATRIBUCIÓN LISTA</span></div>
       {paidChannels.length===0
-        ?<p className="note">Todavía no hay tráfico pagado registrado. Cuando entren campañas con gclid/gbraid/wbraid/fbclid o UTMs, aparecerán aquí automáticamente.</p>
+        ?<p className="note">Todavía no hay tráfico pagado registrado. Cuando entren campañas con gclid/gbraid/wbraid/fbclid/ttclid o UTMs, aparecerán aquí automáticamente.</p>
         :<div className="adminTableWrap"><table className="adminTable">
           <thead><tr><th>Canal</th><th>Medio</th><th>Visitas</th><th>Leads</th><th>Conv.</th><th>Amazon</th><th>Patreon</th></tr></thead>
           <tbody>{paidChannels.map((r:any)=><tr key={`${r.source}:${r.medium}`}>
