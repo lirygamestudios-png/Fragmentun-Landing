@@ -70,6 +70,19 @@ export function AdminCampaigns(){
  async function copyAmazon(r:any){await navigator.clipboard.writeText(emailAmazon(r));setMsg("Enlace de Amazon copiado ✓")}
  function emailPatreon(r:any){const u=new URL("https://www.fragmentun.com/go/patreon");u.searchParams.set("locale",r.locale||"es");u.searchParams.set("utm_source",r.source||"email");u.searchParams.set("utm_medium",r.medium||"email");if(r.campaign)u.searchParams.set("utm_campaign",r.campaign);if(r.content)u.searchParams.set("utm_content",r.content);return u.toString()}
  async function copyPatreon(r:any){await navigator.clipboard.writeText(emailPatreon(r));setMsg("Enlace de Patreon copiado ✓")}
+ function useAsOrganicBase(r:any){
+   const source=String(r.source||"instagram").toLowerCase();
+   const allowed=["instagram","facebook","tiktok","youtube","x","linkedin","reddit"];
+   setOrganic({
+     platform:allowed.includes(source)?source:"instagram",
+     campaign:r.campaign||"lanzamiento_fragmentun",
+     content:r.content||"post_01",
+     locale:r.locale==="en"?"en":"es",
+     destination_url:r.destination_url||`https://www.fragmentun.com/${r.locale==="en"?"en":"es"}`
+   });
+   setMsg("Campaña cargada como base ✓");
+   window.scrollTo({top:0,behavior:"smooth"});
+ }
  return <div className="adminSecondaryModule adminCampaignModule">
    <div className="card adminSecondaryPanel organicLinkGenerator">
      <div className="adminPanelHeader">
@@ -163,6 +176,7 @@ export function AdminCampaigns(){
      <button className="btn btnGhost" onClick={()=>save(r)}>Guardar</button></div>
      <p className="note" style={{wordBreak:"break-all"}}>{url(r)}</p>
      <div className="heroActions">
+       <button className="btn btnGhost" onClick={()=>useAsOrganicBase(r)}>Usar como base</button>
        <button className="btn btnGhost" onClick={()=>copyUrl(r)}>Copiar enlace</button>
        <button className="btn btnGhost" onClick={()=>copyAmazon(r)}>Copiar enlace Amazon</button>
        <button className="btn btnGhost" onClick={()=>copyPatreon(r)}>Copiar enlace Patreon</button>
