@@ -23,6 +23,15 @@ export function AdminCampaigns(){
  async function copyUrl(r:any){const u=url(r);if(!u)return;await navigator.clipboard.writeText(u);setMsg("Enlace copiado ✓")}
  function clean(value:string){return value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"")}
  function organicMedium(platform:string){return platform==="youtube"?"organic_video":"organic_social"}
+ function destinationFor(kind:string){
+   const locale=organic.locale==="en"?"en":"es";
+   if(kind==="chapter")return `https://www.fragmentun.com/${locale}/capitulo-1`;
+   if(kind==="test")return `https://www.fragmentun.com/${locale}/test`;
+   if(kind==="map")return `https://www.fragmentun.com/${locale}/mapa`;
+   if(kind==="amazon")return `https://www.fragmentun.com/go/amazon?locale=${locale}`;
+   if(kind==="patreon")return `https://www.fragmentun.com/go/patreon?locale=${locale}`;
+   return `https://www.fragmentun.com/${locale}`;
+ }
  function organicUrl(){
    try{
      const base=organic.destination_url||`https://www.fragmentun.com/${organic.locale}`;
@@ -95,6 +104,17 @@ export function AdminCampaigns(){
        <label className="wide">Página de destino
          <input value={organic.destination_url} onChange={e=>setOrganic({...organic,destination_url:e.target.value})}/>
        </label>
+     </div>
+     <div className="organicDestinationShortcuts">
+       <span>Destinos rápidos</span>
+       <div className="heroActions">
+         <button type="button" className="btn btnGhost" onClick={()=>setOrganic({...organic,destination_url:destinationFor("home")})}>Inicio</button>
+         <button type="button" className="btn btnGhost" onClick={()=>setOrganic({...organic,destination_url:destinationFor("chapter")})}>Capítulo 1</button>
+         <button type="button" className="btn btnGhost" onClick={()=>setOrganic({...organic,destination_url:destinationFor("test")})}>Test</button>
+         <button type="button" className="btn btnGhost" onClick={()=>setOrganic({...organic,destination_url:destinationFor("map")})}>Mapa</button>
+         <button type="button" className="btn btnGhost" onClick={()=>setOrganic({...organic,destination_url:destinationFor("amazon")})}>Amazon</button>
+         <button type="button" className="btn btnGhost" onClick={()=>setOrganic({...organic,destination_url:destinationFor("patreon")})}>Patreon</button>
+       </div>
      </div>
      <div className="organicLinkPreview">
        <span>Enlace generado</span>
