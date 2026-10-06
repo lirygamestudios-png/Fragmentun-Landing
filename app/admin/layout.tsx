@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AdminInteriorChrome } from "../../components/AdminInteriorChrome";
+import { AdminMfaBoundary } from "../../components/AdminMfaBoundary";
 import "./admin-enhancements.css";
 
 export const metadata:Metadata={
@@ -16,5 +17,5 @@ export const metadata:Metadata={
 };
 
 export default function AdminLayout({children}:{children:React.ReactNode}){
-  return <AdminInteriorChrome>{children}</AdminInteriorChrome>;
+  return <AdminMfaBoundary><AdminInteriorChrome>{children}</AdminInteriorChrome></AdminMfaBoundary>;
 }
