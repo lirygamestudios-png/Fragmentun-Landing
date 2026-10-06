@@ -12,9 +12,10 @@ const items=[
   ["Analítica","/admin/analytics"],
   ["Reportes","/admin/reportes"],
   ["SEO y Social","/admin/seo"],
-  ["Suscriptores","/admin/leads"],
+  ["Registros","/admin/leads"],
   ["Integraciones","/admin/integrations"],
   ["Mapa","/admin/mapa"],
+  ["Seguridad","/admin/seguridad"],
   ["Estado","/admin/status"]
 ] as const;
 
