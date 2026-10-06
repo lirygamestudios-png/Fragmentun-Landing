@@ -7,7 +7,10 @@ Convertir registros del Capítulo 1 en lectores del libro completo sin depender 
 Grupo principal: lectores registrados desde la landing del Capítulo 1.
 
 ## Enlaces rastreables
-Muestra ES:
+
+> Estado actual: el acceso web al Capítulo 1 está protegido por cookie de acceso creada tras un registro válido. Un enlace directo enviado por email puede requerir nuevo registro si se abre en otro navegador o dispositivo. El campo personalizado `chapter_access_url` ya existe en MailerLite, pero el enlace firmado multidispositivo todavía no está implementado y no debe usarse hasta completar esa capa.
+
+Muestra ES (uso interno / mismo navegador tras registro):
 `https://www.fragmentun.com/es/capitulo-1?utm_source=email&utm_medium=email&utm_campaign=fragmentun_nurture&utm_content=email_XX`
 
 Compra Amazon:
@@ -98,6 +101,7 @@ José
 - No inventar urgencia, descuento, disponibilidad, reseñas o cifras de ventas.
 - Medir aperturas como señal secundaria; priorizar clics a muestra y clics Amazon.
 - Las URLs hacia Amazon desde email deben usar `/go/amazon` para alimentar el dashboard interno.
+- No enviar el enlace directo al Capítulo 1 como acceso universal hasta implementar y verificar el enlace firmado `chapter_access_url`.
 
 ## Métricas principales
 - Lead → lectura del capítulo.
