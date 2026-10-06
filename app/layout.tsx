@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { AdvertisingConsent } from "../components/AdvertisingConsent";
 
 const site=process.env.NEXT_PUBLIC_SITE_URL||"https://www.fragmentun.com";
 
@@ -48,7 +49,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang={locale}>
-      <body>{children}</body>
+      <body>{children}<AdvertisingConsent/></body>
     </html>
   );
 }
