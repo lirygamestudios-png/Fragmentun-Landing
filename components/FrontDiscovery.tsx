@@ -297,7 +297,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
             </div>
             :item.key==="free-art"
               ?<div className="shareRewardAction">
-                <button className="btn btnSecondary" type="button" disabled={shareStatus==="prompting"||shareStatus==="sharing"||shareStatus==="preparing"} onClick={async()=>{
+                {(shareStatus==="idle"||shareStatus==="unsupported"||shareStatus==="error")&&<button className="btn btnSecondary" type="button" onClick={async()=>{
                   const url=window.location.href;
                   const text=locale==="es"
                     ?"Descubre FRAGMENTUN, una saga de ciencia ficción emocional."
@@ -315,7 +315,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
 
                   // Stage 1: FRAGMENTUN owns the interaction before the native share sheet opens.
                   setShareStatus("prompting");
-                  await new Promise<void>(resolve=>window.setTimeout(resolve,1400));
+                  await new Promise<void>(resolve=>window.setTimeout(resolve,3000));
                   setShareStatus("sharing");
                   await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
 
@@ -326,7 +326,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                   // Keep it on screen for a deliberate minimum interval; only after it is
                   // completely unmounted can the thank-you card appear.
                   setShareStatus("preparing");
-                  await new Promise<void>(resolve=>window.setTimeout(resolve,2400));
+                  await new Promise<void>(resolve=>window.setTimeout(resolve,3000));
                     fetch("/api/analytics",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
                       event_name:"share_reward_unlock",locale,path:window.location.pathname,...analyticsAttribution(),metadata:{placement:"value_strip",result:"completed_after_share_closed"}
                     }),keepalive:true}).catch(()=>{});
@@ -334,7 +334,6 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                     setRewardReady(true);
                     setShareStatus("idle");
                     await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
-                    await new Promise<void>(resolve=>window.setTimeout(resolve,280));
                     setRewardOpen(true);
                   }catch(error){
                     const aborted=error instanceof DOMException&&error.name==="AbortError";
@@ -349,7 +348,7 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
                   }
                 }}>
                   {item.action}
-                </button>
+                </button>}
                                 {shareStatus==="unsupported"&&<small className="shareRewardStatus">
                   {locale==="es"
                     ?"Este navegador no permite verificar que el contenido haya sido compartido. Abre esta página en un dispositivo compatible con Compartir para desbloquear el arte."
@@ -370,11 +369,11 @@ export function FrontDiscovery({locale,amazonUrl,shareReward,charactersContent}:
     {(shareStatus==="prompting"||shareStatus==="preparing")&&<FragmentunProcessOverlay
       state="processing"
       title={shareStatus==="prompting"
-        ?(locale==="es"?"POR FAVOR SELECCIONA UNA OPCIÓN PARA COMPARTIR":"PLEASE SELECT A SHARING OPTION")
-        :(locale==="es"?"PREPARANDO TU ARTE CONCEPTUAL…":"PREPARING YOUR CONCEPT ART…")}
+        ?(locale==="es"?"SELECCIONA UNA OPCIÓN PARA COMPARTIR":"PLEASE SELECT A SHARING OPTION")
+        :(locale==="es"?"TU ARTE CONCEPTUAL SE ESTÁ PREPARANDO…":"PREPARING YOUR CONCEPT ART…")}
       detail={shareStatus==="prompting"
         ?(locale==="es"?"La ventana para compartir se abrirá a continuación.":"The sharing window will open next.")
-        :(locale==="es"?"ESPERA… estamos preparando tu recompensa FRAGMENTUN.":"PLEASE WAIT… we are preparing your FRAGMENTUN reward.")}
+        :(locale==="es"?"ESPERA…":"PLEASE WAIT…")}
     />}\n\n    {rewardOpen&&<div className="shareRewardBackdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setRewardOpen(false)}}>
       <section className="shareRewardModal" role="dialog" aria-modal="true" aria-label={shareReward?.thank_you||(locale==="es"?"Gracias por compartir este universo":"Thank you for sharing this universe")}>
         <button className="shareRewardClose" type="button" aria-label={locale==="es"?"Cerrar":"Close"} onClick={()=>setRewardOpen(false)}>×</button>
