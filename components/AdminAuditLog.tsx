@@ -1,5 +1,6 @@
 "use client";
 import { useEffect,useState } from "react";
+import {FragmentunProcessOverlay} from "./FragmentunProcessOverlay";
 
 const ACTION_LABELS:Record<string,string>={
   insert:"Creación",update:"Actualización",delete:"Eliminación",login:"Acceso",logout:"Salida"
@@ -19,7 +20,7 @@ export function AdminAuditLog(){
     fetch("/api/admin/audit").then(r=>r.json()).then(setData);
   },[]);
 
-  if(!data)return <p>Cargando auditoría…</p>;
+  if(!data)return <FragmentunProcessOverlay compact state="loading" title="CARGANDO AUDITORÍA…"/>;
   if(data.error)return <p>No fue posible cargar la auditoría.</p>;
 
   return <div className="card">
