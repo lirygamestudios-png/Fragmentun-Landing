@@ -282,7 +282,11 @@ export default async function Home({
                 ?(locale==="es"?"Revisa el correo electrónico e inténtalo de nuevo.":"Check your email address and try again.")
                 :signup==="consent"
                   ?(locale==="es"?"Debes aceptar el consentimiento para recibir el Capítulo 1 por correo.":"You must accept consent to receive Chapter 1 by email.")
-                  :(locale==="es"?"No pudimos guardar tu registro. Inténtalo nuevamente.":"We couldn't save your signup. Please try again.")}
+                  :signup==="required"
+                    ?(locale==="es"?"Regístrate para desbloquear el Capítulo 1.":"Sign up to unlock Chapter 1.")
+                    :signup==="rate"
+                      ?(locale==="es"?"Has realizado varios intentos. Prueba nuevamente más tarde.":"You've made several attempts. Please try again later.")
+                      :(locale==="es"?"No pudimos guardar tu registro. Inténtalo nuevamente.":"We couldn't save your signup. Please try again.")}
             </div>}
             <ChapterLeadExperiment locale={locale} nameLabel={t.name} emailLabel={t.email} defaultLabel={chapter.cta||t.send}/>
             <p className="note">{chapter.privacy||(locale==="es"?"Tu idioma se guardará para que recibas la secuencia correcta.":"Your language will be preserved so you receive the correct sequence.")}</p>
