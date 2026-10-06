@@ -136,9 +136,9 @@ export function AdminAnalytics(){
 
     <div className="card adminInsightPanel">
       <h2>Conversión por fuente</h2>
-      <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Fuente</th><th>Visitas</th><th>Suscriptores</th><th>Conv.</th><th>Amazon</th><th>CTR Amazon</th><th>Patreon</th></tr></thead><tbody>
-        {(data.by_source||[]).map((r:any)=><tr key={r.source}>
-          <td>{r.source}</td><td>{r.visits}</td><td>{r.leads}</td><td>{pct(r.conversion)}</td><td>{r.amazonClicks}</td><td>{pct(r.amazon_ctr)}</td><td>{r.patreonClicks||0}</td>
+      <div className="adminTableWrap"><table className="adminTable"><thead><tr><th>Fuente</th><th>Medio</th><th>Visitas</th><th>Suscriptores</th><th>Conv.</th><th>Amazon</th><th>CTR Amazon</th><th>Patreon</th></tr></thead><tbody>
+        {(data.by_source||[]).map((r:any)=><tr key={`${r.source}:${r.medium}`}>
+          <td>{r.source}</td><td>{r.medium||"—"}</td><td>{r.visits}</td><td>{r.leads}</td><td>{pct(r.conversion)}</td><td>{r.amazonClicks}</td><td>{pct(r.amazon_ctr)}</td><td>{r.patreonClicks||0}</td>
         </tr>)}
       </tbody></table></div>
     </div>
