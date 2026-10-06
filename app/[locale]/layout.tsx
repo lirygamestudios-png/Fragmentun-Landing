@@ -43,19 +43,19 @@ export async function generateMetadata({
       title,
       description,
       images:[{
-        url:"/fragmentun-i-cover-es.jpg",
+        url:"/lumen-frontdesk.webp",
         width:1200,
         height:1800,
         alt:isEs
-          ?"Portada de FRAGMENTUN I: El Despertar Emocional, de José Liranzo"
-          :"Cover of FRAGMENTUN I by José Liranzo"
+          ?"Ciudad de Lumen — universo FRAGMENTUN de José Liranzo"
+          :"Lumen City — the FRAGMENTUN universe by José Liranzo"
       }]
     },
     twitter:{
       card:"summary_large_image",
       title,
       description,
-      images:["/fragmentun-i-cover-es.jpg"]
+      images:["/lumen-frontdesk.webp"]
     }
   };
 }
