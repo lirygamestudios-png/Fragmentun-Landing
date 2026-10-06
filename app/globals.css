@@ -5053,3 +5053,16 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   opacity:1;
   outline:none;
 }
+
+
+.advertisingConsentPanel{bottom:18px}
+@media(max-width:560px){
+  .advertisingConsentPanel{
+    bottom:82px!important;
+    left:12px!important;
+    right:12px!important;
+    padding:15px 16px!important;
+    max-height:calc(100dvh - 110px);
+    overflow:auto;
+  }
+}
