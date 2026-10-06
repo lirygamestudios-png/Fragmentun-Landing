@@ -24,7 +24,7 @@ export function AdminIntegrationLogs(){
   useEffect(()=>{fetch("/api/admin/integrations").then(r=>r.json()).then(setData)},[]);
 
   if(!data)return <FragmentunProcessOverlay compact state="loading" title="CARGANDO INTEGRACIONES…"/>;
-  if(data.error)return <p>No fue posible cargar el historial de integraciones.</p>;
+  if(data.error)return <p className="adminSaveFeedback error">No fue posible cargar el historial de integraciones.</p>;
 
   const items=data.items||[];
   const health=data.health||{};
