@@ -1,5 +1,6 @@
 "use client";
 import { useEffect,useState } from "react";
+import {FragmentunProcessOverlay} from "./FragmentunProcessOverlay";
 
 export function AdminSystemStatus(){
   const[data,setData]=useState<any>(null);
@@ -8,7 +9,7 @@ export function AdminSystemStatus(){
     fetch("/api/admin/status").then(r=>r.json()).then(setData);
   },[]);
 
-  if(!data)return <p>Cargando estado…</p>;
+  if(!data)return <FragmentunProcessOverlay compact state="loading" title="CARGANDO ESTADO…"/>;
   if(data.error)return <p>No fue posible cargar el estado.</p>;
 
   const ops=data.operations||{};
