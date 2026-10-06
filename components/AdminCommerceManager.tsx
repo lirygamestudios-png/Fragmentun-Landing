@@ -2,10 +2,37 @@
 import {useEffect,useMemo,useState} from "react";
 
 type Product={id:string;sku:string|null;name_es:string;name_en:string|null;mode:string;payment_provider:string;external_url:string|null;price_cents:number|null;currency:string;active:boolean;featured:boolean;stock_status:string};
-type Order={id:string;order_number:string;customer_email:string|null;payment_provider:string|null;payment_status:string;fulfillment_status:string;refund_status:string;total_cents:number;currency:string;created_at:string;notes:string|null};
+type Address=Record<string,any>;
+type Order={id:string;order_number:string;customer_email:string|null;customer_name?:string|null;customer_phone?:string|null;shipping_address?:Address|null;billing_address?:Address|null;payment_provider:string|null;payment_status:string;fulfillment_status:string;refund_status:string;total_cents:number;currency:string;created_at:string;notes:string|null};
 type Fulfillment={id:string;order_id:string;supplier:string|null;carrier:string|null;service:string|null;tracking_number:string|null;tracking_url:string|null;shipment_status:string;package_weight_grams:number|null;package_dimensions:{length_cm?:number;width_cm?:number;height_cm?:number}|null;label_provider:string|null;shipping_label_url:string|null;shipping_label_format:string|null;label_cost_cents:number;label_created_at:string|null;shipped_at?:string|null;delivered_at?:string|null};
 
 const emptyProduct={sku:"",name_es:"",name_en:"",mode:"interest",payment_provider:"auto",external_url:"",price_cents:"",currency:"USD",active:false,featured:false,stock_status:"unknown"};
+
+function addressValue(a:Address|null|undefined,...keys:string[]){
+  for(const key of keys){
+    const value=a?.[key];
+    if(value!==undefined&&value!==null&&String(value).trim())return String(value).trim();
+  }
+  return "";
+}
+function shippingAddressStatus(o:Order){
+  const a=o.shipping_address||{};
+  const line1=addressValue(a,"line1","address1","address_line1","street");
+  const city=addressValue(a,"city","locality");
+  const region=addressValue(a,"state","region","province","administrative_area");
+  const postal=addressValue(a,"postal_code","zip","zipcode");
+  const country=addressValue(a,"country","country_code");
+  const missing=[
+    !line1&&"dirección",
+    !city&&"ciudad",
+    !region&&"estado/región",
+    !postal&&"código postal",
+    !country&&"país"
+  ].filter(Boolean) as string[];
+  return {ok:missing.length===0,missing,line1,city,region,postal,country,
+    line2:addressValue(a,"line2","address2","address_line2"),
+    name:addressValue(a,"name","recipient")||o.customer_name||""};
+}
 
 export function AdminCommerceManager(){
   const[products,setProducts]=useState<Product[]>([]);
@@ -136,12 +163,22 @@ export function AdminCommerceManager(){
 
     <section className="card">
       <div className="adminPanelHeader"><div><div className="kicker">ÓRDENES</div><h2>Administración de pedidos</h2></div><span className="adminPanelBadge">{orders.length} · {paid} PAGADAS · {pending} PENDIENTES</span></div>
-      {orders.length===0?<p className="note">No existen órdenes todavía. Aparecerán aquí cuando se habilite el checkout interno.</p>:orders.map(o=><div className="adminShopProductEditor" key={o.id}>
-        <div><strong>{o.order_number}</strong><div className="note">{o.customer_email||"Sin email"} · {(o.total_cents/100).toFixed(2)} {o.currency}</div></div>
-        <label><span>Pago</span><select value={o.payment_status} onChange={e=>saveOrder(o,{payment_status:e.target.value})}><option>pending</option><option>authorized</option><option>paid</option><option>failed</option><option>refunded</option><option>partially_refunded</option><option>canceled</option></select></label>
-        <label><span>Fulfillment</span><select value={o.fulfillment_status} onChange={e=>saveOrder(o,{fulfillment_status:e.target.value})}><option>unfulfilled</option><option>processing</option><option>partially_fulfilled</option><option>fulfilled</option><option>delivered</option><option>returned</option><option>canceled</option></select></label>
-        <button className="btn btnGhost" type="button" onClick={()=>createFulfillment(o.id)}>Crear envío</button>
-      </div>)}
+      {orders.length===0?<p className="note">No existen órdenes todavía. Aparecerán aquí cuando se habilite el checkout interno.</p>:orders.map(o=>{
+        const address=shippingAddressStatus(o);
+        return <div className="adminShopProductEditor" key={o.id}>
+          <div className="wide"><strong>{o.order_number}</strong><div className="note">{o.customer_email||"Sin email"} · {(o.total_cents/100).toFixed(2)} {o.currency}</div></div>
+          <div className="wide adminOrderAddress">
+            <div className="adminPanelHeader">
+              <div><span className="adminSaleModeLabel">DIRECCIÓN DE ENVÍO</span><strong>{address.name||"Destinatario sin nombre"}</strong></div>
+              <span className={address.ok?"adminSaveFeedback success":"adminSaveFeedback error"}>{address.ok?"DIRECCIÓN COMPLETA":"REVISAR DIRECCIÓN"}</span>
+            </div>
+            {address.ok?<p className="note">{address.line1}{address.line2?`, ${address.line2}`:""} · {address.city}, {address.region} {address.postal} · {address.country}</p>:<p className="adminSaveFeedback error">Faltan: {address.missing.join(", ")}.</p>}
+          </div>
+          <label><span>Pago</span><select value={o.payment_status} onChange={e=>saveOrder(o,{payment_status:e.target.value})}><option>pending</option><option>authorized</option><option>paid</option><option>failed</option><option>refunded</option><option>partially_refunded</option><option>canceled</option></select></label>
+          <label><span>Fulfillment</span><select value={o.fulfillment_status} onChange={e=>saveOrder(o,{fulfillment_status:e.target.value})}><option>unfulfilled</option><option>processing</option><option>partially_fulfilled</option><option>fulfilled</option><option>delivered</option><option>returned</option><option>canceled</option></select></label>
+          <button className="btn btnGhost" type="button" disabled={!address.ok||busy} title={!address.ok?"Completa la dirección antes de crear el envío":undefined} onClick={()=>createFulfillment(o.id)}>Crear envío</button>
+        </div>
+      })}
     </section>
 
     <section className="card">
