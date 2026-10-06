@@ -43,13 +43,13 @@ export default function ResetPasswordPage(){
       :"No fue posible actualizar la contraseña.");
   }
 
-  return <main className="authShell">
-    <section className="authCard">
+  return <main className="authShell authRecoveryShell">
+    <section className="authCard authRecoveryCard">
       <div className="kicker">FRAGMENTUN · PANEL DE ADMINISTRACIÓN</div>
       <h1>Nueva contraseña</h1>
-      <p className="lead">Crea una contraseña nueva para tu cuenta administrativa.</p>
+      <p className="lead authRecoveryLead">Crea una contraseña nueva para tu cuenta administrativa. Debe tener al menos 12 caracteres.</p>
 
-      <form onSubmit={submit} className="formGrid">
+      <form onSubmit={submit} className="authRecoveryForm">
         <label>
           <span>Nueva contraseña</span>
           <input type="password" required minLength={12} value={password} onChange={e=>setPassword(e.target.value)} autoComplete="new-password"/>
