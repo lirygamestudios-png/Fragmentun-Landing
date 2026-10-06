@@ -178,10 +178,10 @@ export default async function AdminPage({searchParams}:{searchParams:Promise<{ra
 
       <div className="approvedAdminBody">
         <section className="approvedAdminKpis">
-          <a className="approvedAdminKpiLink" href="/admin/leads"><article><span className="kpiIcon">♟</span><div><strong>{(leadCount??0).toLocaleString()}</strong><small>Suscriptores</small></div><em>REAL</em></article></a>
+          <a className="approvedAdminKpiLink" href="/admin/leads"><article><span className="kpiIcon">♟</span><div><strong>{(leadCount??0).toLocaleString()}</strong><small>Registros</small></div><em>REAL</em></article></a>
           <a className="approvedAdminKpiLink" href={`/admin/analytics?range=${rangeDays}`}><article><span className="kpiIcon">↖</span><div><strong>{recentSessions.toLocaleString()}</strong><small>Sesiones · {rangeDays} días</small></div><em>{rangeDays}D</em></article></a>
-          <a className="approvedAdminKpiLink" href={`/admin/analytics?range=${rangeDays}`}><article><span className="kpiIcon amazon">a</span><div><strong>{amazonCtr.toFixed(1)}%</strong><small>CTR Amazon</small></div><em>{rangeDays}D</em></article></a>
-          <a className="approvedAdminKpiLink" href={`/admin/analytics?range=${rangeDays}`}><article><span className="kpiIcon">▥</span><div><strong>{leadConversion.toFixed(1)}%</strong><small>Conversión a Lead</small></div><em>{rangeDays}D</em></article></a>
+          <a className="approvedAdminKpiLink" href={`/admin/analytics?range=${rangeDays}`}><article><span className="kpiIcon amazon">a</span><div><strong>{amazonCtr.toFixed(1)}%</strong><small>Paso a Amazon</small></div><em>{rangeDays}D</em></article></a>
+          <a className="approvedAdminKpiLink" href={`/admin/analytics?range=${rangeDays}`}><article><span className="kpiIcon">▥</span><div><strong>{leadConversion.toFixed(1)}%</strong><small>Conversión a registro</small></div><em>{rangeDays}D</em></article></a>
           <details className="approvedAdminRange">
             <summary>▣ <span>Últimos {rangeDays} días</span>⌄</summary>
             <div className="approvedAdminRangeMenu">
