@@ -66,7 +66,7 @@ export async function GET(){
     return NextResponse.json({error:"forbidden"},{status:403});
   }
 
-  const[{data,error},{data:leadRows},mailerLiteAutomationState]=await Promise.all([
+  const[{data,error},{data:leadRows},mailerLiteAutomationState,{data:adRows}]=await Promise.all([
     supabase
       .from("integration_logs")
       .select("id,integration,event_type,status,entity_type,entity_id,message,metadata,created_at")
@@ -77,7 +77,8 @@ export async function GET(){
       .select("mailerlite_status,created_at")
       .order("created_at",{ascending:false})
       .limit(5000),
-    fetchMailerLiteAutomations()
+    fetchMailerLiteAutomations(),
+    supabase.from("ad_integrations").select("provider,enabled,public_id,secondary_id,updated_at").order("provider")
   ]);
 
   if(error)return NextResponse.json({error:"query_failed"},{status:500});
@@ -110,6 +111,7 @@ export async function GET(){
   return NextResponse.json({
     items,
     automations:mailerLiteAutomationState,
+    ads:adRows||[],
     health:{
       integration:"mailerlite",
       configured:config,
@@ -185,4 +187,51 @@ export async function POST(){
   }
 
   return NextResponse.json({ok:results.every(x=>!x.error),results});
+}
+
+
+export async function PUT(request:Request){
+  const supabase=await createSupabaseServerClient();
+  const{data:{user}}=await supabase.auth.getUser();
+  if(!user)return NextResponse.json({error:"forbidden"},{status:403});
+
+  const{data:profile}=await supabase
+    .from("admin_profiles")
+    .select("role")
+    .eq("user_id",user.id)
+    .maybeSingle();
+
+  if(!profile||!["admin","marketing"].includes(profile.role)){
+    return NextResponse.json({error:"forbidden"},{status:403});
+  }
+
+  const body=await request.json().catch(()=>null);
+  const provider=String(body?.provider||"");
+  if(!["meta","google","tiktok"].includes(provider)){
+    return NextResponse.json({error:"invalid_provider"},{status:400});
+  }
+
+  const enabled=body?.enabled===true;
+  const publicId=String(body?.public_id||"").trim().slice(0,200)||null;
+  const secondaryId=String(body?.secondary_id||"").trim().slice(0,200)||null;
+
+  if(enabled&&!publicId){
+    return NextResponse.json({error:"missing_id"},{status:400});
+  }
+
+  const{data,error}=await supabase
+    .from("ad_integrations")
+    .upsert({
+      provider,
+      enabled,
+      public_id:publicId,
+      secondary_id:secondaryId,
+      updated_at:new Date().toISOString(),
+      updated_by:user.id
+    },{onConflict:"provider"})
+    .select("provider,enabled,public_id,secondary_id,updated_at")
+    .single();
+
+  if(error)return NextResponse.json({error:"save_failed"},{status:500});
+  return NextResponse.json({ok:true,item:data});
 }
