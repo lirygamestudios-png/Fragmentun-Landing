@@ -178,6 +178,11 @@ export default async function MasterGamesPage(){
       <article><small>Salud crítica</small><strong>{redGames.length}</strong><span>Críticos o pausados</span></article>
     </section>
 
+    {["admin","editor"].includes(profile.role)&&<section className={styles.notice}>
+      <div><strong>Gestión de juegos</strong><span>Responsable, fecha objetivo, presupuesto y etapas se gestionan desde Opciones avanzadas.</span></div>
+      <a className={styles.formButton} href="#game-advanced">Opciones avanzadas</a>
+    </section>}
+
     <section className={styles.sectionHead}>
       <div><span>PORTAFOLIO DE JUEGOS</span><h2>Registro de títulos</h2></div>
       <p>Esta vista ya consume las nuevas tablas persistentes del estudio. No se crean títulos ficticios: el registro comienza vacío hasta cargar cada proyecto real.</p>
@@ -195,7 +200,7 @@ export default async function MasterGamesPage(){
       {!gameRows.length&&<article className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgePlanned}>LISTO</span><em>GAME REGISTRY</em></div>
         <h3>Registro preparado</h3>
-        <p>La base de datos ya está lista para registrar los videojuegos reales de LIRYGAMES STUDIOS con etapa, salud, plataformas, presupuesto y release target.</p>
+        <p>Responsable: Sin asignar<br/>Fecha objetivo: Sin definir<br/>El sistema está listo para registrar los videojuegos reales de LIRYGAMES STUDIOS.</p>
       </article>}
     </section>
 
@@ -217,7 +222,7 @@ export default async function MasterGamesPage(){
     </section>
 
 
-    {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}>
+    {["admin","editor"].includes(profile.role)&&<details id="game-advanced" className={styles.advancedPanel}>
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar juegos y etapas manualmente.</p>
       <section className={styles.adminForms}>
