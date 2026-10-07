@@ -3,6 +3,21 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
+function techStatusLabel(value:string){
+  const map:Record<string,string>={active:"ACTIVO",degraded:"DEGRADADO",maintenance:"MANTENIMIENTO",deprecated:"OBSOLETO",retired:"RETIRADO",planned:"PLANIFICADO",approved:"APROBADO",in_progress:"EN CURSO",completed:"COMPLETADO",failed:"FALLIDO",rolled_back:"REVERTIDO",canceled:"CANCELADO"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
+function riskLabel(value:string){
+  const map:Record<string,string>={low:"BAJA",medium:"MEDIA",high:"ALTA",critical:"CRÍTICA"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function environmentLabel(value:string){
+  const map:Record<string,string>={development:"DESARROLLO",preview:"PRUEBAS",staging:"PREPRODUCCIÓN",production:"PRODUCCIÓN",shared:"COMPARTIDO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
 async function requireTechEditor(){
   "use server";
   const supabase=await createSupabaseServerClient();
@@ -156,33 +171,33 @@ export default async function MasterTechnologyPage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · TECNOLOGÍA</span><h1>Tecnología</h1><p>Inventario técnico, cambios controlados y salud del ecosistema.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · TECNOLOGÍA</span><h1>Tecnología</h1><p>Inventario técnico, cambios controlados y salud del ecosistema.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Servicios</small><strong>{serviceRows.length}</strong><span>{degraded} degraded/maintenance</span></article>
-      <article><small>Cambios abiertos</small><strong>{openChanges.length}</strong><span>{riskyChanges.length} high/critical</span></article>
-      <article><small>Eventos</small><strong>{(events||0).toLocaleString()}</strong><span>Analytics acumulado</span></article>
-      <article><small>Admins</small><strong>{(profiles||0).toLocaleString()}</strong><span>Perfiles provisionados</span></article>
+      <article><small>Servicios</small><strong>{serviceRows.length}</strong><span>{degraded} con incidencia o mantenimiento</span></article>
+      <article><small>Cambios abiertos</small><strong>{openChanges.length}</strong><span>{riskyChanges.length} de riesgo alto o crítico</span></article>
+      <article><small>Eventos</small><strong>{(events||0).toLocaleString()}</strong><span>Analítica acumulada</span></article>
+      <article><small>Admins</small><strong>{(profiles||0).toLocaleString()}</strong><span>Usuarios administrativos</span></article>
     </section>
 
-    <section className={styles.sectionHead}><div><span>SERVICE CATALOG</span><h2>Servicios técnicos</h2></div><p>Registro persistente de componentes y proveedores técnicos.</p></section>
+    <section className={styles.sectionHead}><div><span>SERVICIOS</span><h2>Servicios técnicos</h2></div><p>Componentes y proveedores técnicos registrados.</p></section>
     <section className={styles.grid}>
       {serviceRows.map((s:any)=><article key={s.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={s.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(s.status).toUpperCase()}</span><em>{s.criticality}</em></div>
-        <h3>{s.name}</h3><p>{s.service_type} · {s.provider||"Proveedor no registrado"}<br/>Owner: {ownerName(s.owner_user_id)}<br/>{s.environment} · {s.version||"Sin versión"}<br/>{s.url||"URL no registrada"}</p>
+        <div className={styles.cardTop}><span className={s.status==="active"?styles.badgeActive:styles.badgePlanned}>{techStatusLabel(s.status)}</span><em>{riskLabel(s.criticality)}</em></div>
+        <h3>{s.name}</h3><p>{s.service_type} · {s.provider||"Proveedor no registrado"}<br/>Responsable: {ownerName(s.owner_user_id)}<br/>{environmentLabel(s.environment)} · {s.version||"Sin versión"}<br/>{s.url||"URL no registrada"}</p>
       </article>)}
-      {!serviceRows.length&&<article className={styles.card}><h3>Service Catalog preparado</h3><p>No se han formalizado servicios técnicos todavía.</p></article>}
+      {!serviceRows.length&&<article className={styles.card}><h3>Registro de servicios preparado</h3><p>No se han formalizado servicios técnicos todavía.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>CHANGE REGISTER</span><h2>Cambios técnicos</h2></div><p>Registro de cambios con riesgo, entorno objetivo y rollback plan.</p></section>
+    <section className={styles.sectionHead}><div><span>CAMBIOS</span><h2>Cambios técnicos</h2></div><p>Cambios técnicos con riesgo, entorno objetivo y plan de reversión.</p></section>
     <section className={styles.grid}>
       {changeRows.map((c:any)=><article key={c.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={c.status==="completed"?styles.badgeActive:styles.badgePlanned}>{String(c.status).toUpperCase()}</span><em>{c.risk_level}</em></div>
-        <h3>{c.title}</h3><p>{c.change_code} · {c.change_type}<br/>Owner: {ownerName(c.owner_user_id)}<br/>{c.target_environment} · {c.planned_at?new Date(c.planned_at).toLocaleString("es-US"):"Sin fecha"}<br/>{c.rollback_plan?"Rollback definido":"Rollback pendiente"}</p>
+        <div className={styles.cardTop}><span className={c.status==="completed"?styles.badgeActive:styles.badgePlanned}>{techStatusLabel(c.status)}</span><em>{riskLabel(c.risk_level)}</em></div>
+        <h3>{c.title}</h3><p>{c.change_code} · {c.change_type}<br/>Responsable: {ownerName(c.owner_user_id)}<br/>{environmentLabel(c.target_environment)} · {c.planned_at?new Date(c.planned_at).toLocaleString("es-US"):"Sin fecha"}<br/>{c.rollback_plan?"Plan de reversión definido":"Plan de reversión pendiente"}</p>
       </article>)}
-      {!changeRows.length&&<article className={styles.card}><h3>Change Register vacío</h3><p>Los cambios técnicos formales se registrarán aquí.</p></article>}
+      {!changeRows.length&&<article className={styles.card}><h3>Sin cambios técnicos registrados</h3><p>Los cambios técnicos formales se registrarán aquí.</p></article>}
     </section>
 
     {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
@@ -256,7 +271,7 @@ export default async function MasterTechnologyPage(){
       </form>
     </section>}
 
-    <section className={styles.sectionHead}><div><span>TECH STACK</span><h2>Contexto actual</h2></div></section>
+    <section className={styles.sectionHead}><div><span>ENTORNO TÉCNICO</span><h2>Contexto actual</h2></div></section>
     <section className={styles.grid}>
       {stack.map(([name,value,detail])=><article key={name} className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>ACTIVO</span><em>TECH</em></div>
@@ -265,10 +280,10 @@ export default async function MasterTechnologyPage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Rate controls</small><strong>{(rateRows||0).toLocaleString()}</strong><span>Antiabuso</span></article>
-      <article><small>Media</small><strong>{(media||0).toLocaleString()}</strong><span>Assets registrados</span></article>
-      <article><small>RLS</small><strong>ACTIVO</strong><span>Admin/editor</span></article>
-      <article><small>Producción</small><strong>PROTEGIDA</strong><span>main intacto</span></article>
+      <article><small>Controles antiabuso</small><strong>{(rateRows||0).toLocaleString()}</strong><span>Antiabuso</span></article>
+      <article><small>Media</small><strong>{(media||0).toLocaleString()}</strong><span>Recursos registrados</span></article>
+      <article><small>RLS</small><strong>ACTIVO</strong><span>Administración y edición</span></article>
+      <article><small>Producción</small><strong>PROTEGIDA</strong><span>Rama principal intacta</span></article>
     </section>
   </main>;
 }
