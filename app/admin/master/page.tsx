@@ -23,6 +23,7 @@ const domains:Domain[]=[
   {title:"Personas",subtitle:"Equipo, talento, desempeño y compensación",href:"/admin/master/people",phase:"48",status:"active"},
   {title:"Tecnología",subtitle:"Infraestructura, cambios, pruebas y operación técnica",href:"/admin/master/technology",phase:"58",status:"active"},
   {title:"Datos",subtitle:"Métricas, indicadores y apoyo a decisiones",href:"/admin/master/data",phase:"43",status:"active"},
+  {title:"Reportes",subtitle:"Vista ejecutiva, impresión, PDF y exportación de indicadores",href:"/admin/master/reports",phase:"60",status:"active"},
   {title:"Automatización e IA",subtitle:"Automatizaciones, agentes, permisos y control",href:"/admin/master/automation",phase:"44",status:"active"},
   {title:"Riesgos y Controles",subtitle:"Riesgos, cumplimiento, controles y seguimiento",href:"/admin/master/risk",phase:"46",status:"active"},
   {title:"Seguridad",subtitle:"Accesos, incidentes y continuidad",href:"/admin/master/security",phase:"45",status:"active"},
@@ -152,6 +153,7 @@ export default async function MasterAdminPage(){
         <a href="/admin">◈ <span>FRAGMENTUN Admin</span></a>
         <a href="/admin/analytics">▥ <span>Analítica</span></a>
         <a href="/admin/status">⚙ <span>Estado del Sistema</span></a>
+        <a href="/admin/master/reports">▦ <span>Reportes</span></a>
         <a href="/admin/master/audit">▤ <span>Auditoría</span></a>
         <a href="/admin/integrations">↗ <span>Integraciones</span></a>
       </nav>
