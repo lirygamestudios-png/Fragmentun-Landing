@@ -243,7 +243,7 @@ export default async function MasterSecurityPage(){
           <label>Revisión<select name="review_id" required defaultValue=""><option value="" disabled>Seleccionar revisión</option>{reviewRows.map((r:any)=><option key={r.id} value={r.id}>{r.subject_name||r.subject_ref}</option>)}</select></label>
           <label>Estado<select name="review_status" defaultValue="pending"><option value="pending">Pendiente</option><option value="approved">Aprobada</option><option value="change_required">Requiere cambio</option><option value="revoked">Revocada</option><option value="expired">Vencida</option></select></label>
           <label>Riesgo<select name="risk_level" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
-          <label>Revisióner<select name="reviewer_user_id" defaultValue=""><option value="">Usuario actual</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Revisor<select name="reviewer_user_id" defaultValue=""><option value="">Usuario actual</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
           <label>Fecha límite<input type="date" name="due_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
