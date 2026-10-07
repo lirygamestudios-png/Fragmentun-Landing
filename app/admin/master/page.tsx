@@ -18,6 +18,7 @@ const domains:Domain[]=[
   {title:"Growth",subtitle:"Adquisición, embudos, CRM, conversión y retención",href:"/admin/master/growth",phase:"53",status:"active"},
   {title:"Monetización",subtitle:"Pricing, packaging, freemium, bundles y expansión",href:"/admin/master/monetization",phase:"54",status:"active"},
   {title:"Comercio",subtitle:"Pedidos, pagos, fulfillment, devoluciones y revenue assurance",href:"/admin/master/commerce",phase:"55",status:"active"},
+      {title:"Clientes & Comunidad",subtitle:"Miembros, engagement, beta priority y advocacy",href:"/admin/master/community",phase:"53-55",status:"active"},
   {title:"Finanzas",subtitle:"Accounting, treasury, tax, reporting y runway",href:"/admin/master/finance",phase:"39",status:"active"},
   {title:"Personas",subtitle:"Workforce, talento, desempeño y compensación",href:"/admin/master/people",phase:"48",status:"active"},
   {title:"Tecnología",subtitle:"Infraestructura, CI/CD, QA automation y technical ops",href:"/admin/master/technology",phase:"58",status:"active"},
@@ -31,6 +32,7 @@ const domains:Domain[]=[
   {title:"Marca & Comunicaciones",subtitle:"Brand, PR, reputación y narrativa corporativa",href:"/admin/master/brand",phase:"52",status:"active"},
   {title:"Estrategia",subtitle:"OKRs, prioridades, decisiones y asignación de recursos",href:"/admin/master/strategy",phase:"49",status:"active"},
   {title:"Capital & Investors",subtitle:"Fundraising, board, IR y strategic transactions",href:"/admin/master/capital",phase:"50",status:"active"},
+      {title:"Configuración",subtitle:"Settings operativos no secretos y feature flags",href:"/admin/master/settings",phase:"60",status:"active"},
   {title:"FRAGMENTUN",subtitle:"Administración operativa de la IP y landing pública",href:"/admin",phase:"Actual",status:"active"}
 ];
 
