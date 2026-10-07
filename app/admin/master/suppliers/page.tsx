@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
-function vendorStatusLabel(value:string){
+function vendorEstadoLabel(value:string){
   const map:Record<string,string>={prospect:"PROSPECTO",active:"ACTIVO",on_hold:"EN PAUSA",inactive:"INACTIVO",terminated:"FINALIZADO"};
   return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
 }
@@ -28,7 +28,7 @@ async function requireAdmin(){
   return {supabase,user};
 }
 
-async function createVendor(formData:FormData){
+async function createProveedor(formData:FormData){
   "use server";
   const {supabase,user}=await requireAdmin();
   const name=String(formData.get("name")||"").trim();
@@ -50,7 +50,7 @@ async function createVendor(formData:FormData){
 }
 
 
-async function updateVendor(formData:FormData){
+async function updateProveedor(formData:FormData){
   "use server";
   const {supabase}=await requireAdmin();
   const id=String(formData.get("vendor_id")||"").trim();
@@ -62,9 +62,9 @@ async function updateVendor(formData:FormData){
   const country=String(formData.get("country")||"").trim()||null;
   const paymentTerms=String(formData.get("payment_terms")||"").trim()||null;
   const notes=String(formData.get("notes")||"").trim()||null;
-  const allowedStatus=new Set(["prospect","active","on_hold","inactive","terminated"]);
+  const allowedEstado=new Set(["prospect","active","on_hold","inactive","terminated"]);
   const allowedRisk=new Set(["low","medium","high","critical"]);
-  if(!id||!allowedStatus.has(status)||!allowedRisk.has(risk)) throw new Error("invalid_vendor_update");
+  if(!id||!allowedEstado.has(status)||!allowedRisk.has(risk)) throw new Error("invalid_vendor_update");
   const{error}=await supabase.from("Registrados").update({
     status,risk_rating:risk,preferred,contact_name:contactName,contact_email:contactEmail,
     country,payment_terms:paymentTerms,notes,updated_at:new Date().toISOString()
@@ -116,28 +116,31 @@ export default async function MasterSuppliersPage(){
     <section className={styles.sectionHead}><div><span>PROVEEDORES</span><h2>Proveedores registrados</h2></div></section>
     <section className={styles.grid}>
       {vendorRows.map((v:any)=><article key={v.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={v.status==="active"?styles.badgeActive:styles.badgePlanned}>{vendorStatusLabel(v.status)}</span><em>{riskLabel(v.risk_rating)}</em></div>
+        <div className={styles.cardTop}><span className={v.status==="active"?styles.badgeActivo:styles.badgePlanned}>{vendorEstadoLabel(v.status)}</span><em>{riskLabel(v.risk_rating)}</em></div>
         <h3>{v.name}</h3><p>{vendorTypeLabel(v.vendor_type)} · {v.country||"País pendiente"}<br/>{v.contact_name||"Sin contacto"} · {v.contact_email||"Sin email"}<br/>{v.payment_terms||"Condiciones de pago pendientes"}{v.preferred?" · Preferidos":""}</p>
       </article>)}
       {!vendorRows.length&&<article className={styles.card}><h3>Registro de proveedores preparado</h3><p>No se han cargado proveedores formales todavía.</p></article>}
     </section>
 
-    <section className={styles.adminForms}>
-      <form action={createVendor} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>NUEVO VENDOR</span><h2>Registrar proveedor</h2></div>
+    <details className={styles.advancedPanel}>
+      <summary>Opciones avanzadas</summary>
+      <p className={styles.advancedHint}>Úsalas para registrar o modificar proveedores manualmente.</p>
+        <section className={styles.adminForms}>
+      <form action={createProveedor} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>NUEVO PROVEEDOR</span><h2>Registrar proveedor</h2></div>
         <div className={styles.formGrid}>
           <label>Nombre<input name="name" required/></label>
           <label>Tipo<select name="vendor_type" defaultValue="other">
-            <option value="manufacturing">Manufacturing</option><option value="fulfillment">Fulfillment</option><option value="software">Software</option>
-            <option value="hosting">Hosting</option><option value="professional_services">Professional Services</option><option value="marketing">Marketing</option>
-            <option value="art">Art</option><option value="audio">Audio</option><option value="qa">QA</option><option value="localization">Localization</option>
-            <option value="legal">Legal</option><option value="finance">Finance</option><option value="other">Other</option>
+            <option value="manufacturing">Fabricación</option><option value="fulfillment">Entregas</option><option value="software">Software</option>
+            <option value="hosting">Alojamiento</option><option value="professional_services">Servicios profesionales</option><option value="marketing">Marketing</option>
+            <option value="art">Art</option><option value="audio">Audio</option><option value="qa">QA</option><option value="localization">Localización</option>
+            <option value="legal">Legal</option><option value="finance">Finanzas</option><option value="other">Otro</option>
           </select></label>
           <label>Contacto<input name="contact_name"/></label>
           <label>Email<input type="email" name="contact_email"/></label>
           <label>País<input name="country"/></label>
-          <label>Payment terms<input name="payment_terms" placeholder="Net 30"/></label>
-          <label>Riesgo<select name="risk_rating" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
+          <label>Condiciones de pago<input name="payment_terms" placeholder="Net 30"/></label>
+          <label>Riesgo<select name="risk_rating" defaultValue="medium"><option value="low">Bajo</option><option value="medium">Medio</option><option value="high">Alto</option><option value="critical">Crítico</option></select></label>
           <label>Preferidos<select name="preferred" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar proveedor</button>
@@ -146,22 +149,23 @@ export default async function MasterSuppliersPage(){
 
 
     <section className={styles.adminForms}>
-      <form action={updateVendor} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>GESTIONAR VENDOR</span><h2>Actualizar proveedor</h2></div>
+      <form action={updateProveedor} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR PROVEEDOR</span><h2>Actualizar proveedor</h2></div>
         <div className={styles.formGrid}>
-          <label>Vendor<select name="vendor_id" required defaultValue=""><option value="" disabled>Seleccionar proveedor</option>{vendorRows.map((v:any)=><option key={v.id} value={v.id}>{v.name}</option>)}</select></label>
-          <label>Status<select name="status" defaultValue="active"><option value="prospect">Prospect</option><option value="active">Active</option><option value="on_hold">On hold</option><option value="inactive">Inactive</option><option value="terminated">Terminated</option></select></label>
-          <label>Riesgo<select name="risk_rating" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
+          <label>Proveedor<select name="vendor_id" required defaultValue=""><option value="" disabled>Seleccionar proveedor</option>{vendorRows.map((v:any)=><option key={v.id} value={v.id}>{v.name}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="active"><option value="prospect">Prospecto</option><option value="active">Activo</option><option value="on_hold">En pausa</option><option value="inactive">Inactivo</option><option value="terminated">Finalizado</option></select></label>
+          <label>Riesgo<select name="risk_rating" defaultValue="medium"><option value="low">Bajo</option><option value="medium">Medio</option><option value="high">Alto</option><option value="critical">Crítico</option></select></label>
           <label>Preferidos<select name="preferred" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
           <label>Contacto<input name="contact_name"/></label>
           <label>Email<input type="email" name="contact_email"/></label>
           <label>País<input name="country"/></label>
-          <label>Payment terms<input name="payment_terms"/></label>
+          <label>Condiciones de pago<input name="payment_terms"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <button className={styles.formButton} disabled={!vendorRows.length}>Actualizar proveedor</button>
       </form>
-    </section>
+      </section>
+    </details>
 
     <section className={styles.sectionHead}><div><span>REFERENCIAS EXISTENTES</span><h2>Proveedores detectados en comercio</h2></div><p>Estas referencias no sustituyen al registro formal hasta ser validadas.</p></section>
     <section className={styles.grid}>
