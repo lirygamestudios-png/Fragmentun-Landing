@@ -41,11 +41,19 @@ export function AdminCommerceManager(){
   const[draft,setDraft]=useState<any>(emptyProduct);
   const[msg,setMsg]=useState("");
   const[busy,setBusy]=useState(false);
+  const[loadError,setLoadError]=useState(false);
+  const[loaded,setLoaded]=useState(false);
 
   const load=async()=>{
-    const r=await fetch("/api/admin/commerce/manage",{cache:"no-store"});
-    const j=await r.json().catch(()=>({}));
-    if(r.ok){setProducts(j.products||[]);setOrders(j.orders||[]);setFulfillments(j.fulfillments||[])}
+    try{
+      const r=await fetch("/api/admin/commerce/manage",{cache:"no-store"});
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error(j?.error||"load_failed");
+      setProducts(j.products||[]);setOrders(j.orders||[]);setFulfillments(j.fulfillments||[]);
+      setLoadError(false);setLoaded(true);
+    }catch{
+      setLoadError(true);setLoaded(true);
+    }
   };
   useEffect(()=>{load()},[]);
 
@@ -55,11 +63,13 @@ export function AdminCommerceManager(){
   async function createProduct(){
     if(!draft.name_es.trim()){setMsg("El nombre ES es obligatorio.");return}
     setBusy(true);setMsg("Creando producto…");
-    const r=await fetch("/api/admin/commerce/manage",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"product",...draft})});
-    const j=await r.json().catch(()=>({}));
-    setBusy(false);
-    if(!r.ok){setMsg(j.error||"No fue posible crear el producto.");return}
-    setDraft(emptyProduct);setMsg("GUARDADO SATISFACTORIAMENTE");await load();
+    try{
+      const r=await fetch("/api/admin/commerce/manage",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"product",...draft})});
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok){setMsg(j.error||"No fue posible crear el producto.");return}
+      setDraft(emptyProduct);setMsg("GUARDADO SATISFACTORIAMENTE");await load();
+    }catch{setMsg("No fue posible crear el producto. Revisa la conexión e inténtalo nuevamente.");}
+    finally{setBusy(false);}
   }
 
   function patchProduct(id:string,patch:Partial<Product>){
@@ -68,40 +78,51 @@ export function AdminCommerceManager(){
 
   async function saveProduct(p:Product,patch:Partial<Product>={}){
     setBusy(true);
-    const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"product",...p,...patch})});
-    const j=await r.json().catch(()=>({}));
-    setBusy(false);
-    if(!r.ok){setMsg(j.error||"No fue posible actualizar el producto.");return}
-    setMsg("GUARDADO SATISFACTORIAMENTE");await load();
+    try{
+      const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"product",...p,...patch})});
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok){setMsg(j.error||"No fue posible actualizar el producto.");return}
+      setMsg("GUARDADO SATISFACTORIAMENTE");await load();
+    }catch{setMsg("No fue posible actualizar el producto. Revisa la conexión e inténtalo nuevamente.");}
+    finally{setBusy(false);}
   }
 
   async function saveOrder(o:Order,patch:Partial<Order>={}){
     setBusy(true);
-    const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"order",...o,...patch})});
-    const j=await r.json().catch(()=>({}));
-    setBusy(false);
-    if(!r.ok){setMsg(j.error||"No fue posible actualizar la orden.");return}
-    setMsg("GUARDADO SATISFACTORIAMENTE");await load();
+    try{
+      const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"order",...o,...patch})});
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok){setMsg(j.error||"No fue posible actualizar la orden.");return}
+      setMsg("GUARDADO SATISFACTORIAMENTE");await load();
+    }catch{setMsg("No fue posible actualizar la orden. Revisa la conexión e inténtalo nuevamente.");}
+    finally{setBusy(false);}
   }
 
   async function createFulfillment(orderId:string){
     setBusy(true);
-    const r=await fetch("/api/admin/commerce/manage",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"fulfillment",order_id:orderId})});
-    const j=await r.json().catch(()=>({}));
-    setBusy(false);
-    if(!r.ok){setMsg(j.error||"No fue posible crear fulfillment.");return}
-    setMsg("GUARDADO SATISFACTORIAMENTE");await load();
+    try{
+      const r=await fetch("/api/admin/commerce/manage",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"fulfillment",order_id:orderId})});
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok){setMsg(j.error||"No fue posible crear el envío.");return}
+      setMsg("GUARDADO SATISFACTORIAMENTE");await load();
+    }catch{setMsg("No fue posible crear el envío. Revisa la conexión e inténtalo nuevamente.");}
+    finally{setBusy(false);}
   }
 
   async function saveFulfillment(f:Fulfillment,patch:Partial<Fulfillment>={}){
     setBusy(true);
     const payload={...f,...patch};
-    const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"fulfillment",...payload})});
-    const j=await r.json().catch(()=>({}));
-    setBusy(false);
-    if(!r.ok){setMsg(j.error||"No fue posible actualizar fulfillment.");return}
-    setMsg("GUARDADO SATISFACTORIAMENTE");await load();
+    try{
+      const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"fulfillment",...payload})});
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok){setMsg(j.error||"No fue posible actualizar el envío.");return}
+      setMsg("GUARDADO SATISFACTORIAMENTE");await load();
+    }catch{setMsg("No fue posible actualizar el envío. Revisa la conexión e inténtalo nuevamente.");}
+    finally{setBusy(false);}
   }
+
+  if(!loaded)return <div className="adminShopModule"><section className="card"><p className="note">Cargando gestión comercial…</p></section></div>;
+  if(loadError)return <div className="adminShopModule"><section className="card"><p className="adminSaveFeedback error">No fue posible cargar productos, órdenes y envíos.</p><button type="button" className="btn btnGhost" onClick={()=>window.location.reload()}>Reintentar</button></section></div>;
 
   return <div className="adminShopModule">
     <section className="card">
@@ -128,15 +149,15 @@ export function AdminCommerceManager(){
           <div className="adminSaleMode wide">
             <span className="adminSaleModeLabel">MODALIDAD DE VENTA</span>
             <div className="adminSaleModeChoices" role="group" aria-label="Modalidad de venta del producto">
-              <button type="button" className={p.mode==="internal"?"active":""} aria-pressed={p.mode==="internal"} onClick={()=>patchProduct(p.id,{mode:"internal"})}>
+              <button type="button" className={p.mode==="internal"?"active":""} aria-pressed={p.mode==="internal"} onClick={()=>{patchProduct(p.id,{mode:"internal"});setMsg("Modalidad cambiada a COBRAR EN FRAGMENTUN. Guarda el producto para confirmar.");}}>
                 <strong>COBRAR EN FRAGMENTUN</strong>
                 <small>Factura propia · pedido al suplidor</small>
               </button>
-              <button type="button" className={p.mode==="external"?"active":""} aria-pressed={p.mode==="external"} onClick={()=>patchProduct(p.id,{mode:"external"})}>
+              <button type="button" className={p.mode==="external"?"active":""} aria-pressed={p.mode==="external"} onClick={()=>{patchProduct(p.id,{mode:"external"});setMsg("Modalidad cambiada a ENVIAR AL PROVEEDOR. Guarda el producto para confirmar.");}}>
                 <strong>ENVIAR AL PROVEEDOR</strong>
                 <small>Redirección a tienda externa</small>
               </button>
-              <button type="button" className={p.mode==="interest"?"active secondary":""} aria-pressed={p.mode==="interest"} onClick={()=>patchProduct(p.id,{mode:"interest"})}>
+              <button type="button" className={p.mode==="interest"?"active secondary":""} aria-pressed={p.mode==="interest"} onClick={()=>{patchProduct(p.id,{mode:"interest"});setMsg("Modalidad cambiada a PRÓXIMAMENTE. Guarda el producto para confirmar.");}}>
                 <strong>PRÓXIMAMENTE</strong>
                 <small>Captar interés · sin venta</small>
               </button>
@@ -176,7 +197,7 @@ export function AdminCommerceManager(){
           </div>
           <label><span>Pago</span><select value={o.payment_status} onChange={e=>saveOrder(o,{payment_status:e.target.value})}><option>pending</option><option>authorized</option><option>paid</option><option>failed</option><option>refunded</option><option>partially_refunded</option><option>canceled</option></select></label>
           <label><span>Fulfillment</span><select value={o.fulfillment_status} onChange={e=>saveOrder(o,{fulfillment_status:e.target.value})}><option>unfulfilled</option><option>processing</option><option>partially_fulfilled</option><option>fulfilled</option><option>delivered</option><option>returned</option><option>canceled</option></select></label>
-          <button className="btn btnGhost" type="button" disabled={!address.ok||busy} title={!address.ok?"Completa la dirección antes de crear el envío":undefined} onClick={()=>createFulfillment(o.id)}>Crear envío</button>
+          <button className="btn btnGhost" type="button" disabled={!address.ok||busy} title={!address.ok?"Completa la dirección antes de crear el envío":undefined} onClick={()=>{if(window.confirm("¿Confirmas que deseas crear un envío para esta orden?"))createFulfillment(o.id);}}>Crear envío</button>
         </div>
       })}
     </section>
@@ -198,7 +219,7 @@ export function AdminCommerceManager(){
         <label><span>Costo etiqueta (¢)</span><input type="number" min="0" value={f.label_cost_cents||0} onChange={e=>setFulfillments(v=>v.map(x=>x.id===f.id?{...x,label_cost_cents:Number(e.target.value)}:x))}/></label>
         <div className="adminShopActions">
           <button className="btn btnPrimary" type="button" disabled={busy} onClick={()=>saveFulfillment(f)}>Guardar envío</button>
-          {f.shipment_status!=="shipped"&&f.shipment_status!=="delivered"&&<button className="btn btnGhost" type="button" disabled={busy} onClick={()=>saveFulfillment(f,{shipment_status:"shipped",shipped_at:new Date().toISOString()})}>Marcar como enviado</button>}
+          {f.shipment_status!=="shipped"&&f.shipment_status!=="delivered"&&<button className="btn btnGhost" type="button" disabled={busy} onClick={()=>{if(window.confirm("¿Confirmas que este envío ya fue despachado?"))saveFulfillment(f,{shipment_status:"shipped",shipped_at:new Date().toISOString()});}}>Marcar como enviado</button>}
           {f.shipping_label_url&&<a className="btn btnGhost" href={f.shipping_label_url} target="_blank" rel="noreferrer">Abrir / Reimprimir etiqueta ↗</a>}
           {f.tracking_url&&<a className="btn btnGhost" href={f.tracking_url} target="_blank" rel="noreferrer">Abrir tracking ↗</a>}
         </div>
