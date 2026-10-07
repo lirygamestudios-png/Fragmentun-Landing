@@ -113,10 +113,10 @@ export default async function MasterDataPage(){
   const[
     {data:sources},
     {data:metrics},
-    {cantidad:events},
-    {cantidad:pageViews},
-    {cantidad:leads},
-    {cantidad:amazonClicks},
+    {count:events},
+    {count:pageViews},
+    {count:leads},
+    {count:amazonClicks},
     {data:recentEvents},
     {data:owners}
   ]=await Promise.all([
