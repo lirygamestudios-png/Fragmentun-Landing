@@ -217,7 +217,10 @@ export default async function MasterGamesPage(){
     </section>
 
 
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+    {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}>
+      <summary>Opciones avanzadas</summary>
+      <p className={styles.advancedHint}>Úsalas para registrar o modificar juegos y etapas manualmente.</p>
+      <section className={styles.adminForms}>
       <form action={createGame} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVO TÍTULO</span><h2>Registrar videojuego</h2></div>
         <div className={styles.formGrid}>
@@ -226,15 +229,15 @@ export default async function MasterGamesPage(){
           <label>IP<input name="ip_name" placeholder="FRAGMENTUN"/></label>
           <label>Plataformas<input name="platform_scope" placeholder="PC, PlayStation, Xbox"/></label>
           <label>Etapa<select name="lifecycle_stage" defaultValue="concept">
-            <option value="concept">Concept</option><option value="pre_production">Pre-Production</option>
-            <option value="vertical_slice">Vertical Slice</option><option value="production">Production</option>
+            <option value="concept">Concepto</option><option value="pre_production">Preproducción</option>
+            <option value="vertical_slice">Vertical Slice</option><option value="production">Producción</option>
             <option value="alpha">Alpha</option><option value="beta">Beta</option>
-            <option value="release_candidate">Release Candidate</option><option value="launch">Launch</option>
-            <option value="liveops">LiveOps</option><option value="sunset">Sunset</option>
+            <option value="release_candidate">Candidato a lanzamiento</option><option value="launch">Lanzamiento</option>
+            <option value="liveops">Operación en vivo</option><option value="sunset">Cierre</option>
           </select></label>
           <label>Salud<select name="health_status" defaultValue="green">
-            <option value="green">Green</option><option value="amber">Amber</option>
-            <option value="red">Red</option><option value="paused">Paused</option>
+            <option value="green">Estable</option><option value="amber">Atención</option>
+            <option value="red">Crítico</option><option value="paused">Pausado</option>
           </select></label>
           <label>Fecha objetivo<input type="date" name="target_release_date"/></label>
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3} placeholder="Estado y objetivo del proyecto"/></label>
@@ -243,7 +246,7 @@ export default async function MasterGamesPage(){
       </form>
 
       <form action={createMilestone} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>NUEVO MILESTONE</span><h2>Registrar milestone</h2></div>
+        <div className={styles.formTitle}><span>NUEVA ETAPA</span><h2>Registrar etapa</h2></div>
         <div className={styles.formGrid}>
           <label>Juego<select name="game_id" required defaultValue="">
             <option value="" disabled>Seleccionar juego</option>
@@ -251,29 +254,28 @@ export default async function MasterGamesPage(){
           </select></label>
           <label>Nombre<input name="name" required placeholder="Vertical Slice aprobado"/></label>
           <label>Tipo<select name="milestone_type" defaultValue="production">
-            <option value="pre_production">Pre-Production</option><option value="vertical_slice">Vertical Slice</option>
-            <option value="production">Production</option><option value="alpha">Alpha</option>
-            <option value="beta">Beta</option><option value="release_candidate">Release Candidate</option>
-            <option value="launch">Launch</option><option value="liveops">LiveOps</option>
-            <option value="technical">Technical</option><option value="publishing">Publishing</option>
+            <option value="pre_production">Preproducción</option><option value="vertical_slice">Vertical Slice</option>
+            <option value="production">Producción</option><option value="alpha">Alpha</option>
+            <option value="beta">Beta</option><option value="release_candidate">Candidato a lanzamiento</option>
+            <option value="launch">Lanzamiento</option><option value="liveops">Operación en vivo</option>
+            <option value="technical">Técnico</option><option value="publishing">Publicación</option>
           </select></label>
           <label>Fecha objetivo<input type="date" name="target_date"/></label>
-          <label className={styles.span2}>Exit criteria<textarea name="exit_criteria" rows={3} placeholder="Condiciones para considerar el milestone completado"/></label>
+          <label className={styles.span2}>Condiciones para completar<textarea name="exit_criteria" rows={3} placeholder="Condiciones para considerar la etapa completada"/></label>
         </div>
-        <button className={styles.formButton} type="submit" disabled={!gameRows.length}>Registrar milestone</button>
+        <button className={styles.formButton} type="submit" disabled={!gameRows.length}>Registrar etapa</button>
       </form>
-    </section>}
+      </section>
 
-
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+      <section className={styles.adminForms}>
       <form action={updateGame} className={styles.adminForm}>
         <div className={styles.formTitle}><span>GESTIONAR JUEGO</span><h2>Actualizar producción</h2></div>
         <div className={styles.formGrid}>
           <label>Juego<select name="game_id" required defaultValue=""><option value="" disabled>Seleccionar juego</option>{gameRows.map((g:any)=><option key={g.id} value={g.id}>{g.name}</option>)}</select></label>
-          <label>Etapa<select name="lifecycle_stage" defaultValue="production"><option value="concept">Concept</option><option value="pre_production">Pre-Production</option><option value="vertical_slice">Vertical Slice</option><option value="production">Production</option><option value="alpha">Alpha</option><option value="beta">Beta</option><option value="release_candidate">Release Candidate</option><option value="launch">Launch</option><option value="liveops">LiveOps</option><option value="sunset">Sunset</option></select></label>
-          <label>Salud<select name="health_status" defaultValue="green"><option value="green">Green</option><option value="amber">Amber</option><option value="red">Red</option><option value="paused">Paused</option></select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
-          <label>Release target<input type="date" name="target_release_date"/></label>
+          <label>Etapa<select name="lifecycle_stage" defaultValue="production"><option value="concept">Concepto</option><option value="pre_production">Preproducción</option><option value="vertical_slice">Vertical Slice</option><option value="production">Producción</option><option value="alpha">Alpha</option><option value="beta">Beta</option><option value="release_candidate">Candidato a lanzamiento</option><option value="launch">Lanzamiento</option><option value="liveops">Operación en vivo</option><option value="sunset">Cierre</option></select></label>
+          <label>Salud<select name="health_status" defaultValue="green"><option value="green">Estable</option><option value="amber">Atención</option><option value="red">Crítico</option><option value="paused">Pausado</option></select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Fecha objetivo<input type="date" name="target_release_date"/></label>
           <label>Presupuesto<input type="number" min="0" step="0.01" name="budget"/></label>
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3}/></label>
@@ -282,19 +284,20 @@ export default async function MasterGamesPage(){
       </form>
 
       <form action={updateMilestone} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>GESTIONAR MILESTONE</span><h2>Actualizar milestone</h2></div>
+        <div className={styles.formTitle}><span>GESTIONAR ETAPA</span><h2>Actualizar etapa</h2></div>
         <div className={styles.formGrid}>
-          <label>Milestone<select name="milestone_id" required defaultValue=""><option value="" disabled>Seleccionar milestone</option>{milestoneRows.map((m:any)=><option key={m.id} value={m.id}>{m.name}</option>)}</select></label>
-          <label>Estado<select name="status" defaultValue="in_progress"><option value="planned">Planned</option><option value="in_progress">In progress</option><option value="blocked">Blocked</option><option value="at_risk">At risk</option><option value="completed">Completed</option><option value="canceled">Canceled</option></select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Etapa<select name="milestone_id" required defaultValue=""><option value="" disabled>Seleccionar etapa</option>{milestoneRows.map((m:any)=><option key={m.id} value={m.id}>{m.name}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="in_progress"><option value="planned">Planificado</option><option value="in_progress">En curso</option><option value="blocked">Bloqueado</option><option value="at_risk">En riesgo</option><option value="completed">Completado</option><option value="canceled">Cancelado</option></select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
           <label>Progreso %<input type="number" min="0" max="100" name="progress_percent" defaultValue="0"/></label>
           <label>Fecha objetivo<input type="date" name="target_date"/></label>
-          <label className={styles.span2}>Exit criteria<textarea name="exit_criteria" rows={3}/></label>
+          <label className={styles.span2}>Condiciones para completar<textarea name="exit_criteria" rows={3}/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!milestoneRows.length}>Actualizar milestone</button>
+        <button className={styles.formButton} disabled={!milestoneRows.length}>Actualizar etapa</button>
       </form>
-    </section>}
+      </section>
+    </details>}
 
     <section className={styles.sectionHead}>
       <div><span>ACTIVOS DE LA IP</span><h2>Activos ya disponibles</h2></div>
