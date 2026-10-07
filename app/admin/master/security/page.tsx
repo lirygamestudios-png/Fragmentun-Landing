@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 function incidentStatusLabel(value:string){
   const map:Record<string,string>={open:"ABIERTO",investigating:"INVESTIGANDO",contained:"CONTENIDO",monitoring:"EN SEGUIMIENTO",resolved:"RESUELTO",closed:"CERRADO"};
@@ -204,7 +205,7 @@ export default async function MasterSecurityPage(){
           </select></label>
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar incidente</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar incidente</MasterSubmitButton>
       </form>
 
       <form action={createAccessRevisión} className={styles.adminForm}>
@@ -217,7 +218,7 @@ export default async function MasterSecurityPage(){
           <label>Fecha límite<input type="date" name="due_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar revisión</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar revisión</MasterSubmitButton>
       </form>
     </section>
 
@@ -234,7 +235,7 @@ export default async function MasterSecurityPage(){
           <label className={styles.span2}>Causa raíz<textarea name="root_cause" rows={3}/></label>
           <label className={styles.span2}>Remediación<textarea name="remediation" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!incidentRows.length}>Actualizar incidente</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!incidentRows.length}>Actualizar incidente</MasterSubmitButton>
       </form>
 
       <form action={updateAccessRevisión} className={styles.adminForm}>
@@ -247,7 +248,7 @@ export default async function MasterSecurityPage(){
           <label>Fecha límite<input type="date" name="due_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!reviewRows.length}>Actualizar revisión</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!reviewRows.length}>Actualizar revisión</MasterSubmitButton>
       </form>
       </section>
     </details>
