@@ -59,9 +59,8 @@ export default function AdminMfaPage(){
     setBusy(false);
     if(!r.ok||!j.ok){setMessage(j.detail||"Código no válido. Inténtalo nuevamente.");return;}
     setState("satisfied");
-    setMessage("MFA verificado correctamente.");
-    router.replace("/admin");
-    router.refresh();
+    setMessage("MFA verificado correctamente. Abriendo el panel…");
+    window.location.assign("/admin");
   }
 
   return <main className="authShell authShellFragmentun">
@@ -110,7 +109,7 @@ export default function AdminMfaPage(){
 
         {state==="satisfied"&&<>
           <p className="lead">Segundo factor verificado. Tu sesión cumple AAL2.</p>
-          <button className="btn btnPrimary authSubmit" type="button" onClick={()=>router.replace("/admin")}>Continuar al panel</button>
+          <button className="btn btnPrimary authSubmit" type="button" onClick={()=>window.location.assign("/admin")}>Continuar al panel</button>
         </>}
 
         {message&&state!=="error"&&<p className="note authStatus" role="status">{message}</p>}
