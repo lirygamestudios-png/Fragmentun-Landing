@@ -53,13 +53,43 @@ export default async function MasterAdminPage(){
     {count:leadCount},
     {count:eventCount},
     {count:bookCount},
-    {count:mediaCount}
+    {count:mediaCount},
+    {data:games},
+    {data:milestones},
+    {data:releases},
+    {data:crmContacts},
+    {data:financeTx},
+    {data:approvals}
   ]=await Promise.all([
     supabase.from("leads").select("*",{count:"exact",head:true}),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}),
     supabase.from("books").select("*",{count:"exact",head:true}),
-    supabase.from("media_assets").select("*",{count:"exact",head:true})
+    supabase.from("media_assets").select("*",{count:"exact",head:true}),
+    supabase.from("game_titles").select("id,name,lifecycle_stage,health_status,target_release_date"),
+    supabase.from("game_milestones").select("id,status,target_date,progress_percent"),
+    supabase.from("publishing_releases").select("id,status,certification_status,target_date"),
+    supabase.from("crm_contacts").select("id,lifecycle_stage,status,score,next_action_at"),
+    supabase.from("finance_transactions").select("id,status,transaction_type,amount_cents,currency,transaction_date").limit(500),
+    supabase.from("automation_approvals").select("id,status,risk_level,action_summary,requested_at").eq("status","pending").limit(25)
   ]);
+
+  const gameRows=(games||[]) as any[];
+  const milestoneRows=(milestones||[]) as any[];
+  const releaseRows=(releases||[]) as any[];
+  const crmRows=(crmContacts||[]) as any[];
+  const financeRows=(financeTx||[]) as any[];
+  const approvalRows=(approvals||[]) as any[];
+
+  const gamesAtRisk=gameRows.filter(g=>["red","paused"].includes(g.health_status)).length;
+  const milestonesAtRisk=milestoneRows.filter(m=>["blocked","at_risk"].includes(m.status)).length;
+  const releaseRisks=releaseRows.filter(r=>["blocked","delayed"].includes(r.status)||r.certification_status==="failed").length;
+  const qualifiedContacts=crmRows.filter(x=>["mql","sql","opportunity","customer"].includes(x.lifecycle_stage)).length;
+  const highRiskApprovals=approvalRows.filter(a=>["high","critical"].includes(a.risk_level)).length;
+  const postedFinance=financeRows.filter(x=>x.status==="posted"||x.status==="reconciled");
+  const financeNet=postedFinance.reduce((a,x)=>a+Number(x.amount_cents||0),0);
+  const financeCurrency=postedFinance[0]?.currency||"USD";
+  const financeNetLabel=new Intl.NumberFormat("en-US",{style:"currency",currency:financeCurrency}).format(financeNet/100);
+  const criticalExceptions=gamesAtRisk+milestonesAtRisk+releaseRisks+highRiskApprovals;
 
   return <main className={styles.shell}>
     <aside className={styles.sidebar}>
