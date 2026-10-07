@@ -138,108 +138,108 @@ export default async function MasterStrategyPage(){
   const leadConversion=(views||0)>0?((leads||0)/(views||1))*100:0;
   const amazonCtr=(views||0)>0?((amazonClicks||0)/(views||1))*100:0;
   const ownerRows=(owners||[]) as any[];
-  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · ESTRATEGIA</span><h1>Estrategia & OKRs</h1><p>Objetivos y key results persistentes conectados a métricas operativas reales.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>MASTER ADMIN · ESTRATEGIA</span><h1>Estrategia</h1><p>Objetivos, resultados y métricas conectados a la operación real.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
       <article><small>Objetivos activos</small><strong>{activeObjectives.length}</strong><span>{objectiveRows.length} totales</span></article>
-      <article><small>At risk</small><strong>{atRiskObjectives.length}</strong><span>Objetivos en riesgo</span></article>
-      <article><small>Key results</small><strong>{krRows.length}</strong><span>Medidas registradas</span></article>
-      <article><small>Conversión lead 30D</small><strong>{leadConversion.toFixed(1)}%</strong><span>Señal operativa</span></article>
+      <article><small>En riesgo</small><strong>{atRiskObjectives.length}</strong><span>Objetivos en riesgo</span></article>
+      <article><small>Resultados medibles</small><strong>{krRows.length}</strong><span>Medidas registradas</span></article>
+      <article><small>Conversión de contactos 30 días</small><strong>{leadConversion.toFixed(1)}%</strong><span>Señal operativa</span></article>
     </section>
 
-    <section className={styles.sectionHead}><div><span>OBJECTIVES</span><h2>Objetivos estratégicos</h2></div><p>No se crean metas ficticias; cada objetivo debe registrarse explícitamente.</p></section>
+    <section className={styles.sectionHead}><div><span>OBJETIVOS</span><h2>Objetivos estratégicos</h2></div><p>Cada objetivo debe registrarse de forma explícita y medible.</p></section>
     <section className={styles.grid}>
       {objectiveRows.map((o:any)=><article key={o.id} className={styles.card}>
         <div className={styles.cardTop}><span className={o.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(o.status).toUpperCase()}</span><em>{o.priority}</em></div>
-        <h3>{o.title}</h3><p>{o.horizon} · {o.progress_percent}%<br/>Owner: {ownerName(o.owner_user_id)}<br/>{o.start_date||"sin inicio"} → {o.target_date||"sin target"}<br/>{o.description||"Sin descripción"}</p>
+        <h3>{o.title}</h3><p>{o.horizon} · {o.progress_percent}%<br/>Responsable: {ownerName(o.owner_user_id)}<br/>{o.start_date||"sin inicio"} → {o.target_date||"sin fecha objetivo"}<br/>{o.description||"Sin descripción"}</p>
       </article>)}
-      {!objectiveRows.length&&<article className={styles.card}><h3>Strategy Registry preparado</h3><p>No se han cargado objetivos todavía.</p></article>}
+      {!objectiveRows.length&&<article className={styles.card}><h3>Registro de estrategia preparado</h3><p>No se han cargado objetivos todavía.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>KEY RESULTS</span><h2>Resultados medibles</h2></div></section>
+    <section className={styles.sectionHead}><div><span>RESULTADOS</span><h2>Resultados medibles</h2></div></section>
     <section className={styles.grid}>
       {krRows.map((kr:any)=><article key={kr.id} className={styles.card}>
         <div className={styles.cardTop}><span className={kr.status==="completed"?styles.badgeActive:styles.badgePlanned}>{String(kr.status).toUpperCase()}</span><em>{kr.metric_name||"KPI"}</em></div>
-        <h3>{kr.title}</h3><p>Owner: {ownerName(kr.owner_user_id)}<br/>Baseline: {kr.baseline??"—"} {kr.unit||""}<br/>Actual: {kr.current_value??"—"} · Target: {kr.target_value??"—"} {kr.unit||""}<br/>{kr.target_date||"Sin fecha"}</p>
+        <h3>{kr.title}</h3><p>Responsable: {ownerName(kr.owner_user_id)}<br/>Base: {kr.baseline??"—"} {kr.unit||""}<br/>Actual: {kr.current_value??"—"} · Objetivo: {kr.target_value??"—"} {kr.unit||""}<br/>{kr.target_date||"Sin fecha"}</p>
       </article>)}
-      {!krRows.length&&<article className={styles.card}><h3>Sin key results</h3><p>Los resultados se registrarán contra objetivos reales.</p></article>}
+      {!krRows.length&&<article className={styles.card}><h3>Sin resultados medibles</h3><p>Los resultados se registrarán contra objetivos reales.</p></article>}
     </section>
 
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+    {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}><summary>Opciones avanzadas</summary><section className={styles.adminForms}>
       <form action={createObjective} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVO OBJETIVO</span><h2>Registrar objetivo</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="q4-growth"/></label>
           <label>Título<input name="title" required/></label>
-          <label>Horizonte<select name="horizon" defaultValue="quarter"><option value="month">Month</option><option value="quarter">Quarter</option><option value="year">Year</option><option value="multi_year">Multi-year</option></select></label>
-          <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
+          <label>Horizonte<select name="horizon" defaultValue="quarter"><option value="month">Mes</option><option value="quarter">Trimestre</option><option value="year">Año</option><option value="multi_year">Varios años</option></select></label>
+          <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
           <label>Inicio<input type="date" name="start_date"/></label>
-          <label>Target<input type="date" name="target_date"/></label>
+          <label>Objetivo<input type="date" name="target_date"/></label>
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar objetivo</button>
       </form>
 
       <form action={createKeyResult} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>NUEVO KR</span><h2>Registrar key result</h2></div>
+        <div className={styles.formTitle}><span>NUEVO RESULTADO</span><h2>Registrar resultado medible</h2></div>
         <div className={styles.formGrid}>
           <label>Objetivo<select name="objective_id" required defaultValue=""><option value="" disabled>Seleccionar objetivo</option>{objectiveRows.map((o:any)=><option key={o.id} value={o.id}>{o.title}</option>)}</select></label>
           <label>Título<input name="title" required/></label>
-          <label>Métrica<input name="metric_name" placeholder="Leads / revenue / milestone"/></label>
-          <label>Unidad<input name="unit" placeholder="% / USD / count"/></label>
-          <label>Baseline<input type="number" step="any" name="baseline"/></label>
+          <label>Métrica<input name="metric_name" placeholder="Contactos / ingresos / hito"/></label>
+          <label>Unidad<input name="unit" placeholder="% / USD / cantidad"/></label>
+          <label>Valor inicial<input type="number" step="any" name="baseline"/></label>
           <label>Actual<input type="number" step="any" name="current_value"/></label>
-          <label>Target<input type="number" step="any" name="target_value"/></label>
+          <label>Objetivo<input type="number" step="any" name="target_value"/></label>
           <label>Fecha objetivo<input type="date" name="target_date"/></label>
         </div>
-        <button className={styles.formButton} type="submit" disabled={!objectiveRows.length}>Registrar KR</button>
+        <button className={styles.formButton} type="submit" disabled={!objectiveRows.length}>Registrar resultado</button>
       </form>
-    </section>}
+    </section></details>}
 
 
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+    {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}><summary>Opciones avanzadas</summary><section className={styles.adminForms}>
       <form action={updateObjective} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>GESTIONAR OBJETIVO</span><h2>Actualizar OKR</h2></div>
+        <div className={styles.formTitle}><span>GESTIONAR OBJETIVO</span><h2>Actualizar objetivo</h2></div>
         <div className={styles.formGrid}>
           <label>Objetivo<select name="objective_id" required defaultValue=""><option value="" disabled>Seleccionar objetivo</option>{objectiveRows.map((o:any)=><option key={o.id} value={o.id}>{o.code} · {o.title}</option>)}</select></label>
-          <label>Estado<select name="status" defaultValue="active"><option value="planned">Planned</option><option value="active">Active</option><option value="at_risk">At risk</option><option value="completed">Completed</option><option value="canceled">Canceled</option></select></label>
-          <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="active"><option value="planned">Planificado</option><option value="active">Activo</option><option value="at_risk">En riesgo</option><option value="completed">Completado</option><option value="canceled">Cancelado</option></select></label>
+          <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
           <label>Progreso %<input type="number" min="0" max="100" name="progress_percent" defaultValue="0"/></label>
           <label>Inicio<input type="date" name="start_date"/></label>
-          <label>Target<input type="date" name="target_date"/></label>
+          <label>Objetivo<input type="date" name="target_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <button className={styles.formButton} disabled={!objectiveRows.length}>Actualizar objetivo</button>
       </form>
 
       <form action={updateKeyResult} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>GESTIONAR KR</span><h2>Actualizar resultado</h2></div>
+        <div className={styles.formTitle}><span>GESTIONAR RESULTADO</span><h2>Actualizar resultado</h2></div>
         <div className={styles.formGrid}>
-          <label>Key result<select name="key_result_id" required defaultValue=""><option value="" disabled>Seleccionar KR</option>{krRows.map((kr:any)=><option key={kr.id} value={kr.id}>{kr.title}</option>)}</select></label>
-          <label>Estado<select name="status" defaultValue="active"><option value="planned">Planned</option><option value="active">Active</option><option value="at_risk">At risk</option><option value="completed">Completed</option><option value="canceled">Canceled</option></select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Resultado<select name="key_result_id" required defaultValue=""><option value="" disabled>Seleccionar resultado</option>{krRows.map((kr:any)=><option key={kr.id} value={kr.id}>{kr.title}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="active"><option value="planned">Planificado</option><option value="active">Activo</option><option value="at_risk">En riesgo</option><option value="completed">Completado</option><option value="canceled">Cancelado</option></select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
           <label>Actual<input type="number" step="any" name="current_value"/></label>
-          <label>Target<input type="number" step="any" name="target_value"/></label>
+          <label>Objetivo<input type="number" step="any" name="target_value"/></label>
           <label>Fecha objetivo<input type="date" name="target_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!krRows.length}>Actualizar KR</button>
+        <button className={styles.formButton} disabled={!krRows.length}>Actualizar resultado</button>
       </form>
-    </section>}
+    </section></details>}
 
-    <section className={styles.sectionHead}><div><span>OPERATING SIGNALS</span><h2>Línea base real</h2></div><p>Estas métricas siguen siendo señales operativas; no sustituyen los targets explícitos de los OKRs.</p></section>
+    <section className={styles.sectionHead}><div><span>SEÑALES OPERATIVAS</span><h2>Línea base real</h2></div><p>Estas métricas sirven como referencia operativa; no sustituyen las metas definidas.</p></section>
     <section className={styles.kpis}>
-      <article><small>Tráfico 30D</small><strong>{(views||0).toLocaleString()}</strong><span>Top of funnel</span></article>
-      <article><small>Amazon CTR</small><strong>{amazonCtr.toFixed(1)}%</strong><span>Intento comercial</span></article>
-      <article><small>Test completes</small><strong>{(testCompletes||0).toLocaleString()}</strong><span>Engagement</span></article>
-      <article><small>Paid orders</small><strong>{(paidOrders||0).toLocaleString()}</strong><span>Monetización</span></article>
+      <article><small>Tráfico 30 días</small><strong>{(views||0).toLocaleString()}</strong><span>Inicio del embudo</span></article>
+      <article><small>Clics a Amazon</small><strong>{amazonCtr.toFixed(1)}%</strong><span>Intento comercial</span></article>
+      <article><small>Pruebas completadas</small><strong>{(testCompletes||0).toLocaleString()}</strong><span>Interacción</span></article>
+      <article><small>Órdenes pagadas</small><strong>{(paidOrders||0).toLocaleString()}</strong><span>Monetización</span></article>
     </section>
   </main>;
 }
