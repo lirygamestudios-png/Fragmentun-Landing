@@ -32,7 +32,10 @@ export function PreviewValidationButton(){
       {name:"Comercio",path:"/api/admin/commerce",expected:200},
       {name:"Reportes",path:"/admin/master/reports",expected:200},
       {name:"Copias y Recuperación",path:"/admin/master/backups",expected:200},
-      {name:"Integraciones",path:"/admin/master/integrations",expected:200}
+      {name:"Integraciones",path:"/admin/master/integrations",expected:200},
+      {name:"Mantenimiento",path:"/admin/master/maintenance",expected:200},
+      {name:"Checklist visual",path:"/admin/master/checklist",expected:200},
+      {name:"QA final",path:"/admin/master/qa",expected:200}
     ] as const;
 
     const results:CheckResult[]=[];
