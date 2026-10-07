@@ -33,8 +33,8 @@ export default async function QaFinalPage(){
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div>
-        <span className={styles.eyebrow}>LIRYGAMES · QA FINAL</span>
-        <h1>Preparación de QA final</h1>
+        <span className={styles.eyebrow}>LIRYGAMES · PRUEBAS FINALES</span>
+        <h1>Preparación de pruebas finales</h1>
         <p>Resumen de condiciones necesarias antes de considerar el sistema listo para publicación.</p>
       </div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
@@ -45,38 +45,38 @@ export default async function QaFinalPage(){
         <strong>{ready?"Condiciones completas":"Aún no listo para publicar"}</strong>
         <span>{ready?"Las condiciones automáticas principales están correctas. La decisión final sigue siendo humana.":"Todavía existen condiciones pendientes. Esta pantalla no publica cambios."}</span>
       </div>
-      <code>{ready?"LISTO PARA DECISIÓN":"PREVIEW / QA"}</code>
+      <code>{ready?"LISTO PARA DECISIÓN":"VERSIÓN DE PRUEBA"}</code>
     </section>
 
     <section className={styles.kpis}>
       <article><small>Última prueba</small><strong>{validationOk?"CORRECTA":"PENDIENTE"}</strong><span>{latestValidation?.run_code||"Sin prueba registrada"}</span></article>
       <article><small>Revisión de publicación</small><strong>{gateReady?"APROBADA":"PENDIENTE"}</strong><span>{latestGate?.gate_code||"Sin revisión registrada"}</span></article>
       <article><small>Incidentes abiertos</small><strong>{openIncidents||0}</strong><span>{incidentsOk?"Sin bloqueos":"Requiere revisión"}</span></article>
-      <article><small>Checks bloqueantes fallidos</small><strong>{failedChecks||0}</strong><span>{checksOk?"Sin fallos":"Requiere corrección"}</span></article>
+      <article><small>Comprobaciones bloqueantes fallidas</small><strong>{failedChecks||0}</strong><span>{checksOk?"Sin fallos":"Requiere corrección"}</span></article>
     </section>
 
     <section className={styles.sectionHead}>
       <div><span>PREPARACIÓN</span><h2>Pasos previos a la corrida final</h2></div>
-      <p>La QA final debe combinar revisión visual, pruebas funcionales, seguridad, integraciones y evidencia antes de cualquier publicación.</p>
+      <p>Las pruebas finales deben combinar revisión visual, pruebas funcionales, seguridad, integraciones y evidencia antes de cualquier publicación.</p>
     </section>
 
     <section className={styles.grid}>
       <a className={styles.card} href="/admin/master/checklist">
         <div className={styles.cardTop}><span className={styles.badgePlanned}>MANUAL</span><em>VISUAL</em></div>
-        <h3>Checklist de pantallas</h3>
+        <h3>Revisión de pantallas</h3>
         <p>Recorrer todas las pantallas en escritorio y móvil.</p>
         <span className={styles.cardLink}>Abrir →</span>
       </a>
       <a className={styles.card} href="/admin/master/observability">
-        <div className={styles.cardTop}><span className={validationOk?styles.badgeActive:styles.badgePlanned}>{validationOk?"CORRECTO":"PENDIENTE"}</span><em>RUNTIME</em></div>
+        <div className={styles.cardTop}><span className={validationOk?styles.badgeActive:styles.badgePlanned}>{validationOk?"CORRECTO":"PENDIENTE"}</span><em>FUNCIONAMIENTO</em></div>
         <h3>Estado y Pruebas</h3>
         <p>Ejecutar la comprobación automática y revisar el historial.</p>
         <span className={styles.cardLink}>Abrir →</span>
       </a>
       <a className={styles.card} href="/admin/master/releases">
-        <div className={styles.cardTop}><span className={gateReady?styles.badgeActive:styles.badgePlanned}>{gateReady?"APROBADO":"PENDIENTE"}</span><em>RELEASE</em></div>
+        <div className={styles.cardTop}><span className={gateReady?styles.badgeActive:styles.badgePlanned}>{gateReady?"APROBADO":"PENDIENTE"}</span><em>PUBLICACIÓN</em></div>
         <h3>Revisión antes de publicar</h3>
-        <p>Confirmar evidencia, checks bloqueantes y aprobación humana.</p>
+        <p>Confirmar evidencia, comprobaciones bloqueantes y aprobación humana.</p>
         <span className={styles.cardLink}>Abrir →</span>
       </a>
       <a className={styles.card} href="/admin/master/integrations">
@@ -103,7 +103,7 @@ export default async function QaFinalPage(){
         <strong>Publicación manual obligatoria</strong>
         <span>Incluso con todas las comprobaciones correctas, esta pantalla no promueve el Preview ni modifica producción automáticamente.</span>
       </div>
-      <code>NO AUTO-PUBLISH</code>
+      <code>PUBLICACIÓN MANUAL</code>
     </section>
   </main>;
 }
