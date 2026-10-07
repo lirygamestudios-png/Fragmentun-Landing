@@ -206,7 +206,7 @@ export default async function ReleaseGatePage(){
       <article><small>Revisiones</small><strong>{gateRows.length}</strong><span>{approved} aprobados</span></article>
       <article><small>Con problemas</small><strong>{blocked}</strong><span>Requieren resolución</span></article>
       <article><small>Pendientes importantes</small><strong>{failedChecks+pendingChecks}</strong><span>{failedChecks} por revisar · {pendingChecks} pendientes</span></article>
-      <article><small>Vínculos</small><strong>{linkRows.length}</strong><span>Cross-domain activas</span></article>
+      <article><small>Vínculos</small><strong>{linkRows.length}</strong><span>Relaciones entre áreas activas</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>REVISIONES</span><h2>Estado de la revisión</h2></div><p>La revisión permanece abierta hasta que todas las comprobaciones importantes estén correctas y exista aprobación humana.</p></section>
@@ -217,7 +217,7 @@ export default async function ReleaseGatePage(){
         return <article key={g.id} className={styles.card}>
           <div className={styles.cardTop}><span className={g.status==="approved"?styles.badgeActive:styles.badgePlanned}>{g.status==="approved"?"APROBADA":g.status==="blocked"?"REVISAR":g.status==="in_review"?"EN REVISIÓN":g.status==="canceled"?"CANCELADA":"BORRADOR"}</span><em>{g.environment}</em></div>
           <h3>{g.gate_code} · {g.title}</h3>
-          <p>{g.target_ref||"Sin ref"} · {g.target_commit||"Sin commit"}<br/>{g.target_deployment_id||"Sin deployment"}<br/>{gateChecks.length} checks · {bad} blockers · solicitado por {actorName(g.requested_by)}</p>
+          <p>{g.target_ref||"Sin referencia"} · {g.target_commit||"Sin código"}<br/>{g.target_deployment_id||"Sin versión asociada"}<br/>{gateChecks.length} comprobaciones · {bad} bloqueos · solicitado por {actorName(g.requested_by)}</p>
         </article>
       })}
       {!gateRows.length&&<article className={styles.card}><h3>Sin revisiones</h3><p>Aquí aparecerán las revisiones antes de publicar.</p></article>}
@@ -249,7 +249,7 @@ export default async function ReleaseGatePage(){
         <div className={styles.cardTop}><span className={styles.badgeActive}>{String(l.relation_type).toUpperCase()}</span><em>{l.source_domain} → {l.target_domain}</em></div>
         <h3>{l.source_entity}:{l.source_id}</h3><p>{l.target_entity}:{l.target_id}<br/>{l.notes||"Sin notas"}</p>
       </article>)}
-      {!linkRows.length&&<article className={styles.card}><h3>Sin relaciones manuales</h3><p>Las relaciones naturales por foreign key siguen activas; aquí aparecerán dependencias entre dominios.</p></article>}
+      {!linkRows.length&&<article className={styles.card}><h3>Sin relaciones manuales</h3><p>Las relaciones naturales entre registros siguen activas; aquí aparecerán dependencias entre áreas.</p></article>}
     </section>
 
     {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}>
@@ -273,29 +273,29 @@ export default async function ReleaseGatePage(){
 
       {profile.role==="admin"&&<>
         <form action={createGate} className={styles.adminForm}>
-          <div className={styles.formTitle}><span>NUEVO GATE</span><h2>Registrar release gate</h2></div>
+          <div className={styles.formTitle}><span>NUEVA REVISIÓN</span><h2>Registrar revisión previa a publicación</h2></div>
           <div className={styles.formGrid}>
             <label>Código<input name="gate_code" required placeholder="RG-2026-001"/></label>
             <label>Título<input name="title" required/></label>
-            <label>Entorno<select name="environment" defaultValue="preview"><option value="preview">Preview</option><option value="staging">Staging</option><option value="production">Production</option></select></label>
-            <label>Branch/ref<input name="target_ref"/></label>
-            <label>Commit<input name="target_commit"/></label>
-            <label>Deployment ID<input name="target_deployment_id"/></label>
+            <label>Entorno<select name="environment" defaultValue="preview"><option value="preview">Versión de prueba</option><option value="staging">Preparación</option><option value="production">Producción</option></select></label>
+            <label>Rama o referencia<input name="target_ref"/></label>
+            <label>Código de versión<input name="target_commit"/></label>
+            <label>ID de versión desplegada<input name="target_deployment_id"/></label>
             <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
           </div>
-          <button className={styles.formButton}>Registrar gate</button>
+          <button className={styles.formButton}>Registrar revisión</button>
         </form>
 
         <form action={addCheck} className={styles.adminForm}>
-          <div className={styles.formTitle}><span>NUEVO CHECK</span><h2>Añadir evidencia requerida</h2></div>
+          <div className={styles.formTitle}><span>NUEVA COMPROBACIÓN</span><h2>Añadir evidencia requerida</h2></div>
           <div className={styles.formGrid}>
-            <label>Gate<select name="release_gate_id" required defaultValue=""><option value="" disabled>Seleccionar gate</option>{gateRows.map((g:any)=><option key={g.id} value={g.id}>{g.gate_code} · {g.title}</option>)}</select></label>
+            <label>Revisión<select name="release_gate_id" required defaultValue=""><option value="" disabled>Seleccionar revisión</option>{gateRows.map((g:any)=><option key={g.id} value={g.id}>{g.gate_code} · {g.title}</option>)}</select></label>
             <label>Código<input name="check_code" required placeholder="runtime-smoke"/></label>
-            <label>Label<input name="label" required placeholder="Runtime smoke test"/></label>
-            <label>Tipo<select name="check_type" defaultValue="manual"><option value="build">Build</option><option value="runtime">Runtime</option><option value="security">Security</option><option value="data">Data</option><option value="business">Business</option><option value="manual">Manual</option></select></label>
-            <label>Blocking<select name="blocking" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
+            <label>Nombre visible<input name="label" required placeholder="Comprobación funcional"/></label>
+            <label>Tipo<select name="check_type" defaultValue="manual"><option value="build">Compilación</option><option value="runtime">Funcionamiento</option><option value="security">Seguridad</option><option value="data">Datos</option><option value="business">Negocio</option><option value="manual">Manual</option></select></label>
+            <label>Bloqueante<select name="blocking" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
           </div>
-          <button className={styles.formButton} disabled={!gateRows.length}>Añadir check</button>
+          <button className={styles.formButton} disabled={!gateRows.length}>Añadir comprobación</button>
         </form>
 
         <form action={updateCheck} className={styles.adminForm}>
@@ -311,7 +311,7 @@ export default async function ReleaseGatePage(){
         <form action={updateGate} className={styles.adminForm}>
           <div className={styles.formTitle}><span>DECISIÓN DE GATE</span><h2>Actualizar readiness</h2></div>
           <div className={styles.formGrid}>
-            <label>Gate<select name="gate_id" required defaultValue=""><option value="" disabled>Seleccionar gate</option>{gateRows.map((g:any)=><option key={g.id} value={g.id}>{g.gate_code} · {g.title}</option>)}</select></label>
+            <label>Gate<select name="gate_id" required defaultValue=""><option value="" disabled>Seleccionar revisión</option>{gateRows.map((g:any)=><option key={g.id} value={g.id}>{g.gate_code} · {g.title}</option>)}</select></label>
             <label>Status<select name="status" defaultValue="in_review"><option value="draft">Draft</option><option value="in_review">In review</option><option value="blocked">Blocked</option><option value="approved">Approved</option><option value="canceled">Canceled</option></select></label>
             <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
           </div>
