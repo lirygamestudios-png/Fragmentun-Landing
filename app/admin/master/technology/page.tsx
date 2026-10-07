@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
-function techStatusLabel(value:string){
+function techEstadoLabel(value:string){
   const map:Record<string,string>={active:"ACTIVO",degraded:"DEGRADADO",maintenance:"MANTENIMIENTO",deprecated:"OBSOLETO",retired:"RETIRADO",planned:"PLANIFICADO",approved:"APROBADO",in_progress:"EN CURSO",completed:"COMPLETADO",failed:"FALLIDO",rolled_back:"REVERTIDO",canceled:"CANCELADO"};
   return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
 }
@@ -89,10 +89,10 @@ async function updateService(formData:FormData){
   const version=String(formData.get("version")||"").trim()||null;
   const url=String(formData.get("url")||"").trim()||null;
   const notes=String(formData.get("notes")||"").trim()||null;
-  const allowedStatus=new Set(["active","degraded","maintenance","deprecated","retired"]);
+  const allowedEstado=new Set(["active","degraded","maintenance","deprecated","retired"]);
   const allowedCrit=new Set(["low","medium","high","critical"]);
   const allowedEnv=new Set(["development","preview","staging","production","shared"]);
-  if(!id||!allowedStatus.has(status)||!allowedCrit.has(criticality)||!allowedEnv.has(environment)) throw new Error("invalid_service_update");
+  if(!id||!allowedEstado.has(status)||!allowedCrit.has(criticality)||!allowedEnv.has(environment)) throw new Error("invalid_service_update");
   const{error}=await supabase.from("tech_services").update({
     status,criticality,environment,owner_user_id:ownerUserId,provider,version,url,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
@@ -112,10 +112,10 @@ async function updateChange(formData:FormData){
   const plannedAt=String(formData.get("planned_at")||"").trim()||null;
   const rollback=String(formData.get("rollback_plan")||"").trim()||null;
   const summary=String(formData.get("summary")||"").trim()||null;
-  const allowedStatus=new Set(["planned","approved","in_progress","completed","failed","rolled_back","canceled"]);
+  const allowedEstado=new Set(["planned","approved","in_progress","completed","failed","rolled_back","canceled"]);
   const allowedRisk=new Set(["low","medium","high","critical"]);
   const allowedEnv=new Set(["development","preview","staging","production","shared"]);
-  if(!id||!allowedStatus.has(status)||!allowedRisk.has(risk)||!allowedEnv.has(env)) throw new Error("invalid_change_update");
+  if(!id||!allowedEstado.has(status)||!allowedRisk.has(risk)||!allowedEnv.has(env)) throw new Error("invalid_change_update");
   const patch:any={
     status,risk_level:risk,owner_user_id:ownerUserId,target_environment:env,planned_at:plannedAt,
     rollback_plan:rollback,summary,updated_at:new Date().toISOString()
@@ -158,7 +158,7 @@ export default async function MasterTechnologyPage(){
   const openChanges=changeRows.filter(c=>!["completed","failed","rolled_back","canceled"].includes(c.status));
   const riskyChanges=openChanges.filter(c=>["high","critical"].includes(c.risk_level));
   const ownerRows=(owners||[]) as any[];
-  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
   const stack=[
     ["Frontend","Next.js 15.5.27","Vercel"],
@@ -185,7 +185,7 @@ export default async function MasterTechnologyPage(){
     <section className={styles.sectionHead}><div><span>SERVICIOS</span><h2>Servicios técnicos</h2></div><p>Componentes y proveedores técnicos registrados.</p></section>
     <section className={styles.grid}>
       {serviceRows.map((s:any)=><article key={s.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={s.status==="active"?styles.badgeActive:styles.badgePlanned}>{techStatusLabel(s.status)}</span><em>{riskLabel(s.criticality)}</em></div>
+        <div className={styles.cardTop}><span className={s.status==="active"?styles.badgeActive:styles.badgePlanned}>{techEstadoLabel(s.status)}</span><em>{riskLabel(s.criticality)}</em></div>
         <h3>{s.name}</h3><p>{s.service_type} · {s.provider||"Proveedor no registrado"}<br/>Responsable: {ownerName(s.owner_user_id)}<br/>{environmentLabel(s.environment)} · {s.version||"Sin versión"}<br/>{s.url||"URL no registrada"}</p>
       </article>)}
       {!serviceRows.length&&<article className={styles.card}><h3>Registro de servicios preparado</h3><p>No se han formalizado servicios técnicos todavía.</p></article>}
@@ -194,26 +194,29 @@ export default async function MasterTechnologyPage(){
     <section className={styles.sectionHead}><div><span>CAMBIOS</span><h2>Cambios técnicos</h2></div><p>Cambios técnicos con riesgo, entorno objetivo y plan de reversión.</p></section>
     <section className={styles.grid}>
       {changeRows.map((c:any)=><article key={c.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={c.status==="completed"?styles.badgeActive:styles.badgePlanned}>{techStatusLabel(c.status)}</span><em>{riskLabel(c.risk_level)}</em></div>
+        <div className={styles.cardTop}><span className={c.status==="completed"?styles.badgeActive:styles.badgePlanned}>{techEstadoLabel(c.status)}</span><em>{riskLabel(c.risk_level)}</em></div>
         <h3>{c.title}</h3><p>{c.change_code} · {c.change_type}<br/>Responsable: {ownerName(c.owner_user_id)}<br/>{environmentLabel(c.target_environment)} · {c.planned_at?new Date(c.planned_at).toLocaleString("es-US"):"Sin fecha"}<br/>{c.rollback_plan?"Plan de reversión definido":"Plan de reversión pendiente"}</p>
       </article>)}
       {!changeRows.length&&<article className={styles.card}><h3>Sin cambios técnicos registrados</h3><p>Los cambios técnicos formales se registrarán aquí.</p></article>}
     </section>
 
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+    {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}>
+      <summary>Opciones avanzadas</summary>
+      <p className={styles.advancedHint}>Úsalas para registrar o modificar servicios y cambios técnicos manualmente.</p>
+      <section className={styles.adminForms}>
       <form action={createService} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVO SERVICIO</span><h2>Registrar componente</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="vercel-web"/></label>
           <label>Nombre<input name="name" required placeholder="Web Platform"/></label>
           <label>Tipo<select name="service_type" defaultValue="application">
-            <option value="application">Application</option><option value="database">Database</option><option value="auth">Auth</option>
-            <option value="storage">Storage</option><option value="analytics">Analytics</option><option value="ci_cd">CI/CD</option>
-            <option value="hosting">Hosting</option><option value="integration">Integration</option><option value="monitoring">Monitoring</option><option value="other">Other</option>
+            <option value="application">Aplicación</option><option value="database">Base de datos</option><option value="auth">Autenticación</option>
+            <option value="storage">Almacenamiento</option><option value="analytics">Analítica</option><option value="ci_cd">CI/CD</option>
+            <option value="hosting">Alojamiento</option><option value="integration">Integración</option><option value="monitoring">Monitoreo</option><option value="other">Otro</option>
           </select></label>
           <label>Proveedor<input name="provider"/></label>
-          <label>Entorno<select name="environment" defaultValue="production"><option value="development">Development</option><option value="preview">Preview</option><option value="staging">Staging</option><option value="production">Production</option><option value="shared">Shared</option></select></label>
-          <label>Criticality<select name="criticality" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
+          <label>Entorno<select name="environment" defaultValue="production"><option value="development">Desarrollo</option><option value="preview">Pruebas</option><option value="staging">Preproducción</option><option value="production">Producción</option><option value="shared">Compartido</option></select></label>
+          <label>Importancia<select name="criticality" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
           <label>Versión<input name="version"/></label>
           <label>URL<input name="url"/></label>
         </div>
@@ -225,28 +228,27 @@ export default async function MasterTechnologyPage(){
         <div className={styles.formGrid}>
           <label>Código<input name="change_code" required placeholder="chg-2026-001"/></label>
           <label>Título<input name="title" required/></label>
-          <label>Tipo<select name="change_type" defaultValue="standard"><option value="standard">Standard</option><option value="normal">Normal</option><option value="emergency">Emergency</option><option value="security">Security</option><option value="configuration">Configuration</option><option value="dependency">Dependency</option><option value="infrastructure">Infrastructure</option><option value="other">Other</option></select></label>
-          <label>Riesgo<select name="risk_level" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
+          <label>Tipo<select name="change_type" defaultValue="standard"><option value="standard">Estándar</option><option value="normal">Normal</option><option value="emergency">Emergencia</option><option value="security">Seguridad</option><option value="configuration">Configuración</option><option value="dependency">Dependencia</option><option value="infrastructure">Infraestructura</option><option value="other">Otro</option></select></label>
+          <label>Riesgo<select name="risk_level" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
           <label>Servicio<select name="service_id" defaultValue=""><option value="">Sin servicio</option>{serviceRows.map((s:any)=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
-          <label>Entorno objetivo<select name="target_environment" defaultValue="preview"><option value="development">Development</option><option value="preview">Preview</option><option value="staging">Staging</option><option value="production">Production</option><option value="shared">Shared</option></select></label>
+          <label>Entorno objetivo<select name="target_environment" defaultValue="preview"><option value="development">Desarrollo</option><option value="preview">Pruebas</option><option value="staging">Preproducción</option><option value="production">Producción</option><option value="shared">Compartido</option></select></label>
           <label>Fecha planificada<input type="datetime-local" name="planned_at"/></label>
-          <label className={styles.span2}>Rollback plan<textarea name="rollback_plan" rows={3}/></label>
+          <label className={styles.span2}>Plan de reversión<textarea name="rollback_plan" rows={3}/></label>
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3}/></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar cambio</button>
       </form>
-    </section>}
+      </section>
 
-
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+      <section className={styles.adminForms}>
       <form action={updateService} className={styles.adminForm}>
         <div className={styles.formTitle}><span>GESTIONAR SERVICIO</span><h2>Actualizar componente</h2></div>
         <div className={styles.formGrid}>
           <label>Servicio<select name="service_id" required defaultValue=""><option value="" disabled>Seleccionar servicio</option>{serviceRows.map((s:any)=><option key={s.id} value={s.id}>{s.code} · {s.name}</option>)}</select></label>
-          <label>Status<select name="status" defaultValue="active"><option value="active">Active</option><option value="degraded">Degraded</option><option value="maintenance">Maintenance</option><option value="deprecated">Deprecated</option><option value="retired">Retired</option></select></label>
-          <label>Criticality<select name="criticality" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
-          <label>Entorno<select name="environment" defaultValue="production"><option value="development">Development</option><option value="preview">Preview</option><option value="staging">Staging</option><option value="production">Production</option><option value="shared">Shared</option></select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="active"><option value="active">Activo</option><option value="degraded">Degradado</option><option value="maintenance">Mantenimiento</option><option value="deprecated">Obsoleto</option><option value="retired">Retirado</option></select></label>
+          <label>Importancia<select name="criticality" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
+          <label>Entorno<select name="environment" defaultValue="production"><option value="development">Desarrollo</option><option value="preview">Pruebas</option><option value="staging">Preproducción</option><option value="production">Producción</option><option value="shared">Compartido</option></select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
           <label>Proveedor<input name="provider"/></label>
           <label>Versión<input name="version"/></label>
           <label>URL<input name="url"/></label>
@@ -256,20 +258,21 @@ export default async function MasterTechnologyPage(){
       </form>
 
       <form action={updateChange} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>GESTIONAR CAMBIO</span><h2>Actualizar change record</h2></div>
+        <div className={styles.formTitle}><span>GESTIONAR CAMBIO</span><h2>Actualizar cambio</h2></div>
         <div className={styles.formGrid}>
           <label>Cambio<select name="change_id" required defaultValue=""><option value="" disabled>Seleccionar cambio</option>{changeRows.map((x:any)=><option key={x.id} value={x.id}>{x.change_code} · {x.title}</option>)}</select></label>
-          <label>Status<select name="status" defaultValue="planned"><option value="planned">Planned</option><option value="approved">Approved</option><option value="in_progress">In progress</option><option value="completed">Completed</option><option value="failed">Failed</option><option value="rolled_back">Rolled back</option><option value="canceled">Canceled</option></select></label>
-          <label>Riesgo<select name="risk_level" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
-          <label>Entorno objetivo<select name="target_environment" defaultValue="preview"><option value="development">Development</option><option value="preview">Preview</option><option value="staging">Staging</option><option value="production">Production</option><option value="shared">Shared</option></select></label>
+          <label>Estado<select name="status" defaultValue="planned"><option value="planned">Planificado</option><option value="approved">Aprobado</option><option value="in_progress">En curso</option><option value="completed">Completado</option><option value="failed">Fallido</option><option value="rolled_back">Revertido</option><option value="canceled">Cancelado</option></select></label>
+          <label>Riesgo<select name="risk_level" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Entorno objetivo<select name="target_environment" defaultValue="preview"><option value="development">Desarrollo</option><option value="preview">Pruebas</option><option value="staging">Preproducción</option><option value="production">Producción</option><option value="shared">Compartido</option></select></label>
           <label>Fecha planificada<input type="datetime-local" name="planned_at"/></label>
-          <label className={styles.span2}>Rollback plan<textarea name="rollback_plan" rows={3}/></label>
+          <label className={styles.span2}>Plan de reversión<textarea name="rollback_plan" rows={3}/></label>
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3}/></label>
         </div>
         <button className={styles.formButton} disabled={!changeRows.length}>Actualizar cambio</button>
       </form>
-    </section>}
+      </section>
+    </details>}
 
     <section className={styles.sectionHead}><div><span>ENTORNO TÉCNICO</span><h2>Contexto actual</h2></div></section>
     <section className={styles.grid}>
