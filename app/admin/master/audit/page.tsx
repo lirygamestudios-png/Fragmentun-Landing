@@ -89,7 +89,7 @@ export default async function MasterAuditPage(){
     </section>
 
     <section className={styles.notice}>
-      <div><strong>Cobertura</strong><span>41 tablas operativas y maestras con INSERT / UPDATE / DELETE auditados.</span></div>
+      <div><strong>Cobertura</strong><span>55 tablas del ecosistema con INSERT / UPDATE / DELETE auditados.</span></div>
       <code>admin_audit_log</code>
     </section>
   </main>;
