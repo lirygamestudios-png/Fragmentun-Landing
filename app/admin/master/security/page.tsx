@@ -3,6 +3,21 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
+function incidentStatusLabel(value:string){
+  const map:Record<string,string>={open:"ABIERTO",investigating:"INVESTIGANDO",contained:"CONTENIDO",monitoring:"EN SEGUIMIENTO",resolved:"RESUELTO",closed:"CERRADO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function severityLabel(value:string){
+  const map:Record<string,string>={low:"BAJA",medium:"MEDIA",high:"ALTA",critical:"CRÍTICA"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function reviewStatusLabel(value:string){
+  const map:Record<string,string>={pending:"PENDIENTE",approved:"APROBADA",change_required:"REQUIERE CAMBIO",revoked:"REVOCADA",expired:"VENCIDA"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
 async function requireSecurityAdmin(){
   "use server";
   const supabase=await createSupabaseServerClient();
@@ -126,48 +141,48 @@ export default async function MasterSecurityPage(){
   const openIncidents=incidentRows.filter(i=>!["resolved","closed"].includes(i.status));
   const criticalIncidents=incidentRows.filter(i=>["high","critical"].includes(i.severity)&&!["resolved","closed"].includes(i.status));
   const pendingReviews=reviewRows.filter(r=>r.review_status==="pending"||r.review_status==="change_required");
-  const overdueReviews=reviewRows.filter(r=>r.due_date&&new Date(r.due_date).getTime()<Date.now()&&!["approved","revoked"].includes(r.review_status));
+  const vencidasReviews=reviewRows.filter(r=>r.due_date&&new Date(r.due_date).getTime()<Date.now()&&!["approved","revoked"].includes(r.review_status));
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
 
   const controls=[
     ["RLS","Activo","Tablas públicas relevantes con Row Level Security"],
-    ["Admin Auth","Activo",String(profiles||0)+" perfiles administrativos"],
-    ["Allowlist","Activo",String(allowlist||0)+" accesos permitidos"],
-    ["Rate limiting","Activo",String(rateRows||0)+" registros de control"],
-    ["Audit trail","Activo",String(adminEvents||0)+" eventos administrativos"],
-    ["Production baseline","Protegido","main · 8eb878e"],
-    ["Preview isolation","Activo","Master Admin fuera de producción"],
-    ["Secrets","Servidor","Claves sensibles fuera del cliente"]
+    ["Acceso administrativo","Activo",String(profiles||0)+" perfiles administrativos"],
+    ["Lista de acceso","Activo",String(allowlist||0)+" accesos permitidos"],
+    ["Control antiabuso","Activo",String(rateRows||0)+" registros de control"],
+    ["Historial de auditoría","Activo",String(adminEvents||0)+" eventos administrativos"],
+    ["Base protegida de producción","Protegido","main · 8eb878e"],
+    ["Aislamiento de pruebas","Activo","Master Admin fuera de producción"],
+    ["Claves sensibles","Servidor","Claves sensibles fuera del cliente"]
   ];
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · SEGURIDAD</span><h1>Seguridad</h1><p>Incidentes, revisiones de acceso y controles técnicos existentes.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · SEGURIDAD</span><h1>Seguridad</h1><p>Incidentes, revisiones de acceso y controles técnicos existentes.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Incidentes abiertos</small><strong>{openIncidents.length}</strong><span>{criticalIncidents.length} high/critical</span></article>
-      <article><small>Access reviews</small><strong>{pendingReviews.length}</strong><span>{overdueReviews.length} overdue</span></article>
-      <article><small>Admins</small><strong>{(profiles||0).toLocaleString()}</strong><span>Provisionados</span></article>
-      <article><small>Audit events</small><strong>{(adminEvents||0).toLocaleString()}</strong><span>Trazabilidad</span></article>
+      <article><small>Incidentes abiertos</small><strong>{openIncidents.length}</strong><span>{criticalIncidents.length} altos o críticos</span></article>
+      <article><small>Revisiones de acceso</small><strong>{pendingReviews.length}</strong><span>{overdueReviews.length} vencidas</span></article>
+      <article><small>Usuarios administrativos</small><strong>{(profiles||0).toLocaleString()}</strong><span>Provisionados</span></article>
+      <article><small>Eventos de auditoría</small><strong>{(adminEvents||0).toLocaleString()}</strong><span>Trazabilidad</span></article>
     </section>
 
-    <section className={styles.sectionHead}><div><span>INCIDENT REGISTER</span><h2>Incidentes de seguridad</h2></div><p>Registro persistente y privado; empieza vacío hasta que exista un incidente real que documentar.</p></section>
+    <section className={styles.sectionHead}><div><span>INCIDENTES</span><h2>Incidentes de seguridad</h2></div><p>Registro persistente y privado; empieza vacío hasta que exista un incidente real que documentar.</p></section>
     <section className={styles.grid}>
       {incidentRows.map((i:any)=><article key={i.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={["resolved","closed"].includes(i.status)?styles.badgeActive:styles.badgePlanned}>{String(i.status).toUpperCase()}</span><em>{i.severity}</em></div>
-        <h3>{i.title}</h3><p>{i.incident_code} · {i.category}<br/>Owner: {ownerName(i.owner_user_id)}<br/>{new Date(i.detected_at).toLocaleString("es-US")}<br/>{i.summary||"Sin resumen"}</p>
+        <div className={styles.cardTop}><span className={["resolved","closed"].includes(i.status)?styles.badgeActive:styles.badgePlanned}>{incidentStatusLabel(i.status)}</span><em>{severityLabel(i.severity)}</em></div>
+        <h3>{i.title}</h3><p>{i.incident_code} · {i.category}<br/>Responsable: {ownerName(i.owner_user_id)}<br/>{new Date(i.detected_at).toLocaleString("es-US")}<br/>{i.summary||"Sin resumen"}</p>
       </article>)}
       {!incidentRows.length&&<article className={styles.card}><h3>Sin incidentes registrados</h3><p>No se han creado incidentes ficticios.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>ACCESS REVIEWS</span><h2>Revisiones de acceso</h2></div></section>
+    <section className={styles.sectionHead}><div><span>REVISIONES DE ACCESO</span><h2>Revisiones de acceso</h2></div></section>
     <section className={styles.grid}>
       {reviewRows.map((r:any)=><article key={r.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={r.review_status==="approved"?styles.badgeActive:styles.badgePlanned}>{String(r.review_status).toUpperCase()}</span><em>{r.risk_level}</em></div>
-        <h3>{r.subject_name||r.subject_ref}</h3><p>{r.subject_type}<br/>Reviewer: {ownerName(r.reviewer_user_id)}<br/>{r.due_date?"Due: "+r.due_date:"Sin due date"}<br/>{r.notes||"Sin notas"}</p>
+        <div className={styles.cardTop}><span className={r.review_status==="approved"?styles.badgeActive:styles.badgePlanned}>{reviewStatusLabel(r.review_status)}</span><em>{severityLabel(r.risk_level)}</em></div>
+        <h3>{r.subject_name||r.subject_ref}</h3><p>{r.subject_type}<br/>Revisor: {ownerName(r.reviewer_user_id)}<br/>{r.due_date?"Fecha límite: "+r.due_date:"Sin fecha límite"}<br/>{r.notes||"Sin notas"}</p>
       </article>)}
       {!reviewRows.length&&<article className={styles.card}><h3>Sin revisiones pendientes</h3><p>Las revisiones se registrarán solo cuando exista una necesidad real de control.</p></article>}
     </section>
@@ -233,7 +248,7 @@ export default async function MasterSecurityPage(){
       </form>
     </section>
 
-    <section className={styles.sectionHead}><div><span>SECURITY CONTROL PLANE</span><h2>Controles existentes</h2></div><p>Señales técnicas separadas del registro de incidentes.</p></section>
+    <section className={styles.sectionHead}><div><span>CONTROLES DE SEGURIDAD</span><h2>Controles existentes</h2></div><p>Señales técnicas separadas del registro de incidentes.</p></section>
     <section className={styles.grid}>
       {controls.map(([name,state,detail])=><article key={name} className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>{state.toUpperCase()}</span><em>SEGURIDAD</em></div>
