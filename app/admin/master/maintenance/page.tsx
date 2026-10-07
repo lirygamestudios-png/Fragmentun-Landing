@@ -59,7 +59,7 @@ export default async function MaintenancePage(){
       <a className={styles.card} href="/admin/master/observability">
         <div className={styles.cardTop}><span className={styles.badgeActive}>DISPONIBLE</span><em>PRUEBAS</em></div>
         <h3>Estado y Pruebas</h3>
-        <p>Ejecutar comprobaciones del Preview y consultar resultados históricos.</p>
+        <p>Ejecutar comprobaciones de la versión de prueba y consultar resultados históricos.</p>
         <span className={styles.cardLink}>Abrir →</span>
       </a>
       <a className={styles.card} href="/admin/master/releases">
@@ -88,8 +88,8 @@ export default async function MaintenancePage(){
       </a>
       <a className={styles.card} href="/admin/master/checklist">
         <div className={styles.cardTop}><span className={styles.badgePlanned}>REVISIÓN</span><em>PANTALLAS</em></div>
-        <h3>Checklist visual</h3>
-        <p>Recorrer todas las pantallas del Master Admin antes de la QA final.</p>
+        <h3>Revisión visual</h3>
+        <p>Recorrer todas las pantallas del Master Admin antes de las pruebas finales.</p>
         <span className={styles.cardLink}>Abrir →</span>
       </a>
     </section>
@@ -99,7 +99,7 @@ export default async function MaintenancePage(){
         <strong>Regla operativa</strong>
         <span>Las rutinas de mantenimiento preparan evidencia y diagnóstico; ninguna de estas pantallas publica cambios en producción por sí sola.</span>
       </div>
-      <code>Preview primero</code>
+      <code>Versión de prueba primero</code>
     </section>
   </main>;
 }
