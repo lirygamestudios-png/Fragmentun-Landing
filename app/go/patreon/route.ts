@@ -1,6 +1,6 @@
 import { NextRequest,NextResponse } from "next/server";
 
-const PATREON_BASE="https://patreon.com/sagaFragmentun";
+const PATREON_BASE="https://www.patreon.com/15059528/join";
 
 function clean(v:string|null,max=200){return String(v??"").slice(0,max);}
 
