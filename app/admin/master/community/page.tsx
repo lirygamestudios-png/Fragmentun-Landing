@@ -55,6 +55,28 @@ async function addAction(formData:FormData){
   revalidatePath("/admin/master/community");
 }
 
+
+async function updateMember(formData:FormData){
+  "use server";
+  const {supabase}=await requireCommunityEditor();
+  const id=String(formData.get("member_id")||"").trim();
+  const status=String(formData.get("status")||"active");
+  const tier=String(formData.get("tier")||"member");
+  const source=String(formData.get("source")||"").trim()||null;
+  const points=Math.max(0,Math.trunc(Number(formData.get("points")||0)));
+  const betaPriority=String(formData.get("beta_priority")||"false")==="true";
+  const tags=String(formData.get("tags")||"").split(",").map(x=>x.trim()).filter(Boolean);
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["active","inactive","blocked","left"]);
+  const allowedTier=new Set(["member","engaged","advocate","beta_priority","moderator"]);
+  if(!id||!allowedStatus.has(status)||!allowedTier.has(tier)||!Number.isFinite(points)) throw new Error("invalid_member_update");
+  const{error}=await supabase.from("community_members").update({
+    status,tier,points,beta_priority:betaPriority||tier==="beta_priority",source,tags,notes,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/community");
+}
+
 export default async function CommunityPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -63,7 +85,7 @@ export default async function CommunityPage(){
   if(!profile) redirect("/admin/login?unauthorized=1");
 
   const[{data:members},{data:actions},{count:crmContacts},{count:shareClicks}]=await Promise.all([
-    supabase.from("community_members").select("id,display_name,handle,email,status,tier,points,beta_priority,source,joined_at,last_activity_at").order("points",{ascending:false}),
+    supabase.from("community_members").select("id,display_name,handle,email,status,tier,points,beta_priority,source,joined_at,last_activity_at,tags,notes").order("points",{ascending:false}),
     supabase.from("community_actions").select("id,member_id,action_type,source,points_delta,description,occurred_at").order("occurred_at",{ascending:false}).limit(50),
     supabase.from("crm_contacts").select("*",{count:"exact",head:true}),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","share_click")
@@ -131,6 +153,24 @@ export default async function CommunityPage(){
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
         <button className={styles.formButton} disabled={!memberRows.length}>Registrar actividad</button>
+      </form>
+    </section>}
+
+
+    {["admin","editor","marketing"].includes(profile.role)&&<section className={styles.adminForms}>
+      <form action={updateMember} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR MIEMBRO</span><h2>Actualizar comunidad</h2></div>
+        <div className={styles.formGrid}>
+          <label>Miembro<select name="member_id" required defaultValue=""><option value="" disabled>Seleccionar miembro</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name||m.handle||m.email}</option>)}</select></label>
+          <label>Status<select name="status" defaultValue="active"><option value="active">Active</option><option value="inactive">Inactive</option><option value="blocked">Blocked</option><option value="left">Left</option></select></label>
+          <label>Tier<select name="tier" defaultValue="member"><option value="member">Member</option><option value="engaged">Engaged</option><option value="advocate">Advocate</option><option value="beta_priority">Beta priority</option><option value="moderator">Moderator</option></select></label>
+          <label>Beta priority<select name="beta_priority" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
+          <label>Puntos<input type="number" min="0" name="points" defaultValue="0"/></label>
+          <label>Fuente<input name="source"/></label>
+          <label className={styles.span2}>Tags<input name="tags" placeholder="beta, advocate, creator"/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!memberRows.length}>Actualizar miembro</button>
       </form>
     </section>}
 
