@@ -61,7 +61,11 @@ export default async function MasterAdminPage(){
     {data:releases},
     {data:crmContacts},
     {data:financeTx},
-    {data:approvals}
+    {data:approvals},
+    {data:workItems},
+    {data:risks},
+    {data:incidents},
+    {data:community}
   ]=await Promise.all([
     supabase.from("leads").select("*",{count:"exact",head:true}),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}),
@@ -72,7 +76,11 @@ export default async function MasterAdminPage(){
     supabase.from("publishing_releases").select("id,status,certification_status,target_date"),
     supabase.from("crm_contacts").select("id,lifecycle_stage,status,score,next_action_at"),
     supabase.from("finance_transactions").select("id,status,transaction_type,amount_cents,currency,transaction_date").limit(500),
-    supabase.from("automation_approvals").select("id,status,risk_level,action_summary,requested_at").eq("status","pending").limit(25)
+    supabase.from("automation_approvals").select("id,status,risk_level,action_summary,requested_at").eq("status","pending").limit(25),
+    supabase.from("ops_work_items").select("id,status,priority,due_date,domain"),
+    supabase.from("risk_register").select("id,status,inherent_score,domain,due_date"),
+    supabase.from("security_incidents").select("id,status,severity,category"),
+    supabase.from("community_members").select("id,status,tier,points,beta_priority")
   ]);
 
   const gameRows=(games||[]) as any[];
@@ -81,6 +89,10 @@ export default async function MasterAdminPage(){
   const crmRows=(crmContacts||[]) as any[];
   const financeRows=(financeTx||[]) as any[];
   const approvalRows=(approvals||[]) as any[];
+  const workRows=(workItems||[]) as any[];
+  const riskRows=(risks||[]) as any[];
+  const incidentRows=(incidents||[]) as any[];
+  const communityRows=(community||[]) as any[];
 
   const gamesAtRisk=gameRows.filter(g=>["red","paused"].includes(g.health_status)).length;
   const milestonesAtRisk=milestoneRows.filter(m=>["blocked","at_risk"].includes(m.status)).length;
@@ -91,7 +103,14 @@ export default async function MasterAdminPage(){
   const financeNet=postedFinance.reduce((a,x)=>a+Number(x.amount_cents||0),0);
   const financeCurrency=postedFinance[0]?.currency||"USD";
   const financeNetLabel=new Intl.NumberFormat("en-US",{style:"currency",currency:financeCurrency}).format(financeNet/100);
-  const criticalExceptions=gamesAtRisk+milestonesAtRisk+releaseRisks+highRiskApprovals;
+  const blockedWork=workRows.filter(w=>w.status==="blocked"||w.priority==="critical").length;
+  const openWork=workRows.filter(w=>!["completed","canceled"].includes(w.status)).length;
+  const highRisks=riskRows.filter(r=>r.status!=="closed"&&Number(r.inherent_score)>=15).length;
+  const securityIncidents=incidentRows.filter(i=>!["resolved","closed"].includes(i.status)).length;
+  const criticalSecurity=incidentRows.filter(i=>!["resolved","closed"].includes(i.status)&&["high","critical"].includes(i.severity)).length;
+  const betaPriority=communityRows.filter(m=>m.status==="active"&&(m.beta_priority||m.tier==="beta_priority")).length;
+  const advocates=communityRows.filter(m=>m.status==="active"&&m.tier==="advocate").length;
+  const criticalExceptions=gamesAtRisk+milestonesAtRisk+releaseRisks+highRiskApprovals+blockedWork+highRisks+criticalSecurity;
 
   return <main className={styles.shell}>
     <aside className={styles.sidebar}>
@@ -132,8 +151,8 @@ export default async function MasterAdminPage(){
       </section>
 
       <section className={styles.kpis}>
-        <article><small>Excepciones críticas</small><strong>{criticalExceptions}</strong><span>Producción + Publishing + approvals</span></article>
-        <article><small>Juegos</small><strong>{gameRows.length}</strong><span>{gamesAtRisk} red/paused</span></article>
+        <article><small>Excepciones críticas</small><strong>{criticalExceptions}</strong><span>Operación + riesgo + seguridad + producto</span></article>
+        <article><small>Trabajo abierto</small><strong>{openWork}</strong><span>{blockedWork} bloqueados/críticos</span></article>
         <article><small>CRM cualificado</small><strong>{qualifiedContacts}</strong><span>{crmRows.length} contactos totales</span></article>
         <article><small>Net ledger</small><strong>{financeNetLabel}</strong><span>Posted + reconciled</span></article>
       </section>
@@ -163,6 +182,26 @@ export default async function MasterAdminPage(){
           <div className={styles.cardTop}><span className={approvalRows.length?styles.badgePlanned:styles.badgeActive}>{approvalRows.length?"DECISIÓN":"LIMPIO"}</span><em>AI/OPS</em></div>
           <h3>Approvals</h3>
           <p>{approvalRows.length} pendientes · {highRiskApprovals} high/critical</p>
+        </a>
+        <a href="/admin/master/operations" className={styles.card}>
+          <div className={styles.cardTop}><span className={blockedWork?styles.badgePlanned:styles.badgeActive}>{blockedWork?"ATENCIÓN":"ESTABLE"}</span><em>OPERACIONES</em></div>
+          <h3>Work Queue</h3>
+          <p>{openWork} abiertos · {blockedWork} bloqueados/críticos</p>
+        </a>
+        <a href="/admin/master/risk" className={styles.card}>
+          <div className={styles.cardTop}><span className={highRisks?styles.badgePlanned:styles.badgeActive}>{highRisks?"ATENCIÓN":"CONTROLADO"}</span><em>RISK</em></div>
+          <h3>Riesgos</h3>
+          <p>{riskRows.length} registrados · {highRisks} high/critical</p>
+        </a>
+        <a href="/admin/master/security" className={styles.card}>
+          <div className={styles.cardTop}><span className={criticalSecurity?styles.badgePlanned:styles.badgeActive}>{securityIncidents?"INCIDENTES":"LIMPIO"}</span><em>SECURITY</em></div>
+          <h3>Seguridad</h3>
+          <p>{securityIncidents} incidentes abiertos · {criticalSecurity} high/critical</p>
+        </a>
+        <a href="/admin/master/community" className={styles.card}>
+          <div className={styles.cardTop}><span className={styles.badgeActive}>COMUNIDAD</span><em>ENGAGEMENT</em></div>
+          <h3>Beta & Advocacy</h3>
+          <p>{communityRows.length} miembros · {betaPriority} beta priority · {advocates} advocates</p>
         </a>
       </section>
 
