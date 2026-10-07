@@ -31,7 +31,7 @@ const domains:Domain[]=[
   {title:"Proveedores",subtitle:"Compras, suplidores, contratos y costos",href:"/admin/master/suppliers",phase:"56",status:"active"},
   {title:"Marca y Comunicaciones",subtitle:"Marca, prensa, reputación y comunicación",href:"/admin/master/brand",phase:"52",status:"active"},
   {title:"Estrategia",subtitle:"Objetivos, prioridades, decisiones y recursos",href:"/admin/master/strategy",phase:"49",status:"active"},
-  {title:"Capital e Inversionistas",subtitle:"Inversión, board, IR y strategic transactions",href:"/admin/master/capital",phase:"50",status:"active"},
+  {title:"Capital e Inversionistas",subtitle:"Inversión, relaciones con inversionistas y operaciones estratégicas",href:"/admin/master/capital",phase:"50",status:"active"},
       {title:"Configuración",subtitle:"Ajustes generales y funciones del sistema",href:"/admin/master/settings",phase:"60",status:"active"},
   {title:"Revisión antes de publicar",subtitle:"Comprobaciones, evidencia y aprobación antes de publicar",href:"/admin/master/releases",phase:"60",status:"active"},
   {title:"Estado y Pruebas",subtitle:"Comprobaciones, historial y estado de la versión de prueba",href:"/admin/master/observability",phase:"60",status:"active"},
@@ -183,7 +183,7 @@ export default async function MasterAdminPage(){
       <section className={styles.kpis}>
         <article><small>Excepciones críticas</small><strong>{criticalExceptions}</strong><span>Operación + riesgo + seguridad + producto</span></article>
         <article><small>Trabajo abierto</small><strong>{openWork}</strong><span>{blockedWork} bloqueados/críticos</span></article>
-        <article><small>Vencidos</small><strong>{overdueTotal}</strong><span>Ops + Risk + Access + Capital</span></article>
+        <article><small>Vencidos</small><strong>{overdueTotal}</strong><span>Operaciones + Riesgos + Accesos + Capital</span></article>
         <article><small>Balance registrado</small><strong>{financeNetLabel}</strong><span>Movimientos contabilizados</span></article>
       </section>
 
@@ -194,24 +194,24 @@ export default async function MasterAdminPage(){
 
       <section className={styles.grid}>
         <a href="/admin/master/games" className={styles.card}>
-          <div className={styles.cardTop}><span className={gamesAtRisk||milestonesAtRisk?styles.badgePlanned:styles.badgeActive}>{gamesAtRisk||milestonesAtRisk?"ATENCIÓN":"ESTABLE"}</span><em>GAME OPS</em></div>
+          <div className={styles.cardTop}><span className={gamesAtRisk||milestonesAtRisk?styles.badgePlanned:styles.badgeActive}>{gamesAtRisk||milestonesAtRisk?"ATENCIÓN":"ESTABLE"}</span><em>JUEGOS</em></div>
           <h3>Producción</h3>
-          <p>{gameRows.length} juegos · {milestoneRows.length} milestones · {gamesAtRisk+milestonesAtRisk} excepciones</p>
+          <p>{gameRows.length} juegos · {milestoneRows.length} hitos · {gamesAtRisk+milestonesAtRisk} excepciones</p>
         </a>
         <a href="/admin/master/publishing" className={styles.card}>
-          <div className={styles.cardTop}><span className={releaseRisks?styles.badgePlanned:styles.badgeActive}>{releaseRisks?"ATENCIÓN":"ESTABLE"}</span><em>PUBLISHING</em></div>
+          <div className={styles.cardTop}><span className={releaseRisks?styles.badgePlanned:styles.badgeActive}>{releaseRisks?"ATENCIÓN":"ESTABLE"}</span><em>PUBLICACIÓN</em></div>
           <h3>Lanzamientos</h3>
-          <p>{releaseRows.length} releases · {releaseRisks} con riesgo/certificación</p>
+          <p>{releaseRows.length} lanzamientos · {releaseRisks} con riesgo o certificación pendiente</p>
         </a>
         <a href="/admin/master/growth" className={styles.card}>
-          <div className={styles.cardTop}><span className={styles.badgeActive}>PIPELINE</span><em>CRM</em></div>
+          <div className={styles.cardTop}><span className={styles.badgeActive}>EMBUDO</span><em>CONTACTOS</em></div>
           <h3>Crecimiento</h3>
-          <p>{crmRows.length} contactos · {qualifiedContacts} cualificados · {(leadCount||0)} leads originales</p>
+          <p>{crmRows.length} contactos · {qualifiedContacts} cualificados · {(leadCount||0)} contactos captados</p>
         </a>
         <a href="/admin/master/automation" className={styles.card}>
-          <div className={styles.cardTop}><span className={approvalRows.length?styles.badgePlanned:styles.badgeActive}>{approvalRows.length?"DECISIÓN":"LIMPIO"}</span><em>AI/OPS</em></div>
+          <div className={styles.cardTop}><span className={approvalRows.length?styles.badgePlanned:styles.badgeActive}>{approvalRows.length?"DECISIÓN":"LIMPIO"}</span><em>IA Y OPERACIONES</em></div>
           <h3>Aprobaciones</h3>
-          <p>{approvalRows.length} pendientes · {highRiskAprobaciones} high/critical</p>
+          <p>{approvalRows.length} pendientes · {highRiskAprobaciones} de riesgo alto o crítico</p>
         </a>
         <a href="/admin/master/operations" className={styles.card}>
           <div className={styles.cardTop}><span className={blockedWork?styles.badgePlanned:styles.badgeActive}>{blockedWork?"ATENCIÓN":"ESTABLE"}</span><em>OPERACIONES</em></div>
@@ -219,24 +219,24 @@ export default async function MasterAdminPage(){
           <p>{openWork} abiertos · {blockedWork} bloqueados/críticos</p>
         </a>
         <a href="/admin/master/risk" className={styles.card}>
-          <div className={styles.cardTop}><span className={highRisks?styles.badgePlanned:styles.badgeActive}>{highRisks?"ATENCIÓN":"CONTROLADO"}</span><em>RISK</em></div>
+          <div className={styles.cardTop}><span className={highRisks?styles.badgePlanned:styles.badgeActive}>{highRisks?"ATENCIÓN":"CONTROLADO"}</span><em>RIESGOS</em></div>
           <h3>Riesgos</h3>
-          <p>{riskRows.length} registrados · {highRisks} high/critical</p>
+          <p>{riskRows.length} registrados · {highRisks} de nivel alto o crítico</p>
         </a>
         <a href="/admin/master/security" className={styles.card}>
-          <div className={styles.cardTop}><span className={criticalSecurity?styles.badgePlanned:styles.badgeActive}>{securityIncidents?"INCIDENTES":"LIMPIO"}</span><em>SECURITY</em></div>
+          <div className={styles.cardTop}><span className={criticalSecurity?styles.badgePlanned:styles.badgeActive}>{securityIncidents?"INCIDENTES":"LIMPIO"}</span><em>SEGURIDAD</em></div>
           <h3>Seguridad</h3>
-          <p>{securityIncidents} incidentes abiertos · {criticalSecurity} high/critical</p>
+          <p>{securityIncidents} incidentes abiertos · {criticalSecurity} de nivel alto o crítico</p>
         </a>
         <a href="/admin/master/community" className={styles.card}>
-          <div className={styles.cardTop}><span className={styles.badgeActive}>COMUNIDAD</span><em>ENGAGEMENT</em></div>
+          <div className={styles.cardTop}><span className={styles.badgeActive}>COMUNIDAD</span><em>PARTICIPACIÓN</em></div>
           <h3>Betas y Comunidad</h3>
-          <p>{communityRows.length} miembros · {betaPriority} beta priority · {advocates} advocates</p>
+          <p>{communityRows.length} miembros · {betaPriority} con prioridad beta · {advocates} promotores</p>
         </a>
         <a href="/admin/master/security" className={styles.card}>
-          <div className={styles.cardTop}><span className={overdueReviews?styles.badgePlanned:styles.badgeActive}>{overdueReviews?"VENCIDOS":"AL DÍA"}</span><em>ACCESS</em></div>
+          <div className={styles.cardTop}><span className={overdueReviews?styles.badgePlanned:styles.badgeActive}>{overdueReviews?"VENCIDOS":"AL DÍA"}</span><em>ACCESOS</em></div>
           <h3>Revisión de Accesos</h3>
-          <p>{reviewRows.length} reviews · {overdueReviews} vencidas</p>
+          <p>{reviewRows.length} revisiones · {overdueReviews} vencidas</p>
         </a>
         <a href="/admin/master/legal" className={styles.card}>
           <div className={styles.cardTop}><span className={expiringContracts?styles.badgePlanned:styles.badgeActive}>{expiringContracts?"ATENCIÓN":"ESTABLE"}</span><em>LEGAL</em></div>
@@ -244,14 +244,14 @@ export default async function MasterAdminPage(){
           <p>{contractRows.length} registrados · {expiringContracts} vencen en ≤60 días</p>
         </a>
         <a href="/admin/master/technology" className={styles.card}>
-          <div className={styles.cardTop}><span className={riskyTechChanges?styles.badgePlanned:styles.badgeActive}>{riskyTechChanges?"ATENCIÓN":"ESTABLE"}</span><em>CHANGE</em></div>
+          <div className={styles.cardTop}><span className={riskyTechChanges?styles.badgePlanned:styles.badgeActive}>{riskyTechChanges?"ATENCIÓN":"ESTABLE"}</span><em>CAMBIOS</em></div>
           <h3>Cambios técnicos</h3>
-          <p>{techChangeRows.length} registrados · {riskyTechChanges} high/critical abiertos</p>
+          <p>{techChangeRows.length} registrados · {riskyTechChanges} de riesgo alto o crítico</p>
         </a>
         <a href="/admin/master/capital" className={styles.card}>
-          <div className={styles.cardTop}><span className={fundraisingDue?styles.badgePlanned:styles.badgeActive}>{fundraisingDue?"FOLLOW-UP":"AL DÍA"}</span><em>CAPITAL</em></div>
+          <div className={styles.cardTop}><span className={fundraisingDue?styles.badgePlanned:styles.badgeActive}>{fundraisingDue?"SEGUIMIENTO":"AL DÍA"}</span><em>CAPITAL</em></div>
           <h3>Inversión</h3>
-          <p>{fundraisingRows.length} oportunidades · {fundraisingDue} follow-ups vencidos</p>
+          <p>{fundraisingRows.length} oportunidades · {fundraisingDue} seguimientos vencidos</p>
         </a>
       </section>
 
