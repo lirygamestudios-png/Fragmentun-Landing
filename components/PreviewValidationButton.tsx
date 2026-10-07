@@ -29,7 +29,10 @@ export function PreviewValidationButton(){
       {name:"Acceso al Admin",path:"/admin/login",expected:200},
       {name:"Panel LIRYGAMES",path:"/admin/master",expected:200},
       {name:"Estado del sistema",path:"/api/admin/status",expected:200},
-      {name:"Comercio",path:"/api/admin/commerce",expected:200}
+      {name:"Comercio",path:"/api/admin/commerce",expected:200},
+      {name:"Reportes",path:"/admin/master/reports",expected:200},
+      {name:"Copias y Recuperación",path:"/admin/master/backups",expected:200},
+      {name:"Integraciones",path:"/admin/master/integrations",expected:200}
     ] as const;
 
     const results:CheckResult[]=[];
