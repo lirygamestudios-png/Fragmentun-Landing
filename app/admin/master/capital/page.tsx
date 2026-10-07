@@ -44,7 +44,7 @@ async function createOpportunity(formData:FormData){
   const name=String(formData.get("name")||"").trim();
   const type=String(formData.get("opportunity_type")||"equity");
   const target=Number(formData.get("target_amount")||0);
-  const comprometido=Number(formData.get("committed_amount")||0);
+  const committed=Number(formData.get("committed_amount")||0);
   const currency=(String(formData.get("currency")||"USD").trim()||"USD").toUpperCase();
   const probability=Math.max(0,Math.min(100,Number(formData.get("probability")||0)));
   const expectedClose=String(formData.get("expected_close_date")||"").trim()||null;
@@ -53,7 +53,7 @@ async function createOpportunity(formData:FormData){
   if(!name||!allowedType.has(type)||!Number.isFinite(target)||!Number.isFinite(committed)||!Number.isFinite(probability)) throw new Error("invalid_opportunity");
   const{error}=await supabase.from("fundraising_opportunities").insert({
     investor_id:investorId,name,opportunity_type:type,target_amount_cents:Math.max(0,Math.round(target*100)),
-    comprometido_amount_cents:Math.max(0,Math.round(committed*100)),currency,probability,
+    committed_amount_cents:Math.max(0,Math.round(committed*100)),currency,probability,
     expected_close_date:expectedClose,next_action:nextAction,created_by:user.id
   });
   if(error) throw new Error(error.message);
@@ -94,9 +94,9 @@ async function updateOpportunity(formData:FormData){
   const ownerUserId=ownerRaw||null;
   const probability=Math.max(0,Math.min(100,Number(formData.get("probability")||0)));
   const targetRaw=String(formData.get("target_amount")||"").trim();
-  const comprometidoRaw=String(formData.get("committed_amount")||"").trim();
+  const committedRaw=String(formData.get("committed_amount")||"").trim();
   const target=targetRaw?Math.round(Number(targetRaw)*100):null;
-  const comprometido=committedRaw?Math.round(Number(committedRaw)*100):null;
+  const committed=committedRaw?Math.round(Number(committedRaw)*100):null;
   const expectedClose=String(formData.get("expected_close_date")||"").trim()||null;
   const nextAction=String(formData.get("next_action")||"").trim()||null;
   const nextActionAt=String(formData.get("next_action_at")||"").trim()||null;
@@ -145,7 +145,7 @@ export default async function MasterCapitalPage(){
   const revenueCurrency=paidRows[0]?.currency||"USD";
   const open=opportunityRows.filter(o=>o.status==="open"||o.status==="on_hold");
   const pipelineValue=open.reduce((a,o)=>a+Number(o.target_amount_cents||0),0);
-  const comprometidoValue=opportunityRows.reduce((a,o)=>a+Number(o.committed_amount_cents||0),0);
+  const committedValue=opportunityRows.reduce((a,o)=>a+Number(o.committed_amount_cents||0),0);
   const weighted=open.reduce((a,o)=>a+Math.round(Number(o.target_amount_cents||0)*(Number(o.probability||0)/100)),0);
   const pipelineCurrency=open[0]?.currency||opportunityRows[0]?.currency||"USD";
   const ownerRows=(owners||[]) as any[];
