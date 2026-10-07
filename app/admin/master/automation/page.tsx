@@ -3,6 +3,21 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
+function statusLabel(value:string){
+  const map:Record<string,string>={draft:"BORRADOR",testing:"EN PRUEBA",active:"ACTIVO",paused:"PAUSADO",disabled:"DESACTIVADO",error:"ERROR",pending:"PENDIENTE",approved:"APROBADO",rejected:"RECHAZADO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function autonomyLabel(value:string){
+  const map:Record<string,string>={assistive:"ASISTENCIA",recommend:"RECOMENDACIÓN",execute_low_risk:"EJECUCIÓN DE BAJO RIESGO",execute_with_approval:"EJECUCIÓN CON APROBACIÓN"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
+function riskLabel(value:string){
+  const map:Record<string,string>={low:"BAJO",medium:"MEDIO",high:"ALTO",critical:"CRÍTICO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
 async function requireAutomationEditor(){
   "use server";
   const supabase=await createSupabaseServerClient();
@@ -155,7 +170,7 @@ export default async function MasterAutomationPage(){
   const approvalRows=(approvals||[]) as any[];
   const pending=approvalRows.filter(a=>a.status==="pending");
   const killCount=agentRows.filter(a=>a.kill_switch).length;
-  const activeWorkflows=workflowRows.filter(w=>w.status==="active").length;
+  const activeAutomatizaciones=workflowRows.filter(w=>w.status==="active").length;
   const activeAgents=agentRows.filter(a=>a.status==="active").length;
   const integrations=(adIntegrations||[]) as any[];
   const ownerRows=(owners||[]) as any[];
@@ -163,43 +178,43 @@ export default async function MasterAutomationPage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · AUTOMATIZACIÓN & IA</span><h1>Automatización & IA</h1><p>Registry persistente de workflows, agentes, approvals y guardrails.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · AUTOMATIZACIÓN E IA</span><h1>Automatización e IA</h1><p>Automatizaciones, agentes, aprobaciones y controles de seguridad.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Workflows activos</small><strong>{activeWorkflows}</strong><span>{workflowRows.length} registrados</span></article>
+      <article><small>Automatizaciones activas</small><strong>{activeAutomatizaciones}</strong><span>{workflowRows.length} registrados</span></article>
       <article><small>Agentes activos</small><strong>{activeAgents}</strong><span>{agentRows.length} registrados</span></article>
-      <article><small>Approvals pendientes</small><strong>{pending.length}</strong><span>Human-in-the-loop</span></article>
-      <article><small>Kill switches</small><strong>{killCount}</strong><span>Agentes detenidos</span></article>
+      <article><small>Aprobaciones pendientes</small><strong>{pending.length}</strong><span>Decisión humana requerida</span></article>
+      <article><small>Paradas de emergencia</small><strong>{killCount}</strong><span>Agentes detenidos</span></article>
     </section>
 
-    <section className={styles.sectionHead}><div><span>WORKFLOW REGISTRY</span><h2>Workflows</h2></div><p>Los workflows empiezan vacíos y se activan únicamente después de configuración y pruebas.</p></section>
+    <section className={styles.sectionHead}><div><span>AUTOMATIZACIONES</span><h2>Automatizaciones</h2></div><p>Las automatizaciones empiezan vacías y se activan únicamente después de configuración y pruebas.</p></section>
     <section className={styles.grid}>
       {workflowRows.map((w:any)=><article key={w.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={w.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(w.status).toUpperCase()}</span><em>{w.autonomy_level}</em></div>
-        <h3>{w.name}</h3><p>{w.domain} · {w.trigger_type}<br/>Owner: {ownerName(w.owner_user_id)}<br/>Approval: {w.requires_approval?"Sí":"No"}</p>
+        <div className={styles.cardTop}><span className={w.status==="active"?styles.badgeActive:styles.badgePlanned}>{statusLabel(w.status)}</span><em>{autonomyLabel(w.autonomy_level)}</em></div>
+        <h3>{w.name}</h3><p>{w.domain} · {w.trigger_type}<br/>Responsable: {ownerName(w.owner_user_id)}<br/>Requiere aprobación: {w.requires_approval?"Sí":"No"}</p>
       </article>)}
-      {!workflowRows.length&&<article className={styles.card}><h3>Sin workflows registrados</h3><p>El registry está preparado para incorporar automatizaciones reales del estudio.</p></article>}
+      {!workflowRows.length&&<article className={styles.card}><h3>Sin automatizaciones registradas</h3><p>El sistema está preparado para incorporar automatizaciones reales del estudio.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>AGENT REGISTRY</span><h2>Agentes IA</h2></div><p>Los agentes no se crean ni activan automáticamente; requieren configuración explícita.</p></section>
+    <section className={styles.sectionHead}><div><span>AGENTES IA</span><h2>Agentes IA</h2></div><p>Los agentes no se crean ni activan automáticamente; requieren configuración explícita.</p></section>
     <section className={styles.grid}>
       {agentRows.map((a:any)=><article key={a.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={a.kill_switch?styles.badgePlanned:styles.badgeActive}>{a.kill_switch?"KILL ON":String(a.status).toUpperCase()}</span><em>{a.autonomy_level}</em></div>
-        <h3>{a.name}</h3><p>{a.domain}<br/>Owner: {ownerName(a.owner_user_id)}<br/>{a.purpose||"Propósito pendiente"}<br/>{a.model_ref||"Modelo no asignado"} · {a.cost_budget_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(a.cost_budget_cents)/100):"Budget no definido"}</p>
+        <div className={styles.cardTop}><span className={a.kill_switch?styles.badgePlanned:styles.badgeActive}>{a.kill_switch?"PARADA ACTIVA":String(a.status).toUpperCase()}</span><em>{autonomyLabel(a.autonomy_level)}</em></div>
+        <h3>{a.name}</h3><p>{a.domain}<br/>Responsable: {ownerName(a.owner_user_id)}<br/>{a.purpose||"Propósito pendiente"}<br/>{a.model_ref||"Modelo no asignado"} · {a.cost_budget_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(a.cost_budget_cents)/100):"Presupuesto no definido"}</p>
         {profile.role==="admin"&&<form action={toggleKillSwitch}>
           <input type="hidden" name="agent_id" value={a.id}/><input type="hidden" name="next" value={String(!a.kill_switch)}/>
-          <button className={styles.formButton} type="submit">{a.kill_switch?"Reactivar":"Activar kill switch"}</button>
+          <button className={styles.formButton} type="submit">{a.kill_switch?"Reactivar":"Detener agente"}</button>
         </form>}
       </article>)}
-      {!agentRows.length&&<article className={styles.card}><h3>Sin agentes registrados</h3><p>El registry está listo, con aprobación humana y kill switch por agente.</p></article>}
+      {!agentRows.length&&<article className={styles.card}><h3>Sin agentes registrados</h3><p>El sistema está listo, con aprobación humana y parada de emergencia por agente.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>APPROVAL QUEUE</span><h2>Decisiones pendientes</h2></div><p>Acciones sensibles pueden quedar detenidas aquí hasta decisión humana.</p></section>
+    <section className={styles.sectionHead}><div><span>APROBACIONES</span><h2>Decisiones pendientes</h2></div><p>Acciones sensibles pueden quedar detenidas aquí hasta decisión humana.</p></section>
     <section className={styles.grid}>
       {pending.map((a:any)=><article key={a.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={styles.badgePlanned}>{String(a.risk_level).toUpperCase()}</span><em>{a.action_type}</em></div>
+        <div className={styles.cardTop}><span className={styles.badgePlanned}>{riskLabel(a.risk_level)}</span><em>{a.action_type}</em></div>
         <h3>{a.action_summary}</h3>
         <p>Solicitado: {new Date(a.requested_at).toLocaleString("es-US")}</p>
         {profile.role==="admin"&&<div>
@@ -207,7 +222,7 @@ export default async function MasterAutomationPage(){
           <form action={decideApproval}><input type="hidden" name="approval_id" value={a.id}/><input type="hidden" name="decision" value="rejected"/><button className={styles.formButton}>Rechazar</button></form>
         </div>}
       </article>)}
-      {!pending.length&&<article className={styles.card}><h3>Sin approvals pendientes</h3><p>No hay acciones esperando decisión humana.</p></article>}
+      {!pending.length&&<article className={styles.card}><h3>Sin aprobaciones pendientes</h3><p>No hay acciones esperando decisión humana.</p></article>}
     </section>
 
     {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
@@ -281,13 +296,13 @@ export default async function MasterAutomationPage(){
       </form>}
     </section>}
 
-    <section className={styles.sectionHead}><div><span>EXISTING CONTROLS</span><h2>Guardrails del ecosistema</h2></div></section>
+    <section className={styles.sectionHead}><div><span>CONTROLES EXISTENTES</span><h2>Controles del ecosistema</h2></div></section>
     <section className={styles.grid}>
       {[
         ["Campañas",String(campaigns||0)+" configuradas"],
-        ["Audit trail",String(adminEvents||0)+" eventos"],
-        ["Rate limiting",String(rateRows||0)+" registros"],
-        ["Ad integrations",integrations.map(x=>x.provider+":"+(x.enabled?"on":"off")).join(" · ")||"Sin integraciones"]
+        ["Historial de auditoría",String(adminEvents||0)+" eventos"],
+        ["Control antiabuso",String(rateRows||0)+" registros"],
+        ["Integraciones publicitarias",integrations.map(x=>x.provider+":"+(x.enabled?"on":"off")).join(" · ")||"Sin integraciones"]
       ].map(([name,detail])=><article key={name} className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>CONTROL</span><em>AI/OPS</em></div>
         <h3>{name}</h3><p>{detail}</p>
