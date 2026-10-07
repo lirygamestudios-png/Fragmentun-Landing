@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 function narrativeEstadoLabel(value:string){
   const map:Record<string,string>={draft:"BORRADOR",review:"EN REVISIÓN",active:"ACTIVA",archived:"ARCHIVADA"};
@@ -189,7 +190,7 @@ export default async function MasterBrandPage(){
           <label className={styles.span2}>Mensaje clave<textarea name="key_message" required rows={3}/></label>
           <label className={styles.span2}>Evidencias de respaldo<input name="proof_points" placeholder="Dato 1, dato 2, dato 3"/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar narrativa</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar narrativa</MasterSubmitButton>
       </form>
 
       <form action={createCommunicationCampaign} className={styles.adminForm}>
@@ -206,7 +207,7 @@ export default async function MasterBrandPage(){
           <label>Inicio<input type="date" name="start_date"/></label>
           <label>Fin<input type="date" name="end_date"/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar campaña</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar campaña</MasterSubmitButton>
       </form>
       </section>
 
@@ -223,7 +224,7 @@ export default async function MasterBrandPage(){
           <label className={styles.span2}>Evidencias de respaldo<input name="proof_points"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!narrativeRows.length}>Actualizar narrativa</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!narrativeRows.length}>Actualizar narrativa</MasterSubmitButton>
       </form>
 
       <form action={updateCommunicationCampaign} className={styles.adminForm}>
@@ -239,7 +240,7 @@ export default async function MasterBrandPage(){
           <label>Fin<input type="date" name="end_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!commRows.length}>Actualizar campaña</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!commRows.length}>Actualizar campaña</MasterSubmitButton>
       </form>
       </section>
     </details>}
