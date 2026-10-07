@@ -17,16 +17,23 @@ export default async function MasterAuditPage(){
 
   const[
     {data:events},
-    {count:total}
+    {count:total},
+    {data:actors}
   ]=await Promise.all([
     supabase.from("admin_audit_log")
       .select("id,user_id,action,table_name,record_id,created_at")
       .order("created_at",{ascending:false})
       .limit(100),
-    supabase.from("admin_audit_log").select("*",{count:"exact",head:true})
+    supabase.from("admin_audit_log").select("*",{count:"exact",head:true}),
+    supabase.from("admin_profiles").select("user_id,display_name,role")
   ]);
 
   const rows=(events||[]) as any[];
+  const actorRows=(actors||[]) as any[];
+  const actorName=(id:string|null|undefined)=>{
+    const actor=actorRows.find(a=>a.user_id===id);
+    return actor?((actor.display_name||actor.user_id)+" · "+actor.role):(id?"Usuario fuera del roster":"Sistema / trigger");
+  };
   const tableCounts=rows.reduce((acc:Record<string,number>,row:any)=>{
     acc[row.table_name]=(acc[row.table_name]||0)+1;
     return acc;
@@ -65,7 +72,7 @@ export default async function MasterAuditPage(){
           <em>{new Date(row.created_at).toLocaleString("es-US")}</em>
         </div>
         <h3>{row.table_name}</h3>
-        <p>Registro: {row.record_id||"—"}<br/>Actor: {row.user_id||"sistema / trigger"}</p>
+        <p>Registro: {row.record_id||"—"}<br/>Actor: {actorName(row.user_id)}</p>
       </article>)}
       {!rows.length&&<article className={styles.card}><h3>Sin eventos</h3><p>Los cambios futuros en registros maestros aparecerán automáticamente aquí.</p></article>}
     </section>
@@ -82,7 +89,7 @@ export default async function MasterAuditPage(){
     </section>
 
     <section className={styles.notice}>
-      <div><strong>Cobertura</strong><span>37 tablas maestras del Master Admin con INSERT / UPDATE / DELETE auditados.</span></div>
+      <div><strong>Cobertura</strong><span>41 tablas operativas y maestras con INSERT / UPDATE / DELETE auditados.</span></div>
       <code>admin_audit_log</code>
     </section>
   </main>;
