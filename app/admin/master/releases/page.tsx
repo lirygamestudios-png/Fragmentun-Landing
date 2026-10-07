@@ -262,7 +262,7 @@ export default async function ReleaseGatePage(){
           <label>Dominio origen<input name="source_domain" required placeholder="Technology"/></label>
           <label>Entidad origen<input name="source_entity" required placeholder="tech_changes"/></label>
           <label>ID origen<input name="source_id" required/></label>
-          <label>Relación<select name="relation_type" defaultValue="related_to"><option value="depends_on">Depends on</option><option value="blocks">Blocks</option><option value="supports">Supports</option><option value="related_to">Related to</option><option value="derived_from">Derived from</option><option value="governs">Governs</option></select></label>
+          <label>Relación<select name="relation_type" defaultValue="related_to"><option value="depends_on">Depende de</option><option value="blocks">Bloquea</option><option value="supports">Apoya</option><option value="related_to">Relacionado con</option><option value="derived_from">Derivado de</option><option value="governs">Gobierna</option></select></label>
           <label>Dominio destino<input name="target_domain" required placeholder="Publishing"/></label>
           <label>Entidad destino<input name="target_entity" required placeholder="publishing_releases"/></label>
           <label>ID destino<input name="target_id" required/></label>
@@ -299,23 +299,23 @@ export default async function ReleaseGatePage(){
         </form>
 
         <form action={updateCheck} className={styles.adminForm}>
-          <div className={styles.formTitle}><span>GESTIONAR CHECK</span><h2>Registrar resultado</h2></div>
+          <div className={styles.formTitle}><span>GESTIONAR COMPROBACIÓN</span><h2>Registrar resultado</h2></div>
           <div className={styles.formGrid}>
-            <label>Check<select name="check_id" required defaultValue=""><option value="" disabled>Seleccionar check</option>{checkRows.map((c:any)=><option key={c.id} value={c.id}>{c.check_code} · {c.label}</option>)}</select></label>
-            <label>Status<select name="status" defaultValue="pending"><option value="pending">Pending</option><option value="passed">Passed</option><option value="failed">Failed</option><option value="waived">Waived</option></select></label>
+            <label>Comprobación<select name="check_id" required defaultValue=""><option value="" disabled>Seleccionar comprobación</option>{checkRows.map((c:any)=><option key={c.id} value={c.id}>{c.check_code} · {c.label}</option>)}</select></label>
+            <label>Estado<select name="status" defaultValue="pending"><option value="pending">Pendiente</option><option value="passed">Correcta</option><option value="failed">Revisar</option><option value="waived">Aceptada</option></select></label>
             <label className={styles.span2}>Evidencia<textarea name="evidence" rows={3}/></label>
           </div>
-          <button className={styles.formButton} disabled={!checkRows.length}>Actualizar check</button>
+          <button className={styles.formButton} disabled={!checkRows.length}>Actualizar comprobación</button>
         </form>
 
         <form action={updateGate} className={styles.adminForm}>
-          <div className={styles.formTitle}><span>DECISIÓN DE GATE</span><h2>Actualizar readiness</h2></div>
+          <div className={styles.formTitle}><span>DECISIÓN DE REVISIÓN</span><h2>Actualizar estado final</h2></div>
           <div className={styles.formGrid}>
-            <label>Gate<select name="gate_id" required defaultValue=""><option value="" disabled>Seleccionar revisión</option>{gateRows.map((g:any)=><option key={g.id} value={g.id}>{g.gate_code} · {g.title}</option>)}</select></label>
-            <label>Status<select name="status" defaultValue="in_review"><option value="draft">Draft</option><option value="in_review">In review</option><option value="blocked">Blocked</option><option value="approved">Approved</option><option value="canceled">Canceled</option></select></label>
+            <label>Revisión<select name="gate_id" required defaultValue=""><option value="" disabled>Seleccionar revisión</option>{gateRows.map((g:any)=><option key={g.id} value={g.id}>{g.gate_code} · {g.title}</option>)}</select></label>
+            <label>Estado<select name="status" defaultValue="in_review"><option value="draft">Borrador</option><option value="in_review">En revisión</option><option value="blocked">Bloqueada</option><option value="approved">Aprobada</option><option value="canceled">Cancelada</option></select></label>
             <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
           </div>
-          <button className={styles.formButton} disabled={!gateRows.length}>Actualizar gate</button>
+          <button className={styles.formButton} disabled={!gateRows.length}>Actualizar revisión</button>
         </form>
       </>}
       </section>
