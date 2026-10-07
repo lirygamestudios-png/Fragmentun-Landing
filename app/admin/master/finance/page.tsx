@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 function money(cents:number|null|undefined,currency="USD"){
   return new Intl.NumberFormat("en-US",{style:"currency",currency}).format((cents||0)/100);
@@ -216,7 +217,7 @@ export default async function MasterFinancePage(){
           </select></label>
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar cuenta</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar cuenta</MasterSubmitButton>
       </form>}
 
       <form action={createFinanceTransaction} className={styles.adminForm}>
@@ -242,7 +243,7 @@ export default async function MasterFinancePage(){
           <label>Fuente<input name="source_type" placeholder="Pedido / factura / manual"/></label>
           <label>ID fuente<input name="source_id" placeholder="Referencia interna"/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar movimiento</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar movimiento</MasterSubmitButton>
       </form>
     </section>
 
@@ -254,7 +255,7 @@ export default async function MasterFinancePage(){
           <label>Activa<select name="active" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
         </div>
-        <button className={styles.formButton} disabled={!accountRows.length}>Actualizar cuenta</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!accountRows.length}>Actualizar cuenta</MasterSubmitButton>
       </form>}
 
       <form action={updateFinanceTransaction} className={styles.adminForm}>
@@ -268,7 +269,7 @@ export default async function MasterFinancePage(){
           <label>Referencia externa<input name="external_reference"/></label>
           <label className={styles.span2}>Descripción<input name="description"/></label>
         </div>
-        <button className={styles.formButton} disabled={!txRows.length}>Actualizar movimiento</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!txRows.length}>Actualizar movimiento</MasterSubmitButton>
       </form>
     </section></details>}
 
