@@ -36,7 +36,13 @@ async function validateCurrentPreview(){
     {name:"Admin login",path:"/admin/login",expected:200},
     {name:"Master protegido",path:"/admin/master",expected:307},
     {name:"API status protegida",path:"/api/admin/status",expected:403},
-    {name:"API commerce protegida",path:"/api/admin/commerce",expected:403}
+    {name:"API commerce protegida",path:"/api/admin/commerce",expected:403},
+    {name:"Reportes protegidos",path:"/admin/master/reports",expected:307},
+    {name:"Copias protegidas",path:"/admin/master/backups",expected:307},
+    {name:"Integraciones protegidas",path:"/admin/master/integrations",expected:307},
+    {name:"Mantenimiento protegido",path:"/admin/master/maintenance",expected:307},
+    {name:"Checklist protegido",path:"/admin/master/checklist",expected:307},
+    {name:"QA final protegido",path:"/admin/master/qa",expected:307}
   ];
 
   let failed=0;
@@ -69,8 +75,8 @@ async function validateCurrentPreview(){
   const finalStatus=failed===0?"passed":"failed";
   const{error:closeError}=await supabase.from("runtime_validation_runs").update({
     status:finalStatus,notes:failed===0
-      ?"Smoke automático completo: 5/5 checks passed."
-      :`Smoke automático con ${failed} check(s) fallido(s).`,
+      ?"Smoke automático completo: todas las comprobaciones superadas."
+      :`Smoke automático con ${failed} comprobación(es) fallida(s).`,
     updated_at:new Date().toISOString()
   }).eq("id",run.id);
   if(closeError) throw new Error(closeError.message);
