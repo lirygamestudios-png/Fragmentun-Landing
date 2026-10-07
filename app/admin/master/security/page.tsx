@@ -140,7 +140,7 @@ export default async function MasterSecurityPage(){
   const reviewRows=(accessRevisións||[]) as any[];
   const openIncidents=incidentRows.filter(i=>!["resolved","closed"].includes(i.status));
   const criticalIncidents=incidentRows.filter(i=>["high","critical"].includes(i.severity)&&!["resolved","closed"].includes(i.status));
-  const pendingRevisións=reviewRows.filter(r=>r.review_status==="pending"||r.review_status==="change_required");
+  const pendingReviews=reviewRows.filter(r=>r.review_status==="pending"||r.review_status==="change_required");
   const vencidasRevisións=reviewRows.filter(r=>r.due_date&&new Date(r.due_date).getTime()<Date.now()&&!["approved","revoked"].includes(r.review_status));
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
@@ -164,7 +164,7 @@ export default async function MasterSecurityPage(){
 
     <section className={styles.kpis}>
       <article><small>Incidentes abiertos</small><strong>{openIncidents.length}</strong><span>{criticalIncidents.length} altos o críticos</span></article>
-      <article><small>Revisiones de acceso</small><strong>{pendingRevisións.length}</strong><span>{overdueRevisións.length} vencidas</span></article>
+      <article><small>Revisiones de acceso</small><strong>{pendingReviews.length}</strong><span>{overdueReviews.length} vencidas</span></article>
       <article><small>Usuarios administrativos</small><strong>{(profiles||0).toLocaleString()}</strong><span>Provisionados</span></article>
       <article><small>Eventos de auditoría</small><strong>{(adminEvents||0).toLocaleString()}</strong><span>Trazabilidad</span></article>
     </section>
