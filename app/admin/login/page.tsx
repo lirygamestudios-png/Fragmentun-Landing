@@ -1,10 +1,8 @@
 "use client";
 import Link from "next/link";
 import { FormEvent,useEffect,useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage(){
-  const router=useRouter();
   const[unauthorized,setUnauthorized]=useState(false);
   const[authError,setAuthError]=useState(false);
   const[email,setEmail]=useState("");
@@ -33,8 +31,7 @@ export default function AdminLoginPage(){
       setStatus(destination==="/admin/mfa"
         ?"Credenciales correctas. Verifica el segundo factor…"
         :"Acceso correcto. Abriendo Panel de administración…");
-      router.replace(destination);
-      router.refresh();
+      window.location.assign(destination);
       return;
     }
     setLoading(false);
