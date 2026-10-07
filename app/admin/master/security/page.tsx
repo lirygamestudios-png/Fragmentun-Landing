@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
-function incidentEstadoLabel(value:string){
+function incidentStatusLabel(value:string){
   const map:Record<string,string>={open:"ABIERTO",investigating:"INVESTIGANDO",contained:"CONTENIDO",monitoring:"EN SEGUIMIENTO",resolved:"RESUELTO",closed:"CERRADO"};
   return map[value]||String(value||"").toUpperCase();
 }
@@ -120,7 +120,7 @@ export default async function MasterSecurityPage(){
 
   const[
     {data:incidents},
-    {data:accessRevisións},
+    {data:accessReviews},
     {count:profiles},
     {count:allowlist},
     {count:rateRows},
@@ -137,11 +137,11 @@ export default async function MasterSecurityPage(){
   ]);
 
   const incidentRows=(incidents||[]) as any[];
-  const reviewRows=(accessRevisións||[]) as any[];
+  const reviewRows=(accessReviews||[]) as any[];
   const openIncidents=incidentRows.filter(i=>!["resolved","closed"].includes(i.status));
   const criticalIncidents=incidentRows.filter(i=>["high","critical"].includes(i.severity)&&!["resolved","closed"].includes(i.status));
   const pendingReviews=reviewRows.filter(r=>r.review_status==="pending"||r.review_status==="change_required");
-  const vencidasRevisións=reviewRows.filter(r=>r.due_date&&new Date(r.due_date).getTime()<Date.now()&&!["approved","revoked"].includes(r.review_status));
+  const overdueReviews=reviewRows.filter(r=>r.due_date&&new Date(r.due_date).getTime()<Date.now()&&!["approved","revoked"].includes(r.review_status));
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
@@ -172,7 +172,7 @@ export default async function MasterSecurityPage(){
     <section className={styles.sectionHead}><div><span>INCIDENTES</span><h2>Incidentes de seguridad</h2></div><p>Registro persistente y privado; empieza vacío hasta que exista un incidente real que documentar.</p></section>
     <section className={styles.grid}>
       {incidentRows.map((i:any)=><article key={i.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={["resolved","closed"].includes(i.status)?styles.badgeActive:styles.badgePlanned}>{incidentEstadoLabel(i.status)}</span><em>{severityLabel(i.severity)}</em></div>
+        <div className={styles.cardTop}><span className={["resolved","closed"].includes(i.status)?styles.badgeActive:styles.badgePlanned}>{incidentStatusLabel(i.status)}</span><em>{severityLabel(i.severity)}</em></div>
         <h3>{i.title}</h3><p>{i.incident_code} · {i.category}<br/>Responsable: {ownerName(i.owner_user_id)}<br/>{new Date(i.detected_at).toLocaleString("es-US")}<br/>{i.summary||"Sin resumen"}</p>
       </article>)}
       {!incidentRows.length&&<article className={styles.card}><h3>Sin incidentes registrados</h3><p>No se han creado incidentes ficticios.</p></article>}
