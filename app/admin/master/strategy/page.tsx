@@ -56,6 +56,51 @@ async function createKeyResult(formData:FormData){
   revalidatePath("/admin/master/strategy");
 }
 
+
+async function updateObjective(formData:FormData){
+  "use server";
+  const {supabase}=await requireStrategyEditor();
+  const id=String(formData.get("objective_id")||"").trim();
+  const status=String(formData.get("status")||"planned");
+  const priority=String(formData.get("priority")||"medium");
+  const ownerRaw=String(formData.get("owner_user_id")||"").trim();
+  const ownerUserId=ownerRaw||null;
+  const progress=Math.max(0,Math.min(100,Number(formData.get("progress_percent")||0)));
+  const startDate=String(formData.get("start_date")||"").trim()||null;
+  const targetDate=String(formData.get("target_date")||"").trim()||null;
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["planned","active","at_risk","completed","canceled"]);
+  const allowedPriority=new Set(["low","medium","high","critical"]);
+  if(!id||!allowedStatus.has(status)||!allowedPriority.has(priority)||!Number.isFinite(progress)) throw new Error("invalid_objective_update");
+  const{error}=await supabase.from("strategy_objectives").update({
+    status,priority,owner_user_id:ownerUserId,progress_percent:Math.trunc(progress),start_date:startDate,target_date:targetDate,notes,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/strategy");
+}
+
+async function updateKeyResult(formData:FormData){
+  "use server";
+  const {supabase}=await requireStrategyEditor();
+  const id=String(formData.get("key_result_id")||"").trim();
+  const status=String(formData.get("status")||"planned");
+  const ownerRaw=String(formData.get("owner_user_id")||"").trim();
+  const ownerUserId=ownerRaw||null;
+  const currentRaw=String(formData.get("current_value")||"").trim();
+  const targetRaw=String(formData.get("target_value")||"").trim();
+  const current=currentRaw?Number(currentRaw):null;
+  const target=targetRaw?Number(targetRaw):null;
+  const targetDate=String(formData.get("target_date")||"").trim()||null;
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["planned","active","at_risk","completed","canceled"]);
+  if(!id||!allowedStatus.has(status)||[current,target].some(v=>v!==null&&!Number.isFinite(v))) throw new Error("invalid_kr_update");
+  const{error}=await supabase.from("strategy_key_results").update({
+    status,owner_user_id:ownerUserId,current_value:current,target_value:target,target_date:targetDate,notes,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/strategy");
+}
+
 export default async function MasterStrategyPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -72,16 +117,18 @@ export default async function MasterStrategyPage(){
     {count:leads},
     {count:testCompletes},
     {count:campaigns},
-    {count:paidOrders}
+    {count:paidOrders},
+    {data:owners}
   ]=await Promise.all([
-    supabase.from("strategy_objectives").select("id,code,title,description,horizon,status,priority,start_date,target_date,progress_percent,created_at").order("priority",{ascending:false}),
-    supabase.from("strategy_key_results").select("id,objective_id,title,metric_name,unit,baseline,target_value,current_value,status,target_date,created_at").order("created_at",{ascending:true}),
+    supabase.from("strategy_objectives").select("id,code,title,description,horizon,status,priority,owner_user_id,start_date,target_date,progress_percent,notes,created_at").order("priority",{ascending:false}),
+    supabase.from("strategy_key_results").select("id,objective_id,title,metric_name,unit,baseline,target_value,current_value,status,owner_user_id,target_date,notes,created_at").order("created_at",{ascending:true}),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","page_view").gte("created_at",since30),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","amazon_click").gte("created_at",since30),
     supabase.from("leads").select("*",{count:"exact",head:true}).gte("created_at",since30),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","test_complete").gte("created_at",since30),
     supabase.from("campaigns").select("*",{count:"exact",head:true}).eq("active",true),
-    supabase.from("shop_orders").select("*",{count:"exact",head:true}).eq("payment_status","paid")
+    supabase.from("shop_orders").select("*",{count:"exact",head:true}).eq("payment_status","paid"),
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
   ]);
 
   const objectiveRows=(objectives||[]) as any[];
@@ -90,6 +137,8 @@ export default async function MasterStrategyPage(){
   const atRiskObjectives=objectiveRows.filter(o=>o.status==="at_risk");
   const leadConversion=(views||0)>0?((leads||0)/(views||1))*100:0;
   const amazonCtr=(views||0)>0?((amazonClicks||0)/(views||1))*100:0;
+  const ownerRows=(owners||[]) as any[];
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
@@ -108,7 +157,7 @@ export default async function MasterStrategyPage(){
     <section className={styles.grid}>
       {objectiveRows.map((o:any)=><article key={o.id} className={styles.card}>
         <div className={styles.cardTop}><span className={o.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(o.status).toUpperCase()}</span><em>{o.priority}</em></div>
-        <h3>{o.title}</h3><p>{o.horizon} · {o.progress_percent}%<br/>{o.start_date||"sin inicio"} → {o.target_date||"sin target"}<br/>{o.description||"Sin descripción"}</p>
+        <h3>{o.title}</h3><p>{o.horizon} · {o.progress_percent}%<br/>Owner: {ownerName(o.owner_user_id)}<br/>{o.start_date||"sin inicio"} → {o.target_date||"sin target"}<br/>{o.description||"Sin descripción"}</p>
       </article>)}
       {!objectiveRows.length&&<article className={styles.card}><h3>Strategy Registry preparado</h3><p>No se han cargado objetivos todavía.</p></article>}
     </section>
@@ -117,7 +166,7 @@ export default async function MasterStrategyPage(){
     <section className={styles.grid}>
       {krRows.map((kr:any)=><article key={kr.id} className={styles.card}>
         <div className={styles.cardTop}><span className={kr.status==="completed"?styles.badgeActive:styles.badgePlanned}>{String(kr.status).toUpperCase()}</span><em>{kr.metric_name||"KPI"}</em></div>
-        <h3>{kr.title}</h3><p>Baseline: {kr.baseline??"—"} {kr.unit||""}<br/>Actual: {kr.current_value??"—"} · Target: {kr.target_value??"—"} {kr.unit||""}<br/>{kr.target_date||"Sin fecha"}</p>
+        <h3>{kr.title}</h3><p>Owner: {ownerName(kr.owner_user_id)}<br/>Baseline: {kr.baseline??"—"} {kr.unit||""}<br/>Actual: {kr.current_value??"—"} · Target: {kr.target_value??"—"} {kr.unit||""}<br/>{kr.target_date||"Sin fecha"}</p>
       </article>)}
       {!krRows.length&&<article className={styles.card}><h3>Sin key results</h3><p>Los resultados se registrarán contra objetivos reales.</p></article>}
     </section>
@@ -150,6 +199,38 @@ export default async function MasterStrategyPage(){
           <label>Fecha objetivo<input type="date" name="target_date"/></label>
         </div>
         <button className={styles.formButton} type="submit" disabled={!objectiveRows.length}>Registrar KR</button>
+      </form>
+    </section>}
+
+
+    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+      <form action={updateObjective} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR OBJETIVO</span><h2>Actualizar OKR</h2></div>
+        <div className={styles.formGrid}>
+          <label>Objetivo<select name="objective_id" required defaultValue=""><option value="" disabled>Seleccionar objetivo</option>{objectiveRows.map((o:any)=><option key={o.id} value={o.id}>{o.code} · {o.title}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="active"><option value="planned">Planned</option><option value="active">Active</option><option value="at_risk">At risk</option><option value="completed">Completed</option><option value="canceled">Canceled</option></select></label>
+          <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
+          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Progreso %<input type="number" min="0" max="100" name="progress_percent" defaultValue="0"/></label>
+          <label>Inicio<input type="date" name="start_date"/></label>
+          <label>Target<input type="date" name="target_date"/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!objectiveRows.length}>Actualizar objetivo</button>
+      </form>
+
+      <form action={updateKeyResult} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR KR</span><h2>Actualizar resultado</h2></div>
+        <div className={styles.formGrid}>
+          <label>Key result<select name="key_result_id" required defaultValue=""><option value="" disabled>Seleccionar KR</option>{krRows.map((kr:any)=><option key={kr.id} value={kr.id}>{kr.title}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="active"><option value="planned">Planned</option><option value="active">Active</option><option value="at_risk">At risk</option><option value="completed">Completed</option><option value="canceled">Canceled</option></select></label>
+          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Actual<input type="number" step="any" name="current_value"/></label>
+          <label>Target<input type="number" step="any" name="target_value"/></label>
+          <label>Fecha objetivo<input type="date" name="target_date"/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!krRows.length}>Actualizar KR</button>
       </form>
     </section>}
 
