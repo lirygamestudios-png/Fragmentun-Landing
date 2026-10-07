@@ -16,22 +16,29 @@ export function AdminCommerceReports(){
 
   async function load(){
     setLoading(true);setMsg("");
-    const q=new URLSearchParams();if(from)q.set("from",from);if(to)q.set("to",to);
-    const r=await fetch("/api/admin/commerce/reports?"+q.toString(),{cache:"no-store"});
-    const j=await r.json().catch(()=>({}));setLoading(false);
-    if(!r.ok){setMsg(j.error||"No fue posible generar el reporte.");return}setData(j);
+    try{
+      const q=new URLSearchParams();if(from)q.set("from",from);if(to)q.set("to",to);
+      const r=await fetch("/api/admin/commerce/reports?"+q.toString(),{cache:"no-store"});
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok){setMsg(j.error||"No fue posible generar el reporte.");return}
+      setData(j);setMsg("Reporte actualizado correctamente.");
+    }catch{
+      setMsg("No fue posible generar el reporte. Revisa la conexión e inténtalo nuevamente.");
+    }finally{
+      setLoading(false);
+    }
   }
   useEffect(()=>{load()},[]);
 
   const maxProvider=useMemo(()=>data?Math.max(1,...Object.values(data.by_provider).map(v=>v.revenue_cents)):1,[data]);
 
   function exportCsv(){
-    if(!data)return;
+    if(!data){setMsg("No hay datos disponibles para exportar.");return;}
     const rows=[["Orden","Fecha","Cliente","Procesador","Pago","Fulfillment","Subtotal","Impuesto","Envío","Total","Comisión","Costo proveedor","Costo envío","Margen","Moneda"],
       ...data.orders.map(o=>[o.order_number,o.created_at,o.customer_email||"",o.payment_provider||"",o.payment_status,o.fulfillment_status,o.subtotal_cents/100,o.tax_cents/100,o.shipping_cents/100,o.total_cents/100,o.payment_fee_cents/100,o.supplier_cost_cents/100,o.shipping_cost_cents/100,o.margin_cents/100,o.currency])];
     const csv="\ufeff"+rows.map(r=>r.map(csvCell).join(",")).join("\n");
     const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");
-    a.href=url;a.download="fragmentun-reporte-tienda-"+(from||"inicio")+"-"+(to||"actualidad")+".csv";document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+    a.href=url;a.download="fragmentun-reporte-tienda-"+(from||"inicio")+"-"+(to||"actualidad")+".csv";document.body.appendChild(a);a.click();a.remove();window.setTimeout(()=>URL.revokeObjectURL(url),1000);setMsg("Reporte CSV exportado correctamente.");
   }
 
   if(loading&&!data)return <section className="card adminStoreReport"><FragmentunProcessOverlay compact state="loading" title="GENERANDO REPORTE…"/></section>;
@@ -39,6 +46,7 @@ export function AdminCommerceReports(){
 
   return <section className="card adminStoreReport" id="reporte-tienda">
     <div className="adminPanelHeader noPrint"><div><div className="kicker">REPORTES DE TIENDA</div><h2>Ventas, impuestos y operación</h2><p className="note">Dashboard visual y reporte imprimible para administración de la franquicia.</p></div><span className="adminPanelBadge">REPORTING</span></div>
+    {msg?<p role="status" className={msg.toLowerCase().includes("no fue")||msg.toLowerCase().includes("no hay")?"adminSaveFeedback error":"adminSaveFeedback success"}>{msg}</p>:null}
     <div className="adminReportToolbar noPrint">
       <label><span>Desde</span><input type="date" value={from} onChange={e=>setFrom(e.target.value)}/></label>
       <label><span>Hasta</span><input type="date" value={to} onChange={e=>setTo(e.target.value)}/></label>
