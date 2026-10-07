@@ -65,7 +65,7 @@ export function AdminIntegrationLogs(){
   const[plantillaStatus,setPlantillaStatus]=useState<"idle"|"copied"|"error">("idle");
   const[adSaving,setAdSaving]=useState<string>("");
   const[adFeedback,setAdFeedback]=useState<Record<string,string>>({});
-  useEffect(()=>{fetch("/api/admin/integrations").then(r=>r.json()).then(setData)},[]);
+  useEffect(()=>{fetch("/api/admin/integrations").then(async r=>{const j=await r.json().catch(()=>({error:"load_failed"}));setData(r.ok?j:{error:j?.error||"load_failed"});}).catch(()=>setData({error:"load_failed"}))},[]);
 
   if(!data)return <FragmentunProcessOverlay compact state="loading" title="CARGANDO INTEGRACIONES…"/>;
   if(data.error)return <p className="adminSaveFeedback error">No fue posible cargar el historial de integraciones.</p>;
