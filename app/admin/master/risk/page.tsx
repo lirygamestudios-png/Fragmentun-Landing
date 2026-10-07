@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 function riskStatusLabel(value:string){
   const map:Record<string,string>={open:"ABIERTO",mitigating:"EN MITIGACIÓN",accepted:"ACEPTADO",monitoring:"EN SEGUIMIENTO",closed:"CERRADO"};
@@ -189,7 +190,7 @@ export default async function MasterRiskPage(){
           <label>Fecha límite<input type="date" name="due_date"/></label>
           <label className={styles.span2}>Mitigación<textarea name="mitigation" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar riesgo</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar riesgo</MasterSubmitButton>
       </form>
 
       <form action={createEvidence} className={styles.adminForm}>
@@ -204,7 +205,7 @@ export default async function MasterRiskPage(){
           <label>URL evidencia<input name="evidence_url"/></label>
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit" disabled={!riskRows.length}>Registrar evidencia</button>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!riskRows.length}>Registrar evidencia</MasterSubmitButton>
       </form>
       </section>
 
@@ -224,7 +225,7 @@ export default async function MasterRiskPage(){
           <label className={styles.span2}>Mitigación<textarea name="mitigation" rows={3}/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit" disabled={!riskRows.length}>Actualizar riesgo</button>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!riskRows.length}>Actualizar riesgo</MasterSubmitButton>
       </form>
       </section>
     </details>}
