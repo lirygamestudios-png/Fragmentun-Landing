@@ -29,8 +29,11 @@ export default function AdminLoginPage(){
     });
     const j=await r.json().catch(()=>({}));
     if(r.ok){
-      setStatus("Acceso correcto. Abriendo Panel de administración…");
-      router.replace("/admin");
+      const destination=typeof j.redirect==="string"&&j.redirect.startsWith("/admin")?j.redirect:"/admin";
+      setStatus(destination==="/admin/mfa"
+        ?"Credenciales correctas. Verifica el segundo factor…"
+        :"Acceso correcto. Abriendo Panel de administración…");
+      router.replace(destination);
       router.refresh();
       return;
     }
