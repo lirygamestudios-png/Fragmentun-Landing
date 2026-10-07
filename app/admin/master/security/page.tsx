@@ -71,7 +71,7 @@ export default async function MasterSecurityPage(){
     supabase.from("admin_profiles").select("*",{count:"exact",head:true}),
     supabase.from("admin_access_allowlist").select("*",{count:"exact",head:true}),
     supabase.from("ingress_rate_limits").select("*",{count:"exact",head:true}),
-    supabase.from("admin_activity_log").select("*",{count:"exact",head:true})
+    supabase.from("admin_audit_log").select("*",{count:"exact",head:true})
   ]);
 
   const incidentRows=(incidents||[]) as any[];
