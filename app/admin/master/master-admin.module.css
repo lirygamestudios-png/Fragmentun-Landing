@@ -27,3 +27,12 @@
 .span2{grid-column:1/-1}.formButton{margin-top:14px;border:1px solid rgba(201,168,76,.45);background:rgba(201,168,76,.10);color:#e8d28d;border-radius:8px;padding:10px 14px;font-weight:700;cursor:pointer}.formButton:hover{background:rgba(201,168,76,.16)}.formButton:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:900px){.adminForms{grid-template-columns:1fr}}
 @media(max-width:600px){.formGrid{grid-template-columns:1fr}.span2{grid-column:auto}}
+
+/* Accesibilidad: foco visible y navegación por teclado */
+.nav a:focus-visible,.publicSite:focus-visible,.card:focus-visible,.formButton:focus-visible,.formGrid input:focus-visible,.formGrid select:focus-visible,.formGrid textarea:focus-visible,.advancedPanel summary:focus-visible{
+  outline:2px solid #c9a84c;
+  outline-offset:3px;
+}
+.formGrid input:focus-visible,.formGrid select:focus-visible,.formGrid textarea:focus-visible{
+  border-color:#c9a84c;
+}
