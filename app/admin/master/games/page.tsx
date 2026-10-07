@@ -71,6 +71,54 @@ async function createMilestone(formData:FormData){
   revalidatePath("/admin/master/games");
 }
 
+
+async function updateGame(formData:FormData){
+  "use server";
+  const {supabase}=await requireGameEditor();
+  const id=String(formData.get("game_id")||"").trim();
+  const stage=String(formData.get("lifecycle_stage")||"concept");
+  const health=String(formData.get("health_status")||"green");
+  const ownerRaw=String(formData.get("owner_user_id")||"").trim();
+  const ownerUserId=ownerRaw||null;
+  const targetRelease=String(formData.get("target_release_date")||"").trim()||null;
+  const budgetRaw=String(formData.get("budget")||"").trim();
+  const budgetCents=budgetRaw?Math.round(Number(budgetRaw)*100):null;
+  const currency=(String(formData.get("currency")||"USD").trim()||"USD").toUpperCase();
+  const summary=String(formData.get("summary")||"").trim()||null;
+  const allowedStages=new Set(["concept","pre_production","vertical_slice","production","alpha","beta","release_candidate","launch","liveops","sunset"]);
+  const allowedHealth=new Set(["green","amber","red","paused"]);
+  if(!id||!allowedStages.has(stage)||!allowedHealth.has(health)|| (budgetCents!==null&&(!Number.isFinite(budgetCents)||budgetCents<0))) throw new Error("invalid_game_update");
+  const{error}=await supabase.from("game_titles").update({
+    lifecycle_stage:stage,health_status:health,owner_user_id:ownerUserId,target_release_date:targetRelease,
+    budget_cents:budgetCents,currency,summary,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/games");
+}
+
+async function updateMilestone(formData:FormData){
+  "use server";
+  const {supabase}=await requireGameEditor();
+  const id=String(formData.get("milestone_id")||"").trim();
+  const status=String(formData.get("status")||"planned");
+  const ownerRaw=String(formData.get("owner_user_id")||"").trim();
+  const ownerUserId=ownerRaw||null;
+  const progress=Math.max(0,Math.min(100,Number(formData.get("progress_percent")||0)));
+  const targetDate=String(formData.get("target_date")||"").trim()||null;
+  const exitCriteria=String(formData.get("exit_criteria")||"").trim()||null;
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["planned","in_progress","blocked","at_risk","completed","canceled"]);
+  if(!id||!allowedStatus.has(status)||!Number.isFinite(progress)) throw new Error("invalid_milestone_update");
+  const patch:any={
+    status,owner_user_id:ownerUserId,progress_percent:Math.trunc(progress),target_date:targetDate,
+    exit_criteria:exitCriteria,notes,updated_at:new Date().toISOString()
+  };
+  patch.completed_at=status==="completed"?new Date().toISOString():null;
+  const{error}=await supabase.from("game_milestones").update(patch).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/games");
+}
+
 export default async function MasterGamesPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -83,13 +131,15 @@ export default async function MasterGamesPage(){
     {data:milestones},
     {count:books},
     {count:characters},
-    {count:media}
+    {count:media},
+    {data:owners}
   ]=await Promise.all([
-    supabase.from("game_titles").select("id,slug,name,ip_name,platform_scope,lifecycle_stage,health_status,target_release_date,budget_cents,currency,summary,created_at").order("created_at",{ascending:true}),
-    supabase.from("game_milestones").select("id,game_id,name,milestone_type,status,target_date,progress_percent,exit_criteria,notes,created_at").order("target_date",{ascending:true}),
+    supabase.from("game_titles").select("id,slug,name,ip_name,platform_scope,lifecycle_stage,health_status,owner_user_id,target_release_date,budget_cents,currency,summary,created_at").order("created_at",{ascending:true}),
+    supabase.from("game_milestones").select("id,game_id,name,milestone_type,status,target_date,completed_at,owner_user_id,progress_percent,exit_criteria,notes,created_at").order("target_date",{ascending:true}),
     supabase.from("books").select("*",{count:"exact",head:true}),
     supabase.from("characters").select("*",{count:"exact",head:true}),
-    supabase.from("media_assets").select("*",{count:"exact",head:true})
+    supabase.from("media_assets").select("*",{count:"exact",head:true}),
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
   ]);
 
   const gameRows=(games||[]) as any[];
@@ -97,6 +147,8 @@ export default async function MasterGamesPage(){
   const activeMilestones=milestoneRows.filter(m=>!["completed","canceled"].includes(m.status));
   const blocked=milestoneRows.filter(m=>m.status==="blocked"||m.status==="at_risk");
   const redGames=gameRows.filter(g=>g.health_status==="red"||g.health_status==="paused");
+  const ownerRows=(owners||[]) as any[];
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
@@ -123,7 +175,7 @@ export default async function MasterGamesPage(){
           <em>{stageLabel(g.lifecycle_stage)}</em>
         </div>
         <h3>{g.name}</h3>
-        <p>{g.ip_name||"IP sin asignar"}<br/>{(g.platform_scope||[]).length?(g.platform_scope||[]).join(" · "):"Plataformas por definir"}<br/>{g.target_release_date?"Target: "+g.target_release_date:"Sin fecha objetivo"}</p>
+        <p>{g.ip_name||"IP sin asignar"}<br/>Owner: {ownerName(g.owner_user_id)}<br/>{(g.platform_scope||[]).length?(g.platform_scope||[]).join(" · "):"Plataformas por definir"}<br/>{g.target_release_date?"Target: "+g.target_release_date:"Sin fecha objetivo"} · {g.budget_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:g.currency||"USD"}).format(Number(g.budget_cents)/100):"Presupuesto por definir"}</p>
       </article>)}
       {!gameRows.length&&<article className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgePlanned}>LISTO</span><em>GAME REGISTRY</em></div>
@@ -144,7 +196,7 @@ export default async function MasterGamesPage(){
           <em>{m.progress_percent}%</em>
         </div>
         <h3>{m.name}</h3>
-        <p>{m.milestone_type} · {m.target_date||"Sin fecha"}<br/>{m.exit_criteria||"Exit criteria pendiente"}</p>
+        <p>{m.milestone_type} · {m.target_date||"Sin fecha"}<br/>Owner: {ownerName(m.owner_user_id)}<br/>{m.exit_criteria||"Exit criteria pendiente"}</p>
       </article>)}
       {!milestoneRows.length&&<article className={styles.card}><h3>Sin milestones cargados</h3><p>Cuando registremos cada juego, aquí controlaremos Vertical Slice, Alpha, Beta, RC, Launch y LiveOps.</p></article>}
     </section>
@@ -194,6 +246,38 @@ export default async function MasterGamesPage(){
           <label className={styles.span2}>Exit criteria<textarea name="exit_criteria" rows={3} placeholder="Condiciones para considerar el milestone completado"/></label>
         </div>
         <button className={styles.formButton} type="submit" disabled={!gameRows.length}>Registrar milestone</button>
+      </form>
+    </section>}
+
+
+    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+      <form action={updateGame} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR JUEGO</span><h2>Actualizar producción</h2></div>
+        <div className={styles.formGrid}>
+          <label>Juego<select name="game_id" required defaultValue=""><option value="" disabled>Seleccionar juego</option>{gameRows.map((g:any)=><option key={g.id} value={g.id}>{g.name}</option>)}</select></label>
+          <label>Etapa<select name="lifecycle_stage" defaultValue="production"><option value="concept">Concept</option><option value="pre_production">Pre-Production</option><option value="vertical_slice">Vertical Slice</option><option value="production">Production</option><option value="alpha">Alpha</option><option value="beta">Beta</option><option value="release_candidate">Release Candidate</option><option value="launch">Launch</option><option value="liveops">LiveOps</option><option value="sunset">Sunset</option></select></label>
+          <label>Salud<select name="health_status" defaultValue="green"><option value="green">Green</option><option value="amber">Amber</option><option value="red">Red</option><option value="paused">Paused</option></select></label>
+          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Release target<input type="date" name="target_release_date"/></label>
+          <label>Presupuesto<input type="number" min="0" step="0.01" name="budget"/></label>
+          <label>Moneda<input name="currency" defaultValue="USD"/></label>
+          <label className={styles.span2}>Resumen<textarea name="summary" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!gameRows.length}>Actualizar juego</button>
+      </form>
+
+      <form action={updateMilestone} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR MILESTONE</span><h2>Actualizar milestone</h2></div>
+        <div className={styles.formGrid}>
+          <label>Milestone<select name="milestone_id" required defaultValue=""><option value="" disabled>Seleccionar milestone</option>{milestoneRows.map((m:any)=><option key={m.id} value={m.id}>{m.name}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="in_progress"><option value="planned">Planned</option><option value="in_progress">In progress</option><option value="blocked">Blocked</option><option value="at_risk">At risk</option><option value="completed">Completed</option><option value="canceled">Canceled</option></select></label>
+          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Progreso %<input type="number" min="0" max="100" name="progress_percent" defaultValue="0"/></label>
+          <label>Fecha objetivo<input type="date" name="target_date"/></label>
+          <label className={styles.span2}>Exit criteria<textarea name="exit_criteria" rows={3}/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!milestoneRows.length}>Actualizar milestone</button>
       </form>
     </section>}
 
