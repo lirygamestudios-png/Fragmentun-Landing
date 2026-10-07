@@ -23,11 +23,15 @@ export function AdminShop(){
   const[media,setMedia]=useState<any[]>([]);
   const[msg,setMsg]=useState("");
   const[saving,setSaving]=useState(false);
+  const[loadError,setLoadError]=useState(false);
   const supabase=useMemo(()=>createSupabaseBrowserClient(),[]);
 
   useEffect(()=>{
     Promise.all([fetch("/api/admin/content"),fetch("/api/admin/media")])
-      .then(async([a,b])=>[await a.json(),await b.json()])
+      .then(async([a,b])=>{
+        if(!a.ok||!b.ok)throw new Error("load_failed");
+        return [await a.json(),await b.json()];
+      })
       .then(([content,assets])=>{
         const row=(content.data||[]).find((x:any)=>x.content_key==="home.shop");
         setEs(row?.es||{enabled:false,featured_products:[]});
@@ -35,7 +39,8 @@ export function AdminShop(){
         setStatusEs(row?.status_es||"published");
         setStatusEn(row?.status_en||"published");
         setMedia((assets.data||[]).filter((x:any)=>x.public_visible&&x.kind==="image"));
-      });
+      })
+      .catch(()=>setLoadError(true));
   },[]);
 
   function mediaUrl(asset:any){
@@ -83,15 +88,21 @@ export function AdminShop(){
       return;
     }
     setSaving(true);setMsg("Guardando tienda…");
-    const r=await fetch("/api/admin/content",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-      content_key:"home.shop",es,en,status_es:statusEs,status_en:statusEn
-    })});
-    const j=await r.json().catch(()=>({}));
-    setSaving(false);
-    if(!r.ok){setMsg(j.error||"No fue posible guardar.");return}
-    setEs(j.data.es);setEn(j.data.en);setMsg("GUARDADO SATISFACTORIAMENTE");
+    try{
+      const r=await fetch("/api/admin/content",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+        content_key:"home.shop",es,en,status_es:statusEs,status_en:statusEn
+      })});
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok){setMsg(j.error||"No fue posible guardar.");return}
+      setEs(j.data.es);setEn(j.data.en);setMsg("GUARDADO SATISFACTORIAMENTE");
+    }catch{
+      setMsg("No fue posible guardar. Revisa la conexión e inténtalo nuevamente.");
+    }finally{
+      setSaving(false);
+    }
   }
 
+  if(loadError)return <section className="card"><p className="adminSaveFeedback error">No fue posible cargar la tienda.</p><button type="button" className="btn btnGhost" onClick={()=>window.location.reload()}>Reintentar</button></section>;
   if(!es||!en)return <FragmentunProcessOverlay compact state="loading" title="CARGANDO TIENDA…"/>;
   const active=!!es.enabled&&(!!(es.shop_url||"").trim()||products("es").some(productReady));
   const modeCounts=products("es").reduce((a,p)=>{a[productMode(p)]++;return a},{external:0,internal:0,interest:0});
@@ -148,7 +159,7 @@ export function AdminShop(){
           <label><span>Estado editorial</span><select value={lang==="es"?statusEs:statusEn} onChange={e=>lang==="es"?setStatusEs(e.target.value):setStatusEn(e.target.value)}><option value="draft">Borrador</option><option value="review">Revisión</option><option value="published">Publicado</option></select></label>
 
           <div className="adminShopProducts">
-            <div className="adminPanelHeader"><div><div className="kicker">PRODUCTOS HÍBRIDOS</div><h3>Productos</h3></div><button type="button" className="btn btnGhost" onClick={()=>update(lang,"featured_products",[...products(lang),emptyProduct()])}>+ Añadir producto</button></div>
+            <div className="adminPanelHeader"><div><div className="kicker">PRODUCTOS HÍBRIDOS</div><h3>Productos</h3></div><button type="button" className="btn btnGhost" onClick={()=>{update(lang,"featured_products",[...products(lang),emptyProduct()]);setMsg("Nuevo producto añadido. Completa sus datos y guarda la tienda.");}}>+ Añadir producto</button></div>
             {products(lang).length===0?<p className="note">No hay productos destacados todavía.</p>:products(lang).map((p,i)=><div className="adminShopProductEditor" key={i}>
               <label><span>Nombre</span><input value={p.name||""} onChange={e=>setProduct(lang,i,"name",e.target.value)}/></label>
               <div className="adminSaleMode wide">
@@ -197,7 +208,7 @@ export function AdminShop(){
               </>}
               {productMode(p)==="interest"&&<label className="wide"><span>CTA de interés</span><input value={p.interest_cta||""} onChange={e=>setProduct(lang,i,"interest_cta",e.target.value)} placeholder={lang==="es"?"Quiero recibir novedades":"Notify me about this product"}/></label>}
               <label><span>Imagen</span><select value={p.image_url||""} onChange={e=>setProduct(lang,i,"image_url",e.target.value)}><option value="">— Sin imagen —</option>{media.map(m=><option key={m.id} value={mediaUrl(m)}>{m.slug}</option>)}</select></label>
-              <button type="button" className="adminShopRemove" onClick={()=>removeProduct(lang,i)}>Eliminar</button>
+              <button type="button" className="adminShopRemove" onClick={()=>{removeProduct(lang,i);setMsg("Producto retirado de la edición. Guarda la tienda para confirmar el cambio.");}}>Eliminar</button>
             </div>)}
           </div>
         </article>
