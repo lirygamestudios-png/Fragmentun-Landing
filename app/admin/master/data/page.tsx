@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 function dataEstadoLabel(value:string){
   const map:Record<string,string>={active:"ACTIVO",degraded:"DEGRADADO",paused:"PAUSADO",deprecated:"OBSOLETO",retired:"RETIRADO",draft:"BORRADOR"};
@@ -184,7 +185,7 @@ export default async function MasterDataPage(){
           <label>Actualización objetivo (min)<input type="number" min="0" name="freshness_target_minutes"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar fuente</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar fuente</MasterSubmitButton>
       </form>
 
       <form action={createMetric} className={styles.adminForm}>
@@ -198,7 +199,7 @@ export default async function MasterDataPage(){
           <label>Fórmula<input name="formula" placeholder="leads / page_views"/></label>
           <label className={styles.span2}>Definición<textarea name="definition" required rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar métrica</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar métrica</MasterSubmitButton>
       </form>
       </section>
 
@@ -213,7 +214,7 @@ export default async function MasterDataPage(){
           <label>Actualización objetivo (min)<input type="number" min="0" name="freshness_target_minutes"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!sourceRows.length}>Actualizar fuente</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!sourceRows.length}>Actualizar fuente</MasterSubmitButton>
       </form>
 
       <form action={updateMetric} className={styles.adminForm}>
@@ -228,7 +229,7 @@ export default async function MasterDataPage(){
           <label className={styles.span2}>Definición<textarea name="definition" rows={3}/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!metricRows.length}>Actualizar métrica</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!metricRows.length}>Actualizar métrica</MasterSubmitButton>
       </form>
       </section>
     </details>}
