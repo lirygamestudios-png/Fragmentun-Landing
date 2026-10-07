@@ -59,6 +59,7 @@ function formatAutomationTrigger(trigger:any){
 export function AdminIntegrationLogs(){
   const[data,setData]=useState<any>(null);
   const[emailLocale,setEmailLocale]=useState<"es"|"en">("es");
+  const[localeFeedback,setLocaleFeedback]=useState("");
   const[provisioning,setProvisioning]=useState(false);
   const[provisionResult,setProvisionResult]=useState<any>(null);
   const[plantillaStatus,setPlantillaStatus]=useState<"idle"|"copied"|"error">("idle");
@@ -245,10 +246,11 @@ export function AdminIntegrationLogs(){
           <p style={{opacity:.8,marginTop:0}}>Referencia editorial y visual aprobada para los correos de captación, nutrición, conversión y reseña.</p>
         </div>
         <div style={{display:"flex",gap:"8px"}}>
-          <button type="button" className="btn btnGhost" onClick={()=>setEmailLocale("es")} aria-pressed={emailLocale==="es"} style={emailLocale==="es"?{borderColor:FRAGMENTUN_EMAIL_BRAND.gold,color:FRAGMENTUN_EMAIL_BRAND.gold}:undefined}>ES</button>
-          <button type="button" className="btn btnGhost" onClick={()=>setEmailLocale("en")} aria-pressed={emailLocale==="en"} style={emailLocale==="en"?{borderColor:FRAGMENTUN_EMAIL_BRAND.gold,color:FRAGMENTUN_EMAIL_BRAND.gold}:undefined}>EN</button>
+          <button type="button" className="btn btnGhost" onClick={()=>{setEmailLocale("es");setLocaleFeedback("Plantilla en español seleccionada.");}} aria-pressed={emailLocale==="es"} style={emailLocale==="es"?{borderColor:FRAGMENTUN_EMAIL_BRAND.gold,color:FRAGMENTUN_EMAIL_BRAND.gold}:undefined}>ES</button>
+          <button type="button" className="btn btnGhost" onClick={()=>{setEmailLocale("en");setLocaleFeedback("Plantilla en inglés seleccionada.");}} aria-pressed={emailLocale==="en"} style={emailLocale==="en"?{borderColor:FRAGMENTUN_EMAIL_BRAND.gold,color:FRAGMENTUN_EMAIL_BRAND.gold}:undefined}>EN</button>
         </div>
       </div>
+      {localeFeedback?<p role="status" style={{margin:"0 0 10px",fontSize:".8rem",color:FRAGMENTUN_EMAIL_BRAND.gold}}>{localeFeedback}</p>:null}
       <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",gap:"10px",marginBottom:"12px",flexWrap:"wrap"}}>
         {plantillaStatus==="copied"?<span style={{fontSize:".82rem",color:FRAGMENTUN_EMAIL_BRAND.gold,fontWeight:800}}>✓ Plantilla {emailLocale.toUpperCase()} copiado al portapapeles</span>:null}
         {plantillaStatus==="error"?<span style={{fontSize:".82rem",color:"#ff8a8a",fontWeight:800}}>No fue posible copiar automáticamente. Revisa los permisos del portapapeles.</span>:null}
