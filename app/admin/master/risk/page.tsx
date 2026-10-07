@@ -29,6 +29,8 @@ export default async function MasterRiskPage(){
     {name:"Catálogo comercial",level:(products||0)>0?"CONTROLADO":"ABIERTO",control:String(products||0)+" productos registrados"},
     {name:"Órdenes",level:(orders||0)>0?"OPERATIVO":"SIN EXPOSICIÓN",control:String(orders||0)+" órdenes"},
     {name:"Campañas",level:(campaigns||0)>0?"OPERATIVO":"BAJO",control:String(campaigns||0)+" campañas"},
+    {name:"Rate limiting DB access",level:"CONTROLADO",control:"Tabla cerrada a escritura directa; lectura administrativa bajo RLS; función server-side preservada"},
+    {name:"Leaked password protection",level:"ABIERTO",control:"Supabase Auth: protección contra contraseñas filtradas pendiente de activación por canal de Auth"},
     {name:"Vulnerabilidad npm alta",level:"ABIERTO",control:"Resolver antes de cualquier futura promoción"}
   ];
 
