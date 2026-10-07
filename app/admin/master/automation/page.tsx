@@ -78,6 +78,51 @@ async function decideApproval(formData:FormData){
   revalidatePath("/admin/master/automation");
 }
 
+
+async function updateWorkflow(formData:FormData){
+  "use server";
+  const {supabase}=await requireAutomationEditor();
+  const id=String(formData.get("workflow_id")||"").trim();
+  const status=String(formData.get("status")||"testing");
+  const autonomy=String(formData.get("autonomy_level")||"assistive");
+  const ownerRaw=String(formData.get("owner_user_id")||"").trim();
+  const ownerUserId=ownerRaw||null;
+  const requiresApproval=String(formData.get("requires_approval")||"true")==="true";
+  const allowedStatus=new Set(["draft","testing","active","paused","disabled","error"]);
+  const allowedAutonomy=new Set(["assistive","recommend","execute_low_risk","execute_with_approval"]);
+  if(!id||!allowedStatus.has(status)||!allowedAutonomy.has(autonomy)) throw new Error("invalid_workflow_update");
+  const{error}=await supabase.from("automation_workflows").update({
+    status,autonomy_level:autonomy,owner_user_id:ownerUserId,requires_approval:requiresApproval,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/automation");
+}
+
+async function updateAgent(formData:FormData){
+  "use server";
+  const {supabase,profile}=await requireAutomationEditor();
+  if(profile.role!=="admin") throw new Error("admin_required");
+  const id=String(formData.get("agent_id")||"").trim();
+  const status=String(formData.get("status")||"testing");
+  const autonomy=String(formData.get("autonomy_level")||"assistive");
+  const ownerRaw=String(formData.get("owner_user_id")||"").trim();
+  const ownerUserId=ownerRaw||null;
+  const requiresApproval=String(formData.get("requires_approval")||"true")==="true";
+  const modelRef=String(formData.get("model_ref")||"").trim()||null;
+  const budgetRaw=String(formData.get("cost_budget")||"").trim();
+  const budgetCents=budgetRaw?Math.round(Number(budgetRaw)*100):null;
+  const purpose=String(formData.get("purpose")||"").trim()||null;
+  const allowedStatus=new Set(["draft","testing","active","paused","disabled"]);
+  const allowedAutonomy=new Set(["assistive","recommend","execute_low_risk","execute_with_approval"]);
+  if(!id||!allowedStatus.has(status)||!allowedAutonomy.has(autonomy)||(budgetCents!==null&&(!Number.isFinite(budgetCents)||budgetCents<0))) throw new Error("invalid_agent_update");
+  const{error}=await supabase.from("ai_agents").update({
+    status,autonomy_level:autonomy,owner_user_id:ownerUserId,requires_approval:requiresApproval,
+    model_ref:modelRef,cost_budget_cents:budgetCents,purpose,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/automation");
+}
+
 export default async function MasterAutomationPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -92,15 +137,17 @@ export default async function MasterAutomationPage(){
     {count:campaigns},
     {count:adminEvents},
     {count:rateRows},
-    {data:adIntegrations}
+    {data:adIntegrations},
+    {data:owners}
   ]=await Promise.all([
-    supabase.from("automation_workflows").select("id,code,name,domain,trigger_type,status,autonomy_level,requires_approval,last_run_at,last_status,created_at").order("created_at",{ascending:true}),
-    supabase.from("ai_agents").select("id,code,name,domain,purpose,status,autonomy_level,kill_switch,requires_approval,model_ref,cost_budget_cents,created_at").order("created_at",{ascending:true}),
+    supabase.from("automation_workflows").select("id,code,name,domain,trigger_type,status,autonomy_level,requires_approval,owner_user_id,last_run_at,last_status,created_at").order("created_at",{ascending:true}),
+    supabase.from("ai_agents").select("id,code,name,domain,purpose,status,autonomy_level,kill_switch,requires_approval,owner_user_id,model_ref,cost_budget_cents,created_at").order("created_at",{ascending:true}),
     supabase.from("automation_approvals").select("id,workflow_id,agent_id,action_type,action_summary,risk_level,status,requested_at,decision_notes").order("requested_at",{ascending:false}).limit(50),
     supabase.from("campaigns").select("*",{count:"exact",head:true}),
     supabase.from("admin_audit_log").select("*",{count:"exact",head:true}),
     supabase.from("ingress_rate_limits").select("*",{count:"exact",head:true}),
-    supabase.from("ad_integrations").select("provider,enabled").order("provider",{ascending:true})
+    supabase.from("ad_integrations").select("provider,enabled").order("provider",{ascending:true}),
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
   ]);
 
   const workflowRows=(workflows||[]) as any[];
@@ -111,6 +158,8 @@ export default async function MasterAutomationPage(){
   const activeWorkflows=workflowRows.filter(w=>w.status==="active").length;
   const activeAgents=agentRows.filter(a=>a.status==="active").length;
   const integrations=(adIntegrations||[]) as any[];
+  const ownerRows=(owners||[]) as any[];
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
@@ -129,7 +178,7 @@ export default async function MasterAutomationPage(){
     <section className={styles.grid}>
       {workflowRows.map((w:any)=><article key={w.id} className={styles.card}>
         <div className={styles.cardTop}><span className={w.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(w.status).toUpperCase()}</span><em>{w.autonomy_level}</em></div>
-        <h3>{w.name}</h3><p>{w.domain} · {w.trigger_type}<br/>Approval: {w.requires_approval?"Sí":"No"}</p>
+        <h3>{w.name}</h3><p>{w.domain} · {w.trigger_type}<br/>Owner: {ownerName(w.owner_user_id)}<br/>Approval: {w.requires_approval?"Sí":"No"}</p>
       </article>)}
       {!workflowRows.length&&<article className={styles.card}><h3>Sin workflows registrados</h3><p>El registry está preparado para incorporar automatizaciones reales del estudio.</p></article>}
     </section>
@@ -138,7 +187,7 @@ export default async function MasterAutomationPage(){
     <section className={styles.grid}>
       {agentRows.map((a:any)=><article key={a.id} className={styles.card}>
         <div className={styles.cardTop}><span className={a.kill_switch?styles.badgePlanned:styles.badgeActive}>{a.kill_switch?"KILL ON":String(a.status).toUpperCase()}</span><em>{a.autonomy_level}</em></div>
-        <h3>{a.name}</h3><p>{a.domain}<br/>{a.purpose||"Propósito pendiente"}</p>
+        <h3>{a.name}</h3><p>{a.domain}<br/>Owner: {ownerName(a.owner_user_id)}<br/>{a.purpose||"Propósito pendiente"}<br/>{a.model_ref||"Modelo no asignado"} · {a.cost_budget_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(a.cost_budget_cents)/100):"Budget no definido"}</p>
         {profile.role==="admin"&&<form action={toggleKillSwitch}>
           <input type="hidden" name="agent_id" value={a.id}/><input type="hidden" name="next" value={String(!a.kill_switch)}/>
           <button className={styles.formButton} type="submit">{a.kill_switch?"Reactivar":"Activar kill switch"}</button>
@@ -199,6 +248,36 @@ export default async function MasterAutomationPage(){
           <label className={styles.span2}>Propósito<textarea name="purpose" rows={3} placeholder="Qué puede hacer y qué no puede hacer"/></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar agente</button>
+      </form>}
+    </section>}
+
+
+    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+      <form action={updateWorkflow} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR WORKFLOW</span><h2>Actualizar automatización</h2></div>
+        <div className={styles.formGrid}>
+          <label>Workflow<select name="workflow_id" required defaultValue=""><option value="" disabled>Seleccionar workflow</option>{workflowRows.map((w:any)=><option key={w.id} value={w.id}>{w.code} · {w.name}</option>)}</select></label>
+          <label>Status<select name="status" defaultValue="testing"><option value="draft">Draft</option><option value="testing">Testing</option><option value="active">Active</option><option value="paused">Paused</option><option value="disabled">Disabled</option><option value="error">Error</option></select></label>
+          <label>Autonomía<select name="autonomy_level" defaultValue="assistive"><option value="assistive">Assistive</option><option value="recommend">Recommend</option><option value="execute_low_risk">Execute low risk</option><option value="execute_with_approval">Execute with approval</option></select></label>
+          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Requiere aprobación<select name="requires_approval" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
+        </div>
+        <button className={styles.formButton} disabled={!workflowRows.length}>Actualizar workflow</button>
+      </form>
+
+      {profile.role==="admin"&&<form action={updateAgent} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR AGENTE</span><h2>Actualizar gobierno IA</h2></div>
+        <div className={styles.formGrid}>
+          <label>Agente<select name="agent_id" required defaultValue=""><option value="" disabled>Seleccionar agente</option>{agentRows.map((a:any)=><option key={a.id} value={a.id}>{a.code} · {a.name}</option>)}</select></label>
+          <label>Status<select name="status" defaultValue="testing"><option value="draft">Draft</option><option value="testing">Testing</option><option value="active">Active</option><option value="paused">Paused</option><option value="disabled">Disabled</option></select></label>
+          <label>Autonomía<select name="autonomy_level" defaultValue="assistive"><option value="assistive">Assistive</option><option value="recommend">Recommend</option><option value="execute_low_risk">Execute low risk</option><option value="execute_with_approval">Execute with approval</option></select></label>
+          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Requiere aprobación<select name="requires_approval" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
+          <label>Modelo<input name="model_ref" placeholder="provider/model"/></label>
+          <label>Budget USD<input type="number" min="0" step="0.01" name="cost_budget"/></label>
+          <label className={styles.span2}>Propósito<textarea name="purpose" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!agentRows.length}>Actualizar agente</button>
       </form>}
     </section>}
 
