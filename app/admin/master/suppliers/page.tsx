@@ -34,6 +34,30 @@ async function createVendor(formData:FormData){
   revalidatePath("/admin/master/suppliers");
 }
 
+
+async function updateVendor(formData:FormData){
+  "use server";
+  const {supabase}=await requireAdmin();
+  const id=String(formData.get("vendor_id")||"").trim();
+  const status=String(formData.get("status")||"active");
+  const risk=String(formData.get("risk_rating")||"medium");
+  const preferred=String(formData.get("preferred")||"false")==="true";
+  const contactName=String(formData.get("contact_name")||"").trim()||null;
+  const contactEmail=String(formData.get("contact_email")||"").trim()||null;
+  const country=String(formData.get("country")||"").trim()||null;
+  const paymentTerms=String(formData.get("payment_terms")||"").trim()||null;
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["prospect","active","on_hold","inactive","terminated"]);
+  const allowedRisk=new Set(["low","medium","high","critical"]);
+  if(!id||!allowedStatus.has(status)||!allowedRisk.has(risk)) throw new Error("invalid_vendor_update");
+  const{error}=await supabase.from("vendor_master").update({
+    status,risk_rating:risk,preferred,contact_name:contactName,contact_email:contactEmail,
+    country,payment_terms:paymentTerms,notes,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/suppliers");
+}
+
 export default async function MasterSuppliersPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -48,7 +72,7 @@ export default async function MasterSuppliersPage(){
     {data:fulfillments},
     {count:orders}
   ]=await Promise.all([
-    supabase.from("vendor_master").select("id,name,vendor_type,status,contact_name,contact_email,country,payment_terms,risk_rating,preferred,created_at").order("name",{ascending:true}),
+    supabase.from("vendor_master").select("id,name,vendor_type,status,contact_name,contact_email,country,payment_terms,risk_rating,preferred,notes,created_at").order("name",{ascending:true}),
     supabase.from("shop_products").select("supplier,supplier_product_id,sku,name_es,mode,active").order("sort_order",{ascending:true}).limit(250),
     supabase.from("shop_fulfillments").select("supplier,shipment_status,label_cost_cents,created_at").order("created_at",{ascending:false}).limit(250),
     supabase.from("shop_orders").select("*",{count:"exact",head:true})
@@ -102,6 +126,25 @@ export default async function MasterSuppliersPage(){
           <label>Preferred<select name="preferred" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar proveedor</button>
+      </form>
+    </section>
+
+
+    <section className={styles.adminForms}>
+      <form action={updateVendor} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR VENDOR</span><h2>Actualizar proveedor</h2></div>
+        <div className={styles.formGrid}>
+          <label>Vendor<select name="vendor_id" required defaultValue=""><option value="" disabled>Seleccionar proveedor</option>{vendorRows.map((v:any)=><option key={v.id} value={v.id}>{v.name}</option>)}</select></label>
+          <label>Status<select name="status" defaultValue="active"><option value="prospect">Prospect</option><option value="active">Active</option><option value="on_hold">On hold</option><option value="inactive">Inactive</option><option value="terminated">Terminated</option></select></label>
+          <label>Riesgo<select name="risk_rating" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
+          <label>Preferred<select name="preferred" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
+          <label>Contacto<input name="contact_name"/></label>
+          <label>Email<input type="email" name="contact_email"/></label>
+          <label>País<input name="country"/></label>
+          <label>Payment terms<input name="payment_terms"/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!vendorRows.length}>Actualizar proveedor</button>
       </form>
     </section>
 
