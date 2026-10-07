@@ -11,31 +11,31 @@ type Domain={
 };
 
 const domains:Domain[]=[
-  {title:"Command Center",subtitle:"Vista ejecutiva, alertas, decisiones y excepciones",href:"/admin/master",phase:"60",status:"active"},
-  {title:"Operaciones",subtitle:"Estado operativo, continuidad y señales del sistema",href:"/admin/master/operations",phase:"60",status:"active"},
-  {title:"Juegos",subtitle:"Producción, LiveOps, releases y operación por título",href:"/admin/master/games",phase:"57",status:"active"},
-  {title:"Publishing",subtitle:"Plataformas, lanzamientos, catálogo y franquicias",href:"/admin/master/publishing",phase:"59",status:"active"},
-  {title:"Growth",subtitle:"Adquisición, embudos, CRM, conversión y retención",href:"/admin/master/growth",phase:"53",status:"active"},
-  {title:"Monetización",subtitle:"Pricing, packaging, freemium, bundles y expansión",href:"/admin/master/monetization",phase:"54",status:"active"},
-  {title:"Comercio",subtitle:"Pedidos, pagos, fulfillment, devoluciones y revenue assurance",href:"/admin/master/commerce",phase:"55",status:"active"},
-      {title:"Clientes & Comunidad",subtitle:"Miembros, engagement, beta priority y advocacy",href:"/admin/master/community",phase:"53-55",status:"active"},
-  {title:"Finanzas",subtitle:"Accounting, treasury, tax, reporting y runway",href:"/admin/master/finance",phase:"39",status:"active"},
-  {title:"Personas",subtitle:"Workforce, talento, desempeño y compensación",href:"/admin/master/people",phase:"48",status:"active"},
-  {title:"Tecnología",subtitle:"Infraestructura, CI/CD, QA automation y technical ops",href:"/admin/master/technology",phase:"58",status:"active"},
-  {title:"Datos",subtitle:"Analytics governance, KPIs y decision intelligence",href:"/admin/master/data",phase:"43",status:"active"},
-  {title:"Automatización & IA",subtitle:"Agentes, workflows, permisos, auditoría y kill switch",href:"/admin/master/automation",phase:"44",status:"active"},
-  {title:"Riesgos & Controles",subtitle:"ERM, compliance, controles y audit readiness",href:"/admin/master/risk",phase:"46",status:"active"},
-  {title:"Seguridad",subtitle:"Identidad, ciberseguridad, resiliencia y continuidad",href:"/admin/master/security",phase:"45",status:"active"},
-  {title:"Legal & IP",subtitle:"Contratos, derechos, chain-of-title y registros",href:"/admin/master/legal",phase:"47",status:"active"},
-  {title:"Partners & Licensing",subtitle:"Alianzas, distribución, licencias y expansión",href:"/admin/master/partners",phase:"51",status:"active"},
-  {title:"Proveedores",subtitle:"Procurement, vendor management y optimización de costes",href:"/admin/master/suppliers",phase:"56",status:"active"},
-  {title:"Marca & Comunicaciones",subtitle:"Brand, PR, reputación y narrativa corporativa",href:"/admin/master/brand",phase:"52",status:"active"},
-  {title:"Estrategia",subtitle:"OKRs, prioridades, decisiones y asignación de recursos",href:"/admin/master/strategy",phase:"49",status:"active"},
-  {title:"Capital & Investors",subtitle:"Fundraising, board, IR y strategic transactions",href:"/admin/master/capital",phase:"50",status:"active"},
-      {title:"Configuración",subtitle:"Settings operativos no secretos y feature flags",href:"/admin/master/settings",phase:"60",status:"active"},
+  {title:"Inicio",subtitle:"Resumen general, alertas y decisiones pendientes",href:"/admin/master",phase:"60",status:"active"},
+  {title:"Operaciones",subtitle:"Trabajo diario, continuidad y estado general",href:"/admin/master/operations",phase:"60",status:"active"},
+  {title:"Juegos",subtitle:"Desarrollo, lanzamientos y operación por título",href:"/admin/master/games",phase:"57",status:"active"},
+  {title:"Publicación",subtitle:"Plataformas, lanzamientos, catálogo y franquicias",href:"/admin/master/publishing",phase:"59",status:"active"},
+  {title:"Crecimiento",subtitle:"Captación, conversión, contactos y retención",href:"/admin/master/growth",phase:"53",status:"active"},
+  {title:"Monetización",subtitle:"Precios, planes, freemium, paquetes e ingresos",href:"/admin/master/monetization",phase:"54",status:"active"},
+  {title:"Comercio",subtitle:"Pedidos, pagos, entregas y devoluciones",href:"/admin/master/commerce",phase:"55",status:"active"},
+      {title:"Clientes y Comunidad",subtitle:"Miembros, participación, betas y comunidad",href:"/admin/master/community",phase:"53-55",status:"active"},
+  {title:"Finanzas",subtitle:"Ingresos, gastos, caja, impuestos y reportes",href:"/admin/master/finance",phase:"39",status:"active"},
+  {title:"Personas",subtitle:"Equipo, talento, desempeño y compensación",href:"/admin/master/people",phase:"48",status:"active"},
+  {title:"Tecnología",subtitle:"Infraestructura, cambios, pruebas y operación técnica",href:"/admin/master/technology",phase:"58",status:"active"},
+  {title:"Datos",subtitle:"Métricas, indicadores y apoyo a decisiones",href:"/admin/master/data",phase:"43",status:"active"},
+  {title:"Automatización e IA",subtitle:"Automatizaciones, agentes, permisos y control",href:"/admin/master/automation",phase:"44",status:"active"},
+  {title:"Riesgos y Controles",subtitle:"Riesgos, cumplimiento, controles y seguimiento",href:"/admin/master/risk",phase:"46",status:"active"},
+  {title:"Seguridad",subtitle:"Accesos, incidentes y continuidad",href:"/admin/master/security",phase:"45",status:"active"},
+  {title:"Legal e IP",subtitle:"Contratos, derechos, propiedad intelectual y registros",href:"/admin/master/legal",phase:"47",status:"active"},
+  {title:"Alianzas y Licencias",subtitle:"Alianzas, distribución, licencias y expansión",href:"/admin/master/partners",phase:"51",status:"active"},
+  {title:"Proveedores",subtitle:"Compras, suplidores, contratos y costos",href:"/admin/master/suppliers",phase:"56",status:"active"},
+  {title:"Marca y Comunicaciones",subtitle:"Marca, prensa, reputación y comunicación",href:"/admin/master/brand",phase:"52",status:"active"},
+  {title:"Estrategia",subtitle:"Objetivos, prioridades, decisiones y recursos",href:"/admin/master/strategy",phase:"49",status:"active"},
+  {title:"Capital e Inversionistas",subtitle:"Inversión, board, IR y strategic transactions",href:"/admin/master/capital",phase:"50",status:"active"},
+      {title:"Configuración",subtitle:"Ajustes generales y funciones del sistema",href:"/admin/master/settings",phase:"60",status:"active"},
   {title:"Revisión antes de publicar",subtitle:"Comprobaciones, evidencia y aprobación antes de publicar",href:"/admin/master/releases",phase:"60",status:"active"},
-  {title:"Observabilidad",subtitle:"Smoke tests, runtime validation y evidencia por deployment",href:"/admin/master/observability",phase:"60",status:"active"},
-  {title:"FRAGMENTUN",subtitle:"Administración operativa de la IP y landing pública",href:"/admin",phase:"Actual",status:"active"}
+  {title:"Estado y Pruebas",subtitle:"Comprobaciones, historial y estado de la versión de prueba",href:"/admin/master/observability",phase:"60",status:"active"},
+  {title:"FRAGMENTUN",subtitle:"Administración de la IP y su sitio público",href:"/admin",phase:"Actual",status:"active"}
 ];
 
 export default async function MasterAdminPage(){
@@ -112,7 +112,7 @@ export default async function MasterAdminPage(){
   const milestonesAtRisk=milestoneRows.filter(m=>["blocked","at_risk"].includes(m.status)).length;
   const releaseRisks=releaseRows.filter(r=>["blocked","delayed"].includes(r.status)||r.certification_status==="failed").length;
   const qualifiedContacts=crmRows.filter(x=>["mql","sql","opportunity","customer"].includes(x.lifecycle_stage)).length;
-  const highRiskApprovals=approvalRows.filter(a=>["high","critical"].includes(a.risk_level)).length;
+  const highRiskAprobaciones=approvalRows.filter(a=>["high","critical"].includes(a.risk_level)).length;
   const postedFinance=financeRows.filter(x=>x.status==="posted"||x.status==="reconciled");
   const financeNet=postedFinance.reduce((a,x)=>a+Number(x.amount_cents||0),0);
   const financeCurrency=postedFinance[0]?.currency||"USD";
@@ -139,7 +139,7 @@ export default async function MasterAdminPage(){
     return date&&new Date(date).getTime()<now&&!["won","lost","canceled"].includes(f.status);
   }).length;
   const overdueTotal=overdueWork+overdueRisks+overdueReviews+fundraisingDue;
-  const criticalExceptions=gamesAtRisk+milestonesAtRisk+releaseRisks+highRiskApprovals+blockedWork+highRisks+criticalSecurity+riskyTechChanges;
+  const criticalExceptions=gamesAtRisk+milestonesAtRisk+releaseRisks+highRiskAprobaciones+blockedWork+highRisks+criticalSecurity+riskyTechChanges;
 
   return <main className={styles.shell}>
     <aside className={styles.sidebar}>
@@ -148,7 +148,7 @@ export default async function MasterAdminPage(){
         <div><strong>LIRYGAMES</strong><small>MASTER ADMIN</small></div>
       </div>
       <nav className={styles.nav}>
-        <a className={styles.active} href="/admin/master">⌂ <span>Command Center</span></a>
+        <a className={styles.active} href="/admin/master">⌂ <span>Inicio</span></a>
         <a href="/admin">◈ <span>FRAGMENTUN Admin</span></a>
         <a href="/admin/analytics">▥ <span>Analítica</span></a>
         <a href="/admin/status">⚙ <span>Estado del Sistema</span></a>
@@ -165,9 +165,9 @@ export default async function MasterAdminPage(){
     <section className={styles.workspace}>
       <header className={styles.topbar}>
         <div>
-          <span className={styles.eyebrow}>CORPORATE COMMAND CENTER</span>
+          <span className={styles.eyebrow}>LIRYGAMES · PANEL GENERAL</span>
           <h1>LIRYGAMES STUDIOS</h1>
-          <p>Vista maestra del sistema empresarial · Fases 1–60</p>
+          <p>Vista general del estudio, sus áreas y decisiones pendientes · Fases 1–60</p>
         </div>
         <div className={styles.protection}>
           <b>FRAGMENTUN</b>
@@ -184,12 +184,12 @@ export default async function MasterAdminPage(){
         <article><small>Excepciones críticas</small><strong>{criticalExceptions}</strong><span>Operación + riesgo + seguridad + producto</span></article>
         <article><small>Trabajo abierto</small><strong>{openWork}</strong><span>{blockedWork} bloqueados/críticos</span></article>
         <article><small>Vencidos</small><strong>{overdueTotal}</strong><span>Ops + Risk + Access + Capital</span></article>
-        <article><small>Net ledger</small><strong>{financeNetLabel}</strong><span>Posted + reconciled</span></article>
+        <article><small>Balance registrado</small><strong>{financeNetLabel}</strong><span>Movimientos contabilizados</span></article>
       </section>
 
       <section className={styles.sectionHead}>
-        <div><span>EXECUTIVE PULSE</span><h2>Señales que requieren atención</h2></div>
-        <p>El Command Center prioriza excepciones y decisiones; los módulos operativos conservan el detalle.</p>
+        <div><span>PRIORIDADES</span><h2>Señales que requieren atención</h2></div>
+        <p>Esta vista resume problemas, vencimientos y decisiones; cada área conserva el detalle.</p>
       </section>
 
       <section className={styles.grid}>
@@ -205,17 +205,17 @@ export default async function MasterAdminPage(){
         </a>
         <a href="/admin/master/growth" className={styles.card}>
           <div className={styles.cardTop}><span className={styles.badgeActive}>PIPELINE</span><em>CRM</em></div>
-          <h3>Growth</h3>
+          <h3>Crecimiento</h3>
           <p>{crmRows.length} contactos · {qualifiedContacts} cualificados · {(leadCount||0)} leads originales</p>
         </a>
         <a href="/admin/master/automation" className={styles.card}>
           <div className={styles.cardTop}><span className={approvalRows.length?styles.badgePlanned:styles.badgeActive}>{approvalRows.length?"DECISIÓN":"LIMPIO"}</span><em>AI/OPS</em></div>
-          <h3>Approvals</h3>
-          <p>{approvalRows.length} pendientes · {highRiskApprovals} high/critical</p>
+          <h3>Aprobaciones</h3>
+          <p>{approvalRows.length} pendientes · {highRiskAprobaciones} high/critical</p>
         </a>
         <a href="/admin/master/operations" className={styles.card}>
           <div className={styles.cardTop}><span className={blockedWork?styles.badgePlanned:styles.badgeActive}>{blockedWork?"ATENCIÓN":"ESTABLE"}</span><em>OPERACIONES</em></div>
-          <h3>Work Queue</h3>
+          <h3>Trabajo pendiente</h3>
           <p>{openWork} abiertos · {blockedWork} bloqueados/críticos</p>
         </a>
         <a href="/admin/master/risk" className={styles.card}>
@@ -230,12 +230,12 @@ export default async function MasterAdminPage(){
         </a>
         <a href="/admin/master/community" className={styles.card}>
           <div className={styles.cardTop}><span className={styles.badgeActive}>COMUNIDAD</span><em>ENGAGEMENT</em></div>
-          <h3>Beta & Advocacy</h3>
+          <h3>Betas y Comunidad</h3>
           <p>{communityRows.length} miembros · {betaPriority} beta priority · {advocates} advocates</p>
         </a>
         <a href="/admin/master/security" className={styles.card}>
           <div className={styles.cardTop}><span className={overdueReviews?styles.badgePlanned:styles.badgeActive}>{overdueReviews?"VENCIDOS":"AL DÍA"}</span><em>ACCESS</em></div>
-          <h3>Access Reviews</h3>
+          <h3>Revisión de Accesos</h3>
           <p>{reviewRows.length} reviews · {overdueReviews} vencidas</p>
         </a>
         <a href="/admin/master/legal" className={styles.card}>
@@ -250,14 +250,14 @@ export default async function MasterAdminPage(){
         </a>
         <a href="/admin/master/capital" className={styles.card}>
           <div className={styles.cardTop}><span className={fundraisingDue?styles.badgePlanned:styles.badgeActive}>{fundraisingDue?"FOLLOW-UP":"AL DÍA"}</span><em>CAPITAL</em></div>
-          <h3>Fundraising</h3>
+          <h3>Inversión</h3>
           <p>{fundraisingRows.length} oportunidades · {fundraisingDue} follow-ups vencidos</p>
         </a>
       </section>
 
       <section className={styles.sectionHead}>
-        <div><span>ARQUITECTURA OPERATIVA</span><h2>Dominios del Master Admin</h2></div>
-        <p>Cobertura operativa profunda. Los módulos comparten auditoría, owners, estados y excepciones sin rehacer el FrontDesk.</p>
+        <div><span>ÁREAS</span><h2>Módulos de LIRYGAMES</h2></div>
+        <p>Cada módulo concentra la información de un área y comparte seguridad, historial y estado con el resto del sistema.</p>
       </section>
 
       <section className={styles.grid}>
@@ -268,7 +268,7 @@ export default async function MasterAdminPage(){
           </div>
           <h3>{domain.title}</h3>
           <p>{domain.subtitle}</p>
-          <span className={styles.cardLink}>{domain.status==="active"?"Abrir módulo":"Ver base actual"} →</span>
+          <span className={styles.cardLink}>{domain.status==="active"?"Abrir":"Ver base actual"} →</span>
         </a>)}
       </section>
     </section>
