@@ -27,7 +27,7 @@ async function validateCurrentPreview(){
   const runCode="SMOKE-PREVIEW-"+new Date().toISOString().replace(/[-:T.Z]/g,"").slice(0,14);
   const{data:run,error:runError}=await supabase.from("runtime_validation_runs").insert({
     run_code:runCode,environment:"preview",deployment_id:deploymentId,commit_sha:commitSha,base_url:baseUrl,
-    status:"running",executed_by:user.id,notes:"Validación automática del Preview actual desde Master Admin."
+    status:"running",executed_by:user.id,notes:"Prueba automática del Preview actual desde Master Admin."
   }).select("id").single();
   if(runError||!run) throw new Error(runError?.message||"validation_run_create_failed");
 
@@ -166,23 +166,32 @@ export default async function ObservabilityPage(){
   const latestRun=runRows[0];
   const latestChecks=latestRun?resultRows.filter(r=>r.run_id===latestRun.id):[];
   const latestPassed=latestChecks.filter(c=>c.status==="passed").length;
+  const statusText=(value:string|undefined)=>{
+    if(value==="passed") return "CORRECTO";
+    if(value==="failed") return "REVISAR";
+    if(value==="running") return "EN CURSO";
+    if(value==="partial") return "INCOMPLETO";
+    if(value==="canceled") return "CANCELADO";
+    if(value==="skipped") return "OMITIDO";
+    return "—";
+  };
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · OBSERVABILIDAD</span><h1>Observabilidad</h1><p>Historial persistente de smoke tests y señales operativas por deployment.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · CONTROL</span><h1>Estado y Pruebas</h1><p>Comprueba que la versión de prueba funciona correctamente antes de avanzar.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Pruebas</small><strong>{runRows.length}</strong><span>{passedRuns} passed · {failedRuns} failed</span></article>
-      <article><small>Última prueba</small><strong>{latestRun?.status?.toUpperCase()||"—"}</strong><span>{latestRun?.run_code||"Sin ejecuciones"}</span></article>
-      <article><small>Resultados</small><strong>{latestPassed}/{latestChecks.length}</strong><span>Checks passed</span></article>
-      <article><small>Movimientos registrados</small><strong>{(auditEvents||0).toLocaleString()}</strong><span>Trazabilidad acumulada</span></article>
+      <article><small>Pruebas realizadas</small><strong>{runRows.length}</strong><span>{passedRuns} correctas · {failedRuns} por revisar</span></article>
+      <article><small>Última prueba</small><strong>{statusText(latestRun?.status)}</strong><span>{latestRun?new Date(latestRun.executed_at).toLocaleString("es-US"):"Sin pruebas todavía"}</span></article>
+      <article><small>Comprobaciones correctas</small><strong>{latestPassed}/{latestChecks.length}</strong><span>De la última prueba</span></article>
+      <article><small>Acciones registradas</small><strong>{(auditEvents||0).toLocaleString()}</strong><span>Historial de seguridad</span></article>
     </section>
 
     <section className={styles.sectionHead}>
-      <div><span>HISTORIAL</span><h2>Pruebas guardadas</h2></div>
-      <p>El historial conserva el artefacto exacto probado. Production no se prueba ni modifica desde este módulo.</p>
+      <div><span>HISTORIAL</span><h2>Pruebas anteriores</h2></div>
+      <p>Aquí puedes consultar qué versión se comprobó, cuándo se hizo y si todo salió bien. Producción permanece protegida.</p>
     </section>
 
     <section className={styles.grid}>
@@ -190,77 +199,81 @@ export default async function ObservabilityPage(){
         const checks=resultRows.filter(x=>x.run_id===r.id);
         const passed=checks.filter(x=>x.status==="passed").length;
         return <article key={r.id} className={styles.card}>
-          <div className={styles.cardTop}><span className={r.status==="passed"?styles.badgeActive:styles.badgePlanned}>{String(r.status).toUpperCase()}</span><em>{r.environment}</em></div>
+          <div className={styles.cardTop}><span className={r.status==="passed"?styles.badgeActive:styles.badgePlanned}>{statusText(r.status)}</span><em>{r.environment==="preview"?"VERSIÓN DE PRUEBA":"PREPARACIÓN"}</em></div>
           <h3>{r.run_code}</h3>
           <p>{r.deployment_id||"Sin deployment"}<br/>{r.commit_sha||"Sin commit"}<br/>{passed}/{checks.length} checks passed<br/>{new Date(r.executed_at).toLocaleString("es-US")}</p>
         </article>
       })}
-      {!runRows.length&&<article className={styles.card}><h3>Sin validaciones</h3><p>Los smoke tests aparecerán aquí cuando se registren.</p></article>}
+      {!runRows.length&&<article className={styles.card}><h3>Aún no hay pruebas</h3><p>Cuando ejecutes una comprobación, aparecerá aquí.</p></article>}
     </section>
 
     <section className={styles.sectionHead}><div><span>ÚLTIMA PRUEBA</span><h2>Detalle de la última comprobación</h2></div></section>
     <section className={styles.grid}>
       {latestChecks.map((c:any)=><article key={c.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={c.status==="passed"?styles.badgeActive:styles.badgePlanned}>{String(c.status).toUpperCase()}</span><em>{c.method}</em></div>
+        <div className={styles.cardTop}><span className={c.status==="passed"?styles.badgeActive:styles.badgePlanned}>{statusText(c.status)}</span></div>
         <h3>{c.check_name}</h3>
-        <p>{c.request_path}<br/>Esperado: {c.expected_status??"—"} · Real: {c.actual_status??"—"}<br/>{c.redirect_location?"Redirect: "+c.redirect_location:"Sin redirect"}<br/>{c.detail||"Sin detalle"}</p>
+        <p>{c.status==="passed"?"Funcionó correctamente.":"Necesita revisión."}<br/>{c.detail||"Sin observaciones adicionales."}</p>
       </article>)}
-      {!latestChecks.length&&<article className={styles.card}><h3>Sin resultados</h3><p>No existe un run con detalle todavía.</p></article>}
+      {!latestChecks.length&&<article className={styles.card}><h3>Sin resultados todavía</h3><p>Ejecuta una comprobación para ver el detalle.</p></article>}
     </section>
 
     <section className={styles.sectionHead}><div><span>ESTADO ACTUAL</span><h2>Estado actual</h2></div></section>
     <section className={styles.kpis}>
-      <article><small>Último analytics</small><strong>{latestAnalytics?.event_name||"—"}</strong><span>{latestAnalytics?.created_at?new Date(latestAnalytics.created_at).toLocaleString("es-US"):"Sin eventos"}</span></article>
-      <article><small>Último lead</small><strong>{latestLead?"ACTIVO":"—"}</strong><span>{latestLead?.created_at?new Date(latestLead.created_at).toLocaleString("es-US"):"Sin leads"}</span></article>
-      <article><small>Auth boundary</small><strong>VALIDADA</strong><span>Master→login · APIs→403</span></article>
-      <article><small>Producción</small><strong>PROTEGIDA</strong><span>Sin promociones desde Observabilidad</span></article>
+      <article><small>Actividad del sitio</small><strong>{latestAnalytics?"ACTIVA":"—"}</strong><span>{latestAnalytics?.created_at?new Date(latestAnalytics.created_at).toLocaleString("es-US"):"Sin actividad registrada"}</span></article>
+      <article><small>Captación de contactos</small><strong>{latestLead?"ACTIVA":"—"}</strong><span>{latestLead?.created_at?new Date(latestLead.created_at).toLocaleString("es-US"):"Sin contactos registrados"}</span></article>
+      <article><small>Acceso seguro</small><strong>PROTEGIDO</strong><span>Login y permisos verificados</span></article>
+      <article><small>Sitio público</small><strong>PROTEGIDO</strong><span>Esta sección no publica cambios</span></article>
     </section>
 
     {profile.role==="admin"&&<section className={styles.notice}>
-      <div><strong>Comprobación rápida</strong><span>Revisa automáticamente este Preview y guarda el resultado con tu sesión segura.</span></div>
+      <div><strong>Comprobación rápida</strong><span>Revisa automáticamente esta versión de prueba y guarda el resultado.</span></div>
       <PreviewValidationButton/>
     </section>}
 
-    {profile.role==="admin"&&<section className={styles.adminForms}>
+    {profile.role==="admin"&&<details className={styles.advancedPanel}>
+      <summary>Opciones avanzadas</summary>
+      <p className={styles.advancedHint}>Solo necesarias para pruebas manuales o soporte técnico.</p>
+      <section className={styles.adminForms}>
       <form action={createValidationRun} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>NUEVA VALIDACIÓN</span><h2>Registrar prueba de Preview</h2></div>
+        <div className={styles.formTitle}><span>NUEVA PRUEBA MANUAL</span><h2>Registrar prueba manual</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="run_code" required placeholder="SMOKE-PREVIEW-2026-10-07-02"/></label>
-          <label>Entorno<select name="environment" defaultValue="preview"><option value="preview">Preview</option><option value="staging">Staging</option></select></label>
-          <label>Deployment ID<input name="deployment_id"/></label>
-          <label>Commit<input name="commit_sha"/></label>
+          <label>Tipo de versión<select name="environment" defaultValue="preview"><option value="preview">Versión de prueba</option><option value="staging">Preparación</option></select></label>
+          <label>ID técnico de versión<input name="deployment_id"/></label>
+          <label>Código técnico<input name="commit_sha"/></label>
           <label className={styles.span2}>URL base<input name="base_url" placeholder="https://...vercel.app"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton}>Crear validación</button>
+        <button className={styles.formButton}>Crear prueba</button>
       </form>
 
       <form action={addValidationResult} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>NUEVO RESULTADO</span><h2>Añadir check</h2></div>
+        <div className={styles.formTitle}><span>NUEVA COMPROBACIÓN</span><h2>Añadir comprobación</h2></div>
         <div className={styles.formGrid}>
-          <label>Validación<select name="run_id" required defaultValue=""><option value="" disabled>Seleccionar validación</option>{runRows.map((r:any)=><option key={r.id} value={r.id}>{r.run_code} · {r.status}</option>)}</select></label>
+          <label>Prueba<select name="run_id" required defaultValue=""><option value="" disabled>Seleccionar prueba</option>{runRows.map((r:any)=><option key={r.id} value={r.id}>{r.run_code} · {r.status}</option>)}</select></label>
           <label>Nombre<input name="check_name" required placeholder="Admin login"/></label>
-          <label>Ruta<input name="request_path" required placeholder="/admin/login"/></label>
-          <label>Método<select name="method" defaultValue="GET"><option value="GET">GET</option><option value="POST">POST</option><option value="HEAD">HEAD</option></select></label>
-          <label>Esperado<input type="number" min="100" max="599" name="expected_status"/></label>
-          <label>Real<input type="number" min="100" max="599" name="actual_status"/></label>
-          <label>Resultado<select name="status" defaultValue="passed"><option value="passed">Passed</option><option value="failed">Failed</option><option value="skipped">Skipped</option></select></label>
-          <label>Redirect<input name="redirect_location"/></label>
+          <label>Dirección interna<input name="request_path" required placeholder="/admin/login"/></label>
+          <label>Tipo de consulta<select name="method" defaultValue="GET"><option value="GET">GET</option><option value="POST">POST</option><option value="HEAD">HEAD</option></select></label>
+          <label>Estado esperado<input type="number" min="100" max="599" name="expected_status"/></label>
+          <label>Estado obtenido<input type="number" min="100" max="599" name="actual_status"/></label>
+          <label>Estado<select name="status" defaultValue="passed"><option value="passed">Correcto</option><option value="failed">Revisar</option><option value="skipped">Omitido</option></select></label>
+          <label>Redirección<input name="redirect_location"/></label>
           <label className={styles.span2}>Detalle<textarea name="detail" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!runRows.length}>Añadir resultado</button>
+        <button className={styles.formButton} disabled={!runRows.length}>Guardar comprobación</button>
       </form>
 
       <form action={closeValidationRun} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>CERRAR VALIDACIÓN</span><h2>Definir resultado final</h2></div>
+        <div className={styles.formTitle}><span>CERRAR PRUEBA</span><h2>Definir estado final</h2></div>
         <div className={styles.formGrid}>
-          <label>Validación<select name="run_id" required defaultValue=""><option value="" disabled>Seleccionar validación</option>{runRows.map((r:any)=><option key={r.id} value={r.id}>{r.run_code} · {r.status}</option>)}</select></label>
-          <label>Estado<select name="status" defaultValue="partial"><option value="passed">Passed</option><option value="failed">Failed</option><option value="partial">Partial</option><option value="canceled">Canceled</option></select></label>
+          <label>Prueba<select name="run_id" required defaultValue=""><option value="" disabled>Seleccionar prueba</option>{runRows.map((r:any)=><option key={r.id} value={r.id}>{r.run_code} · {r.status}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="partial"><option value="passed">Correcto</option><option value="failed">Revisar</option><option value="partial">Incompleto</option><option value="canceled">Cancelado</option></select></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!runRows.length}>Cerrar validación</button>
+        <button className={styles.formButton} disabled={!runRows.length}>Cerrar prueba</button>
       </form>
-    </section>}
+      </section>
+    </details>}
 
     <section className={styles.notice}>
       <div><strong>Fuente de verdad</strong><span>Los resultados históricos provienen de runtime_validation_runs + runtime_validation_results. Las escrituras desde esta pantalla requieren MFA.</span></div>
