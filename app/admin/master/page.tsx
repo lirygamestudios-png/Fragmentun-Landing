@@ -12,6 +12,7 @@ type Domain={
 
 const domains:Domain[]=[
   {title:"Command Center",subtitle:"Vista ejecutiva, alertas, decisiones y excepciones",href:"/admin/master",phase:"60",status:"active"},
+  {title:"Operaciones",subtitle:"Estado operativo, continuidad y señales del sistema",href:"/admin/master/operations",phase:"60",status:"active"},
   {title:"Juegos",subtitle:"Producción, LiveOps, releases y operación por título",href:"/admin",phase:"57",status:"planned"},
   {title:"Publishing",subtitle:"Plataformas, lanzamientos, catálogo y franquicias",href:"/admin",phase:"59",status:"planned"},
   {title:"Growth",subtitle:"Adquisición, embudos, CRM, conversión y retención",href:"/admin/analytics",phase:"53",status:"planned"},
@@ -20,7 +21,7 @@ const domains:Domain[]=[
   {title:"Finanzas",subtitle:"Accounting, treasury, tax, reporting y runway",href:"/admin/reportes",phase:"39",status:"planned"},
   {title:"Personas",subtitle:"Workforce, talento, desempeño y compensación",href:"/admin",phase:"48",status:"planned"},
   {title:"Tecnología",subtitle:"Infraestructura, CI/CD, QA automation y technical ops",href:"/admin/status",phase:"58",status:"planned"},
-  {title:"Datos",subtitle:"Analytics governance, KPIs y decision intelligence",href:"/admin/analytics",phase:"43",status:"planned"},
+  {title:"Datos",subtitle:"Analytics governance, KPIs y decision intelligence",href:"/admin/master/data",phase:"43",status:"active"},
   {title:"Automatización & IA",subtitle:"Agentes, workflows, permisos, auditoría y kill switch",href:"/admin/integrations",phase:"44",status:"planned"},
   {title:"Riesgos & Controles",subtitle:"ERM, compliance, controles y audit readiness",href:"/admin/status",phase:"46",status:"planned"},
   {title:"Seguridad",subtitle:"Identidad, ciberseguridad, resiliencia y continuidad",href:"/admin/status",phase:"45",status:"planned"},
