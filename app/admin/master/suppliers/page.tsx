@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 function vendorEstadoLabel(value:string){
   const map:Record<string,string>={prospect:"PROSPECTO",active:"ACTIVO",on_hold:"EN PAUSA",inactive:"INACTIVO",terminated:"FINALIZADO"};
@@ -143,7 +144,7 @@ export default async function MasterSuppliersPage(){
           <label>Riesgo<select name="risk_rating" defaultValue="medium"><option value="low">Bajo</option><option value="medium">Medio</option><option value="high">Alto</option><option value="critical">Crítico</option></select></label>
           <label>Preferidos<select name="preferred" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar proveedor</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar proveedor</MasterSubmitButton>
       </form>
     </section>
 
@@ -162,7 +163,7 @@ export default async function MasterSuppliersPage(){
           <label>Condiciones de pago<input name="payment_terms"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!vendorRows.length}>Actualizar proveedor</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!vendorRows.length}>Actualizar proveedor</MasterSubmitButton>
       </form>
       </section>
     </details>
