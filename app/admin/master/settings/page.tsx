@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 async function requireAdmin(){
   "use server";
@@ -154,7 +155,7 @@ export default async function SettingsPage(){
           <label className={styles.span2}>Valor<input name="value"/></label>
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
-        <button className={styles.formButton}>Registrar parámetro</button>
+        <MasterSubmitButton className={styles.formButton}>Registrar parámetro</MasterSubmitButton>
       </form>
 
       <form action={createFlag} className={styles.adminForm}>
@@ -166,7 +167,7 @@ export default async function SettingsPage(){
           <label>Porcentaje de activación<input type="number" min="0" max="100" name="rollout_percent" defaultValue="0"/></label>
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
-        <button className={styles.formButton}>Registrar control</button>
+        <MasterSubmitButton className={styles.formButton}>Registrar control</MasterSubmitButton>
       </form>
     </section>
 
@@ -180,7 +181,7 @@ export default async function SettingsPage(){
           <label className={styles.span2}>Valor<input name="value"/></label>
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!settingRows.length}>Actualizar parámetro</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!settingRows.length}>Actualizar parámetro</MasterSubmitButton>
       </form>
 
       <form action={updateFlag} className={styles.adminForm}>
@@ -194,7 +195,7 @@ export default async function SettingsPage(){
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!flagRows.length}>Actualizar control</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!flagRows.length}>Actualizar control</MasterSubmitButton>
       </form>
     </section></details>
 
