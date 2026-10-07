@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
-function incidentStatusLabel(value:string){
+function incidentEstadoLabel(value:string){
   const map:Record<string,string>={open:"ABIERTO",investigating:"INVESTIGANDO",contained:"CONTENIDO",monitoring:"EN SEGUIMIENTO",resolved:"RESUELTO",closed:"CERRADO"};
   return map[value]||String(value||"").toUpperCase();
 }
@@ -13,7 +13,7 @@ function severityLabel(value:string){
   return map[value]||String(value||"").toUpperCase();
 }
 
-function reviewStatusLabel(value:string){
+function reviewEstadoLabel(value:string){
   const map:Record<string,string>={pending:"PENDIENTE",approved:"APROBADA",change_required:"REQUIERE CAMBIO",revoked:"REVOCADA",expired:"VENCIDA"};
   return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
 }
@@ -46,7 +46,7 @@ async function createIncident(formData:FormData){
   revalidatePath("/admin/master/security");
 }
 
-async function createAccessReview(formData:FormData){
+async function createAccessRevisión(formData:FormData){
   "use server";
   const {supabase,user}=await requireSecurityAdmin();
   const subjectType=String(formData.get("subject_type")||"admin_user");
@@ -77,9 +77,9 @@ async function updateIncident(formData:FormData){
   const summary=String(formData.get("summary")||"").trim()||null;
   const rootCause=String(formData.get("root_cause")||"").trim()||null;
   const remediation=String(formData.get("remediation")||"").trim()||null;
-  const allowedStatus=new Set(["open","investigating","contained","monitoring","resolved","closed"]);
+  const allowedEstado=new Set(["open","investigating","contained","monitoring","resolved","closed"]);
   const allowedSeverity=new Set(["low","medium","high","critical"]);
-  if(!id||!allowedStatus.has(status)||!allowedSeverity.has(severity)) throw new Error("invalid_incident_update");
+  if(!id||!allowedEstado.has(status)||!allowedSeverity.has(severity)) throw new Error("invalid_incident_update");
   const patch:any={
     status,severity,owner_user_id:ownerUserId,summary,root_cause:rootCause,remediation,updated_at:new Date().toISOString()
   };
@@ -90,7 +90,7 @@ async function updateIncident(formData:FormData){
   revalidatePath("/admin/master/security");
 }
 
-async function updateAccessReview(formData:FormData){
+async function updateAccessRevisión(formData:FormData){
   "use server";
   const {supabase,user}=await requireSecurityAdmin();
   const id=String(formData.get("review_id")||"").trim();
@@ -100,9 +100,9 @@ async function updateAccessReview(formData:FormData){
   const reviewerUserId=reviewerRaw||user.id;
   const dueDate=String(formData.get("due_date")||"").trim()||null;
   const notes=String(formData.get("notes")||"").trim()||null;
-  const allowedStatus=new Set(["pending","approved","change_required","revoked","expired"]);
+  const allowedEstado=new Set(["pending","approved","change_required","revoked","expired"]);
   const allowedRisk=new Set(["low","medium","high","critical"]);
-  if(!id||!allowedStatus.has(status)||!allowedRisk.has(risk)) throw new Error("invalid_access_review_update");
+  if(!id||!allowedEstado.has(status)||!allowedRisk.has(risk)) throw new Error("invalid_access_review_update");
   const patch:any={review_status:status,risk_level:risk,reviewer_user_id:reviewerUserId,due_date:dueDate,notes};
   patch.reviewed_at=status==="pending"?null:new Date().toISOString();
   const{error}=await supabase.from("security_access_reviews").update(patch).eq("id",id);
@@ -120,7 +120,7 @@ export default async function MasterSecurityPage(){
 
   const[
     {data:incidents},
-    {data:accessReviews},
+    {data:accessRevisións},
     {count:profiles},
     {count:allowlist},
     {count:rateRows},
@@ -137,13 +137,13 @@ export default async function MasterSecurityPage(){
   ]);
 
   const incidentRows=(incidents||[]) as any[];
-  const reviewRows=(accessReviews||[]) as any[];
+  const reviewRows=(accessRevisións||[]) as any[];
   const openIncidents=incidentRows.filter(i=>!["resolved","closed"].includes(i.status));
   const criticalIncidents=incidentRows.filter(i=>["high","critical"].includes(i.severity)&&!["resolved","closed"].includes(i.status));
-  const pendingReviews=reviewRows.filter(r=>r.review_status==="pending"||r.review_status==="change_required");
-  const vencidasReviews=reviewRows.filter(r=>r.due_date&&new Date(r.due_date).getTime()<Date.now()&&!["approved","revoked"].includes(r.review_status));
+  const pendingRevisións=reviewRows.filter(r=>r.review_status==="pending"||r.review_status==="change_required");
+  const vencidasRevisións=reviewRows.filter(r=>r.due_date&&new Date(r.due_date).getTime()<Date.now()&&!["approved","revoked"].includes(r.review_status));
   const ownerRows=(owners||[]) as any[];
-  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
   const controls=[
     ["RLS","Activo","Tablas públicas relevantes con Row Level Security"],
@@ -164,7 +164,7 @@ export default async function MasterSecurityPage(){
 
     <section className={styles.kpis}>
       <article><small>Incidentes abiertos</small><strong>{openIncidents.length}</strong><span>{criticalIncidents.length} altos o críticos</span></article>
-      <article><small>Revisiones de acceso</small><strong>{pendingReviews.length}</strong><span>{overdueReviews.length} vencidas</span></article>
+      <article><small>Revisiones de acceso</small><strong>{pendingRevisións.length}</strong><span>{overdueRevisións.length} vencidas</span></article>
       <article><small>Usuarios administrativos</small><strong>{(profiles||0).toLocaleString()}</strong><span>Provisionados</span></article>
       <article><small>Eventos de auditoría</small><strong>{(adminEvents||0).toLocaleString()}</strong><span>Trazabilidad</span></article>
     </section>
@@ -172,7 +172,7 @@ export default async function MasterSecurityPage(){
     <section className={styles.sectionHead}><div><span>INCIDENTES</span><h2>Incidentes de seguridad</h2></div><p>Registro persistente y privado; empieza vacío hasta que exista un incidente real que documentar.</p></section>
     <section className={styles.grid}>
       {incidentRows.map((i:any)=><article key={i.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={["resolved","closed"].includes(i.status)?styles.badgeActive:styles.badgePlanned}>{incidentStatusLabel(i.status)}</span><em>{severityLabel(i.severity)}</em></div>
+        <div className={styles.cardTop}><span className={["resolved","closed"].includes(i.status)?styles.badgeActive:styles.badgePlanned}>{incidentEstadoLabel(i.status)}</span><em>{severityLabel(i.severity)}</em></div>
         <h3>{i.title}</h3><p>{i.incident_code} · {i.category}<br/>Responsable: {ownerName(i.owner_user_id)}<br/>{new Date(i.detected_at).toLocaleString("es-US")}<br/>{i.summary||"Sin resumen"}</p>
       </article>)}
       {!incidentRows.length&&<article className={styles.card}><h3>Sin incidentes registrados</h3><p>No se han creado incidentes ficticios.</p></article>}
@@ -181,40 +181,43 @@ export default async function MasterSecurityPage(){
     <section className={styles.sectionHead}><div><span>REVISIONES DE ACCESO</span><h2>Revisiones de acceso</h2></div></section>
     <section className={styles.grid}>
       {reviewRows.map((r:any)=><article key={r.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={r.review_status==="approved"?styles.badgeActive:styles.badgePlanned}>{reviewStatusLabel(r.review_status)}</span><em>{severityLabel(r.risk_level)}</em></div>
+        <div className={styles.cardTop}><span className={r.review_status==="approved"?styles.badgeActive:styles.badgePlanned}>{reviewEstadoLabel(r.review_status)}</span><em>{severityLabel(r.risk_level)}</em></div>
         <h3>{r.subject_name||r.subject_ref}</h3><p>{r.subject_type}<br/>Revisor: {ownerName(r.reviewer_user_id)}<br/>{r.due_date?"Fecha límite: "+r.due_date:"Sin fecha límite"}<br/>{r.notes||"Sin notas"}</p>
       </article>)}
       {!reviewRows.length&&<article className={styles.card}><h3>Sin revisiones pendientes</h3><p>Las revisiones se registrarán solo cuando exista una necesidad real de control.</p></article>}
     </section>
 
-    <section className={styles.adminForms}>
+    <details className={styles.advancedPanel}>
+      <summary>Opciones avanzadas</summary>
+      <p className={styles.advancedHint}>Úsalas para registrar o modificar incidentes y revisiones de acceso manualmente.</p>
+        <section className={styles.adminForms}>
       <form action={createIncident} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVO INCIDENTE</span><h2>Registrar incidente</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="incident_code" required placeholder="sec-2026-001"/></label>
           <label>Título<input name="title" required/></label>
-          <label>Severidad<select name="severity" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
+          <label>Severidad<select name="severity" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
           <label>Categoría<select name="category" defaultValue="other">
-            <option value="auth">Auth</option><option value="data">Data</option><option value="application">Application</option><option value="infrastructure">Infrastructure</option>
-            <option value="vendor">Vendor</option><option value="abuse">Abuse</option><option value="availability">Availability</option><option value="malware">Malware</option>
-            <option value="phishing">Phishing</option><option value="privacy">Privacy</option><option value="other">Other</option>
+            <option value="auth">Autenticación</option><option value="data">Datos</option><option value="application">Aplicación</option><option value="infrastructure">Infraestructura</option>
+            <option value="vendor">Proveedor</option><option value="abuse">Abuso</option><option value="availability">Disponibilidad</option><option value="malware">Malware</option>
+            <option value="phishing">Phishing</option><option value="privacy">Privacidad</option><option value="other">Otro</option>
           </select></label>
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3}/></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar incidente</button>
       </form>
 
-      <form action={createAccessReview} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>NUEVA REVIEW</span><h2>Registrar revisión de acceso</h2></div>
+      <form action={createAccessRevisión} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>NUEVA REVISIÓN</span><h2>Registrar revisión de acceso</h2></div>
         <div className={styles.formGrid}>
-          <label>Tipo<select name="subject_type" defaultValue="admin_user"><option value="admin_user">Admin user</option><option value="service_account">Service account</option><option value="integration">Integration</option><option value="vendor">Vendor</option><option value="other">Other</option></select></label>
+          <label>Tipo<select name="subject_type" defaultValue="admin_user"><option value="admin_user">Usuario administrativo</option><option value="service_account">Cuenta de servicio</option><option value="integration">Integración</option><option value="vendor">Proveedor</option><option value="other">Otro</option></select></label>
           <label>Referencia<input name="subject_ref" required placeholder="email / id / provider"/></label>
           <label>Nombre<input name="subject_name"/></label>
-          <label>Riesgo<select name="risk_level" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
-          <label>Due date<input type="date" name="due_date"/></label>
+          <label>Riesgo<select name="risk_level" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
+          <label>Fecha límite<input type="date" name="due_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar review</button>
+        <button className={styles.formButton} type="submit">Registrar revisión</button>
       </form>
     </section>
 
@@ -224,9 +227,9 @@ export default async function MasterSecurityPage(){
         <div className={styles.formTitle}><span>GESTIONAR INCIDENTE</span><h2>Actualizar respuesta</h2></div>
         <div className={styles.formGrid}>
           <label>Incidente<select name="incident_id" required defaultValue=""><option value="" disabled>Seleccionar incidente</option>{incidentRows.map((i:any)=><option key={i.id} value={i.id}>{i.incident_code} · {i.title}</option>)}</select></label>
-          <label>Status<select name="status" defaultValue="investigating"><option value="open">Open</option><option value="investigating">Investigating</option><option value="contained">Contained</option><option value="monitoring">Monitoring</option><option value="resolved">Resolved</option><option value="closed">Closed</option></select></label>
-          <label>Severidad<select name="severity" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="investigating"><option value="open">Abierto</option><option value="investigating">Investigando</option><option value="contained">Contenido</option><option value="monitoring">En seguimiento</option><option value="resolved">Resuelto</option><option value="closed">Cerrado</option></select></label>
+          <label>Severidad<select name="severity" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3}/></label>
           <label className={styles.span2}>Causa raíz<textarea name="root_cause" rows={3}/></label>
           <label className={styles.span2}>Remediación<textarea name="remediation" rows={3}/></label>
@@ -234,19 +237,20 @@ export default async function MasterSecurityPage(){
         <button className={styles.formButton} disabled={!incidentRows.length}>Actualizar incidente</button>
       </form>
 
-      <form action={updateAccessReview} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>GESTIONAR REVIEW</span><h2>Actualizar acceso</h2></div>
+      <form action={updateAccessRevisión} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR REVISIÓN</span><h2>Actualizar acceso</h2></div>
         <div className={styles.formGrid}>
-          <label>Review<select name="review_id" required defaultValue=""><option value="" disabled>Seleccionar review</option>{reviewRows.map((r:any)=><option key={r.id} value={r.id}>{r.subject_name||r.subject_ref}</option>)}</select></label>
-          <label>Status<select name="review_status" defaultValue="pending"><option value="pending">Pending</option><option value="approved">Approved</option><option value="change_required">Change required</option><option value="revoked">Revoked</option><option value="expired">Expired</option></select></label>
-          <label>Riesgo<select name="risk_level" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
-          <label>Reviewer<select name="reviewer_user_id" defaultValue=""><option value="">Usuario actual</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
-          <label>Due date<input type="date" name="due_date"/></label>
+          <label>Revisión<select name="review_id" required defaultValue=""><option value="" disabled>Seleccionar revisión</option>{reviewRows.map((r:any)=><option key={r.id} value={r.id}>{r.subject_name||r.subject_ref}</option>)}</select></label>
+          <label>Estado<select name="review_status" defaultValue="pending"><option value="pending">Pendiente</option><option value="approved">Aprobada</option><option value="change_required">Requiere cambio</option><option value="revoked">Revocada</option><option value="expired">Vencida</option></select></label>
+          <label>Riesgo<select name="risk_level" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
+          <label>Revisióner<select name="reviewer_user_id" defaultValue=""><option value="">Usuario actual</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Fecha límite<input type="date" name="due_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!reviewRows.length}>Actualizar review</button>
+        <button className={styles.formButton} disabled={!reviewRows.length}>Actualizar revisión</button>
       </form>
-    </section>
+      </section>
+    </details>
 
     <section className={styles.sectionHead}><div><span>CONTROLES DE SEGURIDAD</span><h2>Controles existentes</h2></div><p>Señales técnicas separadas del registro de incidentes.</p></section>
     <section className={styles.grid}>
