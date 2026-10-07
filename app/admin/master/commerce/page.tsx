@@ -6,6 +6,21 @@ function money(cents:number|null|undefined,currency="USD"){
   return new Intl.NumberFormat("en-US",{style:"currency",currency}).format((cents||0)/100);
 }
 
+function paymentLabel(value:string){
+  const map:Record<string,string>={paid:"PAGADO",pending:"PENDIENTE",failed:"FALLIDO",refunded:"REEMBOLSADO",partially_refunded:"REEMBOLSO PARCIAL",canceled:"CANCELADO"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
+function deliveryLabel(value:string){
+  const map:Record<string,string>={unfulfilled:"PENDIENTE",processing:"PREPARANDO",fulfilled:"ENVIADO",shipped:"EN CAMINO",delivered:"ENTREGADO",canceled:"CANCELADO"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
+function simpleModeLabel(value:string){
+  const map:Record<string,string>={manual:"MANUAL",auto:"AUTOMÁTICO",automatic:"AUTOMÁTICO",included:"INCLUIDO",external:"EXTERNO"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
 export default async function MasterCommercePage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -34,29 +49,29 @@ export default async function MasterCommercePage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · COMERCIO</span><h1>Comercio</h1><p>Pedidos, pagos, fulfillment y devoluciones sobre la arquitectura real de tienda.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · COMERCIO</span><h1>Comercio</h1><p>Pedidos, pagos, entregas y devoluciones sobre la tienda real.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
       <article><small>Pedidos</small><strong>{rows.length.toLocaleString()}</strong><span>{(products||0).toLocaleString()} productos registrados</span></article>
-      <article><small>Pagado</small><strong>{money(totalPaid,currency)}</strong><span>{paid.length} órdenes pagadas</span></article>
-      <article><small>Pendientes</small><strong>{open.length}</strong><span>Fulfillment abierto</span></article>
-      <article><small>Refunds</small><strong>{refunds.length}</strong><span>Con devolución/reembolso</span></article>
+      <article><small>Pagado</small><strong>{money(totalPaid,currency)}</strong><span>{paid.length} pedidos pagados</span></article>
+      <article><small>Pendientes</small><strong>{open.length}</strong><span>Entregas pendientes</span></article>
+      <article><small>Reembolsos</small><strong>{refunds.length}</strong><span>Con devolución/reembolso</span></article>
     </section>
 
     <section className={styles.sectionHead}>
-      <div><span>COMMERCE READINESS</span><h2>Configuración</h2></div>
-      <p>Pagos y shipping permanecen bajo control hasta su activación comercial.</p>
+      <div><span>PREPARACIÓN COMERCIAL</span><h2>Configuración</h2></div>
+      <p>Pagos y envíos permanecen bajo control hasta su activación comercial.</p>
     </section>
     <section className={styles.grid}>
       {[
         ["Stripe",settings?.stripe_enabled?"Habilitado":"Deshabilitado"],
         ["PayPal",settings?.paypal_enabled?"Habilitado":"Deshabilitado"],
-        ["Proveedor por defecto",settings?.default_payment_provider||"auto"],
-        ["Tax mode",settings?.tax_mode||"manual"],
-        ["Shipping labels",settings?.shipping_label_mode||"manual"],
-        ["Fulfillments",String(fulfillments||0)]
+        ["Proveedor por defecto",settings?.default_payment_provider||"Automático"],
+        ["Impuestos",simpleModeLabel(settings?.tax_mode||"manual")],
+        ["Etiquetas de envío",simpleModeLabel(settings?.shipping_label_mode||"manual")],
+        ["Entregas registradas",String(fulfillments||0)]
       ].map(([name,value])=><article key={name} className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>COMERCIO</span><em>CONTROL</em></div>
         <h3>{name}</h3><p><strong>{value}</strong></p>
@@ -66,7 +81,7 @@ export default async function MasterCommercePage(){
     <section className={styles.sectionHead}><div><span>ÓRDENES</span><h2>Actividad reciente</h2></div></section>
     <section className={styles.grid}>
       {rows.slice(0,12).map((o:any)=><article key={o.order_number} className={styles.card}>
-        <div className={styles.cardTop}><span className={styles.badgePlanned}>{String(o.payment_status).toUpperCase()}</span><em>{o.fulfillment_status}</em></div>
+        <div className={styles.cardTop}><span className={styles.badgePlanned}>{paymentLabel(o.payment_status)}</span><em>{deliveryLabel(o.fulfillment_status)}</em></div>
         <h3>{o.order_number}</h3>
         <p>{money(o.total_cents,o.currency||"USD")} · {o.customer_email||"cliente"}<br/>{new Date(o.created_at).toLocaleString("es-US")}</p>
       </article>)}
