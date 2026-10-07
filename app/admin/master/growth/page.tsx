@@ -38,9 +38,9 @@ async function updateContact(formData:FormData){
   const score=Math.max(0,Math.min(100,Number(formData.get("score")||0)));
   const notes=String(formData.get("notes")||"").trim()||null;
   const nextAction=String(formData.get("next_action_at")||"").trim()||null;
-  const allowedLifecycle=new Set(["subscriber","lead","mql","sql","opportunity","customer","advocate","inactive"]);
+  const allowedEtapa=new Set(["subscriber","lead","mql","sql","opportunity","customer","advocate","inactive"]);
   const allowedStatus=new Set(["active","nurturing","qualified","contacted","won","lost","unsubscribed","suppressed"]);
-  if(!contactId||!allowedLifecycle.has(lifecycle)||!allowedStatus.has(status)||!Number.isFinite(score)) throw new Error("invalid_contact_update");
+  if(!contactId||!allowedEtapa.has(lifecycle)||!allowedStatus.has(status)||!Number.isFinite(score)) throw new Error("invalid_contact_update");
 
   const{data:before}=await supabase.from("crm_contacts").select("lifecycle_stage,status,score,notes").eq("id",contactId).maybeSingle();
   const{error}=await supabase.from("crm_contacts").update({
@@ -111,7 +111,7 @@ export default async function MasterGrowthPage(){
   const activityRows=(activities||[]) as any[];
   const qualified=contactRows.filter(x=>["mql","sql","opportunity","customer"].includes(x.lifecycle_stage)).length;
   const customers=contactRows.filter(x=>x.lifecycle_stage==="customer"||x.status==="won").length;
-  const avgScore=contactRows.length?contactRows.reduce((a,x)=>a+Number(x.score||0),0)/contactRows.length:0;
+  const avgPrioridad=contactRows.length?contactRows.reduce((a,x)=>a+Number(x.score||0),0)/contactRows.length:0;
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
@@ -128,7 +128,7 @@ export default async function MasterGrowthPage(){
 
     <section className={styles.sectionHead}>
       <div><span>CONTACTOS</span><h2>Contactos y etapas</h2></div>
-      <p>{(campaigns||0).toLocaleString()} campañas activas · {qualified} contactos cualificados · {customers} clientes · prioridad promedio {avgScore.toFixed(0)}/100.</p>
+      <p>{(campaigns||0).toLocaleString()} campañas activas · {qualified} contactos cualificados · {customers} clientes · prioridad promedio {avgPrioridad.toFixed(0)}/100.</p>
     </section>
 
     <section className={styles.grid}>
@@ -143,27 +143,30 @@ export default async function MasterGrowthPage(){
       {!contactRows.length&&<article className={styles.card}><h3>Sin contactos</h3><p>Los contactos captados se incorporarán automáticamente aquí.</p></article>}
     </section>
 
-    {["admin","editor","marketing"].includes(profile.role)&&contactRows.length>0&&<section className={styles.adminForms}>
+    {["admin","editor","marketing"].includes(profile.role)&&contactRows.length>0&&<details className={styles.advancedPanel}>
+      <summary>Opciones avanzadas</summary>
+      <p className={styles.advancedHint}>Úsalas para actualizar contactos o registrar interacciones manualmente.</p>
+      <section className={styles.adminForms}>
       <form action={updateContact} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>PIPELINE</span><h2>Actualizar contacto</h2></div>
+        <div className={styles.formTitle}><span>GESTIÓN DE CONTACTOS</span><h2>Actualizar contacto</h2></div>
         <div className={styles.formGrid}>
           <label>Contacto<select name="contact_id" required defaultValue="">
             <option value="" disabled>Seleccionar contacto</option>
             {contactRows.map((x:any)=><option key={x.id} value={x.id}>{x.leads?.name||x.leads?.email}</option>)}
           </select></label>
-          <label>Lifecycle<select name="lifecycle_stage" defaultValue="lead">
-            <option value="subscriber">Subscriber</option><option value="lead">Lead</option>
+          <label>Etapa<select name="lifecycle_stage" defaultValue="lead">
+            <option value="subscriber">Suscriptor</option><option value="lead">Contacto</option>
             <option value="mql">MQL</option><option value="sql">SQL</option>
-            <option value="opportunity">Opportunity</option><option value="customer">Customer</option>
-            <option value="advocate">Advocate</option><option value="inactive">Inactive</option>
+            <option value="opportunity">Oportunidad</option><option value="customer">Cliente</option>
+            <option value="advocate">Promotor</option><option value="inactive">Inactivo</option>
           </select></label>
           <label>Estado<select name="status" defaultValue="active">
-            <option value="active">Active</option><option value="nurturing">Nurturing</option>
-            <option value="qualified">Qualified</option><option value="contacted">Contacted</option>
-            <option value="won">Won</option><option value="lost">Lost</option>
-            <option value="unsubscribed">Unsubscribed</option><option value="suppressed">Suppressed</option>
+            <option value="active">Activo</option><option value="nurturing">En seguimiento</option>
+            <option value="qualified">Calificado</option><option value="contacted">Contactado</option>
+            <option value="won">Convertido</option><option value="lost">Perdido</option>
+            <option value="unsubscribed">Baja</option><option value="suppressed">Bloqueado</option>
           </select></label>
-          <label>Score<input type="number" min="0" max="100" name="score" defaultValue="0"/></label>
+          <label>Prioridad<input type="number" min="0" max="100" name="score" defaultValue="0"/></label>
           <label>Próxima acción<input type="datetime-local" name="next_action_at"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3} placeholder="Notas internas del contacto"/></label>
         </div>
@@ -178,15 +181,16 @@ export default async function MasterGrowthPage(){
             {contactRows.map((x:any)=><option key={x.id} value={x.id}>{x.leads?.name||x.leads?.email}</option>)}
           </select></label>
           <label>Tipo<select name="activity_type" defaultValue="note">
-            <option value="note">Nota</option><option value="email">Email</option><option value="call">Call</option>
-            <option value="dm">DM</option><option value="meeting">Meeting</option><option value="other">Other</option>
+            <option value="note">Nota</option><option value="email">Email</option><option value="call">Llamada</option>
+            <option value="dm">DM</option><option value="meeting">Reunión</option><option value="other">Otro</option>
           </select></label>
           <label className={styles.span2}>Asunto<input name="subject" placeholder="Seguimiento"/></label>
           <label className={styles.span2}>Detalle<textarea name="body" rows={4} placeholder="Detalle de la interacción"/></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar actividad</button>
       </form>
-    </section>}
+      </section>
+    </details>}
 
     <section className={styles.sectionHead}><div><span>ACTIVIDAD</span><h2>Actividad reciente</h2></div><p>Historial de interacciones y cambios del contacto.</p></section>
     <section className={styles.grid}>
