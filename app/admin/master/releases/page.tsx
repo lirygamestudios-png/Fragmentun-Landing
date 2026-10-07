@@ -112,7 +112,7 @@ async function useLatestPassedValidation(formData:FormData){
 
   if(!latest) throw new Error("no_passed_validation");
 
-  const evidence=`Prueba autenticada ${latest.run_code}: 5/5 correctas. Deployment ${latest.deployment_id||"—"} · commit ${latest.commit_sha||"—"}.`;
+  const evidence=`Prueba autenticada ${latest.run_code}: todas las comprobaciones registradas como correctas. Versión ${latest.deployment_id||"—"} · código ${latest.commit_sha||"—"}.`;
 
   const{error:gateError}=await supabase.from("release_gates").update({
     target_commit:latest.commit_sha||null,
@@ -194,7 +194,7 @@ export default async function ReleaseGatePage(){
   const activeGate=gateRows[0];
   const activeGateChecks=activeGate?checkRows.filter(c=>c.release_gate_id===activeGate.id):[];
   const runtimeEvidence=activeGateChecks.find(c=>c.check_code==="runtime-smoke");
-  const evidenceIntegrated=runtimeEvidence?.status==="passed"&&String(runtimeEvidence?.evidence||"").includes("5/5 correctas");
+  const evidenceIntegrated=runtimeEvidence?.status==="passed";
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
@@ -225,11 +225,11 @@ export default async function ReleaseGatePage(){
 
     {gateRows.length>0&&<section className={styles.notice}>
       {evidenceIntegrated
-        ?<div><strong>Evidencia integrada</strong><span>La prueba 5/5 quedó registrada correctamente. Falta únicamente la aprobación humana antes de cualquier publicación.</span></div>
-        :<><div><strong>Integrar prueba 5/5</strong><span>Usa la última comprobación correcta como evidencia de esta revisión. No publica ni aprueba producción.</span></div>
+        ?<div><strong>Evidencia integrada</strong><span>La última prueba correcta quedó registrada como evidencia. Falta únicamente la aprobación humana antes de cualquier publicación.</span></div>
+        :<><div><strong>Integrar última prueba correcta</strong><span>Usa la última comprobación correcta como evidencia de esta revisión. No publica ni aprueba producción.</span></div>
           <form action={useLatestPassedValidation}>
             <input type="hidden" name="gate_id" value={gateRows[0].id}/>
-            <button className={styles.formButton}>Usar prueba 5/5</button>
+            <button className={styles.formButton}>Usar última prueba correcta</button>
           </form></>}
       {evidenceIntegrated&&<code>APROBACIÓN HUMANA PENDIENTE</code>}
     </section>}
