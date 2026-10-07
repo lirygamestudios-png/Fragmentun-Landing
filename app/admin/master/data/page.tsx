@@ -122,10 +122,10 @@ export default async function MasterDataPage(){
   ]=await Promise.all([
     supabase.from("data_sources").select("id,code,name,source_type,system_name,status,freshness_target_minutes,owner_user_id,notes,created_at").order("name",{ascending:true}),
     supabase.from("metric_definitions").select("id,code,name,domain,definition,formula,unit,source_table,status,owner_user_id,notes,created_at").order("domain",{ascending:true}),
-    supabase.from("analytics_events").select("*",{cantidad:"exact",head:true}).gte("created_at",since),
-    supabase.from("analytics_events").select("*",{cantidad:"exact",head:true}).eq("event_name","page_view").gte("created_at",since),
-    supabase.from("leads").select("*",{cantidad:"exact",head:true}).gte("created_at",since),
-    supabase.from("analytics_events").select("*",{cantidad:"exact",head:true}).eq("event_name","amazon_click").gte("created_at",since),
+    supabase.from("analytics_events").select("*",{count:"exact",head:true}).gte("created_at",since),
+    supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","page_view").gte("created_at",since),
+    supabase.from("leads").select("*",{count:"exact",head:true}).gte("created_at",since),
+    supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","amazon_click").gte("created_at",since),
     supabase.from("analytics_events").select("event_name,source,medium,created_at").order("created_at",{ascending:false}).limit(20),
     supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
   ]);
