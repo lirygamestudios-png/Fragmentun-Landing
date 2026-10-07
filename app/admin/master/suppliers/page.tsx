@@ -3,6 +3,21 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
+function vendorStatusLabel(value:string){
+  const map:Record<string,string>={prospect:"PROSPECTO",active:"ACTIVO",on_hold:"EN PAUSA",inactive:"INACTIVO",terminated:"FINALIZADO"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
+function riskLabel(value:string){
+  const map:Record<string,string>={low:"BAJO",medium:"MEDIO",high:"ALTO",critical:"CRÍTICO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function vendorTypeLabel(value:string){
+  const map:Record<string,string>={manufacturing:"FABRICACIÓN",fulfillment:"ENTREGAS",software:"SOFTWARE",hosting:"ALOJAMIENTO",professional_services:"SERVICIOS PROFESIONALES",marketing:"MARKETING",art:"ARTE",audio:"AUDIO",qa:"PRUEBAS",localization:"LOCALIZACIÓN",legal:"LEGAL",finance:"FINANZAS",other:"OTRO"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
 async function requireAdmin(){
   "use server";
   const supabase=await createSupabaseServerClient();
@@ -27,7 +42,7 @@ async function createVendor(formData:FormData){
   const allowedType=new Set(["manufacturing","fulfillment","software","hosting","professional_services","marketing","art","audio","qa","localization","legal","finance","other"]);
   const allowedRisk=new Set(["low","medium","high","critical"]);
   if(!name||!allowedType.has(vendorType)||!allowedRisk.has(risk)) throw new Error("invalid_vendor");
-  const{error}=await supabase.from("vendor_master").insert({
+  const{error}=await supabase.from("Registrados").insert({
     name,vendor_type:vendorType,contact_name:contactName,contact_email:contactEmail,country,payment_terms:paymentTerms,risk_rating:risk,preferred,created_by:user.id
   });
   if(error) throw new Error(error.message);
@@ -50,7 +65,7 @@ async function updateVendor(formData:FormData){
   const allowedStatus=new Set(["prospect","active","on_hold","inactive","terminated"]);
   const allowedRisk=new Set(["low","medium","high","critical"]);
   if(!id||!allowedStatus.has(status)||!allowedRisk.has(risk)) throw new Error("invalid_vendor_update");
-  const{error}=await supabase.from("vendor_master").update({
+  const{error}=await supabase.from("Registrados").update({
     status,risk_rating:risk,preferred,contact_name:contactName,contact_email:contactEmail,
     country,payment_terms:paymentTerms,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
@@ -72,7 +87,7 @@ export default async function MasterSuppliersPage(){
     {data:fulfillments},
     {count:orders}
   ]=await Promise.all([
-    supabase.from("vendor_master").select("id,name,vendor_type,status,contact_name,contact_email,country,payment_terms,risk_rating,preferred,notes,created_at").order("name",{ascending:true}),
+    supabase.from("Registrados").select("id,name,vendor_type,status,contact_name,contact_email,country,payment_terms,risk_rating,preferred,notes,created_at").order("name",{ascending:true}),
     supabase.from("shop_products").select("supplier,supplier_product_id,sku,name_es,mode,active").order("sort_order",{ascending:true}).limit(250),
     supabase.from("shop_fulfillments").select("supplier,shipment_status,label_cost_cents,created_at").order("created_at",{ascending:false}).limit(250),
     supabase.from("shop_orders").select("*",{count:"exact",head:true})
@@ -87,24 +102,24 @@ export default async function MasterSuppliersPage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · PROVEEDORES</span><h1>Proveedores</h1><p>Vendor Master persistente separado de las referencias de supplier presentes en productos y fulfillment.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · PROVEEDORES</span><h1>Proveedores</h1><p>Registro formal de proveedores separado de las referencias existentes en productos y entregas.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Vendors</small><strong>{vendorRows.length}</strong><span>vendor_master</span></article>
-      <article><small>Preferred</small><strong>{preferred}</strong><span>Proveedores preferidos</span></article>
-      <article><small>High/Critical risk</small><strong>{highRisk}</strong><span>Requieren atención</span></article>
+      <article><small>Proveedores</small><strong>{vendorRows.length}</strong><span>Registrados</span></article>
+      <article><small>Preferidos</small><strong>{preferred}</strong><span>Proveedores preferidos</span></article>
+      <article><small>Riesgo alto o crítico</small><strong>{highRisk}</strong><span>Requieren atención</span></article>
       <article><small>Órdenes</small><strong>{(orders||0).toLocaleString()}</strong><span>Demanda comercial</span></article>
     </section>
 
-    <section className={styles.sectionHead}><div><span>VENDOR MASTER</span><h2>Proveedores registrados</h2></div></section>
+    <section className={styles.sectionHead}><div><span>PROVEEDORES</span><h2>Proveedores registrados</h2></div></section>
     <section className={styles.grid}>
       {vendorRows.map((v:any)=><article key={v.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={v.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(v.status).toUpperCase()}</span><em>{v.risk_rating}</em></div>
-        <h3>{v.name}</h3><p>{v.vendor_type} · {v.country||"País pendiente"}<br/>{v.contact_name||"Sin contacto"} · {v.contact_email||"Sin email"}<br/>{v.payment_terms||"Payment terms pendientes"}{v.preferred?" · Preferred":""}</p>
+        <div className={styles.cardTop}><span className={v.status==="active"?styles.badgeActive:styles.badgePlanned}>{vendorStatusLabel(v.status)}</span><em>{riskLabel(v.risk_rating)}</em></div>
+        <h3>{v.name}</h3><p>{vendorTypeLabel(v.vendor_type)} · {v.country||"País pendiente"}<br/>{v.contact_name||"Sin contacto"} · {v.contact_email||"Sin email"}<br/>{v.payment_terms||"Condiciones de pago pendientes"}{v.preferred?" · Preferidos":""}</p>
       </article>)}
-      {!vendorRows.length&&<article className={styles.card}><h3>Vendor Master preparado</h3><p>No se han cargado proveedores formales todavía.</p></article>}
+      {!vendorRows.length&&<article className={styles.card}><h3>Registro de proveedores preparado</h3><p>No se han cargado proveedores formales todavía.</p></article>}
     </section>
 
     <section className={styles.adminForms}>
@@ -123,7 +138,7 @@ export default async function MasterSuppliersPage(){
           <label>País<input name="country"/></label>
           <label>Payment terms<input name="payment_terms" placeholder="Net 30"/></label>
           <label>Riesgo<select name="risk_rating" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
-          <label>Preferred<select name="preferred" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
+          <label>Preferidos<select name="preferred" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar proveedor</button>
       </form>
@@ -137,7 +152,7 @@ export default async function MasterSuppliersPage(){
           <label>Vendor<select name="vendor_id" required defaultValue=""><option value="" disabled>Seleccionar proveedor</option>{vendorRows.map((v:any)=><option key={v.id} value={v.id}>{v.name}</option>)}</select></label>
           <label>Status<select name="status" defaultValue="active"><option value="prospect">Prospect</option><option value="active">Active</option><option value="on_hold">On hold</option><option value="inactive">Inactive</option><option value="terminated">Terminated</option></select></label>
           <label>Riesgo<select name="risk_rating" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
-          <label>Preferred<select name="preferred" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
+          <label>Preferidos<select name="preferred" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
           <label>Contacto<input name="contact_name"/></label>
           <label>Email<input type="email" name="contact_email"/></label>
           <label>País<input name="country"/></label>
@@ -148,14 +163,14 @@ export default async function MasterSuppliersPage(){
       </form>
     </section>
 
-    <section className={styles.sectionHead}><div><span>LEGACY REFERENCES</span><h2>Suppliers detectados en comercio</h2></div><p>Estas referencias no sustituyen al Vendor Master hasta ser formalizadas.</p></section>
+    <section className={styles.sectionHead}><div><span>REFERENCIAS EXISTENTES</span><h2>Proveedores detectados en comercio</h2></div><p>Estas referencias no sustituyen al registro formal hasta ser validadas.</p></section>
     <section className={styles.grid}>
       {legacySupplierNames.map(name=><article key={String(name)} className={styles.card}>
-        <div className={styles.cardTop}><span className={styles.badgePlanned}>REFERENCIA</span><em>COMMERCE</em></div>
+        <div className={styles.cardTop}><span className={styles.badgePlanned}>REFERENCIA</span><em>COMERCIO</em></div>
         <h3>{String(name)}</h3>
-        <p>{productRows.filter(p=>p.supplier===name).length} productos · {fulfillmentRows.filter(f=>f.supplier===name).length} fulfillments</p>
+        <p>{productRows.filter(p=>p.supplier===name).length} productos · {fulfillmentRows.filter(f=>f.supplier===name).length} entregas</p>
       </article>)}
-      {!legacySupplierNames.length&&<article className={styles.card}><h3>Sin referencias legacy</h3><p>No existen suppliers derivados del catálogo o fulfillment.</p></article>}
+      {!legacySupplierNames.length&&<article className={styles.card}><h3>Sin referencias anteriores</h3><p>No existen proveedores derivados del catálogo o las entregas.</p></article>}
     </section>
   </main>;
 }
