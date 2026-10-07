@@ -1,0 +1,93 @@
+import {redirect} from "next/navigation";
+import {createSupabaseServerClient} from "../../../../lib/supabase/server";
+import {MasterBackupDownload} from "../../../../components/MasterBackupDownload";
+import styles from "../master-admin.module.css";
+
+export default async function MasterBackupPage(){
+  const supabase=await createSupabaseServerClient();
+  const{data:{user}}=await supabase.auth.getUser();
+  if(!user)redirect("/admin/login");
+  const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
+  if(!profile)redirect("/admin/login?unauthorized=1");
+
+  const[
+    {count:media},
+    {count:books},
+    {count:characters},
+    {count:campaigns},
+    {data:lastLog}
+  ]=await Promise.all([
+    supabase.from("media_assets").select("*",{count:"exact",head:true}),
+    supabase.from("books").select("*",{count:"exact",head:true}),
+    supabase.from("characters").select("*",{count:"exact",head:true}),
+    supabase.from("campaigns").select("*",{count:"exact",head:true}),
+    supabase.from("admin_audit_log").select("created_at,action,resource_type").order("created_at",{ascending:false}).limit(1).maybeSingle()
+  ]);
+
+  return <main className={styles.workspace}>
+    <header className={styles.topbar}>
+      <div>
+        <span className={styles.eyebrow}>LIRYGAMES · RESPALDOS</span>
+        <h1>Copias y Recuperación</h1>
+        <p>Descarga copias protegidas del contenido restaurable y conserva una referencia externa fuera del sistema.</p>
+      </div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
+    </header>
+
+    <section className={styles.kpis}>
+      <article><small>Recursos multimedia</small><strong>{(media||0).toLocaleString()}</strong><span>Incluidos por referencia</span></article>
+      <article><small>Libros</small><strong>{(books||0).toLocaleString()}</strong><span>Incluidos en copia</span></article>
+      <article><small>Personajes</small><strong>{(characters||0).toLocaleString()}</strong><span>Incluidos en copia</span></article>
+      <article><small>Campañas</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Incluidas en copia</span></article>
+    </section>
+
+    <section className={styles.sectionHead}>
+      <div><span>COPIA EXTERNA</span><h2>Descarga manual protegida</h2></div>
+      <p>La descarga requiere sesión administrativa y MFA. La copia contiene contenido y metadatos restaurables, no credenciales ni secretos.</p>
+    </section>
+
+    <section className={styles.notice}>
+      <div>
+        <strong>Backup FRAGMENTUN</strong>
+        <span>Genera un archivo JSON con checksum y orden de recuperación. Los binarios de Storage no se duplican; se conservan sus rutas.</span>
+      </div>
+      {profile.role==="admin"?<MasterBackupDownload/>:<code>Solo Admin</code>}
+    </section>
+
+    <section className={styles.sectionHead}>
+      <div><span>ALCANCE</span><h2>Qué incluye y qué excluye</h2></div>
+      <p>La copia está diseñada para recuperación de contenido, no como exportación de datos personales ni de autenticación.</p>
+    </section>
+
+    <section className={styles.grid}>
+      <article className={styles.card}>
+        <div className={styles.cardTop}><span className={styles.badgeActive}>INCLUIDO</span><em>CONTENIDO</em></div>
+        <h3>Contenido editorial</h3>
+        <p>Libros, ediciones, personajes, mapas, pruebas, reseñas, campañas y contenido localizado.</p>
+      </article>
+      <article className={styles.card}>
+        <div className={styles.cardTop}><span className={styles.badgeActive}>INCLUIDO</span><em>MEDIA</em></div>
+        <h3>Manifiesto de archivos</h3>
+        <p>Conserva rutas y metadatos de recursos multimedia para validar y reconstruir referencias.</p>
+      </article>
+      <article className={styles.card}>
+        <div className={styles.cardTop}><span className={styles.badgePlanned}>EXCLUIDO</span><em>PRIVACIDAD</em></div>
+        <h3>Datos personales</h3>
+        <p>No incluye leads, usuarios de autenticación, perfiles administrativos ni registros sensibles.</p>
+      </article>
+      <article className={styles.card}>
+        <div className={styles.cardTop}><span className={styles.badgePlanned}>EXCLUIDO</span><em>SEGURIDAD</em></div>
+        <h3>Credenciales</h3>
+        <p>No incluye secretos, tokens, claves privadas ni objetos binarios de almacenamiento.</p>
+      </article>
+    </section>
+
+    <section className={styles.notice}>
+      <div>
+        <strong>Última actividad administrativa</strong>
+        <span>{lastLog?.created_at?new Date(lastLog.created_at).toLocaleString("es-US"):"Sin actividad registrada"}{lastLog?.action?" · "+lastLog.action:""}</span>
+      </div>
+      <code>Recuperación controlada</code>
+    </section>
+  </main>;
+}
