@@ -93,3 +93,68 @@
   .advancedPanel .adminForms{padding:12px}
   .advancedHint{padding:10px 14px 0;font-size:.8rem}
 }
+
+/* Reportes Master: pantalla e impresión */
+.reportActions{
+  margin:22px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+  padding:16px;
+  border:1px solid rgba(201,168,76,.2);
+  border-radius:12px;
+  background:rgba(201,168,76,.05);
+}
+.reportActions strong,.reportActions span{display:block}
+.reportActions strong{color:#f0deb0;font-size:.9rem}
+.reportActions span{margin-top:4px;color:#8492a6;font-size:.75rem}
+.reportSheet{
+  background:#0b1524;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;
+  padding:20px;
+}
+.reportSheet>header{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  align-items:flex-end;
+  padding-bottom:16px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.reportSheet>header span{font-size:.65rem;letter-spacing:.18em;color:#c9a84c}
+.reportSheet>header h2{margin:5px 0 0;font-size:1.45rem}
+.reportSheet>header small{color:#758397}
+.reportTable{display:grid;margin-top:8px}
+.reportTable>div{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  padding:13px 4px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.reportTable span{color:#8694a8;font-size:.8rem}
+.reportTable strong{color:#f5f7fa;font-size:.85rem;text-align:right}
+
+@media(max-width:600px){
+  .reportActions,.reportSheet>header,.reportTable>div{display:block}
+  .reportActions>div{margin-bottom:12px}
+  .reportTable strong{display:block;text-align:left;margin-top:5px}
+}
+
+@media print{
+  .sidebar,.publicSite,.reportActions,.nav,.identity,.advancedPanel{display:none!important}
+  .shell{display:block!important;background:#fff!important;color:#111!important}
+  .workspace{padding:0!important;background:#fff!important;color:#111!important}
+  .topbar{border:0!important;padding:0 0 18px!important}
+  .topbar .eyebrow,.topbar p{color:#555!important}
+  .topbar h1{color:#111!important;font-size:28pt!important}
+  .kpis,.grid{break-inside:avoid}
+  .kpis article,.card,.reportSheet{background:#fff!important;color:#111!important;border:1px solid #ccc!important;box-shadow:none!important}
+  .kpis small,.kpis span,.card p,.sectionHead p,.reportTable span,.reportSheet>header small{color:#555!important}
+  .kpis strong,.card h3,.sectionHead h2,.reportTable strong,.reportSheet>header h2{color:#111!important}
+  .reportSheet{padding:16px!important}
+  .reportTable>div{border-bottom:1px solid #ddd!important}
+  .sectionHead{margin-top:24px!important}
+}
