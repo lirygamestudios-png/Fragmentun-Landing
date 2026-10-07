@@ -3,6 +3,21 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
+function narrativeStatusLabel(value:string){
+  const map:Record<string,string>={draft:"BORRADOR",review:"EN REVISIÓN",active:"ACTIVA",archived:"ARCHIVADA"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function campaignStatusLabel(value:string){
+  const map:Record<string,string>={planned:"PLANIFICADA",active:"ACTIVA",paused:"PAUSADA",completed:"COMPLETADA",canceled:"CANCELADA"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function campaignTypeLabel(value:string){
+  const map:Record<string,string>={brand:"MARCA",pr:"PRENSA",launch:"LANZAMIENTO",community:"COMUNIDAD",investor:"INVERSIONISTAS",reputation:"REPUTACIÓN",crisis:"CRISIS",content:"CONTENIDO",other:"OTRO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
 async function requireBrandEditor(){
   "use server";
   const supabase=await createSupabaseServerClient();
@@ -131,31 +146,31 @@ export default async function MasterBrandPage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · MARCA</span><h1>Marca & Comunicaciones</h1><p>Narrativa corporativa y campañas de comunicación persistentes, separadas del contenido operativo de cada IP.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · MARCA Y COMUNICACIONES</span><h1>Marca y Comunicaciones</h1><p>Narrativa corporativa y campañas de comunicación persistentes, separadas del contenido operativo de cada IP.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
       <article><small>Narrativas activas</small><strong>{activeNarratives}</strong><span>{narrativeRows.length} registradas</span></article>
       <article><small>Campañas comunicación</small><strong>{activeComms}</strong><span>{commRows.length} registradas</span></article>
       <article><small>Contenido localizado</small><strong>{(content||0).toLocaleString()}</strong><span>ES/EN operativo</span></article>
-      <article><small>Media</small><strong>{(media||0).toLocaleString()}</strong><span>Assets existentes</span></article>
+      <article><small>Multimedia</small><strong>{(media||0).toLocaleString()}</strong><span>Activos existentes</span></article>
     </section>
 
-    <section className={styles.sectionHead}><div><span>MESSAGE HOUSE</span><h2>Narrativa corporativa</h2></div><p>Pilares, audiencias, mensajes y proof points del estudio.</p></section>
+    <section className={styles.sectionHead}><div><span>NARRATIVA CORPORATIVA</span><h2>Narrativa corporativa</h2></div><p>Pilares, audiencias, mensajes y evidencias de respaldo del estudio.</p></section>
     <section className={styles.grid}>
       {narrativeRows.map((n:any)=><article key={n.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={n.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(n.status).toUpperCase()}</span><em>{n.message_pillar}</em></div>
-        <h3>{n.name}</h3><p>Owner: {ownerName(n.owner_user_id)}<br/>{n.audience||"Audiencia general"}<br/>{n.key_message}<br/>{(n.proof_points||[]).length?(n.proof_points||[]).join(" · "):"Sin proof points"}</p>
+        <div className={styles.cardTop}><span className={n.status==="active"?styles.badgeActive:styles.badgePlanned}>{narrativeStatusLabel(n.status)}</span><em>{n.message_pillar}</em></div>
+        <h3>{n.name}</h3><p>Responsable: {ownerName(n.owner_user_id)}<br/>{n.audience||"Audiencia general"}<br/>{n.key_message}<br/>{(n.proof_points||[]).length?(n.proof_points||[]).join(" · "):"Sin evidencias de respaldo"}</p>
       </article>)}
-      {!narrativeRows.length&&<article className={styles.card}><h3>Message House preparado</h3><p>No se han cargado narrativas corporativas todavía.</p></article>}
+      {!narrativeRows.length&&<article className={styles.card}><h3>Narrativa corporativa preparada</h3><p>No se han cargado narrativas corporativas todavía.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>COMMS CALENDAR</span><h2>Campañas de comunicación</h2></div></section>
+    <section className={styles.sectionHead}><div><span>CALENDARIO DE COMUNICACIÓN</span><h2>Campañas de comunicación</h2></div></section>
     <section className={styles.grid}>
       {commRows.map((c:any)=><article key={c.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={c.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(c.status).toUpperCase()}</span><em>{c.campaign_type}</em></div>
-        <h3>{c.name}</h3><p>Owner: {ownerName(c.owner_user_id)}<br/>{c.audience||"Audiencia general"}<br/>{(c.channel_scope||[]).length?(c.channel_scope||[]).join(" · "):"Canales por definir"}<br/>{c.start_date||"sin inicio"} → {c.end_date||"abierta"}</p>
+        <div className={styles.cardTop}><span className={c.status==="active"?styles.badgeActive:styles.badgePlanned}>{campaignStatusLabel(c.status)}</span><em>{campaignTypeLabel(c.campaign_type)}</em></div>
+        <h3>{c.name}</h3><p>Responsable: {ownerName(c.owner_user_id)}<br/>{c.audience||"Audiencia general"}<br/>{(c.channel_scope||[]).length?(c.channel_scope||[]).join(" · "):"Canales por definir"}<br/>{c.start_date||"sin inicio"} → {c.end_date||"abierta"}</p>
       </article>)}
       {!commRows.length&&<article className={styles.card}><h3>Calendario preparado</h3><p>Las campañas corporativas se registrarán aquí.</p></article>}
     </section>
@@ -226,12 +241,12 @@ export default async function MasterBrandPage(){
       </form>
     </section>}
 
-    <section className={styles.sectionHead}><div><span>EXISTING SIGNALS</span><h2>Activos de comunicación actuales</h2></div></section>
+    <section className={styles.sectionHead}><div><span>ACTIVOS ACTUALES</span><h2>Activos de comunicación actuales</h2></div></section>
     <section className={styles.kpis}>
-      <article><small>Campañas Growth</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Separadas de Comms</span></article>
-      <article><small>Reviews</small><strong>{(reviews||0).toLocaleString()}</strong><span>Prueba social</span></article>
-      <article><small>Shares</small><strong>{(shareClicks||0).toLocaleString()}</strong><span>Eventos acumulados</span></article>
-      <article><small>RLS</small><strong>ACTIVO</strong><span>Admin / editor / marketing</span></article>
+      <article><small>Campañas de crecimiento</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Separadas de comunicación</span></article>
+      <article><small>Reseñas</small><strong>{(reviews||0).toLocaleString()}</strong><span>Prueba social</span></article>
+      <article><small>Compartidos</small><strong>{(shareClicks||0).toLocaleString()}</strong><span>Eventos acumulados</span></article>
+      <article><small>RLS</small><strong>ACTIVO</strong><span>Administración / edición / marketing</span></article>
     </section>
   </main>;
 }
