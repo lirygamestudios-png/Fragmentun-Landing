@@ -27,9 +27,9 @@ const screens=[
   ["Configuración","/admin/master/settings","Parámetros del sistema"],
   ["Reportes","/admin/master/reports","Pantalla, PDF y exportación"],
   ["Integraciones","/admin/master/integrations","Conexiones externas"],
-  ["Copias y Recuperación","/admin/master/backups","Backup y recuperación"],
+  ["Copias y Recuperación","/admin/master/backups","Copias y recuperación"],
   ["Mantenimiento","/admin/master/maintenance","Rutinas operativas"],
-  ["Estado y Pruebas","/admin/master/observability","Validación del Preview"],
+  ["Estado y Pruebas","/admin/master/observability","Validación de la versión de prueba"],
   ["Revisión antes de publicar","/admin/master/releases","Evidencia y aprobación"],
   ["Auditoría","/admin/master/audit","Trazabilidad administrativa"]
 ] as const;
@@ -44,9 +44,9 @@ export default async function MasterChecklistPage(){
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div>
-        <span className={styles.eyebrow}>LIRYGAMES · CHECKLIST VISUAL</span>
+        <span className={styles.eyebrow}>LIRYGAMES · REVISIÓN VISUAL</span>
         <h1>Revisión pantalla por pantalla</h1>
-        <p>Recorrido visual del Master Admin antes de iniciar las corridas funcionales finales.</p>
+        <p>Recorrido visual del Master Admin antes de iniciar las pruebas funcionales finales.</p>
       </div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
@@ -60,7 +60,7 @@ export default async function MasterChecklistPage(){
     </section>
 
     <section className={styles.sectionHead}>
-      <div><span>CHECKLIST</span><h2>Pantallas del Master Admin</h2></div>
+      <div><span>REVISIÓN</span><h2>Pantallas del Master Admin</h2></div>
       <p>Cada tarjeta abre directamente la pantalla correspondiente para revisión visual manual.</p>
     </section>
 
