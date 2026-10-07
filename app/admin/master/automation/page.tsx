@@ -98,7 +98,7 @@ export default async function MasterAutomationPage(){
     supabase.from("ai_agents").select("id,code,name,domain,purpose,status,autonomy_level,kill_switch,requires_approval,model_ref,cost_budget_cents,created_at").order("created_at",{ascending:true}),
     supabase.from("automation_approvals").select("id,workflow_id,agent_id,action_type,action_summary,risk_level,status,requested_at,decision_notes").order("requested_at",{ascending:false}).limit(50),
     supabase.from("campaigns").select("*",{count:"exact",head:true}),
-    supabase.from("admin_activity_log").select("*",{count:"exact",head:true}),
+    supabase.from("admin_audit_log").select("*",{count:"exact",head:true}),
     supabase.from("ingress_rate_limits").select("*",{count:"exact",head:true}),
     supabase.from("ad_integrations").select("provider,enabled").order("provider",{ascending:true})
   ]);
