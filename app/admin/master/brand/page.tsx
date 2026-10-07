@@ -3,12 +3,12 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
-function narrativeStatusLabel(value:string){
+function narrativeEstadoLabel(value:string){
   const map:Record<string,string>={draft:"BORRADOR",review:"EN REVISIÓN",active:"ACTIVA",archived:"ARCHIVADA"};
   return map[value]||String(value||"").toUpperCase();
 }
 
-function campaignStatusLabel(value:string){
+function campaignEstadoLabel(value:string){
   const map:Record<string,string>={planned:"PLANIFICADA",active:"ACTIVA",paused:"PAUSADA",completed:"COMPLETADA",canceled:"CANCELADA"};
   return map[value]||String(value||"").toUpperCase();
 }
@@ -77,8 +77,8 @@ async function updateNarrative(formData:FormData){
   const keyMessage=String(formData.get("key_message")||"").trim()||null;
   const proofPoints=String(formData.get("proof_points")||"").split(",").map(x=>x.trim()).filter(Boolean);
   const notes=String(formData.get("notes")||"").trim()||null;
-  const allowedStatus=new Set(["draft","review","active","archived"]);
-  if(!id||!allowedStatus.has(status)) throw new Error("invalid_narrative_update");
+  const allowedEstado=new Set(["draft","review","active","archived"]);
+  if(!id||!allowedEstado.has(status)) throw new Error("invalid_narrative_update");
   const patch:any={status,owner_user_id:ownerUserId,audience,notes,updated_at:new Date().toISOString()};
   if(pillar) patch.message_pillar=pillar;
   if(keyMessage) patch.key_message=keyMessage;
@@ -101,8 +101,8 @@ async function updateCommunicationCampaign(formData:FormData){
   const startDate=String(formData.get("start_date")||"").trim()||null;
   const endDate=String(formData.get("end_date")||"").trim()||null;
   const notes=String(formData.get("notes")||"").trim()||null;
-  const allowedStatus=new Set(["planned","active","paused","completed","canceled"]);
-  if(!id||!allowedStatus.has(status)) throw new Error("invalid_comms_update");
+  const allowedEstado=new Set(["planned","active","paused","completed","canceled"]);
+  if(!id||!allowedEstado.has(status)) throw new Error("invalid_comms_update");
   const{error}=await supabase.from("communication_campaigns").update({
     status,owner_user_id:ownerUserId,audience,channel_scope:channels,objective,start_date:startDate,end_date:endDate,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
@@ -142,7 +142,7 @@ export default async function MasterBrandPage(){
   const activeNarratives=narrativeRows.filter(n=>n.status==="active").length;
   const activeComms=commRows.filter(c=>c.status==="active").length;
   const ownerRows=(owners||[]) as any[];
-  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
@@ -160,7 +160,7 @@ export default async function MasterBrandPage(){
     <section className={styles.sectionHead}><div><span>NARRATIVA CORPORATIVA</span><h2>Narrativa corporativa</h2></div><p>Pilares, audiencias, mensajes y evidencias de respaldo del estudio.</p></section>
     <section className={styles.grid}>
       {narrativeRows.map((n:any)=><article key={n.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={n.status==="active"?styles.badgeActive:styles.badgePlanned}>{narrativeStatusLabel(n.status)}</span><em>{n.message_pillar}</em></div>
+        <div className={styles.cardTop}><span className={n.status==="active"?styles.badgeActive:styles.badgePlanned}>{narrativeEstadoLabel(n.status)}</span><em>{n.message_pillar}</em></div>
         <h3>{n.name}</h3><p>Responsable: {ownerName(n.owner_user_id)}<br/>{n.audience||"Audiencia general"}<br/>{n.key_message}<br/>{(n.proof_points||[]).length?(n.proof_points||[]).join(" · "):"Sin evidencias de respaldo"}</p>
       </article>)}
       {!narrativeRows.length&&<article className={styles.card}><h3>Narrativa corporativa preparada</h3><p>No se han cargado narrativas corporativas todavía.</p></article>}
@@ -169,22 +169,25 @@ export default async function MasterBrandPage(){
     <section className={styles.sectionHead}><div><span>CALENDARIO DE COMUNICACIÓN</span><h2>Campañas de comunicación</h2></div></section>
     <section className={styles.grid}>
       {commRows.map((c:any)=><article key={c.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={c.status==="active"?styles.badgeActive:styles.badgePlanned}>{campaignStatusLabel(c.status)}</span><em>{campaignTypeLabel(c.campaign_type)}</em></div>
+        <div className={styles.cardTop}><span className={c.status==="active"?styles.badgeActive:styles.badgePlanned}>{campaignEstadoLabel(c.status)}</span><em>{campaignTypeLabel(c.campaign_type)}</em></div>
         <h3>{c.name}</h3><p>Responsable: {ownerName(c.owner_user_id)}<br/>{c.audience||"Audiencia general"}<br/>{(c.channel_scope||[]).length?(c.channel_scope||[]).join(" · "):"Canales por definir"}<br/>{c.start_date||"sin inicio"} → {c.end_date||"abierta"}</p>
       </article>)}
       {!commRows.length&&<article className={styles.card}><h3>Calendario preparado</h3><p>Las campañas corporativas se registrarán aquí.</p></article>}
     </section>
 
-    {["admin","editor","marketing"].includes(profile.role)&&<section className={styles.adminForms}>
+    {["admin","editor","marketing"].includes(profile.role)&&<details className={styles.advancedPanel}>
+      <summary>Opciones avanzadas</summary>
+      <p className={styles.advancedHint}>Úsalas para registrar o modificar narrativas y campañas de comunicación manualmente.</p>
+      <section className={styles.adminForms}>
       <form action={createNarrative} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>NUEVA NARRATIVA</span><h2>Registrar message pillar</h2></div>
+        <div className={styles.formTitle}><span>NUEVA NARRATIVA</span><h2>Registrar narrativa</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="lirygames-core"/></label>
           <label>Nombre<input name="name" required placeholder="Narrativa corporativa"/></label>
           <label>Audiencia<input name="audience" placeholder="Jugadores / inversores / prensa"/></label>
           <label>Pilar<input name="message_pillar" required placeholder="Innovación / IP / comunidad"/></label>
           <label className={styles.span2}>Mensaje clave<textarea name="key_message" required rows={3}/></label>
-          <label className={styles.span2}>Proof points<input name="proof_points" placeholder="Dato 1, dato 2, dato 3"/></label>
+          <label className={styles.span2}>Evidencias de respaldo<input name="proof_points" placeholder="Dato 1, dato 2, dato 3"/></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar narrativa</button>
       </form>
@@ -194,8 +197,8 @@ export default async function MasterBrandPage(){
         <div className={styles.formGrid}>
           <label>Nombre<input name="name" required/></label>
           <label>Tipo<select name="campaign_type" defaultValue="brand">
-            <option value="brand">Brand</option><option value="pr">PR</option><option value="launch">Launch</option><option value="community">Community</option>
-            <option value="investor">Investor</option><option value="reputation">Reputation</option><option value="crisis">Crisis</option><option value="content">Content</option><option value="other">Other</option>
+            <option value="brand">Marca</option><option value="pr">PR</option><option value="launch">Lanzamiento</option><option value="community">Comunidad</option>
+            <option value="investor">Inversionistas</option><option value="reputation">Reputación</option><option value="crisis">Crisis</option><option value="content">Contenido</option><option value="other">Otro</option>
           </select></label>
           <label>Audiencia<input name="audience"/></label>
           <label>Canales<input name="channel_scope" placeholder="YouTube, Instagram, PR"/></label>
@@ -205,20 +208,19 @@ export default async function MasterBrandPage(){
         </div>
         <button className={styles.formButton} type="submit">Registrar campaña</button>
       </form>
-    </section>}
+      </section>
 
-
-    {["admin","editor","marketing"].includes(profile.role)&&<section className={styles.adminForms}>
+      <section className={styles.adminForms}>
       <form action={updateNarrative} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>GESTIONAR NARRATIVA</span><h2>Actualizar message house</h2></div>
+        <div className={styles.formTitle}><span>GESTIONAR NARRATIVA</span><h2>Actualizar narrativa</h2></div>
         <div className={styles.formGrid}>
           <label>Narrativa<select name="narrative_id" required defaultValue=""><option value="" disabled>Seleccionar narrativa</option>{narrativeRows.map((n:any)=><option key={n.id} value={n.id}>{n.code} · {n.name}</option>)}</select></label>
-          <label>Status<select name="status" defaultValue="review"><option value="draft">Draft</option><option value="review">Review</option><option value="active">Active</option><option value="archived">Archived</option></select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="review"><option value="draft">Borrador</option><option value="review">En revisión</option><option value="active">Activa</option><option value="archived">Archivada</option></select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
           <label>Audiencia<input name="audience"/></label>
           <label>Pilar<input name="message_pillar"/></label>
           <label className={styles.span2}>Mensaje clave<textarea name="key_message" rows={3}/></label>
-          <label className={styles.span2}>Proof points<input name="proof_points"/></label>
+          <label className={styles.span2}>Evidencias de respaldo<input name="proof_points"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <button className={styles.formButton} disabled={!narrativeRows.length}>Actualizar narrativa</button>
@@ -228,8 +230,8 @@ export default async function MasterBrandPage(){
         <div className={styles.formTitle}><span>GESTIONAR COMUNICACIÓN</span><h2>Actualizar campaña</h2></div>
         <div className={styles.formGrid}>
           <label>Campaña<select name="campaign_id" required defaultValue=""><option value="" disabled>Seleccionar campaña</option>{commRows.map((x:any)=><option key={x.id} value={x.id}>{x.name}</option>)}</select></label>
-          <label>Status<select name="status" defaultValue="active"><option value="planned">Planned</option><option value="active">Active</option><option value="paused">Paused</option><option value="completed">Completed</option><option value="canceled">Canceled</option></select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="active"><option value="planned">Planificada</option><option value="active">Activa</option><option value="paused">Pausada</option><option value="completed">Completada</option><option value="canceled">Cancelada</option></select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
           <label>Audiencia<input name="audience"/></label>
           <label>Canales<input name="channel_scope"/></label>
           <label className={styles.span2}>Objetivo<input name="objective"/></label>
@@ -239,7 +241,8 @@ export default async function MasterBrandPage(){
         </div>
         <button className={styles.formButton} disabled={!commRows.length}>Actualizar campaña</button>
       </form>
-    </section>}
+      </section>
+    </details>}
 
     <section className={styles.sectionHead}><div><span>ACTIVOS ACTUALES</span><h2>Activos de comunicación actuales</h2></div></section>
     <section className={styles.kpis}>
