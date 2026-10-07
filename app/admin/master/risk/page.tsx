@@ -31,7 +31,7 @@ export default async function MasterRiskPage(){
     {name:"Campañas",level:(campaigns||0)>0?"OPERATIVO":"BAJO",control:String(campaigns||0)+" campañas"},
     {name:"Rate limiting DB access",level:"CONTROLADO",control:"Tabla cerrada a escritura directa; lectura administrativa bajo RLS; función server-side preservada"},
     {name:"Leaked password protection",level:"ABIERTO",control:"Supabase Auth: protección contra contraseñas filtradas pendiente de activación por canal de Auth"},
-    {name:"Vulnerabilidad npm alta",level:"ABIERTO",control:"Resolver antes de cualquier futura promoción"}
+    {name:"Vulnerabilidad npm alta",level:"CONTROLADO",control:"Corregida: sharp 0.35.5 + lockfile actualizado; npm audit = 0 vulnerabilidades"}
   ];
 
   return <main className={styles.workspace}>
