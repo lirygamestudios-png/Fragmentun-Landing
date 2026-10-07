@@ -132,61 +132,98 @@ export default async function MasterOperationsPage(){
   const blocked=workRows.filter(w=>w.status==="blocked"||w.priority==="critical");
   const pendingDecisions=decisionRows.filter(d=>d.status==="proposed");
   const ownerRows=(owners||[]) as any[];
-  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
+  const workStatusLabel=(value:string)=>{
+    if(value==="open") return "ABIERTO";
+    if(value==="in_progress") return "EN CURSO";
+    if(value==="blocked") return "BLOQUEADO";
+    if(value==="waiting") return "EN ESPERA";
+    if(value==="completed") return "COMPLETADO";
+    if(value==="canceled") return "CANCELADO";
+    return String(value||"").toUpperCase();
+  };
+  const priorityLabel=(value:string)=>{
+    if(value==="low") return "Baja";
+    if(value==="medium") return "Media";
+    if(value==="high") return "Alta";
+    if(value==="critical") return "Crítica";
+    return value;
+  };
+  const workTypeLabel=(value:string)=>{
+    if(value==="task") return "Tarea";
+    if(value==="issue") return "Problema";
+    if(value==="decision") return "Decisión";
+    if(value==="follow_up") return "Seguimiento";
+    if(value==="incident_followup") return "Seguimiento de incidente";
+    if(value==="launch") return "Lanzamiento";
+    if(value==="review") return "Revisión";
+    return "Otro";
+  };
+  const decisionStatusLabel=(value:string)=>{
+    if(value==="proposed") return "PROPUESTA";
+    if(value==="approved") return "APROBADA";
+    if(value==="rejected") return "RECHAZADA";
+    if(value==="superseded") return "REEMPLAZADA";
+    if(value==="implemented") return "IMPLEMENTADA";
+    return String(value||"").toUpperCase();
+  };
 
   const checks=[
     {name:"Landing FRAGMENTUN",status:"Protegida",detail:"main · baseline 8eb878e"},
-    {name:"Master Admin",status:"Preview",detail:"work/master-admin-implementation"},
+    {name:"Panel LIRYGAMES",status:"Versión de prueba",detail:"work/master-admin-implementation"},
     {name:"Supabase",status:"Conectado",detail:"Auth + datos operativos"},
     {name:"Analytics",status:latestEvent?"Activo":"Pendiente",detail:latestEvent?("Último: "+latestEvent.event_name):"Sin eventos"},
-    {name:"Leads",status:latestLead?"Activo":"Pendiente",detail:latestLead?"Último registro disponible":"Sin leads"}
+    {name:"Contactos",status:latestLead?"Activo":"Pendiente",detail:latestLead?"Último registro disponible":"Sin leads"}
   ];
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · OPERACIONES</span><h1>Operaciones</h1><p>Work items, decisiones y continuidad operativa sobre señales reales del ecosistema.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · OPERACIONES</span><h1>Operaciones</h1><p>Trabajo pendiente, decisiones y continuidad operativa del estudio.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Work items abiertos</small><strong>{open.length}</strong><span>{blocked.length} bloqueados/críticos</span></article>
-      <article><small>Decisiones propuestas</small><strong>{pendingDecisions.length}</strong><span>{decisionRows.length} registradas</span></article>
-      <article><small>Leads</small><strong>{(leads||0).toLocaleString()}</strong><span>Base actual</span></article>
-      <article><small>Media assets</small><strong>{(media||0).toLocaleString()}</strong><span>Biblioteca</span></article>
+      <article><small>Trabajos abiertos</small><strong>{open.length}</strong><span>{blocked.length} bloqueados o críticos</span></article>
+      <article><small>Decisiones pendientes</small><strong>{pendingDecisions.length}</strong><span>{decisionRows.length} registradas</span></article>
+      <article><small>Contactos</small><strong>{(leads||0).toLocaleString()}</strong><span>Base actual</span></article>
+      <article><small>Recursos multimedia</small><strong>{(media||0).toLocaleString()}</strong><span>Biblioteca</span></article>
     </section>
 
-    <section className={styles.sectionHead}><div><span>WORK REGISTER</span><h2>Trabajo operativo</h2></div><p>Registro persistente de tareas, issues, follow-ups, reviews y launch items.</p></section>
+    <section className={styles.sectionHead}><div><span>TRABAJO</span><h2>Trabajo pendiente</h2></div><p>Tareas, problemas, seguimientos, revisiones y lanzamientos pendientes.</p></section>
     <section className={styles.grid}>
       {workRows.map((w:any)=><article key={w.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={w.status==="completed"?styles.badgeActive:styles.badgePlanned}>{String(w.status).toUpperCase()}</span><em>{w.priority}</em></div>
-        <h3>{w.title}</h3><p>{w.domain} · {w.work_type}<br/>Owner: {ownerName(w.owner_user_id)}<br/>{w.due_date?"Due: "+w.due_date:"Sin due date"}<br/>{w.next_action||"Next action pendiente"}</p>
+        <div className={styles.cardTop}><span className={w.status==="completed"?styles.badgeActive:styles.badgePlanned}>{workStatusLabel(w.status)}</span><em>{priorityLabel(w.priority)}</em></div>
+        <h3>{w.title}</h3><p>{w.domain} · {workTypeLabel(w.work_type)}<br/>Responsable: {ownerName(w.owner_user_id)}<br/>{w.due_date?"Fecha límite: "+w.due_date:"Sin fecha límite"}<br/>{w.next_action||"Próxima acción pendiente"}</p>
       </article>)}
-      {!workRows.length&&<article className={styles.card}><h3>Work register preparado</h3><p>No se han cargado work items todavía.</p></article>}
+      {!workRows.length&&<article className={styles.card}><h3>Registro de trabajo preparado</h3><p>Todavía no hay trabajos registrados.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>DECISION LOG</span><h2>Decisiones</h2></div><p>Registro de decisiones operativas y estratégicas con rationale y revisión.</p></section>
+    <section className={styles.sectionHead}><div><span>DECISIONES</span><h2>Decisiones</h2></div><p>Registro de decisiones operativas y estratégicas con motivo y fecha de revisión.</p></section>
     <section className={styles.grid}>
       {decisionRows.map((d:any)=><article key={d.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={d.status==="implemented"?styles.badgeActive:styles.badgePlanned}>{String(d.status).toUpperCase()}</span><em>{d.domain}</em></div>
-        <h3>{d.title}</h3><p>Owner: {ownerName(d.owner_user_id)}<br/>{d.decision||"Decisión pendiente"}<br/>{d.rationale||"Rationale pendiente"}<br/>{d.review_date?"Review: "+d.review_date:"Sin review date"}</p>
+        <div className={styles.cardTop}><span className={d.status==="implemented"?styles.badgeActive:styles.badgePlanned}>{decisionStatusLabel(d.status)}</span><em>{d.domain}</em></div>
+        <h3>{d.title}</h3><p>Responsable: {ownerName(d.owner_user_id)}<br/>{d.decision||"Decisión pendiente"}<br/>{d.rationale||"Motivo pendiente"}<br/>{d.review_date?"Revisión: "+d.review_date:"Sin fecha de revisión"}</p>
       </article>)}
-      {!decisionRows.length&&<article className={styles.card}><h3>Decision log vacío</h3><p>Las decisiones formales se registrarán aquí.</p></article>}
+      {!decisionRows.length&&<article className={styles.card}><h3>Sin decisiones registradas</h3><p>Las decisiones formales aparecerán aquí.</p></article>}
     </section>
 
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+    {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}>
+      <summary>Opciones avanzadas</summary>
+      <p className={styles.advancedHint}>Úsalas para registrar o editar trabajo y decisiones manualmente.</p>
+      <section className={styles.adminForms}>
       <form action={createWorkItem} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>NUEVO WORK ITEM</span><h2>Registrar trabajo</h2></div>
+        <div className={styles.formTitle}><span>NUEVO TRABAJO</span><h2>Registrar trabajo</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="ops-001"/></label>
           <label>Título<input name="title" required/></label>
-          <label>Dominio<input name="domain" required placeholder="Games / Finance / Growth"/></label>
-          <label>Tipo<select name="work_type" defaultValue="task"><option value="task">Task</option><option value="issue">Issue</option><option value="decision">Decision</option><option value="follow_up">Follow-up</option><option value="incident_followup">Incident follow-up</option><option value="launch">Launch</option><option value="review">Review</option><option value="other">Other</option></select></label>
-          <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
-          <label>Due date<input type="date" name="due_date"/></label>
-          <label className={styles.span2}>Next action<input name="next_action"/></label>
+          <label>Área<input name="domain" required placeholder="Juegos / Finanzas / Crecimiento"/></label>
+          <label>Tipo<select name="work_type" defaultValue="task"><option value="task">Tarea</option><option value="issue">Problema</option><option value="decision">Decisión</option><option value="follow_up">Seguimiento</option><option value="incident_followup">Seguimiento de incidente</option><option value="launch">Lanzamiento</option><option value="review">Revisión</option><option value="other">Otro</option></select></label>
+          <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
+          <label>Fecha límite<input type="date" name="due_date"/></label>
+          <label className={styles.span2}>Próxima acción<input name="next_action"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar work item</button>
+        <button className={styles.formButton} type="submit">Registrar trabajo</button>
       </form>
 
       <form action={createDecision} className={styles.adminForm}>
@@ -194,45 +231,46 @@ export default async function MasterOperationsPage(){
         <div className={styles.formGrid}>
           <label>Código<input name="decision_code" required placeholder="dec-001"/></label>
           <label>Título<input name="title" required/></label>
-          <label>Dominio<input name="domain" required/></label>
-          <label>Review date<input type="date" name="review_date"/></label>
+          <label>Área<input name="domain" required/></label>
+          <label>Fecha de revisión<input type="date" name="review_date"/></label>
           <label className={styles.span2}>Decisión<textarea name="decision" rows={3}/></label>
-          <label className={styles.span2}>Rationale<textarea name="rationale" rows={3}/></label>
+          <label className={styles.span2}>Motivo<textarea name="rationale" rows={3}/></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar decisión</button>
       </form>
     </section>}
 
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+      <section className={styles.adminForms}>
       <form action={updateWorkItem} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>GESTIONAR WORK ITEM</span><h2>Actualizar trabajo</h2></div>
+        <div className={styles.formTitle}><span>GESTIONAR TRABAJO</span><h2>Actualizar trabajo</h2></div>
         <div className={styles.formGrid}>
-          <label>Work item<select name="work_id" required defaultValue=""><option value="" disabled>Seleccionar</option>{workRows.map((w:any)=><option key={w.id} value={w.id}>{w.code} · {w.title}</option>)}</select></label>
-          <label>Estado<select name="status" defaultValue="in_progress"><option value="open">Open</option><option value="in_progress">In progress</option><option value="blocked">Blocked</option><option value="waiting">Waiting</option><option value="completed">Completed</option><option value="canceled">Canceled</option></select></label>
-          <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
-          <label>Due date<input type="date" name="due_date"/></label>
-          <label className={styles.span2}>Next action<input name="next_action"/></label>
+          <label>Trabajo<select name="work_id" required defaultValue=""><option value="" disabled>Seleccionar</option>{workRows.map((w:any)=><option key={w.id} value={w.id}>{w.code} · {w.title}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="in_progress"><option value="open">Abierto</option><option value="in_progress">En curso</option><option value="blocked">Bloqueado</option><option value="waiting">En espera</option><option value="completed">Completado</option><option value="canceled">Cancelado</option></select></label>
+          <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Fecha límite<input type="date" name="due_date"/></label>
+          <label className={styles.span2}>Próxima acción<input name="next_action"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit" disabled={!workRows.length}>Actualizar work item</button>
+        <button className={styles.formButton} type="submit" disabled={!workRows.length}>Actualizar trabajo</button>
       </form>
 
       <form action={updateDecision} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>GESTIONAR DECISIÓN</span><h2>Actualizar Decision Log</h2></div>
+        <div className={styles.formTitle}><span>GESTIONAR DECISIÓN</span><h2>Actualizar decisión</h2></div>
         <div className={styles.formGrid}>
           <label>Decisión<select name="decision_id" required defaultValue=""><option value="" disabled>Seleccionar</option>{decisionRows.map((d:any)=><option key={d.id} value={d.id}>{d.decision_code} · {d.title}</option>)}</select></label>
-          <label>Estado<select name="status" defaultValue="proposed"><option value="proposed">Proposed</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="superseded">Superseded</option><option value="implemented">Implemented</option></select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
-          <label>Review date<input type="date" name="review_date"/></label>
+          <label>Estado<select name="status" defaultValue="proposed"><option value="proposed">Propuesta</option><option value="approved">Aprobada</option><option value="rejected">Rechazada</option><option value="superseded">Reemplazada</option><option value="implemented">Implementada</option></select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Fecha de revisión<input type="date" name="review_date"/></label>
           <label className={styles.span2}>Decisión<textarea name="decision" rows={3}/></label>
-          <label className={styles.span2}>Rationale<textarea name="rationale" rows={3}/></label>
+          <label className={styles.span2}>Motivo<textarea name="rationale" rows={3}/></label>
         </div>
         <button className={styles.formButton} type="submit" disabled={!decisionRows.length}>Actualizar decisión</button>
       </form>
-    </section>}
+      </section>
+    </details>}
 
-    <section className={styles.sectionHead}><div><span>SYSTEM STATUS</span><h2>Estado del ecosistema</h2></div></section>
+    <section className={styles.sectionHead}><div><span>ESTADO DEL SISTEMA</span><h2>Estado general</h2></div></section>
     <section className={styles.grid}>
       {checks.map(c=><article key={c.name} className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>{c.status.toUpperCase()}</span><em>OPERACIÓN</em></div>
@@ -243,8 +281,8 @@ export default async function MasterOperationsPage(){
     <section className={styles.kpis}>
       <article><small>Libros</small><strong>{(books||0).toLocaleString()}</strong><span>Catálogo</span></article>
       <article><small>Personajes</small><strong>{(characters||0).toLocaleString()}</strong><span>Universo IP</span></article>
-      <article><small>RLS</small><strong>ACTIVO</strong><span>Admin/editor</span></article>
-      <article><small>Producción</small><strong>PROTEGIDA</strong><span>main intacto</span></article>
+      <article><small>RLS</small><strong>ACTIVO</strong><span>Administración protegida</span></article>
+      <article><small>Producción</small><strong>PROTEGIDA</strong><span>Sitio público intacto</span></article>
     </section>
   </main>;
 }
