@@ -18,7 +18,7 @@ const domains:Domain[]=[
   {title:"Growth",subtitle:"Adquisición, embudos, CRM, conversión y retención",href:"/admin/analytics",phase:"53",status:"planned"},
   {title:"Monetización",subtitle:"Pricing, packaging, freemium, bundles y expansión",href:"/admin/tienda",phase:"54",status:"planned"},
   {title:"Comercio",subtitle:"Pedidos, pagos, fulfillment, devoluciones y revenue assurance",href:"/admin/tienda",phase:"55",status:"planned"},
-  {title:"Finanzas",subtitle:"Accounting, treasury, tax, reporting y runway",href:"/admin/reportes",phase:"39",status:"planned"},
+  {title:"Finanzas",subtitle:"Accounting, treasury, tax, reporting y runway",href:"/admin/master/finance",phase:"39",status:"active"},
   {title:"Personas",subtitle:"Workforce, talento, desempeño y compensación",href:"/admin",phase:"48",status:"planned"},
   {title:"Tecnología",subtitle:"Infraestructura, CI/CD, QA automation y technical ops",href:"/admin/status",phase:"58",status:"planned"},
   {title:"Datos",subtitle:"Analytics governance, KPIs y decision intelligence",href:"/admin/master/data",phase:"43",status:"active"},
@@ -29,7 +29,7 @@ const domains:Domain[]=[
   {title:"Partners & Licensing",subtitle:"Alianzas, distribución, licencias y expansión",href:"/admin",phase:"51",status:"planned"},
   {title:"Proveedores",subtitle:"Procurement, vendor management y optimización de costes",href:"/admin",phase:"56",status:"planned"},
   {title:"Marca & Comunicaciones",subtitle:"Brand, PR, reputación y narrativa corporativa",href:"/admin/seo",phase:"52",status:"planned"},
-  {title:"Estrategia",subtitle:"OKRs, prioridades, decisiones y asignación de recursos",href:"/admin",phase:"49",status:"planned"},
+  {title:"Estrategia",subtitle:"OKRs, prioridades, decisiones y asignación de recursos",href:"/admin/master/strategy",phase:"49",status:"active"},
   {title:"Capital & Investors",subtitle:"Fundraising, board, IR y strategic transactions",href:"/admin",phase:"50",status:"planned"},
   {title:"FRAGMENTUN",subtitle:"Administración operativa de la IP y landing pública",href:"/admin",phase:"Actual",status:"active"}
 ];
