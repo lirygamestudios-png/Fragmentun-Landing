@@ -3,6 +3,21 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
+function tierLabel(value:string){
+  const map:Record<string,string>={member:"MIEMBRO",engaged:"PARTICIPATIVO",advocate:"PROMOTOR",beta_priority:"PRIORIDAD BETA",moderator:"MODERADOR"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
+function memberStatusLabel(value:string){
+  const map:Record<string,string>={active:"ACTIVO",inactive:"INACTIVO",blocked:"BLOQUEADO",left:"SALIDA"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function actionLabel(value:string){
+  const map:Record<string,string>={share:"COMPARTIDO",referral:"REFERIDO",comment:"COMENTARIO",event:"EVENTO",survey:"ENCUESTA",beta_signup:"REGISTRO BETA",beta_feedback:"OPINIÓN BETA",purchase:"COMPRA",community_join:"INGRESO A COMUNIDAD",other:"OTRO"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
 async function requireCommunityEditor(){
   "use server";
   const supabase=await createSupabaseServerClient();
@@ -100,34 +115,34 @@ export default async function CommunityPage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · COMUNIDAD</span><h1>Clientes & Comunidad</h1><p>Miembros, participación, prioridad beta y señales de comunidad sin duplicar el CRM.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · CLIENTES Y COMUNIDAD</span><h1>Clientes y Comunidad</h1><p>Miembros, participación y acceso beta sin duplicar la información comercial.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
       <article><small>Miembros activos</small><strong>{active.length}</strong><span>{memberRows.length} registrados</span></article>
-      <article><small>Beta priority</small><strong>{beta.length}</strong><span>Acceso prioritario</span></article>
-      <article><small>Advocates</small><strong>{advocates.length}</strong><span>Comunidad avanzada</span></article>
+      <article><small>Prioridad beta</small><strong>{beta.length}</strong><span>Acceso prioritario</span></article>
+      <article><small>Promotores</small><strong>{advocates.length}</strong><span>Miembros que impulsan la comunidad</span></article>
       <article><small>Puntos</small><strong>{totalPoints.toLocaleString()}</strong><span>Participación acumulada</span></article>
     </section>
 
-    <section className={styles.sectionHead}><div><span>COMMUNITY MASTER</span><h2>Miembros</h2></div><p>El CRM conserva lifecycle comercial; este registro cubre relación comunitaria y participación.</p></section>
+    <section className={styles.sectionHead}><div><span>MIEMBROS</span><h2>Miembros</h2></div><p>La información comercial se mantiene separada; aquí se gestiona la relación con la comunidad y su participación.</p></section>
     <section className={styles.grid}>
       {memberRows.map((m:any)=><article key={m.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(m.tier).toUpperCase()}</span><em>{m.points} pts</em></div>
+        <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActive:styles.badgePlanned}>{tierLabel(m.tier)}</span><em>{m.points} pts</em></div>
         <h3>{m.display_name||m.handle||m.email||"Miembro"}</h3>
-        <p>{m.handle||m.email||"Sin handle/email"}<br/>{m.source||"Fuente no registrada"}<br/>{m.beta_priority?"Beta prioritario":"Acceso beta estándar"}</p>
+        <p>{m.handle||m.email||"Sin usuario o email"}<br/>{m.source||"Fuente no registrada"}<br/>{m.beta_priority?"Beta prioritario":"Acceso beta estándar"}</p>
       </article>)}
-      {!memberRows.length&&<article className={styles.card}><h3>Community Master preparado</h3><p>No se han creado miembros ficticios. El registro empieza vacío.</p></article>}
+      {!memberRows.length&&<article className={styles.card}><h3>Registro de comunidad preparado</h3><p>No se han creado miembros ficticios. El registro empieza vacío.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>ACTIVITY</span><h2>Participación reciente</h2></div></section>
+    <section className={styles.sectionHead}><div><span>PARTICIPACIÓN</span><h2>Participación reciente</h2></div></section>
     <section className={styles.grid}>
       {actionRows.map((a:any)=><article key={a.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={styles.badgeActive}>{String(a.action_type).toUpperCase()}</span><em>{a.points_delta>=0?"+":""}{a.points_delta}</em></div>
+        <div className={styles.cardTop}><span className={styles.badgeActive}>{actionLabel(a.action_type)}</span><em>{a.points_delta>=0?"+":""}{a.points_delta}</em></div>
         <h3>{memberRows.find(m=>m.id===a.member_id)?.display_name||"Miembro"}</h3><p>{a.description||a.source||"Actividad registrada"}<br/>{new Date(a.occurred_at).toLocaleString("es-US")}</p>
       </article>)}
-      {!actionRows.length&&<article className={styles.card}><h3>Sin actividad manual aún</h3><p>Shares, referrals, beta feedback y otras acciones podrán registrarse aquí.</p></article>}
+      {!actionRows.length&&<article className={styles.card}><h3>Sin actividad registrada todavía</h3><p>Compartidos, referidos, opiniones beta y otras acciones podrán registrarse aquí.</p></article>}
     </section>
 
     {["admin","editor","marketing"].includes(profile.role)&&<section className={styles.adminForms}>
@@ -138,7 +153,7 @@ export default async function CommunityPage(){
           <label>Email<input type="email" name="email"/></label>
           <label>Handle<input name="handle"/></label>
           <label>Fuente<input name="source" placeholder="LiryBoost / Discord / web"/></label>
-          <label>Tier<select name="tier" defaultValue="member"><option value="member">Member</option><option value="engaged">Engaged</option><option value="advocate">Advocate</option><option value="beta_priority">Beta priority</option><option value="moderator">Moderator</option></select></label>
+          <label>Tier<select name="tier" defaultValue="member"><option value="member">Member</option><option value="engaged">Engaged</option><option value="advocate">Advocate</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderator</option></select></label>
         </div>
         <button className={styles.formButton}>Registrar miembro</button>
       </form>
@@ -163,8 +178,8 @@ export default async function CommunityPage(){
         <div className={styles.formGrid}>
           <label>Miembro<select name="member_id" required defaultValue=""><option value="" disabled>Seleccionar miembro</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name||m.handle||m.email}</option>)}</select></label>
           <label>Status<select name="status" defaultValue="active"><option value="active">Active</option><option value="inactive">Inactive</option><option value="blocked">Blocked</option><option value="left">Left</option></select></label>
-          <label>Tier<select name="tier" defaultValue="member"><option value="member">Member</option><option value="engaged">Engaged</option><option value="advocate">Advocate</option><option value="beta_priority">Beta priority</option><option value="moderator">Moderator</option></select></label>
-          <label>Beta priority<select name="beta_priority" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
+          <label>Tier<select name="tier" defaultValue="member"><option value="member">Member</option><option value="engaged">Engaged</option><option value="advocate">Advocate</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderator</option></select></label>
+          <label>Prioridad beta<select name="beta_priority" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
           <label>Puntos<input type="number" min="0" name="points" defaultValue="0"/></label>
           <label>Fuente<input name="source"/></label>
           <label className={styles.span2}>Tags<input name="tags" placeholder="beta, advocate, creator"/></label>
@@ -175,10 +190,10 @@ export default async function CommunityPage(){
     </section>}
 
     <section className={styles.kpis}>
-      <article><small>CRM contacts</small><strong>{(crmContacts||0).toLocaleString()}</strong><span>Lifecycle comercial separado</span></article>
-      <article><small>Share clicks</small><strong>{(shareClicks||0).toLocaleString()}</strong><span>Analytics existente</span></article>
-      <article><small>RLS</small><strong>ACTIVO</strong><span>Admin/editor/marketing</span></article>
-      <article><small>LiryBoost</small><strong>BASE LISTA</strong><span>Ranking puede conectarse después</span></article>
+      <article><small>Contactos comerciales</small><strong>{(crmContacts||0).toLocaleString()}</strong><span>Seguimiento comercial separado</span></article>
+      <article><small>Compartidos</small><strong>{(shareClicks||0).toLocaleString()}</strong><span>Analítica existente</span></article>
+      <article><small>RLS</small><strong>ACTIVO</strong><span>Administración y marketing</span></article>
+      <article><small>LiryBoost</small><strong>BASE LISTA</strong><span>Ranking preparado para conexión</span></article>
     </section>
   </main>;
 }
