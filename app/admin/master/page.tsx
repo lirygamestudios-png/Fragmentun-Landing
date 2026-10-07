@@ -123,6 +123,7 @@ export default async function MasterAdminPage(){
         <a href="/admin">◈ <span>FRAGMENTUN Admin</span></a>
         <a href="/admin/analytics">▥ <span>Analítica</span></a>
         <a href="/admin/status">⚙ <span>Estado del Sistema</span></a>
+        <a href="/admin/master/audit">▤ <span>Auditoría</span></a>
         <a href="/admin/integrations">↗ <span>Integraciones</span></a>
       </nav>
       <div className={styles.identity}>
