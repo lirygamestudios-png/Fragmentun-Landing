@@ -43,13 +43,13 @@ export default async function MasterBackupPage(){
 
     <section className={styles.sectionHead}>
       <div><span>COPIA EXTERNA</span><h2>Descarga manual protegida</h2></div>
-      <p>La descarga requiere sesión administrativa y MFA. La copia contiene contenido y metadatos restaurables, no credenciales ni secretos.</p>
+      <p>La descarga requiere sesión administrativa y MFA. La copia contiene contenido y datos de recuperación, no credenciales ni información sensible.</p>
     </section>
 
     <section className={styles.notice}>
       <div>
-        <strong>Backup FRAGMENTUN</strong>
-        <span>Genera un archivo JSON con checksum y orden de recuperación. Los binarios de Storage no se duplican; se conservan sus rutas.</span>
+        <strong>Copia FRAGMENTUN</strong>
+        <span>Genera una copia estructurada con verificación de integridad y orden de recuperación. Los archivos almacenados no se duplican; se conservan sus rutas.</span>
       </div>
       {profile.role==="admin"?<MasterBackupDownload/>:<code>Solo Admin</code>}
     </section>
@@ -66,19 +66,19 @@ export default async function MasterBackupPage(){
         <p>Libros, ediciones, personajes, mapas, pruebas, reseñas, campañas y contenido localizado.</p>
       </article>
       <article className={styles.card}>
-        <div className={styles.cardTop}><span className={styles.badgeActive}>INCLUIDO</span><em>MEDIA</em></div>
-        <h3>Manifiesto de archivos</h3>
+        <div className={styles.cardTop}><span className={styles.badgeActive}>INCLUIDO</span><em>ARCHIVOS</em></div>
+        <h3>Registro de archivos</h3>
         <p>Conserva rutas y metadatos de recursos multimedia para validar y reconstruir referencias.</p>
       </article>
       <article className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgePlanned}>EXCLUIDO</span><em>PRIVACIDAD</em></div>
         <h3>Datos personales</h3>
-        <p>No incluye leads, usuarios de autenticación, perfiles administrativos ni registros sensibles.</p>
+        <p>No incluye contactos captados, usuarios de autenticación, perfiles administrativos ni registros sensibles.</p>
       </article>
       <article className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgePlanned}>EXCLUIDO</span><em>SEGURIDAD</em></div>
         <h3>Credenciales</h3>
-        <p>No incluye secretos, tokens, claves privadas ni objetos binarios de almacenamiento.</p>
+        <p>No incluye credenciales, claves privadas ni archivos binarios almacenados.</p>
       </article>
     </section>
 
