@@ -3,6 +3,21 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
+function assetStatusLabel(value:string){
+  const map:Record<string,string>={draft:"BORRADOR",active:"ACTIVO",licensed:"LICENCIADO",archived:"ARCHIVADO",disputed:"EN DISPUTA",retired:"RETIRADO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function rightStatusLabel(value:string){
+  const map:Record<string,string>={owned:"PROPIO",licensed_out:"LICENCIADO A TERCEROS",licensed_in:"LICENCIADO POR TERCEROS",expired:"VENCIDO",terminated:"TERMINADO",disputed:"EN DISPUTA",pending:"PENDIENTE"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
+function contractStatusLabel(value:string){
+  const map:Record<string,string>={draft:"BORRADOR",review:"EN REVISIÓN",signature:"EN FIRMA",active:"ACTIVO",expired:"VENCIDO",terminated:"TERMINADO",canceled:"CANCELADO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
 async function requireLegalAdmin(){
   "use server";
   const supabase=await createSupabaseServerClient();
@@ -27,7 +42,7 @@ async function createIpAsset(formData:FormData){
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowed=new Set(["book","game","character","world","art","trademark","script","music","video","software","other"]);
   if(!code||!name||!ipName||!allowed.has(type)) throw new Error("invalid_ip_asset");
-  const{error}=await supabase.from("ip_assets").insert({
+  const{error}=await supabase.from("Registrados").insert({
     code,name,ip_name:ipName,asset_type:type,owner_entity:ownerEntity,jurisdiction,
     registration_number:registrationNumber,registration_date:registrationDate,notes,created_by:user.id
   });
@@ -51,7 +66,7 @@ async function createRight(formData:FormData){
   const allowedExclusivity=new Set(["exclusive","non_exclusive","shared","unknown"]);
   const allowedStatus=new Set(["owned","licensed_out","licensed_in","expired","terminated","disputed","pending"]);
   if(!assetId||!allowedRight.has(rightType)||!allowedExclusivity.has(exclusivity)||!allowedStatus.has(status)) throw new Error("invalid_right");
-  const{error}=await supabase.from("ip_rights").insert({
+  const{error}=await supabase.from("Registrados").insert({
     asset_id:assetId,right_type:rightType,territory,exclusivity,holder_name:holderName,licensee_name:licenseeName,
     start_date:startDate,end_date:endDate,status,created_by:user.id
   });
@@ -95,7 +110,7 @@ async function updateIpAsset(formData:FormData){
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedStatus=new Set(["draft","active","licensed","archived","disputed","retired"]);
   if(!id||!allowedStatus.has(status)) throw new Error("invalid_asset_update");
-  const{error}=await supabase.from("ip_assets").update({
+  const{error}=await supabase.from("Registrados").update({
     status,owner_entity:ownerEntity,jurisdiction,registration_number:registrationNumber,
     registration_date:registrationDate,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
@@ -118,7 +133,7 @@ async function updateRight(formData:FormData){
   const allowedStatus=new Set(["owned","licensed_out","licensed_in","expired","terminated","disputed","pending"]);
   const allowedEx=new Set(["exclusive","non_exclusive","shared","unknown"]);
   if(!id||!allowedStatus.has(status)||!allowedEx.has(exclusivity)) throw new Error("invalid_right_update");
-  const{error}=await supabase.from("ip_rights").update({
+  const{error}=await supabase.from("Registrados").update({
     status,exclusivity,territory,holder_name:holderName,licensee_name:licenseeName,
     start_date:startDate,end_date:endDate,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
@@ -169,8 +184,8 @@ export default async function MasterLegalPage(){
     {count:characters},
     {data:owners}
   ]=await Promise.all([
-    supabase.from("ip_assets").select("id,code,name,ip_name,asset_type,status,jurisdiction,registration_number,registration_date,owner_entity,notes,created_at").order("created_at",{ascending:false}),
-    supabase.from("ip_rights").select("id,asset_id,right_type,territory,exclusivity,holder_name,licensee_name,start_date,end_date,status,notes,created_at").order("created_at",{ascending:false}),
+    supabase.from("Registrados").select("id,code,name,ip_name,asset_type,status,jurisdiction,registration_number,registration_date,owner_entity,notes,created_at").order("created_at",{ascending:false}),
+    supabase.from("Registrados").select("id,asset_id,right_type,territory,exclusivity,holder_name,licensee_name,start_date,end_date,status,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("legal_contracts").select("id,contract_code,title,contract_type,counterparty,status,effective_date,expiration_date,auto_renew,renewal_notice_days,value_cents,currency,owner_user_id,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("books").select("*",{count:"exact",head:true}),
     supabase.from("media_assets").select("*",{count:"exact",head:true}),
@@ -193,45 +208,45 @@ export default async function MasterLegalPage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · LEGAL & IP</span><h1>Legal & IP</h1><p>Registro persistente de activos, derechos/licencias y contratos con acceso administrativo restringido.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · LEGAL E IP</span><h1>Legal e IP</h1><p>Registro persistente de activos, derechos/licencias y contratos con acceso administrativo restringido.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Activos IP</small><strong>{assetRows.length}</strong><span>ip_assets</span></article>
-      <article><small>Rights</small><strong>{rightRows.length}</strong><span>ip_rights</span></article>
+      <article><small>Activos de propiedad intelectual</small><strong>{assetRows.length}</strong><span>Registrados</span></article>
+      <article><small>Derechos</small><strong>{rightRows.length}</strong><span>Registrados</span></article>
       <article><small>Contratos activos</small><strong>{activeContracts.length}</strong><span>{expiringSoon.length} vencen ≤90 días</span></article>
-      <article><small>Disputas</small><strong>{disputed}</strong><span>Assets + rights</span></article>
+      <article><small>Disputas</small><strong>{disputed}</strong><span>Activos + derechos</span></article>
     </section>
 
-    <section className={styles.sectionHead}><div><span>IP REGISTER</span><h2>Activos intelectuales</h2></div><p>Inventario legal separado del catálogo editorial y multimedia.</p></section>
+    <section className={styles.sectionHead}><div><span>PROPIEDAD INTELECTUAL</span><h2>Activos intelectuales</h2></div><p>Inventario legal separado del catálogo editorial y multimedia.</p></section>
     <section className={styles.grid}>
       {assetRows.map((a:any)=><article key={a.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={a.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(a.status).toUpperCase()}</span><em>{a.asset_type}</em></div>
+        <div className={styles.cardTop}><span className={a.status==="active"?styles.badgeActive:styles.badgePlanned}>{assetStatusLabel(a.status)}</span><em>{a.asset_type}</em></div>
         <h3>{a.name}</h3>
-        <p>{a.ip_name} · {a.owner_entity||"Owner no registrado"}<br/>{a.jurisdiction||"Jurisdicción pendiente"} · {a.registration_number||"Sin registro externo"}</p>
+        <p>{a.ip_name} · {a.owner_entity||"Titular no registrado"}<br/>{a.jurisdiction||"Jurisdicción pendiente"} · {a.registration_number||"Sin registro externo"}</p>
       </article>)}
-      {!assetRows.length&&<article className={styles.card}><h3>IP Register preparado</h3><p>No se cargaron activos ficticios. El registro empieza vacío hasta documentar cada activo real.</p></article>}
+      {!assetRows.length&&<article className={styles.card}><h3>Registro de propiedad intelectual preparado</h3><p>No se cargaron activos ficticios. El registro empieza vacío hasta documentar cada activo real.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>RIGHTS MATRIX</span><h2>Derechos & licencias</h2></div><p>Territorio, exclusividad, titular, licenciatario y vigencia por activo.</p></section>
+    <section className={styles.sectionHead}><div><span>DERECHOS Y LICENCIAS</span><h2>Derechos y licencias</h2></div><p>Territorio, exclusividad, titular, licenciatario y vigencia por activo.</p></section>
     <section className={styles.grid}>
       {rightRows.map((r:any)=><article key={r.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={r.status==="owned"?styles.badgeActive:styles.badgePlanned}>{String(r.status).toUpperCase()}</span><em>{r.exclusivity}</em></div>
+        <div className={styles.cardTop}><span className={r.status==="owned"?styles.badgeActive:styles.badgePlanned}>{rightStatusLabel(r.status)}</span><em>{r.exclusivity}</em></div>
         <h3>{r.right_type}</h3>
-        <p>{assetRows.find(a=>a.id===r.asset_id)?.name||"Activo"} · {r.territory}<br/>{r.holder_name||"Holder pendiente"}{r.licensee_name?" → "+r.licensee_name:""}<br/>{r.start_date||"sin inicio"} → {r.end_date||"sin vencimiento"}</p>
+        <p>{assetRows.find(a=>a.id===r.asset_id)?.name||"Activo"} · {r.territory}<br/>{r.holder_name||"Titular pendiente"}{r.licensee_name?" → "+r.licensee_name:""}<br/>{r.start_date||"sin inicio"} → {r.end_date||"sin vencimiento"}</p>
       </article>)}
-      {!rightRows.length&&<article className={styles.card}><h3>Rights Matrix vacía</h3><p>Los derechos se registrarán únicamente contra activos IP reales.</p></article>}
+      {!rightRows.length&&<article className={styles.card}><h3>Derechos Matrix vacía</h3><p>Los derechos se registrarán únicamente contra activos IP reales.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>CLM</span><h2>Contratos</h2></div><p>Registro operativo de contratos; los documentos firmados pueden almacenarse después en un repositorio documental controlado.</p></section>
+    <section className={styles.sectionHead}><div><span>CONTRATOS</span><h2>Contratos</h2></div><p>Registro operativo de contratos; los documentos firmados pueden almacenarse después en un repositorio documental controlado.</p></section>
     <section className={styles.grid}>
       {contractRows.map((c:any)=><article key={c.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={c.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(c.status).toUpperCase()}</span><em>{c.contract_type}</em></div>
+        <div className={styles.cardTop}><span className={c.status==="active"?styles.badgeActive:styles.badgePlanned}>{contractStatusLabel(c.status)}</span><em>{c.contract_type}</em></div>
         <h3>{c.title}</h3>
-        <p>{c.counterparty||"Sin contraparte"} · {c.contract_code}<br/>Owner: {ownerName(c.owner_user_id)}<br/>{c.effective_date||"Sin fecha efectiva"} → {c.expiration_date||"Sin vencimiento"}<br/>Auto-renew: {c.auto_renew?"Sí":"No"} · {c.value_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:c.currency||"USD"}).format(Number(c.value_cents)/100):"Valor no registrado"}</p>
+        <p>{c.counterparty||"Sin contraparte"} · {c.contract_code}<br/>Responsable: {ownerName(c.owner_user_id)}<br/>{c.effective_date||"Sin fecha efectiva"} → {c.expiration_date||"Sin vencimiento"}<br/>Renovación automática: {c.auto_renew?"Sí":"No"} · {c.value_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:c.currency||"USD"}).format(Number(c.value_cents)/100):"Valor no registrado"}</p>
       </article>)}
-      {!contractRows.length&&<article className={styles.card}><h3>CLM preparado</h3><p>No hay contratos cargados todavía.</p></article>}
+      {!contractRows.length&&<article className={styles.card}><h3>CONTRATOS preparado</h3><p>No hay contratos cargados todavía.</p></article>}
     </section>
 
     <section className={styles.adminForms}>
@@ -337,7 +352,7 @@ export default async function MasterLegalPage(){
       </form>
 
       <form action={updateContract} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>GESTIONAR CONTRATO</span><h2>Actualizar CLM</h2></div>
+        <div className={styles.formTitle}><span>GESTIONAR CONTRATO</span><h2>Actualizar CONTRATOS</h2></div>
         <div className={styles.formGrid}>
           <label>Contrato<select name="contract_id" required defaultValue=""><option value="" disabled>Seleccionar contrato</option>{contractRows.map((c:any)=><option key={c.id} value={c.id}>{c.contract_code} · {c.title}</option>)}</select></label>
           <label>Status<select name="status" defaultValue="review"><option value="draft">Draft</option><option value="review">Review</option><option value="signature">Signature</option><option value="active">Active</option><option value="expired">Expired</option><option value="terminated">Terminated</option><option value="canceled">Canceled</option></select></label>
@@ -354,12 +369,12 @@ export default async function MasterLegalPage(){
       </form>
     </section>
 
-    <section className={styles.sectionHead}><div><span>EXISTING IP SIGNALS</span><h2>Activos operativos existentes</h2></div></section>
+    <section className={styles.sectionHead}><div><span>ACTIVOS EXISTENTES</span><h2>Activos operativos existentes</h2></div></section>
     <section className={styles.kpis}>
       <article><small>Libros</small><strong>{(books||0).toLocaleString()}</strong><span>Catálogo editorial</span></article>
-      <article><small>Media</small><strong>{(media||0).toLocaleString()}</strong><span>Assets operativos</span></article>
-      <article><small>Personajes</small><strong>{(characters||0).toLocaleString()}</strong><span>Worldbuilding</span></article>
-      <article><small>Acceso</small><strong>ADMIN</strong><span>RLS restringido</span></article>
+      <article><small>Multimedia</small><strong>{(media||0).toLocaleString()}</strong><span>Activos operativos</span></article>
+      <article><small>Personajes</small><strong>{(characters||0).toLocaleString()}</strong><span>Universo creativo</span></article>
+      <article><small>Acceso</small><strong>ADMINISTRADOR</strong><span>RLS restringido</span></article>
     </section>
   </main>;
 }
