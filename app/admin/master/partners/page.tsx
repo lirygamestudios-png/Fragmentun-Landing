@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 function partnerEstadoLabel(value:string){
   const map:Record<string,string>={prospect:"PROSPECTO",active:"ACTIVO",paused:"PAUSADO",inactive:"INACTIVO",ended:"FINALIZADO"};
@@ -197,7 +198,7 @@ export default async function MasterOrganizacionesPage(){
           <label>Territorio<input name="territory"/></label>
           <label>Web<input name="website"/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar organización</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar organización</MasterSubmitButton>
       </form>
 
       <form action={createAcuerdo} className={styles.adminForm}>
@@ -216,7 +217,7 @@ export default async function MasterOrganizacionesPage(){
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
           <label>Regalía %<input type="number" min="0" max="100" step="0.01" name="royalty_percent"/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar acuerdo</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar acuerdo</MasterSubmitButton>
       </form>
     </section>
 
@@ -233,7 +234,7 @@ export default async function MasterOrganizacionesPage(){
           <label>Web<input name="website"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!partnerRows.length}>Actualizar organización</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!partnerRows.length}>Actualizar organización</MasterSubmitButton>
       </form>
 
       <form action={updateAcuerdo} className={styles.adminForm}>
@@ -252,7 +253,7 @@ export default async function MasterOrganizacionesPage(){
           <label className={styles.span2}>Próxima acción<input name="next_action"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!dealRows.length}>Actualizar acuerdo</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!dealRows.length}>Actualizar acuerdo</MasterSubmitButton>
       </form>
       </section>
     </details>
