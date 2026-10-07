@@ -47,7 +47,7 @@ async function createMember(formData:FormData){
   const skills=String(formData.get("skills")||"").split(",").map(x=>x.trim()).filter(Boolean);
   const allowed=new Set(["founder","employee","contractor","advisor","partner","intern","other"]);
   if(!displayName||!allowed.has(employmentType)||!Number.isFinite(allocation)) throw new Error("invalid_member");
-  const{error}=await supabase.from("Equipo registrado").insert({
+  const{error}=await supabase.from("people_members").insert({
     display_name:displayName,email,employment_type:employmentType,title,department,location,
     start_date:startDate,allocation_percent:allocation,skills,created_by:user.id
   });
@@ -91,7 +91,7 @@ async function updateMember(formData:FormData){
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedStatus=new Set(["active","on_leave","inactive","ended"]);
   if(!id||!allowedStatus.has(status)||!Number.isFinite(allocation)) throw new Error("invalid_member_update");
-  const{error}=await supabase.from("Equipo registrado").update({
+  const{error}=await supabase.from("people_members").update({
     status,title,department,manager_id:managerId,location,end_date:endDate,
     allocation_percent:Math.trunc(allocation),skills,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
@@ -132,7 +132,7 @@ export default async function MasterPeoplePage(){
     {count:adminProfiles},
     {count:activity}
   ]=await Promise.all([
-    supabase.from("Equipo registrado").select("id,display_name,email,employment_type,status,title,department,manager_id,location,start_date,end_date,allocation_percent,skills,notes,created_at").order("display_name",{ascending:true}),
+    supabase.from("people_members").select("id,display_name,email,employment_type,status,title,department,manager_id,location,start_date,end_date,allocation_percent,skills,notes,created_at").order("display_name",{ascending:true}),
     supabase.from("people_assignments").select("id,member_id,domain,workstream,allocation_percent,priority,status,start_date,end_date,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("admin_profiles").select("*",{count:"exact",head:true}),
     supabase.from("admin_audit_log").select("*",{count:"exact",head:true})
@@ -148,7 +148,7 @@ export default async function MasterPeoplePage(){
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · PERSONAS</span><h1>Personas</h1><p>Equipo, disponibilidad y asignaciones, separado de los permisos del sistema.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
@@ -160,7 +160,7 @@ export default async function MasterPeoplePage(){
 
     <section className={styles.sectionHead}>
       <div><span>EQUIPO</span><h2>Equipo registrado</h2></div>
-      <p>El registro empieza vacío hasta cargar personas reales. los usuarios administrativos siguen siendo únicamente una capa de acceso.</p>
+      <p>El registro empieza vacío hasta cargar personas reales. Los usuarios administrativos siguen siendo únicamente una capa de acceso.</p>
     </section>
 
     <section className={styles.grid}>
@@ -182,22 +182,22 @@ export default async function MasterPeoplePage(){
       {!assignmentRows.length&&<article className={styles.card}><h3>Sin asignaciones</h3><p>La capacidad se mostrará aquí cuando se distribuyan personas a dominios o proyectos reales.</p></article>}
     </section>
 
-    {profile.role==="admin"&&<section className={styles.adminForms}>
+    {profile.role==="admin"&&<details className={styles.advancedPanel}><summary>Opciones avanzadas</summary><section className={styles.adminForms}>
       <form action={createMember} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVO MIEMBRO</span><h2>Registrar persona</h2></div>
         <div className={styles.formGrid}>
           <label>Nombre<input name="display_name" required placeholder="Nombre completo"/></label>
           <label>Email<input type="email" name="email" placeholder="correo@empresa.com"/></label>
           <label>Tipo<select name="employment_type" defaultValue="employee">
-            <option value="founder">Founder</option><option value="employee">Employee</option><option value="contractor">Contractor</option>
-            <option value="advisor">Advisor</option><option value="partner">Partner</option><option value="intern">Intern</option><option value="other">Other</option>
+            <option value="founder">Fundador</option><option value="employee">Empleado</option><option value="contractor">Contratista</option>
+            <option value="advisor">Asesor</option><option value="partner">Socio</option><option value="intern">Pasante</option><option value="other">Otro</option>
           </select></label>
-          <label>Título<input name="title" placeholder="CEO / Producer / Developer"/></label>
-          <label>Departamento<input name="department" placeholder="Publishing / Technology / Growth"/></label>
+          <label>Título<input name="title" placeholder="CEO / Productor / Desarrollador"/></label>
+          <label>Departamento<input name="department" placeholder="Publicación / Tecnología / Crecimiento"/></label>
           <label>Ubicación<input name="location" placeholder="Ciudad / remoto"/></label>
           <label>Inicio<input type="date" name="start_date"/></label>
           <label>Disponibilidad %<input type="number" min="0" max="100" name="allocation_percent" defaultValue="100"/></label>
-          <label className={styles.span2}>Skills<input name="skills" placeholder="Unity, Marketing, Production"/></label>
+          <label className={styles.span2}>Habilidades<input name="skills" placeholder="Unity, Marketing, Producción"/></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar miembro</button>
       </form>
@@ -209,33 +209,32 @@ export default async function MasterPeoplePage(){
             <option value="" disabled>Seleccionar miembro</option>
             {memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name}</option>)}
           </select></label>
-          <label>Dominio<input name="domain" required placeholder="Games / Publishing / Growth"/></label>
-          <label>Workstream<input name="workstream" placeholder="Vertical Slice / Launch / CRM"/></label>
-          <label>Allocation %<input type="number" min="0" max="100" name="allocation_percent" defaultValue="25"/></label>
+          <label>Dominio<input name="domain" required placeholder="Juegos / Publicación / Crecimiento"/></label>
+          <label>Línea de trabajo<input name="workstream" placeholder="Vertical Slice / Lanzamiento / CRM"/></label>
+          <label>Disponibilidad %<input type="number" min="0" max="100" name="allocation_percent" defaultValue="25"/></label>
           <label>Prioridad<select name="priority" defaultValue="medium">
-            <option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option>
+            <option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option>
           </select></label>
           <label>Inicio<input type="date" name="start_date"/></label>
           <label>Fin<input type="date" name="end_date"/></label>
         </div>
         <button className={styles.formButton} type="submit" disabled={!memberRows.length}>Registrar asignación</button>
       </form>
-    </section>}
+    </section>
 
-
-    {profile.role==="admin"&&<section className={styles.adminForms}>
+    <section className={styles.adminForms}>
       <form action={updateMember} className={styles.adminForm}>
         <div className={styles.formTitle}><span>GESTIONAR PERSONA</span><h2>Actualizar miembro</h2></div>
         <div className={styles.formGrid}>
           <label>Miembro<select name="member_id" required defaultValue=""><option value="" disabled>Seleccionar miembro</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name}</option>)}</select></label>
-          <label>Status<select name="status" defaultValue="active"><option value="active">Active</option><option value="on_leave">On leave</option><option value="inactive">Inactive</option><option value="ended">Ended</option></select></label>
+          <label>Estado<select name="status" defaultValue="active"><option value="active">Activo</option><option value="on_leave">Licencia</option><option value="inactive">Inactivo</option><option value="ended">Finalizado</option></select></label>
           <label>Título<input name="title"/></label>
           <label>Departamento<input name="department"/></label>
-          <label>Manager<select name="manager_id" defaultValue=""><option value="">Sin manager</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name}</option>)}</select></label>
+          <label>Responsable<select name="manager_id" defaultValue=""><option value="">Sin responsable</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name}</option>)}</select></label>
           <label>Ubicación<input name="location"/></label>
           <label>Fin<input type="date" name="end_date"/></label>
           <label>Disponibilidad %<input type="number" min="0" max="100" name="allocation_percent" defaultValue="100"/></label>
-          <label className={styles.span2}>Skills<input name="skills" placeholder="Unity, Marketing, Production"/></label>
+          <label className={styles.span2}>Habilidades<input name="skills" placeholder="Unity, Marketing, Producción"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <button className={styles.formButton} disabled={!memberRows.length}>Actualizar miembro</button>
@@ -245,23 +244,23 @@ export default async function MasterPeoplePage(){
         <div className={styles.formTitle}><span>GESTIONAR ASIGNACIÓN</span><h2>Actualizar capacidad</h2></div>
         <div className={styles.formGrid}>
           <label>Asignación<select name="assignment_id" required defaultValue=""><option value="" disabled>Seleccionar asignación</option>{assignmentRows.map((a:any)=><option key={a.id} value={a.id}>{memberRows.find(m=>m.id===a.member_id)?.display_name||"Miembro"} · {a.domain}</option>)}</select></label>
-          <label>Status<select name="status" defaultValue="active"><option value="planned">Planned</option><option value="active">Active</option><option value="paused">Paused</option><option value="completed">Completed</option><option value="canceled">Canceled</option></select></label>
-          <label>Allocation %<input type="number" min="0" max="100" name="allocation_percent"/></label>
-          <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
+          <label>Estado<select name="status" defaultValue="active"><option value="planned">Planificada</option><option value="active">Activo</option><option value="paused">Pausada</option><option value="completed">Completada</option><option value="canceled">Cancelada</option></select></label>
+          <label>Disponibilidad %<input type="number" min="0" max="100" name="allocation_percent"/></label>
+          <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
           <label>Inicio<input type="date" name="start_date"/></label>
           <label>Fin<input type="date" name="end_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <button className={styles.formButton} disabled={!assignmentRows.length}>Actualizar asignación</button>
       </form>
-    </section>}
+    </section></details>}
 
     <section className={styles.sectionHead}><div><span>SEÑALES ADMINISTRATIVAS</span><h2>Señales administrativas</h2></div></section>
     <section className={styles.kpis}>
       <article><small>Actividad administrativa</small><strong>{(activity||0).toLocaleString()}</strong><span>Historial de auditoría</span></article>
       <article><small>Equipo inferido</small><strong>NO</strong><span>Solo datos explícitos</span></article>
       <article><small>Compensación</small><strong>NO CARGADA</strong><span>Se gestionará en una capa separada</span></article>
-      <article><small>RLS</small><strong>ACTIVO</strong><span>Escritura solo Admin</span></article>
+      <article><small>Control de acceso</small><strong>ACTIVO</strong><span>Edición solo para administradores</span></article>
     </section>
   </main>;
 }
