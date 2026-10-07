@@ -3,6 +3,16 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
+function dataStatusLabel(value:string){
+  const map:Record<string,string>={active:"ACTIVO",degraded:"DEGRADADO",paused:"PAUSADO",deprecated:"OBSOLETO",retired:"RETIRADO",draft:"BORRADOR"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function sourceTypeLabel(value:string){
+  const map:Record<string,string>={database:"BASE DE DATOS",api:"API",analytics:"ANALÍTICA",file:"ARCHIVO",webhook:"WEBHOOK",platform:"PLATAFORMA",manual:"MANUAL",other:"OTRO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
 async function requireDataEditor(){
   "use server";
   const supabase=await createSupabaseServerClient();
@@ -112,18 +122,18 @@ export default async function MasterDataPage(){
   ]=await Promise.all([
     supabase.from("data_sources").select("id,code,name,source_type,system_name,status,freshness_target_minutes,owner_user_id,notes,created_at").order("name",{ascending:true}),
     supabase.from("metric_definitions").select("id,code,name,domain,definition,formula,unit,source_table,status,owner_user_id,notes,created_at").order("domain",{ascending:true}),
-    supabase.from("analytics_events").select("*",{count:"exact",head:true}).gte("created_at",since),
-    supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","page_view").gte("created_at",since),
+    supabase.from("Eventos registrados").select("*",{count:"exact",head:true}).gte("created_at",since),
+    supabase.from("Eventos registrados").select("*",{count:"exact",head:true}).eq("event_name","page_view").gte("created_at",since),
     supabase.from("leads").select("*",{count:"exact",head:true}).gte("created_at",since),
-    supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","amazon_click").gte("created_at",since),
-    supabase.from("analytics_events").select("event_name,source,medium,created_at").order("created_at",{ascending:false}).limit(20),
+    supabase.from("Eventos registrados").select("*",{count:"exact",head:true}).eq("event_name","amazon_click").gte("created_at",since),
+    supabase.from("Eventos registrados").select("event_name,source,medium,created_at").order("created_at",{ascending:false}).limit(20),
     supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
   ]);
 
   const sourceRows=(sources||[]) as any[];
   const metricRows=(metrics||[]) as any[];
   const activeSources=sourceRows.filter(s=>s.status==="active");
-  const degradedSources=sourceRows.filter(s=>s.status==="degraded");
+  const degradadasSources=sourceRows.filter(s=>s.status==="degraded");
   const conversion=(pageViews||0)>0?((leads||0)/(pageViews||1))*100:0;
   const amazonCtr=(pageViews||0)>0?((amazonClicks||0)/(pageViews||1))*100:0;
   const ownerRows=(owners||[]) as any[];
@@ -131,33 +141,33 @@ export default async function MasterDataPage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · DATOS</span><h1>Datos & Analytics</h1><p>Catálogo de fuentes y métricas persistentes sobre señales reales del ecosistema.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · DATOS</span><h1>Datos</h1><p>Fuentes, métricas y señales reales del ecosistema.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Fuentes activas</small><strong>{activeSources.length}</strong><span>{degradedSources.length} degraded</span></article>
-      <article><small>Métricas definidas</small><strong>{metricRows.length}</strong><span>Metric registry</span></article>
-      <article><small>Eventos 30D</small><strong>{(events||0).toLocaleString()}</strong><span>analytics_events</span></article>
-      <article><small>Conversión lead</small><strong>{conversion.toFixed(1)}%</strong><span>Leads / page views</span></article>
+      <article><small>Fuentes activas</small><strong>{activeSources.length}</strong><span>{degradedSources.length} degradadas</span></article>
+      <article><small>Métricas definidas</small><strong>{metricRows.length}</strong><span>Métricas registradas</span></article>
+      <article><small>Eventos 30D</small><strong>{(events||0).toLocaleString()}</strong><span>Eventos registrados</span></article>
+      <article><small>Conversión de contactos</small><strong>{conversion.toFixed(1)}%</strong><span>Contactos / visitas</span></article>
     </section>
 
-    <section className={styles.sectionHead}><div><span>DATA CATALOG</span><h2>Fuentes</h2></div><p>Inventario persistente de bases, APIs, plataformas y pipelines.</p></section>
+    <section className={styles.sectionHead}><div><span>FUENTES</span><h2>Fuentes</h2></div><p>Inventario de bases, APIs, plataformas y otras fuentes de datos.</p></section>
     <section className={styles.grid}>
       {sourceRows.map((s:any)=><article key={s.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={s.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(s.status).toUpperCase()}</span><em>{s.source_type}</em></div>
-        <h3>{s.name}</h3><p>{s.system_name||"Sistema no registrado"}<br/>Owner: {ownerName(s.owner_user_id)}<br/>{s.freshness_target_minutes!=null?"Freshness: "+s.freshness_target_minutes+" min":"Freshness no definido"}</p>
+        <div className={styles.cardTop}><span className={s.status==="active"?styles.badgeActive:styles.badgePlanned}>{dataStatusLabel(s.status)}</span><em>{sourceTypeLabel(s.source_type)}</em></div>
+        <h3>{s.name}</h3><p>{s.system_name||"Sistema no registrado"}<br/>Responsable: {ownerName(s.owner_user_id)}<br/>{s.freshness_target_minutes!=null?"Actualización: "+s.freshness_target_minutes+" min":"Actualización no definida"}</p>
       </article>)}
-      {!sourceRows.length&&<article className={styles.card}><h3>Data catalog preparado</h3><p>No se han formalizado fuentes todavía.</p></article>}
+      {!sourceRows.length&&<article className={styles.card}><h3>Registro de fuentes preparado</h3><p>No se han formalizado fuentes todavía.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>METRIC REGISTRY</span><h2>Definiciones KPI</h2></div><p>Una sola definición por métrica para evitar interpretaciones distintas entre módulos.</p></section>
+    <section className={styles.sectionHead}><div><span>MÉTRICAS</span><h2>Definiciones de métricas</h2></div><p>Una sola definición por métrica para evitar interpretaciones distintas entre módulos.</p></section>
     <section className={styles.grid}>
       {metricRows.map((m:any)=><article key={m.id} className={styles.card}>
         <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(m.status).toUpperCase()}</span><em>{m.domain}</em></div>
-        <h3>{m.name}</h3><p>Owner: {ownerName(m.owner_user_id)}<br/>{m.definition}<br/>{m.formula||"Fórmula no registrada"} · {m.unit||"sin unidad"}<br/>{m.source_table||"Fuente no asociada"}</p>
+        <h3>{m.name}</h3><p>Responsable: {ownerName(m.owner_user_id)}<br/>{m.definition}<br/>{m.formula||"Fórmula no registrada"} · {m.unit||"sin unidad"}<br/>{m.source_table||"Fuente no asociada"}</p>
       </article>)}
-      {!metricRows.length&&<article className={styles.card}><h3>Metric Registry vacío</h3><p>Las definiciones corporativas se registrarán aquí.</p></article>}
+      {!metricRows.length&&<article className={styles.card}><h3>Sin métricas definidas</h3><p>Las definiciones corporativas se registrarán aquí.</p></article>}
     </section>
 
     {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
@@ -181,7 +191,7 @@ export default async function MasterDataPage(){
           <label>Nombre<input name="name" required placeholder="Lead Conversion"/></label>
           <label>Dominio<input name="domain" required placeholder="Growth"/></label>
           <label>Unidad<input name="unit" placeholder="% / USD / count"/></label>
-          <label>Fuente tabla<input name="source_table" placeholder="leads / analytics_events"/></label>
+          <label>Fuente tabla<input name="source_table" placeholder="leads / Eventos registrados"/></label>
           <label>Fórmula<input name="formula" placeholder="leads / page_views"/></label>
           <label className={styles.span2}>Definición<textarea name="definition" required rows={3}/></label>
         </div>
@@ -220,7 +230,7 @@ export default async function MasterDataPage(){
       </form>
     </section>}
 
-    <section className={styles.sectionHead}><div><span>LIVE SIGNALS</span><h2>Señales recientes</h2></div><p>Datos existentes reutilizados como observabilidad operativa.</p></section>
+    <section className={styles.sectionHead}><div><span>SEÑALES RECIENTES</span><h2>Señales recientes</h2></div><p>Actividad reciente registrada por el sistema.</p></section>
     <section className={styles.grid}>
       {(recentEvents||[]).map((e:any,i:number)=><article key={i} className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>REAL</span><em>{new Date(e.created_at).toLocaleString("es-US")}</em></div>
@@ -230,10 +240,10 @@ export default async function MasterDataPage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Page Views 30D</small><strong>{(pageViews||0).toLocaleString()}</strong><span>Tráfico medido</span></article>
-      <article><small>Amazon CTR</small><strong>{amazonCtr.toFixed(1)}%</strong><span>Clicks / page views</span></article>
-      <article><small>RLS</small><strong>ACTIVO</strong><span>Admin/editor</span></article>
-      <article><small>Producción</small><strong>PROTEGIDA</strong><span>main intacto</span></article>
+      <article><small>Visitas 30D</small><strong>{(pageViews||0).toLocaleString()}</strong><span>Tráfico medido</span></article>
+      <article><small>Conversión a Amazon</small><strong>{amazonCtr.toFixed(1)}%</strong><span>Clics / visitas</span></article>
+      <article><small>RLS</small><strong>ACTIVO</strong><span>Administración y edición</span></article>
+      <article><small>Producción</small><strong>PROTEGIDA</strong><span>Rama principal intacta</span></article>
     </section>
   </main>;
 }
