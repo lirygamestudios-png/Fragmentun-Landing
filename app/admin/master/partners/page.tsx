@@ -3,6 +3,16 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
+function partnerStatusLabel(value:string){
+  const map:Record<string,string>={prospect:"PROSPECTO",active:"ACTIVO",paused:"PAUSADO",inactive:"INACTIVO",ended:"FINALIZADO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function dealStatusLabel(value:string){
+  const map:Record<string,string>={pipeline:"EN PROCESO",qualified:"CALIFICADO",negotiation:"NEGOCIACIÓN",contracting:"CONTRATACIÓN",active:"ACTIVO",expired:"VENCIDO",lost:"PERDIDO",canceled:"CANCELADO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
 function money(cents:number|null|undefined,currency="USD"){
   return new Intl.NumberFormat("en-US",{style:"currency",currency}).format((cents||0)/100);
 }
@@ -111,7 +121,7 @@ async function updateDeal(formData:FormData){
   revalidatePath("/admin/master/partners");
 }
 
-export default async function MasterPartnersPage(){
+export default async function MasterOrganizacionesPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user) redirect("/admin/login");
@@ -140,33 +150,33 @@ export default async function MasterPartnersPage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · PARTNERS</span><h1>Partners & Licensing</h1><p>Registro maestro de partners y pipeline de acuerdos/licencias.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · ALIANZAS Y LICENCIAS</span><h1>Alianzas y Licencias</h1><p>Registro de organizaciones aliadas y acuerdos/licencias.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Partners</small><strong>{partnerRows.length}</strong><span>Organizaciones registradas</span></article>
-      <article><small>Deals activos</small><strong>{activeDeals.length}</strong><span>Licensing / distribution</span></article>
-      <article><small>Pipeline deals</small><strong>{pipelineDeals.length}</strong><span>{money(pipelineValue,currency)}</span></article>
+      <article><small>Organizaciones</small><strong>{partnerRows.length}</strong><span>Organizaciones registradas</span></article>
+      <article><small>Acuerdos activos</small><strong>{activeDeals.length}</strong><span>Licencias / distribución</span></article>
+      <article><small>Acuerdos en proceso</small><strong>{pipelineDeals.length}</strong><span>{money(pipelineValue,currency)}</span></article>
       <article><small>Ediciones</small><strong>{(editions||0).toLocaleString()}</strong><span>Señal editorial</span></article>
     </section>
 
-    <section className={styles.sectionHead}><div><span>PARTNER MASTER</span><h2>Organizaciones</h2></div></section>
+    <section className={styles.sectionHead}><div><span>ORGANIZACIONES</span><h2>Organizaciones</h2></div></section>
     <section className={styles.grid}>
       {partnerRows.map((p:any)=><article key={p.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={p.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(p.status).toUpperCase()}</span><em>{p.partner_type}</em></div>
+        <div className={styles.cardTop}><span className={p.status==="active"?styles.badgeActive:styles.badgePlanned}>{partnerStatusLabel(p.status)}</span><em>{p.partner_type}</em></div>
         <h3>{p.name}</h3><p>{p.contact_name||"Sin contacto"} · {p.contact_email||"Sin email"}<br/>{p.territory||"Territorio pendiente"}</p>
       </article>)}
-      {!partnerRows.length&&<article className={styles.card}><h3>Partner Master preparado</h3><p>No se han cargado organizaciones reales todavía.</p></article>}
+      {!partnerRows.length&&<article className={styles.card}><h3>Registro de organizaciones preparado</h3><p>No se han cargado organizaciones reales todavía.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>DEAL PIPELINE</span><h2>Licensing & acuerdos</h2></div></section>
+    <section className={styles.sectionHead}><div><span>ACUERDOS Y LICENCIAS</span><h2>Licencias y acuerdos</h2></div></section>
     <section className={styles.grid}>
       {dealRows.map((d:any)=><article key={d.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={d.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(d.status).toUpperCase()}</span><em>{d.deal_type}</em></div>
-        <h3>{d.deal_name}</h3><p>{d.ip_name||"IP por definir"} · {d.territory||"Sin territorio"}<br/>{money(d.value_cents,d.currency)} · {d.royalty_bps!=null?(d.royalty_bps/100).toFixed(2)+"% royalty":"Royalty no registrado"}</p>
+        <div className={styles.cardTop}><span className={d.status==="active"?styles.badgeActive:styles.badgePlanned}>{dealStatusLabel(d.status)}</span><em>{d.deal_type}</em></div>
+        <h3>{d.deal_name}</h3><p>{d.ip_name||"IP por definir"} · {d.territory||"Sin territorio"}<br/>{money(d.value_cents,d.currency)} · {d.royalty_bps!=null?(d.royalty_bps/100).toFixed(2)+"% regalía":"Regalía no registrada"}</p>
       </article>)}
-      {!dealRows.length&&<article className={styles.card}><h3>Pipeline vacío</h3><p>Los acuerdos reales se registrarán aquí.</p></article>}
+      {!dealRows.length&&<article className={styles.card}><h3>Registro de acuerdos vacío</h3><p>Los acuerdos reales se registrarán aquí.</p></article>}
     </section>
 
     <section className={styles.adminForms}>
@@ -243,12 +253,12 @@ export default async function MasterPartnersPage(){
       </form>
     </section>
 
-    <section className={styles.sectionHead}><div><span>EXISTING SIGNALS</span><h2>Contexto comercial</h2></div></section>
+    <section className={styles.sectionHead}><div><span>CONTEXTO COMERCIAL</span><h2>Contexto comercial</h2></div></section>
     <section className={styles.kpis}>
-      <article><small>Campañas</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Go-to-market</span></article>
+      <article><small>Campañas</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Salida al mercado</span></article>
       <article><small>Ediciones</small><strong>{(editions||0).toLocaleString()}</strong><span>Catálogo</span></article>
       <article><small>Acceso</small><strong>ADMIN</strong><span>RLS restringido</span></article>
-      <article><small>Contracts</small><strong>SEPARADOS</strong><span>Legal & IP</span></article>
+      <article><small>Contratos</small><strong>SEPARADOS</strong><span>Legal e IP</span></article>
     </section>
   </main>;
 }
