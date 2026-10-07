@@ -8,7 +8,7 @@ function tierLabel(value:string){
   return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
 }
 
-function memberStatusLabel(value:string){
+function memberEstadoLabel(value:string){
   const map:Record<string,string>={active:"ACTIVO",inactive:"INACTIVO",blocked:"BLOQUEADO",left:"SALIDA"};
   return map[value]||String(value||"").toUpperCase();
 }
@@ -82,9 +82,9 @@ async function updateMember(formData:FormData){
   const betaPriority=String(formData.get("beta_priority")||"false")==="true";
   const tags=String(formData.get("tags")||"").split(",").map(x=>x.trim()).filter(Boolean);
   const notes=String(formData.get("notes")||"").trim()||null;
-  const allowedStatus=new Set(["active","inactive","blocked","left"]);
-  const allowedTier=new Set(["member","engaged","advocate","beta_priority","moderator"]);
-  if(!id||!allowedStatus.has(status)||!allowedTier.has(tier)||!Number.isFinite(points)) throw new Error("invalid_member_update");
+  const allowedEstado=new Set(["active","inactive","blocked","left"]);
+  const allowedNivel=new Set(["member","engaged","advocate","beta_priority","moderator"]);
+  if(!id||!allowedEstado.has(status)||!allowedNivel.has(tier)||!Number.isFinite(points)) throw new Error("invalid_member_update");
   const{error}=await supabase.from("community_members").update({
     status,tier,points,beta_priority:betaPriority||tier==="beta_priority",source,tags,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
@@ -145,15 +145,18 @@ export default async function CommunityPage(){
       {!actionRows.length&&<article className={styles.card}><h3>Sin actividad registrada todavía</h3><p>Compartidos, referidos, opiniones beta y otras acciones podrán registrarse aquí.</p></article>}
     </section>
 
-    {["admin","editor","marketing"].includes(profile.role)&&<section className={styles.adminForms}>
+    {["admin","editor","marketing"].includes(profile.role)&&<details className={styles.advancedPanel}>
+      <summary>Opciones avanzadas</summary>
+      <p className={styles.advancedHint}>Úsalas para registrar o modificar miembros y participación manualmente.</p>
+      <section className={styles.adminForms}>
       <form action={createMember} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVO MIEMBRO</span><h2>Registrar comunidad</h2></div>
         <div className={styles.formGrid}>
           <label>Nombre<input name="display_name"/></label>
           <label>Email<input type="email" name="email"/></label>
-          <label>Handle<input name="handle"/></label>
+          <label>Usuario<input name="handle"/></label>
           <label>Fuente<input name="source" placeholder="LiryBoost / Discord / web"/></label>
-          <label>Tier<select name="tier" defaultValue="member"><option value="member">Member</option><option value="engaged">Engaged</option><option value="advocate">Advocate</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderator</option></select></label>
+          <label>Nivel<select name="tier" defaultValue="member"><option value="member">Miembro</option><option value="engaged">Participativo</option><option value="advocate">Promotor</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderador</option></select></label>
         </div>
         <button className={styles.formButton}>Registrar miembro</button>
       </form>
@@ -162,32 +165,32 @@ export default async function CommunityPage(){
         <div className={styles.formTitle}><span>NUEVA ACTIVIDAD</span><h2>Registrar participación</h2></div>
         <div className={styles.formGrid}>
           <label>Miembro<select name="member_id" required defaultValue=""><option value="" disabled>Seleccionar miembro</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name||m.handle||m.email}</option>)}</select></label>
-          <label>Tipo<select name="action_type" defaultValue="share"><option value="share">Share</option><option value="referral">Referral</option><option value="comment">Comment</option><option value="event">Event</option><option value="survey">Survey</option><option value="beta_signup">Beta signup</option><option value="beta_feedback">Beta feedback</option><option value="purchase">Purchase</option><option value="community_join">Community join</option><option value="other">Other</option></select></label>
+          <label>Tipo<select name="action_type" defaultValue="share"><option value="share">Compartido</option><option value="referral">Referido</option><option value="comment">Comentario</option><option value="event">Evento</option><option value="survey">Encuesta</option><option value="beta_signup">Registro beta</option><option value="beta_feedback">Opinión beta</option><option value="purchase">Compra</option><option value="community_join">Ingreso a comunidad</option><option value="other">Otro</option></select></label>
           <label>Puntos<input type="number" name="points_delta" defaultValue="0"/></label>
           <label>Fuente<input name="source"/></label>
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
         <button className={styles.formButton} disabled={!memberRows.length}>Registrar actividad</button>
       </form>
-    </section>}
+      </section>
 
-
-    {["admin","editor","marketing"].includes(profile.role)&&<section className={styles.adminForms}>
+      <section className={styles.adminForms}>
       <form action={updateMember} className={styles.adminForm}>
         <div className={styles.formTitle}><span>GESTIONAR MIEMBRO</span><h2>Actualizar comunidad</h2></div>
         <div className={styles.formGrid}>
           <label>Miembro<select name="member_id" required defaultValue=""><option value="" disabled>Seleccionar miembro</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name||m.handle||m.email}</option>)}</select></label>
-          <label>Status<select name="status" defaultValue="active"><option value="active">Active</option><option value="inactive">Inactive</option><option value="blocked">Blocked</option><option value="left">Left</option></select></label>
-          <label>Tier<select name="tier" defaultValue="member"><option value="member">Member</option><option value="engaged">Engaged</option><option value="advocate">Advocate</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderator</option></select></label>
+          <label>Estado<select name="status" defaultValue="active"><option value="active">Activo</option><option value="inactive">Inactivo</option><option value="blocked">Bloqueado</option><option value="left">Salida</option></select></label>
+          <label>Nivel<select name="tier" defaultValue="member"><option value="member">Miembro</option><option value="engaged">Participativo</option><option value="advocate">Promotor</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderador</option></select></label>
           <label>Prioridad beta<select name="beta_priority" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
           <label>Puntos<input type="number" min="0" name="points" defaultValue="0"/></label>
           <label>Fuente<input name="source"/></label>
-          <label className={styles.span2}>Tags<input name="tags" placeholder="beta, advocate, creator"/></label>
+          <label className={styles.span2}>Etiquetas<input name="tags" placeholder="beta, advocate, creator"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <button className={styles.formButton} disabled={!memberRows.length}>Actualizar miembro</button>
       </form>
-    </section>}
+      </section>
+    </details>}
 
     <section className={styles.kpis}>
       <article><small>Contactos comerciales</small><strong>{(crmContacts||0).toLocaleString()}</strong><span>Seguimiento comercial separado</span></article>
