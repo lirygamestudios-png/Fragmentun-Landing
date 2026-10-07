@@ -1,6 +1,7 @@
 import { NextRequest,NextResponse } from "next/server";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { consumePublicRateLimit } from "../../../../lib/rate-limit";
+import { getMfaState } from "../../../../lib/supabase/mfa";
 
 async function ensureAdminProfile(supabase:any,user:{id:string;email?:string|null}){
   let{data:profile}=await supabase
@@ -68,5 +69,6 @@ export async function POST(request:NextRequest){
     return NextResponse.json({ok:false,error:"unauthorized"},{status:403});
   }
 
-  return NextResponse.json({ok:true,role:profile.role});
+  const mfa=await getMfaState(supabase);
+  return NextResponse.json({ok:true,role:profile.role,mfa_state:mfa.state,redirect:mfa.state==="satisfied"?"/admin":"/admin/mfa"});
 }
