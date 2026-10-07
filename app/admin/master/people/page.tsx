@@ -54,6 +54,51 @@ async function createAssignment(formData:FormData){
   revalidatePath("/admin/master/people");
 }
 
+
+async function updateMember(formData:FormData){
+  "use server";
+  const {supabase}=await requirePeopleAdmin();
+  const id=String(formData.get("member_id")||"").trim();
+  const status=String(formData.get("status")||"active");
+  const title=String(formData.get("title")||"").trim()||null;
+  const department=String(formData.get("department")||"").trim()||null;
+  const managerRaw=String(formData.get("manager_id")||"").trim();
+  const managerId=managerRaw||null;
+  const location=String(formData.get("location")||"").trim()||null;
+  const endDate=String(formData.get("end_date")||"").trim()||null;
+  const allocation=Math.max(0,Math.min(100,Number(formData.get("allocation_percent")||100)));
+  const skills=String(formData.get("skills")||"").split(",").map(x=>x.trim()).filter(Boolean);
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["active","on_leave","inactive","ended"]);
+  if(!id||!allowedStatus.has(status)||!Number.isFinite(allocation)) throw new Error("invalid_member_update");
+  const{error}=await supabase.from("people_members").update({
+    status,title,department,manager_id:managerId,location,end_date:endDate,
+    allocation_percent:Math.trunc(allocation),skills,notes,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/people");
+}
+
+async function updateAssignment(formData:FormData){
+  "use server";
+  const {supabase}=await requirePeopleAdmin();
+  const id=String(formData.get("assignment_id")||"").trim();
+  const status=String(formData.get("status")||"active");
+  const allocation=Math.max(0,Math.min(100,Number(formData.get("allocation_percent")||0)));
+  const priority=String(formData.get("priority")||"medium");
+  const startDate=String(formData.get("start_date")||"").trim()||null;
+  const endDate=String(formData.get("end_date")||"").trim()||null;
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["planned","active","paused","completed","canceled"]);
+  const allowedPriority=new Set(["low","medium","high","critical"]);
+  if(!id||!allowedStatus.has(status)||!allowedPriority.has(priority)||!Number.isFinite(allocation)) throw new Error("invalid_assignment_update");
+  const{error}=await supabase.from("people_assignments").update({
+    status,allocation_percent:Math.trunc(allocation),priority,start_date:startDate,end_date:endDate,notes,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/people");
+}
+
 export default async function MasterPeoplePage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -67,8 +112,8 @@ export default async function MasterPeoplePage(){
     {count:adminProfiles},
     {count:activity}
   ]=await Promise.all([
-    supabase.from("people_members").select("id,display_name,email,employment_type,status,title,department,location,start_date,end_date,allocation_percent,skills,created_at").order("display_name",{ascending:true}),
-    supabase.from("people_assignments").select("id,member_id,domain,workstream,allocation_percent,priority,status,start_date,end_date,created_at").order("created_at",{ascending:false}),
+    supabase.from("people_members").select("id,display_name,email,employment_type,status,title,department,manager_id,location,start_date,end_date,allocation_percent,skills,notes,created_at").order("display_name",{ascending:true}),
+    supabase.from("people_assignments").select("id,member_id,domain,workstream,allocation_percent,priority,status,start_date,end_date,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("admin_profiles").select("*",{count:"exact",head:true}),
     supabase.from("admin_audit_log").select("*",{count:"exact",head:true})
   ]);
@@ -154,6 +199,40 @@ export default async function MasterPeoplePage(){
           <label>Fin<input type="date" name="end_date"/></label>
         </div>
         <button className={styles.formButton} type="submit" disabled={!memberRows.length}>Registrar asignación</button>
+      </form>
+    </section>}
+
+
+    {profile.role==="admin"&&<section className={styles.adminForms}>
+      <form action={updateMember} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR PERSONA</span><h2>Actualizar miembro</h2></div>
+        <div className={styles.formGrid}>
+          <label>Miembro<select name="member_id" required defaultValue=""><option value="" disabled>Seleccionar miembro</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name}</option>)}</select></label>
+          <label>Status<select name="status" defaultValue="active"><option value="active">Active</option><option value="on_leave">On leave</option><option value="inactive">Inactive</option><option value="ended">Ended</option></select></label>
+          <label>Título<input name="title"/></label>
+          <label>Departamento<input name="department"/></label>
+          <label>Manager<select name="manager_id" defaultValue=""><option value="">Sin manager</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name}</option>)}</select></label>
+          <label>Ubicación<input name="location"/></label>
+          <label>Fin<input type="date" name="end_date"/></label>
+          <label>Disponibilidad %<input type="number" min="0" max="100" name="allocation_percent" defaultValue="100"/></label>
+          <label className={styles.span2}>Skills<input name="skills" placeholder="Unity, Marketing, Production"/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!memberRows.length}>Actualizar miembro</button>
+      </form>
+
+      <form action={updateAssignment} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR ASIGNACIÓN</span><h2>Actualizar capacidad</h2></div>
+        <div className={styles.formGrid}>
+          <label>Asignación<select name="assignment_id" required defaultValue=""><option value="" disabled>Seleccionar asignación</option>{assignmentRows.map((a:any)=><option key={a.id} value={a.id}>{memberRows.find(m=>m.id===a.member_id)?.display_name||"Miembro"} · {a.domain}</option>)}</select></label>
+          <label>Status<select name="status" defaultValue="active"><option value="planned">Planned</option><option value="active">Active</option><option value="paused">Paused</option><option value="completed">Completed</option><option value="canceled">Canceled</option></select></label>
+          <label>Allocation %<input type="number" min="0" max="100" name="allocation_percent"/></label>
+          <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
+          <label>Inicio<input type="date" name="start_date"/></label>
+          <label>Fin<input type="date" name="end_date"/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!assignmentRows.length}>Actualizar asignación</button>
       </form>
     </section>}
 
