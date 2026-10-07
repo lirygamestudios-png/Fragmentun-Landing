@@ -1,6 +1,60 @@
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+
+async function requireStrategyEditor(){
+  "use server";
+  const supabase=await createSupabaseServerClient();
+  const{data:{user}}=await supabase.auth.getUser();
+  if(!user) redirect("/admin/login");
+  const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
+  if(!profile||!["admin","editor"].includes(profile.role)) throw new Error("forbidden");
+  return {supabase,user};
+}
+
+async function createObjective(formData:FormData){
+  "use server";
+  const {supabase,user}=await requireStrategyEditor();
+  const code=String(formData.get("code")||"").trim().toLowerCase().replace(/[^a-z0-9-]+/g,"-").replace(/^-+|-+$/g,"");
+  const title=String(formData.get("title")||"").trim();
+  const description=String(formData.get("description")||"").trim()||null;
+  const horizon=String(formData.get("horizon")||"quarter");
+  const priority=String(formData.get("priority")||"medium");
+  const startDate=String(formData.get("start_date")||"").trim()||null;
+  const targetDate=String(formData.get("target_date")||"").trim()||null;
+  const allowedHorizon=new Set(["month","quarter","year","multi_year"]);
+  const allowedPriority=new Set(["low","medium","high","critical"]);
+  if(!code||!title||!allowedHorizon.has(horizon)||!allowedPriority.has(priority)) throw new Error("invalid_objective");
+  const{error}=await supabase.from("strategy_objectives").insert({
+    code,title,description,horizon,priority,start_date:startDate,target_date:targetDate,created_by:user.id
+  });
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/strategy");
+}
+
+async function createKeyResult(formData:FormData){
+  "use server";
+  const {supabase,user}=await requireStrategyEditor();
+  const objectiveId=String(formData.get("objective_id")||"").trim();
+  const title=String(formData.get("title")||"").trim();
+  const metricName=String(formData.get("metric_name")||"").trim()||null;
+  const unit=String(formData.get("unit")||"").trim()||null;
+  const baselineRaw=String(formData.get("baseline")||"").trim();
+  const targetRaw=String(formData.get("target_value")||"").trim();
+  const currentRaw=String(formData.get("current_value")||"").trim();
+  const baseline=baselineRaw?Number(baselineRaw):null;
+  const target=targetRaw?Number(targetRaw):null;
+  const current=currentRaw?Number(currentRaw):null;
+  const targetDate=String(formData.get("target_date")||"").trim()||null;
+  if(!objectiveId||!title) throw new Error("invalid_key_result");
+  if([baseline,target,current].some(v=>v!==null&&!Number.isFinite(v))) throw new Error("invalid_metric");
+  const{error}=await supabase.from("strategy_key_results").insert({
+    objective_id:objectiveId,title,metric_name:metricName,unit,baseline,target_value:target,current_value:current,target_date:targetDate,created_by:user.id
+  });
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/strategy");
+}
 
 export default async function MasterStrategyPage(){
   const supabase=await createSupabaseServerClient();
@@ -11,6 +65,8 @@ export default async function MasterStrategyPage(){
 
   const since30=new Date(Date.now()-30*86400000).toISOString();
   const[
+    {data:objectives},
+    {data:keyResults},
     {count:views},
     {count:amazonClicks},
     {count:leads},
@@ -18,6 +74,8 @@ export default async function MasterStrategyPage(){
     {count:campaigns},
     {count:paidOrders}
   ]=await Promise.all([
+    supabase.from("strategy_objectives").select("id,code,title,description,horizon,status,priority,start_date,target_date,progress_percent,created_at").order("priority",{ascending:false}),
+    supabase.from("strategy_key_results").select("id,objective_id,title,metric_name,unit,baseline,target_value,current_value,status,target_date,created_at").order("created_at",{ascending:true}),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","page_view").gte("created_at",since30),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","amazon_click").gte("created_at",since30),
     supabase.from("leads").select("*",{count:"exact",head:true}).gte("created_at",since30),
@@ -26,57 +84,81 @@ export default async function MasterStrategyPage(){
     supabase.from("shop_orders").select("*",{count:"exact",head:true}).eq("payment_status","paid")
   ]);
 
+  const objectiveRows=(objectives||[]) as any[];
+  const krRows=(keyResults||[]) as any[];
+  const activeObjectives=objectiveRows.filter(o=>o.status==="active");
+  const atRiskObjectives=objectiveRows.filter(o=>o.status==="at_risk");
   const leadConversion=(views||0)>0?((leads||0)/(views||1))*100:0;
   const amazonCtr=(views||0)>0?((amazonClicks||0)/(views||1))*100:0;
-  const testRate=(views||0)>0?((testCompletes||0)/(views||1))*100:0;
-
-  const kpis=[
-    {name:"Tráfico 30D",value:(views||0).toLocaleString(),status:(views||0)>0?"Activa":"Sin señal",note:"Top-of-funnel"},
-    {name:"Conversión a lead",value:leadConversion.toFixed(1)+"%",status:leadConversion>0?"Medida":"Base",note:"Captación"},
-    {name:"Paso a Amazon",value:amazonCtr.toFixed(1)+"%",status:amazonCtr>0?"Medida":"Base",note:"Intento comercial"},
-    {name:"Test completado",value:testRate.toFixed(1)+"%",status:testRate>0?"Medida":"Base",note:"Engagement"},
-    {name:"Campañas activas",value:String(campaigns||0),status:(campaigns||0)>0?"Activas":"Pendiente",note:"Growth"},
-    {name:"Órdenes pagadas",value:String(paidOrders||0),status:(paidOrders||0)>0?"Revenue":"Pre-revenue",note:"Monetización"}
-  ];
-
-  const priorities=[
-    {name:"Proteger producción FRAGMENTUN",owner:"Tecnología",state:"EN CURSO",metric:"0 cambios directos a main"},
-    {name:"Master Admin MVP",owner:"Operaciones",state:"EN CURSO",metric:"Command Center + módulos"},
-    {name:"Instrumentación de conversión",owner:"Growth",state:"ACTIVA",metric:"Analytics + leads"},
-    {name:"Commerce readiness",owner:"Comercio",state:"PREPARADA",metric:"Orders/fulfillment modelados"},
-    {name:"Game production operating system",owner:"Studio",state:"SIGUIENTE",metric:"Fases 57–59 → ejecución"}
-  ];
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · ESTRATEGIA</span><h1>Estrategia & KPIs Ejecutivos</h1><p>Primera jerarquía ejecutiva basada en señales reales y prioridades de implementación.</p></div>
+      <div><span className={styles.eyebrow}>MASTER ADMIN · ESTRATEGIA</span><h1>Estrategia & OKRs</h1><p>Objetivos y key results persistentes conectados a métricas operativas reales.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Command Center</a>
     </header>
 
     <section className={styles.kpis}>
-      {kpis.slice(0,4).map(k=><article key={k.name}><small>{k.name}</small><strong>{k.value}</strong><span>{k.note} · {k.status}</span></article>)}
+      <article><small>Objetivos activos</small><strong>{activeObjectives.length}</strong><span>{objectiveRows.length} totales</span></article>
+      <article><small>At risk</small><strong>{atRiskObjectives.length}</strong><span>Objetivos en riesgo</span></article>
+      <article><small>Key results</small><strong>{krRows.length}</strong><span>Medidas registradas</span></article>
+      <article><small>Conversión lead 30D</small><strong>{leadConversion.toFixed(1)}%</strong><span>Señal operativa</span></article>
     </section>
 
-    <section className={styles.sectionHead}>
-      <div><span>EXECUTIVE SCORECARD</span><h2>Indicadores corporativos iniciales</h2></div>
-      <p>No se establecen metas ficticias: primero medimos la línea base real; después fijaremos targets y tolerancias por KPI.</p>
-    </section>
+    <section className={styles.sectionHead}><div><span>OBJECTIVES</span><h2>Objetivos estratégicos</h2></div><p>No se crean metas ficticias; cada objetivo debe registrarse explícitamente.</p></section>
     <section className={styles.grid}>
-      {kpis.map(k=><article key={k.name} className={styles.card}>
-        <div className={styles.cardTop}><span className={styles.badgeActive}>{k.status.toUpperCase()}</span><em>{k.note}</em></div>
-        <h3>{k.name}</h3><p><strong>{k.value}</strong></p>
+      {objectiveRows.map((o:any)=><article key={o.id} className={styles.card}>
+        <div className={styles.cardTop}><span className={o.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(o.status).toUpperCase()}</span><em>{o.priority}</em></div>
+        <h3>{o.title}</h3><p>{o.horizon} · {o.progress_percent}%<br/>{o.start_date||"sin inicio"} → {o.target_date||"sin target"}<br/>{o.description||"Sin descripción"}</p>
       </article>)}
+      {!objectiveRows.length&&<article className={styles.card}><h3>Strategy Registry preparado</h3><p>No se han cargado objetivos todavía.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}>
-      <div><span>PRIORIDADES</span><h2>Execution Board</h2></div>
-      <p>Conecta estrategia con implementación sin mezclar aún la operación pública de FRAGMENTUN.</p>
-    </section>
+    <section className={styles.sectionHead}><div><span>KEY RESULTS</span><h2>Resultados medibles</h2></div></section>
     <section className={styles.grid}>
-      {priorities.map(p=><article key={p.name} className={styles.card}>
-        <div className={styles.cardTop}><span className={styles.badgePlanned}>{p.state}</span><em>{p.owner}</em></div>
-        <h3>{p.name}</h3><p>{p.metric}</p>
+      {krRows.map((kr:any)=><article key={kr.id} className={styles.card}>
+        <div className={styles.cardTop}><span className={kr.status==="completed"?styles.badgeActive:styles.badgePlanned}>{String(kr.status).toUpperCase()}</span><em>{kr.metric_name||"KPI"}</em></div>
+        <h3>{kr.title}</h3><p>Baseline: {kr.baseline??"—"} {kr.unit||""}<br/>Actual: {kr.current_value??"—"} · Target: {kr.target_value??"—"} {kr.unit||""}<br/>{kr.target_date||"Sin fecha"}</p>
       </article>)}
+      {!krRows.length&&<article className={styles.card}><h3>Sin key results</h3><p>Los resultados se registrarán contra objetivos reales.</p></article>}
+    </section>
+
+    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+      <form action={createObjective} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>NUEVO OBJETIVO</span><h2>Registrar objetivo</h2></div>
+        <div className={styles.formGrid}>
+          <label>Código<input name="code" required placeholder="q4-growth"/></label>
+          <label>Título<input name="title" required/></label>
+          <label>Horizonte<select name="horizon" defaultValue="quarter"><option value="month">Month</option><option value="quarter">Quarter</option><option value="year">Year</option><option value="multi_year">Multi-year</option></select></label>
+          <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
+          <label>Inicio<input type="date" name="start_date"/></label>
+          <label>Target<input type="date" name="target_date"/></label>
+          <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} type="submit">Registrar objetivo</button>
+      </form>
+
+      <form action={createKeyResult} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>NUEVO KR</span><h2>Registrar key result</h2></div>
+        <div className={styles.formGrid}>
+          <label>Objetivo<select name="objective_id" required defaultValue=""><option value="" disabled>Seleccionar objetivo</option>{objectiveRows.map((o:any)=><option key={o.id} value={o.id}>{o.title}</option>)}</select></label>
+          <label>Título<input name="title" required/></label>
+          <label>Métrica<input name="metric_name" placeholder="Leads / revenue / milestone"/></label>
+          <label>Unidad<input name="unit" placeholder="% / USD / count"/></label>
+          <label>Baseline<input type="number" step="any" name="baseline"/></label>
+          <label>Actual<input type="number" step="any" name="current_value"/></label>
+          <label>Target<input type="number" step="any" name="target_value"/></label>
+          <label>Fecha objetivo<input type="date" name="target_date"/></label>
+        </div>
+        <button className={styles.formButton} type="submit" disabled={!objectiveRows.length}>Registrar KR</button>
+      </form>
+    </section>}
+
+    <section className={styles.sectionHead}><div><span>OPERATING SIGNALS</span><h2>Línea base real</h2></div><p>Estas métricas siguen siendo señales operativas; no sustituyen los targets explícitos de los OKRs.</p></section>
+    <section className={styles.kpis}>
+      <article><small>Tráfico 30D</small><strong>{(views||0).toLocaleString()}</strong><span>Top of funnel</span></article>
+      <article><small>Amazon CTR</small><strong>{amazonCtr.toFixed(1)}%</strong><span>Intento comercial</span></article>
+      <article><small>Test completes</small><strong>{(testCompletes||0).toLocaleString()}</strong><span>Engagement</span></article>
+      <article><small>Paid orders</small><strong>{(paidOrders||0).toLocaleString()}</strong><span>Monetización</span></article>
     </section>
   </main>;
 }
