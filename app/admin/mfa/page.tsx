@@ -48,20 +48,6 @@ export default function AdminMfaPage(){
     setState("challenge");
   }
 
-  async function verify(){
-    if(!factorId||!code.trim())return;
-    setBusy(true);setMessage("");
-    const r=await fetch("/api/admin/mfa",{
-      method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({action:"verify",factorId,code})
-    });
-    const j=await r.json().catch(()=>({}));
-    setBusy(false);
-    if(!r.ok||!j.ok){setMessage(j.detail||"Código no válido. Inténtalo nuevamente.");return;}
-    setState("satisfied");
-    setMessage("MFA verificado correctamente. Abriendo el panel…");
-    window.location.assign("/admin");
-  }
 
   return <main className="authShell authShellFragmentun">
     <section className="authExperience">
@@ -99,17 +85,18 @@ export default function AdminMfaPage(){
           </div>}
           {secret&&<p className="note">Clave manual: <code>{secret}</code></p>}
           {!qr&&factors.length>0&&<p className="lead">Abre tu app autenticadora y escribe el código temporal.</p>}
-          <div className="authForm">
-            <label><span>Código de verificación</span><input inputMode="numeric" autoComplete="one-time-code" value={code} onChange={e=>setCode(e.target.value.replace(/\D/g,"").slice(0,8))}/></label>
-            <button className="btn btnPrimary authSubmit" type="button" onClick={verify} disabled={busy||code.length<6}>
-              {busy?"Verificando…":"Verificar MFA"}
+          <form className="authForm" action="/admin/mfa/verify" method="post">
+            <input type="hidden" name="factorId" value={factorId}/>
+            <label><span>Código de verificación</span><input name="code" inputMode="numeric" autoComplete="one-time-code" value={code} onChange={e=>setCode(e.target.value.replace(/\D/g,"").slice(0,8))}/></label>
+            <button className="btn btnPrimary authSubmit" type="submit" disabled={code.length<6}>
+              Verificar MFA
             </button>
-          </div>
+          </form>
         </>}
 
         {state==="satisfied"&&<>
           <p className="lead">Segundo factor verificado. Tu sesión cumple AAL2.</p>
-          <button className="btn btnPrimary authSubmit" type="button" onClick={()=>window.location.assign("/admin")}>Continuar al panel</button>
+          <a className="btn btnPrimary authSubmit" href="/admin">Continuar al panel</a>
         </>}
 
         {message&&state!=="error"&&<p className="note authStatus" role="status">{message}</p>}
