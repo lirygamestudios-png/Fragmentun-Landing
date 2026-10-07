@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 function memberStatusLabel(value:string){
   const map:Record<string,string>={active:"ACTIVO",on_leave:"LICENCIA",inactive:"INACTIVO",ended:"FINALIZADO"};
@@ -199,7 +200,7 @@ export default async function MasterPeoplePage(){
           <label>Disponibilidad %<input type="number" min="0" max="100" name="allocation_percent" defaultValue="100"/></label>
           <label className={styles.span2}>Habilidades<input name="skills" placeholder="Unity, Marketing, Producción"/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar miembro</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar miembro</MasterSubmitButton>
       </form>
 
       <form action={createAssignment} className={styles.adminForm}>
@@ -218,7 +219,7 @@ export default async function MasterPeoplePage(){
           <label>Inicio<input type="date" name="start_date"/></label>
           <label>Fin<input type="date" name="end_date"/></label>
         </div>
-        <button className={styles.formButton} type="submit" disabled={!memberRows.length}>Registrar asignación</button>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!memberRows.length}>Registrar asignación</MasterSubmitButton>
       </form>
     </section>
 
@@ -237,7 +238,7 @@ export default async function MasterPeoplePage(){
           <label className={styles.span2}>Habilidades<input name="skills" placeholder="Unity, Marketing, Producción"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!memberRows.length}>Actualizar miembro</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length}>Actualizar miembro</MasterSubmitButton>
       </form>
 
       <form action={updateAssignment} className={styles.adminForm}>
@@ -251,7 +252,7 @@ export default async function MasterPeoplePage(){
           <label>Fin<input type="date" name="end_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!assignmentRows.length}>Actualizar asignación</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!assignmentRows.length}>Actualizar asignación</MasterSubmitButton>
       </form>
     </section></details>}
 
