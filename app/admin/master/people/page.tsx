@@ -3,6 +3,26 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
+function memberStatusLabel(value:string){
+  const map:Record<string,string>={active:"ACTIVO",on_leave:"LICENCIA",inactive:"INACTIVO",ended:"FINALIZADO"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
+function employmentTypeLabel(value:string){
+  const map:Record<string,string>={founder:"FUNDADOR",employee:"EMPLEADO",contractor:"CONTRATISTA",advisor:"ASESOR",partner:"SOCIO",intern:"PASANTE",other:"OTRO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function assignmentStatusLabel(value:string){
+  const map:Record<string,string>={planned:"PLANIFICADA",active:"ACTIVA",paused:"PAUSADA",completed:"COMPLETADA",canceled:"CANCELADA"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function priorityLabel(value:string){
+  const map:Record<string,string>={low:"BAJA",medium:"MEDIA",high:"ALTA",critical:"CRÍTICA"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
 async function requirePeopleAdmin(){
   "use server";
   const supabase=await createSupabaseServerClient();
@@ -27,7 +47,7 @@ async function createMember(formData:FormData){
   const skills=String(formData.get("skills")||"").split(",").map(x=>x.trim()).filter(Boolean);
   const allowed=new Set(["founder","employee","contractor","advisor","partner","intern","other"]);
   if(!displayName||!allowed.has(employmentType)||!Number.isFinite(allocation)) throw new Error("invalid_member");
-  const{error}=await supabase.from("people_members").insert({
+  const{error}=await supabase.from("Equipo registrado").insert({
     display_name:displayName,email,employment_type:employmentType,title,department,location,
     start_date:startDate,allocation_percent:allocation,skills,created_by:user.id
   });
@@ -71,7 +91,7 @@ async function updateMember(formData:FormData){
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedStatus=new Set(["active","on_leave","inactive","ended"]);
   if(!id||!allowedStatus.has(status)||!Number.isFinite(allocation)) throw new Error("invalid_member_update");
-  const{error}=await supabase.from("people_members").update({
+  const{error}=await supabase.from("Equipo registrado").update({
     status,title,department,manager_id:managerId,location,end_date:endDate,
     allocation_percent:Math.trunc(allocation),skills,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
@@ -112,7 +132,7 @@ export default async function MasterPeoplePage(){
     {count:adminProfiles},
     {count:activity}
   ]=await Promise.all([
-    supabase.from("people_members").select("id,display_name,email,employment_type,status,title,department,manager_id,location,start_date,end_date,allocation_percent,skills,notes,created_at").order("display_name",{ascending:true}),
+    supabase.from("Equipo registrado").select("id,display_name,email,employment_type,status,title,department,manager_id,location,start_date,end_date,allocation_percent,skills,notes,created_at").order("display_name",{ascending:true}),
     supabase.from("people_assignments").select("id,member_id,domain,workstream,allocation_percent,priority,status,start_date,end_date,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("admin_profiles").select("*",{count:"exact",head:true}),
     supabase.from("admin_audit_log").select("*",{count:"exact",head:true})
@@ -127,37 +147,37 @@ export default async function MasterPeoplePage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · PERSONAS</span><h1>Personas</h1><p>Registro corporativo de equipo, capacidad y asignaciones, separado de los permisos del sistema.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · PERSONAS</span><h1>Personas</h1><p>Equipo, disponibilidad y asignaciones, separado de los permisos del sistema.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Miembros activos</small><strong>{activeMembers.length}</strong><span>people_members</span></article>
+      <article><small>Miembros activos</small><strong>{activeMembers.length}</strong><span>Equipo registrado</span></article>
       <article><small>Departamentos</small><strong>{departments.size}</strong><span>Estructura registrada</span></article>
-      <article><small>Asignaciones activas</small><strong>{activeAssignments.length}</strong><span>{committed}% allocation acumulado</span></article>
-      <article><small>Perfiles admin</small><strong>{(adminProfiles||0).toLocaleString()}</strong><span>Acceso al sistema, no headcount</span></article>
+      <article><small>Asignaciones activas</small><strong>{activeAssignments.length}</strong><span>{committed}% disponibilidad asignada</span></article>
+      <article><small>Usuarios administrativos</small><strong>{(adminProfiles||0).toLocaleString()}</strong><span>Acceso al sistema, no personas del equipo</span></article>
     </section>
 
     <section className={styles.sectionHead}>
-      <div><span>PEOPLE MASTER</span><h2>Equipo registrado</h2></div>
-      <p>El registro empieza vacío hasta cargar personas reales. admin_profiles sigue siendo únicamente una capa de autorización.</p>
+      <div><span>EQUIPO</span><h2>Equipo registrado</h2></div>
+      <p>El registro empieza vacío hasta cargar personas reales. los usuarios administrativos siguen siendo únicamente una capa de acceso.</p>
     </section>
 
     <section className={styles.grid}>
       {memberRows.map((m:any)=><article key={m.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(m.status).toUpperCase()}</span><em>{m.employment_type}</em></div>
+        <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActive:styles.badgePlanned}>{memberStatusLabel(m.status)}</span><em>{employmentTypeLabel(m.employment_type)}</em></div>
         <h3>{m.display_name}</h3>
-        <p>{m.title||"Rol por definir"} · {m.department||"Sin departamento"}<br/>{m.location||"Ubicación no registrada"} · {m.allocation_percent}% disponibilidad base<br/>{(m.skills||[]).length?(m.skills||[]).join(" · "):"Skills por registrar"}</p>
+        <p>{m.title||"Rol por definir"} · {m.department||"Sin departamento"}<br/>{m.location||"Ubicación no registrada"} · {m.allocation_percent}% disponibilidad base<br/>{(m.skills||[]).length?(m.skills||[]).join(" · "):"Habilidades por registrar"}</p>
       </article>)}
-      {!memberRows.length&&<article className={styles.card}><h3>People Master preparado</h3><p>No se han cargado miembros del equipo todavía; no se infiere headcount desde usuarios administrativos.</p></article>}
+      {!memberRows.length&&<article className={styles.card}><h3>Registro de equipo preparado</h3><p>No se han cargado miembros del equipo todavía; no se infiere el tamaño del equipo desde usuarios administrativos.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>CAPACITY</span><h2>Asignaciones</h2></div><p>Distribución de capacidad por dominio o workstream.</p></section>
+    <section className={styles.sectionHead}><div><span>ASIGNACIONES</span><h2>Asignaciones</h2></div><p>Distribución de disponibilidad por área, proyecto o línea de trabajo.</p></section>
     <section className={styles.grid}>
       {assignmentRows.map((a:any)=><article key={a.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={a.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(a.status).toUpperCase()}</span><em>{a.priority}</em></div>
+        <div className={styles.cardTop}><span className={a.status==="active"?styles.badgeActive:styles.badgePlanned}>{assignmentStatusLabel(a.status)}</span><em>{priorityLabel(a.priority)}</em></div>
         <h3>{a.domain}</h3>
-        <p>{memberRows.find(m=>m.id===a.member_id)?.display_name||"Miembro"} · {a.allocation_percent}%<br/>{a.workstream||"Workstream general"}<br/>{a.start_date||"Sin inicio"} → {a.end_date||"abierto"}</p>
+        <p>{memberRows.find(m=>m.id===a.member_id)?.display_name||"Miembro"} · {a.allocation_percent}%<br/>{a.workstream||"Línea de trabajo general"}<br/>{a.start_date||"Sin inicio"} → {a.end_date||"abierto"}</p>
       </article>)}
       {!assignmentRows.length&&<article className={styles.card}><h3>Sin asignaciones</h3><p>La capacidad se mostrará aquí cuando se distribuyan personas a dominios o proyectos reales.</p></article>}
     </section>
@@ -236,11 +256,11 @@ export default async function MasterPeoplePage(){
       </form>
     </section>}
 
-    <section className={styles.sectionHead}><div><span>GOVERNANCE</span><h2>Señales administrativas</h2></div></section>
+    <section className={styles.sectionHead}><div><span>SEÑALES ADMINISTRATIVAS</span><h2>Señales administrativas</h2></div></section>
     <section className={styles.kpis}>
-      <article><small>Admin activity</small><strong>{(activity||0).toLocaleString()}</strong><span>Audit trail</span></article>
-      <article><small>Headcount inferred</small><strong>NO</strong><span>Solo datos explícitos</span></article>
-      <article><small>Compensación</small><strong>NO CARGADA</strong><span>Capa separada futura</span></article>
+      <article><small>Actividad administrativa</small><strong>{(activity||0).toLocaleString()}</strong><span>Historial de auditoría</span></article>
+      <article><small>Equipo inferido</small><strong>NO</strong><span>Solo datos explícitos</span></article>
+      <article><small>Compensación</small><strong>NO CARGADA</strong><span>Se gestionará en una capa separada</span></article>
       <article><small>RLS</small><strong>ACTIVO</strong><span>Escritura solo Admin</span></article>
     </section>
   </main>;
