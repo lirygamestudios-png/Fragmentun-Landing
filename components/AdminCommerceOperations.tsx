@@ -23,24 +23,32 @@ export function AdminCommerceOperations(){
   const[msg,setMsg]=useState("");
   const[processorStatus,setProcessorStatus]=useState<ProcessorStatus>({stripe_configured:false,paypal_configured:false});
   const[saving,setSaving]=useState(false);
+  const[loadError,setLoadError]=useState(false);
 
   useEffect(()=>{
     fetch("/api/admin/commerce",{cache:"no-store"}).then(async r=>{
-      const j=await r.json();
-      if(r.ok){setSettings(j.settings);setStats(j.stats);setProcessorStatus(j.processor_status||{stripe_configured:false,paypal_configured:false})}
-    }).catch(()=>{});
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error(j?.error||"load_failed");
+      setSettings(j.settings);setStats(j.stats);setProcessorStatus(j.processor_status||{stripe_configured:false,paypal_configured:false});
+    }).catch(()=>setLoadError(true));
   },[]);
 
+  if(loadError)return <section className="card"><p className="adminSaveFeedback error">No fue posible cargar la configuración comercial.</p><button type="button" className="btn btnGhost" onClick={()=>window.location.reload()}>Reintentar</button></section>;
   if(!settings||!stats)return <section className="card"><FragmentunProcessOverlay compact state="loading" title="CARGANDO CONFIGURACIÓN…"/></section>;
 
   const patch=(key:keyof Settings,value:any)=>setSettings(v=>v?{...v,[key]:value}:v);
   const save=async()=>{
     setSaving(true);setMsg("Guardando…");
-    const r=await fetch("/api/admin/commerce",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(settings)});
-    const j=await r.json().catch(()=>({}));
-    setSaving(false);
-    if(!r.ok){setMsg(j.error||"No fue posible guardar.");return}
-    setSettings(j.data);setMsg("GUARDADO SATISFACTORIAMENTE");
+    try{
+      const r=await fetch("/api/admin/commerce",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(settings)});
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok){setMsg(j.error||"No fue posible guardar.");return}
+      setSettings(j.data);setMsg("GUARDADO SATISFACTORIAMENTE");
+    }catch{
+      setMsg("No fue posible guardar. Revisa la conexión e inténtalo nuevamente.");
+    }finally{
+      setSaving(false);
+    }
   };
 
   return <section className="card adminCommerceOps">
