@@ -16,6 +16,7 @@ export function MasterBackupDownload(){
         const body=await response.json().catch(()=>({}));
         throw new Error(body?.error||"backup_failed");
       }
+      const status=response.headers.get("x-fragmentun-backup-status")||"complete";
       const blob=await response.blob();
       const disposition=response.headers.get("content-disposition")||"";
       const match=disposition.match(/filename="([^"]+)"/);
@@ -24,9 +25,13 @@ export function MasterBackupDownload(){
       const a=document.createElement("a");
       a.href=url;
       a.download=filename;
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(url);
-      setMessage("Copia preparada y descargada.");
+      a.remove();
+      window.setTimeout(()=>URL.revokeObjectURL(url),1000);
+      setMessage(status==="partial"
+        ?"La copia se descargó, pero contiene elementos pendientes de recuperación."
+        :"Copia completa preparada y descargada.");
     }catch(error:any){
       const reason=String(error?.message||error);
       setMessage(reason==="mfa_required"?"Debes completar MFA antes de descargar la copia.":"No fue posible preparar la copia.");
