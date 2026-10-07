@@ -60,3 +60,36 @@
   .formGrid textarea{min-height:96px}
   .formButton{width:100%;font-size:.9rem}
 }
+
+/* Opciones avanzadas: bloque coherente y responsive */
+.advancedPanel{
+  margin:34px 0;
+  border:1px solid rgba(201,168,76,.22);
+  border-radius:12px;
+  background:rgba(201,168,76,.035);
+  overflow:hidden;
+}
+.advancedPanel summary{
+  cursor:pointer;
+  list-style:none;
+  padding:14px 16px;
+  color:#e6cf8c;
+  font-weight:700;
+  font-size:.82rem;
+  letter-spacing:.03em;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.advancedPanel summary::-webkit-details-marker{display:none}
+.advancedPanel summary::after{content:"+";font-size:1.1rem;color:#c9a84c}
+.advancedPanel[open] summary::after{content:"−"}
+.advancedPanel[open] summary{border-bottom:1px solid rgba(201,168,76,.16)}
+.advancedPanel .adminForms{margin:0;padding:16px}
+.advancedHint{margin:0;padding:12px 16px 0;color:#7f8da1;font-size:.76rem;line-height:1.5}
+@media(max-width:600px){
+  .advancedPanel{margin:28px 0}
+  .advancedPanel summary{padding:14px;font-size:.88rem}
+  .advancedPanel .adminForms{padding:12px}
+  .advancedHint{padding:10px 14px 0;font-size:.8rem}
+}
