@@ -191,6 +191,10 @@ export default async function ReleaseGatePage(){
   const approved=gateRows.filter(g=>g.status==="approved").length;
   const failedChecks=checkRows.filter(c=>c.status==="failed"&&c.blocking).length;
   const pendingChecks=checkRows.filter(c=>c.status==="pending"&&c.blocking).length;
+  const activeGate=gateRows[0];
+  const activeGateChecks=activeGate?checkRows.filter(c=>c.release_gate_id===activeGate.id):[];
+  const runtimeEvidence=activeGateChecks.find(c=>c.check_code==="runtime-smoke");
+  const evidenceIntegrated=runtimeEvidence?.status==="passed"&&String(runtimeEvidence?.evidence||"").includes("5/5 correctas");
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
@@ -201,7 +205,7 @@ export default async function ReleaseGatePage(){
     <section className={styles.kpis}>
       <article><small>Revisiones</small><strong>{gateRows.length}</strong><span>{approved} aprobados</span></article>
       <article><small>Con problemas</small><strong>{blocked}</strong><span>Requieren resolución</span></article>
-      <article><small>Pendientes importantes</small><strong>{failedChecks+pendingChecks}</strong><span>{failedChecks} failed · {pendingChecks} pending</span></article>
+      <article><small>Pendientes importantes</small><strong>{failedChecks+pendingChecks}</strong><span>{failedChecks} por revisar · {pendingChecks} pendientes</span></article>
       <article><small>Vínculos</small><strong>{linkRows.length}</strong><span>Cross-domain activas</span></article>
     </section>
 
@@ -216,24 +220,27 @@ export default async function ReleaseGatePage(){
           <p>{g.target_ref||"Sin ref"} · {g.target_commit||"Sin commit"}<br/>{g.target_deployment_id||"Sin deployment"}<br/>{gateChecks.length} checks · {bad} blockers · solicitado por {actorName(g.requested_by)}</p>
         </article>
       })}
-      {!gateRows.length&&<article className={styles.card}><h3>Sin release gates</h3><p>El registro está listo para documentar la siguiente promoción.</p></article>}
+      {!gateRows.length&&<article className={styles.card}><h3>Sin revisiones</h3><p>Aquí aparecerán las revisiones antes de publicar.</p></article>}
     </section>
 
     {gateRows.length>0&&<section className={styles.notice}>
-      <div><strong>Integrar prueba 5/5</strong><span>Usa la última comprobación correcta como evidencia de esta revisión. No publica ni aprueba producción.</span></div>
-      <form action={useLatestPassedValidation}>
-        <input type="hidden" name="gate_id" value={gateRows[0].id}/>
-        <button className={styles.formButton}>Usar prueba 5/5</button>
-      </form>
+      {evidenceIntegrated
+        ?<div><strong>Evidencia integrada</strong><span>La prueba 5/5 quedó registrada correctamente. Falta únicamente la aprobación humana antes de cualquier publicación.</span></div>
+        :<><div><strong>Integrar prueba 5/5</strong><span>Usa la última comprobación correcta como evidencia de esta revisión. No publica ni aprueba producción.</span></div>
+          <form action={useLatestPassedValidation}>
+            <input type="hidden" name="gate_id" value={gateRows[0].id}/>
+            <button className={styles.formButton}>Usar prueba 5/5</button>
+          </form></>}
+      {evidenceIntegrated&&<code>APROBACIÓN HUMANA PENDIENTE</code>}
     </section>}
 
     <section className={styles.sectionHead}><div><span>COMPROBACIONES</span><h2>Evidencia de la revisión</h2></div></section>
     <section className={styles.grid}>
       {checkRows.map((c:any)=><article key={c.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={c.status==="passed"||c.status==="waived"?styles.badgeActive:styles.badgePlanned}>{c.status==="passed"?"CORRECTO":c.status==="failed"?"REVISAR":c.status==="waived"?"ACEPTADO":"PENDIENTE"}</span><em>{c.check_type}{c.blocking?" · BLOCKING":""}</em></div>
+        <div className={styles.cardTop}><span className={c.status==="passed"||c.status==="waived"?styles.badgeActive:styles.badgePlanned}>{c.status==="passed"?"CORRECTO":c.status==="failed"?"REVISAR":c.status==="waived"?"ACEPTADO":"PENDIENTE"}</span><em>{c.check_type}{c.blocking?" · IMPORTANTE":""}</em></div>
         <h3>{c.label}</h3><p>{c.check_code}<br/>{c.evidence||"Evidencia pendiente"}<br/>{c.checked_at?new Date(c.checked_at).toLocaleString("es-US"):"Sin verificación"}</p>
       </article>)}
-      {!checkRows.length&&<article className={styles.card}><h3>Sin checks</h3><p>Los gates deben incorporar evidencia antes de aprobarse.</p></article>}
+      {!checkRows.length&&<article className={styles.card}><h3>Sin comprobaciones</h3><p>La revisión necesita comprobaciones antes de aprobarse.</p></article>}
     </section>
 
     <section className={styles.sectionHead}><div><span>RELACIONES</span><h2>Vínculos transversales</h2></div><p>Relaciona información de distintas áreas sin duplicarla.</p></section>
