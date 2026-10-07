@@ -24,6 +24,8 @@ const domains:Domain[]=[
   {title:"Tecnología",subtitle:"Infraestructura, cambios, pruebas y operación técnica",href:"/admin/master/technology",phase:"58",status:"active"},
   {title:"Datos",subtitle:"Métricas, indicadores y apoyo a decisiones",href:"/admin/master/data",phase:"43",status:"active"},
   {title:"Reportes",subtitle:"Vista ejecutiva, impresión, PDF y exportación de indicadores",href:"/admin/master/reports",phase:"60",status:"active"},
+  {title:"Integraciones",subtitle:"Conexiones externas, correo, publicidad e historial",href:"/admin/master/integrations",phase:"60",status:"active"},
+  {title:"Copias y Recuperación",subtitle:"Copias externas protegidas y referencia de recuperación",href:"/admin/master/backups",phase:"60",status:"active"},
   {title:"Automatización e IA",subtitle:"Automatizaciones, agentes, permisos y control",href:"/admin/master/automation",phase:"44",status:"active"},
   {title:"Riesgos y Controles",subtitle:"Riesgos, cumplimiento, controles y seguimiento",href:"/admin/master/risk",phase:"46",status:"active"},
   {title:"Seguridad",subtitle:"Accesos, incidentes y continuidad",href:"/admin/master/security",phase:"45",status:"active"},
@@ -155,7 +157,8 @@ export default async function MasterAdminPage(){
         <a href="/admin/status">⚙ <span>Estado del Sistema</span></a>
         <a href="/admin/master/reports">▦ <span>Reportes</span></a>
         <a href="/admin/master/audit">▤ <span>Auditoría</span></a>
-        <a href="/admin/integrations">↗ <span>Integraciones</span></a>
+        <a href="/admin/master/integrations">↗ <span>Integraciones</span></a>
+        <a href="/admin/master/backups">⤓ <span>Copias</span></a>
       </nav>
       <div className={styles.identity}>
         <span>JL</span>
