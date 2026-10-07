@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 async function requireStrategyEditor(){
   "use server";
@@ -183,7 +184,7 @@ export default async function MasterStrategyPage(){
           <label>Objetivo<input type="date" name="target_date"/></label>
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar objetivo</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar objetivo</MasterSubmitButton>
       </form>
 
       <form action={createKeyResult} className={styles.adminForm}>
@@ -198,7 +199,7 @@ export default async function MasterStrategyPage(){
           <label>Objetivo<input type="number" step="any" name="target_value"/></label>
           <label>Fecha objetivo<input type="date" name="target_date"/></label>
         </div>
-        <button className={styles.formButton} type="submit" disabled={!objectiveRows.length}>Registrar resultado</button>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!objectiveRows.length}>Registrar resultado</MasterSubmitButton>
       </form>
     </section></details>}
 
@@ -216,7 +217,7 @@ export default async function MasterStrategyPage(){
           <label>Objetivo<input type="date" name="target_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!objectiveRows.length}>Actualizar objetivo</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!objectiveRows.length}>Actualizar objetivo</MasterSubmitButton>
       </form>
 
       <form action={updateKeyResult} className={styles.adminForm}>
@@ -230,7 +231,7 @@ export default async function MasterStrategyPage(){
           <label>Fecha objetivo<input type="date" name="target_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!krRows.length}>Actualizar resultado</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!krRows.length}>Actualizar resultado</MasterSubmitButton>
       </form>
     </section></details>}
 
