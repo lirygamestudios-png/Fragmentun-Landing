@@ -4,6 +4,21 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
 
+function lifecycleLabel(value:string){
+  const map:Record<string,string>={subscriber:"SUSCRIPTOR",lead:"CONTACTO",mql:"INTERESADO",sql:"CALIFICADO",opportunity:"OPORTUNIDAD",customer:"CLIENTE",advocate:"PROMOTOR",inactive:"INACTIVO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function contactStatusLabel(value:string){
+  const map:Record<string,string>={active:"ACTIVO",nurturing:"EN SEGUIMIENTO",qualified:"CALIFICADO",contacted:"CONTACTADO",won:"CONVERTIDO",lost:"PERDIDO",unsubscribed:"BAJA",suppressed:"BLOQUEADO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function activityLabel(value:string){
+  const map:Record<string,string>={note:"NOTA",email:"EMAIL",call:"LLAMADA",dm:"MENSAJE",meeting:"REUNIÓN",form:"FORMULARIO",test:"PRUEBA",share:"COMPARTIDO",amazon_click:"CLIC AMAZON",purchase:"COMPRA",status_change:"CAMBIO DE ESTADO",score_change:"CAMBIO DE PRIORIDAD",other:"OTRO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
 async function requireGrowthEditor(){
   "use server";
   const supabase=await createSupabaseServerClient();
@@ -100,32 +115,32 @@ export default async function MasterGrowthPage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>LIRYGAMES · CRECIMIENTO</span><h1>Growth & CRM</h1><p>Adquisición, conversión y captación conectadas al embudo real de FRAGMENTUN.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · CRECIMIENTO</span><h1>Crecimiento</h1><p>Captación, conversión y seguimiento de contactos conectados al embudo real de FRAGMENTUN.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Visitas 30D</small><strong>{(views||0).toLocaleString()}</strong><span>Top of funnel</span></article>
-      <article><small>Leads 30D</small><strong>{(leads||0).toLocaleString()}</strong><span>{leadRate.toFixed(1)}% conversión</span></article>
+      <article><small>Visitas 30D</small><strong>{(views||0).toLocaleString()}</strong><span>Entrada al embudo</span></article>
+      <article><small>Contactos 30D</small><strong>{(leads||0).toLocaleString()}</strong><span>{leadRate.toFixed(1)}% conversión</span></article>
       <article><small>Paso a Amazon</small><strong>{amazonCtr.toFixed(1)}%</strong><span>{(amazonClicks||0).toLocaleString()} clicks</span></article>
-      <article><small>Compartidos</small><strong>{shareRate.toFixed(1)}%</strong><span>{(shareClicks||0).toLocaleString()} share clicks</span></article>
+      <article><small>Compartidos</small><strong>{shareRate.toFixed(1)}%</strong><span>{(shareClicks||0).toLocaleString()} compartidos</span></article>
     </section>
 
     <section className={styles.sectionHead}>
-      <div><span>CRM PIPELINE</span><h2>Contactos & lifecycle</h2></div>
-      <p>{(campaigns||0).toLocaleString()} campañas activas · {qualified} contactos cualificados · {customers} clientes · score promedio {avgScore.toFixed(0)}/100.</p>
+      <div><span>CONTACTOS</span><h2>Contactos y etapas</h2></div>
+      <p>{(campaigns||0).toLocaleString()} campañas activas · {qualified} contactos cualificados · {customers} clientes · prioridad promedio {avgScore.toFixed(0)}/100.</p>
     </section>
 
     <section className={styles.grid}>
       {contactRows.map((contact:any)=><article key={contact.id} className={styles.card}>
         <div className={styles.cardTop}>
-          <span className={["customer","advocate"].includes(contact.lifecycle_stage)?styles.badgeActive:styles.badgePlanned}>{String(contact.lifecycle_stage).toUpperCase()}</span>
-          <em>Score {contact.score}</em>
+          <span className={["customer","advocate"].includes(contact.lifecycle_stage)?styles.badgeActive:styles.badgePlanned}>{lifecycleLabel(contact.lifecycle_stage)}</span>
+          <em>Prioridad {contact.score}</em>
         </div>
         <h3>{contact.leads?.name||contact.leads?.email||"Contacto"}</h3>
-        <p>{contact.leads?.email}<br/>{[contact.leads?.source,contact.leads?.medium,contact.leads?.campaign].filter(Boolean).join(" · ")||"Directo / sin atribución"}<br/>Estado: {contact.status}</p>
+        <p>{contact.leads?.email}<br/>{[contact.leads?.source,contact.leads?.medium,contact.leads?.campaign].filter(Boolean).join(" · ")||"Directo / sin atribución"}<br/>Estado: {contactStatusLabel(contact.status)}</p>
       </article>)}
-      {!contactRows.length&&<article className={styles.card}><h3>CRM vacío</h3><p>Los leads captados se incorporarán automáticamente al pipeline.</p></article>}
+      {!contactRows.length&&<article className={styles.card}><h3>Sin contactos</h3><p>Los contactos captados se incorporarán automáticamente aquí.</p></article>}
     </section>
 
     {["admin","editor","marketing"].includes(profile.role)&&contactRows.length>0&&<section className={styles.adminForms}>
@@ -173,13 +188,13 @@ export default async function MasterGrowthPage(){
       </form>
     </section>}
 
-    <section className={styles.sectionHead}><div><span>ACTIVITY STREAM</span><h2>Actividad reciente</h2></div><p>Historial CRM persistente y auditable.</p></section>
+    <section className={styles.sectionHead}><div><span>ACTIVIDAD</span><h2>Actividad reciente</h2></div><p>Historial de interacciones y cambios del contacto.</p></section>
     <section className={styles.grid}>
       {activityRows.map((a:any)=><article key={a.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={styles.badgeActive}>{String(a.activity_type).toUpperCase()}</span><em>{new Date(a.occurred_at).toLocaleString("es-US")}</em></div>
-        <h3>{a.subject||"Actividad CRM"}</h3><p>{a.body||"Sin detalle"}</p>
+        <div className={styles.cardTop}><span className={styles.badgeActive}>{activityLabel(a.activity_type)}</span><em>{new Date(a.occurred_at).toLocaleString("es-US")}</em></div>
+        <h3>{a.subject||"Actividad del contacto"}</h3><p>{a.body||"Sin detalle"}</p>
       </article>)}
-      {!activityRows.length&&<article className={styles.card}><h3>Sin actividad manual aún</h3><p>Las actualizaciones y contactos se registrarán aquí.</p></article>}
+      {!activityRows.length&&<article className={styles.card}><h3>Sin actividad registrada todavía</h3><p>Las actualizaciones y contactos se registrarán aquí.</p></article>}
     </section>
   </main>;
 }
