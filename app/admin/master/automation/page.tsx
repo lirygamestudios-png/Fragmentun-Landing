@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 function statusLabel(value:string){
   const map:Record<string,string>={draft:"BORRADOR",testing:"EN PRUEBA",active:"ACTIVO",paused:"PAUSADO",disabled:"DESACTIVADO",error:"ERROR",pending:"PENDIENTE",approved:"APROBADO",rejected:"RECHAZADO"};
@@ -205,7 +206,7 @@ export default async function MasterAutomationPage(){
         <h3>{a.name}</h3><p>{a.domain}<br/>Responsable: {ownerName(a.owner_user_id)}<br/>{a.purpose||"Propósito pendiente"}<br/>{a.model_ref||"Modelo no asignado"} · {a.cost_budget_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(a.cost_budget_cents)/100):"Presupuesto no definido"}</p>
         {profile.role==="admin"&&<form action={toggleKillSwitch}>
           <input type="hidden" name="agent_id" value={a.id}/><input type="hidden" name="next" value={String(!a.kill_switch)}/>
-          <button className={styles.formButton} type="submit">{a.kill_switch?"Reactivar":"Detener agente"}</button>
+          <MasterSubmitButton className={styles.formButton} type="submit">{a.kill_switch?"Reactivar":"Detener agente"}</MasterSubmitButton>
         </form>}
       </article>)}
       {!agentRows.length&&<article className={styles.card}><h3>Sin agentes registrados</h3><p>El sistema está listo, con aprobación humana y parada de emergencia por agente.</p></article>}
@@ -218,8 +219,8 @@ export default async function MasterAutomationPage(){
         <h3>{a.action_summary}</h3>
         <p>Solicitado: {new Date(a.requested_at).toLocaleString("es-US")}</p>
         {profile.role==="admin"&&<div>
-          <form action={decideApproval}><input type="hidden" name="approval_id" value={a.id}/><input type="hidden" name="decision" value="approved"/><button className={styles.formButton}>Aprobar</button></form>
-          <form action={decideApproval}><input type="hidden" name="approval_id" value={a.id}/><input type="hidden" name="decision" value="rejected"/><button className={styles.formButton}>Rechazar</button></form>
+          <form action={decideApproval}><input type="hidden" name="approval_id" value={a.id}/><input type="hidden" name="decision" value="approved"/><MasterSubmitButton className={styles.formButton}>Aprobar</MasterSubmitButton></form>
+          <form action={decideApproval}><input type="hidden" name="approval_id" value={a.id}/><input type="hidden" name="decision" value="rejected"/><MasterSubmitButton className={styles.formButton}>Rechazar</MasterSubmitButton></form>
         </div>}
       </article>)}
       {!pending.length&&<article className={styles.card}><h3>Sin aprobaciones pendientes</h3><p>No hay acciones esperando decisión humana.</p></article>}
@@ -247,7 +248,7 @@ export default async function MasterAutomationPage(){
             <option value="true">Sí</option><option value="false">No</option>
           </select></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar automatización</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar automatización</MasterSubmitButton>
       </form>
 
       {profile.role==="admin"&&<form action={createAgent} className={styles.adminForm}>
@@ -265,7 +266,7 @@ export default async function MasterAutomationPage(){
           </select></label>
           <label className={styles.span2}>Propósito<textarea name="purpose" rows={3} placeholder="Qué puede hacer y qué no puede hacer"/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar agente</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar agente</MasterSubmitButton>
       </form>}
       </section>
 
@@ -279,7 +280,7 @@ export default async function MasterAutomationPage(){
           <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
           <label>Requiere aprobación<select name="requires_approval" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
         </div>
-        <button className={styles.formButton} disabled={!workflowRows.length}>Actualizar automatización</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!workflowRows.length}>Actualizar automatización</MasterSubmitButton>
       </form>
 
       {profile.role==="admin"&&<form action={updateAgent} className={styles.adminForm}>
@@ -294,7 +295,7 @@ export default async function MasterAutomationPage(){
           <label>Presupuesto USD<input type="number" min="0" step="0.01" name="cost_budget"/></label>
           <label className={styles.span2}>Propósito<textarea name="purpose" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!agentRows.length}>Actualizar agente</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!agentRows.length}>Actualizar agente</MasterSubmitButton>
       </form>}
       </section>
     </details>}
