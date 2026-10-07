@@ -238,7 +238,7 @@ export default async function MasterOperationsPage(){
         </div>
         <button className={styles.formButton} type="submit">Registrar decisión</button>
       </form>
-    </section>}
+      </section>
 
       <section className={styles.adminForms}>
       <form action={updateWorkItem} className={styles.adminForm}>
