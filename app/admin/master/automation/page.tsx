@@ -206,7 +206,7 @@ export default async function MasterAutomationPage(){
         <h3>{a.name}</h3><p>{a.domain}<br/>Responsable: {ownerName(a.owner_user_id)}<br/>{a.purpose||"Propósito pendiente"}<br/>{a.model_ref||"Modelo no asignado"} · {a.cost_budget_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(a.cost_budget_cents)/100):"Presupuesto no definido"}</p>
         {profile.role==="admin"&&<form action={toggleKillSwitch}>
           <input type="hidden" name="agent_id" value={a.id}/><input type="hidden" name="next" value={String(!a.kill_switch)}/>
-          <MasterSubmitButton className={styles.formButton} type="submit">{a.kill_switch?"Reactivar":"Detener agente"}</MasterSubmitButton>
+          <MasterSubmitButton className={styles.formButton} type="submit" confirmText={a.kill_switch?"¿Confirmas que deseas reactivar este agente?":"¿Confirmas que deseas detener este agente? Esta acción puede interrumpir automatizaciones activas."}>{a.kill_switch?"Reactivar":"Detener agente"}</MasterSubmitButton>
         </form>}
       </article>)}
       {!agentRows.length&&<article className={styles.card}><h3>Sin agentes registrados</h3><p>El sistema está listo, con aprobación humana y parada de emergencia por agente.</p></article>}
@@ -219,8 +219,8 @@ export default async function MasterAutomationPage(){
         <h3>{a.action_summary}</h3>
         <p>Solicitado: {new Date(a.requested_at).toLocaleString("es-US")}</p>
         {profile.role==="admin"&&<div>
-          <form action={decideApproval}><input type="hidden" name="approval_id" value={a.id}/><input type="hidden" name="decision" value="approved"/><MasterSubmitButton className={styles.formButton}>Aprobar</MasterSubmitButton></form>
-          <form action={decideApproval}><input type="hidden" name="approval_id" value={a.id}/><input type="hidden" name="decision" value="rejected"/><MasterSubmitButton className={styles.formButton}>Rechazar</MasterSubmitButton></form>
+          <form action={decideApproval}><input type="hidden" name="approval_id" value={a.id}/><input type="hidden" name="decision" value="approved"/><MasterSubmitButton className={styles.formButton} confirmText="¿Confirmas que deseas aprobar esta acción?">Aprobar</MasterSubmitButton></form>
+          <form action={decideApproval}><input type="hidden" name="approval_id" value={a.id}/><input type="hidden" name="decision" value="rejected"/><MasterSubmitButton className={styles.formButton} confirmText="¿Confirmas que deseas rechazar esta acción?">Rechazar</MasterSubmitButton></form>
         </div>}
       </article>)}
       {!pending.length&&<article className={styles.card}><h3>Sin aprobaciones pendientes</h3><p>No hay acciones esperando decisión humana.</p></article>}
