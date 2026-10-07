@@ -7,6 +7,15 @@ function money(cents:number|null|undefined,currency="USD"){
   return new Intl.NumberFormat("en-US",{style:"currency",currency}).format((cents||0)/100);
 }
 
+function financeStatusLabel(value:string){
+  const map:Record<string,string>={draft:"BORRADOR",pending:"PENDIENTE",posted:"REGISTRADA",reconciled:"RECONCILIADA",void:"ANULADA"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
+function transactionTypeLabel(value:string){
+  const map:Record<string,string>={income:"INGRESO",expense:"GASTO",transfer:"TRANSFERENCIA",refund:"REEMBOLSO",fee:"COMISIÓN",adjustment:"AJUSTE",tax:"IMPUESTO"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
 
 async function requireFinanceEditor(){
   "use server";
@@ -138,30 +147,30 @@ export default async function MasterFinancePage(){
   const reconciled=txRows.filter(t=>t.status==="reconciled").length;
 
   const readiness=[
-    {name:"Pedidos",value:rows.length>0?"Operativo":"Sin ventas aún",detail:"shop_orders"},
-    {name:"Productos activos",value:String(products||0),detail:"shop_products"},
+    {name:"Pedidos",value:rows.length>0?"Operativo":"Sin ventas aún",detail:"Ventas registradas"},
+    {name:"Productos activos",value:String(products||0),detail:"Catálogo activo"},
     {name:"Pagos",value:commerce?.default_payment_provider||"auto",detail:(commerce?.stripe_enabled||commerce?.paypal_enabled)?"Proveedor habilitable":"Aún no habilitado"},
     {name:"Impuestos",value:commerce?.tax_registration_status||"not_configured",detail:commerce?.tax_mode||"manual"},
-    {name:"Ledger contable",value:"Operativo",detail:"finance_accounts + finance_transactions"},
-    {name:"Reconciliación",value:"Preparada",detail:"Pedidos + costes + fees + margen ya modelados"}
+    {name:"Registro contable",value:"Operativo",detail:"Cuentas y movimientos"},
+    {name:"Reconciliación",value:"Preparada",detail:"Pedidos + costes + comisiones + margen"}
   ];
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · FINANZAS</span><h1>Finanzas & Revenue Control</h1><p>Control financiero-comercial inicial conectado a la arquitectura de tienda.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>MASTER ADMIN · FINANZAS</span><h1>Finanzas</h1><p>Control de ingresos, gastos, cuentas y movimientos conectado a la operación comercial.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
       <article><small>Ingresos pagados</small><strong>{money(revenue,currency)}</strong><span>{paid.length} órdenes pagadas</span></article>
       <article><small>Margen registrado</small><strong>{money(margin,currency)}</strong><span>Después de costes modelados</span></article>
-      <article><small>Fees de pago</small><strong>{money(fees,currency)}</strong><span>Coste de procesamiento</span></article>
-      <article><small>Fulfilled</small><strong>{(fulfilled||0).toLocaleString()}</strong><span>Órdenes completadas</span></article>
+      <article><small>Comisiones de pago</small><strong>{money(fees,currency)}</strong><span>Coste de procesamiento</span></article>
+      <article><small>Órdenes completadas</small><strong>{(fulfilled||0).toLocaleString()}</strong><span>Órdenes completadas</span></article>
     </section>
 
     <section className={styles.sectionHead}>
-      <div><span>FINANCE READINESS</span><h2>Estado financiero-operativo</h2></div>
-      <p>El sistema ya puede capturar ingresos, fees, costes de proveedor, shipping y margen. El ledger contable formal se implementará como siguiente capa financiera.</p>
+      <div><span>ESTADO FINANCIERO</span><h2>Estado financiero-operativo</h2></div>
+      <p>El sistema puede registrar ingresos, comisiones, costes de proveedor, envíos y margen, además de cuentas y movimientos financieros.</p>
     </section>
 
     <section className={styles.grid}>
@@ -174,36 +183,36 @@ export default async function MasterFinancePage(){
 
 
     <section className={styles.sectionHead}>
-      <div><span>LEDGER OPERATIVO</span><h2>Cuentas & transacciones</h2></div>
-      <p>El ledger es independiente de las órdenes comerciales. Los movimientos empiezan en cero hasta que se registren transacciones reales.</p>
+      <div><span>REGISTRO FINANCIERO</span><h2>Cuentas y movimientos</h2></div>
+      <p>El registro financiero es independiente de las órdenes comerciales. Los valores permanecen en cero hasta que existan movimientos reales.</p>
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Cuentas</small><strong>{accountRows.length}</strong><span>finance_accounts</span></article>
-      <article><small>Transacciones</small><strong>{txRows.length}</strong><span>finance_transactions</span></article>
-      <article><small>Net ledger</small><strong>{money(ledgerNet,txRows[0]?.currency||"USD")}</strong><span>Posted + reconciled</span></article>
+      <article><small>Cuentas</small><strong>{accountRows.length}</strong><span>Cuentas registradas</span></article>
+      <article><small>Transacciones</small><strong>{txRows.length}</strong><span>Movimientos registrados</span></article>
+      <article><small>Balance registrado</small><strong>{money(ledgerNet,txRows[0]?.currency||"USD")}</strong><span>Registradas + reconciliadas</span></article>
       <article><small>Reconciliadas</small><strong>{reconciled}</strong><span>Control de cierre</span></article>
     </section>
 
     <section className={styles.grid}>
       {txRows.slice(0,12).map((t:any)=><article key={t.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={t.status==="reconciled"?styles.badgeActive:styles.badgePlanned}>{String(t.status).toUpperCase()}</span><em>{t.transaction_type}</em></div>
+        <div className={styles.cardTop}><span className={t.status==="reconciled"?styles.badgeActive:styles.badgePlanned}>{financeStatusLabel(t.status)}</span><em>{transactionTypeLabel(t.transaction_type)}</em></div>
         <h3>{t.description}</h3>
         <p>{money(t.amount_cents,t.currency||"USD")} · {t.transaction_date}<br/>{[t.category,t.counterparty].filter(Boolean).join(" · ")||"Sin categoría/contraparte"}</p>
       </article>)}
-      {!txRows.length&&<article className={styles.card}><h3>Ledger vacío</h3><p>No se han registrado movimientos contables/operativos todavía.</p></article>}
+      {!txRows.length&&<article className={styles.card}><h3>Registro vacío</h3><p>No se han registrado movimientos financieros todavía.</p></article>}
     </section>
 
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+    {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}><summary>Opciones avanzadas</summary><section className={styles.adminForms}>
       {profile.role==="admin"&&<form action={createFinanceAccount} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVA CUENTA</span><h2>Registrar cuenta financiera</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="bank-main"/></label>
           <label>Nombre<input name="name" required placeholder="Cuenta bancaria principal"/></label>
           <label>Tipo<select name="account_type" defaultValue="bank">
-            <option value="asset">Asset</option><option value="liability">Liability</option><option value="equity">Equity</option>
-            <option value="revenue">Revenue</option><option value="expense">Expense</option><option value="cash">Cash</option>
-            <option value="bank">Bank</option><option value="processor">Processor</option><option value="other">Other</option>
+            <option value="asset">Activo</option><option value="liability">Pasivo</option><option value="equity">Patrimonio</option>
+            <option value="revenue">Ingresos</option><option value="expense">Gasto</option><option value="cash">Efectivo</option>
+            <option value="bank">Banco</option><option value="processor">Procesador de pagos</option><option value="other">Otro</option>
           </select></label>
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
         </div>
@@ -215,30 +224,29 @@ export default async function MasterFinancePage(){
         <div className={styles.formGrid}>
           <label>Fecha<input type="date" name="transaction_date"/></label>
           <label>Tipo<select name="transaction_type" defaultValue="expense">
-            <option value="income">Income</option><option value="expense">Expense</option><option value="transfer">Transfer</option>
-            <option value="refund">Refund</option><option value="fee">Fee</option><option value="adjustment">Adjustment</option><option value="tax">Tax</option>
+            <option value="income">Ingreso</option><option value="expense">Gasto</option><option value="transfer">Transferencia</option>
+            <option value="refund">Reembolso</option><option value="fee">Comisión</option><option value="adjustment">Ajuste</option><option value="tax">Impuesto</option>
           </select></label>
           <label>Estado<select name="status" defaultValue="posted">
-            <option value="draft">Draft</option><option value="pending">Pending</option><option value="posted">Posted</option>
-            <option value="reconciled">Reconciled</option><option value="void">Void</option>
+            <option value="draft">Borrador</option><option value="pending">Pendiente</option><option value="posted">Registrada</option>
+            <option value="reconciled">Reconciliada</option><option value="void">Anulada</option>
           </select></label>
           <label>Cuenta<select name="account_id" defaultValue="">
             <option value="">Sin cuenta</option>{accountRows.map((a:any)=><option key={a.id} value={a.id}>{a.name}</option>)}
           </select></label>
           <label>Monto<input type="number" name="amount" step="0.01" required placeholder="0.00"/></label>
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
-          <label>Categoría<input name="category" placeholder="Software / Marketing / Revenue"/></label>
+          <label>Categoría<input name="category" placeholder="Software / Marketing / Ingresos"/></label>
           <label>Contraparte<input name="counterparty" placeholder="Proveedor o cliente"/></label>
           <label className={styles.span2}>Descripción<input name="description" required placeholder="Descripción del movimiento"/></label>
-          <label>Fuente<input name="source_type" placeholder="shop_order / invoice / manual"/></label>
+          <label>Fuente<input name="source_type" placeholder="Pedido / factura / manual"/></label>
           <label>ID fuente<input name="source_id" placeholder="Referencia interna"/></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar movimiento</button>
       </form>
-    </section>}
+    </section>
 
-
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+    <section className={styles.adminForms}>
       {profile.role==="admin"&&<form action={updateFinanceAccount} className={styles.adminForm}>
         <div className={styles.formTitle}><span>GESTIONAR CUENTA</span><h2>Actualizar cuenta financiera</h2></div>
         <div className={styles.formGrid}>
@@ -253,7 +261,7 @@ export default async function MasterFinancePage(){
         <div className={styles.formTitle}><span>GESTIONAR MOVIMIENTO</span><h2>Actualizar transacción</h2></div>
         <div className={styles.formGrid}>
           <label>Transacción<select name="transaction_id" required defaultValue=""><option value="" disabled>Seleccionar movimiento</option>{txRows.map((t:any)=><option key={t.id} value={t.id}>{t.transaction_date} · {t.description}</option>)}</select></label>
-          <label>Estado<select name="status" defaultValue="pending"><option value="draft">Draft</option><option value="pending">Pending</option><option value="posted">Posted</option><option value="reconciled">Reconciled</option><option value="void">Void</option></select></label>
+          <label>Estado<select name="status" defaultValue="pending"><option value="draft">Borrador</option><option value="pending">Pendiente</option><option value="posted">Registrada</option><option value="reconciled">Reconciliada</option><option value="void">Anulada</option></select></label>
           <label>Cuenta<select name="account_id" defaultValue=""><option value="">Sin cuenta</option>{accountRows.map((a:any)=><option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
           <label>Categoría<input name="category"/></label>
           <label>Contraparte<input name="counterparty"/></label>
@@ -262,7 +270,7 @@ export default async function MasterFinancePage(){
         </div>
         <button className={styles.formButton} disabled={!txRows.length}>Actualizar movimiento</button>
       </form>
-    </section>}
+    </section></details>}
 
     <section className={styles.sectionHead}>
       <div><span>ECONOMÍA COMERCIAL</span><h2>Costes modelados</h2></div>
@@ -270,10 +278,10 @@ export default async function MasterFinancePage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Proveedor</small><strong>{money(supplier,currency)}</strong><span>supplier_cost_cents</span></article>
-      <article><small>Shipping</small><strong>{money(shipping,currency)}</strong><span>shipping_cost_cents</span></article>
-      <article><small>Procesamiento</small><strong>{money(fees,currency)}</strong><span>payment_fee_cents</span></article>
-      <article><small>Margen</small><strong>{money(margin,currency)}</strong><span>margin_cents</span></article>
+      <article><small>Proveedor</small><strong>{money(supplier,currency)}</strong><span>Costes de proveedor</span></article>
+      <article><small>Envíos</small><strong>{money(shipping,currency)}</strong><span>Costes de envío</span></article>
+      <article><small>Procesamiento</small><strong>{money(fees,currency)}</strong><span>Comisiones de pago</span></article>
+      <article><small>Margen</small><strong>{money(margin,currency)}</strong><span>Margen registrado</span></article>
     </section>
   </main>;
 }
