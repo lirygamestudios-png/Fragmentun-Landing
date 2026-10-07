@@ -33,7 +33,7 @@ const domains:Domain[]=[
   {title:"Estrategia",subtitle:"OKRs, prioridades, decisiones y asignación de recursos",href:"/admin/master/strategy",phase:"49",status:"active"},
   {title:"Capital & Investors",subtitle:"Fundraising, board, IR y strategic transactions",href:"/admin/master/capital",phase:"50",status:"active"},
       {title:"Configuración",subtitle:"Settings operativos no secretos y feature flags",href:"/admin/master/settings",phase:"60",status:"active"},
-  {title:"Release Gate & Relaciones",subtitle:"Readiness, evidencia y dependencias transversales",href:"/admin/master/releases",phase:"60",status:"active"},
+  {title:"Revisión antes de publicar",subtitle:"Comprobaciones, evidencia y aprobación antes de publicar",href:"/admin/master/releases",phase:"60",status:"active"},
   {title:"Observabilidad",subtitle:"Smoke tests, runtime validation y evidencia por deployment",href:"/admin/master/observability",phase:"60",status:"active"},
   {title:"FRAGMENTUN",subtitle:"Administración operativa de la IP y landing pública",href:"/admin",phase:"Actual",status:"active"}
 ];
