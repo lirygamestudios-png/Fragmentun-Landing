@@ -3,6 +3,21 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
+function riskStatusLabel(value:string){
+  const map:Record<string,string>={open:"ABIERTO",mitigating:"EN MITIGACIÓN",accepted:"ACEPTADO",monitoring:"EN SEGUIMIENTO",closed:"CERRADO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function controlStatusLabel(value:string){
+  const map:Record<string,string>={planned:"PLANIFICADO",implemented:"IMPLEMENTADO",effective:"EFECTIVO",needs_improvement:"REQUIERE MEJORA",failed:"FALLIDO",not_applicable:"NO APLICA"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
+function categoryLabel(value:string){
+  const map:Record<string,string>={strategic:"ESTRATÉGICO",financial:"FINANCIERO",operational:"OPERATIVO",security:"SEGURIDAD",legal:"LEGAL",compliance:"CUMPLIMIENTO",technology:"TECNOLOGÍA",reputation:"REPUTACIÓN",vendor:"PROVEEDORES",people:"PERSONAS",other:"OTRO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
 async function requireRiskEditor(){
   "use server";
   const supabase=await createSupabaseServerClient();
@@ -123,28 +138,28 @@ export default async function MasterRiskPage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · RIESGOS</span><h1>Riesgos & Controles</h1><p>Risk register persistente, evidencias de control y señales técnicas actuales.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · RIESGOS Y CONTROLES</span><h1>Riesgos y Controles</h1><p>Riesgos, controles, evidencias y señales actuales del sistema.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
       <article><small>Riesgos abiertos</small><strong>{open.length}</strong><span>{riskRows.length} registrados</span></article>
-      <article><small>High/Critical</small><strong>{high.length}</strong><span>Score ≥15</span></article>
-      <article><small>Overdue</small><strong>{overdue.length}</strong><span>Due date vencida</span></article>
-      <article><small>Evidencias</small><strong>{evidenceRows.length}</strong><span>Control evidence</span></article>
+      <article><small>Altos o críticos</small><strong>{high.length}</strong><span>Nivel ≥15</span></article>
+      <article><small>Vencidos</small><strong>{overdue.length}</strong><span>Fecha límite vencida</span></article>
+      <article><small>Evidencias</small><strong>{evidenceRows.length}</strong><span>Evidencias de control</span></article>
     </section>
 
-    <section className={styles.sectionHead}><div><span>RISK REGISTER</span><h2>Riesgos formales</h2></div><p>Los riesgos del sistema no se insertan automáticamente: solo pasan al registro formal cuando se asigna tratamiento y owner.</p></section>
+    <section className={styles.sectionHead}><div><span>RIESGOS</span><h2>Riesgos formales</h2></div><p>Los riesgos solo pasan al registro formal cuando tienen tratamiento y responsable asignados.</p></section>
     <section className={styles.grid}>
       {riskRows.map((r:any)=><article key={r.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={Number(r.inherent_score)>=15?styles.badgePlanned:styles.badgeActive}>{String(r.status).toUpperCase()}</span><em>Score {r.inherent_score}</em></div>
+        <div className={styles.cardTop}><span className={Number(r.inherent_score)>=15?styles.badgePlanned:styles.badgeActive}>{riskStatusLabel(r.status)}</span><em>Nivel {r.inherent_score}</em></div>
         <h3>{r.title}</h3>
-        <p>{r.domain} · {r.category}<br/>Owner: {ownerName(r.owner_user_id)}<br/>Likelihood {r.likelihood} × Impact {r.impact}<br/>{r.control_name||"Control por definir"} · {r.control_status}<br/>{r.due_date?"Due: "+r.due_date:"Sin due date"}</p>
+        <p>{r.domain} · {categoryLabel(r.category)}<br/>Responsable: {ownerName(r.owner_user_id)}<br/>Probabilidad {r.likelihood} × Impacto {r.impact}<br/>{r.control_name||"Control por definir"} · {controlStatusLabel(r.control_status)}<br/>{r.due_date?"Fecha límite: "+r.due_date:"Sin fecha límite"}</p>
       </article>)}
-      {!riskRows.length&&<article className={styles.card}><h3>Risk Register preparado</h3><p>No se han formalizado riesgos todavía.</p></article>}
+      {!riskRows.length&&<article className={styles.card}><h3>Registro de riesgos preparado</h3><p>No se han formalizado riesgos todavía.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>SYSTEM SIGNALS</span><h2>Señales técnicas actuales</h2></div><p>Observaciones automáticas del sistema; no equivalen por sí solas a riesgos corporativos formales.</p></section>
+    <section className={styles.sectionHead}><div><span>SEÑALES DEL SISTEMA</span><h2>Señales técnicas actuales</h2></div><p>Observaciones automáticas del sistema; no equivalen por sí solas a riesgos corporativos formales.</p></section>
     <section className={styles.grid}>
       {systemSignals.map(s=><article key={s.name} className={styles.card}>
         <div className={styles.cardTop}><span className={s.state==="ABIERTO"?styles.badgePlanned:styles.badgeActive}>{s.state}</span><em>SISTEMA</em></div>
@@ -211,12 +226,12 @@ export default async function MasterRiskPage(){
       </form>
     </section>}
 
-    <section className={styles.sectionHead}><div><span>OPERATING CONTEXT</span><h2>Exposición actual</h2></div></section>
+    <section className={styles.sectionHead}><div><span>CONTEXTO ACTUAL</span><h2>Exposición actual</h2></div></section>
     <section className={styles.kpis}>
-      <article><small>Productos</small><strong>{(products||0).toLocaleString()}</strong><span>Commerce</span></article>
-      <article><small>Órdenes</small><strong>{(orders||0).toLocaleString()}</strong><span>Commerce</span></article>
-      <article><small>Campañas</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Growth</span></article>
-      <article><small>RLS</small><strong>ACTIVO</strong><span>Admin / editor</span></article>
+      <article><small>Productos</small><strong>{(products||0).toLocaleString()}</strong><span>Comercio</span></article>
+      <article><small>Órdenes</small><strong>{(orders||0).toLocaleString()}</strong><span>Comercio</span></article>
+      <article><small>Campañas</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Crecimiento</span></article>
+      <article><small>RLS</small><strong>ACTIVO</strong><span>Administración y edición</span></article>
     </section>
   </main>;
 }
