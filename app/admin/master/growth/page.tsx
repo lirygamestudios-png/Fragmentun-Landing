@@ -100,7 +100,7 @@ export default async function MasterGrowthPage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · GROWTH</span><h1>Growth & CRM</h1><p>Adquisición, conversión y captación conectadas al embudo real de FRAGMENTUN.</p></div>
+      <div><span className={styles.eyebrow}>LIRYGAMES · CRECIMIENTO</span><h1>Growth & CRM</h1><p>Adquisición, conversión y captación conectadas al embudo real de FRAGMENTUN.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Command Center</a>
     </header>
 
