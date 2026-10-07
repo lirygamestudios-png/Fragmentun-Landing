@@ -122,22 +122,22 @@ export default async function MasterDataPage(){
   ]=await Promise.all([
     supabase.from("data_sources").select("id,code,name,source_type,system_name,status,freshness_target_minutes,owner_user_id,notes,created_at").order("name",{ascending:true}),
     supabase.from("metric_definitions").select("id,code,name,domain,definition,formula,unit,source_table,status,owner_user_id,notes,created_at").order("domain",{ascending:true}),
-    supabase.from("Eventos registrados").select("*",{count:"exact",head:true}).gte("created_at",since),
-    supabase.from("Eventos registrados").select("*",{count:"exact",head:true}).eq("event_name","page_view").gte("created_at",since),
+    supabase.from("analytics_events").select("*",{count:"exact",head:true}).gte("created_at",since),
+    supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","page_view").gte("created_at",since),
     supabase.from("leads").select("*",{count:"exact",head:true}).gte("created_at",since),
-    supabase.from("Eventos registrados").select("*",{count:"exact",head:true}).eq("event_name","amazon_click").gte("created_at",since),
-    supabase.from("Eventos registrados").select("event_name,source,medium,created_at").order("created_at",{ascending:false}).limit(20),
+    supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","amazon_click").gte("created_at",since),
+    supabase.from("analytics_events").select("event_name,source,medium,created_at").order("created_at",{ascending:false}).limit(20),
     supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
   ]);
 
   const sourceRows=(sources||[]) as any[];
   const metricRows=(metrics||[]) as any[];
   const activeSources=sourceRows.filter(s=>s.status==="active");
-  const degradadasSources=sourceRows.filter(s=>s.status==="degraded");
+  const degradedSources=sourceRows.filter(s=>s.status==="degraded");
   const conversion=(pageViews||0)>0?((leads||0)/(pageViews||1))*100:0;
   const amazonCtr=(pageViews||0)>0?((amazonClicks||0)/(pageViews||1))*100:0;
   const ownerRows=(owners||[]) as any[];
-  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
