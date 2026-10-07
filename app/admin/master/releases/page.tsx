@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 async function requireLinkEditor(){
   "use server";
@@ -229,7 +230,7 @@ export default async function ReleaseGatePage(){
         :<><div><strong>Integrar última prueba correcta</strong><span>Usa la última comprobación correcta como evidencia de esta revisión. No publica ni aprueba producción.</span></div>
           <form action={useLatestPassedValidation}>
             <input type="hidden" name="gate_id" value={gateRows[0].id}/>
-            <button className={styles.formButton}>Usar última prueba correcta</button>
+            <MasterSubmitButton className={styles.formButton}>Usar última prueba correcta</MasterSubmitButton>
           </form></>}
       {evidenceIntegrated&&<code>APROBACIÓN HUMANA PENDIENTE</code>}
     </section>}
@@ -268,7 +269,7 @@ export default async function ReleaseGatePage(){
           <label>ID destino<input name="target_id" required/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton}>Crear relación</button>
+        <MasterSubmitButton className={styles.formButton}>Crear relación</MasterSubmitButton>
       </form>
 
       {profile.role==="admin"&&<>
@@ -283,7 +284,7 @@ export default async function ReleaseGatePage(){
             <label>ID de versión desplegada<input name="target_deployment_id"/></label>
             <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
           </div>
-          <button className={styles.formButton}>Registrar revisión</button>
+          <MasterSubmitButton className={styles.formButton}>Registrar revisión</MasterSubmitButton>
         </form>
 
         <form action={addCheck} className={styles.adminForm}>
@@ -295,7 +296,7 @@ export default async function ReleaseGatePage(){
             <label>Tipo<select name="check_type" defaultValue="manual"><option value="build">Compilación</option><option value="runtime">Funcionamiento</option><option value="security">Seguridad</option><option value="data">Datos</option><option value="business">Negocio</option><option value="manual">Manual</option></select></label>
             <label>Bloqueante<select name="blocking" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
           </div>
-          <button className={styles.formButton} disabled={!gateRows.length}>Añadir comprobación</button>
+          <MasterSubmitButton className={styles.formButton} disabled={!gateRows.length}>Añadir comprobación</MasterSubmitButton>
         </form>
 
         <form action={updateCheck} className={styles.adminForm}>
@@ -305,7 +306,7 @@ export default async function ReleaseGatePage(){
             <label>Estado<select name="status" defaultValue="pending"><option value="pending">Pendiente</option><option value="passed">Correcta</option><option value="failed">Revisar</option><option value="waived">Aceptada</option></select></label>
             <label className={styles.span2}>Evidencia<textarea name="evidence" rows={3}/></label>
           </div>
-          <button className={styles.formButton} disabled={!checkRows.length}>Actualizar comprobación</button>
+          <MasterSubmitButton className={styles.formButton} disabled={!checkRows.length}>Actualizar comprobación</MasterSubmitButton>
         </form>
 
         <form action={updateGate} className={styles.adminForm}>
@@ -315,7 +316,7 @@ export default async function ReleaseGatePage(){
             <label>Estado<select name="status" defaultValue="in_review"><option value="draft">Borrador</option><option value="in_review">En revisión</option><option value="blocked">Bloqueada</option><option value="approved">Aprobada</option><option value="canceled">Cancelada</option></select></label>
             <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
           </div>
-          <button className={styles.formButton} disabled={!gateRows.length}>Actualizar revisión</button>
+          <MasterSubmitButton className={styles.formButton} disabled={!gateRows.length}>Actualizar revisión</MasterSubmitButton>
         </form>
       </>}
       </section>
