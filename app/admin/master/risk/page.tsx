@@ -52,6 +52,33 @@ async function createEvidence(formData:FormData){
   revalidatePath("/admin/master/risk");
 }
 
+
+async function updateRisk(formData:FormData){
+  "use server";
+  const {supabase}=await requireRiskEditor();
+  const id=String(formData.get("risk_id")||"").trim();
+  const status=String(formData.get("status")||"open");
+  const likelihood=Number(formData.get("likelihood")||2);
+  const impact=Number(formData.get("impact")||2);
+  const ownerRaw=String(formData.get("owner_user_id")||"").trim();
+  const ownerUserId=ownerRaw||null;
+  const mitigation=String(formData.get("mitigation")||"").trim()||null;
+  const controlName=String(formData.get("control_name")||"").trim()||null;
+  const controlStatus=String(formData.get("control_status")||"planned");
+  const reviewDate=String(formData.get("review_date")||"").trim()||null;
+  const dueDate=String(formData.get("due_date")||"").trim()||null;
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["open","mitigating","accepted","monitoring","closed"]);
+  const allowedControl=new Set(["planned","implemented","effective","needs_improvement","failed","not_applicable"]);
+  if(!id||!allowedStatus.has(status)||!allowedControl.has(controlStatus)||![1,2,3,4,5].includes(likelihood)||![1,2,3,4,5].includes(impact)) throw new Error("invalid_risk_update");
+  const{error}=await supabase.from("risk_register").update({
+    status,likelihood,impact,owner_user_id:ownerUserId,mitigation,control_name:controlName,
+    control_status:controlStatus,review_date:reviewDate,due_date:dueDate,notes,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/risk");
+}
+
 export default async function MasterRiskPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -65,14 +92,16 @@ export default async function MasterRiskPage(){
     {data:commerce},
     {count:products},
     {count:orders},
-    {count:campaigns}
+    {count:campaigns},
+    {data:owners}
   ]=await Promise.all([
-    supabase.from("risk_register").select("id,code,title,domain,category,likelihood,impact,inherent_score,status,mitigation,control_name,control_status,review_date,due_date,created_at").order("inherent_score",{ascending:false}),
+    supabase.from("risk_register").select("id,code,title,domain,category,likelihood,impact,inherent_score,status,owner_user_id,mitigation,control_name,control_status,review_date,due_date,notes,created_at").order("inherent_score",{ascending:false}),
     supabase.from("control_evidence").select("id,risk_id,control_name,evidence_type,description,evidence_url,status,collected_at,expires_at").order("collected_at",{ascending:false}).limit(100),
     supabase.from("commerce_settings").select("stripe_enabled,paypal_enabled,tax_registration_status,tax_mode").eq("id","default").maybeSingle(),
     supabase.from("shop_products").select("*",{count:"exact",head:true}),
     supabase.from("shop_orders").select("*",{count:"exact",head:true}),
-    supabase.from("campaigns").select("*",{count:"exact",head:true})
+    supabase.from("campaigns").select("*",{count:"exact",head:true}),
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
   ]);
 
   const riskRows=(risks||[]) as any[];
@@ -80,6 +109,8 @@ export default async function MasterRiskPage(){
   const open=riskRows.filter(r=>r.status!=="closed");
   const high=riskRows.filter(r=>Number(r.inherent_score)>=15);
   const overdue=riskRows.filter(r=>r.due_date&&new Date(r.due_date).getTime()<Date.now()&&r.status!=="closed");
+  const ownerRows=(owners||[]) as any[];
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
 
   const systemSignals=[
     {name:"Producción directa",state:"CONTROLADO",detail:"Master Admin aislado en rama Preview; main protegido"},
@@ -108,7 +139,7 @@ export default async function MasterRiskPage(){
       {riskRows.map((r:any)=><article key={r.id} className={styles.card}>
         <div className={styles.cardTop}><span className={Number(r.inherent_score)>=15?styles.badgePlanned:styles.badgeActive}>{String(r.status).toUpperCase()}</span><em>Score {r.inherent_score}</em></div>
         <h3>{r.title}</h3>
-        <p>{r.domain} · {r.category}<br/>Likelihood {r.likelihood} × Impact {r.impact}<br/>{r.control_name||"Control por definir"} · {r.control_status}<br/>{r.due_date?"Due: "+r.due_date:"Sin due date"}</p>
+        <p>{r.domain} · {r.category}<br/>Owner: {ownerName(r.owner_user_id)}<br/>Likelihood {r.likelihood} × Impact {r.impact}<br/>{r.control_name||"Control por definir"} · {r.control_status}<br/>{r.due_date?"Due: "+r.due_date:"Sin due date"}</p>
       </article>)}
       {!riskRows.length&&<article className={styles.card}><h3>Risk Register preparado</h3><p>No se han formalizado riesgos todavía.</p></article>}
     </section>
@@ -156,6 +187,27 @@ export default async function MasterRiskPage(){
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
         <button className={styles.formButton} type="submit" disabled={!riskRows.length}>Registrar evidencia</button>
+      </form>
+    </section>}
+
+
+    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+      <form action={updateRisk} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR RIESGO</span><h2>Actualizar tratamiento</h2></div>
+        <div className={styles.formGrid}>
+          <label>Riesgo<select name="risk_id" required defaultValue=""><option value="" disabled>Seleccionar riesgo</option>{riskRows.map((r:any)=><option key={r.id} value={r.id}>{r.code} · {r.title}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="mitigating"><option value="open">Open</option><option value="mitigating">Mitigating</option><option value="accepted">Accepted</option><option value="monitoring">Monitoring</option><option value="closed">Closed</option></select></label>
+          <label>Likelihood<select name="likelihood" defaultValue="2">{[1,2,3,4,5].map(n=><option key={n} value={n}>{n}</option>)}</select></label>
+          <label>Impact<select name="impact" defaultValue="2">{[1,2,3,4,5].map(n=><option key={n} value={n}>{n}</option>)}</select></label>
+          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Control status<select name="control_status" defaultValue="planned"><option value="planned">Planned</option><option value="implemented">Implemented</option><option value="effective">Effective</option><option value="needs_improvement">Needs improvement</option><option value="failed">Failed</option><option value="not_applicable">Not applicable</option></select></label>
+          <label>Control<input name="control_name"/></label>
+          <label>Review date<input type="date" name="review_date"/></label>
+          <label>Due date<input type="date" name="due_date"/></label>
+          <label className={styles.span2}>Mitigación<textarea name="mitigation" rows={3}/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} type="submit" disabled={!riskRows.length}>Actualizar riesgo</button>
       </form>
     </section>}
 
