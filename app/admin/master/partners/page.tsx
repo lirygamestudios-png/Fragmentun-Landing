@@ -58,6 +58,59 @@ async function createDeal(formData:FormData){
   revalidatePath("/admin/master/partners");
 }
 
+
+async function updatePartner(formData:FormData){
+  "use server";
+  const {supabase}=await requireAdmin();
+  const id=String(formData.get("partner_id")||"").trim();
+  const status=String(formData.get("status")||"active");
+  const contactName=String(formData.get("contact_name")||"").trim()||null;
+  const contactEmail=String(formData.get("contact_email")||"").trim()||null;
+  const territory=String(formData.get("territory")||"").trim()||null;
+  const website=String(formData.get("website")||"").trim()||null;
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["prospect","active","paused","inactive","ended"]);
+  if(!id||!allowedStatus.has(status)) throw new Error("invalid_partner_update");
+  const{error}=await supabase.from("partner_organizations").update({
+    status,contact_name:contactName,contact_email:contactEmail,territory,website,notes,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/partners");
+}
+
+async function updateDeal(formData:FormData){
+  "use server";
+  const {supabase}=await requireAdmin();
+  const id=String(formData.get("deal_id")||"").trim();
+  const status=String(formData.get("status")||"pipeline");
+  const territory=String(formData.get("territory")||"").trim()||null;
+  const exclusivity=String(formData.get("exclusivity")||"unknown");
+  const startDate=String(formData.get("start_date")||"").trim()||null;
+  const endDate=String(formData.get("end_date")||"").trim()||null;
+  const valueRaw=String(formData.get("value")||"").trim();
+  const valueCents=valueRaw?Math.round(Number(valueRaw)*100):null;
+  const currency=(String(formData.get("currency")||"USD").trim()||"USD").toUpperCase();
+  const royaltyRaw=String(formData.get("royalty_percent")||"").trim();
+  const royaltyBps=royaltyRaw?Math.round(Number(royaltyRaw)*100):null;
+  const nextAction=String(formData.get("next_action")||"").trim()||null;
+  const nextActionAt=String(formData.get("next_action_at")||"").trim()||null;
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["pipeline","qualified","negotiation","contracting","active","expired","lost","canceled"]);
+  const allowedEx=new Set(["exclusive","non_exclusive","shared","unknown"]);
+  if(!id||!allowedStatus.has(status)||!allowedEx.has(exclusivity)) throw new Error("invalid_deal_update");
+  if(valueCents!==null&&(!Number.isFinite(valueCents)||valueCents<0)) throw new Error("invalid_value");
+  if(royaltyBps!==null&&(!Number.isFinite(royaltyBps)||royaltyBps<0||royaltyBps>10000)) throw new Error("invalid_royalty");
+  const patch:any={
+    status,territory,exclusivity,start_date:startDate,end_date:endDate,currency,
+    next_action:nextAction,next_action_at:nextActionAt,notes,updated_at:new Date().toISOString()
+  };
+  if(valueCents!==null) patch.value_cents=valueCents;
+  if(royaltyBps!==null) patch.royalty_bps=royaltyBps;
+  const{error}=await supabase.from("licensing_deals").update(patch).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/partners");
+}
+
 export default async function MasterPartnersPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -72,8 +125,8 @@ export default async function MasterPartnersPage(){
     {count:editions},
     {count:campaigns}
   ]=await Promise.all([
-    supabase.from("partner_organizations").select("id,name,partner_type,status,contact_name,contact_email,territory,website,created_at").order("created_at",{ascending:false}),
-    supabase.from("licensing_deals").select("id,partner_id,deal_name,ip_name,deal_type,status,territory,exclusivity,start_date,end_date,value_cents,currency,royalty_bps,next_action,created_at").order("created_at",{ascending:false}),
+    supabase.from("partner_organizations").select("id,name,partner_type,status,contact_name,contact_email,territory,website,notes,created_at").order("created_at",{ascending:false}),
+    supabase.from("licensing_deals").select("id,partner_id,deal_name,ip_name,deal_type,status,territory,exclusivity,start_date,end_date,value_cents,currency,royalty_bps,next_action,next_action_at,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("book_editions").select("*",{count:"exact",head:true}),
     supabase.from("campaigns").select("*",{count:"exact",head:true})
   ]);
@@ -151,6 +204,42 @@ export default async function MasterPartnersPage(){
           <label>Royalty %<input type="number" min="0" max="100" step="0.01" name="royalty_percent"/></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar deal</button>
+      </form>
+    </section>
+
+
+    <section className={styles.adminForms}>
+      <form action={updatePartner} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR PARTNER</span><h2>Actualizar relación</h2></div>
+        <div className={styles.formGrid}>
+          <label>Partner<select name="partner_id" required defaultValue=""><option value="" disabled>Seleccionar partner</option>{partnerRows.map((p:any)=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
+          <label>Status<select name="status" defaultValue="active"><option value="prospect">Prospect</option><option value="active">Active</option><option value="paused">Paused</option><option value="inactive">Inactive</option><option value="ended">Ended</option></select></label>
+          <label>Contacto<input name="contact_name"/></label>
+          <label>Email<input type="email" name="contact_email"/></label>
+          <label>Territorio<input name="territory"/></label>
+          <label>Web<input name="website"/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!partnerRows.length}>Actualizar partner</button>
+      </form>
+
+      <form action={updateDeal} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR DEAL</span><h2>Actualizar licensing pipeline</h2></div>
+        <div className={styles.formGrid}>
+          <label>Deal<select name="deal_id" required defaultValue=""><option value="" disabled>Seleccionar deal</option>{dealRows.map((d:any)=><option key={d.id} value={d.id}>{d.deal_name}</option>)}</select></label>
+          <label>Status<select name="status" defaultValue="qualified"><option value="pipeline">Pipeline</option><option value="qualified">Qualified</option><option value="negotiation">Negotiation</option><option value="contracting">Contracting</option><option value="active">Active</option><option value="expired">Expired</option><option value="lost">Lost</option><option value="canceled">Canceled</option></select></label>
+          <label>Territorio<input name="territory"/></label>
+          <label>Exclusividad<select name="exclusivity" defaultValue="unknown"><option value="exclusive">Exclusive</option><option value="non_exclusive">Non-exclusive</option><option value="shared">Shared</option><option value="unknown">Unknown</option></select></label>
+          <label>Inicio<input type="date" name="start_date"/></label>
+          <label>Fin<input type="date" name="end_date"/></label>
+          <label>Valor<input type="number" min="0" step="0.01" name="value"/></label>
+          <label>Moneda<input name="currency" defaultValue="USD"/></label>
+          <label>Royalty %<input type="number" min="0" max="100" step="0.01" name="royalty_percent"/></label>
+          <label>Next action at<input type="datetime-local" name="next_action_at"/></label>
+          <label className={styles.span2}>Próxima acción<input name="next_action"/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!dealRows.length}>Actualizar deal</button>
       </form>
     </section>
 
