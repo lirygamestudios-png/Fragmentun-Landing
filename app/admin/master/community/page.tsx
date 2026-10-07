@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 function tierLabel(value:string){
   const map:Record<string,string>={member:"MIEMBRO",engaged:"PARTICIPATIVO",advocate:"PROMOTOR",beta_priority:"PRIORIDAD BETA",moderator:"MODERADOR"};
@@ -158,7 +159,7 @@ export default async function CommunityPage(){
           <label>Fuente<input name="source" placeholder="LiryBoost / Discord / web"/></label>
           <label>Nivel<select name="tier" defaultValue="member"><option value="member">Miembro</option><option value="engaged">Participativo</option><option value="advocate">Promotor</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderador</option></select></label>
         </div>
-        <button className={styles.formButton}>Registrar miembro</button>
+        <MasterSubmitButton className={styles.formButton}>Registrar miembro</MasterSubmitButton>
       </form>
 
       <form action={addAction} className={styles.adminForm}>
@@ -170,7 +171,7 @@ export default async function CommunityPage(){
           <label>Fuente<input name="source"/></label>
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!memberRows.length}>Registrar actividad</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length}>Registrar actividad</MasterSubmitButton>
       </form>
       </section>
 
@@ -187,7 +188,7 @@ export default async function CommunityPage(){
           <label className={styles.span2}>Etiquetas<input name="tags" placeholder="beta, advocate, creator"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!memberRows.length}>Actualizar miembro</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length}>Actualizar miembro</MasterSubmitButton>
       </form>
       </section>
     </details>}
