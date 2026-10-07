@@ -82,6 +82,76 @@ async function createContract(formData:FormData){
   revalidatePath("/admin/master/legal");
 }
 
+
+async function updateIpAsset(formData:FormData){
+  "use server";
+  const {supabase}=await requireLegalAdmin();
+  const id=String(formData.get("asset_id")||"").trim();
+  const status=String(formData.get("status")||"active");
+  const ownerEntity=String(formData.get("owner_entity")||"").trim()||null;
+  const jurisdiction=String(formData.get("jurisdiction")||"").trim()||null;
+  const registrationNumber=String(formData.get("registration_number")||"").trim()||null;
+  const registrationDate=String(formData.get("registration_date")||"").trim()||null;
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["draft","active","licensed","archived","disputed","retired"]);
+  if(!id||!allowedStatus.has(status)) throw new Error("invalid_asset_update");
+  const{error}=await supabase.from("ip_assets").update({
+    status,owner_entity:ownerEntity,jurisdiction,registration_number:registrationNumber,
+    registration_date:registrationDate,notes,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/legal");
+}
+
+async function updateRight(formData:FormData){
+  "use server";
+  const {supabase}=await requireLegalAdmin();
+  const id=String(formData.get("right_id")||"").trim();
+  const status=String(formData.get("status")||"owned");
+  const exclusivity=String(formData.get("exclusivity")||"exclusive");
+  const territory=String(formData.get("territory")||"worldwide").trim()||"worldwide";
+  const holderName=String(formData.get("holder_name")||"").trim()||null;
+  const licenseeName=String(formData.get("licensee_name")||"").trim()||null;
+  const startDate=String(formData.get("start_date")||"").trim()||null;
+  const endDate=String(formData.get("end_date")||"").trim()||null;
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["owned","licensed_out","licensed_in","expired","terminated","disputed","pending"]);
+  const allowedEx=new Set(["exclusive","non_exclusive","shared","unknown"]);
+  if(!id||!allowedStatus.has(status)||!allowedEx.has(exclusivity)) throw new Error("invalid_right_update");
+  const{error}=await supabase.from("ip_rights").update({
+    status,exclusivity,territory,holder_name:holderName,licensee_name:licenseeName,
+    start_date:startDate,end_date:endDate,notes,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/legal");
+}
+
+async function updateContract(formData:FormData){
+  "use server";
+  const {supabase}=await requireLegalAdmin();
+  const id=String(formData.get("contract_id")||"").trim();
+  const status=String(formData.get("status")||"review");
+  const ownerRaw=String(formData.get("owner_user_id")||"").trim();
+  const ownerUserId=ownerRaw||null;
+  const effectiveDate=String(formData.get("effective_date")||"").trim()||null;
+  const expirationDate=String(formData.get("expiration_date")||"").trim()||null;
+  const autoRenew=String(formData.get("auto_renew")||"false")==="true";
+  const noticeRaw=String(formData.get("renewal_notice_days")||"").trim();
+  const noticeDays=noticeRaw?Math.max(0,Number(noticeRaw)):null;
+  const valueRaw=String(formData.get("value")||"").trim();
+  const valueCents=valueRaw?Math.round(Number(valueRaw)*100):null;
+  const currency=(String(formData.get("currency")||"USD").trim()||"USD").toUpperCase();
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["draft","review","signature","active","expired","terminated","canceled"]);
+  if(!id||!allowedStatus.has(status)||(noticeDays!==null&&!Number.isFinite(noticeDays))||(valueCents!==null&&(!Number.isFinite(valueCents)||valueCents<0))) throw new Error("invalid_contract_update");
+  const{error}=await supabase.from("legal_contracts").update({
+    status,owner_user_id:ownerUserId,effective_date:effectiveDate,expiration_date:expirationDate,
+    auto_renew:autoRenew,renewal_notice_days:noticeDays,value_cents:valueCents,currency,notes,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/legal");
+}
+
 export default async function MasterLegalPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -96,19 +166,23 @@ export default async function MasterLegalPage(){
     {data:contracts},
     {count:books},
     {count:media},
-    {count:characters}
+    {count:characters},
+    {data:owners}
   ]=await Promise.all([
-    supabase.from("ip_assets").select("id,code,name,ip_name,asset_type,status,jurisdiction,registration_number,registration_date,owner_entity,created_at").order("created_at",{ascending:false}),
-    supabase.from("ip_rights").select("id,asset_id,right_type,territory,exclusivity,holder_name,licensee_name,start_date,end_date,status,created_at").order("created_at",{ascending:false}),
-    supabase.from("legal_contracts").select("id,contract_code,title,contract_type,counterparty,status,effective_date,expiration_date,auto_renew,renewal_notice_days,created_at").order("created_at",{ascending:false}),
+    supabase.from("ip_assets").select("id,code,name,ip_name,asset_type,status,jurisdiction,registration_number,registration_date,owner_entity,notes,created_at").order("created_at",{ascending:false}),
+    supabase.from("ip_rights").select("id,asset_id,right_type,territory,exclusivity,holder_name,licensee_name,start_date,end_date,status,notes,created_at").order("created_at",{ascending:false}),
+    supabase.from("legal_contracts").select("id,contract_code,title,contract_type,counterparty,status,effective_date,expiration_date,auto_renew,renewal_notice_days,value_cents,currency,owner_user_id,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("books").select("*",{count:"exact",head:true}),
     supabase.from("media_assets").select("*",{count:"exact",head:true}),
-    supabase.from("characters").select("*",{count:"exact",head:true})
+    supabase.from("characters").select("*",{count:"exact",head:true}),
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
   ]);
 
   const assetRows=(assets||[]) as any[];
   const rightRows=(rights||[]) as any[];
   const contractRows=(contracts||[]) as any[];
+  const ownerRows=(owners||[]) as any[];
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
   const activeContracts=contractRows.filter(c=>c.status==="active");
   const expiringSoon=contractRows.filter(c=>{
     if(!c.expiration_date) return false;
@@ -155,7 +229,7 @@ export default async function MasterLegalPage(){
       {contractRows.map((c:any)=><article key={c.id} className={styles.card}>
         <div className={styles.cardTop}><span className={c.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(c.status).toUpperCase()}</span><em>{c.contract_type}</em></div>
         <h3>{c.title}</h3>
-        <p>{c.counterparty||"Sin contraparte"} · {c.contract_code}<br/>{c.effective_date||"Sin fecha efectiva"} → {c.expiration_date||"Sin vencimiento"}<br/>Auto-renew: {c.auto_renew?"Sí":"No"}</p>
+        <p>{c.counterparty||"Sin contraparte"} · {c.contract_code}<br/>Owner: {ownerName(c.owner_user_id)}<br/>{c.effective_date||"Sin fecha efectiva"} → {c.expiration_date||"Sin vencimiento"}<br/>Auto-renew: {c.auto_renew?"Sí":"No"} · {c.value_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:c.currency||"USD"}).format(Number(c.value_cents)/100):"Valor no registrado"}</p>
       </article>)}
       {!contractRows.length&&<article className={styles.card}><h3>CLM preparado</h3><p>No hay contratos cargados todavía.</p></article>}
     </section>
@@ -227,6 +301,56 @@ export default async function MasterLegalPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar contrato</button>
+      </form>
+    </section>
+
+
+    <section className={styles.adminForms}>
+      <form action={updateIpAsset} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR ACTIVO</span><h2>Actualizar IP</h2></div>
+        <div className={styles.formGrid}>
+          <label>Activo<select name="asset_id" required defaultValue=""><option value="" disabled>Seleccionar activo</option>{assetRows.map((a:any)=><option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
+          <label>Status<select name="status" defaultValue="active"><option value="draft">Draft</option><option value="active">Active</option><option value="licensed">Licensed</option><option value="archived">Archived</option><option value="disputed">Disputed</option><option value="retired">Retired</option></select></label>
+          <label>Owner entity<input name="owner_entity"/></label>
+          <label>Jurisdicción<input name="jurisdiction"/></label>
+          <label>Registro<input name="registration_number"/></label>
+          <label>Fecha registro<input type="date" name="registration_date"/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!assetRows.length}>Actualizar activo</button>
+      </form>
+
+      <form action={updateRight} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR DERECHO</span><h2>Actualizar vigencia/licencia</h2></div>
+        <div className={styles.formGrid}>
+          <label>Derecho<select name="right_id" required defaultValue=""><option value="" disabled>Seleccionar derecho</option>{rightRows.map((r:any)=><option key={r.id} value={r.id}>{r.right_type} · {assetRows.find(a=>a.id===r.asset_id)?.name||"Activo"}</option>)}</select></label>
+          <label>Status<select name="status" defaultValue="owned"><option value="owned">Owned</option><option value="licensed_out">Licensed out</option><option value="licensed_in">Licensed in</option><option value="expired">Expired</option><option value="terminated">Terminated</option><option value="disputed">Disputed</option><option value="pending">Pending</option></select></label>
+          <label>Exclusividad<select name="exclusivity" defaultValue="exclusive"><option value="exclusive">Exclusive</option><option value="non_exclusive">Non-exclusive</option><option value="shared">Shared</option><option value="unknown">Unknown</option></select></label>
+          <label>Territorio<input name="territory" defaultValue="worldwide"/></label>
+          <label>Holder<input name="holder_name"/></label>
+          <label>Licensee<input name="licensee_name"/></label>
+          <label>Inicio<input type="date" name="start_date"/></label>
+          <label>Fin<input type="date" name="end_date"/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!rightRows.length}>Actualizar derecho</button>
+      </form>
+
+      <form action={updateContract} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR CONTRATO</span><h2>Actualizar CLM</h2></div>
+        <div className={styles.formGrid}>
+          <label>Contrato<select name="contract_id" required defaultValue=""><option value="" disabled>Seleccionar contrato</option>{contractRows.map((c:any)=><option key={c.id} value={c.id}>{c.contract_code} · {c.title}</option>)}</select></label>
+          <label>Status<select name="status" defaultValue="review"><option value="draft">Draft</option><option value="review">Review</option><option value="signature">Signature</option><option value="active">Active</option><option value="expired">Expired</option><option value="terminated">Terminated</option><option value="canceled">Canceled</option></select></label>
+          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Fecha efectiva<input type="date" name="effective_date"/></label>
+          <label>Vencimiento<input type="date" name="expiration_date"/></label>
+          <label>Auto-renew<select name="auto_renew" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
+          <label>Aviso renovación (días)<input type="number" min="0" name="renewal_notice_days"/></label>
+          <label>Valor<input type="number" min="0" step="0.01" name="value"/></label>
+          <label>Moneda<input name="currency" defaultValue="USD"/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!contractRows.length}>Actualizar contrato</button>
       </form>
     </section>
 
