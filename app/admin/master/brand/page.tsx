@@ -49,6 +49,52 @@ async function createCommunicationCampaign(formData:FormData){
   revalidatePath("/admin/master/brand");
 }
 
+
+async function updateNarrative(formData:FormData){
+  "use server";
+  const {supabase}=await requireBrandEditor();
+  const id=String(formData.get("narrative_id")||"").trim();
+  const status=String(formData.get("status")||"review");
+  const ownerRaw=String(formData.get("owner_user_id")||"").trim();
+  const ownerUserId=ownerRaw||null;
+  const audience=String(formData.get("audience")||"").trim()||null;
+  const pillar=String(formData.get("message_pillar")||"").trim()||null;
+  const keyMessage=String(formData.get("key_message")||"").trim()||null;
+  const proofPoints=String(formData.get("proof_points")||"").split(",").map(x=>x.trim()).filter(Boolean);
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["draft","review","active","archived"]);
+  if(!id||!allowedStatus.has(status)) throw new Error("invalid_narrative_update");
+  const patch:any={status,owner_user_id:ownerUserId,audience,notes,updated_at:new Date().toISOString()};
+  if(pillar) patch.message_pillar=pillar;
+  if(keyMessage) patch.key_message=keyMessage;
+  if(proofPoints.length) patch.proof_points=proofPoints;
+  const{error}=await supabase.from("brand_narratives").update(patch).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/brand");
+}
+
+async function updateCommunicationCampaign(formData:FormData){
+  "use server";
+  const {supabase}=await requireBrandEditor();
+  const id=String(formData.get("campaign_id")||"").trim();
+  const status=String(formData.get("status")||"planned");
+  const ownerRaw=String(formData.get("owner_user_id")||"").trim();
+  const ownerUserId=ownerRaw||null;
+  const audience=String(formData.get("audience")||"").trim()||null;
+  const channels=String(formData.get("channel_scope")||"").split(",").map(x=>x.trim()).filter(Boolean);
+  const objective=String(formData.get("objective")||"").trim()||null;
+  const startDate=String(formData.get("start_date")||"").trim()||null;
+  const endDate=String(formData.get("end_date")||"").trim()||null;
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["planned","active","paused","completed","canceled"]);
+  if(!id||!allowedStatus.has(status)) throw new Error("invalid_comms_update");
+  const{error}=await supabase.from("communication_campaigns").update({
+    status,owner_user_id:ownerUserId,audience,channel_scope:channels,objective,start_date:startDate,end_date:endDate,notes,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/brand");
+}
+
 export default async function MasterBrandPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -63,21 +109,25 @@ export default async function MasterBrandPage(){
     {count:media},
     {count:campaigns},
     {count:reviews},
-    {count:shareClicks}
+    {count:shareClicks},
+    {data:owners}
   ]=await Promise.all([
-    supabase.from("brand_narratives").select("id,code,name,audience,message_pillar,key_message,proof_points,status,created_at").order("created_at",{ascending:false}),
-    supabase.from("communication_campaigns").select("id,name,campaign_type,status,audience,channel_scope,objective,start_date,end_date,created_at").order("created_at",{ascending:false}),
+    supabase.from("brand_narratives").select("id,code,name,audience,message_pillar,key_message,proof_points,status,owner_user_id,notes,created_at").order("created_at",{ascending:false}),
+    supabase.from("communication_campaigns").select("id,name,campaign_type,status,audience,channel_scope,objective,start_date,end_date,owner_user_id,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("localized_content").select("*",{count:"exact",head:true}),
     supabase.from("media_assets").select("*",{count:"exact",head:true}),
     supabase.from("campaigns").select("*",{count:"exact",head:true}),
     supabase.from("reviews").select("*",{count:"exact",head:true}),
-    supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","share_click")
+    supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","share_click"),
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
   ]);
 
   const narrativeRows=(narratives||[]) as any[];
   const commRows=(commCampaigns||[]) as any[];
   const activeNarratives=narrativeRows.filter(n=>n.status==="active").length;
   const activeComms=commRows.filter(c=>c.status==="active").length;
+  const ownerRows=(owners||[]) as any[];
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
@@ -96,7 +146,7 @@ export default async function MasterBrandPage(){
     <section className={styles.grid}>
       {narrativeRows.map((n:any)=><article key={n.id} className={styles.card}>
         <div className={styles.cardTop}><span className={n.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(n.status).toUpperCase()}</span><em>{n.message_pillar}</em></div>
-        <h3>{n.name}</h3><p>{n.audience||"Audiencia general"}<br/>{n.key_message}<br/>{(n.proof_points||[]).length?(n.proof_points||[]).join(" · "):"Sin proof points"}</p>
+        <h3>{n.name}</h3><p>Owner: {ownerName(n.owner_user_id)}<br/>{n.audience||"Audiencia general"}<br/>{n.key_message}<br/>{(n.proof_points||[]).length?(n.proof_points||[]).join(" · "):"Sin proof points"}</p>
       </article>)}
       {!narrativeRows.length&&<article className={styles.card}><h3>Message House preparado</h3><p>No se han cargado narrativas corporativas todavía.</p></article>}
     </section>
@@ -105,7 +155,7 @@ export default async function MasterBrandPage(){
     <section className={styles.grid}>
       {commRows.map((c:any)=><article key={c.id} className={styles.card}>
         <div className={styles.cardTop}><span className={c.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(c.status).toUpperCase()}</span><em>{c.campaign_type}</em></div>
-        <h3>{c.name}</h3><p>{c.audience||"Audiencia general"}<br/>{(c.channel_scope||[]).length?(c.channel_scope||[]).join(" · "):"Canales por definir"}<br/>{c.start_date||"sin inicio"} → {c.end_date||"abierta"}</p>
+        <h3>{c.name}</h3><p>Owner: {ownerName(c.owner_user_id)}<br/>{c.audience||"Audiencia general"}<br/>{(c.channel_scope||[]).length?(c.channel_scope||[]).join(" · "):"Canales por definir"}<br/>{c.start_date||"sin inicio"} → {c.end_date||"abierta"}</p>
       </article>)}
       {!commRows.length&&<article className={styles.card}><h3>Calendario preparado</h3><p>Las campañas corporativas se registrarán aquí.</p></article>}
     </section>
@@ -139,6 +189,40 @@ export default async function MasterBrandPage(){
           <label>Fin<input type="date" name="end_date"/></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar campaña</button>
+      </form>
+    </section>}
+
+
+    {["admin","editor","marketing"].includes(profile.role)&&<section className={styles.adminForms}>
+      <form action={updateNarrative} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR NARRATIVA</span><h2>Actualizar message house</h2></div>
+        <div className={styles.formGrid}>
+          <label>Narrativa<select name="narrative_id" required defaultValue=""><option value="" disabled>Seleccionar narrativa</option>{narrativeRows.map((n:any)=><option key={n.id} value={n.id}>{n.code} · {n.name}</option>)}</select></label>
+          <label>Status<select name="status" defaultValue="review"><option value="draft">Draft</option><option value="review">Review</option><option value="active">Active</option><option value="archived">Archived</option></select></label>
+          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Audiencia<input name="audience"/></label>
+          <label>Pilar<input name="message_pillar"/></label>
+          <label className={styles.span2}>Mensaje clave<textarea name="key_message" rows={3}/></label>
+          <label className={styles.span2}>Proof points<input name="proof_points"/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!narrativeRows.length}>Actualizar narrativa</button>
+      </form>
+
+      <form action={updateCommunicationCampaign} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR COMUNICACIÓN</span><h2>Actualizar campaña</h2></div>
+        <div className={styles.formGrid}>
+          <label>Campaña<select name="campaign_id" required defaultValue=""><option value="" disabled>Seleccionar campaña</option>{commRows.map((x:any)=><option key={x.id} value={x.id}>{x.name}</option>)}</select></label>
+          <label>Status<select name="status" defaultValue="active"><option value="planned">Planned</option><option value="active">Active</option><option value="paused">Paused</option><option value="completed">Completed</option><option value="canceled">Canceled</option></select></label>
+          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Audiencia<input name="audience"/></label>
+          <label>Canales<input name="channel_scope"/></label>
+          <label className={styles.span2}>Objetivo<input name="objective"/></label>
+          <label>Inicio<input type="date" name="start_date"/></label>
+          <label>Fin<input type="date" name="end_date"/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!commRows.length}>Actualizar campaña</button>
       </form>
     </section>}
 
