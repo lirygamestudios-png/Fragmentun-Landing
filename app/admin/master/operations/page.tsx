@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 async function requireOpsEditor(){
   "use server";
@@ -223,7 +224,7 @@ export default async function MasterOperationsPage(){
           <label className={styles.span2}>Próxima acción<input name="next_action"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar trabajo</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar trabajo</MasterSubmitButton>
       </form>
 
       <form action={createDecision} className={styles.adminForm}>
@@ -236,7 +237,7 @@ export default async function MasterOperationsPage(){
           <label className={styles.span2}>Decisión<textarea name="decision" rows={3}/></label>
           <label className={styles.span2}>Motivo<textarea name="rationale" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar decisión</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar decisión</MasterSubmitButton>
       </form>
       </section>
 
@@ -252,7 +253,7 @@ export default async function MasterOperationsPage(){
           <label className={styles.span2}>Próxima acción<input name="next_action"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit" disabled={!workRows.length}>Actualizar trabajo</button>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!workRows.length}>Actualizar trabajo</MasterSubmitButton>
       </form>
 
       <form action={updateDecision} className={styles.adminForm}>
@@ -265,7 +266,7 @@ export default async function MasterOperationsPage(){
           <label className={styles.span2}>Decisión<textarea name="decision" rows={3}/></label>
           <label className={styles.span2}>Motivo<textarea name="rationale" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit" disabled={!decisionRows.length}>Actualizar decisión</button>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!decisionRows.length}>Actualizar decisión</MasterSubmitButton>
       </form>
       </section>
     </details>}
