@@ -168,6 +168,7 @@ export default async function SettingsPage(){
         </div>
         <button className={styles.formButton}>Registrar control</button>
       </form>
+    </section>
 
     <section className={styles.adminForms}>
       <form action={updateSetting} className={styles.adminForm}>
@@ -200,7 +201,6 @@ export default async function SettingsPage(){
     <section className={styles.notice}>
       <div><strong>Protección antes de publicar</strong><span>Los controles de producción no pueden activarse desde esta vista previa; requieren aprobación explícita antes de publicar.</span></div>
       <code>producción protegida</code>
-    </section>
     </section>
   </main>;
 }
