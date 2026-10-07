@@ -60,6 +60,30 @@ export default async function MasterCommercePage(){
       <article><small>Reembolsos</small><strong>{refunds.length}</strong><span>Con devolución/reembolso</span></article>
     </section>
 
+    <details className={styles.advancedPanel}>
+      <summary>Opciones avanzadas</summary>
+      <p className={styles.advancedHint}>Accede a las herramientas reales de gestión comercial.</p>
+      <section className={styles.adminForms}>
+        <article className={styles.adminForm}>
+          <div className={styles.formTitle}><span>TIENDA</span><h2>Productos, pedidos y devoluciones</h2></div>
+          <p>Gestiona el catálogo, las operaciones de pedidos, devoluciones y reportes de la tienda.</p>
+          <a className={styles.formButton} href="/admin/tienda">Gestionar tienda y productos</a>
+        </article>
+        <article className={styles.adminForm}>
+          <div className={styles.formTitle}><span>CONEXIONES</span><h2>Pagos e integraciones</h2></div>
+          <p>Revisa o configura las conexiones necesarias para pagos y servicios externos.</p>
+          <a className={styles.formButton} href="/admin/integrations">Ver integraciones</a>
+        </article>
+      </section>
+      <section className={styles.adminForms}>
+        <article className={styles.adminForm}>
+          <div className={styles.formTitle}><span>REPORTES</span><h2>Resultados comerciales</h2></div>
+          <p>Consulta los reportes disponibles del ecosistema administrativo.</p>
+          <a className={styles.formButton} href="/admin/reportes">Ver reportes</a>
+        </article>
+      </section>
+    </details>
+
     <section className={styles.sectionHead}>
       <div><span>PREPARACIÓN COMERCIAL</span><h2>Configuración</h2></div>
       <p>Pagos y envíos permanecen bajo control hasta su activación comercial.</p>
