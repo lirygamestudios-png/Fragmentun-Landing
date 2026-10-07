@@ -28,7 +28,7 @@ async function requireAutomationEditor(){
   return {supabase,user,profile};
 }
 
-async function createWorkflow(formData:FormData){
+async function createAutomatización(formData:FormData){
   "use server";
   const {supabase,user}=await requireAutomationEditor();
   const code=String(formData.get("code")||"").trim().toLowerCase().replace(/[^a-z0-9-]+/g,"-").replace(/^-+|-+$/g,"");
@@ -37,9 +37,9 @@ async function createWorkflow(formData:FormData){
   const triggerType=String(formData.get("trigger_type")||"manual");
   const autonomy=String(formData.get("autonomy_level")||"assistive");
   const requiresApproval=String(formData.get("requires_approval")||"true")==="true";
-  const allowedTrigger=new Set(["manual","event","schedule","webhook","condition"]);
+  const allowedActivación=new Set(["manual","event","schedule","webhook","condition"]);
   const allowedAutonomy=new Set(["assistive","recommend","execute_low_risk","execute_with_approval"]);
-  if(!code||!name||!domain||!allowedTrigger.has(triggerType)||!allowedAutonomy.has(autonomy)) throw new Error("invalid_workflow");
+  if(!code||!name||!domain||!allowedActivación.has(triggerType)||!allowedAutonomy.has(autonomy)) throw new Error("invalid_workflow");
   const{error}=await supabase.from("automation_workflows").insert({
     code,name,domain,trigger_type:triggerType,autonomy_level:autonomy,requires_approval:requiresApproval,created_by:user.id
   });
@@ -94,7 +94,7 @@ async function decideApproval(formData:FormData){
 }
 
 
-async function updateWorkflow(formData:FormData){
+async function updateAutomatización(formData:FormData){
   "use server";
   const {supabase}=await requireAutomationEditor();
   const id=String(formData.get("workflow_id")||"").trim();
@@ -103,9 +103,9 @@ async function updateWorkflow(formData:FormData){
   const ownerRaw=String(formData.get("owner_user_id")||"").trim();
   const ownerUserId=ownerRaw||null;
   const requiresApproval=String(formData.get("requires_approval")||"true")==="true";
-  const allowedStatus=new Set(["draft","testing","active","paused","disabled","error"]);
+  const allowedEstado=new Set(["draft","testing","active","paused","disabled","error"]);
   const allowedAutonomy=new Set(["assistive","recommend","execute_low_risk","execute_with_approval"]);
-  if(!id||!allowedStatus.has(status)||!allowedAutonomy.has(autonomy)) throw new Error("invalid_workflow_update");
+  if(!id||!allowedEstado.has(status)||!allowedAutonomy.has(autonomy)) throw new Error("invalid_workflow_update");
   const{error}=await supabase.from("automation_workflows").update({
     status,autonomy_level:autonomy,owner_user_id:ownerUserId,requires_approval:requiresApproval,updated_at:new Date().toISOString()
   }).eq("id",id);
@@ -127,9 +127,9 @@ async function updateAgent(formData:FormData){
   const budgetRaw=String(formData.get("cost_budget")||"").trim();
   const budgetCents=budgetRaw?Math.round(Number(budgetRaw)*100):null;
   const purpose=String(formData.get("purpose")||"").trim()||null;
-  const allowedStatus=new Set(["draft","testing","active","paused","disabled"]);
+  const allowedEstado=new Set(["draft","testing","active","paused","disabled"]);
   const allowedAutonomy=new Set(["assistive","recommend","execute_low_risk","execute_with_approval"]);
-  if(!id||!allowedStatus.has(status)||!allowedAutonomy.has(autonomy)||(budgetCents!==null&&(!Number.isFinite(budgetCents)||budgetCents<0))) throw new Error("invalid_agent_update");
+  if(!id||!allowedEstado.has(status)||!allowedAutonomy.has(autonomy)||(budgetCents!==null&&(!Number.isFinite(budgetCents)||budgetCents<0))) throw new Error("invalid_agent_update");
   const{error}=await supabase.from("ai_agents").update({
     status,autonomy_level:autonomy,owner_user_id:ownerUserId,requires_approval:requiresApproval,
     model_ref:modelRef,cost_budget_cents:budgetCents,purpose,updated_at:new Date().toISOString()
@@ -174,7 +174,7 @@ export default async function MasterAutomationPage(){
   const activeAgents=agentRows.filter(a=>a.status==="active").length;
   const integrations=(adIntegrations||[]) as any[];
   const ownerRows=(owners||[]) as any[];
-  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
@@ -225,37 +225,40 @@ export default async function MasterAutomationPage(){
       {!pending.length&&<article className={styles.card}><h3>Sin aprobaciones pendientes</h3><p>No hay acciones esperando decisión humana.</p></article>}
     </section>
 
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
-      <form action={createWorkflow} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>NUEVO WORKFLOW</span><h2>Registrar automatización</h2></div>
+    {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}>
+      <summary>Opciones avanzadas</summary>
+      <p className={styles.advancedHint}>Úsalas para registrar o modificar automatizaciones y agentes manualmente.</p>
+      <section className={styles.adminForms}>
+      <form action={createAutomatización} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>NUEVA AUTOMATIZACIÓN</span><h2>Registrar automatización</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="lead-nurture"/></label>
-          <label>Nombre<input name="name" required placeholder="Lead Nurture"/></label>
-          <label>Dominio<input name="domain" required placeholder="Growth"/></label>
-          <label>Trigger<select name="trigger_type" defaultValue="manual">
-            <option value="manual">Manual</option><option value="event">Event</option><option value="schedule">Schedule</option>
-            <option value="webhook">Webhook</option><option value="condition">Condition</option>
+          <label>Nombre<input name="name" required placeholder="Seguimiento de contactos"/></label>
+          <label>Dominio<input name="domain" required placeholder="Crecimiento"/></label>
+          <label>Activación<select name="trigger_type" defaultValue="manual">
+            <option value="manual">Manual</option><option value="event">Evento</option><option value="schedule">Programación</option>
+            <option value="webhook">Webhook</option><option value="condition">Condición</option>
           </select></label>
           <label>Autonomía<select name="autonomy_level" defaultValue="assistive">
-            <option value="assistive">Assistive</option><option value="recommend">Recommend</option>
-            <option value="execute_low_risk">Execute low risk</option><option value="execute_with_approval">Execute with approval</option>
+            <option value="assistive">Asistencia</option><option value="recommend">Recomendación</option>
+            <option value="execute_low_risk">Ejecución de bajo riesgo</option><option value="execute_with_approval">Ejecución con aprobación</option>
           </select></label>
           <label>Requiere aprobación<select name="requires_approval" defaultValue="true">
             <option value="true">Sí</option><option value="false">No</option>
           </select></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar workflow</button>
+        <button className={styles.formButton} type="submit">Registrar automatización</button>
       </form>
 
       {profile.role==="admin"&&<form action={createAgent} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVO AGENTE</span><h2>Registrar agente IA</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="growth-assistant"/></label>
-          <label>Nombre<input name="name" required placeholder="Growth Assistant"/></label>
-          <label>Dominio<input name="domain" required placeholder="Growth"/></label>
+          <label>Nombre<input name="name" required placeholder="Crecimiento Assistant"/></label>
+          <label>Dominio<input name="domain" required placeholder="Crecimiento"/></label>
           <label>Autonomía<select name="autonomy_level" defaultValue="assistive">
-            <option value="assistive">Assistive</option><option value="recommend">Recommend</option>
-            <option value="execute_low_risk">Execute low risk</option><option value="execute_with_approval">Execute with approval</option>
+            <option value="assistive">Asistencia</option><option value="recommend">Recomendación</option>
+            <option value="execute_low_risk">Ejecución de bajo riesgo</option><option value="execute_with_approval">Ejecución con aprobación</option>
           </select></label>
           <label>Requiere aprobación<select name="requires_approval" defaultValue="true">
             <option value="true">Sí</option><option value="false">No</option>
@@ -264,37 +267,37 @@ export default async function MasterAutomationPage(){
         </div>
         <button className={styles.formButton} type="submit">Registrar agente</button>
       </form>}
-    </section>}
+      </section>
 
-
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
-      <form action={updateWorkflow} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>GESTIONAR WORKFLOW</span><h2>Actualizar automatización</h2></div>
+      <section className={styles.adminForms}>
+      <form action={updateAutomatización} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR AUTOMATIZACIÓN</span><h2>Actualizar automatización</h2></div>
         <div className={styles.formGrid}>
-          <label>Workflow<select name="workflow_id" required defaultValue=""><option value="" disabled>Seleccionar workflow</option>{workflowRows.map((w:any)=><option key={w.id} value={w.id}>{w.code} · {w.name}</option>)}</select></label>
-          <label>Status<select name="status" defaultValue="testing"><option value="draft">Draft</option><option value="testing">Testing</option><option value="active">Active</option><option value="paused">Paused</option><option value="disabled">Disabled</option><option value="error">Error</option></select></label>
-          <label>Autonomía<select name="autonomy_level" defaultValue="assistive"><option value="assistive">Assistive</option><option value="recommend">Recommend</option><option value="execute_low_risk">Execute low risk</option><option value="execute_with_approval">Execute with approval</option></select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Automatización<select name="workflow_id" required defaultValue=""><option value="" disabled>Seleccionar automatización</option>{workflowRows.map((w:any)=><option key={w.id} value={w.id}>{w.code} · {w.name}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="testing"><option value="draft">Borrador</option><option value="testing">En prueba</option><option value="active">Activo</option><option value="paused">Pausado</option><option value="disabled">Desactivado</option><option value="error">Error</option></select></label>
+          <label>Autonomía<select name="autonomy_level" defaultValue="assistive"><option value="assistive">Asistencia</option><option value="recommend">Recomendación</option><option value="execute_low_risk">Ejecución de bajo riesgo</option><option value="execute_with_approval">Ejecución con aprobación</option></select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
           <label>Requiere aprobación<select name="requires_approval" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
         </div>
-        <button className={styles.formButton} disabled={!workflowRows.length}>Actualizar workflow</button>
+        <button className={styles.formButton} disabled={!workflowRows.length}>Actualizar automatización</button>
       </form>
 
       {profile.role==="admin"&&<form action={updateAgent} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>GESTIONAR AGENTE</span><h2>Actualizar gobierno IA</h2></div>
+        <div className={styles.formTitle}><span>GESTIONAR AGENTE</span><h2>Actualizar agente IA</h2></div>
         <div className={styles.formGrid}>
           <label>Agente<select name="agent_id" required defaultValue=""><option value="" disabled>Seleccionar agente</option>{agentRows.map((a:any)=><option key={a.id} value={a.id}>{a.code} · {a.name}</option>)}</select></label>
-          <label>Status<select name="status" defaultValue="testing"><option value="draft">Draft</option><option value="testing">Testing</option><option value="active">Active</option><option value="paused">Paused</option><option value="disabled">Disabled</option></select></label>
-          <label>Autonomía<select name="autonomy_level" defaultValue="assistive"><option value="assistive">Assistive</option><option value="recommend">Recommend</option><option value="execute_low_risk">Execute low risk</option><option value="execute_with_approval">Execute with approval</option></select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="testing"><option value="draft">Borrador</option><option value="testing">En prueba</option><option value="active">Activo</option><option value="paused">Pausado</option><option value="disabled">Desactivado</option></select></label>
+          <label>Autonomía<select name="autonomy_level" defaultValue="assistive"><option value="assistive">Asistencia</option><option value="recommend">Recomendación</option><option value="execute_low_risk">Ejecución de bajo riesgo</option><option value="execute_with_approval">Ejecución con aprobación</option></select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
           <label>Requiere aprobación<select name="requires_approval" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
           <label>Modelo<input name="model_ref" placeholder="provider/model"/></label>
-          <label>Budget USD<input type="number" min="0" step="0.01" name="cost_budget"/></label>
+          <label>Presupuesto USD<input type="number" min="0" step="0.01" name="cost_budget"/></label>
           <label className={styles.span2}>Propósito<textarea name="purpose" rows={3}/></label>
         </div>
         <button className={styles.formButton} disabled={!agentRows.length}>Actualizar agente</button>
       </form>}
-    </section>}
+      </section>
+    </details>}
 
     <section className={styles.sectionHead}><div><span>CONTROLES EXISTENTES</span><h2>Controles del ecosistema</h2></div></section>
     <section className={styles.grid}>
@@ -304,7 +307,7 @@ export default async function MasterAutomationPage(){
         ["Control antiabuso",String(rateRows||0)+" registros"],
         ["Integraciones publicitarias",integrations.map(x=>x.provider+":"+(x.enabled?"on":"off")).join(" · ")||"Sin integraciones"]
       ].map(([name,detail])=><article key={name} className={styles.card}>
-        <div className={styles.cardTop}><span className={styles.badgeActive}>CONTROL</span><em>AI/OPS</em></div>
+        <div className={styles.cardTop}><span className={styles.badgeActive}>CONTROL</span><em>IA / OPERACIONES</em></div>
         <h3>{name}</h3><p>{detail}</p>
       </article>)}
     </section>
