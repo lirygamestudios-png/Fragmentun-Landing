@@ -61,6 +61,45 @@ async function createFinanceTransaction(formData:FormData){
   revalidatePath("/admin/master/finance");
 }
 
+
+async function updateFinanceAccount(formData:FormData){
+  "use server";
+  const {supabase,profile}=await requireFinanceEditor();
+  if(profile.role!=="admin") throw new Error("admin_required");
+  const id=String(formData.get("account_id")||"").trim();
+  const active=String(formData.get("active")||"true")==="true";
+  const currency=(String(formData.get("currency")||"USD").trim()||"USD").toUpperCase();
+  if(!id) throw new Error("account_required");
+  const{error}=await supabase.from("finance_accounts").update({
+    active,currency,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/finance");
+}
+
+async function updateFinanceTransaction(formData:FormData){
+  "use server";
+  const {supabase}=await requireFinanceEditor();
+  const id=String(formData.get("transaction_id")||"").trim();
+  const status=String(formData.get("status")||"pending");
+  const accountRaw=String(formData.get("account_id")||"").trim();
+  const accountId=accountRaw||null;
+  const category=String(formData.get("category")||"").trim()||null;
+  const counterparty=String(formData.get("counterparty")||"").trim()||null;
+  const description=String(formData.get("description")||"").trim()||null;
+  const externalReference=String(formData.get("external_reference")||"").trim()||null;
+  const allowedStatus=new Set(["draft","pending","posted","reconciled","void"]);
+  if(!id||!allowedStatus.has(status)) throw new Error("invalid_transaction_update");
+  const patch:any={
+    status,account_id:accountId,category,counterparty,external_reference:externalReference,updated_at:new Date().toISOString()
+  };
+  if(description) patch.description=description;
+  patch.reconciled_at=status==="reconciled"?new Date().toISOString():null;
+  const{error}=await supabase.from("finance_transactions").update(patch).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/finance");
+}
+
 export default async function MasterFinancePage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -81,7 +120,7 @@ export default async function MasterFinancePage(){
     supabase.from("shop_products").select("*",{count:"exact",head:true}).eq("active",true),
     supabase.from("shop_orders").select("*",{count:"exact",head:true}).eq("fulfillment_status","fulfilled"),
     supabase.from("finance_accounts").select("id,code,name,account_type,currency,active").order("name",{ascending:true}),
-    supabase.from("finance_transactions").select("id,transaction_date,transaction_type,status,account_id,counterparty,category,description,amount_cents,currency,source_type,source_id,created_at").order("transaction_date",{ascending:false}).limit(250)
+    supabase.from("finance_transactions").select("id,transaction_date,transaction_type,status,account_id,counterparty,category,description,amount_cents,currency,source_type,source_id,external_reference,reconciled_at,created_at").order("transaction_date",{ascending:false}).limit(250)
   ]);
 
   const rows=(orders||[]) as any[];
@@ -103,7 +142,7 @@ export default async function MasterFinancePage(){
     {name:"Productos activos",value:String(products||0),detail:"shop_products"},
     {name:"Pagos",value:commerce?.default_payment_provider||"auto",detail:(commerce?.stripe_enabled||commerce?.paypal_enabled)?"Proveedor habilitable":"Aún no habilitado"},
     {name:"Impuestos",value:commerce?.tax_registration_status||"not_configured",detail:commerce?.tax_mode||"manual"},
-    {name:"Ledger contable",value:"Pendiente",detail:"Se añadirá como capa financiera separada"},
+    {name:"Ledger contable",value:"Operativo",detail:"finance_accounts + finance_transactions"},
     {name:"Reconciliación",value:"Preparada",detail:"Pedidos + costes + fees + margen ya modelados"}
   ];
 
@@ -195,6 +234,33 @@ export default async function MasterFinancePage(){
           <label>ID fuente<input name="source_id" placeholder="Referencia interna"/></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar movimiento</button>
+      </form>
+    </section>}
+
+
+    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+      {profile.role==="admin"&&<form action={updateFinanceAccount} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR CUENTA</span><h2>Actualizar cuenta financiera</h2></div>
+        <div className={styles.formGrid}>
+          <label>Cuenta<select name="account_id" required defaultValue=""><option value="" disabled>Seleccionar cuenta</option>{accountRows.map((a:any)=><option key={a.id} value={a.id}>{a.code} · {a.name}</option>)}</select></label>
+          <label>Activa<select name="active" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
+          <label>Moneda<input name="currency" defaultValue="USD"/></label>
+        </div>
+        <button className={styles.formButton} disabled={!accountRows.length}>Actualizar cuenta</button>
+      </form>}
+
+      <form action={updateFinanceTransaction} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR MOVIMIENTO</span><h2>Actualizar transacción</h2></div>
+        <div className={styles.formGrid}>
+          <label>Transacción<select name="transaction_id" required defaultValue=""><option value="" disabled>Seleccionar movimiento</option>{txRows.map((t:any)=><option key={t.id} value={t.id}>{t.transaction_date} · {t.description}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="pending"><option value="draft">Draft</option><option value="pending">Pending</option><option value="posted">Posted</option><option value="reconciled">Reconciled</option><option value="void">Void</option></select></label>
+          <label>Cuenta<select name="account_id" defaultValue=""><option value="">Sin cuenta</option>{accountRows.map((a:any)=><option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
+          <label>Categoría<input name="category"/></label>
+          <label>Contraparte<input name="counterparty"/></label>
+          <label>Referencia externa<input name="external_reference"/></label>
+          <label className={styles.span2}>Descripción<input name="description"/></label>
+        </div>
+        <button className={styles.formButton} disabled={!txRows.length}>Actualizar movimiento</button>
       </form>
     </section>}
 
