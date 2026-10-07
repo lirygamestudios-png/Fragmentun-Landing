@@ -36,3 +36,27 @@
 .formGrid input:focus-visible,.formGrid select:focus-visible,.formGrid textarea:focus-visible{
   border-color:#c9a84c;
 }
+
+/* Responsive móvil: controles cómodos y lectura legible */
+@media(max-width:900px){
+  .sidebar{padding:18px 14px}
+  .nav a,.publicSite,.formButton,.advancedPanel summary{min-height:44px;box-sizing:border-box}
+  .workspace{padding-left:18px;padding-right:18px}
+  .topbar h1{font-size:clamp(2rem,8vw,3rem)}
+  .card p,.sectionHead p,.notice span{font-size:.8rem;line-height:1.6}
+  .kpis span{font-size:.72rem;line-height:1.45}
+}
+@media(max-width:600px){
+  .brand{padding-bottom:16px}
+  .nav{padding:14px 0}
+  .nav a{padding:12px 13px;font-size:.9rem}
+  .publicSite{font-size:.84rem;padding:12px}
+  .kpis article,.card,.adminForm{padding:16px}
+  .card{min-height:auto}
+  .card h3{font-size:1.05rem}
+  .card p{font-size:.82rem}
+  .formGrid label{font-size:.78rem}
+  .formGrid input,.formGrid select,.formGrid textarea{min-height:44px;font-size:16px}
+  .formGrid textarea{min-height:96px}
+  .formButton{width:100%;font-size:.9rem}
+}
