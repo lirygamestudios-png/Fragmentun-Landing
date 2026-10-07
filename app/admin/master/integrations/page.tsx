@@ -44,7 +44,7 @@ export default async function MasterIntegrationsPage(){
 
     <section className={styles.grid}>
       <a className={styles.card} href="/admin/integrations">
-        <div className={styles.cardTop}><span className={styles.badgeActive}>CONFIGURABLE</span><em>CORREO Y ADS</em></div>
+        <div className={styles.cardTop}><span className={styles.badgeActive}>CONFIGURABLE</span><em>CORREO Y PUBLICIDAD</em></div>
         <h3>Panel de Integraciones</h3>
         <p>MailerLite, Meta Ads, Google Ads y TikTok Ads, con historial y configuración existente.</p>
         <span className={styles.cardLink}>Abrir configuración →</span>
@@ -57,7 +57,7 @@ export default async function MasterIntegrationsPage(){
       <article className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>PROTEGIDO</span><em>SEGURIDAD</em></div>
         <h3>Credenciales</h3>
-        <p>Tokens y secretos permanecen fuera del Master Admin y no se muestran en esta pantalla.</p>
+        <p>Las credenciales sensibles permanecen fuera del Master Admin y no se muestran en esta pantalla.</p>
       </article>
       <article className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>ACTIVO</span><em>CONSENTIMIENTO</em></div>
