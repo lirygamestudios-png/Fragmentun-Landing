@@ -16,3 +16,14 @@
 @media(max-width:1180px){.grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:900px){.shell{display:block}.sidebar{position:relative;height:auto}.nav{grid-template-columns:repeat(2,1fr)}.identity{margin-top:0}.kpis{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.workspace{padding:24px 14px 48px}.topbar,.sectionHead,.notice{display:block}.protection{margin-top:18px}.notice code{display:block;margin-top:10px}.kpis,.grid{grid-template-columns:1fr}.sectionHead p{margin-top:10px}.nav{grid-template-columns:1fr}}
+
+.adminForms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:38px 0}
+.adminForm{background:linear-gradient(180deg,#0c1727,#091321);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:20px}
+.formTitle span{font-size:.62rem;letter-spacing:.18em;color:#c9a84c}.formTitle h2{margin:5px 0 18px;font-size:1.15rem}
+.formGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.formGrid label{display:grid;gap:6px;color:#8d9aae;font-size:.68rem;letter-spacing:.04em}
+.formGrid input,.formGrid select,.formGrid textarea{width:100%;box-sizing:border-box;background:#07111e;border:1px solid rgba(255,255,255,.10);border-radius:8px;color:#eef3fb;padding:10px 11px;font:inherit;outline:none}
+.formGrid input:focus,.formGrid select:focus,.formGrid textarea:focus{border-color:rgba(201,168,76,.55)}
+.span2{grid-column:1/-1}.formButton{margin-top:14px;border:1px solid rgba(201,168,76,.45);background:rgba(201,168,76,.10);color:#e8d28d;border-radius:8px;padding:10px 14px;font-weight:700;cursor:pointer}.formButton:hover{background:rgba(201,168,76,.16)}.formButton:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:900px){.adminForms{grid-template-columns:1fr}}
+@media(max-width:600px){.formGrid{grid-template-columns:1fr}.span2{grid-column:auto}}
