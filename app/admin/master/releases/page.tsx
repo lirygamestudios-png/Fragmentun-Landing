@@ -219,6 +219,14 @@ export default async function ReleaseGatePage(){
       {!gateRows.length&&<article className={styles.card}><h3>Sin release gates</h3><p>El registro está listo para documentar la siguiente promoción.</p></article>}
     </section>
 
+    {gateRows.length>0&&<section className={styles.notice}>
+      <div><strong>Integrar prueba 5/5</strong><span>Usa la última comprobación correcta como evidencia de esta revisión. No publica ni aprueba producción.</span></div>
+      <form action={useLatestPassedValidation}>
+        <input type="hidden" name="gate_id" value={gateRows[0].id}/>
+        <button className={styles.formButton}>Usar prueba 5/5</button>
+      </form>
+    </section>}
+
     <section className={styles.sectionHead}><div><span>COMPROBACIONES</span><h2>Evidencia de la revisión</h2></div></section>
     <section className={styles.grid}>
       {checkRows.map((c:any)=><article key={c.id} className={styles.card}>
@@ -236,14 +244,6 @@ export default async function ReleaseGatePage(){
       </article>)}
       {!linkRows.length&&<article className={styles.card}><h3>Sin relaciones manuales</h3><p>Las relaciones naturales por foreign key siguen activas; aquí aparecerán dependencias entre dominios.</p></article>}
     </section>
-
-    {profile.role==="admin"&&gateRows.length>0&&<section className={styles.notice}>
-      <div><strong>Última prueba correcta</strong><span>Usa automáticamente la validación 5/5 más reciente como evidencia de esta revisión. No publica ni aprueba producción.</span></div>
-      <form action={useLatestPassedValidation}>
-        <input type="hidden" name="gate_id" value={gateRows[0].id}/>
-        <button className={styles.formButton}>Usar última prueba correcta</button>
-      </form>
-    </section>}
 
     {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}>
       <summary>Opciones avanzadas</summary>
