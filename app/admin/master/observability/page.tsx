@@ -15,6 +15,67 @@ async function requireObservabilityAdmin(){
   return {supabase,user};
 }
 
+async function validateCurrentPreview(){
+  "use server";
+  const {supabase,user}=await requireObservabilityAdmin();
+  const host=process.env.VERCEL_URL;
+  const commitSha=process.env.VERCEL_GIT_COMMIT_SHA||null;
+  const deploymentId=process.env.VERCEL_DEPLOYMENT_ID||null;
+  if(!host) throw new Error("preview_url_unavailable");
+  const baseUrl="https://"+host;
+  const runCode="SMOKE-PREVIEW-"+new Date().toISOString().replace(/[-:T.Z]/g,"").slice(0,14);
+  const{data:run,error:runError}=await supabase.from("runtime_validation_runs").insert({
+    run_code:runCode,environment:"preview",deployment_id:deploymentId,commit_sha:commitSha,base_url:baseUrl,
+    status:"running",executed_by:user.id,notes:"Validación automática del Preview actual desde Master Admin."
+  }).select("id").single();
+  if(runError||!run) throw new Error(runError?.message||"validation_run_create_failed");
+
+  const checks=[
+    {name:"Landing ES",path:"/es",expected:200},
+    {name:"Admin login",path:"/admin/login",expected:200},
+    {name:"Master protegido",path:"/admin/master",expected:307},
+    {name:"API status protegida",path:"/api/admin/status",expected:403},
+    {name:"API commerce protegida",path:"/api/admin/commerce",expected:403}
+  ];
+
+  let failed=0;
+  for(const check of checks){
+    const started=Date.now();
+    try{
+      const response=await fetch(baseUrl+check.path,{method:"GET",redirect:"manual",cache:"no-store"});
+      const actual=response.status;
+      const passed=actual===check.expected;
+      if(!passed) failed++;
+      const location=response.headers.get("location");
+      const{error}=await supabase.from("runtime_validation_results").insert({
+        run_id:run.id,check_name:check.name,request_path:check.path,method:"GET",
+        expected_status:check.expected,actual_status:actual,redirect_location:location,
+        status:passed?"passed":"failed",latency_ms:Date.now()-started,
+        detail:passed?"Respuesta esperada.":"Respuesta distinta a la esperada."
+      });
+      if(error) throw error;
+    }catch(error:any){
+      failed++;
+      await supabase.from("runtime_validation_results").insert({
+        run_id:run.id,check_name:check.name,request_path:check.path,method:"GET",
+        expected_status:check.expected,actual_status:null,redirect_location:null,
+        status:"failed",latency_ms:Date.now()-started,
+        detail:"Error de runtime: "+String(error?.message||error)
+      });
+    }
+  }
+
+  const finalStatus=failed===0?"passed":"failed";
+  const{error:closeError}=await supabase.from("runtime_validation_runs").update({
+    status:finalStatus,notes:failed===0
+      ?"Smoke automático completo: 5/5 checks passed."
+      :`Smoke automático con ${failed} check(s) fallido(s).`,
+    updated_at:new Date().toISOString()
+  }).eq("id",run.id);
+  if(closeError) throw new Error(closeError.message);
+  revalidatePath("/admin/master/observability");
+}
+
 async function createValidationRun(formData:FormData){
   "use server";
   const {supabase,user}=await requireObservabilityAdmin();
@@ -153,6 +214,11 @@ export default async function ObservabilityPage(){
       <article><small>Auth boundary</small><strong>VALIDADA</strong><span>Master→login · APIs→403</span></article>
       <article><small>Producción</small><strong>PROTEGIDA</strong><span>Sin promociones desde Observabilidad</span></article>
     </section>
+
+    {profile.role==="admin"&&<section className={styles.notice}>
+      <div><strong>Validación automática</strong><span>Ejecuta 5 smoke tests sobre este Preview y guarda la evidencia con tu sesión MFA.</span></div>
+      <form action={validateCurrentPreview}><button className={styles.formButton}>Validar este Preview</button></form>
+    </section>}
 
     {profile.role==="admin"&&<section className={styles.adminForms}>
       <form action={createValidationRun} className={styles.adminForm}>
