@@ -50,6 +50,48 @@ async function createMetric(formData:FormData){
   revalidatePath("/admin/master/data");
 }
 
+
+async function updateDataSource(formData:FormData){
+  "use server";
+  const {supabase}=await requireDataEditor();
+  const id=String(formData.get("source_id")||"").trim();
+  const status=String(formData.get("status")||"active");
+  const ownerRaw=String(formData.get("owner_user_id")||"").trim();
+  const ownerUserId=ownerRaw||null;
+  const systemName=String(formData.get("system_name")||"").trim()||null;
+  const freshnessRaw=String(formData.get("freshness_target_minutes")||"").trim();
+  const freshness=freshnessRaw?Math.max(0,Number(freshnessRaw)):null;
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["active","degraded","paused","deprecated","retired"]);
+  if(!id||!allowedStatus.has(status)||(freshness!==null&&!Number.isFinite(freshness))) throw new Error("invalid_data_source_update");
+  const{error}=await supabase.from("data_sources").update({
+    status,owner_user_id:ownerUserId,system_name:systemName,freshness_target_minutes:freshness,notes,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/data");
+}
+
+async function updateMetric(formData:FormData){
+  "use server";
+  const {supabase}=await requireDataEditor();
+  const id=String(formData.get("metric_id")||"").trim();
+  const status=String(formData.get("status")||"active");
+  const ownerRaw=String(formData.get("owner_user_id")||"").trim();
+  const ownerUserId=ownerRaw||null;
+  const definition=String(formData.get("definition")||"").trim()||null;
+  const formula=String(formData.get("formula")||"").trim()||null;
+  const unit=String(formData.get("unit")||"").trim()||null;
+  const sourceTable=String(formData.get("source_table")||"").trim()||null;
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["draft","active","deprecated"]);
+  if(!id||!allowedStatus.has(status)) throw new Error("invalid_metric_update");
+  const patch:any={status,owner_user_id:ownerUserId,formula,unit,source_table:sourceTable,notes,updated_at:new Date().toISOString()};
+  if(definition) patch.definition=definition;
+  const{error}=await supabase.from("metric_definitions").update(patch).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/data");
+}
+
 export default async function MasterDataPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -65,15 +107,17 @@ export default async function MasterDataPage(){
     {count:pageViews},
     {count:leads},
     {count:amazonClicks},
-    {data:recentEvents}
+    {data:recentEvents},
+    {data:owners}
   ]=await Promise.all([
-    supabase.from("data_sources").select("id,code,name,source_type,system_name,status,freshness_target_minutes,created_at").order("name",{ascending:true}),
-    supabase.from("metric_definitions").select("id,code,name,domain,definition,formula,unit,source_table,status,created_at").order("domain",{ascending:true}),
+    supabase.from("data_sources").select("id,code,name,source_type,system_name,status,freshness_target_minutes,owner_user_id,notes,created_at").order("name",{ascending:true}),
+    supabase.from("metric_definitions").select("id,code,name,domain,definition,formula,unit,source_table,status,owner_user_id,notes,created_at").order("domain",{ascending:true}),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).gte("created_at",since),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","page_view").gte("created_at",since),
     supabase.from("leads").select("*",{count:"exact",head:true}).gte("created_at",since),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","amazon_click").gte("created_at",since),
-    supabase.from("analytics_events").select("event_name,source,medium,created_at").order("created_at",{ascending:false}).limit(20)
+    supabase.from("analytics_events").select("event_name,source,medium,created_at").order("created_at",{ascending:false}).limit(20),
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
   ]);
 
   const sourceRows=(sources||[]) as any[];
@@ -82,6 +126,8 @@ export default async function MasterDataPage(){
   const degradedSources=sourceRows.filter(s=>s.status==="degraded");
   const conversion=(pageViews||0)>0?((leads||0)/(pageViews||1))*100:0;
   const amazonCtr=(pageViews||0)>0?((amazonClicks||0)/(pageViews||1))*100:0;
+  const ownerRows=(owners||[]) as any[];
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
@@ -100,7 +146,7 @@ export default async function MasterDataPage(){
     <section className={styles.grid}>
       {sourceRows.map((s:any)=><article key={s.id} className={styles.card}>
         <div className={styles.cardTop}><span className={s.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(s.status).toUpperCase()}</span><em>{s.source_type}</em></div>
-        <h3>{s.name}</h3><p>{s.system_name||"Sistema no registrado"}<br/>{s.freshness_target_minutes!=null?"Freshness: "+s.freshness_target_minutes+" min":"Freshness no definido"}</p>
+        <h3>{s.name}</h3><p>{s.system_name||"Sistema no registrado"}<br/>Owner: {ownerName(s.owner_user_id)}<br/>{s.freshness_target_minutes!=null?"Freshness: "+s.freshness_target_minutes+" min":"Freshness no definido"}</p>
       </article>)}
       {!sourceRows.length&&<article className={styles.card}><h3>Data catalog preparado</h3><p>No se han formalizado fuentes todavía.</p></article>}
     </section>
@@ -109,7 +155,7 @@ export default async function MasterDataPage(){
     <section className={styles.grid}>
       {metricRows.map((m:any)=><article key={m.id} className={styles.card}>
         <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(m.status).toUpperCase()}</span><em>{m.domain}</em></div>
-        <h3>{m.name}</h3><p>{m.definition}<br/>{m.formula||"Fórmula no registrada"} · {m.unit||"sin unidad"}<br/>{m.source_table||"Fuente no asociada"}</p>
+        <h3>{m.name}</h3><p>Owner: {ownerName(m.owner_user_id)}<br/>{m.definition}<br/>{m.formula||"Fórmula no registrada"} · {m.unit||"sin unidad"}<br/>{m.source_table||"Fuente no asociada"}</p>
       </article>)}
       {!metricRows.length&&<article className={styles.card}><h3>Metric Registry vacío</h3><p>Las definiciones corporativas se registrarán aquí.</p></article>}
     </section>
@@ -140,6 +186,37 @@ export default async function MasterDataPage(){
           <label className={styles.span2}>Definición<textarea name="definition" required rows={3}/></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar métrica</button>
+      </form>
+    </section>}
+
+
+    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+      <form action={updateDataSource} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR FUENTE</span><h2>Actualizar data source</h2></div>
+        <div className={styles.formGrid}>
+          <label>Fuente<select name="source_id" required defaultValue=""><option value="" disabled>Seleccionar fuente</option>{sourceRows.map((s:any)=><option key={s.id} value={s.id}>{s.code} · {s.name}</option>)}</select></label>
+          <label>Status<select name="status" defaultValue="active"><option value="active">Active</option><option value="degraded">Degraded</option><option value="paused">Paused</option><option value="deprecated">Deprecated</option><option value="retired">Retired</option></select></label>
+          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Sistema<input name="system_name"/></label>
+          <label>Freshness target (min)<input type="number" min="0" name="freshness_target_minutes"/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!sourceRows.length}>Actualizar fuente</button>
+      </form>
+
+      <form action={updateMetric} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR KPI</span><h2>Actualizar definición</h2></div>
+        <div className={styles.formGrid}>
+          <label>Métrica<select name="metric_id" required defaultValue=""><option value="" disabled>Seleccionar métrica</option>{metricRows.map((m:any)=><option key={m.id} value={m.id}>{m.code} · {m.name}</option>)}</select></label>
+          <label>Status<select name="status" defaultValue="active"><option value="draft">Draft</option><option value="active">Active</option><option value="deprecated">Deprecated</option></select></label>
+          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Unidad<input name="unit"/></label>
+          <label>Fuente tabla<input name="source_table"/></label>
+          <label>Fórmula<input name="formula"/></label>
+          <label className={styles.span2}>Definición<textarea name="definition" rows={3}/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!metricRows.length}>Actualizar métrica</button>
       </form>
     </section>}
 
