@@ -16,7 +16,8 @@ const items=[
   ["Integraciones","/admin/integrations"],
   ["Mapa","/admin/mapa"],
   ["Seguridad","/admin/seguridad"],
-  ["Estado","/admin/status"]
+  ["Estado","/admin/status"],
+  ["LIRYGAMES","/admin/master"]
 ] as const;
 
 const hiddenPrefixes=[
