@@ -74,7 +74,7 @@ async function updateFlag(formData:FormData){
   "use server";
   const {supabase,user}=await requireAdmin();
   const id=String(formData.get("flag_id")||"").trim();
-  const activos=String(formData.get("enabled")||"false")==="true";
+  const enabled=String(formData.get("enabled")||"false")==="true";
   const scope=String(formData.get("environment_scope")||"preview");
   const rollout=Math.max(0,Math.min(100,Number(formData.get("rollout_percent")||0)));
   const ownerRaw=String(formData.get("owner_user_id")||"").trim();
@@ -84,7 +84,7 @@ async function updateFlag(formData:FormData){
   if(!id||!["shared","development","preview","production"].includes(scope)||!Number.isFinite(rollout)) throw new Error("invalid_flag_update");
   if(enabled&&scope==="production") throw new Error("production_flag_requires_release_approval");
   const{error}=await supabase.from("feature_flags").update({
-    activos,environment_scope:scope,rollout_percent:Math.trunc(rollout),owner_user_id:ownerUserId,
+    enabled,environment_scope:scope,rollout_percent:Math.trunc(rollout),owner_user_id:ownerUserId,
     description,notes,updated_by:user.id,updated_at:new Date().toISOString()
   }).eq("id",id);
   if(error) throw new Error(error.message);
@@ -107,7 +107,7 @@ export default async function SettingsPage(){
 
   const settingRows=(settings||[]) as any[];
   const flagRows=(flags||[]) as any[];
-  const activosFlags=flagRows.filter(f=>f.enabled);
+  const enabledFlags=flagRows.filter(f=>f.enabled);
   const prodScoped=settingRows.filter(s=>s.environment_scope==="production").length;
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
