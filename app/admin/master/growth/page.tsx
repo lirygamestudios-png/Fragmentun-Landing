@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 
 function lifecycleLabel(value:string){
@@ -170,7 +171,7 @@ export default async function MasterGrowthPage(){
           <label>Próxima acción<input type="datetime-local" name="next_action_at"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3} placeholder="Notas internas del contacto"/></label>
         </div>
-        <button className={styles.formButton} type="submit">Guardar contacto</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Guardar contacto</MasterSubmitButton>
       </form>
 
       <form action={addActivity} className={styles.adminForm}>
@@ -187,7 +188,7 @@ export default async function MasterGrowthPage(){
           <label className={styles.span2}>Asunto<input name="subject" placeholder="Seguimiento"/></label>
           <label className={styles.span2}>Detalle<textarea name="body" rows={4} placeholder="Detalle de la interacción"/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar actividad</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar actividad</MasterSubmitButton>
       </form>
       </section>
     </details>}
