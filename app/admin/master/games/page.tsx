@@ -5,18 +5,33 @@ import styles from "../master-admin.module.css";
 
 function stageLabel(stage:string){
   const map:Record<string,string>={
-    concept:"Concept",
-    pre_production:"Pre-Production",
+    concept:"Concepto",
+    pre_production:"Preproducción",
     vertical_slice:"Vertical Slice",
-    production:"Production",
+    production:"Producción",
     alpha:"Alpha",
     beta:"Beta",
-    release_candidate:"Release Candidate",
-    launch:"Launch",
-    liveops:"LiveOps",
-    sunset:"Sunset"
+    release_candidate:"Candidato a lanzamiento",
+    launch:"Lanzamiento",
+    liveops:"Operación en vivo",
+    sunset:"Cierre"
   };
   return map[stage]||stage;
+}
+
+function healthLabel(value:string){
+  const map:Record<string,string>={green:"ESTABLE",amber:"ATENCIÓN",red:"CRÍTICO",paused:"PAUSADO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function milestoneStatusLabel(value:string){
+  const map:Record<string,string>={planned:"PLANIFICADO",in_progress:"EN CURSO",blocked:"BLOQUEADO",at_risk:"EN RIESGO",completed:"COMPLETADO",canceled:"CANCELADO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function milestoneTypeLabel(value:string){
+  const map:Record<string,string>={pre_production:"Preproducción",vertical_slice:"Vertical Slice",production:"Producción",alpha:"Alpha",beta:"Beta",release_candidate:"Candidato a lanzamiento",launch:"Lanzamiento",liveops:"Operación en vivo",technical:"Técnico",publishing:"Publicación"};
+  return map[value]||value;
 }
 
 
@@ -148,34 +163,34 @@ export default async function MasterGamesPage(){
   const blocked=milestoneRows.filter(m=>m.status==="blocked"||m.status==="at_risk");
   const redGames=gameRows.filter(g=>g.health_status==="red"||g.health_status==="paused");
   const ownerRows=(owners||[]) as any[];
-  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · JUEGOS</span><h1>Juegos & Operaciones</h1><p>Registro operativo real de títulos, milestones y salud de producción.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · JUEGOS</span><h1>Juegos</h1><p>Seguimiento de títulos, avances y estado de producción.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
       <article><small>Títulos</small><strong>{gameRows.length}</strong><span>game_titles</span></article>
-      <article><small>Milestones abiertos</small><strong>{activeMilestones.length}</strong><span>Producción activa</span></article>
-      <article><small>En riesgo/bloqueados</small><strong>{blocked.length}</strong><span>Excepciones</span></article>
-      <article><small>Salud crítica</small><strong>{redGames.length}</strong><span>Red/paused</span></article>
+      <article><small>Etapas abiertas</small><strong>{activeMilestones.length}</strong><span>Producción activa</span></article>
+      <article><small>En riesgo o bloqueados</small><strong>{blocked.length}</strong><span>Excepciones</span></article>
+      <article><small>Salud crítica</small><strong>{redGames.length}</strong><span>Críticos o pausados</span></article>
     </section>
 
     <section className={styles.sectionHead}>
-      <div><span>GAME PORTFOLIO</span><h2>Registro de títulos</h2></div>
+      <div><span>PORTAFOLIO DE JUEGOS</span><h2>Registro de títulos</h2></div>
       <p>Esta vista ya consume las nuevas tablas persistentes del estudio. No se crean títulos ficticios: el registro comienza vacío hasta cargar cada proyecto real.</p>
     </section>
 
     <section className={styles.grid}>
       {gameRows.map((g:any)=><article key={g.id} className={styles.card}>
         <div className={styles.cardTop}>
-          <span className={g.health_status==="green"?styles.badgeActive:styles.badgePlanned}>{String(g.health_status).toUpperCase()}</span>
+          <span className={g.health_status==="green"?styles.badgeActive:styles.badgePlanned}>{healthLabel(g.health_status)}</span>
           <em>{stageLabel(g.lifecycle_stage)}</em>
         </div>
         <h3>{g.name}</h3>
-        <p>{g.ip_name||"IP sin asignar"}<br/>Owner: {ownerName(g.owner_user_id)}<br/>{(g.platform_scope||[]).length?(g.platform_scope||[]).join(" · "):"Plataformas por definir"}<br/>{g.target_release_date?"Target: "+g.target_release_date:"Sin fecha objetivo"} · {g.budget_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:g.currency||"USD"}).format(Number(g.budget_cents)/100):"Presupuesto por definir"}</p>
+        <p>{g.ip_name||"IP sin asignar"}<br/>Responsable: {ownerName(g.owner_user_id)}<br/>{(g.platform_scope||[]).length?(g.platform_scope||[]).join(" · "):"Plataformas por definir"}<br/>{g.target_release_date?"Lanzamiento objetivo: "+g.target_release_date:"Sin fecha objetivo"} · {g.budget_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:g.currency||"USD"}).format(Number(g.budget_cents)/100):"Presupuesto por definir"}</p>
       </article>)}
       {!gameRows.length&&<article className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgePlanned}>LISTO</span><em>GAME REGISTRY</em></div>
@@ -185,20 +200,20 @@ export default async function MasterGamesPage(){
     </section>
 
     <section className={styles.sectionHead}>
-      <div><span>MILESTONES</span><h2>Control de producción</h2></div>
+      <div><span>ETAPAS</span><h2>Avance de producción</h2></div>
       <p>Milestones conectados por título con progreso, owner, fecha objetivo, exit criteria y estado.</p>
     </section>
 
     <section className={styles.grid}>
       {milestoneRows.map((m:any)=><article key={m.id} className={styles.card}>
         <div className={styles.cardTop}>
-          <span className={m.status==="completed"?styles.badgeActive:styles.badgePlanned}>{String(m.status).toUpperCase()}</span>
+          <span className={m.status==="completed"?styles.badgeActive:styles.badgePlanned}>{milestoneStatusLabel(m.status)}</span>
           <em>{m.progress_percent}%</em>
         </div>
         <h3>{m.name}</h3>
-        <p>{m.milestone_type} · {m.target_date||"Sin fecha"}<br/>Owner: {ownerName(m.owner_user_id)}<br/>{m.exit_criteria||"Exit criteria pendiente"}</p>
+        <p>{milestoneTypeLabel(m.milestone_type)} · {m.target_date||"Sin fecha"}<br/>Responsable: {ownerName(m.owner_user_id)}<br/>{m.exit_criteria||"Condiciones de cierre pendientes"}</p>
       </article>)}
-      {!milestoneRows.length&&<article className={styles.card}><h3>Sin milestones cargados</h3><p>Cuando registremos cada juego, aquí controlaremos Vertical Slice, Alpha, Beta, RC, Launch y LiveOps.</p></article>}
+      {!milestoneRows.length&&<article className={styles.card}><h3>Sin etapas cargadas</h3><p>Cuando registremos cada juego, aquí controlaremos Vertical Slice, Alpha, Beta, RC, Launch y LiveOps.</p></article>}
     </section>
 
 
@@ -282,7 +297,7 @@ export default async function MasterGamesPage(){
     </section>}
 
     <section className={styles.sectionHead}>
-      <div><span>IP SOURCE</span><h2>Activos ya disponibles</h2></div>
+      <div><span>ACTIVOS DE LA IP</span><h2>Activos ya disponibles</h2></div>
       <p>El sistema conecta el futuro portfolio de juegos con el contenido editorial y multimedia existente.</p>
     </section>
     <section className={styles.kpis}>
