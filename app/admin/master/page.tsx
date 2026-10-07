@@ -130,10 +130,38 @@ export default async function MasterAdminPage(){
       </section>
 
       <section className={styles.kpis}>
-        <article><small>Leads</small><strong>{(leadCount||0).toLocaleString()}</strong><span>Supabase real</span></article>
-        <article><small>Eventos</small><strong>{(eventCount||0).toLocaleString()}</strong><span>Analytics real</span></article>
-        <article><small>Libros</small><strong>{(bookCount||0).toLocaleString()}</strong><span>Catálogo conectado</span></article>
-        <article><small>Media</small><strong>{(mediaCount||0).toLocaleString()}</strong><span>Biblioteca conectada</span></article>
+        <article><small>Excepciones críticas</small><strong>{criticalExceptions}</strong><span>Producción + Publishing + approvals</span></article>
+        <article><small>Juegos</small><strong>{gameRows.length}</strong><span>{gamesAtRisk} red/paused</span></article>
+        <article><small>CRM cualificado</small><strong>{qualifiedContacts}</strong><span>{crmRows.length} contactos totales</span></article>
+        <article><small>Net ledger</small><strong>{financeNetLabel}</strong><span>Posted + reconciled</span></article>
+      </section>
+
+      <section className={styles.sectionHead}>
+        <div><span>EXECUTIVE PULSE</span><h2>Señales que requieren atención</h2></div>
+        <p>El Command Center prioriza excepciones y decisiones; los módulos operativos conservan el detalle.</p>
+      </section>
+
+      <section className={styles.grid}>
+        <a href="/admin/master/games" className={styles.card}>
+          <div className={styles.cardTop}><span className={gamesAtRisk||milestonesAtRisk?styles.badgePlanned:styles.badgeActive}>{gamesAtRisk||milestonesAtRisk?"ATENCIÓN":"ESTABLE"}</span><em>GAME OPS</em></div>
+          <h3>Producción</h3>
+          <p>{gameRows.length} juegos · {milestoneRows.length} milestones · {gamesAtRisk+milestonesAtRisk} excepciones</p>
+        </a>
+        <a href="/admin/master/publishing" className={styles.card}>
+          <div className={styles.cardTop}><span className={releaseRisks?styles.badgePlanned:styles.badgeActive}>{releaseRisks?"ATENCIÓN":"ESTABLE"}</span><em>PUBLISHING</em></div>
+          <h3>Lanzamientos</h3>
+          <p>{releaseRows.length} releases · {releaseRisks} con riesgo/certificación</p>
+        </a>
+        <a href="/admin/master/growth" className={styles.card}>
+          <div className={styles.cardTop}><span className={styles.badgeActive}>PIPELINE</span><em>CRM</em></div>
+          <h3>Growth</h3>
+          <p>{crmRows.length} contactos · {qualifiedContacts} cualificados · {(leadCount||0)} leads originales</p>
+        </a>
+        <a href="/admin/master/automation" className={styles.card}>
+          <div className={styles.cardTop}><span className={approvalRows.length?styles.badgePlanned:styles.badgeActive}>{approvalRows.length?"DECISIÓN":"LIMPIO"}</span><em>AI/OPS</em></div>
+          <h3>Approvals</h3>
+          <p>{approvalRows.length} pendientes · {highRiskApprovals} high/critical</p>
+        </a>
       </section>
 
       <section className={styles.sectionHead}>
