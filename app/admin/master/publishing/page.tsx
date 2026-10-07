@@ -62,6 +62,49 @@ async function createRelease(formData:FormData){
   revalidatePath("/admin/master/publishing");
 }
 
+
+async function updateStorefront(formData:FormData){
+  "use server";
+  const {supabase}=await requirePublishingEditor();
+  const id=String(formData.get("storefront_id")||"").trim();
+  const accountStatus=String(formData.get("account_status")||"not_configured");
+  const active=String(formData.get("active")||"true")==="true";
+  const regions=String(formData.get("region_scope")||"").split(",").map(x=>x.trim()).filter(Boolean);
+  const allowedStatus=new Set(["not_configured","configured","verified","restricted","suspended"]);
+  if(!id||!allowedStatus.has(accountStatus)) throw new Error("invalid_storefront_update");
+  const{error}=await supabase.from("publishing_storefronts").update({
+    account_status:accountStatus,active,region_scope:regions,updated_at:new Date().toISOString()
+  }).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/publishing");
+}
+
+async function updateRelease(formData:FormData){
+  "use server";
+  const {supabase}=await requirePublishingEditor();
+  const id=String(formData.get("release_id")||"").trim();
+  const status=String(formData.get("status")||"planned");
+  const certification=String(formData.get("certification_status")||"not_started");
+  const targetDate=String(formData.get("target_date")||"").trim()||null;
+  const priceRaw=String(formData.get("price")||"").trim();
+  const priceCents=priceRaw?Math.round(Number(priceRaw)*100):null;
+  const currency=(String(formData.get("currency")||"USD").trim()||"USD").toUpperCase();
+  const territories=String(formData.get("territories")||"").split(",").map(x=>x.trim()).filter(Boolean);
+  const storeUrl=String(formData.get("store_url")||"").trim()||null;
+  const notes=String(formData.get("notes")||"").trim()||null;
+  const allowedStatus=new Set(["planned","preparing","submitted","certification","approved","scheduled","live","delayed","blocked","canceled","sunset"]);
+  const allowedCertification=new Set(["not_started","in_progress","passed","failed","waived"]);
+  if(!id||!allowedStatus.has(status)||!allowedCertification.has(certification)|| (priceCents!==null&&(!Number.isFinite(priceCents)||priceCents<0))) throw new Error("invalid_release_update");
+  const patch:any={
+    status,certification_status:certification,target_date:targetDate,price_cents:priceCents,currency,
+    territories,store_url:storeUrl,notes,updated_at:new Date().toISOString()
+  };
+  if(status==="live") patch.actual_release_at=new Date().toISOString();
+  const{error}=await supabase.from("publishing_releases").update(patch).eq("id",id);
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/publishing");
+}
+
 export default async function MasterPublishingPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -181,6 +224,36 @@ export default async function MasterPublishingPage(){
           <label className={styles.span2}>Territorios<input name="territories" placeholder="US, LATAM, EU"/></label>
         </div>
         <button className={styles.formButton} type="submit" disabled={!gameRows.length}>Registrar release</button>
+      </form>
+    </section>}
+
+
+    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+      <form action={updateStorefront} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR STOREFRONT</span><h2>Actualizar plataforma</h2></div>
+        <div className={styles.formGrid}>
+          <label>Storefront<select name="storefront_id" required defaultValue=""><option value="" disabled>Seleccionar storefront</option>{stores.map((s:any)=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
+          <label>Estado cuenta<select name="account_status" defaultValue="configured"><option value="not_configured">Not configured</option><option value="configured">Configured</option><option value="verified">Verified</option><option value="restricted">Restricted</option><option value="suspended">Suspended</option></select></label>
+          <label>Activo<select name="active" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
+          <label className={styles.span2}>Regiones<input name="region_scope" placeholder="US, LATAM, EU"/></label>
+        </div>
+        <button className={styles.formButton} disabled={!stores.length}>Actualizar storefront</button>
+      </form>
+
+      <form action={updateRelease} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR RELEASE</span><h2>Actualizar lanzamiento</h2></div>
+        <div className={styles.formGrid}>
+          <label>Release<select name="release_id" required defaultValue=""><option value="" disabled>Seleccionar release</option>{releaseRows.map((r:any)=><option key={r.id} value={r.id}>{r.release_name}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="preparing"><option value="planned">Planned</option><option value="preparing">Preparing</option><option value="submitted">Submitted</option><option value="certification">Certification</option><option value="approved">Approved</option><option value="scheduled">Scheduled</option><option value="live">Live</option><option value="delayed">Delayed</option><option value="blocked">Blocked</option><option value="canceled">Canceled</option><option value="sunset">Sunset</option></select></label>
+          <label>Certificación<select name="certification_status" defaultValue="not_started"><option value="not_started">Not started</option><option value="in_progress">In progress</option><option value="passed">Passed</option><option value="failed">Failed</option><option value="waived">Waived</option></select></label>
+          <label>Fecha objetivo<input type="date" name="target_date"/></label>
+          <label>Precio<input type="number" min="0" step="0.01" name="price"/></label>
+          <label>Moneda<input name="currency" defaultValue="USD"/></label>
+          <label className={styles.span2}>Territorios<input name="territories" placeholder="US, LATAM, EU"/></label>
+          <label className={styles.span2}>Store URL<input name="store_url"/></label>
+          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+        </div>
+        <button className={styles.formButton} disabled={!releaseRows.length}>Actualizar release</button>
       </form>
     </section>}
 
