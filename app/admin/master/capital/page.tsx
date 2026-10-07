@@ -44,7 +44,7 @@ async function createOpportunity(formData:FormData){
   const name=String(formData.get("name")||"").trim();
   const type=String(formData.get("opportunity_type")||"equity");
   const target=Number(formData.get("target_amount")||0);
-  const committed=Number(formData.get("committed_amount")||0);
+  const comprometido=Number(formData.get("committed_amount")||0);
   const currency=(String(formData.get("currency")||"USD").trim()||"USD").toUpperCase();
   const probability=Math.max(0,Math.min(100,Number(formData.get("probability")||0)));
   const expectedClose=String(formData.get("expected_close_date")||"").trim()||null;
@@ -53,7 +53,7 @@ async function createOpportunity(formData:FormData){
   if(!name||!allowedType.has(type)||!Number.isFinite(target)||!Number.isFinite(committed)||!Number.isFinite(probability)) throw new Error("invalid_opportunity");
   const{error}=await supabase.from("fundraising_opportunities").insert({
     investor_id:investorId,name,opportunity_type:type,target_amount_cents:Math.max(0,Math.round(target*100)),
-    committed_amount_cents:Math.max(0,Math.round(committed*100)),currency,probability,
+    comprometido_amount_cents:Math.max(0,Math.round(committed*100)),currency,probability,
     expected_close_date:expectedClose,next_action:nextAction,created_by:user.id
   });
   if(error) throw new Error(error.message);
@@ -94,9 +94,9 @@ async function updateOpportunity(formData:FormData){
   const ownerUserId=ownerRaw||null;
   const probability=Math.max(0,Math.min(100,Number(formData.get("probability")||0)));
   const targetRaw=String(formData.get("target_amount")||"").trim();
-  const committedRaw=String(formData.get("committed_amount")||"").trim();
+  const comprometidoRaw=String(formData.get("committed_amount")||"").trim();
   const target=targetRaw?Math.round(Number(targetRaw)*100):null;
-  const committed=committedRaw?Math.round(Number(committedRaw)*100):null;
+  const comprometido=committedRaw?Math.round(Number(committedRaw)*100):null;
   const expectedClose=String(formData.get("expected_close_date")||"").trim()||null;
   const nextAction=String(formData.get("next_action")||"").trim()||null;
   const nextActionAt=String(formData.get("next_action_at")||"").trim()||null;
@@ -145,46 +145,46 @@ export default async function MasterCapitalPage(){
   const revenueCurrency=paidRows[0]?.currency||"USD";
   const open=opportunityRows.filter(o=>o.status==="open"||o.status==="on_hold");
   const pipelineValue=open.reduce((a,o)=>a+Number(o.target_amount_cents||0),0);
-  const committedValue=opportunityRows.reduce((a,o)=>a+Number(o.committed_amount_cents||0),0);
+  const comprometidoValue=opportunityRows.reduce((a,o)=>a+Number(o.committed_amount_cents||0),0);
   const weighted=open.reduce((a,o)=>a+Math.round(Number(o.target_amount_cents||0)*(Number(o.probability||0)/100)),0);
   const pipelineCurrency=open[0]?.currency||opportunityRows[0]?.currency||"USD";
   const ownerRows=(owners||[]) as any[];
-  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · CAPITAL</span><h1>Capital & Investors</h1><p>Pipeline persistente de inversionistas y fundraising. Cap table y gobierno societario permanecen fuera de este CRM.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>MASTER ADMIN · CAPITAL</span><h1>Capital e Inversionistas</h1><p>Seguimiento de inversionistas y oportunidades de capital. La estructura societaria permanece separada de este registro.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Investors</small><strong>{investorRows.length}</strong><span>Contactos registrados</span></article>
-      <article><small>Pipeline</small><strong>{money(pipelineValue,pipelineCurrency)}</strong><span>{open.length} oportunidades abiertas</span></article>
-      <article><small>Weighted pipeline</small><strong>{money(weighted,pipelineCurrency)}</strong><span>Probabilidad aplicada</span></article>
-      <article><small>Committed</small><strong>{money(committedValue,pipelineCurrency)}</strong><span>Solo compromisos registrados</span></article>
+      <article><small>Inversionistas</small><strong>{investorRows.length}</strong><span>Contactos registrados</span></article>
+      <article><small>Oportunidades abiertas</small><strong>{money(pipelineValue,pipelineCurrency)}</strong><span>{open.length} oportunidades abiertas</span></article>
+      <article><small>Valor estimado</small><strong>{money(weighted,pipelineCurrency)}</strong><span>Probabilidad aplicada</span></article>
+      <article><small>Capital comprometido</small><strong>{money(committedValue,pipelineCurrency)}</strong><span>Solo compromisos registrados</span></article>
     </section>
 
-    <section className={styles.sectionHead}><div><span>INVESTOR CRM</span><h2>Inversionistas</h2></div><p>Registro privado visible solo para administradores.</p></section>
+    <section className={styles.sectionHead}><div><span>INVERSIONISTAS</span><h2>Inversionistas</h2></div><p>Registro privado visible solo para administradores.</p></section>
     <section className={styles.grid}>
       {investorRows.map((i:any)=><article key={i.id} className={styles.card}>
         <div className={styles.cardTop}><span className={["engaged","diligence","committed"].includes(i.status)?styles.badgeActive:styles.badgePlanned}>{String(i.status).toUpperCase()}</span><em>{i.priority}</em></div>
         <h3>{i.name}</h3>
-        <p>{i.organization||"Sin organización"} · {i.investor_type}<br/>Owner: {ownerName(i.owner_user_id)}<br/>{i.email||"Email no registrado"}<br/>Stage: {i.stage}</p>
+        <p>{i.organization||"Sin organización"} · {i.investor_type}<br/>Responsable: {ownerName(i.owner_user_id)}<br/>{i.email||"Email no registrado"}<br/>Etapa: {i.stage}</p>
       </article>)}
-      {!investorRows.length&&<article className={styles.card}><h3>Investor CRM preparado</h3><p>No se han cargado inversionistas todavía. No se importan contactos personales automáticamente.</p></article>}
+      {!investorRows.length&&<article className={styles.card}><h3>Registro de inversionistas preparado</h3><p>No se han cargado inversionistas todavía. No se importan contactos personales automáticamente.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>FUNDRAISING</span><h2>Oportunidades</h2></div><p>Seguimiento por monto, probabilidad, stage, fecha y próxima acción.</p></section>
+    <section className={styles.sectionHead}><div><span>CAPITAL</span><h2>Oportunidades</h2></div><p>Seguimiento por monto, probabilidad, etapa, fecha y próxima acción.</p></section>
     <section className={styles.grid}>
       {opportunityRows.map((o:any)=><article key={o.id} className={styles.card}>
         <div className={styles.cardTop}><span className={o.status==="won"?styles.badgeActive:styles.badgePlanned}>{String(o.stage).toUpperCase()}</span><em>{o.probability}%</em></div>
         <h3>{o.name}</h3>
-        <p>{money(o.target_amount_cents,o.currency)} target · {money(o.committed_amount_cents,o.currency)} committed<br/>Owner: {ownerName(o.owner_user_id)}<br/>{o.expected_close_date||"Sin fecha"} · {o.next_action||"Próxima acción pendiente"}</p>
+        <p>{money(o.target_amount_cents,o.currency)} objetivo · {money(o.committed_amount_cents,o.currency)} comprometido<br/>Responsable: {ownerName(o.owner_user_id)}<br/>{o.expected_close_date||"Sin fecha"} · {o.next_action||"Próxima acción pendiente"}</p>
       </article>)}
-      {!opportunityRows.length&&<article className={styles.card}><h3>Pipeline vacío</h3><p>Las oportunidades reales de inversión, publishing, deuda, grants o licensing se registrarán aquí.</p></article>}
+      {!opportunityRows.length&&<article className={styles.card}><h3>Sin oportunidades registradas</h3><p>Las oportunidades reales de inversión, publicación, deuda, subvenciones o licencias se registrarán aquí.</p></article>}
     </section>
 
-    <section className={styles.adminForms}>
+    <details className={styles.advancedPanel}><summary>Opciones avanzadas</summary><section className={styles.adminForms}>
       <form action={createInvestor} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVO INVERSOR</span><h2>Registrar contacto</h2></div>
         <div className={styles.formGrid}>
@@ -192,12 +192,12 @@ export default async function MasterCapitalPage(){
           <label>Organización<input name="organization" placeholder="Firma / empresa"/></label>
           <label>Email<input type="email" name="email" placeholder="correo"/></label>
           <label>Tipo<select name="investor_type" defaultValue="other">
-            <option value="angel">Angel</option><option value="family_office">Family Office</option><option value="vc">VC</option>
-            <option value="strategic">Strategic</option><option value="publisher">Publisher</option><option value="grant">Grant</option>
-            <option value="lender">Lender</option><option value="other">Other</option>
+            <option value="angel">Inversionista ángel</option><option value="family_office">Oficina familiar</option><option value="vc">Capital de riesgo</option>
+            <option value="strategic">Estratégico</option><option value="publisher">Editorial / publisher</option><option value="grant">Subvención</option>
+            <option value="lender">Prestamista</option><option value="other">Otro</option>
           </select></label>
           <label>Prioridad<select name="priority" defaultValue="medium">
-            <option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option>
+            <option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option>
           </select></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3} placeholder="Contexto interno"/></label>
         </div>
@@ -205,70 +205,69 @@ export default async function MasterCapitalPage(){
       </form>
 
       <form action={createOpportunity} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>NUEVA OPORTUNIDAD</span><h2>Registrar fundraising</h2></div>
+        <div className={styles.formTitle}><span>NUEVA OPORTUNIDAD</span><h2>Registrar oportunidad de capital</h2></div>
         <div className={styles.formGrid}>
           <label>Inversor<select name="investor_id" defaultValue="">
             <option value="">Sin inversor asignado</option>
             {investorRows.map((i:any)=><option key={i.id} value={i.id}>{i.name}</option>)}
           </select></label>
-          <label>Nombre<input name="name" required placeholder="Seed / Strategic / Publishing deal"/></label>
+          <label>Nombre<input name="name" required placeholder="Ronda inicial / acuerdo estratégico / publicación"/></label>
           <label>Tipo<select name="opportunity_type" defaultValue="equity">
-            <option value="equity">Equity</option><option value="strategic">Strategic</option><option value="publishing">Publishing</option>
-            <option value="grant">Grant</option><option value="debt">Debt</option><option value="licensing">Licensing</option><option value="other">Other</option>
+            <option value="equity">Participación</option><option value="strategic">Estratégico</option><option value="publishing">Publicación</option>
+            <option value="grant">Subvención</option><option value="debt">Deuda</option><option value="licensing">Licencias</option><option value="other">Otro</option>
           </select></label>
-          <label>Target<input type="number" min="0" step="0.01" name="target_amount" defaultValue="0"/></label>
-          <label>Committed<input type="number" min="0" step="0.01" name="committed_amount" defaultValue="0"/></label>
+          <label>Monto objetivo<input type="number" min="0" step="0.01" name="target_amount" defaultValue="0"/></label>
+          <label>Monto comprometido<input type="number" min="0" step="0.01" name="committed_amount" defaultValue="0"/></label>
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
           <label>Probabilidad %<input type="number" min="0" max="100" name="probability" defaultValue="0"/></label>
           <label>Fecha esperada<input type="date" name="expected_close_date"/></label>
-          <label className={styles.span2}>Próxima acción<input name="next_action" placeholder="Enviar deck / reunión / NDA / diligence"/></label>
+          <label className={styles.span2}>Próxima acción<input name="next_action" placeholder="Enviar presentación / reunión / NDA / revisión"/></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar oportunidad</button>
       </form>
     </section>
-
 
     <section className={styles.adminForms}>
       <form action={updateInvestor} className={styles.adminForm}>
         <div className={styles.formTitle}><span>GESTIONAR INVERSOR</span><h2>Actualizar relación</h2></div>
         <div className={styles.formGrid}>
           <label>Inversor<select name="investor_id" required defaultValue=""><option value="" disabled>Seleccionar inversor</option>{investorRows.map((i:any)=><option key={i.id} value={i.id}>{i.name}</option>)}</select></label>
-          <label>Status<select name="status" defaultValue="engaged"><option value="prospect">Prospect</option><option value="contacted">Contacted</option><option value="engaged">Engaged</option><option value="diligence">Diligence</option><option value="committed">Committed</option><option value="passed">Passed</option><option value="inactive">Inactive</option></select></label>
-          <label>Stage<select name="stage" defaultValue="meeting"><option value="research">Research</option><option value="intro">Intro</option><option value="meeting">Meeting</option><option value="follow_up">Follow-up</option><option value="materials_sent">Materials sent</option><option value="diligence">Diligence</option><option value="term_discussion">Term discussion</option><option value="closed">Closed</option></select></label>
-          <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="critical">Critical</option></select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
-          <label>Next action at<input type="datetime-local" name="next_action_at"/></label>
-          <label>Last contact<input type="datetime-local" name="last_contact_at"/></label>
+          <label>Estado<select name="status" defaultValue="engaged"><option value="prospect">Prospecto</option><option value="contacted">Contactado</option><option value="engaged">En conversación</option><option value="diligence">Revisión</option><option value="committed">Monto comprometido</option><option value="passed">Descartado</option><option value="inactive">Inactivo</option></select></label>
+          <label>Etapa<select name="stage" defaultValue="meeting"><option value="research">Investigación</option><option value="intro">Presentación inicial</option><option value="meeting">Reunión</option><option value="follow_up">Seguimiento</option><option value="materials_sent">Material enviado</option><option value="diligence">Revisión</option><option value="term_discussion">Discusión de términos</option><option value="closed">Cerrado</option></select></label>
+          <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Fecha próxima acción<input type="datetime-local" name="next_action_at"/></label>
+          <label>Último contacto<input type="datetime-local" name="last_contact_at"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <button className={styles.formButton} disabled={!investorRows.length}>Actualizar inversor</button>
       </form>
 
       <form action={updateOpportunity} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>GESTIONAR FUNDRAISING</span><h2>Actualizar oportunidad</h2></div>
+        <div className={styles.formTitle}><span>GESTIONAR OPORTUNIDAD</span><h2>Actualizar oportunidad</h2></div>
         <div className={styles.formGrid}>
           <label>Oportunidad<select name="opportunity_id" required defaultValue=""><option value="" disabled>Seleccionar oportunidad</option>{opportunityRows.map((o:any)=><option key={o.id} value={o.id}>{o.name}</option>)}</select></label>
-          <label>Stage<select name="stage" defaultValue="qualified"><option value="prospect">Prospect</option><option value="qualified">Qualified</option><option value="meeting">Meeting</option><option value="materials">Materials</option><option value="diligence">Diligence</option><option value="term_sheet">Term sheet</option><option value="negotiation">Negotiation</option><option value="committed">Committed</option><option value="closed_won">Closed won</option><option value="closed_lost">Closed lost</option></select></label>
-          <label>Status<select name="status" defaultValue="open"><option value="open">Open</option><option value="on_hold">On hold</option><option value="won">Won</option><option value="lost">Lost</option><option value="canceled">Canceled</option></select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Etapa<select name="stage" defaultValue="qualified"><option value="prospect">Prospecto</option><option value="qualified">Calificada</option><option value="meeting">Reunión</option><option value="materials">Materiales</option><option value="diligence">Revisión</option><option value="term_sheet">Hoja de términos</option><option value="negotiation">Negociación</option><option value="committed">Monto comprometido</option><option value="closed_won">Cerrada ganada</option><option value="closed_lost">Cerrada perdida</option></select></label>
+          <label>Estado<select name="status" defaultValue="open"><option value="open">Abierta</option><option value="on_hold">En pausa</option><option value="won">Ganada</option><option value="lost">Perdida</option><option value="canceled">Cancelada</option></select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
           <label>Probabilidad %<input type="number" min="0" max="100" name="probability"/></label>
-          <label>Target<input type="number" min="0" step="0.01" name="target_amount"/></label>
-          <label>Committed<input type="number" min="0" step="0.01" name="committed_amount"/></label>
-          <label>Expected close<input type="date" name="expected_close_date"/></label>
-          <label>Next action at<input type="datetime-local" name="next_action_at"/></label>
+          <label>Monto objetivo<input type="number" min="0" step="0.01" name="target_amount"/></label>
+          <label>Monto comprometido<input type="number" min="0" step="0.01" name="committed_amount"/></label>
+          <label>Fecha estimada de cierre<input type="date" name="expected_close_date"/></label>
+          <label>Fecha próxima acción<input type="datetime-local" name="next_action_at"/></label>
           <label className={styles.span2}>Próxima acción<input name="next_action"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <button className={styles.formButton} disabled={!opportunityRows.length}>Actualizar oportunidad</button>
       </form>
-    </section>
+    </section></details>
 
-    <section className={styles.sectionHead}><div><span>EVIDENCIA COMERCIAL</span><h2>Revenue observado</h2></div><p>No se mezcla con fundraising; se muestra solo como evidencia comercial existente.</p></section>
+    <section className={styles.sectionHead}><div><span>EVIDENCIA COMERCIAL</span><h2>Ingresos observados</h2></div><p>Se muestra como evidencia comercial existente y permanece separado de la captación de capital.</p></section>
     <section className={styles.kpis}>
-      <article><small>Revenue pagado</small><strong>{money(commercialRevenue,revenueCurrency)}</strong><span>shop_orders</span></article>
+      <article><small>Ingresos pagados</small><strong>{money(commercialRevenue,revenueCurrency)}</strong><span>Ventas registradas</span></article>
       <article><small>Órdenes pagadas</small><strong>{(paidOrders||0).toLocaleString()}</strong><span>Comercio</span></article>
-      <article><small>Cap table</small><strong>SEPARADA</strong><span>No almacenada en Investor CRM</span></article>
-      <article><small>Acceso</small><strong>ADMIN</strong><span>RLS restringido</span></article>
+      <article><small>Estructura accionaria</small><strong>SEPARADA</strong><span>Separada del registro de inversionistas</span></article>
+      <article><small>Acceso</small><strong>ADMINISTRADOR</strong><span>Acceso restringido</span></article>
     </section>
   </main>;
 }
