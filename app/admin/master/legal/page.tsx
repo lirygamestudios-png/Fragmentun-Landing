@@ -3,17 +3,17 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
-function assetStatusLabel(value:string){
+function assetEstadoLabel(value:string){
   const map:Record<string,string>={draft:"BORRADOR",active:"ACTIVO",licensed:"LICENCIADO",archived:"ARCHIVADO",disputed:"EN DISPUTA",retired:"RETIRADO"};
   return map[value]||String(value||"").toUpperCase();
 }
 
-function rightStatusLabel(value:string){
+function rightEstadoLabel(value:string){
   const map:Record<string,string>={owned:"PROPIO",licensed_out:"LICENCIADO A TERCEROS",licensed_in:"LICENCIADO POR TERCEROS",expired:"VENCIDO",terminated:"TERMINADO",disputed:"EN DISPUTA",pending:"PENDIENTE"};
   return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
 }
 
-function contractStatusLabel(value:string){
+function contractEstadoLabel(value:string){
   const map:Record<string,string>={draft:"BORRADOR",review:"EN REVISIÓN",signature:"EN FIRMA",active:"ACTIVO",expired:"VENCIDO",terminated:"TERMINADO",canceled:"CANCELADO"};
   return map[value]||String(value||"").toUpperCase();
 }
@@ -55,7 +55,7 @@ async function createRight(formData:FormData){
   const {supabase,user}=await requireLegalAdmin();
   const assetId=String(formData.get("asset_id")||"").trim();
   const rightType=String(formData.get("right_type")||"copyright");
-  const territory=String(formData.get("territory")||"worldwide").trim()||"worldwide";
+  const territory=String(formData.get("territory")||"mundial").trim()||"mundial";
   const exclusivity=String(formData.get("exclusivity")||"exclusive");
   const holderName=String(formData.get("holder_name")||"").trim()||null;
   const licenseeName=String(formData.get("licensee_name")||"").trim()||null;
@@ -64,8 +64,8 @@ async function createRight(formData:FormData){
   const status=String(formData.get("status")||"owned");
   const allowedRight=new Set(["copyright","trademark","publishing","audiovisual","game","merchandising","translation","distribution","adaptation","music","other"]);
   const allowedExclusivity=new Set(["exclusive","non_exclusive","shared","unknown"]);
-  const allowedStatus=new Set(["owned","licensed_out","licensed_in","expired","terminated","disputed","pending"]);
-  if(!assetId||!allowedRight.has(rightType)||!allowedExclusivity.has(exclusivity)||!allowedStatus.has(status)) throw new Error("invalid_right");
+  const allowedEstado=new Set(["owned","licensed_out","licensed_in","expired","terminated","disputed","pending"]);
+  if(!assetId||!allowedRight.has(rightType)||!allowedExclusivity.has(exclusivity)||!allowedEstado.has(status)) throw new Error("invalid_right");
   const{error}=await supabase.from("Registrados").insert({
     asset_id:assetId,right_type:rightType,territory,exclusivity,holder_name:holderName,licensee_name:licenseeName,
     start_date:startDate,end_date:endDate,status,created_by:user.id
@@ -108,8 +108,8 @@ async function updateIpAsset(formData:FormData){
   const registrationNumber=String(formData.get("registration_number")||"").trim()||null;
   const registrationDate=String(formData.get("registration_date")||"").trim()||null;
   const notes=String(formData.get("notes")||"").trim()||null;
-  const allowedStatus=new Set(["draft","active","licensed","archived","disputed","retired"]);
-  if(!id||!allowedStatus.has(status)) throw new Error("invalid_asset_update");
+  const allowedEstado=new Set(["draft","active","licensed","archived","disputed","retired"]);
+  if(!id||!allowedEstado.has(status)) throw new Error("invalid_asset_update");
   const{error}=await supabase.from("Registrados").update({
     status,owner_entity:ownerEntity,jurisdiction,registration_number:registrationNumber,
     registration_date:registrationDate,notes,updated_at:new Date().toISOString()
@@ -124,15 +124,15 @@ async function updateRight(formData:FormData){
   const id=String(formData.get("right_id")||"").trim();
   const status=String(formData.get("status")||"owned");
   const exclusivity=String(formData.get("exclusivity")||"exclusive");
-  const territory=String(formData.get("territory")||"worldwide").trim()||"worldwide";
+  const territory=String(formData.get("territory")||"mundial").trim()||"mundial";
   const holderName=String(formData.get("holder_name")||"").trim()||null;
   const licenseeName=String(formData.get("licensee_name")||"").trim()||null;
   const startDate=String(formData.get("start_date")||"").trim()||null;
   const endDate=String(formData.get("end_date")||"").trim()||null;
   const notes=String(formData.get("notes")||"").trim()||null;
-  const allowedStatus=new Set(["owned","licensed_out","licensed_in","expired","terminated","disputed","pending"]);
+  const allowedEstado=new Set(["owned","licensed_out","licensed_in","expired","terminated","disputed","pending"]);
   const allowedEx=new Set(["exclusive","non_exclusive","shared","unknown"]);
-  if(!id||!allowedStatus.has(status)||!allowedEx.has(exclusivity)) throw new Error("invalid_right_update");
+  if(!id||!allowedEstado.has(status)||!allowedEx.has(exclusivity)) throw new Error("invalid_right_update");
   const{error}=await supabase.from("Registrados").update({
     status,exclusivity,territory,holder_name:holderName,licensee_name:licenseeName,
     start_date:startDate,end_date:endDate,notes,updated_at:new Date().toISOString()
@@ -157,8 +157,8 @@ async function updateContract(formData:FormData){
   const valueCents=valueRaw?Math.round(Number(valueRaw)*100):null;
   const currency=(String(formData.get("currency")||"USD").trim()||"USD").toUpperCase();
   const notes=String(formData.get("notes")||"").trim()||null;
-  const allowedStatus=new Set(["draft","review","signature","active","expired","terminated","canceled"]);
-  if(!id||!allowedStatus.has(status)||(noticeDays!==null&&!Number.isFinite(noticeDays))||(valueCents!==null&&(!Number.isFinite(valueCents)||valueCents<0))) throw new Error("invalid_contract_update");
+  const allowedEstado=new Set(["draft","review","signature","active","expired","terminated","canceled"]);
+  if(!id||!allowedEstado.has(status)||(noticeDays!==null&&!Number.isFinite(noticeDays))||(valueCents!==null&&(!Number.isFinite(valueCents)||valueCents<0))) throw new Error("invalid_contract_update");
   const{error}=await supabase.from("legal_contracts").update({
     status,owner_user_id:ownerUserId,effective_date:effectiveDate,expiration_date:expirationDate,
     auto_renew:autoRenew,renewal_notice_days:noticeDays,value_cents:valueCents,currency,notes,updated_at:new Date().toISOString()
@@ -197,7 +197,7 @@ export default async function MasterLegalPage(){
   const rightRows=(rights||[]) as any[];
   const contractRows=(contracts||[]) as any[];
   const ownerRows=(owners||[]) as any[];
-  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
   const activeContracts=contractRows.filter(c=>c.status==="active");
   const expiringSoon=contractRows.filter(c=>{
     if(!c.expiration_date) return false;
@@ -222,7 +222,7 @@ export default async function MasterLegalPage(){
     <section className={styles.sectionHead}><div><span>PROPIEDAD INTELECTUAL</span><h2>Activos intelectuales</h2></div><p>Inventario legal separado del catálogo editorial y multimedia.</p></section>
     <section className={styles.grid}>
       {assetRows.map((a:any)=><article key={a.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={a.status==="active"?styles.badgeActive:styles.badgePlanned}>{assetStatusLabel(a.status)}</span><em>{a.asset_type}</em></div>
+        <div className={styles.cardTop}><span className={a.status==="active"?styles.badgeActive:styles.badgePlanned}>{assetEstadoLabel(a.status)}</span><em>{a.asset_type}</em></div>
         <h3>{a.name}</h3>
         <p>{a.ip_name} · {a.owner_entity||"Titular no registrado"}<br/>{a.jurisdiction||"Jurisdicción pendiente"} · {a.registration_number||"Sin registro externo"}</p>
       </article>)}
@@ -232,7 +232,7 @@ export default async function MasterLegalPage(){
     <section className={styles.sectionHead}><div><span>DERECHOS Y LICENCIAS</span><h2>Derechos y licencias</h2></div><p>Territorio, exclusividad, titular, licenciatario y vigencia por activo.</p></section>
     <section className={styles.grid}>
       {rightRows.map((r:any)=><article key={r.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={r.status==="owned"?styles.badgeActive:styles.badgePlanned}>{rightStatusLabel(r.status)}</span><em>{r.exclusivity}</em></div>
+        <div className={styles.cardTop}><span className={r.status==="owned"?styles.badgeActive:styles.badgePlanned}>{rightEstadoLabel(r.status)}</span><em>{r.exclusivity}</em></div>
         <h3>{r.right_type}</h3>
         <p>{assetRows.find(a=>a.id===r.asset_id)?.name||"Activo"} · {r.territory}<br/>{r.holder_name||"Titular pendiente"}{r.licensee_name?" → "+r.licensee_name:""}<br/>{r.start_date||"sin inicio"} → {r.end_date||"sin vencimiento"}</p>
       </article>)}
@@ -242,14 +242,17 @@ export default async function MasterLegalPage(){
     <section className={styles.sectionHead}><div><span>CONTRATOS</span><h2>Contratos</h2></div><p>Registro operativo de contratos; los documentos firmados pueden almacenarse después en un repositorio documental controlado.</p></section>
     <section className={styles.grid}>
       {contractRows.map((c:any)=><article key={c.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={c.status==="active"?styles.badgeActive:styles.badgePlanned}>{contractStatusLabel(c.status)}</span><em>{c.contract_type}</em></div>
+        <div className={styles.cardTop}><span className={c.status==="active"?styles.badgeActive:styles.badgePlanned}>{contractEstadoLabel(c.status)}</span><em>{c.contract_type}</em></div>
         <h3>{c.title}</h3>
         <p>{c.counterparty||"Sin contraparte"} · {c.contract_code}<br/>Responsable: {ownerName(c.owner_user_id)}<br/>{c.effective_date||"Sin fecha efectiva"} → {c.expiration_date||"Sin vencimiento"}<br/>Renovación automática: {c.auto_renew?"Sí":"No"} · {c.value_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:c.currency||"USD"}).format(Number(c.value_cents)/100):"Valor no registrado"}</p>
       </article>)}
       {!contractRows.length&&<article className={styles.card}><h3>CONTRATOS preparado</h3><p>No hay contratos cargados todavía.</p></article>}
     </section>
 
-    <section className={styles.adminForms}>
+    <details className={styles.advancedPanel}>
+      <summary>Opciones avanzadas</summary>
+      <p className={styles.advancedHint}>Úsalas para registrar o modificar activos, derechos, licencias y contratos manualmente.</p>
+        <section className={styles.adminForms}>
       <form action={createIpAsset} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVO ACTIVO</span><h2>Registrar IP</h2></div>
         <div className={styles.formGrid}>
@@ -257,12 +260,12 @@ export default async function MasterLegalPage(){
           <label>Nombre<input name="name" required placeholder="El Despertar Emocional"/></label>
           <label>IP<input name="ip_name" required placeholder="FRAGMENTUN"/></label>
           <label>Tipo<select name="asset_type" defaultValue="book">
-            <option value="book">Book</option><option value="game">Game</option><option value="character">Character</option><option value="world">World</option>
-            <option value="art">Art</option><option value="trademark">Trademark</option><option value="script">Script</option>
-            <option value="music">Music</option><option value="video">Video</option><option value="software">Software</option><option value="other">Other</option>
+            <option value="book">Libro</option><option value="game">Videojuego</option><option value="character">Personaje</option><option value="world">Mundo</option>
+            <option value="art">Arte</option><option value="trademark">Marca registrada</option><option value="script">Guion</option>
+            <option value="music">Música</option><option value="video">Video</option><option value="software">Software</option><option value="other">Otro</option>
           </select></label>
-          <label>Owner entity<input name="owner_entity" placeholder="LIRYGAMES STUDIOS"/></label>
-          <label>Jurisdicción<input name="jurisdiction" placeholder="US / RD / Worldwide"/></label>
+          <label>Entidad titular<input name="owner_entity" placeholder="LIRYGAMES STUDIOS"/></label>
+          <label>Jurisdicción<input name="jurisdiction" placeholder="US / RD / Mundial"/></label>
           <label>Registro<input name="registration_number" placeholder="Número de registro"/></label>
           <label>Fecha registro<input type="date" name="registration_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
@@ -278,20 +281,20 @@ export default async function MasterLegalPage(){
             {assetRows.map((a:any)=><option key={a.id} value={a.id}>{a.name}</option>)}
           </select></label>
           <label>Derecho<select name="right_type" defaultValue="copyright">
-            <option value="copyright">Copyright</option><option value="trademark">Trademark</option><option value="publishing">Publishing</option>
-            <option value="audiovisual">Audiovisual</option><option value="game">Game</option><option value="merchandising">Merchandising</option>
-            <option value="translation">Translation</option><option value="distribution">Distribution</option><option value="adaptation">Adaptation</option><option value="music">Music</option><option value="other">Other</option>
+            <option value="copyright">Copyright</option><option value="trademark">Marca registrada</option><option value="publishing">Publicación</option>
+            <option value="audiovisual">Audiovisual</option><option value="game">Videojuego</option><option value="merchandising">Merchandising</option>
+            <option value="translation">Traducción</option><option value="distribution">Distribución</option><option value="adaptation">Adaptación</option><option value="music">Música</option><option value="other">Otro</option>
           </select></label>
-          <label>Territorio<input name="territory" defaultValue="worldwide"/></label>
+          <label>Territorio<input name="territory" defaultValue="mundial"/></label>
           <label>Exclusividad<select name="exclusivity" defaultValue="exclusive">
-            <option value="exclusive">Exclusive</option><option value="non_exclusive">Non-exclusive</option><option value="shared">Shared</option><option value="unknown">Unknown</option>
+            <option value="exclusive">Exclusivo</option><option value="non_exclusive">No exclusivo</option><option value="shared">Compartido</option><option value="unknown">Desconocido</option>
           </select></label>
-          <label>Status<select name="status" defaultValue="owned">
-            <option value="owned">Owned</option><option value="licensed_out">Licensed out</option><option value="licensed_in">Licensed in</option>
-            <option value="expired">Expired</option><option value="terminated">Terminated</option><option value="disputed">Disputed</option><option value="pending">Pending</option>
+          <label>Estado<select name="status" defaultValue="owned">
+            <option value="owned">Propio</option><option value="licensed_out">Licenciado a terceros</option><option value="licensed_in">Licenciado por terceros</option>
+            <option value="expired">Vencido</option><option value="terminated">Terminado</option><option value="disputed">En disputa</option><option value="pending">Pendiente</option>
           </select></label>
-          <label>Holder<input name="holder_name"/></label>
-          <label>Licensee<input name="licensee_name"/></label>
+          <label>Titular<input name="holder_name"/></label>
+          <label>Licenciatario<input name="licensee_name"/></label>
           <label>Inicio<input type="date" name="start_date"/></label>
           <label>Fin<input type="date" name="end_date"/></label>
         </div>
@@ -304,14 +307,14 @@ export default async function MasterLegalPage(){
           <label>Código<input name="contract_code" required placeholder="nda-001"/></label>
           <label>Título<input name="title" required placeholder="NDA - Partner"/></label>
           <label>Tipo<select name="contract_type" defaultValue="nda">
-            <option value="nda">NDA</option><option value="license">License</option><option value="publishing">Publishing</option>
-            <option value="development">Development</option><option value="employment">Employment</option><option value="contractor">Contractor</option>
-            <option value="vendor">Vendor</option><option value="distribution">Distribution</option><option value="investment">Investment</option><option value="partnership">Partnership</option><option value="other">Other</option>
+            <option value="nda">NDA</option><option value="license">Licencia</option><option value="publishing">Publicación</option>
+            <option value="development">Desarrollo</option><option value="employment">Empleo</option><option value="contractor">Contratista</option>
+            <option value="vendor">Proveedor</option><option value="distribution">Distribución</option><option value="investment">Inversión</option><option value="partnership">Alianza</option><option value="other">Otro</option>
           </select></label>
           <label>Contraparte<input name="counterparty"/></label>
           <label>Fecha efectiva<input type="date" name="effective_date"/></label>
           <label>Vencimiento<input type="date" name="expiration_date"/></label>
-          <label>Auto-renew<select name="auto_renew" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
+          <label>Renovación automática<select name="auto_renew" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
           <label>Aviso renovación (días)<input type="number" min="0" name="renewal_notice_days"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
@@ -325,8 +328,8 @@ export default async function MasterLegalPage(){
         <div className={styles.formTitle}><span>GESTIONAR ACTIVO</span><h2>Actualizar IP</h2></div>
         <div className={styles.formGrid}>
           <label>Activo<select name="asset_id" required defaultValue=""><option value="" disabled>Seleccionar activo</option>{assetRows.map((a:any)=><option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
-          <label>Status<select name="status" defaultValue="active"><option value="draft">Draft</option><option value="active">Active</option><option value="licensed">Licensed</option><option value="archived">Archived</option><option value="disputed">Disputed</option><option value="retired">Retired</option></select></label>
-          <label>Owner entity<input name="owner_entity"/></label>
+          <label>Estado<select name="status" defaultValue="active"><option value="draft">Borrador</option><option value="active">Activo</option><option value="licensed">Licenciado</option><option value="archived">Archivado</option><option value="disputed">En disputa</option><option value="retired">Retirado</option></select></label>
+          <label>Entidad titular<input name="owner_entity"/></label>
           <label>Jurisdicción<input name="jurisdiction"/></label>
           <label>Registro<input name="registration_number"/></label>
           <label>Fecha registro<input type="date" name="registration_date"/></label>
@@ -339,11 +342,11 @@ export default async function MasterLegalPage(){
         <div className={styles.formTitle}><span>GESTIONAR DERECHO</span><h2>Actualizar vigencia/licencia</h2></div>
         <div className={styles.formGrid}>
           <label>Derecho<select name="right_id" required defaultValue=""><option value="" disabled>Seleccionar derecho</option>{rightRows.map((r:any)=><option key={r.id} value={r.id}>{r.right_type} · {assetRows.find(a=>a.id===r.asset_id)?.name||"Activo"}</option>)}</select></label>
-          <label>Status<select name="status" defaultValue="owned"><option value="owned">Owned</option><option value="licensed_out">Licensed out</option><option value="licensed_in">Licensed in</option><option value="expired">Expired</option><option value="terminated">Terminated</option><option value="disputed">Disputed</option><option value="pending">Pending</option></select></label>
-          <label>Exclusividad<select name="exclusivity" defaultValue="exclusive"><option value="exclusive">Exclusive</option><option value="non_exclusive">Non-exclusive</option><option value="shared">Shared</option><option value="unknown">Unknown</option></select></label>
-          <label>Territorio<input name="territory" defaultValue="worldwide"/></label>
-          <label>Holder<input name="holder_name"/></label>
-          <label>Licensee<input name="licensee_name"/></label>
+          <label>Estado<select name="status" defaultValue="owned"><option value="owned">Propio</option><option value="licensed_out">Licenciado a terceros</option><option value="licensed_in">Licenciado por terceros</option><option value="expired">Vencido</option><option value="terminated">Terminado</option><option value="disputed">En disputa</option><option value="pending">Pendiente</option></select></label>
+          <label>Exclusividad<select name="exclusivity" defaultValue="exclusive"><option value="exclusive">Exclusivo</option><option value="non_exclusive">No exclusivo</option><option value="shared">Compartido</option><option value="unknown">Desconocido</option></select></label>
+          <label>Territorio<input name="territory" defaultValue="mundial"/></label>
+          <label>Titular<input name="holder_name"/></label>
+          <label>Licenciatario<input name="licensee_name"/></label>
           <label>Inicio<input type="date" name="start_date"/></label>
           <label>Fin<input type="date" name="end_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
@@ -355,11 +358,11 @@ export default async function MasterLegalPage(){
         <div className={styles.formTitle}><span>GESTIONAR CONTRATO</span><h2>Actualizar CONTRATOS</h2></div>
         <div className={styles.formGrid}>
           <label>Contrato<select name="contract_id" required defaultValue=""><option value="" disabled>Seleccionar contrato</option>{contractRows.map((c:any)=><option key={c.id} value={c.id}>{c.contract_code} · {c.title}</option>)}</select></label>
-          <label>Status<select name="status" defaultValue="review"><option value="draft">Draft</option><option value="review">Review</option><option value="signature">Signature</option><option value="active">Active</option><option value="expired">Expired</option><option value="terminated">Terminated</option><option value="canceled">Canceled</option></select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="review"><option value="draft">Borrador</option><option value="review">En revisión</option><option value="signature">En firma</option><option value="active">Activo</option><option value="expired">Vencido</option><option value="terminated">Terminado</option><option value="canceled">Cancelado</option></select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
           <label>Fecha efectiva<input type="date" name="effective_date"/></label>
           <label>Vencimiento<input type="date" name="expiration_date"/></label>
-          <label>Auto-renew<select name="auto_renew" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
+          <label>Renovación automática<select name="auto_renew" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
           <label>Aviso renovación (días)<input type="number" min="0" name="renewal_notice_days"/></label>
           <label>Valor<input type="number" min="0" step="0.01" name="value"/></label>
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
@@ -367,7 +370,8 @@ export default async function MasterLegalPage(){
         </div>
         <button className={styles.formButton} disabled={!contractRows.length}>Actualizar contrato</button>
       </form>
-    </section>
+      </section>
+    </details>
 
     <section className={styles.sectionHead}><div><span>ACTIVOS EXISTENTES</span><h2>Activos operativos existentes</h2></div></section>
     <section className={styles.kpis}>
