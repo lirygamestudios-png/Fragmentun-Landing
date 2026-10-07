@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 function assetEstadoLabel(value:string){
   const map:Record<string,string>={draft:"BORRADOR",active:"ACTIVO",licensed:"LICENCIADO",archived:"ARCHIVADO",disputed:"EN DISPUTA",retired:"RETIRADO"};
@@ -270,7 +271,7 @@ export default async function MasterLegalPage(){
           <label>Fecha registro<input type="date" name="registration_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar activo</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar activo</MasterSubmitButton>
       </form>
 
       <form action={createRight} className={styles.adminForm}>
@@ -298,7 +299,7 @@ export default async function MasterLegalPage(){
           <label>Inicio<input type="date" name="start_date"/></label>
           <label>Fin<input type="date" name="end_date"/></label>
         </div>
-        <button className={styles.formButton} type="submit" disabled={!assetRows.length}>Registrar derecho</button>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!assetRows.length}>Registrar derecho</MasterSubmitButton>
       </form>
 
       <form action={createContract} className={styles.adminForm}>
@@ -318,7 +319,7 @@ export default async function MasterLegalPage(){
           <label>Aviso renovación (días)<input type="number" min="0" name="renewal_notice_days"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar contrato</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar contrato</MasterSubmitButton>
       </form>
     </section>
 
@@ -335,7 +336,7 @@ export default async function MasterLegalPage(){
           <label>Fecha registro<input type="date" name="registration_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!assetRows.length}>Actualizar activo</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!assetRows.length}>Actualizar activo</MasterSubmitButton>
       </form>
 
       <form action={updateRight} className={styles.adminForm}>
@@ -351,7 +352,7 @@ export default async function MasterLegalPage(){
           <label>Fin<input type="date" name="end_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!rightRows.length}>Actualizar derecho</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!rightRows.length}>Actualizar derecho</MasterSubmitButton>
       </form>
 
       <form action={updateContract} className={styles.adminForm}>
@@ -368,7 +369,7 @@ export default async function MasterLegalPage(){
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!contractRows.length}>Actualizar contrato</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!contractRows.length}>Actualizar contrato</MasterSubmitButton>
       </form>
       </section>
     </details>
