@@ -65,7 +65,11 @@ export default async function MasterAdminPage(){
     {data:workItems},
     {data:risks},
     {data:incidents},
-    {data:community}
+    {data:community},
+    {data:accessReviews},
+    {data:contracts},
+    {data:techChanges},
+    {data:fundraising}
   ]=await Promise.all([
     supabase.from("leads").select("*",{count:"exact",head:true}),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}),
@@ -80,7 +84,11 @@ export default async function MasterAdminPage(){
     supabase.from("ops_work_items").select("id,status,priority,due_date,domain"),
     supabase.from("risk_register").select("id,status,inherent_score,domain,due_date"),
     supabase.from("security_incidents").select("id,status,severity,category"),
-    supabase.from("community_members").select("id,status,tier,points,beta_priority")
+    supabase.from("community_members").select("id,status,tier,points,beta_priority"),
+    supabase.from("security_access_reviews").select("id,review_status,risk_level,due_date"),
+    supabase.from("legal_contracts").select("id,status,expiration_date,auto_renew,renewal_notice_days"),
+    supabase.from("tech_changes").select("id,status,risk_level,planned_at,target_environment"),
+    supabase.from("fundraising_opportunities").select("id,status,stage,probability,expected_close_date,next_action_at")
   ]);
 
   const gameRows=(games||[]) as any[];
@@ -93,6 +101,10 @@ export default async function MasterAdminPage(){
   const riskRows=(risks||[]) as any[];
   const incidentRows=(incidents||[]) as any[];
   const communityRows=(community||[]) as any[];
+  const reviewRows=(accessReviews||[]) as any[];
+  const contractRows=(contracts||[]) as any[];
+  const techChangeRows=(techChanges||[]) as any[];
+  const fundraisingRows=(fundraising||[]) as any[];
 
   const gamesAtRisk=gameRows.filter(g=>["red","paused"].includes(g.health_status)).length;
   const milestonesAtRisk=milestoneRows.filter(m=>["blocked","at_risk"].includes(m.status)).length;
@@ -110,7 +122,22 @@ export default async function MasterAdminPage(){
   const criticalSecurity=incidentRows.filter(i=>!["resolved","closed"].includes(i.status)&&["high","critical"].includes(i.severity)).length;
   const betaPriority=communityRows.filter(m=>m.status==="active"&&(m.beta_priority||m.tier==="beta_priority")).length;
   const advocates=communityRows.filter(m=>m.status==="active"&&m.tier==="advocate").length;
-  const criticalExceptions=gamesAtRisk+milestonesAtRisk+releaseRisks+highRiskApprovals+blockedWork+highRisks+criticalSecurity;
+  const now=Date.now();
+  const overdueWork=workRows.filter(w=>w.due_date&&new Date(w.due_date).getTime()<now&&!["completed","canceled"].includes(w.status)).length;
+  const overdueRisks=riskRows.filter(r=>r.due_date&&new Date(r.due_date).getTime()<now&&r.status!=="closed").length;
+  const overdueReviews=reviewRows.filter(r=>r.due_date&&new Date(r.due_date).getTime()<now&&!["approved","revoked","expired"].includes(r.review_status)).length;
+  const expiringContracts=contractRows.filter(c=>{
+    if(!c.expiration_date||!["active","signature","review"].includes(c.status)) return false;
+    const days=(new Date(c.expiration_date).getTime()-now)/86400000;
+    return days>=0&&days<=60;
+  }).length;
+  const riskyTechChanges=techChangeRows.filter(c=>!["completed","rolled_back","canceled"].includes(c.status)&&["high","critical"].includes(c.risk_level)).length;
+  const fundraisingDue=fundraisingRows.filter(f=>{
+    const date=f.next_action_at||f.expected_close_date;
+    return date&&new Date(date).getTime()<now&&!["won","lost","canceled"].includes(f.status);
+  }).length;
+  const overdueTotal=overdueWork+overdueRisks+overdueReviews+fundraisingDue;
+  const criticalExceptions=gamesAtRisk+milestonesAtRisk+releaseRisks+highRiskApprovals+blockedWork+highRisks+criticalSecurity+riskyTechChanges;
 
   return <main className={styles.shell}>
     <aside className={styles.sidebar}>
@@ -154,7 +181,7 @@ export default async function MasterAdminPage(){
       <section className={styles.kpis}>
         <article><small>Excepciones críticas</small><strong>{criticalExceptions}</strong><span>Operación + riesgo + seguridad + producto</span></article>
         <article><small>Trabajo abierto</small><strong>{openWork}</strong><span>{blockedWork} bloqueados/críticos</span></article>
-        <article><small>CRM cualificado</small><strong>{qualifiedContacts}</strong><span>{crmRows.length} contactos totales</span></article>
+        <article><small>Vencidos</small><strong>{overdueTotal}</strong><span>Ops + Risk + Access + Capital</span></article>
         <article><small>Net ledger</small><strong>{financeNetLabel}</strong><span>Posted + reconciled</span></article>
       </section>
 
@@ -204,11 +231,31 @@ export default async function MasterAdminPage(){
           <h3>Beta & Advocacy</h3>
           <p>{communityRows.length} miembros · {betaPriority} beta priority · {advocates} advocates</p>
         </a>
+        <a href="/admin/master/security" className={styles.card}>
+          <div className={styles.cardTop}><span className={overdueReviews?styles.badgePlanned:styles.badgeActive}>{overdueReviews?"VENCIDOS":"AL DÍA"}</span><em>ACCESS</em></div>
+          <h3>Access Reviews</h3>
+          <p>{reviewRows.length} reviews · {overdueReviews} vencidas</p>
+        </a>
+        <a href="/admin/master/legal" className={styles.card}>
+          <div className={styles.cardTop}><span className={expiringContracts?styles.badgePlanned:styles.badgeActive}>{expiringContracts?"ATENCIÓN":"ESTABLE"}</span><em>LEGAL</em></div>
+          <h3>Contratos</h3>
+          <p>{contractRows.length} registrados · {expiringContracts} vencen en ≤60 días</p>
+        </a>
+        <a href="/admin/master/technology" className={styles.card}>
+          <div className={styles.cardTop}><span className={riskyTechChanges?styles.badgePlanned:styles.badgeActive}>{riskyTechChanges?"ATENCIÓN":"ESTABLE"}</span><em>CHANGE</em></div>
+          <h3>Cambios técnicos</h3>
+          <p>{techChangeRows.length} registrados · {riskyTechChanges} high/critical abiertos</p>
+        </a>
+        <a href="/admin/master/capital" className={styles.card}>
+          <div className={styles.cardTop}><span className={fundraisingDue?styles.badgePlanned:styles.badgeActive}>{fundraisingDue?"FOLLOW-UP":"AL DÍA"}</span><em>CAPITAL</em></div>
+          <h3>Fundraising</h3>
+          <p>{fundraisingRows.length} oportunidades · {fundraisingDue} follow-ups vencidos</p>
+        </a>
       </section>
 
       <section className={styles.sectionHead}>
         <div><span>ARQUITECTURA OPERATIVA</span><h2>Dominios del Master Admin</h2></div>
-        <p>Primera capa de integración. Los módulos se activarán progresivamente sin rehacer el FrontDesk.</p>
+        <p>Cobertura operativa profunda. Los módulos comparten auditoría, owners, estados y excepciones sin rehacer el FrontDesk.</p>
       </section>
 
       <section className={styles.grid}>
