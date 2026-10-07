@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 function techEstadoLabel(value:string){
   const map:Record<string,string>={active:"ACTIVO",degraded:"DEGRADADO",maintenance:"MANTENIMIENTO",deprecated:"OBSOLETO",retired:"RETIRADO",planned:"PLANIFICADO",approved:"APROBADO",in_progress:"EN CURSO",completed:"COMPLETADO",failed:"FALLIDO",rolled_back:"REVERTIDO",canceled:"CANCELADO"};
@@ -220,7 +221,7 @@ export default async function MasterTechnologyPage(){
           <label>Versión<input name="version"/></label>
           <label>URL<input name="url"/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar servicio</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar servicio</MasterSubmitButton>
       </form>
 
       <form action={createChange} className={styles.adminForm}>
@@ -236,7 +237,7 @@ export default async function MasterTechnologyPage(){
           <label className={styles.span2}>Plan de reversión<textarea name="rollback_plan" rows={3}/></label>
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3}/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar cambio</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar cambio</MasterSubmitButton>
       </form>
       </section>
 
@@ -254,7 +255,7 @@ export default async function MasterTechnologyPage(){
           <label>URL<input name="url"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!serviceRows.length}>Actualizar servicio</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!serviceRows.length}>Actualizar servicio</MasterSubmitButton>
       </form>
 
       <form action={updateChange} className={styles.adminForm}>
@@ -269,7 +270,7 @@ export default async function MasterTechnologyPage(){
           <label className={styles.span2}>Plan de reversión<textarea name="rollback_plan" rows={3}/></label>
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!changeRows.length}>Actualizar cambio</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!changeRows.length}>Actualizar cambio</MasterSubmitButton>
       </form>
       </section>
     </details>}
