@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 function money(cents:number|null|undefined,currency="USD"){
   return new Intl.NumberFormat("en-US",{style:"currency",currency}).format((cents||0)/100);
@@ -201,7 +202,7 @@ export default async function MasterCapitalPage(){
           </select></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3} placeholder="Contexto interno"/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar inversor</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar inversor</MasterSubmitButton>
       </form>
 
       <form action={createOpportunity} className={styles.adminForm}>
@@ -223,7 +224,7 @@ export default async function MasterCapitalPage(){
           <label>Fecha esperada<input type="date" name="expected_close_date"/></label>
           <label className={styles.span2}>Próxima acción<input name="next_action" placeholder="Enviar presentación / reunión / NDA / revisión"/></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar oportunidad</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar oportunidad</MasterSubmitButton>
       </form>
     </section>
 
@@ -240,7 +241,7 @@ export default async function MasterCapitalPage(){
           <label>Último contacto<input type="datetime-local" name="last_contact_at"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!investorRows.length}>Actualizar inversor</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!investorRows.length}>Actualizar inversor</MasterSubmitButton>
       </form>
 
       <form action={updateOpportunity} className={styles.adminForm}>
@@ -258,7 +259,7 @@ export default async function MasterCapitalPage(){
           <label className={styles.span2}>Próxima acción<input name="next_action"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!opportunityRows.length}>Actualizar oportunidad</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!opportunityRows.length}>Actualizar oportunidad</MasterSubmitButton>
       </form>
     </section></details>
 
