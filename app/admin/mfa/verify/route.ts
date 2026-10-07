@@ -1,6 +1,6 @@
 import { NextRequest,NextResponse } from "next/server";
-import { createSupabaseServerClient } from "../../../../../lib/supabase/server";
-import { getMfaState } from "../../../../../lib/supabase/mfa";
+import { createSupabaseServerClient } from "../../../../lib/supabase/server";
+import { getMfaState } from "../../../../lib/supabase/mfa";
 
 export async function POST(request:NextRequest){
   const supabase=await createSupabaseServerClient();
