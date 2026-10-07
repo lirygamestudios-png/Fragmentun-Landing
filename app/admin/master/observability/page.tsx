@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
+import { PreviewValidationButton } from "../../../../components/PreviewValidationButton";
 
 async function requireObservabilityAdmin(){
   "use server";
@@ -173,14 +174,14 @@ export default async function ObservabilityPage(){
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Validaciones</small><strong>{runRows.length}</strong><span>{passedRuns} passed · {failedRuns} failed</span></article>
-      <article><small>Último run</small><strong>{latestRun?.status?.toUpperCase()||"—"}</strong><span>{latestRun?.run_code||"Sin ejecuciones"}</span></article>
-      <article><small>Últimos checks</small><strong>{latestPassed}/{latestChecks.length}</strong><span>Checks passed</span></article>
-      <article><small>Audit events</small><strong>{(auditEvents||0).toLocaleString()}</strong><span>Trazabilidad acumulada</span></article>
+      <article><small>Pruebas</small><strong>{runRows.length}</strong><span>{passedRuns} passed · {failedRuns} failed</span></article>
+      <article><small>Última prueba</small><strong>{latestRun?.status?.toUpperCase()||"—"}</strong><span>{latestRun?.run_code||"Sin ejecuciones"}</span></article>
+      <article><small>Resultados</small><strong>{latestPassed}/{latestChecks.length}</strong><span>Checks passed</span></article>
+      <article><small>Movimientos registrados</small><strong>{(auditEvents||0).toLocaleString()}</strong><span>Trazabilidad acumulada</span></article>
     </section>
 
     <section className={styles.sectionHead}>
-      <div><span>VALIDATION RUNS</span><h2>Ejecuciones por deployment</h2></div>
+      <div><span>HISTORIAL</span><h2>Pruebas guardadas</h2></div>
       <p>El historial conserva el artefacto exacto probado. Production no se prueba ni modifica desde este módulo.</p>
     </section>
 
@@ -197,7 +198,7 @@ export default async function ObservabilityPage(){
       {!runRows.length&&<article className={styles.card}><h3>Sin validaciones</h3><p>Los smoke tests aparecerán aquí cuando se registren.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>LAST RUN</span><h2>Detalle del último smoke test</h2></div></section>
+    <section className={styles.sectionHead}><div><span>ÚLTIMA PRUEBA</span><h2>Detalle de la última comprobación</h2></div></section>
     <section className={styles.grid}>
       {latestChecks.map((c:any)=><article key={c.id} className={styles.card}>
         <div className={styles.cardTop}><span className={c.status==="passed"?styles.badgeActive:styles.badgePlanned}>{String(c.status).toUpperCase()}</span><em>{c.method}</em></div>
@@ -207,7 +208,7 @@ export default async function ObservabilityPage(){
       {!latestChecks.length&&<article className={styles.card}><h3>Sin resultados</h3><p>No existe un run con detalle todavía.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>LIVE SIGNALS</span><h2>Señales actuales</h2></div></section>
+    <section className={styles.sectionHead}><div><span>ESTADO ACTUAL</span><h2>Estado actual</h2></div></section>
     <section className={styles.kpis}>
       <article><small>Último analytics</small><strong>{latestAnalytics?.event_name||"—"}</strong><span>{latestAnalytics?.created_at?new Date(latestAnalytics.created_at).toLocaleString("es-US"):"Sin eventos"}</span></article>
       <article><small>Último lead</small><strong>{latestLead?"ACTIVO":"—"}</strong><span>{latestLead?.created_at?new Date(latestLead.created_at).toLocaleString("es-US"):"Sin leads"}</span></article>
@@ -216,8 +217,8 @@ export default async function ObservabilityPage(){
     </section>
 
     {profile.role==="admin"&&<section className={styles.notice}>
-      <div><strong>Validación automática</strong><span>Ejecuta 5 smoke tests sobre este Preview y guarda la evidencia con tu sesión MFA.</span></div>
-      <form action={validateCurrentPreview}><button className={styles.formButton}>Validar este Preview</button></form>
+      <div><strong>Comprobación rápida</strong><span>Revisa automáticamente este Preview y guarda el resultado con tu sesión segura.</span></div>
+      <PreviewValidationButton/>
     </section>}
 
     {profile.role==="admin"&&<section className={styles.adminForms}>
