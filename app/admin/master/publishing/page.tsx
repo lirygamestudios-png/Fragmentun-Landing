@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
+import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 function money(cents:number|null|undefined,currency="USD"){
   return new Intl.NumberFormat("en-US",{style:"currency",currency}).format((cents||0)/100);
@@ -214,7 +215,7 @@ export default async function MasterPublishingPage(){
             <option value="suspended">Suspendida</option>
           </select></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar plataforma</button>
+        <MasterSubmitButton className={styles.formButton} type="submit">Registrar plataforma</MasterSubmitButton>
       </form>
 
       <form action={createRelease} className={styles.adminForm}>
@@ -241,7 +242,7 @@ export default async function MasterPublishingPage(){
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
           <label className={styles.span2}>Territorios<input name="territories" placeholder="US, LATAM, EU"/></label>
         </div>
-        <button className={styles.formButton} type="submit" disabled={!gameRows.length}>Registrar lanzamiento</button>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!gameRows.length}>Registrar lanzamiento</MasterSubmitButton>
       </form>
       </section>
 
@@ -254,7 +255,7 @@ export default async function MasterPublishingPage(){
           <label>Activo<select name="active" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
           <label className={styles.span2}>Regiones<input name="region_scope" placeholder="US, LATAM, EU"/></label>
         </div>
-        <button className={styles.formButton} disabled={!stores.length}>Actualizar plataforma</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!stores.length}>Actualizar plataforma</MasterSubmitButton>
       </form>
 
       <form action={updateRelease} className={styles.adminForm}>
@@ -270,7 +271,7 @@ export default async function MasterPublishingPage(){
           <label className={styles.span2}>Enlace de la tienda<input name="store_url"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!releaseRows.length}>Actualizar lanzamiento</button>
+        <MasterSubmitButton className={styles.formButton} disabled={!releaseRows.length}>Actualizar lanzamiento</MasterSubmitButton>
       </form>
       </section>
     </details>}
