@@ -70,7 +70,7 @@ export default async function MasterPeoplePage(){
     supabase.from("people_members").select("id,display_name,email,employment_type,status,title,department,location,start_date,end_date,allocation_percent,skills,created_at").order("display_name",{ascending:true}),
     supabase.from("people_assignments").select("id,member_id,domain,workstream,allocation_percent,priority,status,start_date,end_date,created_at").order("created_at",{ascending:false}),
     supabase.from("admin_profiles").select("*",{count:"exact",head:true}),
-    supabase.from("admin_activity_log").select("*",{count:"exact",head:true})
+    supabase.from("admin_audit_log").select("*",{count:"exact",head:true})
   ]);
 
   const memberRows=(members||[]) as any[];
