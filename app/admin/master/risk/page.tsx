@@ -125,7 +125,7 @@ export default async function MasterRiskPage(){
   const high=riskRows.filter(r=>Number(r.inherent_score)>=15);
   const overdue=riskRows.filter(r=>r.due_date&&new Date(r.due_date).getTime()<Date.now()&&r.status!=="closed");
   const ownerRows=(owners||[]) as any[];
-  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin owner";
+  const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
   const systemSignals=[
     {name:"Producción directa",state:"CONTROLADO",detail:"Master Admin aislado en rama Preview; main protegido"},
@@ -152,9 +152,9 @@ export default async function MasterRiskPage(){
     <section className={styles.sectionHead}><div><span>RIESGOS</span><h2>Riesgos formales</h2></div><p>Los riesgos solo pasan al registro formal cuando tienen tratamiento y responsable asignados.</p></section>
     <section className={styles.grid}>
       {riskRows.map((r:any)=><article key={r.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={Number(r.inherent_score)>=15?styles.badgePlanned:styles.badgeActive}>{riskStatusLabel(r.status)}</span><em>Nivel {r.inherent_score}</em></div>
+        <div className={styles.cardTop}><span className={Number(r.inherent_score)>=15?styles.badgePlanificado:styles.badgeActive}>{riskStatusLabel(r.status)}</span><em>Nivel {r.inherent_score}</em></div>
         <h3>{r.title}</h3>
-        <p>{r.domain} · {categoryLabel(r.category)}<br/>Responsable: {ownerName(r.owner_user_id)}<br/>Probabilidad {r.likelihood} × Impacto {r.impact}<br/>{r.control_name||"Control por definir"} · {controlStatusLabel(r.control_status)}<br/>{r.due_date?"Fecha límite: "+r.due_date:"Sin fecha límite"}</p>
+        <p>{r.domain} · {categoryLabel(r.category)}<br/>Responsable: {ownerName(r.owner_user_id)}<br/>Probabilidad {r.likelihood} × Impactoo {r.impact}<br/>{r.control_name||"Control por definir"} · {controlStatusLabel(r.control_status)}<br/>{r.due_date?"Fecha límite: "+r.due_date:"Sin fecha límite"}</p>
       </article>)}
       {!riskRows.length&&<article className={styles.card}><h3>Registro de riesgos preparado</h3><p>No se han formalizado riesgos todavía.</p></article>}
     </section>
@@ -162,28 +162,31 @@ export default async function MasterRiskPage(){
     <section className={styles.sectionHead}><div><span>SEÑALES DEL SISTEMA</span><h2>Señales técnicas actuales</h2></div><p>Observaciones automáticas del sistema; no equivalen por sí solas a riesgos corporativos formales.</p></section>
     <section className={styles.grid}>
       {systemSignals.map(s=><article key={s.name} className={styles.card}>
-        <div className={styles.cardTop}><span className={s.state==="ABIERTO"?styles.badgePlanned:styles.badgeActive}>{s.state}</span><em>SISTEMA</em></div>
+        <div className={styles.cardTop}><span className={s.state==="ABIERTO"?styles.badgePlanificado:styles.badgeActive}>{s.state}</span><em>SISTEMA</em></div>
         <h3>{s.name}</h3><p>{s.detail}</p>
       </article>)}
     </section>
 
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+    {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}>
+      <summary>Opciones avanzadas</summary>
+      <p className={styles.advancedHint}>Úsalas para registrar o modificar riesgos, controles y evidencias manualmente.</p>
+      <section className={styles.adminForms}>
       <form action={createRisk} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVO RIESGO</span><h2>Registrar riesgo</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="sec-auth-001"/></label>
           <label>Título<input name="title" required/></label>
-          <label>Dominio<input name="domain" required placeholder="Security / Games / Finance"/></label>
+          <label>Dominio<input name="domain" required placeholder="Seguridad / Games / Finance"/></label>
           <label>Categoría<select name="category" defaultValue="operational">
-            <option value="strategic">Strategic</option><option value="financial">Financial</option><option value="operational">Operational</option>
-            <option value="security">Security</option><option value="legal">Legal</option><option value="compliance">Compliance</option>
-            <option value="technology">Technology</option><option value="reputation">Reputation</option><option value="vendor">Vendor</option><option value="people">People</option><option value="other">Other</option>
+            <option value="strategic">Estratégico</option><option value="financial">Financiero</option><option value="operational">Operativo</option>
+            <option value="security">Seguridad</option><option value="legal">Legal</option><option value="compliance">Cumplimiento</option>
+            <option value="technology">Tecnología</option><option value="reputation">Reputación</option><option value="vendor">Proveedores</option><option value="people">Personas</option><option value="other">Otro</option>
           </select></label>
-          <label>Likelihood<select name="likelihood" defaultValue="2">{[1,2,3,4,5].map(n=><option key={n} value={n}>{n}</option>)}</select></label>
-          <label>Impact<select name="impact" defaultValue="2">{[1,2,3,4,5].map(n=><option key={n} value={n}>{n}</option>)}</select></label>
+          <label>Probabilidad<select name="likelihood" defaultValue="2">{[1,2,3,4,5].map(n=><option key={n} value={n}>{n}</option>)}</select></label>
+          <label>Impacto<select name="impact" defaultValue="2">{[1,2,3,4,5].map(n=><option key={n} value={n}>{n}</option>)}</select></label>
           <label>Control<input name="control_name"/></label>
-          <label>Review date<input type="date" name="review_date"/></label>
-          <label>Due date<input type="date" name="due_date"/></label>
+          <label>Fecha de revisión<input type="date" name="review_date"/></label>
+          <label>Fecha límite<input type="date" name="due_date"/></label>
           <label className={styles.span2}>Mitigación<textarea name="mitigation" rows={3}/></label>
         </div>
         <button className={styles.formButton} type="submit">Registrar riesgo</button>
@@ -195,36 +198,36 @@ export default async function MasterRiskPage(){
           <label>Riesgo<select name="risk_id" required defaultValue=""><option value="" disabled>Seleccionar riesgo</option>{riskRows.map((r:any)=><option key={r.id} value={r.id}>{r.title}</option>)}</select></label>
           <label>Control<input name="control_name" required/></label>
           <label>Tipo<select name="evidence_type" defaultValue="note">
-            <option value="note">Note</option><option value="screenshot">Screenshot</option><option value="log">Log</option>
-            <option value="report">Report</option><option value="policy">Policy</option><option value="test">Test</option><option value="approval">Approval</option><option value="other">Other</option>
+            <option value="note">Nota</option><option value="screenshot">Captura</option><option value="log">Registro</option>
+            <option value="report">Reporte</option><option value="policy">Política</option><option value="test">Prueba</option><option value="approval">Aprobación</option><option value="other">Otro</option>
           </select></label>
           <label>URL evidencia<input name="evidence_url"/></label>
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
         <button className={styles.formButton} type="submit" disabled={!riskRows.length}>Registrar evidencia</button>
       </form>
-    </section>}
+      </section>
 
-
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+      <section className={styles.adminForms}>
       <form action={updateRisk} className={styles.adminForm}>
         <div className={styles.formTitle}><span>GESTIONAR RIESGO</span><h2>Actualizar tratamiento</h2></div>
         <div className={styles.formGrid}>
           <label>Riesgo<select name="risk_id" required defaultValue=""><option value="" disabled>Seleccionar riesgo</option>{riskRows.map((r:any)=><option key={r.id} value={r.id}>{r.code} · {r.title}</option>)}</select></label>
-          <label>Estado<select name="status" defaultValue="mitigating"><option value="open">Open</option><option value="mitigating">Mitigating</option><option value="accepted">Accepted</option><option value="monitoring">Monitoring</option><option value="closed">Closed</option></select></label>
-          <label>Likelihood<select name="likelihood" defaultValue="2">{[1,2,3,4,5].map(n=><option key={n} value={n}>{n}</option>)}</select></label>
-          <label>Impact<select name="impact" defaultValue="2">{[1,2,3,4,5].map(n=><option key={n} value={n}>{n}</option>)}</select></label>
-          <label>Owner<select name="owner_user_id" defaultValue=""><option value="">Sin owner</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
-          <label>Control status<select name="control_status" defaultValue="planned"><option value="planned">Planned</option><option value="implemented">Implemented</option><option value="effective">Effective</option><option value="needs_improvement">Needs improvement</option><option value="failed">Failed</option><option value="not_applicable">Not applicable</option></select></label>
+          <label>Estado<select name="status" defaultValue="mitigating"><option value="open">Abierto</option><option value="mitigating">En mitigación</option><option value="accepted">Aceptado</option><option value="monitoring">En seguimiento</option><option value="closed">Cerrado</option></select></label>
+          <label>Probabilidad<select name="likelihood" defaultValue="2">{[1,2,3,4,5].map(n=><option key={n} value={n}>{n}</option>)}</select></label>
+          <label>Impacto<select name="impact" defaultValue="2">{[1,2,3,4,5].map(n=><option key={n} value={n}>{n}</option>)}</select></label>
+          <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
+          <label>Estado del control<select name="control_status" defaultValue="planned"><option value="planned">Planificado</option><option value="implemented">Implementado</option><option value="effective">Efectivo</option><option value="needs_improvement">Requiere mejora</option><option value="failed">Fallido</option><option value="not_applicable">No aplica</option></select></label>
           <label>Control<input name="control_name"/></label>
-          <label>Review date<input type="date" name="review_date"/></label>
-          <label>Due date<input type="date" name="due_date"/></label>
+          <label>Fecha de revisión<input type="date" name="review_date"/></label>
+          <label>Fecha límite<input type="date" name="due_date"/></label>
           <label className={styles.span2}>Mitigación<textarea name="mitigation" rows={3}/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <button className={styles.formButton} type="submit" disabled={!riskRows.length}>Actualizar riesgo</button>
       </form>
-    </section>}
+      </section>
+    </details>}
 
     <section className={styles.sectionHead}><div><span>CONTEXTO ACTUAL</span><h2>Exposición actual</h2></div></section>
     <section className={styles.kpis}>
