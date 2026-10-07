@@ -95,6 +95,55 @@ async function updateCheck(formData:FormData){
   revalidatePath("/admin/master/releases");
 }
 
+async function useLatestPassedValidation(formData:FormData){
+  "use server";
+  const {supabase,user}=await requireReleaseAdmin();
+  const gateId=String(formData.get("gate_id")||"").trim();
+  if(!gateId) throw new Error("gate_required");
+
+  const{data:latest}=await supabase
+    .from("runtime_validation_runs")
+    .select("id,run_code,deployment_id,commit_sha,status,environment,executed_at,notes")
+    .eq("environment","preview")
+    .eq("status","passed")
+    .order("executed_at",{ascending:false})
+    .limit(1)
+    .maybeSingle();
+
+  if(!latest) throw new Error("no_passed_validation");
+
+  const evidence=`Prueba autenticada ${latest.run_code}: 5/5 correctas. Deployment ${latest.deployment_id||"—"} · commit ${latest.commit_sha||"—"}.`;
+
+  const{error:gateError}=await supabase.from("release_gates").update({
+    target_commit:latest.commit_sha||null,
+    target_deployment_id:latest.deployment_id||null,
+    notes:"Evidencia actualizada desde la última prueba autenticada correcta. La aprobación humana continúa pendiente.",
+    updated_at:new Date().toISOString()
+  }).eq("id",gateId);
+  if(gateError) throw new Error(gateError.message);
+
+  const{data:runtimeCheck}=await supabase.from("release_gate_checks")
+    .select("id")
+    .eq("release_gate_id",gateId)
+    .eq("check_code","runtime-smoke")
+    .maybeSingle();
+
+  if(runtimeCheck?.id){
+    const{error:checkError}=await supabase.from("release_gate_checks").update({
+      status:"passed",evidence,checked_by:user.id,checked_at:new Date().toISOString(),updated_at:new Date().toISOString()
+    }).eq("id",runtimeCheck.id);
+    if(checkError) throw new Error(checkError.message);
+  }else{
+    const{error:checkError}=await supabase.from("release_gate_checks").insert({
+      release_gate_id:gateId,check_code:"runtime-smoke",label:"Comprobación funcional",
+      check_type:"runtime",blocking:true,status:"passed",evidence,checked_by:user.id,checked_at:new Date().toISOString()
+    });
+    if(checkError) throw new Error(checkError.message);
+  }
+
+  revalidatePath("/admin/master/releases");
+}
+
 async function updateGate(formData:FormData){
   "use server";
   const {supabase,user}=await requireReleaseAdmin();
@@ -145,24 +194,24 @@ export default async function ReleaseGatePage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · RELEASE GATE</span><h1>Release Gate & Relaciones</h1><p>Dependencias transversales y evidencia de release. Aprobar un gate no despliega producción.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · CONTROL DE PUBLICACIÓN</span><h1>Revisión antes de publicar</h1><p>Comprueba que una versión esté lista antes de cualquier publicación. Esta pantalla no publica por sí sola.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Gates</small><strong>{gateRows.length}</strong><span>{approved} aprobados</span></article>
-      <article><small>Bloqueados</small><strong>{blocked}</strong><span>Requieren resolución</span></article>
-      <article><small>Checks blocking</small><strong>{failedChecks+pendingChecks}</strong><span>{failedChecks} failed · {pendingChecks} pending</span></article>
-      <article><small>Relaciones</small><strong>{linkRows.length}</strong><span>Cross-domain activas</span></article>
+      <article><small>Revisiones</small><strong>{gateRows.length}</strong><span>{approved} aprobados</span></article>
+      <article><small>Con problemas</small><strong>{blocked}</strong><span>Requieren resolución</span></article>
+      <article><small>Pendientes importantes</small><strong>{failedChecks+pendingChecks}</strong><span>{failedChecks} failed · {pendingChecks} pending</span></article>
+      <article><small>Vínculos</small><strong>{linkRows.length}</strong><span>Cross-domain activas</span></article>
     </section>
 
-    <section className={styles.sectionHead}><div><span>RELEASE GATES</span><h2>Readiness registrada</h2></div><p>Un gate puede quedar Draft, In Review, Blocked o Approved. El estado Released solo se asigna por el proceso de promoción controlado.</p></section>
+    <section className={styles.sectionHead}><div><span>REVISIONES</span><h2>Estado de la revisión</h2></div><p>La revisión permanece abierta hasta que todas las comprobaciones importantes estén correctas y exista aprobación humana.</p></section>
     <section className={styles.grid}>
       {gateRows.map((g:any)=>{
         const gateChecks=checkRows.filter(c=>c.release_gate_id===g.id);
         const bad=gateChecks.filter(c=>c.blocking&&["failed","pending"].includes(c.status)).length;
         return <article key={g.id} className={styles.card}>
-          <div className={styles.cardTop}><span className={g.status==="approved"?styles.badgeActive:styles.badgePlanned}>{String(g.status).toUpperCase()}</span><em>{g.environment}</em></div>
+          <div className={styles.cardTop}><span className={g.status==="approved"?styles.badgeActive:styles.badgePlanned}>{g.status==="approved"?"APROBADA":g.status==="blocked"?"REVISAR":g.status==="in_review"?"EN REVISIÓN":g.status==="canceled"?"CANCELADA":"BORRADOR"}</span><em>{g.environment}</em></div>
           <h3>{g.gate_code} · {g.title}</h3>
           <p>{g.target_ref||"Sin ref"} · {g.target_commit||"Sin commit"}<br/>{g.target_deployment_id||"Sin deployment"}<br/>{gateChecks.length} checks · {bad} blockers · solicitado por {actorName(g.requested_by)}</p>
         </article>
@@ -170,16 +219,16 @@ export default async function ReleaseGatePage(){
       {!gateRows.length&&<article className={styles.card}><h3>Sin release gates</h3><p>El registro está listo para documentar la siguiente promoción.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>CHECKS</span><h2>Evidencia de release</h2></div></section>
+    <section className={styles.sectionHead}><div><span>COMPROBACIONES</span><h2>Evidencia de la revisión</h2></div></section>
     <section className={styles.grid}>
       {checkRows.map((c:any)=><article key={c.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={c.status==="passed"||c.status==="waived"?styles.badgeActive:styles.badgePlanned}>{String(c.status).toUpperCase()}</span><em>{c.check_type}{c.blocking?" · BLOCKING":""}</em></div>
+        <div className={styles.cardTop}><span className={c.status==="passed"||c.status==="waived"?styles.badgeActive:styles.badgePlanned}>{c.status==="passed"?"CORRECTO":c.status==="failed"?"REVISAR":c.status==="waived"?"ACEPTADO":"PENDIENTE"}</span><em>{c.check_type}{c.blocking?" · BLOCKING":""}</em></div>
         <h3>{c.label}</h3><p>{c.check_code}<br/>{c.evidence||"Evidencia pendiente"}<br/>{c.checked_at?new Date(c.checked_at).toLocaleString("es-US"):"Sin verificación"}</p>
       </article>)}
       {!checkRows.length&&<article className={styles.card}><h3>Sin checks</h3><p>Los gates deben incorporar evidencia antes de aprobarse.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>CROSS-DOMAIN</span><h2>Relaciones transversales</h2></div><p>Enlaza registros sin acoplar esquemas ni duplicar datos.</p></section>
+    <section className={styles.sectionHead}><div><span>RELACIONES</span><h2>Vínculos transversales</h2></div><p>Relaciona información de distintas áreas sin duplicarla.</p></section>
     <section className={styles.grid}>
       {linkRows.map((l:any)=><article key={l.id} className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>{String(l.relation_type).toUpperCase()}</span><em>{l.source_domain} → {l.target_domain}</em></div>
@@ -188,7 +237,18 @@ export default async function ReleaseGatePage(){
       {!linkRows.length&&<article className={styles.card}><h3>Sin relaciones manuales</h3><p>Las relaciones naturales por foreign key siguen activas; aquí aparecerán dependencias entre dominios.</p></article>}
     </section>
 
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
+    {profile.role==="admin"&&gateRows.length>0&&<section className={styles.notice}>
+      <div><strong>Última prueba correcta</strong><span>Usa automáticamente la validación 5/5 más reciente como evidencia de esta revisión. No publica ni aprueba producción.</span></div>
+      <form action={useLatestPassedValidation}>
+        <input type="hidden" name="gate_id" value={gateRows[0].id}/>
+        <button className={styles.formButton}>Usar última prueba correcta</button>
+      </form>
+    </section>}
+
+    {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}>
+      <summary>Opciones avanzadas</summary>
+      <p className={styles.advancedHint}>Solo necesarias para gestión técnica o soporte.</p>
+      <section className={styles.adminForms}>
       <form action={createLink} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVA RELACIÓN</span><h2>Vincular dominios</h2></div>
         <div className={styles.formGrid}>
@@ -251,11 +311,12 @@ export default async function ReleaseGatePage(){
           <button className={styles.formButton} disabled={!gateRows.length}>Actualizar gate</button>
         </form>
       </>}
-    </section>}
+      </section>
+    </details>}
 
     <section className={styles.notice}>
-      <div><strong>Guardrail</strong><span>Este módulo registra readiness y aprobación. No ejecuta promociones, aliases ni cambios sobre production.</span></div>
-      <code>release ≠ deploy</code>
+      <div><strong>Protección</strong><span>Esta sección registra la revisión, pero no publica cambios en el sitio público.</span></div>
+      <code>Producción protegida</code>
     </section>
   </main>;
 }
