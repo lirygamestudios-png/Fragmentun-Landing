@@ -7,6 +7,21 @@ function money(cents:number|null|undefined,currency="USD"){
   return new Intl.NumberFormat("en-US",{style:"currency",currency}).format((cents||0)/100);
 }
 
+function accountStatusLabel(value:string){
+  const map:Record<string,string>={not_configured:"SIN CONFIGURAR",configured:"CONFIGURADA",verified:"VERIFICADA",restricted:"RESTRINGIDA",suspended:"SUSPENDIDA"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function releaseStatusLabel(value:string){
+  const map:Record<string,string>={planned:"PLANIFICADO",preparing:"PREPARANDO",submitted:"ENVIADO",certification:"EN CERTIFICACIÓN",approved:"APROBADO",scheduled:"PROGRAMADO",live:"PUBLICADO",delayed:"RETRASADO",blocked:"BLOQUEADO",canceled:"CANCELADO",sunset:"RETIRADO"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
+function certificationLabel(value:string){
+  const map:Record<string,string>={not_started:"NO INICIADA",in_progress:"EN CURSO",passed:"APROBADA",failed:"FALLIDA",waived:"NO REQUERIDA"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
 
 async function requirePublishingEditor(){
   "use server";
@@ -18,7 +33,7 @@ async function requirePublishingEditor(){
   return {supabase,user};
 }
 
-async function createStorefront(formData:FormData){
+async function createPlataforma(formData:FormData){
   "use server";
   const {supabase,user}=await requirePublishingEditor();
   const name=String(formData.get("name")||"").trim();
@@ -63,7 +78,7 @@ async function createRelease(formData:FormData){
 }
 
 
-async function updateStorefront(formData:FormData){
+async function updatePlataforma(formData:FormData){
   "use server";
   const {supabase}=await requirePublishingEditor();
   const id=String(formData.get("storefront_id")||"").trim();
@@ -139,133 +154,136 @@ export default async function MasterPublishingPage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · PUBLISHING</span><h1>Publishing</h1><p>Storefronts, releases, certificación y calendario comercial conectados a registros persistentes.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <div><span className={styles.eyebrow}>LIRYGAMES · PUBLICACIÓN</span><h1>Publicación</h1><p>Plataformas, lanzamientos, certificación y calendario comercial.</p></div>
+      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Storefronts</small><strong>{stores.length}</strong><span>Plataformas registradas</span></article>
-      <article><small>Releases abiertas</small><strong>{open.length}</strong><span>Pipeline</span></article>
-      <article><small>Live</small><strong>{live.length}</strong><span>Lanzamientos activos</span></article>
-      <article><small>Riesgo cert/release</small><strong>{certRisk.length}</strong><span>Failed / blocked / delayed</span></article>
+      <article><small>Plataformas</small><strong>{stores.length}</strong><span>Plataformas registradas</span></article>
+      <article><small>Lanzamientos abiertos</small><strong>{open.length}</strong><span>En preparación</span></article>
+      <article><small>Publicados</small><strong>{live.length}</strong><span>Lanzamientos activos</span></article>
+      <article><small>Riesgos</small><strong>{certRisk.length}</strong><span>Fallidos, bloqueados o retrasados</span></article>
     </section>
 
     <section className={styles.sectionHead}>
-      <div><span>PLATFORMS</span><h2>Storefronts</h2></div>
-      <p>Registro real de cuentas/plataformas. Comienza vacío hasta configurar Steam, PlayStation, Xbox, Nintendo, Epic u otros canales reales.</p>
+      <div><span>PLATAFORMAS</span><h2>Plataformas</h2></div>
+      <p>Cuentas y canales reales como Steam, PlayStation, Xbox, Nintendo, Epic u otros.</p>
     </section>
     <section className={styles.grid}>
       {stores.map((s:any)=><article key={s.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={s.active?styles.badgeActive:styles.badgePlanned}>{s.active?"ACTIVO":"INACTIVO"}</span><em>{s.account_status}</em></div>
+        <div className={styles.cardTop}><span className={s.active?styles.badgeActive:styles.badgePlanned}>{s.active?"ACTIVO":"INACTIVO"}</span><em>{accountStatusLabel(s.account_status)}</em></div>
         <h3>{s.name}</h3>
         <p>{s.platform}<br/>{(s.region_scope||[]).length?(s.region_scope||[]).join(" · "):"Regiones por definir"}</p>
       </article>)}
-      {!stores.length&&<article className={styles.card}><h3>Storefront registry preparado</h3><p>La estructura ya existe; no se cargarán plataformas hasta que exista una cuenta o canal real que registrar.</p></article>}
+      {!stores.length&&<article className={styles.card}><h3>Registro de plataformas preparado</h3><p>El sistema está listo para registrar una plataforma cuando exista una cuenta o canal real.</p></article>}
     </section>
 
     <section className={styles.sectionHead}>
-      <div><span>RELEASE PIPELINE</span><h2>Lanzamientos</h2></div>
-      <p>Cada release queda vinculada a un juego y opcionalmente a un storefront, con estado, certificación, territorio, precio y fecha objetivo.</p>
+      <div><span>LANZAMIENTOS</span><h2>Lanzamientos</h2></div>
+      <p>Cada lanzamiento queda vinculado a un juego y, cuando aplique, a una plataforma, con estado, certificación, territorios, precio y fecha objetivo.</p>
     </section>
     <section className={styles.grid}>
       {releaseRows.map((r:any)=><article key={r.id} className={styles.card}>
         <div className={styles.cardTop}>
-          <span className={r.status==="live"?styles.badgeActive:styles.badgePlanned}>{String(r.status).toUpperCase()}</span>
-          <em>{r.certification_status}</em>
+          <span className={r.status==="live"?styles.badgeActive:styles.badgePlanned}>{releaseStatusLabel(r.status)}</span>
+          <em>{certificationLabel(r.certification_status)}</em>
         </div>
         <h3>{r.release_name}</h3>
-        <p>{gameById.get(r.game_id)?.name||"Juego"} · {storeById.get(r.storefront_id)?.name||"Sin storefront"}<br/>{r.target_date||"Sin fecha"} · {r.price_cents!=null?money(r.price_cents,r.currency||"USD"):"Precio por definir"}</p>
+        <p>{gameById.get(r.game_id)?.name||"Juego"} · {storeById.get(r.storefront_id)?.name||"Sin plataforma"}<br/>{r.target_date||"Sin fecha"} · {r.price_cents!=null?money(r.price_cents,r.currency||"USD"):"Precio por definir"}</p>
       </article>)}
-      {!releaseRows.length&&<article className={styles.card}><h3>Sin releases cargadas</h3><p>El pipeline queda listo para demos, base game, DLC, expansiones, seasons, bundles y patches.</p></article>}
+      {!releaseRows.length&&<article className={styles.card}><h3>Sin lanzamientos cargados</h3><p>El sistema está listo para demos, juego base, DLC, expansiones, temporadas, paquetes y actualizaciones.</p></article>}
     </section>
 
 
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
-      <form action={createStorefront} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>NUEVO STOREFRONT</span><h2>Registrar plataforma</h2></div>
+    {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}>
+      <summary>Opciones avanzadas</summary>
+      <p className={styles.advancedHint}>Úsalas para registrar o modificar plataformas y lanzamientos manualmente.</p>
+      <section className={styles.adminForms}>
+      <form action={createPlataforma} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>NUEVA PLATAFORMA</span><h2>Registrar plataforma</h2></div>
         <div className={styles.formGrid}>
           <label>Nombre<input name="name" required placeholder="Steam"/></label>
           <label>Código<input name="code" required placeholder="steam"/></label>
           <label>Plataforma<input name="platform" required placeholder="PC"/></label>
           <label>Regiones<input name="region_scope" placeholder="US, LATAM, EU"/></label>
           <label>Estado de cuenta<select name="account_status" defaultValue="not_configured">
-            <option value="not_configured">Not configured</option>
-            <option value="configured">Configured</option>
-            <option value="verified">Verified</option>
-            <option value="restricted">Restricted</option>
-            <option value="suspended">Suspended</option>
+            <option value="not_configured">Sin configurar</option>
+            <option value="configured">Configurada</option>
+            <option value="verified">Verificada</option>
+            <option value="restricted">Restringida</option>
+            <option value="suspended">Suspendida</option>
           </select></label>
         </div>
-        <button className={styles.formButton} type="submit">Registrar storefront</button>
+        <button className={styles.formButton} type="submit">Registrar plataforma</button>
       </form>
 
       <form action={createRelease} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>NUEVO RELEASE</span><h2>Registrar lanzamiento</h2></div>
+        <div className={styles.formTitle}><span>NUEVO LANZAMIENTO</span><h2>Registrar lanzamiento</h2></div>
         <div className={styles.formGrid}>
           <label>Juego<select name="game_id" required defaultValue="">
             <option value="" disabled>Seleccionar juego</option>
             {gameRows.map((g:any)=><option key={g.id} value={g.id}>{g.name}</option>)}
           </select></label>
-          <label>Storefront<select name="storefront_id" defaultValue="">
-            <option value="">Sin storefront</option>
+          <label>Plataforma<select name="storefront_id" defaultValue="">
+            <option value="">Sin plataforma</option>
             {stores.map((s:any)=><option key={s.id} value={s.id}>{s.name}</option>)}
           </select></label>
-          <label>Nombre<input name="release_name" required placeholder="Launch PC"/></label>
+          <label>Nombre<input name="release_name" required placeholder="Lanzamiento PC"/></label>
           <label>SKU<input name="sku" placeholder="FRG-PC-BASE"/></label>
           <label>Tipo<select name="release_type" defaultValue="base_game">
-            <option value="base_game">Base Game</option><option value="demo">Demo</option>
-            <option value="prologue">Prologue</option><option value="dlc">DLC</option>
-            <option value="expansion">Expansion</option><option value="season">Season</option>
-            <option value="bundle">Bundle</option><option value="patch">Patch</option><option value="other">Other</option>
+            <option value="base_game">Juego base</option><option value="demo">Demo</option>
+            <option value="prologue">Prólogo</option><option value="dlc">DLC</option>
+            <option value="expansion">Expansión</option><option value="season">Temporada</option>
+            <option value="bundle">Paquete</option><option value="patch">Actualización</option><option value="other">Otro</option>
           </select></label>
           <label>Fecha objetivo<input type="date" name="target_date"/></label>
           <label>Precio<input type="number" name="price" min="0" step="0.01" placeholder="29.99"/></label>
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
           <label className={styles.span2}>Territorios<input name="territories" placeholder="US, LATAM, EU"/></label>
         </div>
-        <button className={styles.formButton} type="submit" disabled={!gameRows.length}>Registrar release</button>
+        <button className={styles.formButton} type="submit" disabled={!gameRows.length}>Registrar lanzamiento</button>
       </form>
-    </section>}
+      </section>
 
-
-    {["admin","editor"].includes(profile.role)&&<section className={styles.adminForms}>
-      <form action={updateStorefront} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>GESTIONAR STOREFRONT</span><h2>Actualizar plataforma</h2></div>
+      <section className={styles.adminForms}>
+      <form action={updatePlataforma} className={styles.adminForm}>
+        <div className={styles.formTitle}><span>GESTIONAR PLATAFORMA</span><h2>Actualizar plataforma</h2></div>
         <div className={styles.formGrid}>
-          <label>Storefront<select name="storefront_id" required defaultValue=""><option value="" disabled>Seleccionar storefront</option>{stores.map((s:any)=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
-          <label>Estado cuenta<select name="account_status" defaultValue="configured"><option value="not_configured">Not configured</option><option value="configured">Configured</option><option value="verified">Verified</option><option value="restricted">Restricted</option><option value="suspended">Suspended</option></select></label>
+          <label>Plataforma<select name="storefront_id" required defaultValue=""><option value="" disabled>Seleccionar plataforma</option>{stores.map((s:any)=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
+          <label>Estado cuenta<select name="account_status" defaultValue="configured"><option value="not_configured">Sin configurar</option><option value="configured">Configurada</option><option value="verified">Verificada</option><option value="restricted">Restringida</option><option value="suspended">Suspendida</option></select></label>
           <label>Activo<select name="active" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
           <label className={styles.span2}>Regiones<input name="region_scope" placeholder="US, LATAM, EU"/></label>
         </div>
-        <button className={styles.formButton} disabled={!stores.length}>Actualizar storefront</button>
+        <button className={styles.formButton} disabled={!stores.length}>Actualizar plataforma</button>
       </form>
 
       <form action={updateRelease} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>GESTIONAR RELEASE</span><h2>Actualizar lanzamiento</h2></div>
+        <div className={styles.formTitle}><span>GESTIONAR LANZAMIENTO</span><h2>Actualizar lanzamiento</h2></div>
         <div className={styles.formGrid}>
-          <label>Release<select name="release_id" required defaultValue=""><option value="" disabled>Seleccionar release</option>{releaseRows.map((r:any)=><option key={r.id} value={r.id}>{r.release_name}</option>)}</select></label>
-          <label>Estado<select name="status" defaultValue="preparing"><option value="planned">Planned</option><option value="preparing">Preparing</option><option value="submitted">Submitted</option><option value="certification">Certification</option><option value="approved">Approved</option><option value="scheduled">Scheduled</option><option value="live">Live</option><option value="delayed">Delayed</option><option value="blocked">Blocked</option><option value="canceled">Canceled</option><option value="sunset">Sunset</option></select></label>
-          <label>Certificación<select name="certification_status" defaultValue="not_started"><option value="not_started">Not started</option><option value="in_progress">In progress</option><option value="passed">Passed</option><option value="failed">Failed</option><option value="waived">Waived</option></select></label>
+          <label>Lanzamiento<select name="release_id" required defaultValue=""><option value="" disabled>Seleccionar lanzamiento</option>{releaseRows.map((r:any)=><option key={r.id} value={r.id}>{r.release_name}</option>)}</select></label>
+          <label>Estado<select name="status" defaultValue="preparing"><option value="planned">Planificado</option><option value="preparing">Preparando</option><option value="submitted">Enviado</option><option value="certification">En certificación</option><option value="approved">Aprobado</option><option value="scheduled">Programado</option><option value="live">Publicados</option><option value="delayed">Retrasado</option><option value="blocked">Bloqueado</option><option value="canceled">Cancelado</option><option value="sunset">Retirado</option></select></label>
+          <label>Certificación<select name="certification_status" defaultValue="not_started"><option value="not_started">No iniciada</option><option value="in_progress">En curso</option><option value="passed">Aprobada</option><option value="failed">Fallida</option><option value="waived">No requerida</option></select></label>
           <label>Fecha objetivo<input type="date" name="target_date"/></label>
           <label>Precio<input type="number" min="0" step="0.01" name="price"/></label>
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
           <label className={styles.span2}>Territorios<input name="territories" placeholder="US, LATAM, EU"/></label>
-          <label className={styles.span2}>Store URL<input name="store_url"/></label>
+          <label className={styles.span2}>Enlace de la tienda<input name="store_url"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <button className={styles.formButton} disabled={!releaseRows.length}>Actualizar release</button>
+        <button className={styles.formButton} disabled={!releaseRows.length}>Actualizar lanzamiento</button>
       </form>
-    </section>}
+      </section>
+    </details>}
 
     <section className={styles.sectionHead}>
-      <div><span>COMMERCIAL SIGNALS</span><h2>Señales actuales</h2></div>
-      <p>Publishing de videojuegos se incorpora sin perder las señales editoriales existentes.</p>
+      <div><span>SEÑALES COMERCIALES</span><h2>Señales actuales</h2></div>
+      <p>La publicación de videojuegos se conecta con las señales comerciales y editoriales existentes.</p>
     </section>
     <section className={styles.kpis}>
-      <article><small>Juegos registrados</small><strong>{gameRows.length}</strong><span>Fuente: game_titles</span></article>
+      <article><small>Juegos registrados</small><strong>{gameRows.length}</strong><span>Juegos del estudio</span></article>
       <article><small>Ediciones</small><strong>{(editions||0).toLocaleString()}</strong><span>Catálogo editorial</span></article>
-      <article><small>Amazon clicks</small><strong>{(amazonClicks||0).toLocaleString()}</strong><span>Intento comercial</span></article>
-      <article><small>Campañas</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Go-to-market</span></article>
+      <article><small>Clics en Amazon</small><strong>{(amazonClicks||0).toLocaleString()}</strong><span>Intento comercial</span></article>
+      <article><small>Campañas</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Campañas activas</span></article>
     </section>
   </main>;
 }
