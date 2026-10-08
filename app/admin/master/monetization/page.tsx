@@ -78,7 +78,7 @@ export default async function MasterMonetizationPage(){
     </section>
 
     <section className={styles.grid}>
-      {productRows.map((p:any,i:number)=><article key={p.sku||i} className={styles.card}>
+      {productRows.map((p:any,i:number)=><article key={p.sku||i} className={`${styles.card} ${!p.active?styles.cardMuted:p.stock_status==="out_of_stock"?styles.cardAttention:["preorder","backorder","limited"].includes(p.stock_status)?styles.cardWarning:""}`}>
         <div className={styles.cardTop}><span className={p.active?styles.badgeActive:styles.badgePlanned}>{p.active?"ACTIVO":"INACTIVO"}</span><em>{modeLabel(p.mode)}</em></div>
         <h3>{p.name_es||p.name_en||p.sku||"Producto"}</h3>
         <p>{p.price_cents!=null?money(p.price_cents,p.currency||"USD"):"Precio por definir"} · {paymentProviderLabel(p.payment_provider)}<br/>Disponibilidad: {stockLabel(p.stock_status)}</p>
