@@ -125,17 +125,26 @@ export default async function SettingsPage(){
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleSettings}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · CONFIGURACIÓN</span><h1>Configuración</h1><p>Parámetros operativos y controles de activación. Las credenciales y claves sensibles permanecen fuera de este panel.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">CF</span>
+      <div className={styles.moduleStripCopy}><small>CONFIGURACIÓN</small><strong>Parámetros y controles de activación</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Configuración corporativa conectada</span>
+        <span>Acceso exclusivo · MFA</span>
+      </div>
+    </section>
+
     <section className={styles.kpis}>
       <article><small>Parámetros</small><strong>{settingRows.length}</strong><span>{prodScoped} de producción</span></article>
       <article><small>Controles de activación</small><strong>{flagRows.length}</strong><span>{enabledFlags.length} activos</span></article>
       <article><small>Credenciales</small><strong>PROHIBIDO</strong><span>Solo parámetros no sensibles</span></article>
-      <article><small>Acceso</small><strong>ADMINISTRADOR</strong><span>Acceso restringido</span></article>
+      <article><small>Acceso</small><strong className={styles.kpiLongValue}>ADMINISTRADOR</strong><span>Acceso restringido</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>PARÁMETROS</span><h2>Parámetros operativos</h2></div></section>
