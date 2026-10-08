@@ -50,11 +50,20 @@ export default async function MasterMonetizationPage(){
   const active=productRows.filter(p=>p.active);
   const featured=productRows.filter(p=>p.featured);
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleMonetization}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · MONETIZACIÓN</span><h1>Monetización</h1><p>Precios, ofertas, catálogo e ingresos reales sin simular resultados.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">MN</span>
+      <div className={styles.moduleStripCopy}><small>INGRESOS Y OFERTAS</small><strong>Monetización del ecosistema</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Ingresos basados en datos reales</span>
+        <span>Sin resultados simulados</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Productos activos</small><strong>{active.length}</strong><span>{featured.length} destacados</span></article>
