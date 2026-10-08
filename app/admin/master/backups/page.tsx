@@ -3,6 +3,23 @@ import {createSupabaseServerClient} from "../../../../lib/supabase/server";
 import {MasterBackupDownload} from "../../../../components/MasterBackupDownload";
 import styles from "../master-admin.module.css";
 
+function auditActionLabel(value:string|undefined){
+  const map:Record<string,string>={
+    create:"Creación",
+    update:"Actualización",
+    delete:"Eliminación",
+    login:"Inicio de sesión",
+    logout:"Cierre de sesión",
+    backup_download:"Descarga de copia",
+    export:"Exportación",
+    publish:"Publicación",
+    approve:"Aprobación",
+    reject:"Rechazo"
+  };
+  if(!value)return "";
+  return map[value]||String(value).replaceAll("_"," ").replace(/\b\w/g,m=>m.toUpperCase());
+}
+
 export default async function MasterBackupPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -27,7 +44,7 @@ export default async function MasterBackupPage(){
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div>
-        <span className={styles.eyebrow}>LIRYGAMES · RESPALDOS</span>
+        <span className={styles.eyebrow}>LIRYGAMES · COPIAS</span>
         <h1>Copias y Recuperación</h1>
         <p>Descarga copias protegidas del contenido restaurable y conserva una referencia externa fuera del sistema.</p>
       </div>
@@ -43,7 +60,7 @@ export default async function MasterBackupPage(){
 
     <section className={styles.sectionHead}>
       <div><span>COPIA EXTERNA</span><h2>Descarga manual protegida</h2></div>
-      <p>La descarga requiere sesión administrativa y MFA. La copia contiene contenido y datos de recuperación, no credenciales ni información sensible.</p>
+      <p>La descarga requiere sesión administrativa y verificación en dos pasos. La copia contiene contenido y datos de recuperación, no credenciales ni información sensible.</p>
     </section>
 
     <section className={styles.notice}>
@@ -85,7 +102,7 @@ export default async function MasterBackupPage(){
     <section className={styles.notice}>
       <div>
         <strong>Última actividad administrativa</strong>
-        <span>{lastLog?.created_at?new Date(lastLog.created_at).toLocaleString("es-US"):"Sin actividad registrada"}{lastLog?.action?" · "+lastLog.action:""}</span>
+        <span>{lastLog?.created_at?new Date(lastLog.created_at).toLocaleString("es-US"):"Sin actividad registrada"}{lastLog?.action?" · "+auditActionLabel(lastLog.action):""}</span>
       </div>
       <code>Recuperación controlada</code>
     </section>
