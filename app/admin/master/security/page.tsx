@@ -147,20 +147,20 @@ export default async function MasterSecurityPage(){
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
   const controls=[
-    ["RLS","Activo","Tablas públicas relevantes con Row Level Security"],
+    ["Control de acceso a datos","Activo","Protección aplicada a las tablas públicas relevantes"],
     ["Acceso administrativo","Activo",String(profiles||0)+" perfiles administrativos"],
     ["Lista de acceso","Activo",String(allowlist||0)+" accesos permitidos"],
     ["Control antiabuso","Activo",String(rateRows||0)+" registros de control"],
     ["Historial de auditoría","Activo",String(adminEvents||0)+" eventos administrativos"],
-    ["Base protegida de producción","Protegido","main · 8eb878e"],
-    ["Aislamiento de pruebas","Activo","Master Admin fuera de producción"],
+    ["Base protegida de producción","Protegido","Versión pública protegida"],
+    ["Aislamiento de pruebas","Activo","Las pruebas se mantienen separadas de producción"],
     ["Claves sensibles","Servidor","Claves sensibles fuera del cliente"]
   ];
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · SEGURIDAD</span><h1>Seguridad</h1><p>Incidentes, revisiones de acceso y controles técnicos existentes.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
@@ -183,7 +183,7 @@ export default async function MasterSecurityPage(){
     <section className={styles.grid}>
       {reviewRows.map((r:any)=><article key={r.id} className={styles.card}>
         <div className={styles.cardTop}><span className={r.review_status==="approved"?styles.badgeActive:styles.badgePlanned}>{reviewEstadoLabel(r.review_status)}</span><em>{severityLabel(r.risk_level)}</em></div>
-        <h3>{r.subject_name||r.subject_ref}</h3><p>{r.subject_type}<br/>Revisor: {ownerName(r.reviewer_user_id)}<br/>{r.due_date?"Fecha límite: "+r.due_date:"Sin fecha límite"}<br/>{r.notes||"Sin notas"}</p>
+        <h3>{r.subject_name||r.subject_ref}</h3><p>{r.subject_type==="admin_user"?"Usuario administrativo":r.subject_type==="service_account"?"Cuenta de servicio":r.subject_type==="integration"?"Integración":r.subject_type==="vendor"?"Proveedor":"Otro"}<br/>Revisor: {ownerName(r.reviewer_user_id)}<br/>{r.due_date?"Fecha límite: "+r.due_date:"Sin fecha límite"}<br/>{r.notes||"Sin notas"}</p>
       </article>)}
       {!reviewRows.length&&<article className={styles.card}><h3>Sin revisiones pendientes</h3><p>Las revisiones se registrarán solo cuando exista una necesidad real de control.</p></article>}
     </section>
@@ -212,7 +212,7 @@ export default async function MasterSecurityPage(){
         <div className={styles.formTitle}><span>NUEVA REVISIÓN</span><h2>Registrar revisión de acceso</h2></div>
         <div className={styles.formGrid}>
           <label>Tipo<select name="subject_type" defaultValue="admin_user"><option value="admin_user">Usuario administrativo</option><option value="service_account">Cuenta de servicio</option><option value="integration">Integración</option><option value="vendor">Proveedor</option><option value="other">Otro</option></select></label>
-          <label>Referencia<input name="subject_ref" required placeholder="email / id / provider"/></label>
+          <label>Referencia<input name="subject_ref" required placeholder="Correo / identificador / proveedor"/></label>
           <label>Nombre<input name="subject_name"/></label>
           <label>Riesgo<select name="risk_level" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
           <label>Fecha límite<input type="date" name="due_date"/></label>
