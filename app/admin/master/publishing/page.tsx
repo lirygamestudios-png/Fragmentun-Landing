@@ -156,7 +156,7 @@ export default async function MasterPublishingPage(){
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · PUBLICACIÓN</span><h1>Publicación</h1><p>Plataformas, lanzamientos, certificación y calendario comercial.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
@@ -168,7 +168,7 @@ export default async function MasterPublishingPage(){
 
     <section className={styles.sectionHead}>
       <div><span>PLATAFORMAS</span><h2>Plataformas</h2></div>
-      <p>Cuentas y canales reales como Steam, PlayStation, Xbox, Nintendo, Epic u otros.</p>
+      <p>Cuentas y canales reales como Steam, PlayStation, Xbox, Nintendo, Epic y otros canales de distribución.</p>
     </section>
     <section className={styles.grid}>
       {stores.map((s:any)=><article key={s.id} className={styles.card}>
@@ -192,7 +192,7 @@ export default async function MasterPublishingPage(){
         <h3>{r.release_name}</h3>
         <p>{gameById.get(r.game_id)?.name||"Juego"} · {storeById.get(r.storefront_id)?.name||"Sin plataforma"}<br/>{r.target_date||"Sin fecha"} · {r.price_cents!=null?money(r.price_cents,r.currency||"USD"):"Precio por definir"}</p>
       </article>)}
-      {!releaseRows.length&&<article className={styles.card}><h3>Sin lanzamientos cargados</h3><p>El sistema está listo para demos, juego base, DLC, expansiones, temporadas, paquetes y actualizaciones.</p></article>}
+      {!releaseRows.length&&<article className={styles.card}><h3>Sin lanzamientos cargados</h3><p>El sistema está listo para demos, juego base, contenido descargable, expansiones, temporadas, paquetes y actualizaciones.</p></article>}
     </section>
 
 
@@ -206,7 +206,7 @@ export default async function MasterPublishingPage(){
           <label>Nombre<input name="name" required placeholder="Steam"/></label>
           <label>Código<input name="code" required placeholder="steam"/></label>
           <label>Plataforma<input name="platform" required placeholder="PC"/></label>
-          <label>Regiones<input name="region_scope" placeholder="US, LATAM, EU"/></label>
+          <label>Regiones<input name="region_scope" placeholder="EE. UU., Latinoamérica, Europa"/></label>
           <label>Estado de cuenta<select name="account_status" defaultValue="not_configured">
             <option value="not_configured">Sin configurar</option>
             <option value="configured">Configurada</option>
@@ -230,17 +230,17 @@ export default async function MasterPublishingPage(){
             {stores.map((s:any)=><option key={s.id} value={s.id}>{s.name}</option>)}
           </select></label>
           <label>Nombre<input name="release_name" required placeholder="Lanzamiento PC"/></label>
-          <label>SKU<input name="sku" placeholder="FRG-PC-BASE"/></label>
+          <label>Código comercial<input name="sku" placeholder="FRG-PC-BASE"/></label>
           <label>Tipo<select name="release_type" defaultValue="base_game">
             <option value="base_game">Juego base</option><option value="demo">Demo</option>
-            <option value="prologue">Prólogo</option><option value="dlc">DLC</option>
+            <option value="prologue">Prólogo</option><option value="dlc">Contenido descargable</option>
             <option value="expansion">Expansión</option><option value="season">Temporada</option>
             <option value="bundle">Paquete</option><option value="patch">Actualización</option><option value="other">Otro</option>
           </select></label>
           <label>Fecha objetivo<input type="date" name="target_date"/></label>
           <label>Precio<input type="number" name="price" min="0" step="0.01" placeholder="29.99"/></label>
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
-          <label className={styles.span2}>Territorios<input name="territories" placeholder="US, LATAM, EU"/></label>
+          <label className={styles.span2}>Territorios<input name="territories" placeholder="EE. UU., Latinoamérica, Europa"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit" disabled={!gameRows.length}>Registrar lanzamiento</MasterSubmitButton>
       </form>
@@ -253,7 +253,7 @@ export default async function MasterPublishingPage(){
           <label>Plataforma<select name="storefront_id" required defaultValue=""><option value="" disabled>Seleccionar plataforma</option>{stores.map((s:any)=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
           <label>Estado cuenta<select name="account_status" defaultValue="configured"><option value="not_configured">Sin configurar</option><option value="configured">Configurada</option><option value="verified">Verificada</option><option value="restricted">Restringida</option><option value="suspended">Suspendida</option></select></label>
           <label>Activo<select name="active" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
-          <label className={styles.span2}>Regiones<input name="region_scope" placeholder="US, LATAM, EU"/></label>
+          <label className={styles.span2}>Regiones<input name="region_scope" placeholder="EE. UU., Latinoamérica, Europa"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!stores.length}>Actualizar plataforma</MasterSubmitButton>
       </form>
@@ -262,12 +262,12 @@ export default async function MasterPublishingPage(){
         <div className={styles.formTitle}><span>GESTIONAR LANZAMIENTO</span><h2>Actualizar lanzamiento</h2></div>
         <div className={styles.formGrid}>
           <label>Lanzamiento<select name="release_id" required defaultValue=""><option value="" disabled>Seleccionar lanzamiento</option>{releaseRows.map((r:any)=><option key={r.id} value={r.id}>{r.release_name}</option>)}</select></label>
-          <label>Estado<select name="status" defaultValue="preparing"><option value="planned">Planificado</option><option value="preparing">Preparando</option><option value="submitted">Enviado</option><option value="certification">En certificación</option><option value="approved">Aprobado</option><option value="scheduled">Programado</option><option value="live">Publicados</option><option value="delayed">Retrasado</option><option value="blocked">Bloqueado</option><option value="canceled">Cancelado</option><option value="sunset">Retirado</option></select></label>
+          <label>Estado<select name="status" defaultValue="preparing"><option value="planned">Planificado</option><option value="preparing">Preparando</option><option value="submitted">Enviado</option><option value="certification">En certificación</option><option value="approved">Aprobado</option><option value="scheduled">Programado</option><option value="live">Publicado</option><option value="delayed">Retrasado</option><option value="blocked">Bloqueado</option><option value="canceled">Cancelado</option><option value="sunset">Retirado</option></select></label>
           <label>Certificación<select name="certification_status" defaultValue="not_started"><option value="not_started">No iniciada</option><option value="in_progress">En curso</option><option value="passed">Aprobada</option><option value="failed">Fallida</option><option value="waived">No requerida</option></select></label>
           <label>Fecha objetivo<input type="date" name="target_date"/></label>
           <label>Precio<input type="number" min="0" step="0.01" name="price"/></label>
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
-          <label className={styles.span2}>Territorios<input name="territories" placeholder="US, LATAM, EU"/></label>
+          <label className={styles.span2}>Territorios<input name="territories" placeholder="EE. UU., Latinoamérica, Europa"/></label>
           <label className={styles.span2}>Enlace de la tienda<input name="store_url"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
@@ -283,7 +283,7 @@ export default async function MasterPublishingPage(){
     <section className={styles.kpis}>
       <article><small>Juegos registrados</small><strong>{gameRows.length}</strong><span>Juegos del estudio</span></article>
       <article><small>Ediciones</small><strong>{(editions||0).toLocaleString()}</strong><span>Catálogo editorial</span></article>
-      <article><small>Clics en Amazon</small><strong>{(amazonClicks||0).toLocaleString()}</strong><span>Intento comercial</span></article>
+      <article><small>Clics en Amazon</small><strong>{(amazonClicks||0).toLocaleString()}</strong><span>Interés comercial</span></article>
       <article><small>Campañas</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Campañas activas</span></article>
     </section>
   </main>;
