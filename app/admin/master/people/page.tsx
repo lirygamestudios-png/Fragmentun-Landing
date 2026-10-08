@@ -219,7 +219,7 @@ export default async function MasterPeoplePage(){
           <label>Inicio<input type="date" name="start_date"/></label>
           <label>Fin<input type="date" name="end_date"/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!memberRows.length}>Registrar asignación</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!memberRows.length} disabledReason="Primero registra una persona para poder crear una asignación.">Registrar asignación</MasterSubmitButton>
       </form>
     </section>
 
@@ -238,7 +238,7 @@ export default async function MasterPeoplePage(){
           <label className={styles.span2}>Habilidades<input name="skills" placeholder="Unity, Marketing, Producción"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length}>Actualizar miembro</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length} disabledReason="No hay personas registradas para actualizar.">Actualizar miembro</MasterSubmitButton>
       </form>
 
       <form action={updateAssignment} className={styles.adminForm}>
@@ -252,7 +252,7 @@ export default async function MasterPeoplePage(){
           <label>Fin<input type="date" name="end_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!assignmentRows.length}>Actualizar asignación</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!assignmentRows.length} disabledReason="No hay asignaciones registradas para actualizar.">Actualizar asignación</MasterSubmitButton>
       </form>
     </section></details>}
 
