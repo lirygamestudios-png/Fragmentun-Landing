@@ -65,7 +65,7 @@ export default async function MasterIntegrationsPage(){
     <section className={styles.kpis}>
       <article><small>Servicios detectados</small><strong>{providers.length}</strong><span>Con actividad registrada</span></article>
       <article><small>Eventos correctos</small><strong>{ok}</strong><span>Últimos 100 registros</span></article>
-      <article><small>Errores</small><strong>{errors}</strong><span>Últimos 100 registros</span></article>
+      <article className={errors?styles.kpiAttention:undefined}><small>Errores</small><strong>{errors}</strong><span>{errors?"Últimos 100 registros":"Sin errores recientes"}</span></article>
       <article><small>Contactos</small><strong>{(leads||0).toLocaleString()}</strong><span>Base de captación</span></article>
     </section>
 
@@ -81,7 +81,7 @@ export default async function MasterIntegrationsPage(){
         <p>MailerLite, Meta Ads, Google Ads y TikTok Ads, con historial y configuración existente.</p>
         <span className={styles.cardLink}>Abrir configuración →</span>
       </a>
-      <article className={styles.card}>
+      <article className={`${styles.card} ${errors?styles.cardAttention:""}`}>
         <div className={styles.cardTop}><span className={errors?styles.badgePlanned:styles.badgeActive}>{errors?"ATENCIÓN":"ESTABLE"}</span><em>HISTORIAL</em></div>
         <h3>Actividad reciente</h3>
         <p>{latest?String(latest.integration||"Servicio")+" · "+eventLabel(latest.event_type)+" · "+integrationStatusLabel(latest.status):"Sin actividad registrada todavía."}</p>
@@ -104,7 +104,7 @@ export default async function MasterIntegrationsPage(){
     </section>
 
     <section className={styles.grid}>
-      {rows.slice(0,8).map((r:any)=><article key={r.id} className={styles.card}>
+      {rows.slice(0,8).map((r:any)=><article key={r.id} className={`${styles.card} ${r.status==="success"?"":styles.cardAttention}`}>
         <div className={styles.cardTop}>
           <span className={r.status==="success"?styles.badgeActive:styles.badgePlanned}>{r.status==="success"?"CORRECTO":"REVISAR"}</span>
           <em>{r.integration||"SERVICIO"}</em>
