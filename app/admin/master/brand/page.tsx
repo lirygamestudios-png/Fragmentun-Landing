@@ -266,7 +266,7 @@ export default async function MasterBrandPage(){
       <article><small>Campañas de crecimiento</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Separadas de comunicación</span></article>
       <article><small>Reseñas</small><strong>{(reviews||0).toLocaleString()}</strong><span>Prueba social</span></article>
       <article><small>Compartidos</small><strong>{(shareClicks||0).toLocaleString()}</strong><span>Eventos acumulados</span></article>
-      <article><small>Acceso a datos</small><strong>PROTEGIDO</strong><span>Administración, edición y marketing</span></article>
+      <article><small>Acceso a datos</small><strong className={styles.kpiCompactValue}>PROTEGIDO</strong><span>Administración, edición y marketing</span></article>
     </section>
   </main>;
 }
