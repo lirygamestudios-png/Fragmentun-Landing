@@ -5,6 +5,10 @@ import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
+function validCurrency(value:string){
+  return /^[A-Z]{3}$/.test(value);
+}
+
 function money(cents:number|null|undefined,currency="USD"){
   return new Intl.NumberFormat("en-US",{style:"currency",currency}).format((cents||0)/100);
 }
@@ -71,7 +75,7 @@ async function createRelease(formData:FormData){
   if(!gameId||!releaseName) throw new Error("release_required_fields");
   const allowedTypes=new Set(["base_game","demo","prologue","dlc","expansion","season","bundle","patch","other"]);
   if(!allowedTypes.has(releaseType)) throw new Error("invalid_release_type");
-  if(priceCents!==null&&(!Number.isFinite(priceCents)||priceCents<0)) throw new Error("invalid_price");
+  if(!validCurrency(currency)||(priceCents!==null&&(!Number.isFinite(priceCents)||priceCents<0))) throw new Error("invalid_price");
   const{error}=await supabase.from("publishing_releases").insert({
     game_id:gameId,storefront_id:storefrontId,release_name:releaseName,release_type:releaseType,
     target_date:targetDate,sku,territories,price_cents:priceCents,currency,created_by:user.id
@@ -112,7 +116,19 @@ async function updateRelease(formData:FormData){
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedStatus=new Set(["planned","preparing","submitted","certification","approved","scheduled","live","delayed","blocked","canceled","sunset"]);
   const allowedCertification=new Set(["not_started","in_progress","passed","failed","waived"]);
-  if(!id||!allowedStatus.has(status)||!allowedCertification.has(certification)|| (priceCents!==null&&(!Number.isFinite(priceCents)||priceCents<0))) throw new Error("invalid_release_update");
+  if(!id||!allowedStatus.has(status)||!allowedCertification.has(certification)||!validCurrency(currency)||(priceCents!==null&&(!Number.isFinite(priceCents)||priceCents<0))) throw new Error("invalid_release_update");
+  const{data:existingRelease,error:existingReleaseError}=await supabase.from("publishing_releases").select("storefront_id").eq("id",id).maybeSingle();
+  if(existingReleaseError) throw new Error(existingReleaseError.message);
+  if(!existingRelease) throw new Error("release_not_found");
+  if(["scheduled","live"].includes(status)&&!targetDate) throw new Error("target_date_required");
+  if(status==="live"){
+    if(!["passed","waived"].includes(certification)||!storeUrl) throw new Error("release_not_ready");
+    if(existingRelease.storefront_id){
+      const{data:store,error:storeError}=await supabase.from("publishing_storefronts").select("account_status,active").eq("id",existingRelease.storefront_id).maybeSingle();
+      if(storeError) throw new Error(storeError.message);
+      if(!store||!store.active||store.account_status!=="verified") throw new Error("storefront_not_ready");
+    }
+  }
   const patch:any={
     status,certification_status:certification,target_date:targetDate,price_cents:priceCents,currency,
     territories,store_url:storeUrl,notes,updated_at:new Date().toISOString()
