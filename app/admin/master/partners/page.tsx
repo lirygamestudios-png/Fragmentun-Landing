@@ -5,6 +5,13 @@ import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
+function invalidDateRange(start:string|null,end:string|null){
+  return Boolean(start&&end&&end<start);
+}
+function validCurrency(value:string){
+  return /^[A-Z]{3}$/.test(value);
+}
+
 function partnerEstadoLabel(value:string){
   const map:Record<string,string>={prospect:"PROSPECTO",active:"ACTIVO",paused:"PAUSADO",inactive:"INACTIVO",ended:"FINALIZADO"};
   return map[value]||String(value||"").toUpperCase();
@@ -62,10 +69,10 @@ async function createAcuerdo(formData:FormData){
   const royaltyBps=royalty?Math.round(Number(royalty)*100):null;
   const allowedAcuerdo=new Set(["license","distribution","publishing","co_development","marketing","merchandising","adaptation","other"]);
   const allowedEx=new Set(["exclusive","non_exclusive","shared","unknown"]);
-  if(!dealName||!allowedAcuerdo.has(dealType)||!allowedEx.has(exclusivity)||!Number.isFinite(value)||(royaltyBps!==null&&!Number.isFinite(royaltyBps))) throw new Error("invalid_deal");
+  if(!dealName||!allowedAcuerdo.has(dealType)||!allowedEx.has(exclusivity)||!Number.isFinite(value)||value<0||!validCurrency(currency)||(royaltyBps!==null&&(!Number.isFinite(royaltyBps)||royaltyBps<0||royaltyBps>10000))) throw new Error("invalid_deal");
   const{error}=await supabase.from("licensing_deals").insert({
     partner_id:partnerId,deal_name:dealName,ip_name:ipName,deal_type:dealType,territory,exclusivity,
-    value_cents:Math.max(0,Math.round(value*100)),currency,royalty_bps:royaltyBps,created_by:user.id
+    value_cents:Math.round(value*100),currency,royalty_bps:royaltyBps,created_by:user.id
   });
   if(error) throw new Error(error.message);
   revalidatePath("/admin/master/partners");
@@ -110,7 +117,7 @@ async function updateAcuerdo(formData:FormData){
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedEstado=new Set(["pipeline","qualified","negotiation","contracting","active","expired","lost","canceled"]);
   const allowedEx=new Set(["exclusive","non_exclusive","shared","unknown"]);
-  if(!id||!allowedEstado.has(status)||!allowedEx.has(exclusivity)) throw new Error("invalid_deal_update");
+  if(!id||!allowedEstado.has(status)||!allowedEx.has(exclusivity)||!validCurrency(currency)||invalidDateRange(startDate,endDate)) throw new Error("invalid_deal_update");
   if(valueCents!==null&&(!Number.isFinite(valueCents)||valueCents<0)) throw new Error("invalid_value");
   if(royaltyBps!==null&&(!Number.isFinite(royaltyBps)||royaltyBps<0||royaltyBps>10000)) throw new Error("invalid_royalty");
   const patch:any={
