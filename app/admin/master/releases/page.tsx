@@ -135,7 +135,7 @@ async function useLatestPassedValidation(formData:FormData){
   if(!gate||gate.environment!=="preview") throw new Error("preview_gate_required");
   if(!["draft","in_review","blocked"].includes(gate.status)) throw new Error("gate_not_editable");
 
-  const{data:latest}=await supabase
+  const{data:latest,error:latestError}=await supabase
     .from("runtime_validation_runs")
     .select("id,run_code,deployment_id,commit_sha,status,environment,executed_at,notes")
     .eq("environment","preview")
@@ -143,6 +143,7 @@ async function useLatestPassedValidation(formData:FormData){
     .limit(1)
     .maybeSingle();
 
+  if(latestError) throw new Error(latestError.message);
   if(!latest) throw new Error("no_validation_available");
   if(latest.status!=="passed") throw new Error("latest_validation_not_passed");
   const currentDeployment=process.env.VERCEL_DEPLOYMENT_ID||null;
@@ -154,19 +155,21 @@ async function useLatestPassedValidation(formData:FormData){
 
   const evidence=`Prueba autenticada ${latest.run_code}: todas las comprobaciones registradas como correctas. Versión ${latest.deployment_id||"—"} · código ${latest.commit_sha||"—"}.`;
 
-  const{error:gateError}=await supabase.from("release_gates").update({
-    target_commit:latest.commit_sha||null,
-    target_deployment_id:latest.deployment_id||null,
+  const{data:updatedGate,error:gateError}=await supabase.from("release_gates").update({
+    target_commit:latest.commit_sha,
+    target_deployment_id:latest.deployment_id,
     notes:"Evidencia actualizada desde la última prueba autenticada correcta. La aprobación humana continúa pendiente.",
     updated_at:new Date().toISOString()
-  }).eq("id",gateId);
+  }).eq("id",gateId).eq("status",gate.status).select("id").maybeSingle();
   if(gateError) throw new Error(gateError.message);
+  if(!updatedGate) throw new Error("gate_status_changed_retry");
 
-  const{data:runtimeCheck}=await supabase.from("release_gate_checks")
+  const{data:runtimeCheck,error:runtimeCheckError}=await supabase.from("release_gate_checks")
     .select("id")
     .eq("release_gate_id",gateId)
     .eq("check_code","runtime-smoke")
     .maybeSingle();
+  if(runtimeCheckError) throw new Error(runtimeCheckError.message);
 
   if(runtimeCheck?.id){
     const{error:checkError}=await supabase.from("release_gate_checks").update({
