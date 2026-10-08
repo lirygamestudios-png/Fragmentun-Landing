@@ -53,11 +53,20 @@ export default async function MasterCommercePage(){
   const totalPaid=paid.reduce((a,o)=>a+Number(o.total_cents||0),0);
   const currency=paid[0]?.currency||"USD";
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleCommerce}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · COMERCIO</span><h1>Comercio</h1><p>Pedidos, pagos, entregas y devoluciones sobre la tienda real.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">CM</span>
+      <div className={styles.moduleStripCopy}><small>COMERCIO Y OPERACIÓN</small><strong>Pedidos, pagos y entregas</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Tienda conectada al ecosistema</span>
+        <span>Activación comercial controlada</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Pedidos</small><strong>{rows.length.toLocaleString()}</strong><span>{(products||0).toLocaleString()} productos registrados</span></article>
