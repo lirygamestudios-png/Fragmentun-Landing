@@ -70,6 +70,7 @@ export function AdminCommerceManager(){
   const[fulfillments,setFulfillments]=useState<Fulfillment[]>([]);
   const[draft,setDraft]=useState<any>(emptyProduct);
   const[msg,setMsg]=useState("");
+  const[msgType,setMsgType]=useState<"info"|"success"|"error">("info");
   const[busy,setBusy]=useState(false);
   const[loadError,setLoadError]=useState(false);
   const[loaded,setLoaded]=useState(false);
@@ -87,20 +88,22 @@ export function AdminCommerceManager(){
   };
   useEffect(()=>{load()},[]);
 
+  const showMessage=(message:string,type:"info"|"success"|"error"="info")=>{setMsg(message);setMsgType(type)};
+
   const paid=useMemo(()=>orders.filter(o=>o.payment_status==="paid").length,[orders]);
   const pending=useMemo(()=>orders.filter(o=>["unfulfilled","processing","partially_fulfilled"].includes(o.fulfillment_status)).length,[orders]);
 
   async function createProduct(){
-    if(!draft.name_es.trim()){setMsg("El nombre ES es obligatorio.");return}
-    if(draft.mode==="external"&&!String(draft.external_url||"").trim()){setMsg("La venta externa necesita la URL del proveedor.");return}
-    if(draft.mode==="internal"&&draft.active&&!(Number(draft.price_cents)>=0)){setMsg("La venta interna activa necesita un precio válido.");return}
-    setBusy(true);setMsg("Creando producto…");
+    if(!draft.name_es.trim()){showMessage("El nombre ES es obligatorio.","error");return}
+    if(draft.mode==="external"&&!String(draft.external_url||"").trim()){showMessage("La venta externa necesita la URL del proveedor.","error");return}
+    if(draft.mode==="internal"&&draft.active&&!(Number(draft.price_cents)>=0)){showMessage("La venta interna activa necesita un precio válido.","error");return}
+    setBusy(true);showMessage("Creando producto…","info");
     try{
       const r=await fetch("/api/admin/commerce/manage",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"product",...draft})});
       const j=await r.json().catch(()=>({}));
-      if(!r.ok){setMsg(commerceErrorMessage(j.error)||"No fue posible crear el producto.");return}
-      setDraft(emptyProduct);setMsg("GUARDADO SATISFACTORIAMENTE");await load();
-    }catch{setMsg("No fue posible crear el producto. Revisa la conexión e inténtalo nuevamente.");}
+      if(!r.ok){showMessage(commerceErrorMessage(j.error)||"No fue posible crear el producto.","error");return}
+      setDraft(emptyProduct);showMessage("Guardado correctamente.","success");await load();
+    }catch{showMessage("No fue posible crear el producto. Revisa la conexión e inténtalo nuevamente.","error");}
     finally{setBusy(false);}
   }
 
@@ -110,16 +113,16 @@ export function AdminCommerceManager(){
 
   async function saveProduct(p:Product,patch:Partial<Product>={}){
     const next={...p,...patch};
-    if(!String(next.name_es||"").trim()){setMsg("El nombre ES es obligatorio.");return}
-    if(next.mode==="external"&&!String(next.external_url||"").trim()){setMsg("La venta externa necesita la URL del proveedor.");return}
-    if(next.mode==="internal"&&next.active&&next.price_cents===null){setMsg("La venta interna activa necesita un precio.");return}
-    setBusy(true);setMsg("Guardando producto…");
+    if(!String(next.name_es||"").trim()){showMessage("El nombre ES es obligatorio.","error");return}
+    if(next.mode==="external"&&!String(next.external_url||"").trim()){showMessage("La venta externa necesita la URL del proveedor.","error");return}
+    if(next.mode==="internal"&&next.active&&next.price_cents===null){showMessage("La venta interna activa necesita un precio.","error");return}
+    setBusy(true);showMessage("Guardando producto…","info");
     try{
       const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"product",...next})});
       const j=await r.json().catch(()=>({}));
-      if(!r.ok){setMsg(commerceErrorMessage(j.error)||"No fue posible actualizar el producto.");return}
-      setMsg("GUARDADO SATISFACTORIAMENTE");await load();
-    }catch{setMsg("No fue posible actualizar el producto. Revisa la conexión e inténtalo nuevamente.");}
+      if(!r.ok){showMessage(commerceErrorMessage(j.error)||"No fue posible actualizar el producto.","error");return}
+      showMessage("Guardado correctamente.","success");await load();
+    }catch{showMessage("No fue posible actualizar el producto. Revisa la conexión e inténtalo nuevamente.","error");}
     finally{setBusy(false);}
   }
 
@@ -128,9 +131,9 @@ export function AdminCommerceManager(){
     try{
       const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"order",...o,...patch})});
       const j=await r.json().catch(()=>({}));
-      if(!r.ok){setMsg(commerceErrorMessage(j.error)||"No fue posible actualizar la orden.");return}
-      setMsg("GUARDADO SATISFACTORIAMENTE");await load();
-    }catch{setMsg("No fue posible actualizar la orden. Revisa la conexión e inténtalo nuevamente.");}
+      if(!r.ok){showMessage(commerceErrorMessage(j.error)||"No fue posible actualizar la orden.","error");return}
+      showMessage("Guardado correctamente.","success");await load();
+    }catch{showMessage("No fue posible actualizar la orden. Revisa la conexión e inténtalo nuevamente.","error");}
     finally{setBusy(false);}
   }
 
@@ -139,9 +142,9 @@ export function AdminCommerceManager(){
     try{
       const r=await fetch("/api/admin/commerce/manage",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"fulfillment",order_id:orderId})});
       const j=await r.json().catch(()=>({}));
-      if(!r.ok){setMsg(commerceErrorMessage(j.error)||"No fue posible crear el envío.");return}
-      setMsg("GUARDADO SATISFACTORIAMENTE");await load();
-    }catch{setMsg("No fue posible crear el envío. Revisa la conexión e inténtalo nuevamente.");}
+      if(!r.ok){showMessage(commerceErrorMessage(j.error)||"No fue posible crear el envío.","error");return}
+      showMessage("Guardado correctamente.","success");await load();
+    }catch{showMessage("No fue posible crear el envío. Revisa la conexión e inténtalo nuevamente.","error");}
     finally{setBusy(false);}
   }
 
@@ -151,9 +154,9 @@ export function AdminCommerceManager(){
     try{
       const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"fulfillment",...payload})});
       const j=await r.json().catch(()=>({}));
-      if(!r.ok){setMsg(commerceErrorMessage(j.error)||"No fue posible actualizar el envío.");return}
-      setMsg("GUARDADO SATISFACTORIAMENTE");await load();
-    }catch{setMsg("No fue posible actualizar el envío. Revisa la conexión e inténtalo nuevamente.");}
+      if(!r.ok){showMessage(commerceErrorMessage(j.error)||"No fue posible actualizar el envío.","error");return}
+      showMessage("Guardado correctamente.","success");await load();
+    }catch{showMessage("No fue posible actualizar el envío. Revisa la conexión e inténtalo nuevamente.","error");}
     finally{setBusy(false);}
   }
 
@@ -173,7 +176,7 @@ export function AdminCommerceManager(){
         <label><span>Moneda</span><input maxLength={3} value={draft.currency} onChange={e=>setDraft({...draft,currency:e.target.value.toUpperCase()})}/></label>
         <label className="wide"><span>URL externa</span><input type="url" value={draft.external_url} onChange={e=>setDraft({...draft,external_url:e.target.value})}/></label>
       </div>
-      <div className="adminShopActions"><button className="btn btnPrimary" type="button" disabled={busy} onClick={createProduct}>+ Crear producto</button><span className={msg==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(msg&&(msg.toLowerCase().includes("error")||msg.toLowerCase().includes("no fue")||msg.toLowerCase().includes("no se")||msg.toLowerCase().includes("inválid")||msg.toLowerCase().includes("obligatorio")||msg.toLowerCase().includes("falta"))?"adminSaveFeedback error":"adminSaveFeedback")}>{msg}</span></div>
+      <div className="adminShopActions"><button className="btn btnPrimary" type="button" disabled={busy} onClick={createProduct}>+ Crear producto</button><span role={msgType==="error"?"alert":"status"} aria-live="polite" className={`adminSaveFeedback ${msgType==="success"?"success":msgType==="error"?"error":""}`}>{msg}</span></div>
 
       <div className="adminShopProducts">
         {products.map(p=><div className="adminShopProductEditor" key={p.id}>
@@ -185,15 +188,15 @@ export function AdminCommerceManager(){
           <div className="adminSaleMode wide">
             <span className="adminSaleModeLabel">MODALIDAD DE VENTA</span>
             <div className="adminSaleModeChoices" role="group" aria-label="Modalidad de venta del producto">
-              <button type="button" className={p.mode==="internal"?"active":""} aria-pressed={p.mode==="internal"} onClick={()=>{patchProduct(p.id,{mode:"internal"});setMsg("Modalidad cambiada a COBRAR EN FRAGMENTUN. Guarda el producto para confirmar.");}}>
+              <button type="button" className={p.mode==="internal"?"active":""} aria-pressed={p.mode==="internal"} onClick={()=>{patchProduct(p.id,{mode:"internal"});showMessage("Modalidad cambiada a COBRAR EN FRAGMENTUN. Guarda el producto para confirmar.","info");}}>
                 <strong>COBRAR EN FRAGMENTUN</strong>
                 <small>Factura propia · pedido al suplidor</small>
               </button>
-              <button type="button" className={p.mode==="external"?"active":""} aria-pressed={p.mode==="external"} onClick={()=>{patchProduct(p.id,{mode:"external"});setMsg("Modalidad cambiada a ENVIAR AL PROVEEDOR. Guarda el producto para confirmar.");}}>
+              <button type="button" className={p.mode==="external"?"active":""} aria-pressed={p.mode==="external"} onClick={()=>{patchProduct(p.id,{mode:"external"});showMessage("Modalidad cambiada a ENVIAR AL PROVEEDOR. Guarda el producto para confirmar.","info");}}>
                 <strong>ENVIAR AL PROVEEDOR</strong>
                 <small>Redirección a tienda externa</small>
               </button>
-              <button type="button" className={p.mode==="interest"?"active secondary":""} aria-pressed={p.mode==="interest"} onClick={()=>{patchProduct(p.id,{mode:"interest"});setMsg("Modalidad cambiada a PRÓXIMAMENTE. Guarda el producto para confirmar.");}}>
+              <button type="button" className={p.mode==="interest"?"active secondary":""} aria-pressed={p.mode==="interest"} onClick={()=>{patchProduct(p.id,{mode:"interest"});showMessage("Modalidad cambiada a PRÓXIMAMENTE. Guarda el producto para confirmar.","info");}}>
                 <strong>PRÓXIMAMENTE</strong>
                 <small>Captar interés · sin venta</small>
               </button>
