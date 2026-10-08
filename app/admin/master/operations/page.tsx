@@ -137,6 +137,7 @@ export default async function MasterOperationsPage(){
   const pendingDecisions=decisionRows.filter(d=>d.status==="proposed");
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
+  const entitlementIssues=((gameEntitlements||[]) as any[]).filter(e=>["pending","failed"].includes(e.status)).length;
   const workStatusLabel=(value:string)=>{
     if(value==="open") return "ABIERTO";
     if(value==="in_progress") return "EN CURSO";
@@ -200,6 +201,13 @@ export default async function MasterOperationsPage(){
       <article><small>Decisiones pendientes</small><strong>{pendingDecisions.length}</strong><span>{decisionRows.length} registradas</span></article>
       <article><small>Contactos</small><strong>{(leads||0).toLocaleString()}</strong><span>Base actual</span></article>
       <article><small>Recursos multimedia</small><strong>{(media||0).toLocaleString()}</strong><span>Biblioteca</span></article>
+    </section>
+
+    <section className={styles.kpis}>
+      <article><small>Última compra in-game</small><strong className={styles.kpiCompactValue}>{latestGamePurchase?"ACTIVA":"—"}</strong><span>{latestGamePurchase?.purchased_at?new Date(latestGamePurchase.purchased_at).toLocaleString("es-US"):"Sin compras registradas"}</span></article>
+      <article><small>Última telemetría</small><strong className={styles.kpiCompactValue}>{latestGameMetric?"ACTIVA":"—"}</strong><span>{latestGameMetric?.updated_at?new Date(latestGameMetric.updated_at).toLocaleString("es-US"):"Sin telemetría registrada"}</span></article>
+      <article className={entitlementIssues?styles.kpiAttention:undefined}><small>Entregas por revisar</small><strong>{entitlementIssues}</strong><span>{entitlementIssues?"Pendientes o fallidas":"Sin incidencias"}</span></article>
+      <article><small>Automatización de tareas</small><strong className={styles.kpiCompactValue}>NO</strong><span>Las señales no crean tareas automáticamente</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>TRABAJO</span><h2>Trabajo pendiente</h2></div><p>{blocked.length?blocked.length+" elementos requieren atención prioritaria.":"Sin bloqueos críticos registrados."} Tareas, problemas, seguimientos, revisiones y lanzamientos pendientes.</p></section>
