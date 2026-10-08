@@ -6,7 +6,10 @@ function pct(v:any){return Number(v||0).toFixed(1)+"%";}
 
 export function AdminReports(){
   const[data,setData]=useState<any>(null);
-  useEffect(()=>{fetch("/api/admin/analytics").then(r=>r.json()).then(setData)},[]);
+  const[loadError,setLoadError]=useState(false);
+  const[actionMsg,setActionMsg]=useState("");
+  useEffect(()=>{fetch("/api/admin/analytics").then(async r=>{const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error("load_failed");setData(j);setLoadError(false)}).catch(()=>setLoadError(true))},[]);
+  if(loadError)return <section className="card"><p className="adminSaveFeedback error">No fue posible preparar el reporte.</p><button type="button" className="btn btnGhost" onClick={()=>window.location.reload()}>Reintentar</button></section>;
   if(!data)return <FragmentunProcessOverlay compact state="loading" title="PREPARANDO REPORTE…"/>;
   if(data.error)return <div className="adminSaveFeedback error">No fue posible preparar el reporte.</div>;
 
@@ -26,7 +29,7 @@ export function AdminReports(){
   return <div className="adminReportsPage">
     <div className="adminReportToolbar adminNoPrint">
       <div><div className="kicker">INTELIGENCIA EJECUTIVA</div><h2>Reportes FRAGMENTUN</h2><p>Resumen visual preparado para revisión, impresión o guardado en PDF.</p></div>
-      <button className="btn btnPrimary" onClick={()=>window.print()}>Imprimir / Guardar PDF</button>
+      <div><button className="btn btnPrimary" onClick={()=>{setActionMsg("Abriendo opciones de impresión…");window.print();}}>Imprimir / Guardar PDF</button>{actionMsg&&<p className="adminSaveFeedback" role="status">{actionMsg}</p>}</div>
     </div>
 
     <section className="adminReportSheet">
