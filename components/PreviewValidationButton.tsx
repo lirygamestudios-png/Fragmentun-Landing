@@ -50,7 +50,9 @@ export function PreviewValidationButton(){
     ] as const;
 
     const results:CheckResult[]=[];
-    for(const check of checks){
+    for(let index=0;index<checks.length;index++){
+      const check=checks[index];
+      setMessage(`Comprobando ${index+1}/${checks.length}: ${check.name}…`);
       const started=Date.now();
       try{
         const response=await fetch(check.path,{method:"GET",credentials:"include",redirect:"manual",cache:"no-store"});
@@ -96,7 +98,7 @@ export function PreviewValidationButton(){
   }
 
   return <div>
-    <button type="button" onClick={run} disabled={loading} className="masterQaButton">
+    <button type="button" onClick={run} disabled={loading} aria-busy={loading} className="masterQaButton">
       {loading?"Comprobando…":"Comprobar versión de prueba"}
     </button>
     {message&&<p role={ok===false?"alert":"status"} aria-live="polite" style={{margin:"8px 0 0",fontSize:".74rem",color:ok===false?"#ffaaaa":ok===true?"#8aebbd":"#9fb0c6"}}>{message}</p>}
