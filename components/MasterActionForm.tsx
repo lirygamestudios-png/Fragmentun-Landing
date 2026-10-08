@@ -37,7 +37,10 @@ const errorMessages:Record<string,string>={
   latest_validation_not_passed:"La última prueba de esta versión no terminó correctamente. Repítela antes de aprobar.",
   no_validation_available:"Todavía no existe una prueba registrada para esta versión.",
   release_deployment_mismatch:"La prueba corresponde a una versión distinta. Ejecuta nuevamente la comprobación de versión en el Preview actual.",
-  release_commit_mismatch:"La prueba corresponde a un código de versión anterior. Ejecuta nuevamente la comprobación de versión en el Preview actual."
+  release_commit_mismatch:"La prueba corresponde a un código de versión anterior. Ejecuta nuevamente la comprobación de versión en el Preview actual.",
+  invalid_virtual_item:"Revisa el juego, SKU, nombre, tipo, rareza y modalidad de entrega del artículo.",
+  timed_duration_required:"Los artículos temporales necesitan una duración válida mayor que cero.",
+  invalid_virtual_offer:"Revisa el artículo, plataforma, precio y código de moneda de la oferta."
 };
 
 function readableError(error:unknown){
