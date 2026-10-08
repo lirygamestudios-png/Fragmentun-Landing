@@ -22,7 +22,7 @@ export function PreviewValidationButton(){
     if(loading)return;
     setLoading(true);
     setOk(null);
-    setMessage("Comprobando este Preview…");
+    setMessage("Comprobando esta versión de prueba…");
 
     const checks=[
       {name:"Página pública",path:"/es",expected:200},
@@ -34,8 +34,8 @@ export function PreviewValidationButton(){
       {name:"Copias y Recuperación",path:"/admin/master/backups",expected:200},
       {name:"Integraciones",path:"/admin/master/integrations",expected:200},
       {name:"Mantenimiento",path:"/admin/master/maintenance",expected:200},
-      {name:"Checklist visual",path:"/admin/master/checklist",expected:200},
-      {name:"QA final",path:"/admin/master/qa",expected:200}
+      {name:"Revisión visual",path:"/admin/master/checklist",expected:200},
+      {name:"Pruebas finales",path:"/admin/master/qa",expected:200}
     ] as const;
 
     const results:CheckResult[]=[];
@@ -86,8 +86,8 @@ export function PreviewValidationButton(){
 
   return <div>
     <button type="button" onClick={run} disabled={loading} className="masterQaButton">
-      {loading?"Comprobando…":"Comprobar este Preview"}
+      {loading?"Comprobando…":"Comprobar versión de prueba"}
     </button>
-    {message&&<p role="status" style={{margin:"8px 0 0",fontSize:".74rem",color:ok===false?"#e7b477":"#9fb0c6"}}>{message}</p>}
+    {message&&<p role="status" style={{margin:"8px 0 0",fontSize:".74rem",color:ok===false?"#ffaaaa":ok===true?"#8aebbd":"#9fb0c6"}}>{message}</p>}
   </div>;
 }
