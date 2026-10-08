@@ -197,6 +197,8 @@ async function updateGate(formData:FormData){
     if(currentCommit&&latestValidation.commit_sha&&latestValidation.commit_sha!==currentCommit) throw new Error("release_commit_mismatch");
     if(latestValidation.deployment_id&&gate?.target_deployment_id&&latestValidation.deployment_id!==gate.target_deployment_id) throw new Error("release_deployment_mismatch");
     if(latestValidation.commit_sha&&gate?.target_commit&&latestValidation.commit_sha!==gate.target_commit) throw new Error("release_commit_mismatch");
+    if(!currentCommit||!gate?.target_commit||!latestValidation.commit_sha||gate.target_commit!==currentCommit||latestValidation.commit_sha!==currentCommit) throw new Error("release_commit_not_verified");
+    if(!currentDeployment||!gate?.target_deployment_id||!latestValidation.deployment_id||gate.target_deployment_id!==currentDeployment||latestValidation.deployment_id!==currentDeployment) throw new Error("release_deployment_not_verified");
   }
   const now=new Date().toISOString();
   const patch:any={status,notes,updated_at:now};
@@ -255,13 +257,21 @@ export default async function ReleaseGatePage(){
     {data:checks},
     {data:links},
     {data:actors},
-    {data:latestValidation}
+    {data:latestValidation},
+    {count:virtualItemCount,error:virtualItemError},
+    {count:virtualOfferCount,error:virtualOfferError},
+    {count:pendingEntitlementCount,error:pendingEntitlementError},
+    {count:failedEntitlementCount,error:failedEntitlementError}
   ]=await Promise.all([
     supabase.from("release_gates").select("*").order("created_at",{ascending:false}),
     supabase.from("release_gate_checks").select("*").order("created_at",{ascending:true}),
     supabase.from("master_entity_links").select("*").eq("status","active").order("created_at",{ascending:false}).limit(100),
     supabase.from("admin_profiles").select("user_id,display_name,role"),
-    supabase.from("runtime_validation_runs").select("status,deployment_id,commit_sha,executed_at").eq("environment","preview").order("executed_at",{ascending:false}).limit(1).maybeSingle()
+    supabase.from("runtime_validation_runs").select("status,deployment_id,commit_sha,executed_at").eq("environment","preview").order("executed_at",{ascending:false}).limit(1).maybeSingle(),
+    supabase.from("game_virtual_items").select("*",{count:"exact",head:true}).eq("active",true),
+    supabase.from("game_virtual_item_offers").select("*",{count:"exact",head:true}).eq("active",true),
+    supabase.from("game_entitlements").select("*",{count:"exact",head:true}).eq("status","pending"),
+    supabase.from("game_entitlements").select("*",{count:"exact",head:true}).eq("status","failed")
   ]);
 
   const gateRows=(gates||[]) as any[];
@@ -281,13 +291,17 @@ export default async function ReleaseGatePage(){
   const gateDeployment=activeGate?.target_deployment_id||null;
   const latestCommit=latestValidation?.commit_sha||null;
   const gateCommit=activeGate?.target_commit||null;
-  const deploymentMatches=latestDeployment&&gateDeployment
-    ?latestDeployment===gateDeployment
-    :true;
-  const commitMatches=latestCommit&&gateCommit
-    ?latestCommit===gateCommit
-    :true;
-  const evidenceIntegrated=runtimeEvidence?.status==="passed"&&validationPassed&&deploymentMatches&&commitMatches;
+  const currentCommit=process.env.VERCEL_GIT_COMMIT_SHA||null;
+  const currentDeployment=process.env.VERCEL_DEPLOYMENT_ID||null;
+  const gateCommitCurrent=Boolean(currentCommit&&gateCommit&&currentCommit===gateCommit);
+  const gateDeploymentCurrent=Boolean(currentDeployment&&gateDeployment&&currentDeployment===gateDeployment);
+  const gateIsCurrent=gateCommitCurrent&&gateDeploymentCurrent;
+  const validationIsCurrent=Boolean(currentCommit&&currentDeployment&&latestCommit===currentCommit&&latestDeployment===currentDeployment);
+  const evidenceIntegrated=runtimeEvidence?.status==="passed"&&validationPassed&&gateIsCurrent&&validationIsCurrent;
+  const freemiumDataOk=![virtualItemError,virtualOfferError,pendingEntitlementError,failedEntitlementError].some(Boolean);
+  const entitlementIssues=(pendingEntitlementCount||0)+(failedEntitlementCount||0);
+  const freemiumPrepared=freemiumDataOk&&(virtualItemCount||0)>0&&(virtualOfferCount||0)>0&&entitlementIssues===0;
+  const gateVersionLabel=!activeGate?"SIN REVISIÓN":!currentCommit||!currentDeployment?"SIN IDENTIFICAR":gateIsCurrent?"VIGENTE":"DESACTUALIZADO";
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleReleases}`}>
     <header className={styles.topbar}>
@@ -311,6 +325,24 @@ export default async function ReleaseGatePage(){
       <article><small>Vínculos</small><strong>{linkRows.length}</strong><span>Relaciones entre áreas activas</span></article>
     </section>
 
+    <section className={styles.sectionHead}><div><span>VERSIÓN ACTUAL</span><h2>Vigencia de la aprobación</h2></div><p>Una aprobación histórica no autoriza automáticamente otro código o despliegue.</p></section>
+    <section className={styles.notice}>
+      <div><strong>{gateVersionLabel}</strong><span>{gateVersionLabel==="VIGENTE"?"La revisión corresponde a este Preview; la aprobación se verifica por separado.":gateVersionLabel==="SIN IDENTIFICAR"?"No se pudo comprobar la versión completa de este Preview. No existe autorización vigente.":"La revisión más reciente no corresponde a este Preview. Se requiere nueva aprobación humana."}</span></div>
+      <code>{activeGate?.gate_code||"SIN GATE"}</code>
+    </section>
+    <section className={styles.kpis}>
+      <article><small>Commit actual</small><strong className={styles.kpiCompactValue}>{currentCommit?currentCommit.slice(0,12):"NO DISPONIBLE"}</strong><span>{gateCommitCurrent?"Coincide":"No verificado"}</span></article>
+      <article><small>Deployment actual</small><strong className={styles.kpiCompactValue}>{currentDeployment?currentDeployment.slice(0,18):"NO DISPONIBLE"}</strong><span>{gateDeploymentCurrent?"Coincide":"No verificado"}</span></article>
+      <article><small>Última revisión</small><strong className={styles.kpiCompactValue}>{activeGate?.status==="approved"?"APROBADA":"NO APROBADA"}</strong><span>{activeGate?.gate_code||"Sin revisión"}</span></article>
+      <article><small>Autorización Preview</small><strong className={styles.kpiCompactValue}>{gateIsCurrent&&activeGate?.status==="approved"?"VIGENTE":"NO VIGENTE"}</strong><span>Publicación siempre manual</span></article>
+    </section>
+    <section className={styles.sectionHead}><div><span>FREEMIUM · PRELANZAMIENTO</span><h2>Preparación de bienes digitales</h2></div><p>Datos reales. Preparación técnica no equivale a aprobación de publicación.</p></section>
+    <section className={styles.kpis}>
+      <article><small>Artículos virtuales activos</small><strong>{freemiumDataOk?virtualItemCount||0:"—"}</strong><span>Catálogo de juegos</span></article>
+      <article><small>Ofertas activas</small><strong>{freemiumDataOk?virtualOfferCount||0:"—"}</strong><span>Precios por plataforma</span></article>
+      <article className={entitlementIssues?styles.kpiAttention:undefined}><small>Entregas por revisar</small><strong>{freemiumDataOk?entitlementIssues:"—"}</strong><span>Pendientes y fallidas</span></article>
+      <article><small>Estado FREEMIUM</small><strong className={styles.kpiCompactValue}>{freemiumPrepared?"PREPARADO":"EN PREPARACIÓN"}</strong><span>{freemiumDataOk?"Indicador preliminar":"Datos no disponibles"}</span></article>
+    </section>
     <section className={styles.sectionHead}><div><span>REVISIONES</span><h2>Estado de la revisión</h2></div><p>La revisión permanece abierta hasta que todas las comprobaciones importantes estén correctas y exista aprobación humana.</p></section>
     <section className={styles.grid}>
       {gateRows.map((g:any)=>{
@@ -327,7 +359,7 @@ export default async function ReleaseGatePage(){
 
     {gateRows.length>0&&<section className={styles.notice}>
       {evidenceIntegrated
-        ?<div><strong>Evidencia integrada</strong><span>La última prueba correcta quedó registrada como evidencia. Falta únicamente la aprobación humana antes de cualquier publicación.</span></div>
+        ?<div><strong>Evidencia integrada</strong><span>La última prueba correcta quedó registrada como evidencia. Las demás comprobaciones y la aprobación humana siguen siendo obligatorias.</span></div>
         :<><div><strong>Integrar última prueba</strong><span>Solo puede usarse la prueba más reciente si terminó correctamente. Si la última prueba falló, primero debe corregirse y repetirse.</span></div>
           <MasterActionForm action={useLatestPassedValidation} successText="Última prueba integrada correctamente.">
             <input type="hidden" name="gate_id" value={gateRows[0].id}/>
