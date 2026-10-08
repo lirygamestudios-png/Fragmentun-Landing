@@ -715,3 +715,32 @@
   border-color:rgba(74,144,217,.36)!important;
   box-shadow:0 14px 34px rgba(0,0,0,.22),0 0 18px rgba(74,144,217,.07)!important;
 }
+
+
+/* UX LIRYGAMES · Bloque 11: estados activos e inactivos FRAGMENTUN */
+.adminShopLive,
+.adminShopOffline,
+.adminPanelBadge,
+.adminReadableStatus,
+.adminLivePulse,
+.adminMediaThumb>span.live,
+.adminMediaThumb>span.private{
+  transition:background .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+.adminShopLive,
+.adminLivePulse,
+.adminMediaThumb>span.live{
+  box-shadow:0 0 18px rgba(64,211,155,.07);
+}
+.adminShopOffline{
+  box-shadow:0 0 16px rgba(255,105,83,.05);
+}
+.adminPanelBadge:hover,
+.adminReadableStatus:hover,
+.adminShopLive:hover,
+.adminShopOffline:hover{
+  filter:brightness(1.08);
+}
+.adminShopToggle input:checked + b{
+  color:#8cebbf;
+}
