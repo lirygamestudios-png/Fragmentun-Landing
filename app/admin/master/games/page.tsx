@@ -5,6 +5,13 @@ import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
+function validPercent(value:number){
+  return Number.isInteger(value)&&value>=0&&value<=100;
+}
+function validCurrency(value:string){
+  return /^[A-Z]{3}$/.test(value);
+}
+
 function stageLabel(stage:string){
   const map:Record<string,string>={
     concept:"Concepto",
@@ -105,7 +112,7 @@ async function updateGame(formData:FormData){
   const summary=String(formData.get("summary")||"").trim()||null;
   const allowedStages=new Set(["concept","pre_production","vertical_slice","production","alpha","beta","release_candidate","launch","liveops","sunset"]);
   const allowedHealth=new Set(["green","amber","red","paused"]);
-  if(!id||!allowedStages.has(stage)||!allowedHealth.has(health)|| (budgetCents!==null&&(!Number.isFinite(budgetCents)||budgetCents<0))) throw new Error("invalid_game_update");
+  if(!id||!allowedStages.has(stage)||!allowedHealth.has(health)||!validCurrency(currency)||(budgetCents!==null&&(!Number.isFinite(budgetCents)||budgetCents<0))) throw new Error("invalid_game_update");
   const{error}=await supabase.from("game_titles").update({
     lifecycle_stage:stage,health_status:health,owner_user_id:ownerUserId,target_release_date:targetRelease,
     budget_cents:budgetCents,currency,summary,updated_at:new Date().toISOString()
@@ -121,12 +128,12 @@ async function updateMilestone(formData:FormData){
   const status=String(formData.get("status")||"planned");
   const ownerRaw=String(formData.get("owner_user_id")||"").trim();
   const ownerUserId=ownerRaw||null;
-  const progress=Math.max(0,Math.min(100,Number(formData.get("progress_percent")||0)));
+  const progress=Number(formData.get("progress_percent")||0);
   const targetDate=String(formData.get("target_date")||"").trim()||null;
   const exitCriteria=String(formData.get("exit_criteria")||"").trim()||null;
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedStatus=new Set(["planned","in_progress","blocked","at_risk","completed","canceled"]);
-  if(!id||!allowedStatus.has(status)||!Number.isFinite(progress)) throw new Error("invalid_milestone_update");
+  if(!id||!allowedStatus.has(status)||!validPercent(progress)||(status==="completed"&&(progress!==100||!exitCriteria))) throw new Error("invalid_milestone_update");
   const patch:any={
     status,owner_user_id:ownerUserId,progress_percent:Math.trunc(progress),target_date:targetDate,
     exit_criteria:exitCriteria,notes,updated_at:new Date().toISOString()
