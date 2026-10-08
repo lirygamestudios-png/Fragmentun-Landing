@@ -224,7 +224,7 @@ export default async function MasterBrandPage(){
           <label className={styles.span2}>Evidencias de respaldo<input name="proof_points"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!narrativeRows.length}>Actualizar narrativa</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!narrativeRows.length} disabledReason="No hay narrativas registradas para actualizar.">Actualizar narrativa</MasterSubmitButton>
       </form>
 
       <form action={updateCommunicationCampaign} className={styles.adminForm}>
@@ -240,7 +240,7 @@ export default async function MasterBrandPage(){
           <label>Fin<input type="date" name="end_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!commRows.length}>Actualizar campaña</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!commRows.length} disabledReason="No hay campañas de comunicación registradas para actualizar.">Actualizar campaña</MasterSubmitButton>
       </form>
       </section>
     </details>}
