@@ -248,7 +248,7 @@ export default async function MasterRiskPage(){
       <article><small>Productos</small><strong>{(products||0).toLocaleString()}</strong><span>Comercio</span></article>
       <article><small>Órdenes</small><strong>{(orders||0).toLocaleString()}</strong><span>Comercio</span></article>
       <article><small>Campañas</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Crecimiento</span></article>
-      <article><small>Acceso a datos</small><strong>PROTEGIDO</strong><span>Administración y edición</span></article>
+      <article><small>Acceso a datos</small><strong className={styles.kpiCompactValue}>PROTEGIDO</strong><span>Administración y edición</span></article>
     </section>
   </main>;
 }
