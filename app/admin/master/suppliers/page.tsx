@@ -89,12 +89,14 @@ export default async function MasterSuppliersPage(){
     {data:vendors},
     {data:products},
     {data:fulfillments},
-    {count:orders}
+    {count:orders},
+    {data:gameProviders}
   ]=await Promise.all([
     supabase.from("vendor_master").select("id,name,vendor_type,status,contact_name,contact_email,country,payment_terms,risk_rating,preferred,notes,created_at").order("name",{ascending:true}),
     supabase.from("shop_products").select("supplier,supplier_product_id,sku,name_es,mode,active").order("sort_order",{ascending:true}).limit(250),
     supabase.from("shop_fulfillments").select("supplier,shipment_status,label_cost_cents,created_at").order("created_at",{ascending:false}).limit(250),
-    supabase.from("shop_orders").select("*",{count:"exact",head:true})
+    supabase.from("shop_orders").select("*",{count:"exact",head:true}),
+    supabase.from("game_purchase_events").select("provider,platform,status").limit(5000)
   ]);
 
   const vendorRows=(vendors||[]) as any[];
@@ -103,6 +105,10 @@ export default async function MasterSuppliersPage(){
   const highRisk=vendorRows.filter(v=>["high","critical"].includes(v.risk_rating)).length;
   const preferred=vendorRows.filter(v=>v.preferred).length;
   const legacySupplierNames=[...new Set([...productRows.map(p=>p.supplier),...fulfillmentRows.map(f=>f.supplier)].filter(Boolean))];
+  const gameProviderRows=(gameProviders||[]) as any[];
+  const gameProviderNames=[...new Set(gameProviderRows.map(p=>p.provider).filter(Boolean))];
+  const gamePlatforms=[...new Set(gameProviderRows.map(p=>p.platform).filter(Boolean))];
+  const gameProviderIssues=gameProviderRows.filter(p=>["failed","chargeback"].includes(p.status)).length;
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleSuppliers}`}>
     <header className={styles.topbar}>
@@ -124,6 +130,18 @@ export default async function MasterSuppliersPage(){
       <article><small>Preferidos</small><strong>{preferred}</strong><span>Proveedores preferidos</span></article>
       <article className={highRisk?styles.kpiAttention:undefined}><small>Riesgo alto o crítico</small><strong>{highRisk}</strong><span>{highRisk?"Requieren atención":"Sin proveedores de riesgo alto"}</span></article>
       <article><small>Órdenes</small><strong>{(orders||0).toLocaleString()}</strong><span>Demanda comercial</span></article>
+    </section>
+
+    <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · SERVICIOS EXTERNOS</span><h2>Proveedores detectados por videojuegos</h2></div>
+      <p>Referencias observadas en compras in-game. No se convierten automáticamente en proveedores formales hasta ser validadas.</p>
+    </section>
+
+    <section className={styles.kpis}>
+      <article><small>Proveedores detectados</small><strong>{gameProviderNames.length}</strong><span>{gameProviderNames.length?gameProviderNames.join(" · "):"Sin actividad todavía"}</span></article>
+      <article><small>Plataformas detectadas</small><strong>{gamePlatforms.length}</strong><span>{gamePlatforms.length?gamePlatforms.join(" · "):"Sin actividad todavía"}</span></article>
+      <article className={gameProviderIssues?styles.kpiAttention:undefined}><small>Incidencias asociadas</small><strong>{gameProviderIssues}</strong><span>{gameProviderIssues?"Fallos o chargebacks":"Sin incidencias"}</span></article>
+      <article><small>Registro formal</small><strong>{vendorRows.length}</strong><span>Solo proveedores validados</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>PROVEEDORES</span><h2>Proveedores registrados</h2></div></section>
