@@ -163,11 +163,20 @@ export default async function MasterFinancePage(){
     {name:"Reconciliación",value:"Preparada",detail:"Pedidos + costes + comisiones + margen"}
   ];
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleFinance}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>MASTER ADMIN · FINANZAS</span><h1>Finanzas</h1><p>Control de ingresos, gastos, cuentas y movimientos conectado a la operación comercial.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">FN</span>
+      <div className={styles.moduleStripCopy}><small>CONTROL FINANCIERO</small><strong>Ingresos, gastos y conciliación</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Movimientos financieros conectados</span>
+        <span>Operaciones sensibles · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Ingresos pagados</small><strong>{money(revenue,currency)}</strong><span>{paid.length} órdenes pagadas</span></article>
