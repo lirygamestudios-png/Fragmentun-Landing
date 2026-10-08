@@ -265,7 +265,7 @@ export default async function MasterTechnologyPage(){
           <label>URL<input name="url"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!serviceRows.length}>Actualizar servicio</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!serviceRows.length} disabledReason="No hay servicios técnicos registrados para actualizar.">Actualizar servicio</MasterSubmitButton>
       </form>
 
       <form action={updateChange} className={styles.adminForm}>
@@ -280,7 +280,7 @@ export default async function MasterTechnologyPage(){
           <label className={styles.span2}>Plan de reversión<textarea name="rollback_plan" rows={3}/></label>
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!changeRows.length}>Actualizar cambio</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!changeRows.length} disabledReason="No hay cambios técnicos registrados para actualizar.">Actualizar cambio</MasterSubmitButton>
       </form>
       </section>
     </details>}
