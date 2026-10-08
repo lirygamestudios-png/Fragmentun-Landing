@@ -44,7 +44,8 @@ async function validateCurrentPreview(){
     {name:"Integraciones protegidas",path:"/admin/master/integrations",expected:307},
     {name:"Mantenimiento protegido",path:"/admin/master/maintenance",expected:307},
     {name:"Checklist protegido",path:"/admin/master/checklist",expected:307},
-    {name:"QA final protegido",path:"/admin/master/qa",expected:307}
+    {name:"QA final protegido",path:"/admin/master/qa",expected:307},
+    {name:"Ingreso FREEMIUM solo POST",path:"/api/games/monetization/ingest",expected:405}
   ];
 
   let failed=0;
@@ -162,13 +163,17 @@ export default async function ObservabilityPage(){
     {data:results},
     {count:auditEvents},
     {data:latestAnalytics},
-    {data:latestLead}
+    {data:latestLead},
+    {data:latestGamePurchase},
+    {data:latestGameMetric}
   ]=await Promise.all([
     supabase.from("runtime_validation_runs").select("*").order("executed_at",{ascending:false}).limit(50),
     supabase.from("runtime_validation_results").select("*").order("created_at",{ascending:false}).limit(300),
     supabase.from("admin_audit_log").select("*",{count:"exact",head:true}),
     supabase.from("analytics_events").select("event_name,created_at").order("created_at",{ascending:false}).limit(1).maybeSingle(),
-    supabase.from("leads").select("created_at").order("created_at",{ascending:false}).limit(1).maybeSingle()
+    supabase.from("leads").select("created_at").order("created_at",{ascending:false}).limit(1).maybeSingle(),
+    supabase.from("game_purchase_events").select("status,purchased_at").order("purchased_at",{ascending:false}).limit(1).maybeSingle(),
+    supabase.from("game_engagement_daily").select("metric_date,updated_at").order("updated_at",{ascending:false}).limit(1).maybeSingle()
   ]);
 
   const runRows=(runs||[]) as any[];
@@ -236,6 +241,18 @@ export default async function ObservabilityPage(){
         <p>{c.status==="passed"?"Funcionó correctamente.":"Necesita revisión."}<br/>{c.detail||"Sin observaciones adicionales."}</p>
       </article>)}
       {!latestChecks.length&&<article className={styles.card}><h3>Sin resultados todavía</h3><p>Ejecuta una comprobación para ver el detalle.</p></article>}
+    </section>
+
+    <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · ESTADO</span><h2>Canal de videojuegos</h2></div>
+      <p>Supervisión del ingreso de compras y telemetría antes de conectar el primer juego real.</p>
+    </section>
+
+    <section className={styles.kpis}>
+      <article><small>Endpoint FREEMIUM</small><strong className={styles.kpiCompactValue}>{process.env.GAME_INGEST_SECRET?"LISTO":"PENDIENTE"}</strong><span>{process.env.GAME_INGEST_SECRET?"Configurado en servidor":"Se activará con el primer juego online"}</span></article>
+      <article><small>Última compra in-game</small><strong className={styles.kpiCompactValue}>{latestGamePurchase?"ACTIVA":"—"}</strong><span>{latestGamePurchase?.purchased_at?new Date(latestGamePurchase.purchased_at).toLocaleString("es-US"):"Sin compras registradas"}</span></article>
+      <article><small>Última telemetría</small><strong className={styles.kpiCompactValue}>{latestGameMetric?"ACTIVA":"—"}</strong><span>{latestGameMetric?.updated_at?new Date(latestGameMetric.updated_at).toLocaleString("es-US"):"Sin telemetría registrada"}</span></article>
+      <article><small>Método público</small><strong className={styles.kpiCompactValue}>POST</strong><span>GET bloqueado por diseño</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>ESTADO ACTUAL</span><h2>Estado actual</h2></div></section>
