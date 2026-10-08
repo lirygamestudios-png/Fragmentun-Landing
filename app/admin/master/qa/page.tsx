@@ -57,6 +57,8 @@ export default async function QaFinalPage(){
   const incidentsOk=(openIncidents||0)===0;
   const approvalsOk=(pendingApprovals||0)===0;
   const checksOk=(failedChecks||0)===0;
+  const entitlementIssues=((gameEntitlements||[]) as any[]).filter(e=>["pending","failed"].includes(e.status)).length;
+  const freemiumPrepared=(virtualItems||0)>0&&(virtualOffers||0)>0&&entitlementIssues===0;
   const ready=validationOk&&validationIsCurrent&&gateReady&&incidentsOk&&approvalsOk&&checksOk;
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleQa}`}>
@@ -91,6 +93,18 @@ export default async function QaFinalPage(){
       <article><small>Revisión de publicación</small><strong className={styles.kpiCompactValue}>{gateLabel}</strong><span>{!gateMatchesValidation&&latestGate?"La revisión aprobada corresponde a otra versión":latestGate?.created_at?new Date(latestGate.created_at).toLocaleString("es-US"):"Sin revisión registrada"}</span></article>
       <article><small>Incidentes abiertos</small><strong>{openIncidents||0}</strong><span>{incidentsOk?"Sin bloqueos":"Requiere revisión"}</span></article>
       <article><small>Comprobaciones bloqueantes fallidas</small><strong>{failedChecks||0}</strong><span>{checksOk?"Sin fallos":"Requiere corrección"}</span></article>
+    </section>
+
+    <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · PRELANZAMIENTO</span><h2>Preparación del primer juego online</h2></div>
+      <p>Estas comprobaciones miden preparación del circuito de juego. No equivalen a aprobación del Release Gate ni publican producción.</p>
+    </section>
+
+    <section className={styles.kpis}>
+      <article><small>Catálogo virtual activo</small><strong>{virtualItems||0}</strong><span>{(virtualItems||0)>0?"Artículos disponibles":"Pendiente de catálogo real"}</span></article>
+      <article><small>Ofertas activas</small><strong>{virtualOffers||0}</strong><span>{(virtualOffers||0)>0?"Precios/plataformas configurados":"Pendiente de ofertas reales"}</span></article>
+      <article className={entitlementIssues?styles.kpiAttention:undefined}><small>Entregas por revisar</small><strong>{entitlementIssues}</strong><span>{entitlementIssues?"Pendientes o fallidas":"Sin incidencias"}</span></article>
+      <article><small>Estado FREEMIUM</small><strong className={styles.kpiCompactValue}>{freemiumPrepared?"PREPARADO":"EN PREPARACIÓN"}</strong><span>{latestGamePurchase||latestGameMetric?"Hay actividad de juego registrada":"Sin tráfico real todavía"}</span></article>
     </section>
 
     <section className={styles.sectionHead}>
