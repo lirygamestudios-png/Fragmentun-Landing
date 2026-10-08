@@ -179,9 +179,9 @@ export default async function MasterFinancePage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Ingresos pagados</small><strong>{money(revenue,currency)}</strong><span>{paid.length} órdenes pagadas</span></article>
-      <article><small>Margen registrado</small><strong>{money(margin,currency)}</strong><span>Después de costes modelados</span></article>
-      <article><small>Comisiones de pago</small><strong>{money(fees,currency)}</strong><span>Coste de procesamiento</span></article>
+      <article><small>Ingresos pagados</small><strong className={styles.kpiLongValue}>{money(revenue,currency)}</strong><span>{paid.length} órdenes pagadas</span></article>
+      <article><small>Margen registrado</small><strong className={styles.kpiLongValue}>{money(margin,currency)}</strong><span>Después de costes modelados</span></article>
+      <article><small>Comisiones de pago</small><strong className={styles.kpiLongValue}>{money(fees,currency)}</strong><span>Coste de procesamiento</span></article>
       <article><small>Órdenes completadas</small><strong>{(fulfilled||0).toLocaleString()}</strong><span>Órdenes completadas</span></article>
     </section>
 
@@ -207,7 +207,7 @@ export default async function MasterFinancePage(){
     <section className={styles.kpis}>
       <article><small>Cuentas</small><strong>{accountRows.length}</strong><span>Cuentas registradas</span></article>
       <article><small>Transacciones</small><strong>{txRows.length}</strong><span>Movimientos registrados</span></article>
-      <article><small>Balance registrado</small><strong>{money(ledgerNet,txRows[0]?.currency||"USD")}</strong><span>Registradas + reconciliadas</span></article>
+      <article><small>Balance registrado</small><strong className={styles.kpiLongValue}>{money(ledgerNet,txRows[0]?.currency||"USD")}</strong><span>Registradas + reconciliadas</span></article>
       <article><small>Reconciliadas</small><strong>{reconciled}</strong><span>Control de cierre</span></article>
     </section>
 
@@ -295,10 +295,10 @@ export default async function MasterFinancePage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Proveedor</small><strong>{money(supplier,currency)}</strong><span>Costes de proveedor</span></article>
-      <article><small>Envíos</small><strong>{money(shipping,currency)}</strong><span>Costes de envío</span></article>
-      <article><small>Comisiones</small><strong>{money(fees,currency)}</strong><span>Costes de procesamiento de pago</span></article>
-      <article><small>Margen</small><strong>{money(margin,currency)}</strong><span>Margen registrado</span></article>
+      <article><small>Proveedor</small><strong className={styles.kpiLongValue}>{money(supplier,currency)}</strong><span>Costes de proveedor</span></article>
+      <article><small>Envíos</small><strong className={styles.kpiLongValue}>{money(shipping,currency)}</strong><span>Costes de envío</span></article>
+      <article><small>Comisiones</small><strong className={styles.kpiLongValue}>{money(fees,currency)}</strong><span>Costes de procesamiento de pago</span></article>
+      <article><small>Margen</small><strong className={styles.kpiLongValue}>{money(margin,currency)}</strong><span>Margen registrado</span></article>
     </section>
   </main>;
 }
