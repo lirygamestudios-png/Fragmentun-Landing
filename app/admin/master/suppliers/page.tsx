@@ -163,7 +163,7 @@ export default async function MasterSuppliersPage(){
           <label>Condiciones de pago<input name="payment_terms"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!vendorRows.length}>Actualizar proveedor</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!vendorRows.length} disabledReason="No hay proveedores registrados para actualizar.">Actualizar proveedor</MasterSubmitButton>
       </form>
       </section>
     </details>
