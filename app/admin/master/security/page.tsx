@@ -131,7 +131,9 @@ export default async function MasterSecurityPage(){
     {count:allowlist},
     {count:rateRows},
     {count:adminEvents},
-    {data:owners}
+    {data:owners},
+    {data:gamePurchases},
+    {data:gameEntitlements}
   ]=await Promise.all([
     supabase.from("security_incidents").select("id,incident_code,title,severity,status,category,detected_at,contained_at,resolved_at,owner_user_id,summary,root_cause,remediation,created_at").order("detected_at",{ascending:false}),
     supabase.from("security_access_reviews").select("id,subject_type,subject_ref,subject_name,review_status,risk_level,reviewer_user_id,due_date,reviewed_at,notes,created_at").order("created_at",{ascending:false}),
@@ -139,7 +141,9 @@ export default async function MasterSecurityPage(){
     supabase.from("admin_access_allowlist").select("*",{count:"exact",head:true}),
     supabase.from("ingress_rate_limits").select("*",{count:"exact",head:true}),
     supabase.from("admin_audit_log").select("*",{count:"exact",head:true}),
-    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true}),
+    supabase.from("game_purchase_events").select("status,purchased_at").order("purchased_at",{ascending:false}).limit(5000),
+    supabase.from("game_entitlements").select("status,created_at").order("created_at",{ascending:false}).limit(5000)
   ]);
 
   const incidentRows=(incidents||[]) as any[];
@@ -150,6 +154,11 @@ export default async function MasterSecurityPage(){
   const overdueReviews=reviewRows.filter(r=>r.due_date&&new Date(r.due_date).getTime()<Date.now()&&!["approved","revoked"].includes(r.review_status));
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
+  const gamePurchaseRows=(gamePurchases||[]) as any[];
+  const gameEntitlementRows=(gameEntitlements||[]) as any[];
+  const failedGamePayments=gamePurchaseRows.filter(p=>p.status==="failed").length;
+  const chargebacks=gamePurchaseRows.filter(p=>p.status==="chargeback").length;
+  const deliveryIssues=gameEntitlementRows.filter(e=>["pending","failed"].includes(e.status)).length;
 
   const controls=[
     ["Control de acceso a datos","Activo","Protección aplicada a las tablas públicas relevantes"],
