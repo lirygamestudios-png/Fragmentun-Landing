@@ -176,7 +176,7 @@ export default async function MasterBrandPage(){
 
     <section className={styles.sectionHead}><div><span>NARRATIVA CORPORATIVA</span><h2>Narrativa corporativa</h2></div><p>Pilares, audiencias, mensajes y evidencias de respaldo del estudio.</p></section>
     <section className={styles.grid}>
-      {narrativeRows.map((n:any)=><article key={n.id} className={styles.card}>
+      {narrativeRows.map((n:any)=><article key={n.id} className={`${styles.card} ${n.status==="review"?styles.cardPriority:["draft","archived"].includes(n.status)?styles.cardMuted:""}`}>
         <div className={styles.cardTop}><span className={n.status==="active"?styles.badgeActive:styles.badgePlanned}>{narrativeEstadoLabel(n.status)}</span><em>{n.message_pillar}</em></div>
         <h3>{n.name}</h3><p>Responsable: {ownerName(n.owner_user_id)}<br/>{n.audience||"Audiencia general"}<br/>{n.key_message}<br/>{(n.proof_points||[]).length?(n.proof_points||[]).join(" · "):"Sin evidencias de respaldo"}</p>
       </article>)}
@@ -185,7 +185,7 @@ export default async function MasterBrandPage(){
 
     <section className={styles.sectionHead}><div><span>CALENDARIO DE COMUNICACIÓN</span><h2>Campañas de comunicación</h2></div></section>
     <section className={styles.grid}>
-      {commRows.map((c:any)=><article key={c.id} className={styles.card}>
+      {commRows.map((c:any)=><article key={c.id} className={`${styles.card} ${c.status==="paused"?styles.cardWarning:["completed","canceled"].includes(c.status)?styles.cardMuted:c.campaign_type==="crisis"&&c.status==="active"?styles.cardAttention:""}`}>
         <div className={styles.cardTop}><span className={c.status==="active"?styles.badgeActive:styles.badgePlanned}>{campaignEstadoLabel(c.status)}</span><em>{campaignTypeLabel(c.campaign_type)}</em></div>
         <h3>{c.name}</h3><p>Responsable: {ownerName(c.owner_user_id)}<br/>{c.audience||"Audiencia general"}<br/>{(c.channel_scope||[]).length?(c.channel_scope||[]).join(" · "):"Canales por definir"}<br/>{c.start_date||"sin inicio"} → {c.end_date||"abierta"}</p>
       </article>)}
