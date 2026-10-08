@@ -129,18 +129,18 @@ export default async function MasterRiskPage(){
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
   const systemSignals=[
-    {name:"Producción directa",state:"CONTROLADO",detail:"Master Admin aislado en rama Preview; main protegido"},
-    {name:"Rate limiting",state:"CONTROLADO",detail:"Tabla cerrada a escritura directa; función server-side preservada"},
-    {name:"npm audit",state:"CONTROLADO",detail:"sharp 0.35.5; npm audit = 0 vulnerabilidades"},
-    {name:"Leaked password protection",state:"ABIERTO",detail:"Supabase Auth: protección pendiente de activación por canal específico de Auth"},
-    {name:"Tax readiness",state:commerce?.tax_registration_status==="configured"?"CONTROLADO":"ABIERTO",detail:commerce?.tax_registration_status||"not_configured"},
+    {name:"Protección de producción",state:"CONTROLADO",detail:"La versión de prueba permanece separada de la versión pública."},
+    {name:"Control antiabuso",state:"CONTROLADO",detail:"La protección contra exceso de solicitudes permanece activa."},
+    {name:"Dependencias de software",state:"CONTROLADO",detail:"No hay vulnerabilidades conocidas registradas en la revisión actual."},
+    {name:"Protección de contraseñas",state:"ABIERTO",detail:"Existe una protección adicional pendiente de activación en el sistema de acceso."},
+    {name:"Preparación fiscal",state:commerce?.tax_registration_status==="configured"?"CONTROLADO":"ABIERTO",detail:commerce?.tax_registration_status==="configured"?"Configuración fiscal registrada":"Configuración fiscal pendiente"},
     {name:"Pagos",state:(commerce?.stripe_enabled||commerce?.paypal_enabled)?"ACTIVO":"CONTROLADO",detail:(commerce?.stripe_enabled||commerce?.paypal_enabled)?"Proveedor habilitado":"Proveedores permanecen deshabilitados"}
   ];
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · RIESGOS Y CONTROLES</span><h1>Riesgos y Controles</h1><p>Riesgos, controles, evidencias y señales actuales del sistema.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
@@ -155,7 +155,7 @@ export default async function MasterRiskPage(){
       {riskRows.map((r:any)=><article key={r.id} className={styles.card}>
         <div className={styles.cardTop}><span className={Number(r.inherent_score)>=15?styles.badgePlanificado:styles.badgeActive}>{riskStatusLabel(r.status)}</span><em>Nivel {r.inherent_score}</em></div>
         <h3>{r.title}</h3>
-        <p>{r.domain} · {categoryLabel(r.category)}<br/>Responsable: {ownerName(r.owner_user_id)}<br/>Probabilidad {r.likelihood} × Impactoo {r.impact}<br/>{r.control_name||"Control por definir"} · {controlStatusLabel(r.control_status)}<br/>{r.due_date?"Fecha límite: "+r.due_date:"Sin fecha límite"}</p>
+        <p>{r.domain} · {categoryLabel(r.category)}<br/>Responsable: {ownerName(r.owner_user_id)}<br/>Probabilidad {r.likelihood} × Impacto {r.impact}<br/>{r.control_name||"Control por definir"} · {controlStatusLabel(r.control_status)}<br/>{r.due_date?"Fecha límite: "+r.due_date:"Sin fecha límite"}</p>
       </article>)}
       {!riskRows.length&&<article className={styles.card}><h3>Registro de riesgos preparado</h3><p>No se han formalizado riesgos todavía.</p></article>}
     </section>
@@ -177,7 +177,7 @@ export default async function MasterRiskPage(){
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="sec-auth-001"/></label>
           <label>Título<input name="title" required/></label>
-          <label>Dominio<input name="domain" required placeholder="Seguridad / Games / Finance"/></label>
+          <label>Dominio<input name="domain" required placeholder="Seguridad / Juegos / Finanzas"/></label>
           <label>Categoría<select name="category" defaultValue="operational">
             <option value="strategic">Estratégico</option><option value="financial">Financiero</option><option value="operational">Operativo</option>
             <option value="security">Seguridad</option><option value="legal">Legal</option><option value="compliance">Cumplimiento</option>
@@ -235,7 +235,7 @@ export default async function MasterRiskPage(){
       <article><small>Productos</small><strong>{(products||0).toLocaleString()}</strong><span>Comercio</span></article>
       <article><small>Órdenes</small><strong>{(orders||0).toLocaleString()}</strong><span>Comercio</span></article>
       <article><small>Campañas</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Crecimiento</span></article>
-      <article><small>RLS</small><strong>ACTIVO</strong><span>Administración y edición</span></article>
+      <article><small>Acceso a datos</small><strong>PROTEGIDO</strong><span>Administración y edición</span></article>
     </section>
   </main>;
 }
