@@ -17,10 +17,25 @@ type Settings={
 type Stats={products:number;active_products:number;orders:number;paid_orders:number;pending_fulfillment:number;shipping_labels:number};
 type ProcessorStatus={stripe_configured:boolean;paypal_configured:boolean};
 
+function commerceSettingsError(code:string){
+  const map:Record<string,string>={
+    mfa_required:"Completa la verificación en dos pasos antes de guardar.",
+    forbidden:"Tu usuario no tiene permiso para modificar la configuración comercial.",
+    stripe_credentials_missing:"No se puede activar Stripe porque faltan sus credenciales seguras.",
+    paypal_credentials_missing:"No se puede activar PayPal porque faltan sus credenciales seguras.",
+    seller_identity_required:"Completa el nombre legal y el país del vendedor antes de marcar la configuración fiscal como lista.",
+    invalid_provider:"El proveedor de pago seleccionado no es válido.",
+    invalid_tax_mode:"El modo fiscal seleccionado no es válido.",
+    invalid_shipping_mode:"El método de etiquetas seleccionado no es válido."
+  };
+  return map[code]||"No fue posible guardar la configuración comercial.";
+}
+
 export function AdminCommerceOperations(){
   const[settings,setSettings]=useState<Settings|null>(null);
   const[stats,setStats]=useState<Stats|null>(null);
   const[msg,setMsg]=useState("");
+  const[msgType,setMsgType]=useState<"info"|"success"|"error">("info");
   const[processorStatus,setProcessorStatus]=useState<ProcessorStatus>({stripe_configured:false,paypal_configured:false});
   const[saving,setSaving]=useState(false);
   const[loadError,setLoadError]=useState(false);
@@ -38,14 +53,14 @@ export function AdminCommerceOperations(){
 
   const patch=(key:keyof Settings,value:any)=>setSettings(v=>v?{...v,[key]:value}:v);
   const save=async()=>{
-    setSaving(true);setMsg("Guardando…");
+    setSaving(true);setMsgType("info");setMsg("Guardando…");
     try{
       const r=await fetch("/api/admin/commerce",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(settings)});
       const j=await r.json().catch(()=>({}));
-      if(!r.ok){setMsg(j.error||"No fue posible guardar.");return}
-      setSettings(j.data);setMsg("GUARDADO SATISFACTORIAMENTE");
+      if(!r.ok){setMsgType("error");setMsg(commerceSettingsError(String(j.error||"")));return}
+      setSettings(j.data);setMsgType("success");setMsg("Configuración comercial guardada correctamente.");
     }catch{
-      setMsg("No fue posible guardar. Revisa la conexión e inténtalo nuevamente.");
+      setMsgType("error");setMsg("No fue posible guardar. Revisa la conexión e inténtalo nuevamente.");
     }finally{
       setSaving(false);
     }
@@ -109,8 +124,8 @@ export function AdminCommerceOperations(){
     </div>
 
     <div className="adminShopActions">
-      <button className="btn btnPrimary" type="button" onClick={save} disabled={saving}>{saving?"Guardando…":"Guardar administración comercial"}</button>
-      <span className={msg==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(msg&&(msg.toLowerCase().includes("error")||msg.toLowerCase().includes("no fue")||msg.toLowerCase().includes("no se")||msg.toLowerCase().includes("inválid")||msg.toLowerCase().includes("obligatorio")||msg.toLowerCase().includes("falta"))?"adminSaveFeedback error":"adminSaveFeedback")}>{msg}</span>
+      <button className="btn btnPrimary" type="button" onClick={save} disabled={saving} aria-busy={saving}>{saving?"Guardando…":"Guardar administración comercial"}</button>
+      <span role={msgType==="error"?"alert":"status"} aria-live="polite" className={`adminSaveFeedback ${msgType==="success"?"success":msgType==="error"?"error":""}`}>{msg}</span>
     </div>
   </section>;
 }
