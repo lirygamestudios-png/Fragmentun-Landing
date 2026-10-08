@@ -52,8 +52,9 @@ export function MasterCommanderLive({initial}:{initial:MasterLiveSnapshot}){
 
     <section className={styles.commandKpis}>
       <article className={styles.commandKpiPrimary}><small>Usuarios activos ahora</small><strong>{snapshot.activeUsers.toLocaleString()}</strong><span>Sesiones con presencia en los últimos 5 minutos</span></article>
-      <article><small>Ventas hoy</small><strong>{money(snapshot.salesTodayCents,snapshot.salesCurrency)}</strong><span>{snapshot.paidOrdersToday} pedidos pagados</span></article>
-      <article><small>Ventas este mes</small><strong>{money(snapshot.salesMonthCents,snapshot.salesCurrency)}</strong><span>{snapshot.paidOrdersMonth} pedidos pagados</span></article>
+      <article><small>Jugadores activos hoy</small><strong>{snapshot.gamePlayersToday.toLocaleString()}</strong><span>Telemetría diaria de videojuegos</span></article>
+      <article><small>Ventas hoy</small><strong>{money(snapshot.salesTodayCents,snapshot.salesCurrency)}</strong><span>{snapshot.paidOrdersToday} transacciones pagadas</span></article>
+      <article><small>Ventas este mes</small><strong>{money(snapshot.salesMonthCents,snapshot.salesCurrency)}</strong><span>{snapshot.paidOrdersMonth} transacciones pagadas</span></article>
       <article><small>Pagos fallidos hoy</small><strong>{snapshot.failedPaymentsToday}</strong><span>{snapshot.failedPaymentsToday?"Requiere revisión":"Sin incidencias registradas"}</span></article>
       <article><small>Nuevos contactos hoy</small><strong>{snapshot.leadsToday}</strong><span>Captación registrada</span></article>
       <article><small>Videojuegos</small><strong>{snapshot.activeGames}/{snapshot.portfolioCapacity}</strong><span>Capacidad total del portafolio</span></article>
@@ -72,7 +73,7 @@ export function MasterCommanderLive({initial}:{initial:MasterLiveSnapshot}){
         </div>
         <h3>{game.name}</h3>
         <div className={styles.commandGameMetrics}>
-          <div><small>Activos ahora</small><strong>{game.activeUsers===null?"—":game.activeUsers.toLocaleString()}</strong><span>{game.telemetryConnected?"Telemetría conectada":"Pendiente de conexión"}</span></div>
+          <div><small>Jugadores activos</small><strong>{game.activeUsers===null?"—":game.activeUsers.toLocaleString()}</strong><span>{game.telemetryConnected?"Telemetría conectada":"Pendiente de conexión"}</span></div>
           <div><small>Ventas hoy</small><strong>{game.salesTodayCents===null?"—":money(game.salesTodayCents,game.currency)}</strong><span>{game.commerceConnected?"Comercio conectado":"Pendiente de conexión"}</span></div>
           <div><small>Ventas mes</small><strong>{game.salesMonthCents===null?"—":money(game.salesMonthCents,game.currency)}</strong><span>{game.commerceConnected?"Dato real":"Sin fuente por juego"}</span></div>
         </div>
