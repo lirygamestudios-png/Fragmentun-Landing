@@ -129,11 +129,20 @@ export default async function CommunityPage(){
   const advocates=memberRows.filter(m=>m.tier==="advocate");
   const totalPoints=memberRows.reduce((a,m)=>a+Number(m.points||0),0);
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleCommunity}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · CLIENTES Y COMUNIDAD</span><h1>Clientes y Comunidad</h1><p>Miembros, participación y acceso beta sin duplicar la información comercial.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">CC</span>
+      <div className={styles.moduleStripCopy}><small>CLIENTES Y COMUNIDAD</small><strong>Participación, fidelización y acceso beta</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Comunidad conectada a datos reales</span>
+        <span>Gestión protegida · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Miembros activos</small><strong>{active.length}</strong><span>{memberRows.length} registrados</span></article>
