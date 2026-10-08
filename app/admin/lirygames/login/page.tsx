@@ -32,7 +32,7 @@ export default function LiryGamesLoginPage(){
         setStatus("Credenciales correctas. Abriendo LIRYGAMES…");
         const destination=j.mfa_state==="satisfied"
           ?"/admin/master"
-          :"/admin/lirygames/mfa";
+          :"/admin/mfa";
         window.location.assign(destination);
         return;
       }
