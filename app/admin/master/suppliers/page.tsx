@@ -118,7 +118,7 @@ export default async function MasterSuppliersPage(){
     <section className={styles.grid}>
       {vendorRows.map((v:any)=><article key={v.id} className={styles.card}>
         <div className={styles.cardTop}><span className={v.status==="active"?styles.badgeActivo:styles.badgePlanned}>{vendorEstadoLabel(v.status)}</span><em>{riskLabel(v.risk_rating)}</em></div>
-        <h3>{v.name}</h3><p>{vendorTypeLabel(v.vendor_type)} · {v.country||"País pendiente"}<br/>{v.contact_name||"Sin contacto"} · {v.contact_email||"Sin email"}<br/>{v.payment_terms||"Condiciones de pago pendientes"}{v.preferred?" · Preferidos":""}</p>
+        <h3>{v.name}</h3><p>{vendorTypeLabel(v.vendor_type)} · {v.country||"País pendiente"}<br/>{v.contact_name||"Sin contacto"} · {v.contact_email||"Sin correo"}<br/>{v.payment_terms||"Condiciones de pago pendientes"}{v.preferred?" · Preferidos":""}</p>
       </article>)}
       {!vendorRows.length&&<article className={styles.card}><h3>Registro de proveedores preparado</h3><p>No se han cargado proveedores formales todavía.</p></article>}
     </section>
@@ -133,16 +133,16 @@ export default async function MasterSuppliersPage(){
           <label>Nombre<input name="name" required/></label>
           <label>Tipo<select name="vendor_type" defaultValue="other">
             <option value="manufacturing">Fabricación</option><option value="fulfillment">Entregas</option><option value="software">Software</option>
-            <option value="hosting">Alojamiento</option><option value="professional_services">Servicios profesionales</option><option value="marketing">Marketing</option>
-            <option value="art">Art</option><option value="audio">Audio</option><option value="qa">QA</option><option value="localization">Localización</option>
+            <option value="hosting">Alojamiento</option><option value="professional_services">Servicios profesionales</option><option value="marketing">Mercadeo</option>
+            <option value="art">Arte</option><option value="audio">Audio</option><option value="qa">Control de calidad</option><option value="localization">Localización</option>
             <option value="legal">Legal</option><option value="finance">Finanzas</option><option value="other">Otro</option>
           </select></label>
           <label>Contacto<input name="contact_name"/></label>
-          <label>Email<input type="email" name="contact_email"/></label>
+          <label>Correo<input type="email" name="contact_email"/></label>
           <label>País<input name="country"/></label>
-          <label>Condiciones de pago<input name="payment_terms" placeholder="Net 30"/></label>
+          <label>Condiciones de pago<input name="payment_terms" placeholder="Pago a 30 días"/></label>
           <label>Riesgo<select name="risk_rating" defaultValue="medium"><option value="low">Bajo</option><option value="medium">Medio</option><option value="high">Alto</option><option value="critical">Crítico</option></select></label>
-          <label>Preferidos<select name="preferred" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
+          <label>Preferido<select name="preferred" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar proveedor</MasterSubmitButton>
       </form>
