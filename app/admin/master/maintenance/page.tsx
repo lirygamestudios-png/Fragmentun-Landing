@@ -28,12 +28,14 @@ export default async function MaintenancePage(){
     {count:auditCount},
     {data:lastValidation},
     {data:lastIncident},
-    {data:lastChange}
+    {data:lastChange},
+    {data:lastGamePurchase}
   ]=await Promise.all([
     supabase.from("admin_audit_log").select("*",{count:"exact",head:true}),
     supabase.from("runtime_validation_runs").select("status,executed_at,run_code").order("executed_at",{ascending:false}).limit(1).maybeSingle(),
     supabase.from("security_incidents").select("status,severity,created_at").order("created_at",{ascending:false}).limit(1).maybeSingle(),
-    supabase.from("tech_changes").select("status,risk_level,created_at").order("created_at",{ascending:false}).limit(1).maybeSingle()
+    supabase.from("tech_changes").select("status,risk_level,created_at").order("created_at",{ascending:false}).limit(1).maybeSingle(),
+    supabase.from("game_purchase_events").select("status,purchased_at").order("purchased_at",{ascending:false}).limit(1).maybeSingle()
   ]);
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleMaintenance}`}>
