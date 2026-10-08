@@ -267,7 +267,7 @@ export default async function ObservabilityPage(){
           <label>Redirección<input name="redirect_location"/></label>
           <label className={styles.span2}>Detalle<textarea name="detail" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!runRows.length}>Guardar comprobación</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!runRows.length} disabledReason="Primero registra o ejecuta una prueba para poder guardar una comprobación.">Guardar comprobación</MasterSubmitButton>
       </form>
 
       <form action={closeValidationRun} className={styles.adminForm}>
@@ -277,7 +277,7 @@ export default async function ObservabilityPage(){
           <label>Estado<select name="status" defaultValue="partial"><option value="passed">Correcto</option><option value="failed">Revisar</option><option value="partial">Incompleto</option><option value="canceled">Cancelado</option></select></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!runRows.length}>Cerrar prueba</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!runRows.length} disabledReason="No hay ninguna prueba registrada para cerrar.">Cerrar prueba</MasterSubmitButton>
       </form>
       </section>
     </details>}
