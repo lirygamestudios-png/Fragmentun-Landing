@@ -92,8 +92,8 @@ export default async function MasterMonetizationPage(){
     {count:amazonClicks},
     {count:merchClicks},
     {data:games},
-    {data:virtualItems},
-    {data:virtualOffers},
+    {data:virtualItems,error:virtualItemsError},
+    {data:virtualOffers,error:virtualOffersError},
     {data:gamePurchases,error:gamePurchasesError},
     {data:entitlements,error:entitlementsError},
     {data:engagement,error:engagementError}
@@ -125,6 +125,8 @@ export default async function MasterMonetizationPage(){
   const entitlementRows=(entitlements||[]) as any[];
   const engagementRows=(engagement||[]) as any[];
   const purchaseDataAvailable=!gamePurchasesError;
+  const itemDataAvailable=!virtualItemsError;
+  const offerDataAvailable=!virtualOffersError;
   const deliveryDataAvailable=!entitlementsError;
   const engagementDataAvailable=!engagementError;
   const paidGamePurchases=purchaseRows.filter(p=>p.status==="paid");
@@ -182,7 +184,7 @@ export default async function MasterMonetizationPage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Artículos virtuales activos</small><strong>{virtualItemRows.filter(i=>i.active).length}</strong><span>{virtualOfferRows.filter(o=>o.active).length} ofertas activas</span></article>
+      <article><small>Artículos virtuales activos</small><strong>{itemDataAvailable?virtualItemRows.filter(i=>i.active).length:"NO DISPONIBLE"}</strong><span>{offerDataAvailable?virtualOfferRows.filter(o=>o.active).length+" ofertas activas":"Ofertas: datos no disponibles"}</span></article>
       <article><small>Compras pagadas acumuladas</small><strong>{allPaidError?"NO DISPONIBLE":(allPaidCount??0).toLocaleString()}</strong><span>Recuento completo de compras pagadas en {inGameCurrency}; no representa ingresos totales</span></article>
       <article><small>Ingresos in-game brutos (muestra)</small><strong className={styles.kpiLongValue}>{purchaseDataAvailable?money(inGameGross,inGameCurrency):"NO DISPONIBLE"}</strong><span>{paidPurchasesInCurrency.length} compras pagadas · {inGameCurrency}{multipleGameCurrencies?" · Existen otras monedas":""} · Últimas 2,000 compras consultadas</span></article>
       <article><small>Ingresos in-game netos (muestra)</small><strong className={styles.kpiLongValue}>{purchaseDataAvailable?money(inGameNet,inGameCurrency):"NO DISPONIBLE"}</strong><span>Después de comisiones e impuestos registrados · {inGameCurrency}{multipleGameCurrencies?" · Otras monedas excluidas":""} · Máximo 2,000 compras recientes</span></article>
