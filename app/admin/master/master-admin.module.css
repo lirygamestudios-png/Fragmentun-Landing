@@ -1935,3 +1935,153 @@
     align-items:flex-start;
   }
 }
+
+
+/* Ronda visual: Auditoría · Configuración · Backups */
+.moduleAudit .sectionHead,
+.moduleSettings .sectionHead,
+.moduleBackups .sectionHead{
+  margin:32px 0 14px;
+  padding-bottom:10px;
+}
+
+.moduleAudit .kpis article,
+.moduleSettings .kpis article,
+.moduleBackups .kpis article{
+  padding:16px;
+  border-radius:11px;
+}
+
+.moduleAudit .card,
+.moduleSettings .card,
+.moduleBackups .card{
+  min-height:148px;
+  padding:16px;
+  border-radius:11px;
+}
+
+.moduleAudit .adminForms,
+.moduleSettings .adminForms,
+.moduleBackups .adminForms{
+  margin:30px 0;
+  gap:14px;
+}
+
+.moduleAudit .adminForm,
+.moduleSettings .adminForm,
+.moduleBackups .adminForm{
+  padding:18px;
+  border-radius:11px;
+}
+
+.moduleAudit .moduleStrip,
+.moduleSettings .moduleStrip,
+.moduleBackups .moduleStrip{
+  margin:-6px 0 16px;
+  border-radius:11px;
+}
+
+.moduleAudit .cardTop em,
+.moduleSettings .cardTop em,
+.moduleBackups .cardTop em{
+  max-width:48%;
+  text-align:right;
+  overflow-wrap:anywhere;
+}
+
+.moduleAudit .card p,
+.moduleSettings .card p,
+.moduleBackups .card p,
+.moduleAudit .card h3,
+.moduleSettings .card h3,
+.moduleBackups .card h3{
+  overflow-wrap:anywhere;
+}
+
+.moduleAudit .kpis small,
+.moduleSettings .kpis small,
+.moduleBackups .kpis small,
+.moduleAudit .kpis span,
+.moduleSettings .kpis span,
+.moduleBackups .kpis span{
+  overflow-wrap:anywhere;
+}
+
+.moduleSettings .card p{
+  word-break:break-word;
+}
+
+.moduleBackups .notice,
+.moduleAudit .notice,
+.moduleSettings .notice{
+  padding:16px 18px;
+  border-radius:11px;
+}
+
+.moduleBackups .notice span,
+.moduleAudit .notice span,
+.moduleSettings .notice span{
+  line-height:1.5;
+}
+
+.moduleBackups .notice code,
+.moduleAudit .notice code,
+.moduleSettings .notice code{
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+
+@media(min-width:1050px){
+  .moduleAudit .moduleStrip,
+  .moduleSettings .moduleStrip,
+  .moduleBackups .moduleStrip{
+    grid-template-columns:auto minmax(180px,1fr) auto;
+    gap:14px;
+  }
+  .moduleAudit .moduleStripMeta,
+  .moduleSettings .moduleStripMeta,
+  .moduleBackups .moduleStripMeta{
+    grid-column:auto;
+    justify-content:flex-end;
+    padding-top:0;
+  }
+}
+
+@media(max-width:900px){
+  .moduleAudit .moduleStrip,
+  .moduleSettings .moduleStrip,
+  .moduleBackups .moduleStrip{
+    grid-template-columns:auto 1fr;
+  }
+  .moduleAudit .moduleStripMeta,
+  .moduleSettings .moduleStripMeta,
+  .moduleBackups .moduleStripMeta{
+    grid-column:1/-1;
+    justify-content:flex-start;
+    padding-top:2px;
+  }
+
+  .moduleBackups .notice,
+  .moduleAudit .notice,
+  .moduleSettings .notice{
+    gap:12px;
+  }
+}
+
+@media(max-width:600px){
+  .moduleAudit .sectionHead,
+  .moduleSettings .sectionHead,
+  .moduleBackups .sectionHead{
+    margin:28px 0 12px;
+  }
+  .moduleAudit .cardTop,
+  .moduleSettings .cardTop,
+  .moduleBackups .cardTop{
+    align-items:flex-start;
+  }
+  .moduleBackups .notice,
+  .moduleAudit .notice,
+  .moduleSettings .notice{
+    padding:14px;
+  }
+}
