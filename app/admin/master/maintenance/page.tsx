@@ -2,6 +2,21 @@ import {redirect} from "next/navigation";
 import {createSupabaseServerClient} from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
+function statusLabel(value:string|undefined){
+  const map:Record<string,string>={
+    open:"ABIERTO",investigating:"INVESTIGANDO",contained:"CONTENIDO",monitoring:"EN SEGUIMIENTO",
+    resolved:"RESUELTO",closed:"CERRADO",planned:"PLANIFICADO",approved:"APROBADO",in_progress:"EN CURSO",
+    completed:"COMPLETADO",failed:"REVISAR",passed:"CORRECTA",canceled:"CANCELADO",paused:"PAUSADO",
+    pending:"PENDIENTE",rolled_back:"REVERTIDO"
+  };
+  return value?(map[value]||String(value).replaceAll("_"," ").toUpperCase()):"—";
+}
+
+function riskLabel(value:string|undefined){
+  const map:Record<string,string>={low:"BAJO",medium:"MEDIO",high:"ALTO",critical:"CRÍTICO"};
+  return value?(map[value]||String(value).replaceAll("_"," ").toUpperCase()):"—";
+}
+
 export default async function MaintenancePage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -34,8 +49,8 @@ export default async function MaintenancePage(){
     <section className={styles.kpis}>
       <article><small>Acciones registradas</small><strong>{(auditCount||0).toLocaleString()}</strong><span>Historial administrativo</span></article>
       <article><small>Última prueba</small><strong>{lastValidation?.status==="passed"?"CORRECTA":lastValidation?.status==="failed"?"REVISAR":"—"}</strong><span>{lastValidation?.executed_at?new Date(lastValidation.executed_at).toLocaleString("es-US"):"Sin pruebas"}</span></article>
-      <article><small>Último incidente</small><strong>{lastIncident?.status?String(lastIncident.status).toUpperCase():"—"}</strong><span>{lastIncident?.severity?String(lastIncident.severity).toUpperCase():"Sin incidentes registrados"}</span></article>
-      <article><small>Último cambio técnico</small><strong>{lastChange?.status?String(lastChange.status).toUpperCase():"—"}</strong><span>{lastChange?.risk_level?String(lastChange.risk_level).toUpperCase():"Sin cambios registrados"}</span></article>
+      <article><small>Último incidente</small><strong>{statusLabel(lastIncident?.status)}</strong><span>{lastIncident?.severity?riskLabel(lastIncident.severity):"Sin incidentes registrados"}</span></article>
+      <article><small>Último cambio técnico</small><strong>{statusLabel(lastChange?.status)}</strong><span>{lastChange?.risk_level?riskLabel(lastChange.risk_level):"Sin cambios registrados"}</span></article>
     </section>
 
     <section className={styles.sectionHead}>
