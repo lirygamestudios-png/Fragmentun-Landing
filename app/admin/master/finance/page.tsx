@@ -212,7 +212,7 @@ export default async function MasterFinancePage(){
     </section>
 
     <section className={styles.grid}>
-      {txRows.slice(0,12).map((t:any)=><article key={t.id} className={styles.card}>
+      {txRows.slice(0,12).map((t:any)=><article key={t.id} className={`${styles.card} ${t.status==="pending"?styles.cardWarning:["draft","void"].includes(t.status)?styles.cardMuted:""}`}>
         <div className={styles.cardTop}><span className={t.status==="reconciled"?styles.badgeActive:styles.badgePlanned}>{financeStatusLabel(t.status)}</span><em>{transactionTypeLabel(t.transaction_type)}</em></div>
         <h3>{t.description}</h3>
         <p>{money(t.amount_cents,t.currency||"USD")} · {t.transaction_date}<br/>{[t.category,t.counterparty].filter(Boolean).join(" · ")||"Sin categoría/contraparte"}</p>
