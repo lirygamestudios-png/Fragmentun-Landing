@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 import { PreviewValidationButton } from "../../../../components/PreviewValidationButton";
 
 async function requireObservabilityAdmin(){
@@ -245,7 +246,7 @@ export default async function ObservabilityPage(){
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Solo necesarias para pruebas manuales o soporte técnico.</p>
       <section className={styles.adminForms}>
-      <form action={createValidationRun} className={styles.adminForm}>
+      <MasterActionForm action={createValidationRun} className={styles.adminForm} successText="Prueba registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA PRUEBA MANUAL</span><h2>Registrar prueba manual</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="run_code" required placeholder="PRUEBA-2026-10-07-02"/></label>
@@ -256,9 +257,9 @@ export default async function ObservabilityPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton}>Crear prueba</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={addValidationResult} className={styles.adminForm}>
+      <MasterActionForm action={addValidationResult} className={styles.adminForm} successText="Comprobación registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA COMPROBACIÓN</span><h2>Añadir comprobación</h2></div>
         <div className={styles.formGrid}>
           <label>Prueba<select name="run_id" required defaultValue=""><option value="" disabled>Seleccionar prueba</option>{runRows.map((r:any)=><option key={r.id} value={r.id}>{r.run_code} · {r.status}</option>)}</select></label>
@@ -272,9 +273,9 @@ export default async function ObservabilityPage(){
           <label className={styles.span2}>Detalle<textarea name="detail" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!runRows.length} disabledReason="Primero registra o ejecuta una prueba para poder guardar una comprobación.">Guardar comprobación</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={closeValidationRun} className={styles.adminForm}>
+      <MasterActionForm action={closeValidationRun} className={styles.adminForm} successText="Prueba cerrada correctamente.">
         <div className={styles.formTitle}><span>CERRAR PRUEBA</span><h2>Definir estado final</h2></div>
         <div className={styles.formGrid}>
           <label>Prueba<select name="run_id" required defaultValue=""><option value="" disabled>Seleccionar prueba</option>{runRows.map((r:any)=><option key={r.id} value={r.id}>{r.run_code} · {r.status}</option>)}</select></label>
@@ -282,7 +283,7 @@ export default async function ObservabilityPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!runRows.length} disabledReason="No hay ninguna prueba registrada para cerrar.">Cerrar prueba</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
     </details>}
 
