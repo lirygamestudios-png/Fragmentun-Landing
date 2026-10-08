@@ -506,3 +506,49 @@
   border-color:rgba(74,144,217,.34)!important;
   box-shadow:0 14px 34px rgba(0,0,0,.22),0 0 18px rgba(74,144,217,.07);
 }
+
+
+/* UX LIRYGAMES · Bloque 6: carga, proceso y estados FRAGMENTUN */
+.fragmentunProcessCore,
+.adminReportLoading,
+.adminReadableStatus,
+.adminInlineStatus,
+.authStatus{
+  transition:border-color .18s ease,background .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.fragmentunProcessCore{
+  border-color:rgba(74,144,217,.24);
+  box-shadow:0 24px 80px rgba(0,0,0,.45),0 0 48px rgba(74,144,217,.08);
+}
+.fragmentunProcessOrbit{
+  border-top-color:#4A90D9;
+  border-right-color:rgba(201,168,76,.72);
+}
+.fragmentunProcessLine i{
+  background:linear-gradient(90deg,#315f94,#4A90D9,#75b7f3,#40d39b);
+}
+.fragmentunProcessOverlay.state-success .fragmentunProcessCore{
+  border-color:rgba(64,211,155,.32);
+  box-shadow:0 24px 80px rgba(0,0,0,.42),0 0 44px rgba(64,211,155,.08);
+}
+.fragmentunProcessOverlay.state-error .fragmentunProcessCore{
+  border-color:rgba(255,92,92,.30);
+}
+.adminReadableStatus,
+.adminInlineStatus,
+.authStatus{
+  border-color:rgba(74,144,217,.28);
+  background:rgba(74,144,217,.07);
+  color:#b5d8f8;
+  box-shadow:0 8px 24px rgba(0,0,0,.10);
+}
+.adminCampaignToast{
+  border-color:rgba(64,211,155,.44);
+  background:linear-gradient(180deg,rgba(8,25,37,.97),rgba(5,18,27,.98));
+  color:#91efc5;
+  box-shadow:0 18px 48px rgba(0,0,0,.35),0 0 24px rgba(64,211,155,.10);
+}
+.adminCampaignToast.error{
+  border-color:rgba(255,92,92,.44);
+  color:#ffadad;
+}
