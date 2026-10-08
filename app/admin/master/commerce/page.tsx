@@ -38,12 +38,16 @@ export default async function MasterCommercePage(){
     {data:orders},
     {count:products},
     {count:fulfillments},
-    {data:settings}
+    {data:settings},
+    {data:gameEvents},
+    {data:entitlements}
   ]=await Promise.all([
     supabase.from("shop_orders").select("order_number,total_cents,currency,payment_status,fulfillment_status,refund_status,customer_email,created_at").order("created_at",{ascending:false}).limit(100),
     supabase.from("shop_products").select("*",{count:"exact",head:true}),
     supabase.from("shop_fulfillments").select("*",{count:"exact",head:true}),
-    supabase.from("commerce_settings").select("stripe_enabled,paypal_enabled,default_payment_provider,tax_mode,shipping_label_mode").eq("id","default").maybeSingle()
+    supabase.from("commerce_settings").select("stripe_enabled,paypal_enabled,default_payment_provider,tax_mode,shipping_label_mode").eq("id","default").maybeSingle(),
+    supabase.from("game_purchase_events").select("id,game_id,item_id,player_ref,platform,provider,gross_cents,net_cents,currency,status,purchased_at").order("purchased_at",{ascending:false}).limit(500),
+    supabase.from("game_entitlements").select("id,game_id,item_id,purchase_id,status,granted_at,expires_at,created_at").order("created_at",{ascending:false}).limit(500)
   ]);
 
   const rows=(orders||[]) as any[];
@@ -52,6 +56,13 @@ export default async function MasterCommercePage(){
   const refunds=rows.filter(o=>o.refund_status&&o.refund_status!=="none");
   const totalPaid=paid.reduce((a,o)=>a+Number(o.total_cents||0),0);
   const currency=paid[0]?.currency||"USD";
+  const gameEventRows=(gameEvents||[]) as any[];
+  const entitlementRows=(entitlements||[]) as any[];
+  const gamePaid=gameEventRows.filter(e=>e.status==="paid");
+  const gameRevenue=gamePaid.reduce((a,e)=>a+Number(e.gross_cents||0),0);
+  const gameCurrency=gamePaid[0]?.currency||"USD";
+  const gamePaymentIssues=gameEventRows.filter(e=>["failed","chargeback"].includes(e.status));
+  const entitlementIssues=entitlementRows.filter(e=>["pending","failed"].includes(e.status));
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleCommerce}`}>
     <header className={styles.topbar}>
@@ -73,6 +84,18 @@ export default async function MasterCommercePage(){
       <article><small>Pagado</small><strong className={styles.kpiLongValue}>{money(totalPaid,currency)}</strong><span>{paid.length} pedidos pagados</span></article>
       <article className={open.length?styles.kpiAttention:undefined}><small>Pendientes</small><strong>{open.length}</strong><span>{open.length?"Pedidos por completar":"Sin pedidos pendientes"}</span></article>
       <article className={refunds.length?styles.kpiAttention:undefined}><small>Reembolsos</small><strong>{refunds.length}</strong><span>{refunds.length?"Con devolución/reembolso":"Sin reembolsos registrados"}</span></article>
+    </section>
+
+    <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · VIDEOJUEGOS</span><h2>Compras y entrega digital</h2></div>
+      <p>Operación de bienes virtuales separada del fulfillment físico. Las compras llegan desde los juegos y plataformas.</p>
+    </section>
+
+    <section className={styles.kpis}>
+      <article><small>Compras in-game</small><strong>{gamePaid.length}</strong><span>{money(gameRevenue,gameCurrency)} bruto registrado</span></article>
+      <article className={gamePaymentIssues.length?styles.kpiAttention:undefined}><small>Pagos con incidencia</small><strong>{gamePaymentIssues.length}</strong><span>{gamePaymentIssues.length?"Fallidos o chargeback":"Sin incidencias"}</span></article>
+      <article className={entitlementIssues.length?styles.kpiAttention:undefined}><small>Entregas digitales</small><strong>{entitlementIssues.length}</strong><span>{entitlementIssues.length?"Pendientes o fallidas":"Sin incidencias"}</span></article>
+      <article><small>Canal</small><strong className={styles.kpiCompactValue}>AUTOMÁTICO</strong><span>Backend firmado</span></article>
     </section>
 
     <details className={styles.advancedPanel}>
