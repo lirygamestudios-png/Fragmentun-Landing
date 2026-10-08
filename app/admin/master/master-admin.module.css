@@ -2085,3 +2085,146 @@
     padding:14px;
   }
 }
+
+
+/* Ronda visual: Mantenimiento · Releases · Observabilidad */
+.moduleMaintenance .sectionHead,
+.moduleReleases .sectionHead,
+.moduleObservability .sectionHead{
+  margin:32px 0 14px;
+  padding-bottom:10px;
+}
+
+.moduleMaintenance .kpis article,
+.moduleReleases .kpis article,
+.moduleObservability .kpis article{
+  padding:16px;
+  border-radius:11px;
+}
+
+.moduleMaintenance .card,
+.moduleReleases .card,
+.moduleObservability .card{
+  min-height:148px;
+  padding:16px;
+  border-radius:11px;
+}
+
+.moduleMaintenance .adminForms,
+.moduleReleases .adminForms,
+.moduleObservability .adminForms{
+  margin:30px 0;
+  gap:14px;
+}
+
+.moduleMaintenance .adminForm,
+.moduleReleases .adminForm,
+.moduleObservability .adminForm{
+  padding:18px;
+  border-radius:11px;
+}
+
+.moduleMaintenance .moduleStrip,
+.moduleReleases .moduleStrip,
+.moduleObservability .moduleStrip{
+  margin:-6px 0 16px;
+  border-radius:11px;
+}
+
+.moduleMaintenance .cardTop em,
+.moduleReleases .cardTop em,
+.moduleObservability .cardTop em{
+  max-width:48%;
+  text-align:right;
+  overflow-wrap:anywhere;
+}
+
+.moduleMaintenance .card p,
+.moduleReleases .card p,
+.moduleObservability .card p,
+.moduleMaintenance .card h3,
+.moduleReleases .card h3,
+.moduleObservability .card h3{
+  overflow-wrap:anywhere;
+}
+
+.moduleMaintenance .kpis small,
+.moduleReleases .kpis small,
+.moduleObservability .kpis small,
+.moduleMaintenance .kpis span,
+.moduleReleases .kpis span,
+.moduleObservability .kpis span{
+  overflow-wrap:anywhere;
+}
+
+.moduleMaintenance .notice,
+.moduleReleases .notice,
+.moduleObservability .notice{
+  padding:16px 18px;
+  border-radius:11px;
+}
+
+.moduleReleases .notice form{
+  margin:10px 0 0;
+}
+
+.moduleReleases .notice .formButton{
+  width:auto;
+  min-width:150px;
+}
+
+.moduleObservability .notice > *{
+  min-width:0;
+}
+
+@media(min-width:1050px){
+  .moduleMaintenance .moduleStrip,
+  .moduleReleases .moduleStrip,
+  .moduleObservability .moduleStrip{
+    grid-template-columns:auto minmax(180px,1fr) auto;
+    gap:14px;
+  }
+  .moduleMaintenance .moduleStripMeta,
+  .moduleReleases .moduleStripMeta,
+  .moduleObservability .moduleStripMeta{
+    grid-column:auto;
+    justify-content:flex-end;
+    padding-top:0;
+  }
+}
+
+@media(max-width:900px){
+  .moduleMaintenance .moduleStrip,
+  .moduleReleases .moduleStrip,
+  .moduleObservability .moduleStrip{
+    grid-template-columns:auto 1fr;
+  }
+  .moduleMaintenance .moduleStripMeta,
+  .moduleReleases .moduleStripMeta,
+  .moduleObservability .moduleStripMeta{
+    grid-column:1/-1;
+    justify-content:flex-start;
+    padding-top:2px;
+  }
+}
+
+@media(max-width:600px){
+  .moduleMaintenance .sectionHead,
+  .moduleReleases .sectionHead,
+  .moduleObservability .sectionHead{
+    margin:28px 0 12px;
+  }
+  .moduleMaintenance .cardTop,
+  .moduleReleases .cardTop,
+  .moduleObservability .cardTop{
+    align-items:flex-start;
+  }
+  .moduleMaintenance .notice,
+  .moduleReleases .notice,
+  .moduleObservability .notice{
+    padding:14px;
+  }
+  .moduleReleases .notice .formButton{
+    width:100%;
+  }
+}
