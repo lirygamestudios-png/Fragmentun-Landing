@@ -33,7 +33,10 @@ function trafficLabel(value:unknown){
 
 export function AdminAnalytics(){
   const[data,setData]=useState<any>(null);
-  useEffect(()=>{fetch("/api/admin/analytics").then(r=>r.json()).then(setData)},[]);
+  const[loadError,setLoadError]=useState(false);
+  const[actionMsg,setActionMsg]=useState("");
+  useEffect(()=>{fetch("/api/admin/analytics").then(async r=>{const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error("load_failed");setData(j);setLoadError(false)}).catch(()=>setLoadError(true))},[]);
+  if(loadError)return <section className="card"><p className="adminSaveFeedback error">No fue posible cargar la analítica.</p><button type="button" className="btn btnGhost" onClick={()=>window.location.reload()}>Reintentar</button></section>;
   if(!data)return <FragmentunProcessOverlay compact state="loading" title="CARGANDO ANALÍTICA…"/>;
   if(data.error)return <p className="adminSaveFeedback error">No fue posible cargar la analítica.</p>;
 
@@ -43,8 +46,29 @@ export function AdminAnalytics(){
   const experiments=data.experiments||{};
   const community=data.community||{};
 
-  function exportCsv(){window.location.href="/api/admin/analytics?format=csv"}
-  function printReport(){window.print()}
+  async function exportCsv(){
+    setActionMsg("Preparando CSV…");
+    try{
+      const r=await fetch("/api/admin/analytics?format=csv");
+      if(!r.ok)throw new Error("export_failed");
+      const blob=await r.blob();
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement("a");
+      a.href=url;
+      a.download="fragmentun-analitica.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.setTimeout(()=>URL.revokeObjectURL(url),1000);
+      setActionMsg("CSV descargado correctamente.");
+    }catch{
+      setActionMsg("No fue posible descargar el CSV.");
+    }
+  }
+  function printReport(){
+    setActionMsg("Abriendo opciones de impresión…");
+    window.print();
+  }
   const funnelSteps=[
     ["Sesiones",data.funnel?.sessions||0],
     ["Registros",data.funnel?.lead_sessions||0],
@@ -78,7 +102,7 @@ export function AdminAnalytics(){
   const hasDecisionData=!!(bestTraffic||bestConversion||bestAmazon||bestCampaign);
 
   return <div className="adminAnalyticsModule">
-    <div className="adminModuleToolbar adminNoPrint"><div><div className="kicker">Inteligencia del embudo</div><h2>Rendimiento y conversión</h2></div><div className="adminReportActions"><button className="btn btnGhost" onClick={printReport}>Imprimir / Guardar PDF</button><button className="btn btnGhost" onClick={exportCsv}>Descargar CSV</button></div></div>
+    <div className="adminModuleToolbar adminNoPrint"><div><div className="kicker">Inteligencia del embudo</div><h2>Rendimiento y conversión</h2></div><div><div className="adminReportActions"><button className="btn btnGhost" onClick={printReport}>Imprimir / Guardar PDF</button><button className="btn btnGhost" onClick={exportCsv}>Descargar CSV</button></div>{actionMsg&&<p role="status" className={actionMsg.toLowerCase().includes("no fue")?"adminSaveFeedback error":"adminSaveFeedback"}>{actionMsg}</p>}</div></div>
     <section className="adminReportCover" id="reportes">
       <div className="adminReportBrand"><img src="/fragmentun-mark.png" alt="" width="48" height="48"/><div><strong>FRAGMENTUN</strong><span>REPORTE EJECUTIVO · ANALÍTICA</span></div></div>
       <div className="adminReportSummary">
