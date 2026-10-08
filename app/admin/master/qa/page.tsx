@@ -26,11 +26,15 @@ export default async function QaFinalPage(){
   const validationOk=latestValidation?.status==="passed";
   const validationLabel=!latestValidation?"SIN PRUEBA":validationOk?"CORRECTA":"REVISAR";
   const gateApproved=latestGate?.status==="approved";
-  const sameDeployment=Boolean(latestValidation?.deployment_id&&latestGate?.target_deployment_id)
-    ?latestValidation.deployment_id===latestGate.target_deployment_id
+  const validationDeployment=latestValidation?.deployment_id||null;
+  const gateDeployment=latestGate?.target_deployment_id||null;
+  const validationCommit=latestValidation?.commit_sha||null;
+  const gateCommit=latestGate?.target_commit||null;
+  const sameDeployment=validationDeployment&&gateDeployment
+    ?validationDeployment===gateDeployment
     :true;
-  const sameCommit=Boolean(latestValidation?.commit_sha&&latestGate?.target_commit)
-    ?latestValidation.commit_sha===latestGate.target_commit
+  const sameCommit=validationCommit&&gateCommit
+    ?validationCommit===gateCommit
     :true;
   const gateMatchesValidation=sameDeployment&&sameCommit;
   const gateReady=gateApproved&&gateMatchesValidation;
