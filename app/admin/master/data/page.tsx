@@ -34,10 +34,10 @@ async function createDataSource(formData:FormData){
   const sourceType=String(formData.get("source_type")||"database");
   const systemName=String(formData.get("system_name")||"").trim()||null;
   const freshnessRaw=String(formData.get("freshness_target_minutes")||"").trim();
-  const freshness=freshnessRaw?Math.max(0,Number(freshnessRaw)):null;
+  const freshness=freshnessRaw?Number(freshnessRaw):null;
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowed=new Set(["database","api","analytics","file","webhook","platform","manual","other"]);
-  if(!code||!name||!allowed.has(sourceType)||(freshness!==null&&!Number.isFinite(freshness))) throw new Error("invalid_data_source");
+  if(!code||!name||!allowed.has(sourceType)||(freshness!==null&&(!Number.isFinite(freshness)||!Number.isInteger(freshness)||freshness<0))) throw new Error("invalid_data_source");
   const{error}=await supabase.from("data_sources").insert({
     code,name,source_type:sourceType,system_name:systemName,freshness_target_minutes:freshness,notes,created_by:user.id
   });
@@ -76,7 +76,7 @@ async function updateDataSource(formData:FormData){
   const freshness=freshnessRaw?Math.max(0,Number(freshnessRaw)):null;
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedEstado=new Set(["active","degraded","paused","deprecated","retired"]);
-  if(!id||!allowedEstado.has(status)||(freshness!==null&&!Number.isFinite(freshness))) throw new Error("invalid_data_source_update");
+  if(!id||!allowedEstado.has(status)||(freshness!==null&&(!Number.isFinite(freshness)||!Number.isInteger(freshness)||freshness<0))) throw new Error("invalid_data_source_update");
   const{error}=await supabase.from("data_sources").update({
     status,owner_user_id:ownerUserId,system_name:systemName,freshness_target_minutes:freshness,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
