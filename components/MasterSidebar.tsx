@@ -1,6 +1,7 @@
 "use client";
 
 import {usePathname} from "next/navigation";
+import {useState} from "react";
 import styles from "../app/admin/master/master-admin.module.css";
 
 const groups=[
@@ -45,7 +46,18 @@ const groups=[
 
 export function MasterSidebar({displayName,role}:{displayName:string;role:string}){
   const pathname=usePathname();
+  const[signingOut,setSigningOut]=useState(false);
   const initials=displayName.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]?.toUpperCase()).join("")||"LG";
+
+  async function signOut(){
+    if(signingOut)return;
+    setSigningOut(true);
+    try{
+      await fetch("/api/admin/lirygames/logout",{method:"POST"});
+    }finally{
+      window.location.assign("/admin/lirygames/login");
+    }
+  }
 
   return <aside className={styles.sidebar}>
     <div className={styles.brand}>
@@ -93,6 +105,9 @@ export function MasterSidebar({displayName,role}:{displayName:string;role:string
       </div>
       <a className={styles.publicSite} href="/admin">FRAGMENTUN Admin ↗</a>
       <a className={styles.publicSiteSecondary} href="/es" target="_blank" rel="noreferrer">Ver web pública ↗</a>
+      <button className={styles.publicSiteSecondary} type="button" onClick={signOut} disabled={signingOut}>
+        {signingOut?"Cerrando sesión…":"Cerrar sesión"}
+      </button>
     </div>
   </aside>;
 }
