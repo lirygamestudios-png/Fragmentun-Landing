@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function statusLabel(value:string){
   const map:Record<string,string>={draft:"BORRADOR",testing:"EN PRUEBA",active:"ACTIVO",paused:"PAUSADO",disabled:"DESACTIVADO",error:"ERROR",pending:"PENDIENTE",approved:"APROBADO",rejected:"RECHAZADO"};
@@ -219,10 +220,10 @@ export default async function MasterAutomationPage(){
       {agentRows.map((a:any)=><article key={a.id} className={styles.card}>
         <div className={styles.cardTop}><span className={a.kill_switch?styles.badgePlanned:styles.badgeActive}>{a.kill_switch?"PARADA ACTIVA":statusLabel(a.status)}</span><em>{autonomyLabel(a.autonomy_level)}</em></div>
         <h3>{a.name}</h3><p>{a.domain}<br/>Responsable: {ownerName(a.owner_user_id)}<br/>{a.purpose||"Propósito pendiente"}<br/>{a.model_ref||"Modelo no asignado"} · {a.cost_budget_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(a.cost_budget_cents)/100):"Presupuesto no definido"}</p>
-        {profile.role==="admin"&&<form action={toggleKillSwitch}>
+        {profile.role==="admin"&&<MasterActionForm action={toggleKillSwitch} successText="Interruptor de emergencia actualizado correctamente.">
           <input type="hidden" name="agent_id" value={a.id}/><input type="hidden" name="next" value={String(!a.kill_switch)}/>
           <MasterSubmitButton className={styles.formButton} type="submit" confirmText={a.kill_switch?"¿Confirmas que deseas reactivar este agente?":"¿Confirmas que deseas detener este agente? Esta acción puede interrumpir automatizaciones activas."}>{a.kill_switch?"Reactivar":"Detener agente"}</MasterSubmitButton>
-        </form>}
+        </MasterActionForm>}
       </article>)}
       {!agentRows.length&&<article className={styles.card}><h3>Sin agentes registrados</h3><p>El sistema está listo, con aprobación humana y parada de emergencia por agente.</p></article>}
     </section>
@@ -234,8 +235,8 @@ export default async function MasterAutomationPage(){
         <h3>{a.action_summary}</h3>
         <p>Solicitado: {new Date(a.requested_at).toLocaleString("es-US")}</p>
         {profile.role==="admin"&&<div>
-          <form action={decideApproval}><input type="hidden" name="approval_id" value={a.id}/><input type="hidden" name="decision" value="approved"/><MasterSubmitButton className={styles.formButton} confirmText="¿Confirmas que deseas aprobar esta acción?">Aprobar</MasterSubmitButton></form>
-          <form action={decideApproval}><input type="hidden" name="approval_id" value={a.id}/><input type="hidden" name="decision" value="rejected"/><MasterSubmitButton className={styles.formButton} confirmText="¿Confirmas que deseas rechazar esta acción?">Rechazar</MasterSubmitButton></form>
+          <MasterActionForm action={decideApproval} successText="Acción aprobada correctamente."><input type="hidden" name="approval_id" value={a.id}/><input type="hidden" name="decision" value="approved"/><MasterSubmitButton className={styles.formButton} confirmText="¿Confirmas que deseas aprobar esta acción?">Aprobar</MasterSubmitButton></MasterActionForm>
+          <MasterActionForm action={decideApproval} successText="Acción rechazada correctamente."><input type="hidden" name="approval_id" value={a.id}/><input type="hidden" name="decision" value="rejected"/><MasterSubmitButton className={styles.formButton} confirmText="¿Confirmas que deseas rechazar esta acción?">Rechazar</MasterSubmitButton></MasterActionForm>
         </div>}
       </article>)}
       {!pending.length&&<article className={styles.card}><h3>Sin aprobaciones pendientes</h3><p>No hay acciones esperando decisión humana.</p></article>}
@@ -245,7 +246,7 @@ export default async function MasterAutomationPage(){
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar automatizaciones y agentes manualmente.</p>
       <section className={styles.adminForms}>
-      <form action={createAutomatización} className={styles.adminForm}>
+      <MasterActionForm action={createAutomatización} className={styles.adminForm} successText="Automatización registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA AUTOMATIZACIÓN</span><h2>Registrar automatización</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="lead-nurture"/></label>
@@ -264,9 +265,9 @@ export default async function MasterAutomationPage(){
           </select></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar automatización</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      {profile.role==="admin"&&<form action={createAgent} className={styles.adminForm}>
+      {profile.role==="admin"&&<MasterActionForm action={createAgent} className={styles.adminForm} successText="Agente registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO AGENTE</span><h2>Registrar agente IA</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="asistente-crecimiento"/></label>
@@ -282,11 +283,11 @@ export default async function MasterAutomationPage(){
           <label className={styles.span2}>Propósito<textarea name="purpose" rows={3} placeholder="Qué puede hacer y qué no puede hacer"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar agente</MasterSubmitButton>
-      </form>}
+      </MasterActionForm>}
       </section>
 
       <section className={styles.adminForms}>
-      <form action={updateAutomatización} className={styles.adminForm}>
+      <MasterActionForm action={updateAutomatización} className={styles.adminForm} successText="Automatización actualizada correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR AUTOMATIZACIÓN</span><h2>Actualizar automatización</h2></div>
         <div className={styles.formGrid}>
           <label>Automatización<select name="workflow_id" required defaultValue=""><option value="" disabled>Seleccionar automatización</option>{workflowRows.map((w:any)=><option key={w.id} value={w.id}>{w.code} · {w.name}</option>)}</select></label>
@@ -296,9 +297,9 @@ export default async function MasterAutomationPage(){
           <label>Requiere aprobación<select name="requires_approval" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!workflowRows.length}>Actualizar automatización</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      {profile.role==="admin"&&<form action={updateAgent} className={styles.adminForm}>
+      {profile.role==="admin"&&<MasterActionForm action={updateAgent} className={styles.adminForm} successText="Agente actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR AGENTE</span><h2>Actualizar agente IA</h2></div>
         <div className={styles.formGrid}>
           <label>Agente<select name="agent_id" required defaultValue=""><option value="" disabled>Seleccionar agente</option>{agentRows.map((a:any)=><option key={a.id} value={a.id}>{a.code} · {a.name}</option>)}</select></label>
@@ -311,7 +312,7 @@ export default async function MasterAutomationPage(){
           <label className={styles.span2}>Propósito<textarea name="purpose" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!agentRows.length}>Actualizar agente</MasterSubmitButton>
-      </form>}
+      </MasterActionForm>}
       </section>
     </details>}
 
