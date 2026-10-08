@@ -24,16 +24,20 @@ function since(value:string){
 export function AdminLiveAnalytics(){
   const[data,setData]=useState<LiveData|null>(null);
   const[paused,setPaused]=useState(false);
+  const[loadError,setLoadError]=useState(false);
+  const[actionMsg,setActionMsg]=useState("");
 
   useEffect(()=>{
     let timer:number|undefined;
     const load=()=>fetch("/api/admin/live-analytics",{cache:"no-store"})
-      .then(r=>r.json()).then(setData).catch(()=>{});
+      .then(async r=>{const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error("load_failed");setData(j);setLoadError(false)})
+      .catch(()=>setLoadError(true));
     load();
     if(!paused)timer=window.setInterval(load,15000);
     return()=>{if(timer)window.clearInterval(timer)};
   },[paused]);
 
+  if(loadError)return <section className="card adminLivePanel"><p className="adminSaveFeedback error">No fue posible cargar la actividad en vivo.</p><button type="button" className="btn btnGhost" onClick={()=>window.location.reload()}>Reintentar</button></section>;
   if(!data)return <section className="card adminLivePanel"><FragmentunProcessOverlay compact state="loading" title="CARGANDO ACTIVIDAD…"/></section>;
   if(data.error)return <section className="card adminLivePanel"><p className="adminSaveFeedback error">No fue posible cargar la actividad en vivo.</p></section>;
 
@@ -55,9 +59,10 @@ export function AdminLiveAnalytics(){
       </div>
       <div className="adminLiveTools">
         <span className="adminLivePulse"><i/>LIVE</span>
-        <button type="button" className="btn btnGhost" onClick={()=>setPaused(v=>!v)}>{paused?"Reanudar":"Pausar"}</button>
+        <button type="button" className="btn btnGhost" onClick={()=>setPaused(v=>{const next=!v;setActionMsg(next?"Actualización automática pausada.":"Actualización automática reanudada.");return next;})}>{paused?"Reanudar":"Pausar"}</button>
       </div>
     </div>
+    {actionMsg&&<p className="adminSaveFeedback success" role="status">{actionMsg}</p>}
 
     <div className="adminLiveKpis" style={{gap:8}}>
       <article style={{minHeight:74,padding:"10px 12px"}}><span>Usuarios en línea ahora</span><strong>{data.active_now}</strong><small>últimos 2 min</small></article>
