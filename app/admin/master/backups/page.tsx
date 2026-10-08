@@ -67,6 +67,14 @@ export default async function MasterBackupPage(){
       <article><small>Campañas</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Incluidas en copia</span></article>
     </section>
 
+    <section className={styles.notice}>
+      <div>
+        <strong>Alcance FREEMIUM</strong>
+        <span>La copia actual es editorial. Compras in-game, entitlements y telemetría se recuperarán mediante una estrategia transaccional separada antes del primer juego online.</span>
+      </div>
+      <code>Datos separados</code>
+    </section>
+
     <section className={styles.sectionHead}>
       <div><span>COPIA EXTERNA</span><h2>Descarga manual protegida</h2></div>
       <p>La descarga requiere sesión administrativa y verificación en dos pasos. La copia contiene contenido y datos de recuperación, no credenciales ni información sensible.</p>
