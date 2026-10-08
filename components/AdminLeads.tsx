@@ -10,34 +10,46 @@ export function AdminLeads(){
   const[status,setStatus]=useState("");
   const[profile,setProfile]=useState("");
   const[loading,setLoading]=useState(true);
+  const[loadError,setLoadError]=useState(false);
   const[actionMsg,setActionMsg]=useState("");
 
   async function load(){
     setLoading(true);
-    const p=new URLSearchParams();
-    if(q)p.set("q",q);
-    if(locale)p.set("locale",locale);
-    if(status)p.set("status",status);
-    if(profile)p.set("profile",profile);
-    const r=await fetch("/api/admin/leads?"+p.toString());
-    const j=await r.json();
-    setRows(j.data||[]);
-    setSummary(j.summary||{});
-    setLoading(false);
+    try{
+      const p=new URLSearchParams();
+      if(q)p.set("q",q);
+      if(locale)p.set("locale",locale);
+      if(status)p.set("status",status);
+      if(profile)p.set("profile",profile);
+      const r=await fetch("/api/admin/leads?"+p.toString());
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error("load_failed");
+      setRows(j.data||[]);
+      setSummary(j.summary||{});
+      setLoadError(false);
+    }catch{
+      setLoadError(true);
+    }finally{
+      setLoading(false);
+    }
   }
 
   useEffect(()=>{load()},[]);
 
   async function retry(id:string){
     setActionMsg("Reintentando sincronización…");
-    const r=await fetch("/api/admin/leads/retry",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({id})
-    });
-    const j=await r.json().catch(()=>({}));
-    setActionMsg(r.ok?"Sincronizado con MailerLite ✓":j.error==="mailerlite_unconfigured"?"MailerLite todavía no está configurado.":"No se pudo sincronizar.");
-    await load();
+    try{
+      const r=await fetch("/api/admin/leads/retry",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({id})
+      });
+      const j=await r.json().catch(()=>({}));
+      setActionMsg(r.ok?"Sincronizado con MailerLite ✓":j.error==="mailerlite_unconfigured"?"MailerLite todavía no está configurado.":"No se pudo sincronizar.");
+      await load();
+    }catch{
+      setActionMsg("No fue posible reintentar la sincronización. Revisa la conexión.");
+    }
   }
 
   async function deleteLead(id:string,email:string){
@@ -45,31 +57,50 @@ export function AdminLeads(){
     if(!ok)return;
 
     setActionMsg("Eliminando registro…");
-    const r=await fetch("/api/admin/leads/delete",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({id,confirmation:"DELETE"})
-    });
-    const j=await r.json().catch(()=>({}));
+    try{
+      const r=await fetch("/api/admin/leads/delete",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({id,confirmation:"DELETE"})
+      });
+      const j=await r.json().catch(()=>({}));
 
-    if(r.ok){
-      setActionMsg(j.warning
-        ?"Registro eliminado de Supabase. MailerLite devolvió una advertencia; revisa Integraciones."
-        :"Registro eliminado correctamente.");
-      await load();
-    }else{
-      setActionMsg("No se pudo eliminar el registro.");
+      if(r.ok){
+        setActionMsg(j.warning
+          ?"Registro eliminado de la base de datos. MailerLite devolvió una advertencia; revisa Integraciones."
+          :"Registro eliminado correctamente.");
+        await load();
+      }else{
+        setActionMsg("No se pudo eliminar el registro.");
+      }
+    }catch{
+      setActionMsg("No fue posible eliminar el registro. Revisa la conexión e inténtalo nuevamente.");
     }
   }
 
-  function exportCsv(){
-    const p=new URLSearchParams({format:"csv"});
-    if(q)p.set("q",q);
-    if(locale)p.set("locale",locale);
-    if(status)p.set("status",status);
-    if(profile)p.set("profile",profile);
-    window.location.href="/api/admin/leads?"+p.toString();
+  async function exportCsv(){
+    setActionMsg("Preparando lista…");
+    try{
+      const p=new URLSearchParams({format:"csv"});
+      if(q)p.set("q",q);
+      if(locale)p.set("locale",locale);
+      if(status)p.set("status",status);
+      if(profile)p.set("profile",profile);
+      const r=await fetch("/api/admin/leads?"+p.toString());
+      if(!r.ok)throw new Error("export_failed");
+      const blob=await r.blob();
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement("a");
+      a.href=url;a.download="fragmentun-registros.csv";
+      document.body.appendChild(a);a.click();a.remove();
+      window.setTimeout(()=>URL.revokeObjectURL(url),1000);
+      setActionMsg("Lista descargada correctamente.");
+    }catch{
+      setActionMsg("No fue posible descargar la lista.");
+    }
   }
+
+  if(loadError)return <section className="card"><p className="adminSaveFeedback error">No fue posible cargar los registros.</p><button type="button" className="btn btnGhost" onClick={()=>window.location.reload()}>Reintentar</button></section>;
 
   return <div className="adminLeadsModule">
     <div className="kpis">
@@ -131,6 +162,6 @@ export function AdminLeads(){
         </tr>)}</tbody>
       </table></div>}
     </div>
-    {actionMsg&&<p className="note">{actionMsg}</p>}
+    {actionMsg&&<p className={actionMsg.toLowerCase().includes("no fue")||actionMsg.toLowerCase().includes("no se pudo")?"adminSaveFeedback error":actionMsg.toLowerCase().includes("correctamente")||actionMsg.includes("✓")?"adminSaveFeedback success":"adminSaveFeedback"} role="status">{actionMsg}</p>}
   </div>;
 }
