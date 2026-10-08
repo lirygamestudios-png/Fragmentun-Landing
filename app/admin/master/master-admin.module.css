@@ -1097,3 +1097,95 @@
 .moduleBackups .cardMuted{
   opacity:.66;
 }
+
+
+/* Auditoría tipográfica equilibrada 2026-10-08 */
+/* Escala general: reducir extremos y recuperar legibilidad sin alterar estructura */
+.topbar h1{font-size:clamp(1.7rem,2.5vw,2.35rem)}
+.commandHero h1{font-size:clamp(1.9rem,3vw,2.65rem)}
+.stateCard h1{font-size:clamp(1.45rem,2.5vw,2.05rem)}
+.sectionHead h2,.reportSheet>header h2{font-size:1.28rem}
+.commandSectionHead h2{font-size:1.24rem}
+.formTitle h2,.capacityHeader h2{font-size:1.08rem}
+
+.kpis strong{font-size:1.55rem}
+.commandKpis strong{font-size:clamp(1.18rem,1.7vw,1.62rem)}
+.commandAlertGrid strong,.commandPulseGrid strong{font-size:.94rem}
+
+.formTitle span{font-size:.63rem}
+.formGrid label{font-size:.72rem;line-height:1.35}
+.formGrid input,.formGrid select,.formGrid textarea{
+  font-size:.80rem;
+  line-height:1.35;
+  min-height:39px;
+  padding:9px 10px;
+}
+.formGrid textarea{min-height:84px}
+.formButton{font-size:.80rem;line-height:1.2;padding:10px 14px}
+
+.card h3{font-size:.94rem}
+.card p{font-size:.74rem;line-height:1.52}
+.cardLink{font-size:.71rem}
+.badgeActive,.badgePlanned{font-size:.60rem}
+
+.moduleStripCopy small{font-size:.60rem}
+.moduleStripCopy strong{font-size:.80rem}
+.moduleStripMeta span{font-size:.64rem}
+.capacityHeader span{font-size:.63rem}
+.capacityIndex{font-size:.59rem}
+.capacityName{font-size:.74rem}
+.capacityMeta{font-size:.62rem;line-height:1.4}
+
+.commandHeroKicker{font-size:.60rem}
+.commandHeroSide span{font-size:.59rem}
+.commandHeroSide strong{font-size:.78rem}
+.commandHeroSide small{font-size:.69rem}
+.commandStatusBar strong,.commandStatusBar span{font-size:.64rem}
+.commandKpis small{font-size:.63rem}
+.commandKpis span{font-size:.64rem;line-height:1.45}
+.commandSectionHead span{font-size:.60rem}
+.commandSectionHead p{font-size:.74rem;line-height:1.55}
+.commandGameTop em{font-size:.60rem}
+.commandGameCard h3{font-size:.98rem}
+.commandGameMetrics small{font-size:.58rem}
+.commandGameMetrics strong{font-size:.78rem}
+.commandGameMetrics span{font-size:.59rem;line-height:1.4}
+.commandEmptyFleet>span{font-size:.60rem}
+.commandEmptyFleet h3{font-size:1rem}
+.commandEmptyFleet p{font-size:.72rem}
+.commandAlertGrid span{font-size:.60rem}
+.commandAlertGrid h3{font-size:.86rem}
+.commandAlertGrid p{font-size:.70rem;line-height:1.5}
+.commandPulseGrid span{font-size:.58rem}
+.commandPulseGrid small{font-size:.62rem;line-height:1.45}
+.commandFooterNote strong{font-size:.76rem}
+.commandFooterNote span{font-size:.70rem;line-height:1.48}
+.commandFooterNote a{font-size:.68rem}
+.commandQuickGrid a>span{font-size:.55rem}
+.commandQuickGrid small{font-size:.58rem}
+.commandQuickGrid strong{font-size:.73rem}
+
+.commandNav strong{font-size:.70rem}
+.commandNav small{font-size:.59rem}
+.navAreasLabel{font-size:.57rem}
+.navSubmenu summary{font-size:.60rem}
+.navSubmenu summary i{font-size:.53rem}
+.nav a{font-size:.79rem}
+.publicSite{font-size:.72rem}
+.publicSiteSecondary{font-size:.70rem}
+.identity small{font-size:.67rem}
+.reportKicker{font-size:.59rem!important}
+
+@media(max-width:900px){
+  .topbar h1{font-size:clamp(1.8rem,6vw,2.35rem)}
+  .commandHero h1{font-size:clamp(1.85rem,6vw,2.45rem)}
+}
+@media(max-width:600px){
+  .formGrid label{font-size:.78rem}
+  .formGrid input,.formGrid select,.formGrid textarea{font-size:16px;min-height:44px}
+  .formButton{font-size:.86rem}
+  .commandNav strong{font-size:.74rem}
+  .commandNav small{font-size:.63rem}
+  .navAreasLabel{font-size:.60rem}
+  .navSubmenu summary{font-size:.64rem}
+}
