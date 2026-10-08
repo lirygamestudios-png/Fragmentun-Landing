@@ -131,6 +131,10 @@ async function useLatestPassedValidation(formData:FormData){
 
   if(!latest) throw new Error("no_validation_available");
   if(latest.status!=="passed") throw new Error("latest_validation_not_passed");
+  const currentDeployment=process.env.VERCEL_DEPLOYMENT_ID||null;
+  const currentCommit=process.env.VERCEL_GIT_COMMIT_SHA||null;
+  if(currentDeployment&&latest.deployment_id&&latest.deployment_id!==currentDeployment) throw new Error("release_deployment_mismatch");
+  if(currentCommit&&latest.commit_sha&&latest.commit_sha!==currentCommit) throw new Error("release_commit_mismatch");
 
   const evidence=`Prueba autenticada ${latest.run_code}: todas las comprobaciones registradas como correctas. Versión ${latest.deployment_id||"—"} · código ${latest.commit_sha||"—"}.`;
 
@@ -183,6 +187,10 @@ async function updateGate(formData:FormData){
     const runtimeCheck=(checks||[]).find((c:any)=>c.check_code==="runtime-smoke");
     if(!runtimeCheck||runtimeCheck.status!=="passed") throw new Error("runtime_validation_required");
     if(!latestValidation||latestValidation.status!=="passed") throw new Error("latest_validation_not_passed");
+    const currentDeployment=process.env.VERCEL_DEPLOYMENT_ID||null;
+    const currentCommit=process.env.VERCEL_GIT_COMMIT_SHA||null;
+    if(currentDeployment&&latestValidation.deployment_id&&latestValidation.deployment_id!==currentDeployment) throw new Error("release_deployment_mismatch");
+    if(currentCommit&&latestValidation.commit_sha&&latestValidation.commit_sha!==currentCommit) throw new Error("release_commit_mismatch");
     if(latestValidation.deployment_id&&gate?.target_deployment_id&&latestValidation.deployment_id!==gate.target_deployment_id) throw new Error("release_deployment_mismatch");
     if(latestValidation.commit_sha&&gate?.target_commit&&latestValidation.commit_sha!==gate.target_commit) throw new Error("release_commit_mismatch");
   }
