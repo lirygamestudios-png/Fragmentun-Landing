@@ -25,14 +25,21 @@ export function AdminCharacters(){
   const[creating,setCreating]=useState(false);
   const[draft,setDraft]=useState<Character>(empty);
   const[msg,setMsg]=useState("");
+  const[loadError,setLoadError]=useState(false);
   const[media,setMedia]=useState<MediaAsset[]>([]);
 
   async function load(){
-    const[rChars,rMedia]=await Promise.all([fetch("/api/admin/characters"),fetch("/api/admin/media")]);
-    const[jChars,jMedia]=await Promise.all([rChars.json(),rMedia.json()]);
-    setItems(jChars.data||[]);
-    setMedia(jMedia.data||[]);
-    setSelected(0);
+    try{
+      const[rChars,rMedia]=await Promise.all([fetch("/api/admin/characters"),fetch("/api/admin/media")]);
+      const[jChars,jMedia]=await Promise.all([rChars.json().catch(()=>({})),rMedia.json().catch(()=>({}))]);
+      if(!rChars.ok||!rMedia.ok)throw new Error("load_failed");
+      setItems(jChars.data||[]);
+      setMedia(jMedia.data||[]);
+      setSelected(0);
+      setLoadError(false);
+    }catch{
+      setLoadError(true);
+    }
   }
 
   useEffect(()=>{load()},[]);
@@ -47,22 +54,28 @@ export function AdminCharacters(){
   async function save(){
     if(!current)return;
     setMsg("Guardando…");
-    const r=await fetch("/api/admin/characters",{
-      method:creating?"POST":"PUT",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(current)
-    });
-    const j=await r.json();
-    if(!r.ok){setMsg(j.error||"Error al guardar");return;}
-    setMsg("GUARDADO SATISFACTORIAMENTE");
-    setCreating(false);
-    setDraft(empty);
-    await load();
+    try{
+      const r=await fetch("/api/admin/characters",{
+        method:creating?"POST":"PUT",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(current)
+      });
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok){setMsg(j.error||"No fue posible guardar el personaje.");return;}
+      setMsg("GUARDADO SATISFACTORIAMENTE");
+      setCreating(false);
+      setDraft(empty);
+      await load();
+    }catch{
+      setMsg("No fue posible guardar el personaje. Revisa la conexión e inténtalo nuevamente.");
+    }
   }
+
+  if(loadError)return <section className="card"><p className="adminSaveFeedback error">No fue posible cargar los personajes.</p><button type="button" className="btn btnGhost" onClick={()=>window.location.reload()}>Reintentar</button></section>;
 
   return <div className="adminEditorGrid">
     <aside className="adminList">
-      <button className={creating?"active":""} onClick={()=>{setCreating(true);setDraft(empty)}}>
+      <button className={creating?"active":""} onClick={()=>{setCreating(true);setDraft(empty);setMsg("Nuevo personaje preparado. Completa sus datos y pulsa Guardar personaje.");}}>
         + Nuevo personaje
       </button>
       {items.map((c,i)=><button key={c.id} className={!creating&&selected===i?"active":""} onClick={()=>{setCreating(false);setSelected(i)}}>
