@@ -220,8 +220,8 @@ export default async function CommunityPage(){
     <section className={styles.kpis}>
       <article><small>Contactos comerciales</small><strong>{(crmContacts||0).toLocaleString()}</strong><span>Seguimiento comercial separado</span></article>
       <article><small>Compartidos</small><strong>{(shareClicks||0).toLocaleString()}</strong><span>Analítica existente</span></article>
-      <article><small>Acceso a datos</small><strong>PROTEGIDO</strong><span>Administración y marketing</span></article>
-      <article><small>LiryBoost</small><strong>BASE LISTA</strong><span>Ranking preparado para conexión</span></article>
+      <article><small>Acceso a datos</small><strong className={styles.kpiCompactValue}>PROTEGIDO</strong><span>Administración y marketing</span></article>
+      <article><small>LiryBoost</small><strong className={styles.kpiCompactValue}>BASE LISTA</strong><span>Ranking preparado para conexión</span></article>
     </section>
   </main>;
 }
