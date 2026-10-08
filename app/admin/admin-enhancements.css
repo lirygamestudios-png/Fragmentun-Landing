@@ -552,3 +552,51 @@
   border-color:rgba(255,92,92,.44);
   color:#ffadad;
 }
+
+
+/* UX LIRYGAMES · Bloque 7: scroll y navegación horizontal FRAGMENTUN */
+.adminInteriorNav,
+.adminTableWrap,
+.adminReportTableWrap,
+.adminLiveFeed,
+.adminMediaModal{
+  scrollbar-width:thin;
+  scrollbar-color:rgba(74,144,217,.45) rgba(255,255,255,.035);
+}
+.adminInteriorNav::-webkit-scrollbar,
+.adminTableWrap::-webkit-scrollbar,
+.adminReportTableWrap::-webkit-scrollbar,
+.adminLiveFeed::-webkit-scrollbar,
+.adminMediaModal::-webkit-scrollbar{
+  width:8px;
+  height:8px;
+}
+.adminInteriorNav::-webkit-scrollbar-track,
+.adminTableWrap::-webkit-scrollbar-track,
+.adminReportTableWrap::-webkit-scrollbar-track,
+.adminLiveFeed::-webkit-scrollbar-track,
+.adminMediaModal::-webkit-scrollbar-track{
+  background:rgba(255,255,255,.025);
+  border-radius:999px;
+}
+.adminInteriorNav::-webkit-scrollbar-thumb,
+.adminTableWrap::-webkit-scrollbar-thumb,
+.adminReportTableWrap::-webkit-scrollbar-thumb,
+.adminLiveFeed::-webkit-scrollbar-thumb,
+.adminMediaModal::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,rgba(74,144,217,.55),rgba(49,95,148,.52));
+  border-radius:999px;
+  border:2px solid rgba(6,15,26,.88);
+}
+.adminInteriorNav::-webkit-scrollbar-thumb:hover,
+.adminTableWrap::-webkit-scrollbar-thumb:hover,
+.adminReportTableWrap::-webkit-scrollbar-thumb:hover,
+.adminLiveFeed::-webkit-scrollbar-thumb:hover,
+.adminMediaModal::-webkit-scrollbar-thumb:hover{
+  background:linear-gradient(180deg,rgba(98,169,235,.72),rgba(74,144,217,.66));
+}
+.adminInteriorNav{
+  scroll-behavior:smooth;
+  scroll-snap-type:x proximity;
+}
+.adminInteriorNav a{scroll-snap-align:center}
