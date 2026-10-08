@@ -45,9 +45,17 @@ export default function ResetPasswordPage(){
       }
 
       setStatusType("error");
-      setStatus(j.error==="unauthorized"
-        ?"El enlace de recuperación expiró o la sesión ya no es válida."
-        :"No fue posible actualizar la contraseña.");
+      setStatus(
+        j.error==="unauthorized"
+          ?"El enlace de recuperación expiró o la sesión ya no es válida."
+          :j.error==="too_many_attempts"
+            ?"Se alcanzó el límite temporal de intentos. Inténtalo nuevamente más tarde."
+            :j.error==="weak_password"
+              ?"La nueva contraseña no cumple los requisitos de seguridad."
+              :j.error==="payload_too_large"
+                ?"La solicitud no pudo procesarse. Revisa los datos e inténtalo nuevamente."
+                :"No fue posible actualizar la contraseña."
+      );
     }catch{
       setStatusType("error");
       setStatus("No fue posible conectar con el servicio. Revisa tu conexión e inténtalo nuevamente.");
