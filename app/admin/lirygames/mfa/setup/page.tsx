@@ -19,7 +19,7 @@ export default function LiryGamesMfaSetupPage(){
       if(r.status===401){router.replace("/admin/lirygames/login");return;}
       if(!r.ok){setMessageType("error");setMessage("No fue posible comprobar la verificación en dos pasos.");return;}
       const totp=j.factors?.totp||[];
-      const verified=totp.find((f:any)=>f.status==="verified"&&String(f.friendly_name||"").trim().toLowerCase()==="lirygames admin");
+      const verified=totp.find((f:any)=>f.status==="verified"&&String(f.friendly_name||"").trim().toLowerCase()==="lirygames commander");
       if(verified){window.location.assign("/admin/lirygames/mfa");return;}
     })();
   },[router]);
@@ -30,7 +30,7 @@ export default function LiryGamesMfaSetupPage(){
       const r=await fetch("/api/admin/mfa",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({action:"enroll",friendlyName:"LIRYGAMES Admin"})
+        body:JSON.stringify({action:"enroll",friendlyName:"LIRYGAMES Commander"})
       });
       const j=await r.json().catch(()=>({}));
       if(!r.ok){setMessageType("error");setMessage(j.detail||"No fue posible iniciar la verificación en dos pasos.");return;}
@@ -52,7 +52,7 @@ export default function LiryGamesMfaSetupPage(){
       const r=await fetch("/api/admin/mfa",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({action:"verify",factorId,code})
+        body:JSON.stringify({factorId,code})
       });
       const j=await r.json().catch(()=>({}));
       if(!r.ok||!j.ok){setMessageType("error");setMessage("El código es incorrecto o ya venció.");return;}
