@@ -235,7 +235,7 @@ export default async function MasterSecurityPage(){
           <label className={styles.span2}>Causa raíz<textarea name="root_cause" rows={3}/></label>
           <label className={styles.span2}>Remediación<textarea name="remediation" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!incidentRows.length}>Actualizar incidente</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!incidentRows.length} disabledReason="No hay incidentes registrados para actualizar.">Actualizar incidente</MasterSubmitButton>
       </form>
 
       <form action={updateAccessRevisión} className={styles.adminForm}>
@@ -248,7 +248,7 @@ export default async function MasterSecurityPage(){
           <label>Fecha límite<input type="date" name="due_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!reviewRows.length}>Actualizar revisión</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!reviewRows.length} disabledReason="No hay revisiones de acceso registradas para actualizar.">Actualizar revisión</MasterSubmitButton>
       </form>
       </section>
     </details>
