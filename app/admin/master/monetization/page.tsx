@@ -125,10 +125,13 @@ export default async function MasterMonetizationPage(){
   const entitlementRows=(entitlements||[]) as any[];
   const engagementRows=(engagement||[]) as any[];
   const paidGamePurchases=purchaseRows.filter(p=>p.status==="paid");
-  const inGameGross=paidGamePurchases.reduce((a,p)=>a+Number(p.gross_cents||0),0);
-  const inGameNet=paidGamePurchases.reduce((a,p)=>a+Number(p.net_cents??(Number(p.gross_cents||0)-Number(p.fee_cents||0)-Number(p.tax_cents||0))),0);
+  // Los importes de distintas monedas no se suman ni se convierten implícitamente.
   const inGameCurrency=paidGamePurchases[0]?.currency||virtualOfferRows[0]?.currency||"USD";
-  const payingPlayers=new Set(paidGamePurchases.map(p=>p.player_ref).filter(Boolean));
+  const paidPurchasesInCurrency=paidGamePurchases.filter(p=>p.currency===inGameCurrency);
+  const multipleGameCurrencies=new Set(paidGamePurchases.map(p=>p.currency).filter(Boolean)).size>1;
+  const inGameGross=paidPurchasesInCurrency.reduce((a,p)=>a+Number(p.gross_cents||0),0);
+  const inGameNet=paidPurchasesInCurrency.reduce((a,p)=>a+Number(p.net_cents??(Number(p.gross_cents||0)-Number(p.fee_cents||0)-Number(p.tax_cents||0))),0);
+  const payingPlayers=new Set(paidPurchasesInCurrency.map(p=>p.player_ref).filter(Boolean));
   const arppu=payingPlayers.size?Math.round(inGameGross/payingPlayers.size):0;
   const latestMetricDate=engagementRows[0]?.metric_date||null;
   const latestActivePlayers=latestMetricDate?engagementRows.filter(r=>r.metric_date===latestMetricDate).reduce((a,r)=>a+Number(r.active_players||0),0):0;
@@ -167,8 +170,8 @@ export default async function MasterMonetizationPage(){
 
     <section className={styles.kpis}>
       <article><small>Artículos virtuales activos</small><strong>{virtualItemRows.filter(i=>i.active).length}</strong><span>{virtualOfferRows.filter(o=>o.active).length} ofertas activas</span></article>
-      <article><small>Ingresos in-game brutos</small><strong className={styles.kpiLongValue}>{money(inGameGross,inGameCurrency)}</strong><span>{paidGamePurchases.length} compras pagadas</span></article>
-      <article><small>Ingresos in-game netos</small><strong className={styles.kpiLongValue}>{money(inGameNet,inGameCurrency)}</strong><span>Después de comisiones e impuestos registrados</span></article>
+      <article><small>Ingresos in-game brutos</small><strong className={styles.kpiLongValue}>{money(inGameGross,inGameCurrency)}</strong><span>{paidPurchasesInCurrency.length} compras pagadas · {inGameCurrency}{multipleGameCurrencies?" · Existen otras monedas":""} · Últimas 2,000 compras consultadas</span></article>
+      <article><small>Ingresos in-game netos</small><strong className={styles.kpiLongValue}>{money(inGameNet,inGameCurrency)}</strong><span>Después de comisiones e impuestos registrados · {inGameCurrency}{multipleGameCurrencies?" · Otras monedas excluidas":""}</span></article>
       <article><small>Jugadores pagadores</small><strong>{payingPlayers.size}</strong><span>ARPPU {money(arppu,inGameCurrency)}</span></article>
       <article><small>Conversión diaria</small><strong>{payerConversion.toFixed(2)}%</strong><span>{latestMetricDate?latestPayers+" de "+latestActivePlayers+" jugadores activos":"Sin telemetría diaria"}</span></article>
       <article className={pendingEntitlements.length?styles.kpiAttention:undefined}><small>Entregas digitales pendientes</small><strong>{pendingEntitlements.length}</strong><span>{pendingEntitlements.length?"Requieren revisión":"Sin incidencias de entrega"}</span></article>
