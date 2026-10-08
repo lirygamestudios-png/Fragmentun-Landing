@@ -57,9 +57,9 @@ export default async function MaintenancePage(){
 
     <section className={styles.kpis}>
       <article><small>Acciones registradas</small><strong>{(auditCount||0).toLocaleString()}</strong><span>Historial administrativo</span></article>
-      <article><small>Última prueba</small><strong>{lastValidation?.status==="passed"?"CORRECTA":lastValidation?.status==="failed"?"REVISAR":"—"}</strong><span>{lastValidation?.executed_at?new Date(lastValidation.executed_at).toLocaleString("es-US"):"Sin pruebas"}</span></article>
-      <article><small>Último incidente</small><strong>{statusLabel(lastIncident?.status)}</strong><span>{lastIncident?.severity?riskLabel(lastIncident.severity):"Sin incidentes registrados"}</span></article>
-      <article><small>Último cambio técnico</small><strong>{statusLabel(lastChange?.status)}</strong><span>{lastChange?.risk_level?riskLabel(lastChange.risk_level):"Sin cambios registrados"}</span></article>
+      <article className={lastValidation?.status==="failed"?styles.kpiAttention:undefined}><small>Última prueba</small><strong>{lastValidation?.status==="passed"?"CORRECTA":lastValidation?.status==="failed"?"REVISAR":"—"}</strong><span>{lastValidation?.executed_at?new Date(lastValidation.executed_at).toLocaleString("es-US"):"Sin pruebas"}</span></article>
+      <article className={lastIncident&&!["resolved","closed"].includes(lastIncident.status)&&["high","critical"].includes(lastIncident.severity)?styles.kpiAttention:undefined}><small>Último incidente</small><strong>{statusLabel(lastIncident?.status)}</strong><span>{lastIncident?.severity?riskLabel(lastIncident.severity):"Sin incidentes registrados"}</span></article>
+      <article className={lastChange&&["high","critical"].includes(lastChange.risk_level)&&!["completed","canceled","rolled_back"].includes(lastChange.status)?styles.kpiAttention:undefined}><small>Último cambio técnico</small><strong>{statusLabel(lastChange?.status)}</strong><span>{lastChange?.risk_level?riskLabel(lastChange.risk_level):"Sin cambios registrados"}</span></article>
     </section>
 
     <section className={styles.sectionHead}>
@@ -80,25 +80,25 @@ export default async function MaintenancePage(){
         <p>Revisar correo, publicidad y actividad de servicios externos.</p>
         <span className={styles.cardLink}>Abrir →</span>
       </a>
-      <a className={styles.card} href="/admin/master/observability">
+      <a className={`${styles.card} ${lastValidation?.status==="failed"?styles.cardAttention:styles.cardPriority}`} href="/admin/master/observability">
         <div className={styles.cardTop}><span className={styles.badgeActive}>DISPONIBLE</span><em>PRUEBAS</em></div>
         <h3>Estado y Pruebas</h3>
         <p>Ejecutar comprobaciones de la versión de prueba y consultar resultados históricos.</p>
         <span className={styles.cardLink}>Abrir →</span>
       </a>
-      <a className={styles.card} href="/admin/master/releases">
+      <a className={`${styles.card} ${styles.cardDecision}`} href="/admin/master/releases">
         <div className={styles.cardTop}><span className={styles.badgePlanned}>CONTROL</span><em>PUBLICACIÓN</em></div>
         <h3>Revisión antes de publicar</h3>
         <p>Ver evidencia, bloqueos y aprobación humana antes de cualquier publicación.</p>
         <span className={styles.cardLink}>Abrir →</span>
       </a>
-      <a className={styles.card} href="/admin/master/security">
+      <a className={`${styles.card} ${lastIncident&&!["resolved","closed"].includes(lastIncident.status)&&["high","critical"].includes(lastIncident.severity)?styles.cardAttention:""}`} href="/admin/master/security">
         <div className={styles.cardTop}><span className={styles.badgeActive}>DISPONIBLE</span><em>SEGURIDAD</em></div>
         <h3>Seguridad</h3>
         <p>Revisar accesos, incidentes y continuidad.</p>
         <span className={styles.cardLink}>Abrir →</span>
       </a>
-      <a className={styles.card} href="/admin/master/technology">
+      <a className={`${styles.card} ${lastChange&&["high","critical"].includes(lastChange.risk_level)&&!["completed","canceled","rolled_back"].includes(lastChange.status)?styles.cardWarning:""}`} href="/admin/master/technology">
         <div className={styles.cardTop}><span className={styles.badgeActive}>DISPONIBLE</span><em>CAMBIOS</em></div>
         <h3>Tecnología</h3>
         <p>Consultar infraestructura, cambios técnicos, pruebas y riesgos.</p>
@@ -110,7 +110,7 @@ export default async function MaintenancePage(){
         <p>Consultar acciones administrativas y trazabilidad.</p>
         <span className={styles.cardLink}>Abrir →</span>
       </a>
-      <a className={styles.card} href="/admin/master/checklist">
+      <a className={`${styles.card} ${styles.cardDecision}`} href="/admin/master/checklist">
         <div className={styles.cardTop}><span className={styles.badgePlanned}>REVISIÓN</span><em>PANTALLAS</em></div>
         <h3>Revisión visual</h3>
         <p>Recorrer todas las pantallas del Master Admin antes de las pruebas finales.</p>
