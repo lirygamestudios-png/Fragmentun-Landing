@@ -14,13 +14,23 @@ export default async function QaFinalPage(){
     {data:latestGate},
     {count:openIncidents},
     {count:pendingApprovals},
-    {count:failedChecks}
+    {count:failedChecks},
+    {count:virtualItems},
+    {count:virtualOffers},
+    {data:latestGamePurchase},
+    {data:latestGameMetric},
+    {data:gameEntitlements}
   ]=await Promise.all([
     supabase.from("runtime_validation_runs").select("status,executed_at,run_code,deployment_id,commit_sha").order("executed_at",{ascending:false}).limit(1).maybeSingle(),
     supabase.from("release_gates").select("status,gate_code,created_at,target_deployment_id,target_commit").order("created_at",{ascending:false}).limit(1).maybeSingle(),
     supabase.from("security_incidents").select("*",{count:"exact",head:true}).not("status","in","(resolved,closed)"),
     supabase.from("automation_approvals").select("*",{count:"exact",head:true}).eq("status","pending"),
-    supabase.from("release_gate_checks").select("*",{count:"exact",head:true}).eq("status","failed").eq("blocking",true)
+    supabase.from("release_gate_checks").select("*",{count:"exact",head:true}).eq("status","failed").eq("blocking",true),
+    supabase.from("game_virtual_items").select("*",{count:"exact",head:true}).eq("active",true),
+    supabase.from("game_virtual_item_offers").select("*",{count:"exact",head:true}).eq("active",true),
+    supabase.from("game_purchase_events").select("status,purchased_at").order("purchased_at",{ascending:false}).limit(1).maybeSingle(),
+    supabase.from("game_engagement_daily").select("metric_date,updated_at").order("updated_at",{ascending:false}).limit(1).maybeSingle(),
+    supabase.from("game_entitlements").select("status").limit(5000)
   ]);
 
   const validationOk=latestValidation?.status==="passed";
