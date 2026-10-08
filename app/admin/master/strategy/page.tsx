@@ -142,7 +142,9 @@ export default async function MasterStrategyPage(){
     {count:testCompletes},
     {count:campaigns},
     {count:paidOrders},
-    {data:owners}
+    {data:owners},
+    {data:gameMetrics},
+    {data:gamePurchases}
   ]=await Promise.all([
     supabase.from("strategy_objectives").select("id,code,title,description,horizon,status,priority,owner_user_id,start_date,target_date,progress_percent,notes,created_at").order("priority",{ascending:false}),
     supabase.from("strategy_key_results").select("id,objective_id,title,metric_name,unit,baseline,target_value,current_value,status,owner_user_id,target_date,notes,created_at").order("created_at",{ascending:true}),
@@ -152,7 +154,9 @@ export default async function MasterStrategyPage(){
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","test_complete").gte("created_at",since30),
     supabase.from("campaigns").select("*",{count:"exact",head:true}).eq("active",true),
     supabase.from("shop_orders").select("*",{count:"exact",head:true}).eq("payment_status","paid"),
-    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true}),
+    supabase.from("game_engagement_daily").select("metric_date,active_players,new_players").order("metric_date",{ascending:false}).limit(1000),
+    supabase.from("game_purchase_events").select("player_ref,gross_cents,currency,status,purchased_at").order("purchased_at",{ascending:false}).limit(5000)
   ]);
 
   const objectiveRows=(objectives||[]) as any[];
