@@ -332,3 +332,40 @@
 @media(max-width:700px){
   .adminCampaignToast{top:72px;right:16px;left:16px;max-width:none}
 }
+
+
+/* UX LIRYGAMES · Bloque 1: navegación FRAGMENTUN */
+.adminInteriorBrand,
+.adminInteriorNav a,
+.adminInteriorSite{
+  transition:transform .16s ease,border-color .18s ease,background .18s ease,color .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+.adminInteriorBrand:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.05);
+}
+.adminInteriorNav a:hover{
+  transform:translateY(-2px);
+  color:#f7fbff;
+  border-color:rgba(74,144,217,.42);
+  background:rgba(74,144,217,.10);
+  box-shadow:0 8px 22px rgba(0,0,0,.22),0 0 18px rgba(74,144,217,.10);
+}
+.adminInteriorNav a:active,
+.adminInteriorSite:active,
+.adminInteriorBrand:active{
+  transform:translateY(0) scale(.985);
+}
+.adminInteriorNav a.active{
+  color:#fff;
+  border-color:rgba(74,144,217,.58);
+  background:linear-gradient(135deg,rgba(74,144,217,.17),rgba(201,168,76,.08));
+  box-shadow:0 8px 24px rgba(0,0,0,.22),0 0 20px rgba(74,144,217,.08);
+}
+.adminInteriorSite:hover{
+  transform:translateY(-2px);
+  border-color:rgba(74,144,217,.62);
+  background:rgba(74,144,217,.10);
+  color:#fff;
+  box-shadow:0 8px 22px rgba(0,0,0,.20),0 0 16px rgba(74,144,217,.09);
+}
