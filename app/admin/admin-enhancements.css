@@ -691,3 +691,27 @@
   from{opacity:0;transform:translateY(8px) scale(.99)}
   to{opacity:1;transform:translateY(0) scale(1)}
 }
+
+
+/* UX LIRYGAMES · Bloque 10: tarjetas clicables FRAGMENTUN */
+.adminCardLink,
+.approvedAdminKpiLink,
+.approvedMediaLink{
+  transition:transform .16s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+.adminCardLink:hover,
+.approvedAdminKpiLink:hover,
+.approvedMediaLink:hover{
+  transform:translateY(-3px);
+  filter:brightness(1.04);
+}
+.adminCardLink:active,
+.approvedAdminKpiLink:active,
+.approvedMediaLink:active{
+  transform:translateY(0) scale(.99);
+}
+.approvedAdminKpiLink:hover article,
+.adminCardLink:hover .card{
+  border-color:rgba(74,144,217,.36)!important;
+  box-shadow:0 14px 34px rgba(0,0,0,.22),0 0 18px rgba(74,144,217,.07)!important;
+}
