@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function validPercent(value:number){
   return Number.isInteger(value)&&value>=0&&value<=100;
@@ -222,7 +223,7 @@ export default async function MasterCapitalPage(){
     </section>
 
     <details className={styles.advancedPanel}><summary>Opciones avanzadas</summary><section className={styles.adminForms}>
-      <form action={createInvestor} className={styles.adminForm}>
+      <MasterActionForm action={createInvestor} className={styles.adminForm} successText="Inversionista registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO INVERSOR</span><h2>Registrar contacto</h2></div>
         <div className={styles.formGrid}>
           <label>Nombre<input name="name" required placeholder="Nombre"/></label>
@@ -239,9 +240,9 @@ export default async function MasterCapitalPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3} placeholder="Contexto interno"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar inversor</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={createOpportunity} className={styles.adminForm}>
+      <MasterActionForm action={createOpportunity} className={styles.adminForm} successText="Oportunidad registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA OPORTUNIDAD</span><h2>Registrar oportunidad de capital</h2></div>
         <div className={styles.formGrid}>
           <label>Inversor<select name="investor_id" defaultValue="">
@@ -261,11 +262,11 @@ export default async function MasterCapitalPage(){
           <label className={styles.span2}>Próxima acción<input name="next_action" placeholder="Enviar presentación / reunión / NDA / revisión"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar oportunidad</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
     </section>
 
     <section className={styles.adminForms}>
-      <form action={updateInvestor} className={styles.adminForm}>
+      <MasterActionForm action={updateInvestor} className={styles.adminForm} successText="Inversionista actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR INVERSOR</span><h2>Actualizar relación</h2></div>
         <div className={styles.formGrid}>
           <label>Inversor<select name="investor_id" required defaultValue=""><option value="" disabled>Seleccionar inversor</option>{investorRows.map((i:any)=><option key={i.id} value={i.id}>{i.name}</option>)}</select></label>
@@ -278,9 +279,9 @@ export default async function MasterCapitalPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!investorRows.length} disabledReason="No hay inversionistas registrados para actualizar.">Actualizar inversor</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={updateOpportunity} className={styles.adminForm}>
+      <MasterActionForm action={updateOpportunity} className={styles.adminForm} successText="Oportunidad actualizada correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR OPORTUNIDAD</span><h2>Actualizar oportunidad</h2></div>
         <div className={styles.formGrid}>
           <label>Oportunidad<select name="opportunity_id" required defaultValue=""><option value="" disabled>Seleccionar oportunidad</option>{opportunityRows.map((o:any)=><option key={o.id} value={o.id}>{o.name}</option>)}</select></label>
@@ -296,7 +297,7 @@ export default async function MasterCapitalPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!opportunityRows.length} disabledReason="No hay oportunidades de capital registradas para actualizar.">Actualizar oportunidad</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
     </section></details>
 
     <section className={styles.sectionHead}><div><span>EVIDENCIA COMERCIAL</span><h2>Ingresos observados</h2></div><p>Se muestra como evidencia comercial existente y permanece separado de la captación de capital.</p></section>
