@@ -16,6 +16,7 @@ export type MasterLiveSnapshot={
   generatedAt:string;
   timeZone:string;
   activeUsers:number;
+  gamePlayersToday:number;
   salesTodayCents:number;
   salesMonthCents:number;
   salesCurrency:string;
@@ -74,32 +75,51 @@ export async function getMasterLiveSnapshot(supabase:any):Promise<MasterLiveSnap
   const since5=new Date(now.getTime()-5*60*1000).toISOString();
   const todayStart=zonedStartIso(now,TIME_ZONE,false);
   const monthStart=zonedStartIso(now,TIME_ZONE,true);
+  const zp=zonedParts(now,TIME_ZONE);
+  const todayDate=`${zp.year}-${String(zp.month).padStart(2,"0")}-${String(zp.day).padStart(2,"0")}`;
 
   const[
     {data:games},
     {data:presence},
     {data:paidOrders},
-    {count:failedPaymentsToday},
+    {data:gamePurchases},
+    {data:engagementToday},
+    {count:failedWebPaymentsToday},
+    {count:failedGamePaymentsToday},
     {count:leadsToday}
   ]=await Promise.all([
     supabase.from("game_titles").select("id,slug,name,lifecycle_stage,health_status,metadata").order("created_at",{ascending:true}),
     supabase.from("analytics_events").select("session_id,metadata,created_at").eq("event_name","presence_ping").gte("created_at",since5).limit(5000),
     supabase.from("shop_orders").select("id,total_cents,currency,created_at,metadata").eq("payment_status","paid").gte("created_at",monthStart).limit(5000),
+    supabase.from("game_purchase_events").select("id,game_id,gross_cents,currency,status,purchased_at").eq("status","paid").gte("purchased_at",monthStart).limit(10000),
+    supabase.from("game_engagement_daily").select("game_id,active_players,platform").eq("metric_date",todayDate).limit(5000),
     supabase.from("shop_orders").select("*",{count:"exact",head:true}).eq("payment_status","failed").gte("created_at",todayStart),
+    supabase.from("game_purchase_events").select("*",{count:"exact",head:true}).in("status",["failed","chargeback"]).gte("purchased_at",todayStart),
     supabase.from("leads").select("*",{count:"exact",head:true}).gte("created_at",todayStart)
   ]);
 
   const gameRows=(games||[]) as any[];
   const presenceRows=(presence||[]) as any[];
   const paidRows=(paidOrders||[]) as any[];
+  const gamePurchaseRows=(gamePurchases||[]) as any[];
+  const engagementRows=(engagementToday||[]) as any[];
 
   const activeSessionIds=new Set(
     presenceRows.map(x=>String(x.session_id||"").trim()).filter(Boolean)
   );
   const todayPaid=paidRows.filter(x=>String(x.created_at||"")>=todayStart);
-  const salesTodayCents=todayPaid.reduce((sum,x)=>sum+Number(x.total_cents||0),0);
-  const salesMonthCents=paidRows.reduce((sum,x)=>sum+Number(x.total_cents||0),0);
-  const salesCurrency=currencySummary(paidRows);
+  const todayGamePurchases=gamePurchaseRows.filter(x=>String(x.purchased_at||"")>=todayStart);
+  const salesTodayCents=
+    todayPaid.reduce((sum,x)=>sum+Number(x.total_cents||0),0)+
+    todayGamePurchases.reduce((sum,x)=>sum+Number(x.gross_cents||0),0);
+  const salesMonthCents=
+    paidRows.reduce((sum,x)=>sum+Number(x.total_cents||0),0)+
+    gamePurchaseRows.reduce((sum,x)=>sum+Number(x.gross_cents||0),0);
+  const salesCurrency=currencySummary([
+    ...paidRows,
+    ...gamePurchaseRows.map(x=>({currency:x.currency}))
+  ]);
+  const gamePlayersToday=engagementRows.reduce((sum,x)=>sum+Number(x.active_players||0),0);
 
   const gameLookup=new Map<string,any>();
   for(const game of gameRows){
@@ -128,22 +148,47 @@ export async function getMasterLiveSnapshot(supabase:any):Promise<MasterLiveSnap
     ordersByGame.set(game.id,rows);
   }
 
+  const purchasesByGame=new Map<string,any[]>();
+  for(const purchase of gamePurchaseRows){
+    const rows=purchasesByGame.get(String(purchase.game_id))||[];
+    rows.push(purchase);
+    purchasesByGame.set(String(purchase.game_id),rows);
+  }
+
+  const engagementByGame=new Map<string,number>();
+  for(const metric of engagementRows){
+    engagementByGame.set(String(metric.game_id),(engagementByGame.get(String(metric.game_id))||0)+Number(metric.active_players||0));
+  }
+
   const gameMetrics:MasterGameLiveMetric[]=gameRows.slice(0,PORTFOLIO_CAPACITY).map(game=>{
     const gamePresence=sessionsByGame.get(game.id)||new Set<string>();
     const gameOrders=ordersByGame.get(game.id)||[];
-    const telemetryConnected=Boolean(game?.metadata?.telemetry_connected)||gamePresence.size>0;
-    const commerceConnected=Boolean(game?.metadata?.commerce_connected)||gameOrders.length>0;
+    const gamePurchases=purchasesByGame.get(game.id)||[];
+    const dailyPlayers=engagementByGame.get(game.id)||0;
+    const telemetryConnected=Boolean(game?.metadata?.telemetry_connected)||gamePresence.size>0||dailyPlayers>0;
+    const commerceConnected=Boolean(game?.metadata?.commerce_connected)||gameOrders.length>0||gamePurchases.length>0;
     const gameTodayOrders=gameOrders.filter(x=>String(x.created_at||"")>=todayStart);
+    const gameTodayPurchases=gamePurchases.filter(x=>String(x.purchased_at||"")>=todayStart);
+    const combinedCurrencies=[
+      ...gameOrders.map(x=>({currency:x.currency})),
+      ...gamePurchases.map(x=>({currency:x.currency}))
+    ];
     return{
       id:String(game.id),
       slug:String(game.slug),
       name:String(game.name),
       lifecycleStage:String(game.lifecycle_stage||"concept"),
       healthStatus:String(game.health_status||"green"),
-      activeUsers:telemetryConnected?gamePresence.size:null,
-      salesTodayCents:commerceConnected?gameTodayOrders.reduce((sum,x)=>sum+Number(x.total_cents||0),0):null,
-      salesMonthCents:commerceConnected?gameOrders.reduce((sum,x)=>sum+Number(x.total_cents||0),0):null,
-      currency:currencySummary(gameOrders),
+      activeUsers:telemetryConnected?Math.max(gamePresence.size,dailyPlayers):null,
+      salesTodayCents:commerceConnected?(
+        gameTodayOrders.reduce((sum,x)=>sum+Number(x.total_cents||0),0)+
+        gameTodayPurchases.reduce((sum,x)=>sum+Number(x.gross_cents||0),0)
+      ):null,
+      salesMonthCents:commerceConnected?(
+        gameOrders.reduce((sum,x)=>sum+Number(x.total_cents||0),0)+
+        gamePurchases.reduce((sum,x)=>sum+Number(x.gross_cents||0),0)
+      ):null,
+      currency:currencySummary(combinedCurrencies),
       telemetryConnected,
       commerceConnected
     };
@@ -153,12 +198,13 @@ export async function getMasterLiveSnapshot(supabase:any):Promise<MasterLiveSnap
     generatedAt:now.toISOString(),
     timeZone:TIME_ZONE,
     activeUsers:activeSessionIds.size,
+    gamePlayersToday,
     salesTodayCents,
     salesMonthCents,
     salesCurrency,
-    paidOrdersToday:todayPaid.length,
-    paidOrdersMonth:paidRows.length,
-    failedPaymentsToday:failedPaymentsToday||0,
+    paidOrdersToday:todayPaid.length+todayGamePurchases.length,
+    paidOrdersMonth:paidRows.length+gamePurchaseRows.length,
+    failedPaymentsToday:(failedWebPaymentsToday||0)+(failedGamePaymentsToday||0),
     leadsToday:leadsToday||0,
     activeGames:gameRows.length,
     portfolioCapacity:PORTFOLIO_CAPACITY,
