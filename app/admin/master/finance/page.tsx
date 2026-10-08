@@ -255,7 +255,7 @@ export default async function MasterFinancePage(){
           <label>Activa<select name="active" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!accountRows.length}>Actualizar cuenta</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!accountRows.length} disabledReason="No hay cuentas financieras registradas para actualizar.">Actualizar cuenta</MasterSubmitButton>
       </form>}
 
       <form action={updateFinanceTransaction} className={styles.adminForm}>
@@ -269,7 +269,7 @@ export default async function MasterFinancePage(){
           <label>Referencia externa opcional<input name="external_reference"/></label>
           <label className={styles.span2}>Descripción<input name="description"/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!txRows.length}>Actualizar movimiento</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!txRows.length} disabledReason="No hay movimientos financieros registrados para actualizar.">Actualizar movimiento</MasterSubmitButton>
       </form>
     </section></details>}
 
