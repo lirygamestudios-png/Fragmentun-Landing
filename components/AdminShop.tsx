@@ -15,6 +15,18 @@ const emptyProduct=():Product=>({name:"",url:"",image_url:"",price_label:"",mode
 function productMode(p:Product):ShopMode{return p.mode==="external"||p.mode==="internal"||p.mode==="interest"?p.mode:(p.external_url||p.url?"external":"interest")}
 function productReady(p:Product){if(!p.name?.trim())return false;const mode=productMode(p);return mode!=="external"||!!(p.external_url||p.url||"").trim()}
 
+function shopErrorMessage(code:string){
+  const map:Record<string,string>={
+    mfa_required:"Completa la verificación en dos pasos antes de guardar la tienda.",
+    forbidden:"Tu usuario no tiene permiso para modificar la tienda.",
+    invalid_request:"La solicitud de tienda no es válida.",
+    shop_es_incomplete:"La tienda en español necesita una URL global o al menos un producto válido.",
+    shop_en_incomplete:"La tienda en inglés necesita una URL global o al menos un producto válido.",
+    invalid_shop_product:"Revisa los productos de la tienda. Hay uno o más datos inválidos."
+  };
+  return map[code]||"No fue posible guardar la tienda.";
+}
+
 export function AdminShop(){
   const[es,setEs]=useState<LangContent|null>(null);
   const[en,setEn]=useState<LangContent|null>(null);
@@ -22,6 +34,7 @@ export function AdminShop(){
   const[statusEn,setStatusEn]=useState("published");
   const[media,setMedia]=useState<any[]>([]);
   const[msg,setMsg]=useState("");
+  const[msgType,setMsgType]=useState<"info"|"success"|"error">("info");
   const[saving,setSaving]=useState(false);
   const[loadError,setLoadError]=useState(false);
   const supabase=useMemo(()=>createSupabaseBrowserClient(),[]);
@@ -75,28 +88,28 @@ export function AdminShop(){
       banner_url:es.banner_url||"",
       campaign:es.campaign||"merch_launch"
     }));
-    setMsg("Configuración comercial sincronizada ES → EN.");
+    setMsgType("info");setMsg("Configuración comercial sincronizada ES → EN.");
   }
   async function save(){
     if(!es||!en)return;
     if(es.enabled&&!(es.shop_url||"").trim()&&!products("es").some(productReady)){
-      setMsg("Error: para activar la tienda ES debes indicar una URL global o configurar al menos un producto válido.");
+      setMsgType("error");setMsg("Para activar la tienda ES debes indicar una URL global o configurar al menos un producto válido.");
       return;
     }
     if(en.enabled&&!(en.shop_url||"").trim()&&!products("en").some(productReady)){
-      setMsg("Error: la tienda EN está activa pero no tiene URL global ni productos válidos.");
+      setMsgType("error");setMsg("La tienda EN está activa pero no tiene URL global ni productos válidos.");
       return;
     }
-    setSaving(true);setMsg("Guardando tienda…");
+    setSaving(true);setMsgType("info");setMsg("Guardando tienda…");
     try{
       const r=await fetch("/api/admin/content",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({
         content_key:"home.shop",es,en,status_es:statusEs,status_en:statusEn
       })});
       const j=await r.json().catch(()=>({}));
-      if(!r.ok){setMsg(j.error||"No fue posible guardar.");return}
-      setEs(j.data.es);setEn(j.data.en);setMsg("GUARDADO SATISFACTORIAMENTE");
+      if(!r.ok){setMsgType("error");setMsg(shopErrorMessage(String(j.error||"")));return}
+      setEs(j.data.es);setEn(j.data.en);setMsgType("success");setMsg("Tienda guardada correctamente.");
     }catch{
-      setMsg("No fue posible guardar. Revisa la conexión e inténtalo nuevamente.");
+      setMsgType("error");setMsg("No fue posible guardar. Revisa la conexión e inténtalo nuevamente.");
     }finally{
       setSaving(false);
     }
@@ -159,7 +172,7 @@ export function AdminShop(){
           <label><span>Estado editorial</span><select value={lang==="es"?statusEs:statusEn} onChange={e=>lang==="es"?setStatusEs(e.target.value):setStatusEn(e.target.value)}><option value="draft">Borrador</option><option value="review">Revisión</option><option value="published">Publicado</option></select></label>
 
           <div className="adminShopProducts">
-            <div className="adminPanelHeader"><div><div className="kicker">PRODUCTOS HÍBRIDOS</div><h3>Productos</h3></div><button type="button" className="btn btnGhost" onClick={()=>{update(lang,"featured_products",[...products(lang),emptyProduct()]);setMsg("Nuevo producto añadido. Completa sus datos y guarda la tienda.");}}>+ Añadir producto</button></div>
+            <div className="adminPanelHeader"><div><div className="kicker">PRODUCTOS HÍBRIDOS</div><h3>Productos</h3></div><button type="button" className="btn btnGhost" onClick={()=>{update(lang,"featured_products",[...products(lang),emptyProduct()]);setMsgType("info");setMsg("Nuevo producto añadido. Completa sus datos y guarda la tienda.");}}>+ Añadir producto</button></div>
             {products(lang).length===0?<p className="note">No hay productos destacados todavía.</p>:products(lang).map((p,i)=><div className="adminShopProductEditor" key={i}>
               <label><span>Nombre</span><input value={p.name||""} onChange={e=>setProduct(lang,i,"name",e.target.value)}/></label>
               <div className="adminSaleMode wide">
@@ -208,7 +221,7 @@ export function AdminShop(){
               </>}
               {productMode(p)==="interest"&&<label className="wide"><span>CTA de interés</span><input value={p.interest_cta||""} onChange={e=>setProduct(lang,i,"interest_cta",e.target.value)} placeholder={lang==="es"?"Quiero recibir novedades":"Notify me about this product"}/></label>}
               <label><span>Imagen</span><select value={p.image_url||""} onChange={e=>setProduct(lang,i,"image_url",e.target.value)}><option value="">— Sin imagen —</option>{media.map(m=><option key={m.id} value={mediaUrl(m)}>{m.slug}</option>)}</select></label>
-              <button type="button" className="adminShopRemove" onClick={()=>{removeProduct(lang,i);setMsg("Producto retirado de la edición. Guarda la tienda para confirmar el cambio.");}}>Eliminar</button>
+              <button type="button" className="adminShopRemove" onClick={()=>{removeProduct(lang,i);setMsgType("info");setMsg("Producto retirado de la edición. Guarda la tienda para confirmar el cambio.");}}>Eliminar</button>
             </div>)}
           </div>
         </article>
@@ -247,8 +260,8 @@ export function AdminShop(){
     </section>
 
     <section className="card adminShopSave">
-      <div><strong>{active?"La tienda aparecerá en el menú y en el FrontDesk.":"La tienda permanecerá oculta hasta activarla y configurar al menos una URL o producto válido."}</strong><span className={msg==="GUARDADO SATISFACTORIAMENTE"?"adminSaveFeedback success":(msg&&(msg.toLowerCase().includes("error")||msg.toLowerCase().includes("no fue")||msg.toLowerCase().includes("no se")||msg.toLowerCase().includes("inválid")||msg.toLowerCase().includes("obligatorio")||msg.toLowerCase().includes("falta"))?"adminSaveFeedback error":"adminSaveFeedback")}>{msg}</span></div>
-      <button className="btn btnPrimary" type="button" onClick={save} disabled={saving}>{saving?"Guardando…":"Guardar Tienda"}</button>
+      <div><strong>{active?"La tienda aparecerá en el menú y en el FrontDesk.":"La tienda permanecerá oculta hasta activarla y configurar al menos una URL o producto válido."}</strong><span role={msgType==="error"?"alert":"status"} aria-live="polite" className={`adminSaveFeedback ${msgType==="success"?"success":msgType==="error"?"error":""}`}>{msg}</span></div>
+      <button className="btn btnPrimary" type="button" onClick={save} disabled={saving} aria-busy={saving}>{saving?"Guardando…":"Guardar Tienda"}</button>
     </section>
   </div>;
 }
