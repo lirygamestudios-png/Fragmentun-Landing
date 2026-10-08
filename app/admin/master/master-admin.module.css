@@ -222,6 +222,9 @@
 .moduleSecurity{--module-accent:#ff668a;--module-accent-rgb:255,102,138}
 .moduleLegal{--module-accent:#9c5cff;--module-accent-rgb:156,92,255}
 .moduleIntegrations{--module-accent:#4fd8ff;--module-accent-rgb:79,216,255}
+.moduleBackups{--module-accent:#4fd8ff;--module-accent-rgb:79,216,255}
+.moduleMaintenance{--module-accent:#9c5cff;--module-accent-rgb:156,92,255}
+.moduleReleases{--module-accent:#5ce69a;--module-accent-rgb:92,230,154}
 
 .modulePage .topbar{
   border-color:rgba(var(--module-accent-rgb),.28);
