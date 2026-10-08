@@ -1060,3 +1060,21 @@
 .moduleSecurity .cardMuted{
   opacity:.66;
 }
+
+
+/* Legal, Integraciones y Auditoría */
+.moduleLegal .cardPriority .cardTop em,
+.moduleAudit .cardPriority .cardTop em{
+  color:#8ce9ff!important;
+}
+.moduleLegal .cardAttention .cardTop em,
+.moduleIntegrations .cardAttention .cardTop em,
+.moduleAudit .cardAttention .cardTop em{
+  color:#ff91aa!important;
+}
+.moduleLegal .cardWarning .cardTop em{
+  color:#ffc85e!important;
+}
+.moduleLegal .cardMuted{
+  opacity:.66;
+}
