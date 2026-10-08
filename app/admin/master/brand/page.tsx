@@ -15,7 +15,7 @@ function campaignEstadoLabel(value:string){
 }
 
 function campaignTypeLabel(value:string){
-  const map:Record<string,string>={brand:"MARCA",pr:"PRENSA",launch:"LANZAMIENTO",community:"COMUNIDAD",investor:"INVERSIONISTAS",reputation:"REPUTACIÓN",crisis:"CRISIS",content:"CONTENIDO",other:"OTRO"};
+  const map:Record<string,string>={brand:"MARCA",pr:"PRENSA Y RELACIONES PÚBLICAS",launch:"LANZAMIENTO",community:"COMUNIDAD",investor:"INVERSIONISTAS",reputation:"REPUTACIÓN",crisis:"CRISIS",content:"CONTENIDO",other:"OTRO"};
   return map[value]||String(value||"").toUpperCase();
 }
 
@@ -148,13 +148,13 @@ export default async function MasterBrandPage(){
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · MARCA Y COMUNICACIONES</span><h1>Marca y Comunicaciones</h1><p>Narrativa corporativa y campañas de comunicación persistentes, separadas del contenido operativo de cada IP.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
       <article><small>Narrativas activas</small><strong>{activeNarratives}</strong><span>{narrativeRows.length} registradas</span></article>
       <article><small>Campañas comunicación</small><strong>{activeComms}</strong><span>{commRows.length} registradas</span></article>
-      <article><small>Contenido localizado</small><strong>{(content||0).toLocaleString()}</strong><span>ES/EN operativo</span></article>
+      <article><small>Contenido localizado</small><strong>{(content||0).toLocaleString()}</strong><span>Español e inglés</span></article>
       <article><small>Multimedia</small><strong>{(media||0).toLocaleString()}</strong><span>Activos existentes</span></article>
     </section>
 
@@ -198,11 +198,11 @@ export default async function MasterBrandPage(){
         <div className={styles.formGrid}>
           <label>Nombre<input name="name" required/></label>
           <label>Tipo<select name="campaign_type" defaultValue="brand">
-            <option value="brand">Marca</option><option value="pr">PR</option><option value="launch">Lanzamiento</option><option value="community">Comunidad</option>
+            <option value="brand">Marca</option><option value="pr">Prensa y relaciones públicas</option><option value="launch">Lanzamiento</option><option value="community">Comunidad</option>
             <option value="investor">Inversionistas</option><option value="reputation">Reputación</option><option value="crisis">Crisis</option><option value="content">Contenido</option><option value="other">Otro</option>
           </select></label>
           <label>Audiencia<input name="audience"/></label>
-          <label>Canales<input name="channel_scope" placeholder="YouTube, Instagram, PR"/></label>
+          <label>Canales<input name="channel_scope" placeholder="YouTube, Instagram, prensa"/></label>
           <label className={styles.span2}>Objetivo<input name="objective"/></label>
           <label>Inicio<input type="date" name="start_date"/></label>
           <label>Fin<input type="date" name="end_date"/></label>
@@ -250,7 +250,7 @@ export default async function MasterBrandPage(){
       <article><small>Campañas de crecimiento</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Separadas de comunicación</span></article>
       <article><small>Reseñas</small><strong>{(reviews||0).toLocaleString()}</strong><span>Prueba social</span></article>
       <article><small>Compartidos</small><strong>{(shareClicks||0).toLocaleString()}</strong><span>Eventos acumulados</span></article>
-      <article><small>RLS</small><strong>ACTIVO</strong><span>Administración / edición / marketing</span></article>
+      <article><small>Acceso a datos</small><strong>PROTEGIDO</strong><span>Administración, edición y marketing</span></article>
     </section>
   </main>;
 }
