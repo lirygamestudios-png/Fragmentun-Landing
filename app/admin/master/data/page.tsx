@@ -143,11 +143,20 @@ export default async function MasterDataPage(){
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleData}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · DATOS</span><h1>Datos</h1><p>Fuentes, métricas y señales reales del ecosistema.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">DT</span>
+      <div className={styles.moduleStripCopy}><small>DATOS Y MÉTRICAS</small><strong>Fuentes, definiciones y señales</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Fuentes y eventos conectados</span>
+        <span>Edición protegida · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Fuentes activas</small><strong>{activeSources.length}</strong><span>{degradedSources.length} degradadas</span></article>
