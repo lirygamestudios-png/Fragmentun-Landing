@@ -160,7 +160,10 @@ export default async function MasterTechnologyPage(){
     {count:rateRows},
     {count:media},
     {count:profiles},
-    {data:owners}
+    {data:owners},
+    {data:latestGamePurchase},
+    {data:latestGameMetric},
+    {data:gameEntitlements}
   ]=await Promise.all([
     supabase.from("tech_services").select("id,code,name,service_type,provider,environment,status,criticality,owner_user_id,url,version,notes,created_at").order("name",{ascending:true}),
     supabase.from("tech_changes").select("id,change_code,title,change_type,status,risk_level,service_id,target_environment,planned_at,completed_at,rollback_plan,summary,owner_user_id,approved_by,created_at").order("created_at",{ascending:false}),
@@ -168,7 +171,10 @@ export default async function MasterTechnologyPage(){
     supabase.from("ingress_rate_limits").select("*",{count:"exact",head:true}),
     supabase.from("media_assets").select("*",{count:"exact",head:true}),
     supabase.from("admin_profiles").select("*",{count:"exact",head:true}),
-    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true}),
+    supabase.from("game_purchase_events").select("status,purchased_at,platform,provider").order("purchased_at",{ascending:false}).limit(1).maybeSingle(),
+    supabase.from("game_engagement_daily").select("metric_date,updated_at,platform").order("updated_at",{ascending:false}).limit(1).maybeSingle(),
+    supabase.from("game_entitlements").select("status").limit(5000)
   ]);
 
   const serviceRows=(services||[]) as any[];
