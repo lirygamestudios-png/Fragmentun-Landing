@@ -161,7 +161,8 @@ export default async function MasterGamesPage(){
     {count:books},
     {count:characters},
     {count:media},
-    {data:owners}
+    {data:owners},
+    {data:virtualItems}
   ]=await Promise.all([
     supabase.from("game_titles").select("id,slug,name,ip_name,platform_scope,lifecycle_stage,health_status,owner_user_id,target_release_date,budget_cents,currency,summary,created_at").order("created_at",{ascending:true}),
     supabase.from("game_milestones").select("id,game_id,name,milestone_type,status,target_date,completed_at,owner_user_id,progress_percent,exit_criteria,notes,created_at").order("target_date",{ascending:true}),
