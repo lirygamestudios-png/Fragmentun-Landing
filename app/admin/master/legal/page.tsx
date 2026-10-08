@@ -220,7 +220,7 @@ export default async function MasterLegalPage(){
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleLegal}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · LEGAL E IP</span><h1>Legal e IP</h1><p>Registro persistente de activos, derechos/licencias y contratos con acceso administrativo restringido.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.moduleStrip} aria-label="Estado del módulo">
@@ -321,7 +321,7 @@ export default async function MasterLegalPage(){
         <MasterSubmitButton className={styles.formButton} type="submit" disabled={!assetRows.length} disabledReason="Primero registra un activo de propiedad intelectual para poder añadir un derecho o licencia.">Registrar derecho</MasterSubmitButton>
       </MasterActionForm>
 
-      <MasterActionForm action={createContract} className={styles.adminForm} successText="Contrato registrado correctamente.">
+      <MasterActionForm action={createContract} className={`${styles.adminForm} ${styles.adminFormWide}`} successText="Contrato registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO CONTRATO</span><h2>Registrar contrato</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="contract_code" required placeholder="nda-001"/></label>
@@ -374,7 +374,7 @@ export default async function MasterLegalPage(){
         <MasterSubmitButton className={styles.formButton} disabled={!rightRows.length} disabledReason="No hay derechos o licencias registrados para actualizar.">Actualizar derecho</MasterSubmitButton>
       </MasterActionForm>
 
-      <MasterActionForm action={updateContract} className={styles.adminForm} successText="Contrato actualizado correctamente.">
+      <MasterActionForm action={updateContract} className={`${styles.adminForm} ${styles.adminFormWide}`} successText="Contrato actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR CONTRATO</span><h2>Actualizar contrato</h2></div>
         <div className={styles.formGrid}>
           <label>Contrato<select name="contract_id" required defaultValue=""><option value="" disabled>Seleccionar contrato</option>{contractRows.map((c:any)=><option key={c.id} value={c.id}>{c.contract_code} · {c.title}</option>)}</select></label>
@@ -398,7 +398,7 @@ export default async function MasterLegalPage(){
       <article><small>Libros</small><strong>{(books||0).toLocaleString()}</strong><span>Catálogo editorial</span></article>
       <article><small>Multimedia</small><strong>{(media||0).toLocaleString()}</strong><span>Activos operativos</span></article>
       <article><small>Personajes</small><strong>{(characters||0).toLocaleString()}</strong><span>Universo creativo</span></article>
-      <article><small>Acceso</small><strong className={styles.kpiLongValue}>ADMINISTRADOR</strong><span>Acceso a datos restringido</span></article>
+      <article><small>Acceso</small><strong className={styles.kpiCompactValue}>ADMINISTRADOR</strong><span>Acceso a datos restringido</span></article>
     </section>
   </main>;
 }
