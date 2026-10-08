@@ -89,6 +89,7 @@ async function updateRisk(formData:FormData){
   const allowedStatus=new Set(["open","mitigating","accepted","monitoring","closed"]);
   const allowedControl=new Set(["planned","implemented","effective","needs_improvement","failed","not_applicable"]);
   if(!id||!allowedStatus.has(status)||!allowedControl.has(controlStatus)||![1,2,3,4,5].includes(likelihood)||![1,2,3,4,5].includes(impact)) throw new Error("invalid_risk_update");
+  if(status==="closed"&&(!ownerUserId||!mitigation||!controlName||!["effective","not_applicable"].includes(controlStatus))) throw new Error("risk_close_requirements_missing");
   const{error}=await supabase.from("risk_register").update({
     status,likelihood,impact,owner_user_id:ownerUserId,mitigation,control_name:controlName,
     control_status:controlStatus,review_date:reviewDate,due_date:dueDate,notes,updated_at:new Date().toISOString()
