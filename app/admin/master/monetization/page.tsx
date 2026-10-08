@@ -26,6 +26,59 @@ function paymentProviderLabel(value:string|undefined){
   return map[value]||String(value).replaceAll("_"," ").replace(/\b\w/g,m=>m.toUpperCase());
 }
 
+async function requireMonetizationEditor(){
+  "use server";
+  const supabase=await createSupabaseServerClient();
+  const{data:{user}}=await supabase.auth.getUser();
+  if(!user) redirect("/admin/lirygames/login");
+  if(!(await hasSatisfiedMfa(supabase))) throw new Error("mfa_required");
+  const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
+  if(!profile||!["admin","editor"].includes(profile.role)) throw new Error("forbidden");
+  return {supabase,user};
+}
+
+async function createVirtualItem(formData:FormData){
+  "use server";
+  const{supabase,user}=await requireMonetizationEditor();
+  const gameId=String(formData.get("game_id")||"").trim();
+  const sku=String(formData.get("sku")||"").trim();
+  const name=String(formData.get("name")||"").trim();
+  const itemType=String(formData.get("item_type")||"cosmetic");
+  const rarity=String(formData.get("rarity")||"standard");
+  const grantType=String(formData.get("grant_type")||"durable");
+  const description=String(formData.get("description")||"").trim()||null;
+  const durationRaw=String(formData.get("duration_seconds")||"").trim();
+  const durationSeconds=durationRaw?Number(durationRaw):null;
+  const allowedItemTypes=new Set(["skin","cosmetic","booster","consumable","currency_pack","battle_pass","expansion","premium_access","subscription","other"]);
+  const allowedRarity=new Set(["standard","common","uncommon","rare","epic","legendary","exclusive"]);
+  const allowedGrant=new Set(["durable","consumable","timed"]);
+  if(!gameId||!sku||!name||!allowedItemTypes.has(itemType)||!allowedRarity.has(rarity)||!allowedGrant.has(grantType)) throw new Error("invalid_virtual_item");
+  if(grantType==="timed"&&(!durationSeconds||!Number.isFinite(durationSeconds)||durationSeconds<=0)) throw new Error("timed_duration_required");
+  const{error}=await supabase.from("game_virtual_items").insert({
+    game_id:gameId,sku,name,description,item_type:itemType,rarity,grant_type:grantType,
+    duration_seconds:grantType==="timed"?Math.trunc(durationSeconds as number):null,active:true,created_by:user.id
+  });
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/monetization");
+}
+
+async function createVirtualOffer(formData:FormData){
+  "use server";
+  const{supabase,user}=await requireMonetizationEditor();
+  const itemId=String(formData.get("item_id")||"").trim();
+  const platform=String(formData.get("platform")||"").trim();
+  const externalSku=String(formData.get("external_sku")||"").trim()||null;
+  const currency=(String(formData.get("currency")||"USD").trim()||"USD").toUpperCase();
+  const price=Number(formData.get("price")||0);
+  const regions=String(formData.get("region_scope")||"").split(",").map(v=>v.trim()).filter(Boolean);
+  if(!itemId||!platform||!Number.isFinite(price)||price<0||!/^[A-Z]{3}$/.test(currency)) throw new Error("invalid_virtual_offer");
+  const{error}=await supabase.from("game_virtual_item_offers").insert({
+    item_id:itemId,platform,external_sku:externalSku,currency,price_cents:Math.round(price*100),region_scope:regions,active:true,created_by:user.id
+  });
+  if(error) throw new Error(error.message);
+  revalidatePath("/admin/master/monetization");
+}
+
 export default async function MasterMonetizationPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
