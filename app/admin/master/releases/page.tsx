@@ -196,6 +196,12 @@ async function updateGate(formData:FormData){
   if(existingGateError) throw new Error(existingGateError.message);
   if(!existingGate) throw new Error("gate_not_found");
   if(["approved","canceled"].includes(existingGate.status)) throw new Error("gate_finalized");
+  const allowedTransitions:Record<string,string[]>={
+    draft:["draft","in_review","canceled"],
+    in_review:["in_review","draft","blocked","approved","canceled"],
+    blocked:["blocked","in_review","canceled"]
+  };
+  if(!(allowedTransitions[existingGate.status]||[]).includes(status)) throw new Error("invalid_gate_transition");
   if(status==="approved"&&existingGate.environment!=="preview") throw new Error("preview_approval_only");
   if(status==="approved"&&humanConfirmation!=="confirm_release_review") throw new Error("explicit_human_confirmation_required");
   if(status==="approved"){
