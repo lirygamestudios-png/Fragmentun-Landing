@@ -103,6 +103,10 @@ async function updateCheck(formData:FormData){
   const status=String(formData.get("status")||"pending");
   const evidence=String(formData.get("evidence")||"").trim()||null;
   if(!id||!["pending","passed","failed","waived"].includes(status)) throw new Error("invalid_check_update");
+  const{data:existingCheck,error:existingCheckError}=await supabase.from("release_gate_checks").select("blocking").eq("id",id).maybeSingle();
+  if(existingCheckError) throw new Error(existingCheckError.message);
+  if(!existingCheck) throw new Error("check_not_found");
+  if(status==="waived"&&existingCheck.blocking&&!evidence) throw new Error("waiver_evidence_required");
   const{error}=await supabase.from("release_gate_checks").update({
     status,evidence,checked_by:user.id,checked_at:status==="pending"?null:new Date().toISOString(),updated_at:new Date().toISOString()
   }).eq("id",id);
