@@ -167,6 +167,13 @@ export default async function MasterAdminPage(){
 
       <MasterCommanderLive initial={liveSnapshot}/>
 
+      <section className={styles.commandQuickGrid} aria-label="Accesos rápidos del centro de mando">
+        <a href="/admin/master/operations"><span>01</span><div><small>OPERACIÓN</small><strong>Trabajo y decisiones</strong></div><b>→</b></a>
+        <a href="/admin/master/games"><span>02</span><div><small>PORTAFOLIO</small><strong>Juegos y desarrollo</strong></div><b>→</b></a>
+        <a href="/admin/master/commerce"><span>03</span><div><small>NEGOCIO</small><strong>Comercio y pedidos</strong></div><b>→</b></a>
+        <a href="/admin/master/observability"><span>04</span><div><small>CONTROL</small><strong>Estado y pruebas</strong></div><b>→</b></a>
+      </section>
+
       <section className={styles.commandSectionHead}>
         <div><span>ALERTAS EJECUTIVAS</span><h2>Lo que requiere atención</h2></div>
         <p>Las señales se alimentan de los módulos ya construidos. Un clic abre el área responsable para actuar.</p>
