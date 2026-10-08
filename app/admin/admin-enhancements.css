@@ -796,3 +796,26 @@
     box-shadow:0 0 0 2px rgba(74,144,217,.10);
   }
 }
+
+
+/* UX LIRYGAMES · Bloque 14: áreas de pulsación cómodas FRAGMENTUN */
+@media(max-width:760px){
+  .adminInteriorNav a,
+  .adminInteriorSite,
+  .adminMain .btn,
+  .adminMain button,
+  .adminList button,
+  .adminSaleModeChoices button,
+  .adminMediaTileActions button,
+  .adminMediaModalClose{
+    min-height:44px;
+  }
+  .adminInteriorNav a{
+    display:inline-flex;
+    align-items:center;
+  }
+  .adminMediaModalClose{
+    width:44px;
+    height:44px;
+  }
+}
