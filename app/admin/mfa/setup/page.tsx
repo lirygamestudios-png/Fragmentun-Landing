@@ -30,7 +30,7 @@ export default function AdminMfaSetupPage(){
     try{
       const r=await fetch("/api/admin/mfa",{
         method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({action:"enroll",friendlyName:"FRAGMENTUN Admin"})
+        body:JSON.stringify({action:"enroll",friendlyName:"FRAGMENTUN Admin",issuer:"FRAGMENTUN Admin"})
       });
       const j=await r.json().catch(()=>({}));
       if(!r.ok){setMessageType("error");setMessage(j.detail||"No fue posible iniciar la verificación en dos pasos.");return;}
