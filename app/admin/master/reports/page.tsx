@@ -22,7 +22,10 @@ export default async function MasterReportsPage(){
     {count:incidents},
     {data:finance},
     {data:fundraising},
-    {data:risks}
+    {data:risks},
+    {data:gamePurchases},
+    {data:entitlements},
+    {data:gameMetrics}
   ]=await Promise.all([
     supabase.from("leads").select("*",{count:"exact",head:true}),
     supabase.from("community_members").select("*",{count:"exact",head:true}).eq("status","active"),
@@ -31,7 +34,10 @@ export default async function MasterReportsPage(){
     supabase.from("security_incidents").select("*",{count:"exact",head:true}).not("status","in","(resolved,closed)"),
     supabase.from("finance_transactions").select("amount_cents,currency,status").in("status",["posted","reconciled"]).limit(500),
     supabase.from("fundraising_opportunities").select("target_amount_cents,committed_amount_cents,currency,status,probability").limit(250),
-    supabase.from("risk_register").select("status,inherent_score").limit(250)
+    supabase.from("risk_register").select("status,inherent_score").limit(250),
+    supabase.from("game_purchase_events").select("player_ref,gross_cents,net_cents,currency,status,purchased_at").order("purchased_at",{ascending:false}).limit(5000),
+    supabase.from("game_entitlements").select("status").limit(5000),
+    supabase.from("game_engagement_daily").select("metric_date,active_players,new_players").order("metric_date",{ascending:false}).limit(1000)
   ]);
 
   const financeRows=(finance||[]) as any[];
@@ -47,6 +53,18 @@ export default async function MasterReportsPage(){
   const riskRows=(risks||[]) as any[];
   const highRisks=riskRows.filter(x=>x.status!=="closed"&&Number(x.inherent_score)>=15).length;
 
+  const gamePurchaseRows=(gamePurchases||[]) as any[];
+  const entitlementRows=(entitlements||[]) as any[];
+  const metricRows=(gameMetrics||[]) as any[];
+  const paidGamePurchases=gamePurchaseRows.filter(x=>x.status==="paid");
+  const gameGross=paidGamePurchases.reduce((a,x)=>a+Number(x.gross_cents||0),0);
+  const gameNet=paidGamePurchases.reduce((a,x)=>a+Number(x.net_cents??x.gross_cents||0),0);
+  const gameCurrency=paidGamePurchases[0]?.currency||"USD";
+  const gamePayers=new Set(paidGamePurchases.map(x=>x.player_ref).filter(Boolean)).size;
+  const entitlementIssues=entitlementRows.filter(x=>["pending","failed"].includes(x.status)).length;
+  const latestGameDate=metricRows[0]?.metric_date||null;
+  const activePlayers=latestGameDate?metricRows.filter(x=>x.metric_date===latestGameDate).reduce((a,x)=>a+Number(x.active_players||0),0):0;
+
   const rows=[
     {label:"Contactos captados",value:leads||0},
     {label:"Miembros activos de comunidad",value:community||0},
@@ -54,6 +72,11 @@ export default async function MasterReportsPage(){
     {label:"Trabajo abierto",value:openWork||0},
     {label:"Incidentes abiertos",value:incidents||0},
     {label:"Riesgos altos o críticos",value:highRisks},
+    {label:"Jugadores activos",value:activePlayers},
+    {label:"Jugadores pagadores",value:gamePayers},
+    {label:"Ingresos in-game brutos",value:money(gameGross,gameCurrency)},
+    {label:"Ingresos in-game netos",value:money(gameNet,gameCurrency)},
+    {label:"Entregas digitales por revisar",value:entitlementIssues},
     {label:"Balance financiero registrado",value:money(financeNet,financeCurrency)},
     {label:"Capital objetivo abierto",value:money(pipeline,capitalCurrency)},
     {label:"Capital comprometido",value:money(committed,capitalCurrency)}
@@ -92,6 +115,18 @@ export default async function MasterReportsPage(){
       <article><small>Comunidad activa</small><strong>{(community||0).toLocaleString()}</strong><span>Miembros activos</span></article>
       <article><small>Trabajo abierto</small><strong>{(openWork||0).toLocaleString()}</strong><span>Operación pendiente</span></article>
       <article className={highRisks?styles.kpiAttention:undefined}><small>Riesgos altos</small><strong>{highRisks}</strong><span>{highRisks?"Requieren atención":"Sin alertas altas registradas"}</span></article>
+    </section>
+
+    <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · EJECUTIVO</span><h2>Economía del portafolio</h2></div>
+      <p>Indicadores reales de videojuegos incorporados al reporte corporativo sin sustituir la contabilidad formal.</p>
+    </section>
+
+    <section className={styles.kpis}>
+      <article><small>Jugadores activos</small><strong>{activePlayers.toLocaleString()}</strong><span>{latestGameDate||"Sin telemetría diaria"}</span></article>
+      <article><small>Jugadores pagadores</small><strong>{gamePayers.toLocaleString()}</strong><span>{paidGamePurchases.length} compras pagadas</span></article>
+      <article><small>Ingresos in-game netos</small><strong className={styles.kpiLongValue}>{money(gameNet,gameCurrency)}</strong><span>{money(gameGross,gameCurrency)} bruto</span></article>
+      <article className={entitlementIssues?styles.kpiAttention:undefined}><small>Entregas por revisar</small><strong>{entitlementIssues}</strong><span>{entitlementIssues?"Pendientes o fallidas":"Sin incidencias"}</span></article>
     </section>
 
     <section className={styles.sectionHead}>
