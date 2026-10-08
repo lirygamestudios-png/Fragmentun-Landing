@@ -479,3 +479,30 @@
   filter:brightness(1.15);
   transform:scale(1.04);
 }
+
+
+/* UX LIRYGAMES · Bloque 5: tablas y listados FRAGMENTUN */
+.adminInteriorShell .adminTable tbody tr,
+.adminInteriorShell .adminReportTable tbody tr,
+.adminInteriorShell .adminReportLocaleTable>div:not(.head),
+.adminInteriorShell .adminLiveRow,
+.adminInteriorShell .adminLiveEvent{
+  transition:background .16s ease,border-color .16s ease,transform .16s ease,box-shadow .16s ease;
+}
+.adminInteriorShell .adminTable tbody tr:hover,
+.adminInteriorShell .adminReportTable tbody tr:hover,
+.adminInteriorShell .adminReportLocaleTable>div:not(.head):hover,
+.adminInteriorShell .adminLiveRow:hover,
+.adminInteriorShell .adminLiveEvent:hover{
+  background:rgba(74,144,217,.055)!important;
+  box-shadow:inset 3px 0 0 rgba(74,144,217,.55);
+}
+.adminInteriorShell .adminTable tbody tr:active,
+.adminInteriorShell .adminReportTable tbody tr:active{
+  background:rgba(74,144,217,.09)!important;
+}
+.adminInteriorShell .adminMediaTile:hover,
+.adminInteriorShell .adminShopProductEditor:hover{
+  border-color:rgba(74,144,217,.34)!important;
+  box-shadow:0 14px 34px rgba(0,0,0,.22),0 0 18px rgba(74,144,217,.07);
+}
