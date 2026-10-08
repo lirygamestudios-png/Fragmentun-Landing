@@ -70,7 +70,7 @@ export default async function MasterCommercePage(){
 
     <section className={styles.kpis}>
       <article><small>Pedidos</small><strong>{rows.length.toLocaleString()}</strong><span>{(products||0).toLocaleString()} productos registrados</span></article>
-      <article><small>Pagado</small><strong>{money(totalPaid,currency)}</strong><span>{paid.length} pedidos pagados</span></article>
+      <article><small>Pagado</small><strong className={styles.kpiLongValue}>{money(totalPaid,currency)}</strong><span>{paid.length} pedidos pagados</span></article>
       <article className={open.length?styles.kpiAttention:undefined}><small>Pendientes</small><strong>{open.length}</strong><span>{open.length?"Pedidos por completar":"Sin pedidos pendientes"}</span></article>
       <article className={refunds.length?styles.kpiAttention:undefined}><small>Reembolsos</small><strong>{refunds.length}</strong><span>{refunds.length?"Con devolución/reembolso":"Sin reembolsos registrados"}</span></article>
     </section>
