@@ -925,3 +925,15 @@
     radial-gradient(circle at 92% 0,rgba(79,216,255,.055),transparent 26%),
     linear-gradient(180deg,rgba(14,16,41,.97),rgba(8,10,25,.99));
 }
+
+
+/* Publicación — estado comercial */
+.modulePublishing .cardTop em{
+  color:#8b7aa9;
+}
+.modulePublishing .cardAttention .cardTop em{
+  color:#ff91aa!important;
+}
+.modulePublishing .cardWarning .cardTop em{
+  color:#ffc85e!important;
+}
