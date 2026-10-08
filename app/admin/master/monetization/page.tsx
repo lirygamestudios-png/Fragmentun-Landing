@@ -72,7 +72,8 @@ async function createVirtualOffer(formData:FormData){
   const externalSku=String(formData.get("external_sku")||"").trim()||null;
   const currency=(String(formData.get("currency")||"USD").trim()||"USD").toUpperCase();
   const price=Number(formData.get("price")||0);
-  const regions=String(formData.get("region_scope")||"").split(",").map(v=>v.trim()).filter(Boolean);
+  const regions=String(formData.get("region_scope")||"").split(",").map(v=>v.trim().toUpperCase()).filter(Boolean);
+  if(platform.length>80||externalSku&&externalSku.length>120||regions.length>50||regions.some(r=>!/^[A-Z]{2}$/.test(r))||new Set(regions).size!==regions.length) throw new Error("invalid_virtual_offer_regions");
   if(!itemId||!platform||!Number.isFinite(price)||price<0||price>99999999||Math.round(price*100)/100!==price||!/^[A-Z]{3}$/.test(currency)) throw new Error("invalid_virtual_offer");
   const{data:targetItem,error:targetItemError}=await supabase.from("game_virtual_items").select("id,active").eq("id",itemId).maybeSingle();
   if(targetItemError||!targetItem||!targetItem.active) throw new Error("virtual_item_not_available");
