@@ -911,3 +911,17 @@
 .moduleOperations .sectionHead p{
   max-width:620px;
 }
+
+
+/* Juegos — salud del portafolio */
+.cardWarning{
+  border-color:rgba(255,184,0,.28)!important;
+  box-shadow:inset 2px 0 rgba(255,184,0,.60),0 14px 34px rgba(0,0,0,.17)!important;
+}
+.cardWarning .cardTop em{color:#ffc85e!important}
+.moduleGames .portfolioCapacity{
+  border-color:rgba(156,92,255,.30);
+  background:
+    radial-gradient(circle at 92% 0,rgba(79,216,255,.055),transparent 26%),
+    linear-gradient(180deg,rgba(14,16,41,.97),rgba(8,10,25,.99));
+}
