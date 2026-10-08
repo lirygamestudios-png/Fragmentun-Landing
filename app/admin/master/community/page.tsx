@@ -117,7 +117,7 @@ export default async function CommunityPage(){
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · CLIENTES Y COMUNIDAD</span><h1>Clientes y Comunidad</h1><p>Miembros, participación y acceso beta sin duplicar la información comercial.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
@@ -130,9 +130,9 @@ export default async function CommunityPage(){
     <section className={styles.sectionHead}><div><span>MIEMBROS</span><h2>Miembros</h2></div><p>La información comercial se mantiene separada; aquí se gestiona la relación con la comunidad y su participación.</p></section>
     <section className={styles.grid}>
       {memberRows.map((m:any)=><article key={m.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActive:styles.badgePlanned}>{tierLabel(m.tier)}</span><em>{m.points} pts</em></div>
+        <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActive:styles.badgePlanned}>{tierLabel(m.tier)}</span><em>{m.points} puntos</em></div>
         <h3>{m.display_name||m.handle||m.email||"Miembro"}</h3>
-        <p>{m.handle||m.email||"Sin usuario o email"}<br/>{m.source||"Fuente no registrada"}<br/>{m.beta_priority?"Beta prioritario":"Acceso beta estándar"}</p>
+        <p>{m.handle||m.email||"Sin usuario o correo"}<br/>{m.source||"Fuente no registrada"}<br/>{m.beta_priority?"Beta prioritario":"Acceso beta estándar"}</p>
       </article>)}
       {!memberRows.length&&<article className={styles.card}><h3>Registro de comunidad preparado</h3><p>No se han creado miembros ficticios. El registro empieza vacío.</p></article>}
     </section>
@@ -154,7 +154,7 @@ export default async function CommunityPage(){
         <div className={styles.formTitle}><span>NUEVO MIEMBRO</span><h2>Registrar comunidad</h2></div>
         <div className={styles.formGrid}>
           <label>Nombre<input name="display_name"/></label>
-          <label>Email<input type="email" name="email"/></label>
+          <label>Correo<input type="email" name="email"/></label>
           <label>Usuario<input name="handle"/></label>
           <label>Fuente<input name="source" placeholder="LiryBoost / Discord / web"/></label>
           <label>Nivel<select name="tier" defaultValue="member"><option value="member">Miembro</option><option value="engaged">Participativo</option><option value="advocate">Promotor</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderador</option></select></label>
@@ -185,7 +185,7 @@ export default async function CommunityPage(){
           <label>Prioridad beta<select name="beta_priority" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
           <label>Puntos<input type="number" min="0" name="points" defaultValue="0"/></label>
           <label>Fuente<input name="source"/></label>
-          <label className={styles.span2}>Etiquetas<input name="tags" placeholder="beta, advocate, creator"/></label>
+          <label className={styles.span2}>Etiquetas<input name="tags" placeholder="beta, promotor, creador"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length}>Actualizar miembro</MasterSubmitButton>
@@ -196,7 +196,7 @@ export default async function CommunityPage(){
     <section className={styles.kpis}>
       <article><small>Contactos comerciales</small><strong>{(crmContacts||0).toLocaleString()}</strong><span>Seguimiento comercial separado</span></article>
       <article><small>Compartidos</small><strong>{(shareClicks||0).toLocaleString()}</strong><span>Analítica existente</span></article>
-      <article><small>RLS</small><strong>ACTIVO</strong><span>Administración y marketing</span></article>
+      <article><small>Acceso a datos</small><strong>PROTEGIDO</strong><span>Administración y marketing</span></article>
       <article><small>LiryBoost</small><strong>BASE LISTA</strong><span>Ranking preparado para conexión</span></article>
     </section>
   </main>;
