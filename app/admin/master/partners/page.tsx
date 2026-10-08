@@ -159,11 +159,20 @@ export default async function MasterOrganizacionesPage(){
   const pipelineValue=pipelineAcuerdos.reduce((a,d)=>a+Number(d.value_cents||0),0);
   const currency=pipelineAcuerdos[0]?.currency||dealRows[0]?.currency||"USD";
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.modulePartners}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · ALIANZAS Y LICENCIAS</span><h1>Alianzas y Licencias</h1><p>Registro de organizaciones aliadas y acuerdos/licencias.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">AL</span>
+      <div className={styles.moduleStripCopy}><small>ALIANZAS Y LICENCIAS</small><strong>Organizaciones, acuerdos y expansión</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Pipeline de acuerdos conectado</span>
+        <span>Acceso exclusivo de administrador</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Organizaciones</small><strong>{partnerRows.length}</strong><span>Organizaciones registradas</span></article>
