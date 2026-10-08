@@ -69,7 +69,7 @@ export default async function MasterAuditPage(){
   const updates=rows.filter(r=>r.action==="UPDATE").length;
   const deletes=rows.filter(r=>r.action==="DELETE").length;
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleAudit}`}>
     <header className={styles.topbar}>
       <div>
         <span className={styles.eyebrow}>LIRYGAMES · AUDITORÍA</span>
@@ -78,6 +78,15 @@ export default async function MasterAuditPage(){
       </div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">AU</span>
+      <div className={styles.moduleStripCopy}><small>AUDITORÍA</small><strong>Trazabilidad y actividad administrativa</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Historial administrativo conectado</span>
+        <span>Acceso restringido</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Eventos totales</small><strong>{(total||0).toLocaleString()}</strong><span>Historial administrativo</span></article>
