@@ -169,11 +169,32 @@ export async function PUT(request:NextRequest){
   }
 
   if(body.entity==="order"){
+    const{data:existing,error:existingError}=await x.supabase.from("shop_orders")
+      .select("id,payment_provider,payment_status,fulfillment_status,refund_status")
+      .eq("id",body.id).maybeSingle();
+    if(existingError)return NextResponse.json({error:existingError.message},{status:500});
+    if(!existing)return NextResponse.json({error:"order_not_found"},{status:404});
+
+    const requestedPayment=PAYMENT_STATUSES.has(body.payment_status)?body.payment_status:existing.payment_status;
+    const requestedFulfillment=FULFILLMENT_STATUSES.has(body.fulfillment_status)?body.fulfillment_status:existing.fulfillment_status;
+    const requestedRefund=REFUND_STATUSES.has(body.refund_status)?body.refund_status:existing.refund_status;
+    const provider=String(existing.payment_provider||"manual");
+
+    if(["stripe","paypal"].includes(provider)&&requestedPayment!==existing.payment_status){
+      return NextResponse.json({error:"payment_status_managed_by_provider"},{status:409});
+    }
+    if(["stripe","paypal"].includes(provider)&&requestedRefund!==existing.refund_status){
+      return NextResponse.json({error:"refund_status_managed_by_provider"},{status:409});
+    }
+    if(["processing","partially_fulfilled","fulfilled","delivered"].includes(requestedFulfillment)&&existing.payment_status!=="paid"){
+      return NextResponse.json({error:"order_must_be_paid_before_fulfillment"},{status:409});
+    }
+
     const payload={
-      payment_status:["pending","authorized","paid","failed","refunded","partially_refunded","canceled"].includes(body.payment_status)?body.payment_status:"pending",
-      fulfillment_status:["unfulfilled","processing","partially_fulfilled","fulfilled","delivered","returned","canceled"].includes(body.fulfillment_status)?body.fulfillment_status:"unfulfilled",
-      refund_status:["none","requested","partial","full"].includes(body.refund_status)?body.refund_status:"none",
-      notes:String(body.notes||"").slice(0,5000)||null,
+      payment_status:requestedPayment,
+      fulfillment_status:requestedFulfillment,
+      refund_status:requestedRefund,
+      notes:text(body.notes,5000)||null,
       updated_at:new Date().toISOString()
     };
     const{data,error}=await x.supabase.from("shop_orders").update(payload).eq("id",body.id).select().single();
