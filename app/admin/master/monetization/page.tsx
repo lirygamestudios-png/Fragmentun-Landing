@@ -95,8 +95,8 @@ export default async function MasterMonetizationPage(){
     {data:virtualItems},
     {data:virtualOffers},
     {data:gamePurchases,error:gamePurchasesError},
-    {data:entitlements},
-    {data:engagement}
+    {data:entitlements,error:entitlementsError},
+    {data:engagement,error:engagementError}
   ]=await Promise.all([
     supabase.from("shop_products").select("sku,name_es,name_en,price_cents,currency,mode,payment_provider,active,featured,stock_status").order("sort_order",{ascending:true}).limit(100),
     supabase.from("shop_orders").select("total_cents,margin_cents,currency,payment_status").limit(500),
@@ -125,6 +125,8 @@ export default async function MasterMonetizationPage(){
   const entitlementRows=(entitlements||[]) as any[];
   const engagementRows=(engagement||[]) as any[];
   const purchaseDataAvailable=!gamePurchasesError;
+  const deliveryDataAvailable=!entitlementsError;
+  const engagementDataAvailable=!engagementError;
   const paidGamePurchases=purchaseRows.filter(p=>p.status==="paid");
   // Los importes de distintas monedas no se suman ni se convierten implícitamente.
   const inGameCurrency=paidGamePurchases[0]?.currency||virtualOfferRows[0]?.currency||"USD";
@@ -185,8 +187,8 @@ export default async function MasterMonetizationPage(){
       <article><small>Ingresos in-game brutos (muestra)</small><strong className={styles.kpiLongValue}>{purchaseDataAvailable?money(inGameGross,inGameCurrency):"NO DISPONIBLE"}</strong><span>{paidPurchasesInCurrency.length} compras pagadas · {inGameCurrency}{multipleGameCurrencies?" · Existen otras monedas":""} · Últimas 2,000 compras consultadas</span></article>
       <article><small>Ingresos in-game netos (muestra)</small><strong className={styles.kpiLongValue}>{purchaseDataAvailable?money(inGameNet,inGameCurrency):"NO DISPONIBLE"}</strong><span>Después de comisiones e impuestos registrados · {inGameCurrency}{multipleGameCurrencies?" · Otras monedas excluidas":""} · Máximo 2,000 compras recientes</span></article>
       <article><small>Jugadores pagadores (muestra)</small><strong>{purchaseDataAvailable?payingPlayers.size:"NO DISPONIBLE"}</strong><span>{arppu===null?"ARPPU sin compradores":"ARPPU de muestra "+money(arppu,inGameCurrency)} · {inGameCurrency} · Máximo 2,000 compras recientes</span></article>
-      <article><small>Conversión diaria (muestra)</small><strong>{!purchaseDataAvailable?"NO DISPONIBLE":payerConversion===null?"SIN DATOS":conversionExceedsPopulation?"REVISAR":payerConversion.toFixed(2)+"%"}</strong><span>{payerConversion===null?"Sin datos comparables por juego y plataforma":currentPayers.size+" combinaciones de jugador/juego/plataforma frente a "+latestActivePlayers+" jugadores activos · "+latestMetricDate+(conversionExceedsPopulation?" · Muestras incompatibles: revisar fuentes":"")}{purchaseSampleLimited||metricSampleLimited?" · Lectura parcial por límite de consulta":""}</span></article>
-      <article className={pendingEntitlements.length?styles.kpiAttention:undefined}><small>Entregas digitales pendientes</small><strong>{pendingEntitlements.length}</strong><span>{pendingEntitlements.length?"Requieren revisión":"Sin incidencias de entrega"}</span></article>
+      <article><small>Conversión diaria (muestra)</small><strong>{!purchaseDataAvailable||!engagementDataAvailable?"NO DISPONIBLE":payerConversion===null?"SIN DATOS":conversionExceedsPopulation?"REVISAR":payerConversion.toFixed(2)+"%"}</strong><span>{payerConversion===null?"Sin datos comparables por juego y plataforma":currentPayers.size+" combinaciones de jugador/juego/plataforma frente a "+latestActivePlayers+" jugadores activos · "+latestMetricDate+(conversionExceedsPopulation?" · Muestras incompatibles: revisar fuentes":"")}{purchaseSampleLimited||metricSampleLimited?" · Lectura parcial por límite de consulta":""}</span></article>
+      <article className={pendingEntitlements.length?styles.kpiAttention:undefined}><small>Entregas digitales pendientes</small><strong>{deliveryDataAvailable?pendingEntitlements.length:"NO DISPONIBLE"}</strong><span>{!deliveryDataAvailable?"No se pudo consultar el estado de las entregas":pendingEntitlements.length?"Requieren revisión":"Sin incidencias en los últimos 2,000 registros consultados"}</span></article>
     </section>
 
     {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}>
