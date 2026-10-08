@@ -138,11 +138,20 @@ export default async function MasterGrowthPage(){
   const customers=contactRows.filter(x=>x.lifecycle_stage==="customer"||x.status==="won").length;
   const avgPrioridad=contactRows.length?contactRows.reduce((a,x)=>a+Number(x.score||0),0)/contactRows.length:0;
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleGrowth}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · CRECIMIENTO</span><h1>Crecimiento</h1><p>Captación, conversión y seguimiento de contactos conectados al embudo real de FRAGMENTUN.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">CR</span>
+      <div className={styles.moduleStripCopy}><small>CRECIMIENTO Y EMBUDO</small><strong>Captación y conversión</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Señales de audiencia conectadas</span>
+        <span>Gestión protegida · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Visitas 30 días</small><strong>{(views||0).toLocaleString()}</strong><span>Entrada al embudo</span></article>
