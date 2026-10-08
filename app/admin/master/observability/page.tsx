@@ -188,11 +188,20 @@ export default async function ObservabilityPage(){
     return "—";
   };
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleObservability}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · CONTROL</span><h1>Estado y Pruebas</h1><p>Comprueba que la versión de prueba funciona correctamente antes de avanzar.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">OP</span>
+      <div className={styles.moduleStripCopy}><small>ESTADO Y PRUEBAS</small><strong>Validación, historial y señales</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Pruebas de versión conectadas</span>
+        <span>Validación protegida · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Pruebas realizadas</small><strong>{runRows.length}</strong><span>{passedRuns} correctas · {failedRuns} por revisar</span></article>
