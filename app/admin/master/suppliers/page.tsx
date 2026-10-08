@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
+import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
@@ -24,6 +25,7 @@ async function requireAdmin(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user) redirect("/admin/login");
+  if(!(await hasSatisfiedMfa(supabase))) throw new Error("mfa_required");
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile||profile.role!=="admin") throw new Error("admin_required");
   return {supabase,user};
@@ -43,7 +45,7 @@ async function createProveedor(formData:FormData){
   const allowedType=new Set(["manufacturing","fulfillment","software","hosting","professional_services","marketing","art","audio","qa","localization","legal","finance","other"]);
   const allowedRisk=new Set(["low","medium","high","critical"]);
   if(!name||!allowedType.has(vendorType)||!allowedRisk.has(risk)) throw new Error("invalid_vendor");
-  const{error}=await supabase.from("Registrados").insert({
+  const{error}=await supabase.from("vendor_master").insert({
     name,vendor_type:vendorType,contact_name:contactName,contact_email:contactEmail,country,payment_terms:paymentTerms,risk_rating:risk,preferred,created_by:user.id
   });
   if(error) throw new Error(error.message);
@@ -66,7 +68,7 @@ async function updateProveedor(formData:FormData){
   const allowedEstado=new Set(["prospect","active","on_hold","inactive","terminated"]);
   const allowedRisk=new Set(["low","medium","high","critical"]);
   if(!id||!allowedEstado.has(status)||!allowedRisk.has(risk)) throw new Error("invalid_vendor_update");
-  const{error}=await supabase.from("Registrados").update({
+  const{error}=await supabase.from("vendor_master").update({
     status,risk_rating:risk,preferred,contact_name:contactName,contact_email:contactEmail,
     country,payment_terms:paymentTerms,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
@@ -88,7 +90,7 @@ export default async function MasterSuppliersPage(){
     {data:fulfillments},
     {count:orders}
   ]=await Promise.all([
-    supabase.from("Registrados").select("id,name,vendor_type,status,contact_name,contact_email,country,payment_terms,risk_rating,preferred,notes,created_at").order("name",{ascending:true}),
+    supabase.from("vendor_master").select("id,name,vendor_type,status,contact_name,contact_email,country,payment_terms,risk_rating,preferred,notes,created_at").order("name",{ascending:true}),
     supabase.from("shop_products").select("supplier,supplier_product_id,sku,name_es,mode,active").order("sort_order",{ascending:true}).limit(250),
     supabase.from("shop_fulfillments").select("supplier,shipment_status,label_cost_cents,created_at").order("created_at",{ascending:false}).limit(250),
     supabase.from("shop_orders").select("*",{count:"exact",head:true})
