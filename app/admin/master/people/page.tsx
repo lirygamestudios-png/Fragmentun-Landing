@@ -188,14 +188,14 @@ export default async function MasterPeoplePage(){
         <div className={styles.formTitle}><span>NUEVO MIEMBRO</span><h2>Registrar persona</h2></div>
         <div className={styles.formGrid}>
           <label>Nombre<input name="display_name" required placeholder="Nombre completo"/></label>
-          <label>Email<input type="email" name="email" placeholder="correo@empresa.com"/></label>
+          <label>Correo<input type="email" name="email" placeholder="correo@empresa.com"/></label>
           <label>Tipo<select name="employment_type" defaultValue="employee">
             <option value="founder">Fundador</option><option value="employee">Empleado</option><option value="contractor">Contratista</option>
             <option value="advisor">Asesor</option><option value="partner">Socio</option><option value="intern">Pasante</option><option value="other">Otro</option>
           </select></label>
-          <label>Título<input name="title" placeholder="CEO / Productor / Desarrollador"/></label>
+          <label>Título<input name="title" placeholder="Dirección / Productor / Desarrollador"/></label>
           <label>Departamento<input name="department" placeholder="Publicación / Tecnología / Crecimiento"/></label>
-          <label>Ubicación<input name="location" placeholder="Ciudad / remoto"/></label>
+          <label>Ubicación<input name="location" placeholder="Ciudad / trabajo remoto"/></label>
           <label>Inicio<input type="date" name="start_date"/></label>
           <label>Disponibilidad %<input type="number" min="0" max="100" name="allocation_percent" defaultValue="100"/></label>
           <label className={styles.span2}>Habilidades<input name="skills" placeholder="Unity, Marketing, Producción"/></label>
@@ -211,7 +211,7 @@ export default async function MasterPeoplePage(){
             {memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name}</option>)}
           </select></label>
           <label>Dominio<input name="domain" required placeholder="Juegos / Publicación / Crecimiento"/></label>
-          <label>Línea de trabajo<input name="workstream" placeholder="Vertical Slice / Lanzamiento / CRM"/></label>
+          <label>Línea de trabajo<input name="workstream" placeholder="Demostración jugable / Lanzamiento / Seguimiento comercial"/></label>
           <label>Disponibilidad %<input type="number" min="0" max="100" name="allocation_percent" defaultValue="25"/></label>
           <label>Prioridad<select name="priority" defaultValue="medium">
             <option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option>
@@ -245,7 +245,7 @@ export default async function MasterPeoplePage(){
         <div className={styles.formTitle}><span>GESTIONAR ASIGNACIÓN</span><h2>Actualizar capacidad</h2></div>
         <div className={styles.formGrid}>
           <label>Asignación<select name="assignment_id" required defaultValue=""><option value="" disabled>Seleccionar asignación</option>{assignmentRows.map((a:any)=><option key={a.id} value={a.id}>{memberRows.find(m=>m.id===a.member_id)?.display_name||"Miembro"} · {a.domain}</option>)}</select></label>
-          <label>Estado<select name="status" defaultValue="active"><option value="planned">Planificada</option><option value="active">Activo</option><option value="paused">Pausada</option><option value="completed">Completada</option><option value="canceled">Cancelada</option></select></label>
+          <label>Estado<select name="status" defaultValue="active"><option value="planned">Planificada</option><option value="active">Activa</option><option value="paused">Pausada</option><option value="completed">Completada</option><option value="canceled">Cancelada</option></select></label>
           <label>Disponibilidad %<input type="number" min="0" max="100" name="allocation_percent"/></label>
           <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
           <label>Inicio<input type="date" name="start_date"/></label>
