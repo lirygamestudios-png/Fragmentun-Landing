@@ -90,6 +90,7 @@ async function addCheck(formData:FormData){
   const type=String(formData.get("check_type")||"manual");
   const blocking=String(formData.get("blocking")||"true")==="true";
   if(!gateId||!code||!label||!["build","runtime","security","data","business","manual"].includes(type)) throw new Error("invalid_check");
+  if(["runtime-smoke","human-release-approval"].includes(code)) throw new Error("reserved_check_code");
   const{data:gate,error:gateError}=await supabase.from("release_gates").select("status").eq("id",gateId).maybeSingle();
   if(gateError) throw new Error(gateError.message);
   if(!gate||!["draft","in_review","blocked"].includes(gate.status)) throw new Error("gate_not_editable");
@@ -114,7 +115,7 @@ async function updateCheck(formData:FormData){
   if(gateError) throw new Error(gateError.message);
   if(!gate||!["draft","in_review","blocked"].includes(gate.status)) throw new Error("gate_not_editable");
   if(existingCheck.check_code==="human-release-approval") throw new Error("human_approval_check_protected");
-  if(existingCheck.check_code==="runtime-smoke"&&status==="passed") throw new Error("use_authenticated_runtime_validation");
+  if(existingCheck.check_code==="runtime-smoke") throw new Error("runtime_check_managed_by_validation_only");
   if(status==="waived"&&existingCheck.blocking&&!evidence) throw new Error("waiver_evidence_required");
   const{error}=await supabase.from("release_gate_checks").update({
     status,evidence,checked_by:user.id,checked_at:status==="pending"?null:new Date().toISOString(),updated_at:new Date().toISOString()
@@ -207,9 +208,10 @@ async function updateGate(formData:FormData){
     const blockers=(checks||[]).filter((c:any)=>
       c.blocking&&
       c.check_code!=="human-release-approval"&&
-      !["passed","waived"].includes(c.status)
+      (c.check_code==="runtime-smoke"?c.status!=="passed":!["passed","waived"].includes(c.status))
     );
     if(blockers.length) throw new Error("blocking_checks_incomplete");
+    if((checks||[]).some((c:any)=>c.check_code==="human-release-approval"&&c.status==="waived")) throw new Error("human_approval_cannot_be_waived");
     const runtimeCheck=(checks||[]).find((c:any)=>c.check_code==="runtime-smoke");
     if(!runtimeCheck||runtimeCheck.status!=="passed") throw new Error("runtime_validation_required");
     if(!latestValidation||latestValidation.status!=="passed") throw new Error("latest_validation_not_passed");
