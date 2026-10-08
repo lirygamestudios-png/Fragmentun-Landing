@@ -153,7 +153,7 @@ export default async function CommunityPage(){
 
     <section className={styles.sectionHead}><div><span>MIEMBROS</span><h2>Miembros</h2></div><p>La información comercial se mantiene separada; aquí se gestiona la relación con la comunidad y su participación.</p></section>
     <section className={styles.grid}>
-      {memberRows.map((m:any)=><article key={m.id} className={styles.card}>
+      {memberRows.map((m:any)=><article key={m.id} className={`${styles.card} ${m.status==="blocked"?styles.cardAttention:["inactive","left"].includes(m.status)?styles.cardMuted:m.beta_priority||m.tier==="beta_priority"?styles.cardPriority:""}`}>
         <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActive:styles.badgePlanned}>{tierLabel(m.tier)}</span><em>{m.points} puntos</em></div>
         <h3>{m.display_name||m.handle||m.email||"Miembro"}</h3>
         <p>{m.handle||m.email||"Sin usuario o correo"}<br/>{m.source||"Fuente no registrada"}<br/>{m.beta_priority?"Beta prioritario":"Acceso beta estándar"}</p>
@@ -163,7 +163,7 @@ export default async function CommunityPage(){
 
     <section className={styles.sectionHead}><div><span>PARTICIPACIÓN</span><h2>Participación reciente</h2></div></section>
     <section className={styles.grid}>
-      {actionRows.map((a:any)=><article key={a.id} className={styles.card}>
+      {actionRows.map((a:any)=><article key={a.id} className={`${styles.card} ${a.points_delta<0?styles.cardWarning:""}`}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>{actionLabel(a.action_type)}</span><em>{a.points_delta>=0?"+":""}{a.points_delta}</em></div>
         <h3>{memberRows.find(m=>m.id===a.member_id)?.display_name||"Miembro"}</h3><p>{a.description||a.source||"Actividad registrada"}<br/>{new Date(a.occurred_at).toLocaleString("es-US")}</p>
       </article>)}
