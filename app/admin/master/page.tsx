@@ -165,6 +165,7 @@ export default async function MasterAdminPage(){
   const gateMatches=Boolean(latestGate&&currentCommit&&currentDeployment&&latestGate.target_commit===currentCommit&&latestGate.target_deployment_id===currentDeployment);
   const gateCurrent=gateMatches&&latestGate?.status==="approved";
   const gateLabel=!latestGate?"SIN REVISIÓN":!currentCommit||!currentDeployment?"NO VERIFICABLE":!gateMatches?"DESACTUALIZADA":latestGate.status==="approved"?"APROBADA":"PENDIENTE";
+  const gateExplanation=!latestGate?"No hay revisión Preview registrada.":!currentCommit||!currentDeployment?"No se puede identificar la versión de este Preview.":!gateMatches?"La revisión existente corresponde a otro commit o despliegue.":gateCurrent?"La aprobación corresponde a esta versión; la publicación sigue siendo manual.":"La versión está identificada, pero falta aprobación humana.";
   const freemiumReadable=![virtualItemsError,virtualOffersError,pendingEntitlementsError,failedEntitlementsError].some(Boolean);
   const deliveryIssues=(pendingEntitlements||0)+(failedEntitlements||0);
   const freemiumPrepared=freemiumReadable&&(virtualItems||0)>0&&(virtualOffers||0)>0&&deliveryIssues===0;
@@ -193,7 +194,7 @@ export default async function MasterAdminPage(){
         <a href="/admin/master/releases" className={gateCurrent?styles.commandAlertStable:styles.commandAlertCritical}>
           <div><span>REVISIÓN DE PUBLICACIÓN</span><strong>{gateCurrent?"OK":"!"}</strong></div>
           <h3>{gateLabel}</h3>
-          <p>{latestGate?.gate_code||"Sin revisión registrada"} · {gateCurrent?"La aprobación corresponde al código y despliegue actuales.":"Se requiere revisión humana para el Preview actual."}</p>
+          <p>{latestGate?.gate_code||"Sin revisión registrada"} · {gateExplanation}</p>
         </a>
         <a href="/admin/master/monetization" className={freemiumPrepared?styles.commandAlertStable:styles.commandAlertCritical}>
           <div><span>FREEMIUM</span><strong>{freemiumReadable?(virtualItems||0):"—"}</strong></div>
