@@ -309,7 +309,7 @@ export default async function ReleaseGatePage(){
             <label>Tipo<select name="check_type" defaultValue="manual"><option value="build">Compilación</option><option value="runtime">Funcionamiento</option><option value="security">Seguridad</option><option value="data">Datos</option><option value="business">Negocio</option><option value="manual">Manual</option></select></label>
             <label>Bloqueante<select name="blocking" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
           </div>
-          <MasterSubmitButton className={styles.formButton} disabled={!gateRows.length}>Añadir comprobación</MasterSubmitButton>
+          <MasterSubmitButton className={styles.formButton} disabled={!gateRows.length} disabledReason="Primero registra una revisión antes de añadir comprobaciones.">Añadir comprobación</MasterSubmitButton>
         </form>
 
         <form action={updateCheck} className={styles.adminForm}>
@@ -319,7 +319,7 @@ export default async function ReleaseGatePage(){
             <label>Estado<select name="status" defaultValue="pending"><option value="pending">Pendiente</option><option value="passed">Correcta</option><option value="failed">Revisar</option><option value="waived">Aceptada</option></select></label>
             <label className={styles.span2}>Evidencia<textarea name="evidence" rows={3}/></label>
           </div>
-          <MasterSubmitButton className={styles.formButton} disabled={!checkRows.length}>Actualizar comprobación</MasterSubmitButton>
+          <MasterSubmitButton className={styles.formButton} disabled={!checkRows.length} disabledReason="No hay comprobaciones registradas para actualizar.">Actualizar comprobación</MasterSubmitButton>
         </form>
 
         <form action={updateGate} className={styles.adminForm}>
@@ -329,7 +329,7 @@ export default async function ReleaseGatePage(){
             <label>Estado<select name="status" defaultValue="in_review"><option value="draft">Borrador</option><option value="in_review">En revisión</option><option value="blocked">Bloqueada</option><option value="approved">Aprobada</option><option value="canceled">Cancelada</option></select></label>
             <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
           </div>
-          <MasterSubmitButton className={styles.formButton} disabled={!gateRows.length}>Actualizar revisión</MasterSubmitButton>
+          <MasterSubmitButton className={styles.formButton} disabled={!gateRows.length} disabledReason="No hay revisiones registradas para actualizar.">Actualizar revisión</MasterSubmitButton>
         </form>
       </>}
       </section>
