@@ -23,7 +23,8 @@ const items=[
 const hiddenPrefixes=[
   "/admin/login",
   "/admin/forgot-password",
-  "/admin/reset-password"
+  "/admin/reset-password",
+  "/admin/lirygames"
 ];
 
 export function AdminInteriorChrome({children}:{children:React.ReactNode}){
