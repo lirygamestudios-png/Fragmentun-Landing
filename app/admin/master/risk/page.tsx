@@ -113,7 +113,9 @@ export default async function MasterRiskPage(){
     {count:products},
     {count:orders},
     {count:campaigns},
-    {data:owners}
+    {data:owners},
+    {data:gamePurchases},
+    {data:entitlements}
   ]=await Promise.all([
     supabase.from("risk_register").select("id,code,title,domain,category,likelihood,impact,inherent_score,status,owner_user_id,mitigation,control_name,control_status,review_date,due_date,notes,created_at").order("inherent_score",{ascending:false}),
     supabase.from("control_evidence").select("id,risk_id,control_name,evidence_type,description,evidence_url,status,collected_at,expires_at").order("collected_at",{ascending:false}).limit(100),
@@ -121,7 +123,9 @@ export default async function MasterRiskPage(){
     supabase.from("shop_products").select("*",{count:"exact",head:true}),
     supabase.from("shop_orders").select("*",{count:"exact",head:true}),
     supabase.from("campaigns").select("*",{count:"exact",head:true}),
-    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true}),
+    supabase.from("game_purchase_events").select("status,provider,platform,purchased_at").order("purchased_at",{ascending:false}).limit(5000),
+    supabase.from("game_entitlements").select("status,created_at").order("created_at",{ascending:false}).limit(5000)
   ]);
 
   const riskRows=(risks||[]) as any[];
@@ -131,6 +135,13 @@ export default async function MasterRiskPage(){
   const overdue=riskRows.filter(r=>r.due_date&&new Date(r.due_date).getTime()<Date.now()&&r.status!=="closed");
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
+  const gamePurchaseRows=(gamePurchases||[]) as any[];
+  const entitlementRows=(entitlements||[]) as any[];
+  const chargebacks=gamePurchaseRows.filter(p=>p.status==="chargeback").length;
+  const failedGamePayments=gamePurchaseRows.filter(p=>p.status==="failed").length;
+  const entitlementIssues=entitlementRows.filter(e=>["pending","failed"].includes(e.status)).length;
+  const gameProviders=Array.from(new Set(gamePurchaseRows.map(p=>p.provider).filter(Boolean)));
+  const gamePlatforms=Array.from(new Set(gamePurchaseRows.map(p=>p.platform).filter(Boolean)));
 
   const systemSignals=[
     {name:"Protección de producción",state:"CONTROLADO",detail:"La versión de prueba permanece separada de la versión pública."},
@@ -138,7 +149,12 @@ export default async function MasterRiskPage(){
     {name:"Dependencias de software",state:"CONTROLADO",detail:"No hay vulnerabilidades conocidas registradas en la revisión actual."},
     {name:"Protección de contraseñas",state:"ABIERTO",detail:"Existe una protección adicional pendiente de activación en el sistema de acceso."},
     {name:"Preparación fiscal",state:commerce?.tax_registration_status==="configured"?"CONTROLADO":"ABIERTO",detail:commerce?.tax_registration_status==="configured"?"Configuración fiscal registrada":"Configuración fiscal pendiente"},
-    {name:"Pagos",state:(commerce?.stripe_enabled||commerce?.paypal_enabled)?"ACTIVO":"CONTROLADO",detail:(commerce?.stripe_enabled||commerce?.paypal_enabled)?"Proveedor habilitado":"Proveedores permanecen deshabilitados"}
+    {name:"Pagos",state:(commerce?.stripe_enabled||commerce?.paypal_enabled)?"ACTIVO":"CONTROLADO",detail:(commerce?.stripe_enabled||commerce?.paypal_enabled)?"Proveedor habilitado":"Proveedores permanecen deshabilitados"},
+    {name:"Chargebacks in-game",state:chargebacks?"ABIERTO":"CONTROLADO",detail:chargebacks?chargebacks+" contracargos requieren revisión":"Sin contracargos registrados"},
+    {name:"Fallos de pago in-game",state:failedGamePayments?"ABIERTO":"CONTROLADO",detail:failedGamePayments?failedGamePayments+" pagos fallidos registrados":"Sin fallos registrados"},
+    {name:"Entrega digital",state:entitlementIssues?"ABIERTO":"CONTROLADO",detail:entitlementIssues?entitlementIssues+" entregas pendientes o fallidas":"Sin incidencias de entitlement"},
+    {name:"Dependencia de plataformas",state:gamePlatforms.length===1?"ABIERTO":"CONTROLADO",detail:gamePlatforms.length?gamePlatforms.length+" plataforma(s) detectada(s)":"Sin dependencia real todavía"},
+    {name:"Dependencia de proveedor",state:gameProviders.length===1?"ABIERTO":"CONTROLADO",detail:gameProviders.length?gameProviders.length+" proveedor(es) detectado(s)":"Sin proveedor real conectado todavía"}
   ];
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleRisk}`}>
@@ -161,6 +177,18 @@ export default async function MasterRiskPage(){
       <article className={high.length?styles.kpiAttention:undefined}><small>Altos o críticos</small><strong>{high.length}</strong><span>{high.length?"Nivel ≥15":"Sin riesgos altos"}</span></article>
       <article className={overdue.length?styles.kpiAttention:undefined}><small>Vencidos</small><strong>{overdue.length}</strong><span>{overdue.length?"Fecha límite vencida":"Sin riesgos vencidos"}</span></article>
       <article><small>Evidencias</small><strong>{evidenceRows.length}</strong><span>Evidencias de control</span></article>
+    </section>
+
+    <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · EXPOSICIÓN</span><h2>Señales de riesgo del primer juego</h2></div>
+      <p>Estas señales ayudan a detectar exposición operativa, financiera o de proveedor. No crean riesgos formales automáticamente.</p>
+    </section>
+
+    <section className={styles.kpis}>
+      <article className={chargebacks?styles.kpiAttention:undefined}><small>Chargebacks</small><strong>{chargebacks}</strong><span>{chargebacks?"Requieren evaluación":"Sin contracargos"}</span></article>
+      <article className={failedGamePayments?styles.kpiAttention:undefined}><small>Pagos fallidos</small><strong>{failedGamePayments}</strong><span>{failedGamePayments?"Requieren seguimiento":"Sin fallos"}</span></article>
+      <article className={entitlementIssues?styles.kpiAttention:undefined}><small>Entregas digitales</small><strong>{entitlementIssues}</strong><span>{entitlementIssues?"Pendientes o fallidas":"Sin incidencias"}</span></article>
+      <article><small>Diversificación</small><strong>{Math.max(gameProviders.length,gamePlatforms.length)}</strong><span>Proveedores/plataformas detectados</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>RIESGOS</span><h2>Riesgos formales</h2></div><p>Los riesgos solo pasan al registro formal cuando tienen tratamiento y responsable asignados.</p></section>
