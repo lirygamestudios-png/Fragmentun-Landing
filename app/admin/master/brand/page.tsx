@@ -152,11 +152,20 @@ export default async function MasterBrandPage(){
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleBrand}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · MARCA Y COMUNICACIONES</span><h1>Marca y Comunicaciones</h1><p>Narrativa corporativa y campañas de comunicación persistentes, separadas del contenido operativo de cada IP.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">MC</span>
+      <div className={styles.moduleStripCopy}><small>MARCA Y COMUNICACIÓN</small><strong>Narrativa, reputación y campañas</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Activos de comunicación conectados</span>
+        <span>Gestión protegida · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Narrativas activas</small><strong>{activeNarratives}</strong><span>{narrativeRows.length} registradas</span></article>
