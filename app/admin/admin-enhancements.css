@@ -600,3 +600,52 @@
   scroll-snap-type:x proximity;
 }
 .adminInteriorNav a{scroll-snap-align:center}
+
+
+/* UX LIRYGAMES · Bloque 8: toasts y mensajes temporales FRAGMENTUN */
+.adminCampaignToast,
+.adminSaveFeedback,
+.adminInlineStatus,
+.authStatus,
+.adminReadableStatus{
+  animation:adminFeedbackIn .18s ease both;
+}
+@keyframes adminFeedbackIn{
+  from{opacity:0;transform:translateY(-4px) scale(.99)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.adminCampaignToast{
+  backdrop-filter:blur(16px);
+}
+.adminSaveFeedback.success,
+.adminCampaignToast:not(.error){
+  position:relative;
+}
+.adminSaveFeedback.success:before,
+.adminCampaignToast:not(.error):before{
+  content:"✓";
+  display:inline-grid;
+  place-items:center;
+  width:18px;height:18px;
+  margin-right:7px;
+  border-radius:50%;
+  background:rgba(64,211,155,.14);
+  color:#96f0c8;
+  font-size:.68rem;
+  font-weight:900;
+  flex:0 0 auto;
+}
+.adminSaveFeedback.error:before,
+.adminCampaignToast.error:before{
+  content:"!";
+  display:inline-grid;
+  place-items:center;
+  width:18px;height:18px;
+  margin-right:7px;
+  border-radius:50%;
+  background:rgba(255,92,92,.12);
+  color:#ffb0b0;
+  font-size:.68rem;
+  font-weight:900;
+  flex:0 0 auto;
+}
