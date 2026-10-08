@@ -34,6 +34,36 @@ function shippingAddressStatus(o:Order){
     name:addressValue(a,"name","recipient")||o.customer_name||""};
 }
 
+function paymentLabel(value:string){
+  const map:Record<string,string>={
+    pending:"Pendiente",authorized:"Autorizado",paid:"Pagado",failed:"Fallido",
+    refunded:"Reembolsado",partially_refunded:"Reembolso parcial",canceled:"Cancelado"
+  };
+  return map[value]||value;
+}
+function fulfillmentLabel(value:string){
+  const map:Record<string,string>={
+    unfulfilled:"Sin preparar",processing:"Procesando",partially_fulfilled:"Parcialmente preparado",
+    fulfilled:"Preparado",delivered:"Entregado",returned:"Devuelto",canceled:"Cancelado"
+  };
+  return map[value]||value;
+}
+function commerceErrorMessage(code:string){
+  const map:Record<string,string>={
+    payment_status_managed_by_provider:"El estado de pago de Stripe/PayPal se actualiza desde el procesador y no puede cambiarse manualmente.",
+    refund_status_managed_by_provider:"El estado de reembolso de Stripe/PayPal se actualiza desde el procesador.",
+    order_must_be_paid_before_fulfillment:"El pedido debe estar pagado antes de iniciar su preparación.",
+    order_must_be_paid_before_shipping:"El pedido debe estar pagado antes de marcar el envío como despachado.",
+    shipping_address_incomplete:"Completa la dirección de envío antes de crear el envío.",
+    order_not_eligible_for_fulfillment:"Este pedido ya no admite nuevos envíos.",
+    canceled_order_cannot_ship:"Un pedido cancelado no puede despacharse.",
+    external_url_required:"Los productos externos necesitan una URL del proveedor.",
+    price_required_for_internal_sale:"Los productos cobrados aquí necesitan un precio.",
+    payment_provider_not_enabled:"Activa primero un procesador de pago válido para este producto."
+  };
+  return map[code]||code||"No fue posible completar la acción.";
+}
+
 export function AdminCommerceManager(){
   const[products,setProducts]=useState<Product[]>([]);
   const[orders,setOrders]=useState<Order[]>([]);
@@ -66,7 +96,7 @@ export function AdminCommerceManager(){
     try{
       const r=await fetch("/api/admin/commerce/manage",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"product",...draft})});
       const j=await r.json().catch(()=>({}));
-      if(!r.ok){setMsg(j.error||"No fue posible crear el producto.");return}
+      if(!r.ok){setMsg(commerceErrorMessage(j.error)||"No fue posible crear el producto.");return}
       setDraft(emptyProduct);setMsg("GUARDADO SATISFACTORIAMENTE");await load();
     }catch{setMsg("No fue posible crear el producto. Revisa la conexión e inténtalo nuevamente.");}
     finally{setBusy(false);}
@@ -81,7 +111,7 @@ export function AdminCommerceManager(){
     try{
       const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"product",...p,...patch})});
       const j=await r.json().catch(()=>({}));
-      if(!r.ok){setMsg(j.error||"No fue posible actualizar el producto.");return}
+      if(!r.ok){setMsg(commerceErrorMessage(j.error)||"No fue posible actualizar el producto.");return}
       setMsg("GUARDADO SATISFACTORIAMENTE");await load();
     }catch{setMsg("No fue posible actualizar el producto. Revisa la conexión e inténtalo nuevamente.");}
     finally{setBusy(false);}
@@ -92,7 +122,7 @@ export function AdminCommerceManager(){
     try{
       const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"order",...o,...patch})});
       const j=await r.json().catch(()=>({}));
-      if(!r.ok){setMsg(j.error||"No fue posible actualizar la orden.");return}
+      if(!r.ok){setMsg(commerceErrorMessage(j.error)||"No fue posible actualizar la orden.");return}
       setMsg("GUARDADO SATISFACTORIAMENTE");await load();
     }catch{setMsg("No fue posible actualizar la orden. Revisa la conexión e inténtalo nuevamente.");}
     finally{setBusy(false);}
@@ -103,7 +133,7 @@ export function AdminCommerceManager(){
     try{
       const r=await fetch("/api/admin/commerce/manage",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"fulfillment",order_id:orderId})});
       const j=await r.json().catch(()=>({}));
-      if(!r.ok){setMsg(j.error||"No fue posible crear el envío.");return}
+      if(!r.ok){setMsg(commerceErrorMessage(j.error)||"No fue posible crear el envío.");return}
       setMsg("GUARDADO SATISFACTORIAMENTE");await load();
     }catch{setMsg("No fue posible crear el envío. Revisa la conexión e inténtalo nuevamente.");}
     finally{setBusy(false);}
@@ -115,7 +145,7 @@ export function AdminCommerceManager(){
     try{
       const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"fulfillment",...payload})});
       const j=await r.json().catch(()=>({}));
-      if(!r.ok){setMsg(j.error||"No fue posible actualizar el envío.");return}
+      if(!r.ok){setMsg(commerceErrorMessage(j.error)||"No fue posible actualizar el envío.");return}
       setMsg("GUARDADO SATISFACTORIAMENTE");await load();
     }catch{setMsg("No fue posible actualizar el envío. Revisa la conexión e inténtalo nuevamente.");}
     finally{setBusy(false);}
@@ -195,9 +225,15 @@ export function AdminCommerceManager(){
             </div>
             {address.ok?<p className="note">{address.line1}{address.line2?`, ${address.line2}`:""} · {address.city}, {address.region} {address.postal} · {address.country}</p>:<p className="adminSaveFeedback error">Faltan: {address.missing.join(", ")}.</p>}
           </div>
-          <label><span>Pago</span><select value={o.payment_status} onChange={e=>saveOrder(o,{payment_status:e.target.value})}><option>pending</option><option>authorized</option><option>paid</option><option>failed</option><option>refunded</option><option>partially_refunded</option><option>canceled</option></select></label>
-          <label><span>Fulfillment</span><select value={o.fulfillment_status} onChange={e=>saveOrder(o,{fulfillment_status:e.target.value})}><option>unfulfilled</option><option>processing</option><option>partially_fulfilled</option><option>fulfilled</option><option>delivered</option><option>returned</option><option>canceled</option></select></label>
-          <button className="btn btnGhost" type="button" disabled={!address.ok||busy} title={!address.ok?"Completa la dirección antes de crear el envío":undefined} onClick={()=>{if(window.confirm("¿Confirmas que deseas crear un envío para esta orden?"))createFulfillment(o.id);}}>Crear envío</button>
+          <label><span>Pago</span>{["stripe","paypal"].includes(o.payment_provider||"")
+            ?<div className="adminSaveFeedback">{paymentLabel(o.payment_status)} · gestionado por {o.payment_provider==="stripe"?"Stripe":"PayPal"}</div>
+            :<select value={o.payment_status} onChange={e=>saveOrder(o,{payment_status:e.target.value})}>
+              <option value="pending">Pendiente</option><option value="authorized">Autorizado</option><option value="paid">Pagado</option><option value="failed">Fallido</option><option value="refunded">Reembolsado</option><option value="partially_refunded">Reembolso parcial</option><option value="canceled">Cancelado</option>
+            </select>}</label>
+          <label><span>Preparación</span><select value={o.fulfillment_status} disabled={o.payment_status!=="paid"||busy} title={o.payment_status!=="paid"?"El pedido debe estar pagado antes de iniciar la preparación":undefined} onChange={e=>saveOrder(o,{fulfillment_status:e.target.value})}>
+            <option value="unfulfilled">Sin preparar</option><option value="processing">Procesando</option><option value="partially_fulfilled">Parcialmente preparado</option><option value="fulfilled">Preparado</option><option value="delivered">Entregado</option><option value="returned">Devuelto</option><option value="canceled">Cancelado</option>
+          </select></label>
+          <button className="btn btnGhost" type="button" disabled={!address.ok||o.payment_status!=="paid"||busy} title={!address.ok?"Completa la dirección antes de crear el envío":o.payment_status!=="paid"?"El pedido debe estar pagado antes de crear el envío":undefined} onClick={()=>{if(window.confirm("¿Confirmas que deseas crear un envío para esta orden?"))createFulfillment(o.id);}}>Crear envío</button>
         </div>
       })}
     </section>
