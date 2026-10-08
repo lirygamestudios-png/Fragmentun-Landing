@@ -61,7 +61,8 @@ export default function LiryGamesMfaSetupPage(){
       const supabase=createSupabaseBrowserClient();
       const result=await supabase.auth.mfa.enroll({
         factorType:"totp",
-        friendlyName:"LIRYGAMES Commander"
+        friendlyName:"LIRYGAMES Commander",
+        issuer:"LIRYGAMES Commander"
       });
       if(result.error){
         setMessageType("error");
