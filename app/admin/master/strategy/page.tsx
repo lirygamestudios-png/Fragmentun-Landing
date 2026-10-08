@@ -164,11 +164,20 @@ export default async function MasterStrategyPage(){
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleStrategy}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · ESTRATEGIA</span><h1>Estrategia</h1><p>Objetivos, resultados y métricas conectados a la operación real.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">ES</span>
+      <div className={styles.moduleStripCopy}><small>ESTRATEGIA Y PRIORIDADES</small><strong>Objetivos, resultados y decisiones</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Seguimiento estratégico conectado</span>
+        <span>Cambios protegidos · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Objetivos activos</small><strong>{activeObjectives.length}</strong><span>{objectiveRows.length} totales</span></article>
