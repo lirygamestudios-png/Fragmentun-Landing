@@ -258,8 +258,8 @@ export default async function MasterDataPage(){
     <section className={styles.kpis}>
       <article><small>Visitas 30 días</small><strong>{(pageViews||0).toLocaleString()}</strong><span>Tráfico medido</span></article>
       <article><small>Conversión a Amazon</small><strong>{amazonCtr.toFixed(1)}%</strong><span>Clics / visitas</span></article>
-      <article><small>Acceso a datos</small><strong>PROTEGIDO</strong><span>Administración y edición</span></article>
-      <article><small>Producción</small><strong>PROTEGIDA</strong><span>Versión pública intacta</span></article>
+      <article><small>Acceso a datos</small><strong className={styles.kpiCompactValue}>PROTEGIDO</strong><span>Administración y edición</span></article>
+      <article><small>Producción</small><strong className={styles.kpiCompactValue}>PROTEGIDA</strong><span>Versión pública intacta</span></article>
     </section>
   </main>;
 }
