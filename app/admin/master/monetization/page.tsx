@@ -89,8 +89,8 @@ export default async function MasterMonetizationPage(){
   const[
     {data:products,error:productsError},
     {data:orders,error:ordersError},
-    {count:amazonClicks},
-    {count:merchClicks},
+    {count:amazonClicks,error:amazonClicksError},
+    {count:merchClicks,error:merchClicksError},
     {data:games},
     {data:virtualItems,error:virtualItemsError},
     {data:virtualOffers,error:virtualOffersError},
@@ -110,6 +110,7 @@ export default async function MasterMonetizationPage(){
     supabase.from("game_engagement_daily").select("metric_date,game_id,platform,active_players,new_players,sessions,session_minutes").order("metric_date",{ascending:false}).limit(500)
   ]);
 
+  const externalClicksAvailable=!amazonClicksError&&!merchClicksError;
   const productsAvailable=!productsError;
   const ordersAvailable=!ordersError;
   const productRows=(products||[]) as any[];
@@ -177,7 +178,7 @@ export default async function MasterMonetizationPage(){
       <article><small>Productos activos</small><strong>{productsAvailable?active.length:"NO DISPONIBLE"}</strong><span>{productsAvailable?featured.length+" destacados":"No se pudo consultar el catálogo"}</span></article>
       <article><small>Ingresos cobrados</small><strong className={styles.kpiLongValue}>{ordersAvailable?money(revenue,currency):"NO DISPONIBLE"}</strong><span>Solo órdenes reales de la muestra consultada</span></article>
       <article><small>Margen</small><strong className={styles.kpiLongValue}>{ordersAvailable?money(margin,currency):"NO DISPONIBLE"}</strong><span>Solo órdenes reales de la muestra consultada</span></article>
-      <article><small>Interacciones externas</small><strong>{((amazonClicks||0)+(merchClicks||0)).toLocaleString()}</strong><span>Amazon + tienda</span></article>
+      <article><small>Interacciones externas</small><strong>{externalClicksAvailable?((amazonClicks||0)+(merchClicks||0)).toLocaleString():"NO DISPONIBLE"}</strong><span>{externalClicksAvailable?"Amazon + tienda · Recuento real":"No se pudieron consultar las interacciones externas"}</span></article>
     </section>
 
     <section className={styles.sectionHead}>
