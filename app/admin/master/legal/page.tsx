@@ -5,6 +5,13 @@ import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
+function invalidDateRange(start:string|null,end:string|null){
+  return Boolean(start&&end&&end<start);
+}
+function validCurrency(value:string){
+  return /^[A-Z]{3}$/.test(value);
+}
+
 function assetEstadoLabel(value:string){
   const map:Record<string,string>={draft:"BORRADOR",active:"ACTIVO",licensed:"LICENCIADO",archived:"ARCHIVADO",disputed:"EN DISPUTA",retired:"RETIRADO"};
   return map[value]||String(value||"").toUpperCase();
@@ -68,7 +75,7 @@ async function createRight(formData:FormData){
   const allowedRight=new Set(["copyright","trademark","publishing","audiovisual","game","merchandising","translation","distribution","adaptation","music","other"]);
   const allowedExclusivity=new Set(["exclusive","non_exclusive","shared","unknown"]);
   const allowedEstado=new Set(["owned","licensed_out","licensed_in","expired","terminated","disputed","pending"]);
-  if(!assetId||!allowedRight.has(rightType)||!allowedExclusivity.has(exclusivity)||!allowedEstado.has(status)) throw new Error("invalid_right");
+  if(!assetId||!allowedRight.has(rightType)||!allowedExclusivity.has(exclusivity)||!allowedEstado.has(status)||invalidDateRange(startDate,endDate)) throw new Error("invalid_right");
   const{error}=await supabase.from("ip_rights").insert({
     asset_id:assetId,right_type:rightType,territory,exclusivity,holder_name:holderName,licensee_name:licenseeName,
     start_date:startDate,end_date:endDate,status,created_by:user.id
@@ -91,7 +98,7 @@ async function createContract(formData:FormData){
   const noticeDays=noticeRaw?Math.max(0,Number(noticeRaw)):null;
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowed=new Set(["nda","license","publishing","development","employment","contractor","vendor","distribution","investment","partnership","other"]);
-  if(!code||!title||!allowed.has(type)||(noticeDays!==null&&!Number.isFinite(noticeDays))) throw new Error("invalid_contract");
+  if(!code||!title||!allowed.has(type)||(noticeDays!==null&&(!Number.isFinite(noticeDays)||!Number.isInteger(noticeDays)))||invalidDateRange(effectiveDate,expirationDate)) throw new Error("invalid_contract");
   const{error}=await supabase.from("legal_contracts").insert({
     contract_code:code,title,contract_type:type,counterparty,effective_date:effectiveDate,expiration_date:expirationDate,
     auto_renew:autoRenew,renewal_notice_days:noticeDays,notes,created_by:user.id
@@ -135,7 +142,7 @@ async function updateRight(formData:FormData){
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedEstado=new Set(["owned","licensed_out","licensed_in","expired","terminated","disputed","pending"]);
   const allowedEx=new Set(["exclusive","non_exclusive","shared","unknown"]);
-  if(!id||!allowedEstado.has(status)||!allowedEx.has(exclusivity)) throw new Error("invalid_right_update");
+  if(!id||!allowedEstado.has(status)||!allowedEx.has(exclusivity)||invalidDateRange(startDate,endDate)) throw new Error("invalid_right_update");
   const{error}=await supabase.from("ip_rights").update({
     status,exclusivity,territory,holder_name:holderName,licensee_name:licenseeName,
     start_date:startDate,end_date:endDate,notes,updated_at:new Date().toISOString()
@@ -161,7 +168,7 @@ async function updateContract(formData:FormData){
   const currency=(String(formData.get("currency")||"USD").trim()||"USD").toUpperCase();
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedEstado=new Set(["draft","review","signature","active","expired","terminated","canceled"]);
-  if(!id||!allowedEstado.has(status)||(noticeDays!==null&&!Number.isFinite(noticeDays))||(valueCents!==null&&(!Number.isFinite(valueCents)||valueCents<0))) throw new Error("invalid_contract_update");
+  if(!id||!allowedEstado.has(status)||(noticeDays!==null&&(!Number.isFinite(noticeDays)||!Number.isInteger(noticeDays)))||(valueCents!==null&&(!Number.isFinite(valueCents)||valueCents<0))||!validCurrency(currency)||invalidDateRange(effectiveDate,expirationDate)) throw new Error("invalid_contract_update");
   const{error}=await supabase.from("legal_contracts").update({
     status,owner_user_id:ownerUserId,effective_date:effectiveDate,expiration_date:expirationDate,
     auto_renew:autoRenew,renewal_notice_days:noticeDays,value_cents:valueCents,currency,notes,updated_at:new Date().toISOString()
