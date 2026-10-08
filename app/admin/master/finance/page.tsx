@@ -5,6 +5,10 @@ import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
+function validCurrency(value:string){
+  return /^[A-Z]{3}$/.test(value);
+}
+
 function money(cents:number|null|undefined,currency="USD"){
   return new Intl.NumberFormat("en-US",{style:"currency",currency}).format((cents||0)/100);
 }
@@ -39,7 +43,7 @@ async function createFinanceAccount(formData:FormData){
   const type=String(formData.get("account_type")||"other");
   const currency=(String(formData.get("currency")||"USD").trim()||"USD").toUpperCase();
   const allowed=new Set(["asset","liability","equity","revenue","expense","cash","bank","processor","other"]);
-  if(!code||!name||!allowed.has(type)) throw new Error("invalid_account");
+  if(!code||!name||!allowed.has(type)||!validCurrency(currency)) throw new Error("invalid_account");
   const{error}=await supabase.from("finance_accounts").insert({code,name,account_type:type,currency,created_by:user.id});
   if(error) throw new Error(error.message);
   revalidatePath("/admin/master/finance");
@@ -62,7 +66,7 @@ async function createFinanceTransaction(formData:FormData){
   const sourceId=String(formData.get("source_id")||"").trim()||null;
   const allowedType=new Set(["income","expense","transfer","refund","fee","adjustment","tax"]);
   const allowedStatus=new Set(["draft","pending","posted","reconciled","void"]);
-  if(!description||!allowedType.has(type)||!allowedStatus.has(status)||!Number.isFinite(amount)) throw new Error("invalid_transaction");
+  if(!description||!allowedType.has(type)||!allowedStatus.has(status)||!Number.isFinite(amount)||amount===0||!validCurrency(currency)||(["posted","reconciled"].includes(status)&&!accountId)) throw new Error("invalid_transaction");
   const amountCents=Math.round(amount*100);
   const signedAmount=["expense","refund","fee","tax"].includes(type)?-Math.abs(amountCents):Math.abs(amountCents);
   const{error}=await supabase.from("finance_transactions").insert({
@@ -81,7 +85,7 @@ async function updateFinanceAccount(formData:FormData){
   const id=String(formData.get("account_id")||"").trim();
   const active=String(formData.get("active")||"true")==="true";
   const currency=(String(formData.get("currency")||"USD").trim()||"USD").toUpperCase();
-  if(!id) throw new Error("account_required");
+  if(!id||!validCurrency(currency)) throw new Error("account_required");
   const{error}=await supabase.from("finance_accounts").update({
     active,currency,updated_at:new Date().toISOString()
   }).eq("id",id);
@@ -101,7 +105,7 @@ async function updateFinanceTransaction(formData:FormData){
   const description=String(formData.get("description")||"").trim()||null;
   const externalReference=String(formData.get("external_reference")||"").trim()||null;
   const allowedStatus=new Set(["draft","pending","posted","reconciled","void"]);
-  if(!id||!allowedStatus.has(status)) throw new Error("invalid_transaction_update");
+  if(!id||!allowedStatus.has(status)||(["posted","reconciled"].includes(status)&&!accountId)) throw new Error("invalid_transaction_update");
   const patch:any={
     status,account_id:accountId,category,counterparty,external_reference:externalReference,updated_at:new Date().toISOString()
   };
