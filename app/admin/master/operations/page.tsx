@@ -294,8 +294,8 @@ export default async function MasterOperationsPage(){
     <section className={styles.kpis}>
       <article><small>Libros</small><strong>{(books||0).toLocaleString()}</strong><span>Catálogo</span></article>
       <article><small>Personajes</small><strong>{(characters||0).toLocaleString()}</strong><span>Universo IP</span></article>
-      <article><small>Acceso a datos</small><strong>PROTEGIDO</strong><span>Administración protegida</span></article>
-      <article><small>Producción</small><strong>PROTEGIDA</strong><span>Sitio público intacto</span></article>
+      <article><small>Acceso a datos</small><strong className={styles.kpiCompactValue}>PROTEGIDO</strong><span>Administración protegida</span></article>
+      <article><small>Producción</small><strong className={styles.kpiCompactValue}>PROTEGIDA</strong><span>Sitio público intacto</span></article>
     </section>
   </main>;
 }
