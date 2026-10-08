@@ -92,7 +92,7 @@ export default async function MasterAuditPage(){
       <article><small>Eventos totales</small><strong>{(total||0).toLocaleString()}</strong><span>Historial administrativo</span></article>
       <article><small>Creaciones recientes</small><strong>{inserts}</strong><span>Últimos 100 eventos</span></article>
       <article><small>Actualizaciones recientes</small><strong>{updates}</strong><span>Últimos 100 eventos</span></article>
-      <article><small>Eliminaciones recientes</small><strong>{deletes}</strong><span>Últimos 100 eventos</span></article>
+      <article className={deletes?styles.kpiAttention:undefined}><small>Eliminaciones recientes</small><strong>{deletes}</strong><span>{deletes?"Últimos 100 eventos":"Sin eliminaciones recientes"}</span></article>
     </section>
 
     <section className={styles.sectionHead}>
@@ -101,7 +101,7 @@ export default async function MasterAuditPage(){
     </section>
 
     <section className={styles.grid}>
-      {rows.map((row:any)=><article key={row.id} className={styles.card}>
+      {rows.map((row:any)=><article key={row.id} className={`${styles.card} ${row.action==="DELETE"?styles.cardAttention:row.action==="UPDATE"?styles.cardPriority:""}`}>
         <div className={styles.cardTop}>
           <span className={row.action==="DELETE"?styles.badgePlanned:styles.badgeActive}>{actionLabel(row.action)}</span>
           <em>{new Date(row.created_at).toLocaleString("es-US")}</em>
