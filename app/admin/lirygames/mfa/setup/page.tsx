@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useRef,useState} from "react";
 import {useRouter} from "next/navigation";
+import {createSupabaseBrowserClient} from "../../../../../lib/supabase/browser";
 
 export default function LiryGamesMfaSetupPage(){
   const router=useRouter();
@@ -32,19 +33,32 @@ export default function LiryGamesMfaSetupPage(){
   async function enroll(){
     setBusy(true);setMessageType("info");setMessage("Generando QR exclusivo de LIRYGAMES…");
     try{
-      const r=await fetch("/api/admin/mfa",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({action:"enroll",friendlyName:"LIRYGAMES Commander"})
+      const supabase=createSupabaseBrowserClient();
+      const result=await supabase.auth.mfa.enroll({
+        factorType:"totp",
+        friendlyName:"LIRYGAMES Commander"
       });
-      const j=await r.json().catch(()=>({}));
-      if(!r.ok){setMessageType("error");setMessage(j.detail||"No fue posible iniciar la verificación en dos pasos.");return;}
-      setFactorId(j.factorId);setQr(j.qrCode||"");setSecret(j.secret||"");
+      if(result.error){
+        setMessageType("error");
+        setMessage(result.error.message||"No fue posible generar el autenticador de LIRYGAMES.");
+        return;
+      }
+      const factor=result.data;
+      const qrCode=factor?.totp?.qr_code||"";
+      const factorSecret=factor?.totp?.secret||"";
+      if(!factor?.id||!qrCode){
+        setMessageType("error");
+        setMessage("Supabase no devolvió un código QR válido. Inténtalo nuevamente.");
+        return;
+      }
+      setFactorId(factor.id);
+      setQr(qrCode);
+      setSecret(factorSecret);
       setMessageType("success");
-      setMessage("Autenticador preparado. Escanea el código y confirma con tu código temporal.");
+      setMessage("QR generado. Escanéalo con tu aplicación autenticadora y confirma con el código temporal.");
     }catch{
       setMessageType("error");
-      setMessage("No fue posible conectar con el servicio de seguridad. Revisa tu conexión e inténtalo nuevamente.");
+      setMessage("No fue posible generar el QR. Revisa tu conexión e inténtalo nuevamente.");
     }finally{
       setBusy(false);
     }
