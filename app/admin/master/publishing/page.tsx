@@ -153,14 +153,18 @@ export default async function MasterPublishingPage(){
     {data:games},
     {count:editions},
     {count:amazonClicks},
-    {count:campaigns}
+    {count:campaigns},
+    {data:virtualItems},
+    {data:virtualOffers}
   ]=await Promise.all([
     supabase.from("publishing_storefronts").select("id,code,name,platform,region_scope,active,account_status,created_at").order("name",{ascending:true}),
     supabase.from("publishing_releases").select("id,game_id,storefront_id,sku,release_name,release_type,status,target_date,price_cents,currency,territories,certification_status,store_url,created_at").order("target_date",{ascending:true}),
     supabase.from("game_titles").select("id,name,ip_name,lifecycle_stage,health_status").order("name",{ascending:true}),
     supabase.from("book_editions").select("*",{count:"exact",head:true}),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","amazon_click"),
-    supabase.from("campaigns").select("*",{count:"exact",head:true})
+    supabase.from("campaigns").select("*",{count:"exact",head:true}),
+    supabase.from("game_virtual_items").select("id,game_id,active").eq("active",true),
+    supabase.from("game_virtual_item_offers").select("id,item_id,platform,active").eq("active",true)
   ]);
 
   const stores=(storefronts||[]) as any[];
