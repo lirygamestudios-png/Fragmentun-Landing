@@ -158,15 +158,15 @@ export default async function MasterRiskPage(){
 
     <section className={styles.kpis}>
       <article><small>Riesgos abiertos</small><strong>{open.length}</strong><span>{riskRows.length} registrados</span></article>
-      <article><small>Altos o críticos</small><strong>{high.length}</strong><span>Nivel ≥15</span></article>
-      <article><small>Vencidos</small><strong>{overdue.length}</strong><span>Fecha límite vencida</span></article>
+      <article className={high.length?styles.kpiAttention:undefined}><small>Altos o críticos</small><strong>{high.length}</strong><span>{high.length?"Nivel ≥15":"Sin riesgos altos"}</span></article>
+      <article className={overdue.length?styles.kpiAttention:undefined}><small>Vencidos</small><strong>{overdue.length}</strong><span>{overdue.length?"Fecha límite vencida":"Sin riesgos vencidos"}</span></article>
       <article><small>Evidencias</small><strong>{evidenceRows.length}</strong><span>Evidencias de control</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>RIESGOS</span><h2>Riesgos formales</h2></div><p>Los riesgos solo pasan al registro formal cuando tienen tratamiento y responsable asignados.</p></section>
     <section className={styles.grid}>
-      {riskRows.map((r:any)=><article key={r.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={Number(r.inherent_score)>=15?styles.badgePlanificado:styles.badgeActive}>{riskStatusLabel(r.status)}</span><em>Nivel {r.inherent_score}</em></div>
+      {riskRows.map((r:any)=><article key={r.id} className={`${styles.card} ${Number(r.inherent_score)>=20||r.control_status==="failed"?styles.cardAttention:Number(r.inherent_score)>=15||r.control_status==="needs_improvement"?styles.cardWarning:r.status==="closed"?styles.cardMuted:""}`}>
+        <div className={styles.cardTop}><span className={Number(r.inherent_score)>=15?styles.badgePlanned:styles.badgeActive}>{riskStatusLabel(r.status)}</span><em>Nivel {r.inherent_score}</em></div>
         <h3>{r.title}</h3>
         <p>{r.domain} · {categoryLabel(r.category)}<br/>Responsable: {ownerName(r.owner_user_id)}<br/>Probabilidad {r.likelihood} × Impacto {r.impact}<br/>{r.control_name||"Control por definir"} · {controlStatusLabel(r.control_status)}<br/>{r.due_date?"Fecha límite: "+r.due_date:"Sin fecha límite"}</p>
       </article>)}
@@ -175,8 +175,8 @@ export default async function MasterRiskPage(){
 
     <section className={styles.sectionHead}><div><span>SEÑALES DEL SISTEMA</span><h2>Señales técnicas actuales</h2></div><p>Observaciones automáticas del sistema; no equivalen por sí solas a riesgos corporativos formales.</p></section>
     <section className={styles.grid}>
-      {systemSignals.map(s=><article key={s.name} className={styles.card}>
-        <div className={styles.cardTop}><span className={s.state==="ABIERTO"?styles.badgePlanificado:styles.badgeActive}>{s.state}</span><em>SISTEMA</em></div>
+      {systemSignals.map(s=><article key={s.name} className={`${styles.card} ${s.state==="ABIERTO"?styles.cardWarning:""}`}>
+        <div className={styles.cardTop}><span className={s.state==="ABIERTO"?styles.badgePlanned:styles.badgeActive}>{s.state}</span><em>SISTEMA</em></div>
         <h3>{s.name}</h3><p>{s.detail}</p>
       </article>)}
     </section>
