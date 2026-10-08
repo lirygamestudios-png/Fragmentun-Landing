@@ -235,13 +235,13 @@ export default async function MasterLegalPage(){
     <section className={styles.kpis}>
       <article><small>Activos de propiedad intelectual</small><strong>{assetRows.length}</strong><span>Registrados</span></article>
       <article><small>Derechos</small><strong>{rightRows.length}</strong><span>Registrados</span></article>
-      <article><small>Contratos activos</small><strong>{activeContracts.length}</strong><span>{expiringSoon.length} vencen ≤90 días</span></article>
-      <article><small>Disputas</small><strong>{disputed}</strong><span>Activos + derechos</span></article>
+      <article className={expiringSoon.length?styles.kpiAttention:undefined}><small>Contratos activos</small><strong>{activeContracts.length}</strong><span>{expiringSoon.length?expiringSoon.length+" vencen ≤90 días":"Sin vencimientos próximos"}</span></article>
+      <article className={disputed?styles.kpiAttention:undefined}><small>Disputas</small><strong>{disputed}</strong><span>{disputed?"Activos + derechos en disputa":"Sin disputas registradas"}</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>PROPIEDAD INTELECTUAL</span><h2>Activos intelectuales</h2></div><p>Inventario legal separado del catálogo editorial y multimedia.</p></section>
     <section className={styles.grid}>
-      {assetRows.map((a:any)=><article key={a.id} className={styles.card}>
+      {assetRows.map((a:any)=><article key={a.id} className={`${styles.card} ${a.status==="disputed"?styles.cardAttention:["draft","archived","retired"].includes(a.status)?styles.cardMuted:a.status==="licensed"?styles.cardPriority:""}`}>
         <div className={styles.cardTop}><span className={a.status==="active"?styles.badgeActive:styles.badgePlanned}>{assetEstadoLabel(a.status)}</span><em>{a.asset_type}</em></div>
         <h3>{a.name}</h3>
         <p>{a.ip_name} · {a.owner_entity||"Titular no registrado"}<br/>{a.jurisdiction||"Jurisdicción pendiente"} · {a.registration_number||"Sin registro externo"}</p>
@@ -251,7 +251,7 @@ export default async function MasterLegalPage(){
 
     <section className={styles.sectionHead}><div><span>DERECHOS Y LICENCIAS</span><h2>Derechos y licencias</h2></div><p>Territorio, exclusividad, titular, licenciatario y vigencia por activo.</p></section>
     <section className={styles.grid}>
-      {rightRows.map((r:any)=><article key={r.id} className={styles.card}>
+      {rightRows.map((r:any)=><article key={r.id} className={`${styles.card} ${r.status==="disputed"?styles.cardAttention:r.status==="pending"?styles.cardWarning:["expired","terminated"].includes(r.status)?styles.cardMuted:["licensed_in","licensed_out"].includes(r.status)?styles.cardPriority:""}`}>
         <div className={styles.cardTop}><span className={r.status==="owned"?styles.badgeActive:styles.badgePlanned}>{rightEstadoLabel(r.status)}</span><em>{r.exclusivity}</em></div>
         <h3>{r.right_type}</h3>
         <p>{assetRows.find(a=>a.id===r.asset_id)?.name||"Activo"} · {r.territory}<br/>{r.holder_name||"Titular pendiente"}{r.licensee_name?" → "+r.licensee_name:""}<br/>{r.start_date||"sin inicio"} → {r.end_date||"sin vencimiento"}</p>
@@ -261,7 +261,7 @@ export default async function MasterLegalPage(){
 
     <section className={styles.sectionHead}><div><span>CONTRATOS</span><h2>Contratos</h2></div><p>Registro operativo de contratos; los documentos firmados pueden almacenarse después en un repositorio documental controlado.</p></section>
     <section className={styles.grid}>
-      {contractRows.map((c:any)=><article key={c.id} className={styles.card}>
+      {contractRows.map((c:any)=><article key={c.id} className={`${styles.card} ${c.status==="signature"||c.status==="review"?styles.cardPriority:["expired","terminated","canceled"].includes(c.status)?styles.cardMuted:""}`}>
         <div className={styles.cardTop}><span className={c.status==="active"?styles.badgeActive:styles.badgePlanned}>{contractEstadoLabel(c.status)}</span><em>{c.contract_type}</em></div>
         <h3>{c.title}</h3>
         <p>{c.counterparty||"Sin contraparte"} · {c.contract_code}<br/>Responsable: {ownerName(c.owner_user_id)}<br/>{c.effective_date||"Sin fecha efectiva"} → {c.expiration_date||"Sin vencimiento"}<br/>Renovación automática: {c.auto_renew?"Sí":"No"} · {c.value_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:c.currency||"USD"}).format(Number(c.value_cents)/100):"Valor no registrado"}</p>
