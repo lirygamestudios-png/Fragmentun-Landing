@@ -200,7 +200,7 @@ export default async function MasterPeoplePage(){
     </section>
 
     <section className={styles.grid}>
-      {memberRows.map((m:any)=><article key={m.id} className={styles.card}>
+      {memberRows.map((m:any)=><article key={m.id} className={`${styles.card} ${m.status==="on_leave"?styles.cardWarning:["inactive","ended"].includes(m.status)?styles.cardMuted:""}`}>
         <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActive:styles.badgePlanned}>{memberStatusLabel(m.status)}</span><em>{employmentTypeLabel(m.employment_type)}</em></div>
         <h3>{m.display_name}</h3>
         <p>{m.title||"Rol por definir"} · {m.department||"Sin departamento"}<br/>{m.location||"Ubicación no registrada"} · {m.allocation_percent}% disponibilidad base<br/>{(m.skills||[]).length?(m.skills||[]).join(" · "):"Habilidades por registrar"}</p>
@@ -210,7 +210,7 @@ export default async function MasterPeoplePage(){
 
     <section className={styles.sectionHead}><div><span>ASIGNACIONES</span><h2>Asignaciones</h2></div><p>Distribución de disponibilidad por área, proyecto o línea de trabajo.</p></section>
     <section className={styles.grid}>
-      {assignmentRows.map((a:any)=><article key={a.id} className={styles.card}>
+      {assignmentRows.map((a:any)=><article key={a.id} className={`${styles.card} ${a.priority==="critical"?styles.cardAttention:a.priority==="high"?styles.cardPriority:a.status==="paused"?styles.cardWarning:["completed","canceled"].includes(a.status)?styles.cardMuted:""}`}>
         <div className={styles.cardTop}><span className={a.status==="active"?styles.badgeActive:styles.badgePlanned}>{assignmentStatusLabel(a.status)}</span><em>{priorityLabel(a.priority)}</em></div>
         <h3>{a.domain}</h3>
         <p>{memberRows.find(m=>m.id===a.member_id)?.display_name||"Miembro"} · {a.allocation_percent}%<br/>{a.workstream||"Línea de trabajo general"}<br/>{a.start_date||"Sin inicio"} → {a.end_date||"abierto"}</p>
