@@ -52,7 +52,7 @@ async function createAutomatización(formData:FormData){
   const requiresApproval=String(formData.get("requires_approval")||"true")==="true";
   const allowedActivación=new Set(["manual","event","schedule","webhook","condition"]);
   const allowedAutonomy=new Set(["assistive","recommend","execute_low_risk","execute_with_approval"]);
-  if(!code||!name||!domain||!allowedActivación.has(triggerType)||!allowedAutonomy.has(autonomy)) throw new Error("invalid_workflow");
+  if(!code||!name||!domain||!allowedActivación.has(triggerType)||!allowedAutonomy.has(autonomy)||(autonomy==="execute_with_approval"&&!requiresApproval)) throw new Error("invalid_workflow");
   const{error}=await supabase.from("automation_workflows").insert({
     code,name,domain,trigger_type:triggerType,autonomy_level:autonomy,requires_approval:requiresApproval,created_by:user.id
   });
@@ -71,7 +71,7 @@ async function createAgent(formData:FormData){
   const autonomy=String(formData.get("autonomy_level")||"assistive");
   const requiresApproval=String(formData.get("requires_approval")||"true")==="true";
   const allowedAutonomy=new Set(["assistive","recommend","execute_low_risk","execute_with_approval"]);
-  if(!code||!name||!domain||!allowedAutonomy.has(autonomy)) throw new Error("invalid_agent");
+  if(!code||!name||!domain||!allowedAutonomy.has(autonomy)||(autonomy==="execute_with_approval"&&!requiresApproval)) throw new Error("invalid_agent");
   const{error}=await supabase.from("ai_agents").insert({
     code,name,domain,purpose,autonomy_level:autonomy,requires_approval:requiresApproval,kill_switch:false,created_by:user.id
   });
@@ -118,7 +118,7 @@ async function updateAutomatización(formData:FormData){
   const requiresApproval=String(formData.get("requires_approval")||"true")==="true";
   const allowedEstado=new Set(["draft","testing","active","paused","disabled","error"]);
   const allowedAutonomy=new Set(["assistive","recommend","execute_low_risk","execute_with_approval"]);
-  if(!id||!allowedEstado.has(status)||!allowedAutonomy.has(autonomy)) throw new Error("invalid_workflow_update");
+  if(!id||!allowedEstado.has(status)||!allowedAutonomy.has(autonomy)||(autonomy==="execute_with_approval"&&!requiresApproval)) throw new Error("invalid_workflow_update");
   const{error}=await supabase.from("automation_workflows").update({
     status,autonomy_level:autonomy,owner_user_id:ownerUserId,requires_approval:requiresApproval,updated_at:new Date().toISOString()
   }).eq("id",id);
@@ -142,7 +142,10 @@ async function updateAgent(formData:FormData){
   const purpose=String(formData.get("purpose")||"").trim()||null;
   const allowedEstado=new Set(["draft","testing","active","paused","disabled"]);
   const allowedAutonomy=new Set(["assistive","recommend","execute_low_risk","execute_with_approval"]);
-  if(!id||!allowedEstado.has(status)||!allowedAutonomy.has(autonomy)||(budgetCents!==null&&(!Number.isFinite(budgetCents)||budgetCents<0))) throw new Error("invalid_agent_update");
+  const{data:existingAgent,error:existingAgentError}=await supabase.from("ai_agents").select("kill_switch").eq("id",id).maybeSingle();
+  if(existingAgentError) throw new Error(existingAgentError.message);
+  if(!id||!existingAgent||!allowedEstado.has(status)||!allowedAutonomy.has(autonomy)||(autonomy==="execute_with_approval"&&!requiresApproval)||(budgetCents!==null&&(!Number.isFinite(budgetCents)||budgetCents<0))) throw new Error("invalid_agent_update");
+  if(existingAgent.kill_switch&&status==="active") throw new Error("kill_switch_active");
   const{error}=await supabase.from("ai_agents").update({
     status,autonomy_level:autonomy,owner_user_id:ownerUserId,requires_approval:requiresApproval,
     model_ref:modelRef,cost_budget_cents:budgetCents,purpose,updated_at:new Date().toISOString()
