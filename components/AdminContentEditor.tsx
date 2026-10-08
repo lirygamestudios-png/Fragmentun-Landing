@@ -58,6 +58,7 @@ export function AdminContentEditor(){
   const[enText,setEnText]=useState("");
   const[status,setStatus]=useState("");
   const[loading,setLoading]=useState(true);
+  const[loadError,setLoadError]=useState(false);
   const[media,setMedia]=useState<MediaAsset[]>([]);
   const[authorFile,setAuthorFile]=useState<File|null>(null);
   const[uploading,setUploading]=useState(false);
@@ -69,7 +70,10 @@ export function AdminContentEditor(){
   useEffect(()=>{
     const qs=new URLSearchParams(window.location.search);
     Promise.all([fetch("/api/admin/content"),fetch("/api/admin/media")])
-      .then(async([a,b])=>[await a.json(),await b.json()])
+      .then(async([a,b])=>{
+        if(!a.ok||!b.ok)throw new Error("load_failed");
+        return [await a.json(),await b.json()];
+      })
       .then(([content,assets])=>{
         const nextRows=content.data||[];
         setRows(nextRows);
@@ -81,8 +85,9 @@ export function AdminContentEditor(){
           setEsText(JSON.stringify(match.es,null,2));
           setEnText(JSON.stringify(match.en,null,2));
         }
-        setLoading(false);
       })
+      .catch(()=>setLoadError(true))
+      .finally(()=>setLoading(false))
   },[]);
 
   function choose(row:Row){
@@ -126,17 +131,31 @@ export function AdminContentEditor(){
     setEnText(JSON.stringify(en,null,2));
   }
   async function uploadAuthorImage(){
-    if(!authorFile)return;
+    if(!authorFile){setStatus("Selecciona una fotografía antes de continuar.");return}
     setUploading(true);setStatus("Subiendo imagen…");
     const slug="jose-liranzo-author";
     const safe=authorFile.name.toLowerCase().replace(/[^a-z0-9._-]+/g,"-");
     const path=`${slug}/${Date.now()}-${safe}`;
-    const{error}=await supabase.storage.from("official-media").upload(path,authorFile,{contentType:authorFile.type||undefined});
-    if(error){setUploading(false);setStatus(error.message);return}
-    const r=await fetch("/api/admin/media",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug,kind:"image",storage_path:`official-media/${path}`,alt_es:"José Liranzo, autor de FRAGMENTUN",alt_en:"José Liranzo, author of FRAGMENTUN",protected:false,public_visible:true,metadata:{filename:authorFile.name,bucket:"official-media",path,usage:"author_photo"}})});
-    const j=await r.json();
-    if(!r.ok){setUploading(false);setStatus(j.error||"No se pudo registrar la imagen.");return}
-    const url=assetUrl(j.data);setAuthorImage(url);setMedia(m=>[j.data,...m.filter(x=>x.id!==j.data.id)]);setAuthorFile(null);setUploading(false);setStatus("GUARDADO SATISFACTORIAMENTE");
+    try{
+      const{error}=await supabase.storage.from("official-media").upload(path,authorFile,{contentType:authorFile.type||undefined});
+      if(error){setStatus("No fue posible subir la fotografía.");return}
+      const r=await fetch("/api/admin/media",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug,kind:"image",storage_path:`official-media/${path}`,alt_es:"José Liranzo, autor de FRAGMENTUN",alt_en:"José Liranzo, author of FRAGMENTUN",protected:false,public_visible:true,metadata:{filename:authorFile.name,bucket:"official-media",path,usage:"author_photo"}})});
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok){
+        await supabase.storage.from("official-media").remove([path]).catch(()=>{});
+        setStatus(j.error||"No fue posible registrar la fotografía.");
+        return;
+      }
+      const url=assetUrl(j.data);
+      setAuthorImage(url);
+      setMedia(m=>[j.data,...m.filter(x=>x.id!==j.data.id)]);
+      setAuthorFile(null);
+      setStatus("GUARDADO SATISFACTORIAMENTE");
+    }catch{
+      setStatus("No fue posible completar la subida. Revisa la conexión e inténtalo nuevamente.");
+    }finally{
+      setUploading(false);
+    }
   }
 
   function setWhyCard(lang:"es"|"en",index:number,field:"title"|"body"|"image_url",value:string){
@@ -270,6 +289,7 @@ export function AdminContentEditor(){
   }
 
   if(loading)return <FragmentunProcessOverlay compact state="loading" title="CARGANDO CONTENIDO…"/>;
+  if(loadError)return <section className="card"><p className="adminSaveFeedback error">No fue posible cargar el contenido del sitio.</p><button type="button" className="btn btnGhost" onClick={()=>window.location.reload()}>Reintentar</button></section>;
   return <div className="adminEditorGrid">
     <aside className="adminList">
       {rows.map(row=><button key={row.content_key} onClick={()=>choose(row)} className={selected?.content_key===row.content_key?"active":""}>
