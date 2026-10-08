@@ -10,7 +10,7 @@ function dataEstadoLabel(value:string){
 }
 
 function sourceTypeLabel(value:string){
-  const map:Record<string,string>={database:"BASE DE DATOS",api:"API",analytics:"ANALÍTICA",file:"ARCHIVO",webhook:"WEBHOOK",platform:"PLATAFORMA",manual:"MANUAL",other:"OTRO"};
+  const map:Record<string,string>={database:"BASE DE DATOS",api:"SERVICIO EXTERNO",analytics:"ANALÍTICA",file:"ARCHIVO",webhook:"EVENTO AUTOMÁTICO",platform:"PLATAFORMA",manual:"MANUAL",other:"OTRO"};
   return map[value]||String(value||"").toUpperCase();
 }
 
@@ -143,13 +143,13 @@ export default async function MasterDataPage(){
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · DATOS</span><h1>Datos</h1><p>Fuentes, métricas y señales reales del ecosistema.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
       <article><small>Fuentes activas</small><strong>{activeSources.length}</strong><span>{degradedSources.length} degradadas</span></article>
       <article><small>Métricas definidas</small><strong>{metricRows.length}</strong><span>Métricas registradas</span></article>
-      <article><small>Eventos 30D</small><strong>{(events||0).toLocaleString()}</strong><span>Eventos registrados</span></article>
+      <article><small>Eventos 30 días</small><strong>{(events||0).toLocaleString()}</strong><span>Actividad registrada</span></article>
       <article><small>Conversión de contactos</small><strong>{conversion.toFixed(1)}%</strong><span>Contactos / visitas</span></article>
     </section>
 
@@ -165,8 +165,8 @@ export default async function MasterDataPage(){
     <section className={styles.sectionHead}><div><span>MÉTRICAS</span><h2>Definiciones de métricas</h2></div><p>Una sola definición por métrica para evitar interpretaciones distintas entre módulos.</p></section>
     <section className={styles.grid}>
       {metricRows.map((m:any)=><article key={m.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActivo:styles.badgePlanned}>{String(m.status).toUpperCase()}</span><em>{m.domain}</em></div>
-        <h3>{m.name}</h3><p>Responsable: {ownerName(m.owner_user_id)}<br/>{m.definition}<br/>{m.formula||"Fórmula no registrada"} · {m.unit||"sin unidad"}<br/>{m.source_table||"Fuente no asociada"}</p>
+        <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActivo:styles.badgePlanned}>{dataEstadoLabel(m.status)}</span><em>{m.domain}</em></div>
+        <h3>{m.name}</h3><p>Responsable: {ownerName(m.owner_user_id)}<br/>{m.definition}<br/>{m.formula?"Fórmula registrada":"Fórmula no registrada"} · {m.unit||"sin unidad"}<br/>{m.source_table?"Fuente asociada":"Fuente no asociada"}</p>
       </article>)}
       {!metricRows.length&&<article className={styles.card}><h3>Sin métricas definidas</h3><p>Las definiciones corporativas se registrarán aquí.</p></article>}
     </section>
@@ -180,7 +180,7 @@ export default async function MasterDataPage(){
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="supabase-main"/></label>
           <label>Nombre<input name="name" required placeholder="Supabase Principal"/></label>
-          <label>Tipo<select name="source_type" defaultValue="database"><option value="database">Base de datos</option><option value="api">API</option><option value="analytics">Analítica</option><option value="file">Archivo</option><option value="webhook">Webhook</option><option value="platform">Plataforma</option><option value="manual">Manual</option><option value="other">Otro</option></select></label>
+          <label>Tipo<select name="source_type" defaultValue="database"><option value="database">Base de datos</option><option value="api">Servicio externo</option><option value="analytics">Analítica</option><option value="file">Archivo</option><option value="webhook">Evento automático</option><option value="platform">Plataforma</option><option value="manual">Manual</option><option value="other">Otro</option></select></label>
           <label>Sistema<input name="system_name" placeholder="Supabase / Vercel / Meta"/></label>
           <label>Actualización objetivo (min)<input type="number" min="0" name="freshness_target_minutes"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
@@ -238,16 +238,16 @@ export default async function MasterDataPage(){
     <section className={styles.grid}>
       {(recentEvents||[]).map((e:any,i:number)=><article key={i} className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgeActivo}>REAL</span><em>{new Date(e.created_at).toLocaleString("es-US")}</em></div>
-        <h3>{e.event_name}</h3>
+        <h3>Actividad registrada</h3>
         <p>{[e.source,e.medium].filter(Boolean).join(" · ")||"Directo / sin atribución"}</p>
       </article>)}
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Visitas 30D</small><strong>{(pageViews||0).toLocaleString()}</strong><span>Tráfico medido</span></article>
+      <article><small>Visitas 30 días</small><strong>{(pageViews||0).toLocaleString()}</strong><span>Tráfico medido</span></article>
       <article><small>Conversión a Amazon</small><strong>{amazonCtr.toFixed(1)}%</strong><span>Clics / visitas</span></article>
-      <article><small>RLS</small><strong>ACTIVO</strong><span>Administración y edición</span></article>
-      <article><small>Producción</small><strong>PROTEGIDA</strong><span>Rama principal intacta</span></article>
+      <article><small>Acceso a datos</small><strong>PROTEGIDO</strong><span>Administración y edición</span></article>
+      <article><small>Producción</small><strong>PROTEGIDA</strong><span>Versión pública intacta</span></article>
     </section>
   </main>;
 }
