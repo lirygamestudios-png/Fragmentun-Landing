@@ -262,7 +262,7 @@ export default async function MasterCapitalPage(){
           <label>Último contacto<input type="datetime-local" name="last_contact_at"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!investorRows.length}>Actualizar inversor</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!investorRows.length} disabledReason="No hay inversionistas registrados para actualizar.">Actualizar inversor</MasterSubmitButton>
       </form>
 
       <form action={updateOpportunity} className={styles.adminForm}>
@@ -280,7 +280,7 @@ export default async function MasterCapitalPage(){
           <label className={styles.span2}>Próxima acción<input name="next_action"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!opportunityRows.length}>Actualizar oportunidad</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!opportunityRows.length} disabledReason="No hay oportunidades de capital registradas para actualizar.">Actualizar oportunidad</MasterSubmitButton>
       </form>
     </section></details>
 
