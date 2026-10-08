@@ -3,6 +3,18 @@ import { useEffect,useState } from "react";
 import { FRAGMENTUN_EMAIL_SEQUENCE,FRAGMENTUN_EMAIL_SEQUENCE_EN,FRAGMENTUN_EMAIL_BRAND } from "../lib/fragmentun-email-sequence";
 import {FragmentunProcessOverlay} from "./FragmentunProcessOverlay";
 
+function integrationErrorMessage(code:string){
+  const map:Record<string,string>={
+    load_failed:"No fue posible cargar las integraciones.",
+    mfa_required:"Completa la verificación en dos pasos antes de modificar integraciones.",
+    forbidden:"Tu usuario no tiene permiso para modificar integraciones.",
+    missing_id:"Agrega el identificador antes de activar esta integración.",
+    invalid_provider:"El servicio seleccionado no es válido.",
+    request_failed:"No fue posible completar la solicitud. Revisa la conexión."
+  };
+  return map[code]||"No fue posible completar la acción.";
+}
+
 function AdIntegrationCard({ad,label,saving,feedback,onSave}:any){
   const[enabled,setEnabled]=useState(!!ad.enabled);
   const[publicId,setPublicId]=useState(ad.public_id||"");
@@ -36,8 +48,8 @@ function AdIntegrationCard({ad,label,saving,feedback,onSave}:any){
       </label>:null}
     </div>
     <div style={{display:"flex",justifyContent:"flex-end",alignItems:"center",gap:"10px",marginTop:"14px"}}>
-      {feedback?<span className={feedback==="Guardado"?"adminSaveFeedback success":"adminSaveFeedback error"}>{feedback}</span>:null}
-      <button className="btn btnPrimary" type="button" disabled={saving} onClick={()=>onSave(ad.provider,enabled,publicId,secondaryId)}>
+      {feedback?<span role={feedback.includes("correctamente")?"status":"alert"} aria-live="polite" className={feedback.includes("correctamente")?"adminSaveFeedback success":"adminSaveFeedback error"}>{feedback}</span>:null}
+      <button className="btn btnPrimary" type="button" disabled={saving} aria-busy={saving} onClick={()=>onSave(ad.provider,enabled,publicId,secondaryId)}>
         {saving?"Guardando…":"Guardar"}
       </button>
     </div>
@@ -68,7 +80,7 @@ export function AdminIntegrationLogs(){
   useEffect(()=>{fetch("/api/admin/integrations").then(async r=>{const j=await r.json().catch(()=>({error:"load_failed"}));setData(r.ok?j:{error:j?.error||"load_failed"});}).catch(()=>setData({error:"load_failed"}))},[]);
 
   if(!data)return <FragmentunProcessOverlay compact state="loading" title="CARGANDO INTEGRACIONES…"/>;
-  if(data.error)return <p className="adminSaveFeedback error">No fue posible cargar el historial de integraciones.</p>;
+  if(data.error)return <section className="card"><p className="adminSaveFeedback error" role="alert">No fue posible cargar el historial de integraciones.</p><button type="button" className="btn btnGhost" onClick={()=>window.location.reload()}>Reintentar</button></section>;
 
   const items=data.items||[];
   const health=data.health||{};
@@ -109,7 +121,7 @@ export function AdminIntegrationLogs(){
         setData(refreshed);
       }
     }catch{
-      setProvisionResult({ok:false,error:"request_failed"});
+      setProvisionResult({ok:false,error:"request_failed",message:integrationErrorMessage("request_failed")});
     }finally{
       setProvisioning(false);
     }
@@ -126,15 +138,15 @@ export function AdminIntegrationLogs(){
       });
       const j=await r.json();
       if(!r.ok){
-        setAdFeedback(x=>({...x,[provider]:j.error==="missing_id"?"Agrega el ID antes de activar.":"No fue posible guardar."}));
+        setAdFeedback(x=>({...x,[provider]:integrationErrorMessage(String(j.error||""))}));
         return;
       }
       const refreshed=await fetch("/api/admin/integrations").then(x=>x.json());
       setData(refreshed);
-      setAdFeedback(x=>({...x,[provider]:"Guardado"}));
+      setAdFeedback(x=>({...x,[provider]:"Guardado correctamente"}));
       window.setTimeout(()=>setAdFeedback(x=>({...x,[provider]:""})),2500);
     }catch{
-      setAdFeedback(x=>({...x,[provider]:"No fue posible guardar."}));
+      setAdFeedback(x=>({...x,[provider]:integrationErrorMessage("request_failed")}));
     }finally{
       setAdSaving("");
     }
@@ -201,12 +213,12 @@ export function AdminIntegrationLogs(){
           <h2 style={{marginBottom:".25rem"}}>Secuencia de correos</h2>
           <p style={{marginTop:0,opacity:.75}}>Automatizaciones reales detectadas en la cuenta conectada.</p>
         </div>
-        <button type="button" className="btn btnPrimary" onClick={provisionAutomations} disabled={provisioning}>
+        <button type="button" className="btn btnPrimary" onClick={provisionAutomations} disabled={provisioning} aria-busy={provisioning}>
           {provisioning?"Creando borradores…":"Crear / verificar borradores ES + EN"}
         </button>
       </div>
       {provisionResult&&<div style={{margin:"0 0 16px",padding:"12px 14px",borderRadius:"12px",border:"1px solid rgba(201,168,76,.25)"}}>
-        {provisionResult.ok?<strong>✓ Borradores verificados en MailerLite</strong>:<strong>No fue posible completar la creación.</strong>}
+        {provisionResult.ok?<strong>✓ Borradores verificados en MailerLite</strong>:<strong>{provisionResult.message||integrationErrorMessage(String(provisionResult.error||""))}</strong>}
         {(provisionResult.results||[]).map((x:any)=><div key={x.name} style={{marginTop:"6px",fontSize:".86rem",opacity:.82}}>
           {x.error?"✕":"✓"} {x.name} {x.created?"· creado":x.id?"· ya existía":""} {x.error?"· "+x.error:""}
         </div>)}
