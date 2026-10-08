@@ -119,12 +119,12 @@ async function useLatestPassedValidation(formData:FormData){
     .from("runtime_validation_runs")
     .select("id,run_code,deployment_id,commit_sha,status,environment,executed_at,notes")
     .eq("environment","preview")
-    .eq("status","passed")
     .order("executed_at",{ascending:false})
     .limit(1)
     .maybeSingle();
 
-  if(!latest) throw new Error("no_passed_validation");
+  if(!latest) throw new Error("no_validation_available");
+  if(latest.status!=="passed") throw new Error("latest_validation_not_passed");
 
   const evidence=`Prueba autenticada ${latest.run_code}: todas las comprobaciones registradas como correctas. Versión ${latest.deployment_id||"—"} · código ${latest.commit_sha||"—"}.`;
 
