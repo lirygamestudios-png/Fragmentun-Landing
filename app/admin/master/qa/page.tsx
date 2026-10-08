@@ -44,7 +44,7 @@ export default async function QaFinalPage(){
   const checksOk=(failedChecks||0)===0;
   const ready=validationOk&&gateReady&&incidentsOk&&approvalsOk&&checksOk;
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleQa}`}>
     <header className={styles.topbar}>
       <div>
         <span className={styles.eyebrow}>LIRYGAMES · PRUEBAS FINALES</span>
@@ -53,6 +53,15 @@ export default async function QaFinalPage(){
       </div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">QA</span>
+      <div className={styles.moduleStripCopy}><small>PRUEBAS FINALES</small><strong>Condiciones, evidencia y decisión</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Condiciones finales conectadas</span>
+        <span>Publicación manual obligatoria</span>
+      </div>
+    </section>
 
     <section className={styles.notice}>
       <div>
