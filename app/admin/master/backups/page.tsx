@@ -41,7 +41,7 @@ export default async function MasterBackupPage(){
     supabase.from("admin_audit_log").select("created_at,action,resource_type").order("created_at",{ascending:false}).limit(1).maybeSingle()
   ]);
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleBackups}`}>
     <header className={styles.topbar}>
       <div>
         <span className={styles.eyebrow}>LIRYGAMES · COPIAS</span>
@@ -50,6 +50,15 @@ export default async function MasterBackupPage(){
       </div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">BK</span>
+      <div className={styles.moduleStripCopy}><small>COPIAS Y RECUPERACIÓN</small><strong>Respaldo, integridad y restauración</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Contenido restaurable conectado</span>
+        <span>Descarga protegida · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Recursos multimedia</small><strong>{(media||0).toLocaleString()}</strong><span>Incluidos por referencia</span></article>
