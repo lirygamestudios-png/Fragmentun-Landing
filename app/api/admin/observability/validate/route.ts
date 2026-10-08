@@ -61,7 +61,14 @@ export async function POST(request:NextRequest){
 
   const payload=clean.map((r:any)=>({...r,run_id:run.id}));
   const{error:resultsError}=await supabase.from("runtime_validation_results").insert(payload);
-  if(resultsError)return NextResponse.json({error:resultsError.message},{status:500});
+  if(resultsError){
+    await supabase.from("runtime_validation_runs").update({
+      status:"failed",
+      notes:"No fue posible guardar los resultados de la validación.",
+      updated_at:new Date().toISOString()
+    }).eq("id",run.id);
+    return NextResponse.json({error:"validation_results_save_failed"},{status:500});
+  }
 
   return NextResponse.json({ok:true,run_id:run.id,status:failed===0?"passed":"failed"});
 }
