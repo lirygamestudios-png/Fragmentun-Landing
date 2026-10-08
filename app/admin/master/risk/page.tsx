@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
+import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
@@ -24,6 +25,7 @@ async function requireRiskEditor(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user) redirect("/admin/login");
+  if(!(await hasSatisfiedMfa(supabase))) throw new Error("mfa_required");
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile||!["admin","editor"].includes(profile.role)) throw new Error("forbidden");
   return {supabase,user};
