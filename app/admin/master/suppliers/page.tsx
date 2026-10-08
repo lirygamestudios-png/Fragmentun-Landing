@@ -107,7 +107,7 @@ export default async function MasterSuppliersPage(){
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleSuppliers}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · PROVEEDORES</span><h1>Proveedores</h1><p>Registro formal de proveedores separado de las referencias existentes en productos y entregas.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.moduleStrip} aria-label="Estado del módulo">
@@ -138,7 +138,7 @@ export default async function MasterSuppliersPage(){
     <details className={styles.advancedPanel}>
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar proveedores manualmente.</p>
-        <section className={styles.adminForms}>
+        <section className={`${styles.adminForms} ${styles.adminFormsSingle}`}>
       <MasterActionForm action={createProveedor} className={styles.adminForm} successText="Proveedor registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO PROVEEDOR</span><h2>Registrar proveedor</h2></div>
         <div className={styles.formGrid}>
@@ -161,7 +161,7 @@ export default async function MasterSuppliersPage(){
     </section>
 
 
-    <section className={styles.adminForms}>
+    <section className={`${styles.adminForms} ${styles.adminFormsSingle}`}>
       <MasterActionForm action={updateProveedor} className={styles.adminForm} successText="Proveedor actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR PROVEEDOR</span><h2>Actualizar proveedor</h2></div>
         <div className={styles.formGrid}>
