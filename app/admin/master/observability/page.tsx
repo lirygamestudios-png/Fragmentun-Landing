@@ -240,9 +240,9 @@ export default async function ObservabilityPage(){
 
     <section className={styles.sectionHead}><div><span>ESTADO ACTUAL</span><h2>Estado actual</h2></div></section>
     <section className={styles.kpis}>
-      <article><small>Actividad del sitio</small><strong>{latestAnalytics?"ACTIVA":"—"}</strong><span>{latestAnalytics?.created_at?new Date(latestAnalytics.created_at).toLocaleString("es-US"):"Sin actividad registrada"}</span></article>
-      <article><small>Captación de contactos</small><strong>{latestLead?"ACTIVA":"—"}</strong><span>{latestLead?.created_at?new Date(latestLead.created_at).toLocaleString("es-US"):"Sin contactos registrados"}</span></article>
-      <article><small>Acceso seguro</small><strong>PROTEGIDO</strong><span>Login y permisos verificados</span></article>
+      <article><small>Actividad del sitio</small><strong className={styles.kpiCompactValue}>{latestAnalytics?"ACTIVA":"—"}</strong><span>{latestAnalytics?.created_at?new Date(latestAnalytics.created_at).toLocaleString("es-US"):"Sin actividad registrada"}</span></article>
+      <article><small>Captación de contactos</small><strong className={styles.kpiCompactValue}>{latestLead?"ACTIVA":"—"}</strong><span>{latestLead?.created_at?new Date(latestLead.created_at).toLocaleString("es-US"):"Sin contactos registrados"}</span></article>
+      <article><small>Acceso seguro</small><strong className={styles.kpiCompactValue}>PROTEGIDO</strong><span>Login y permisos verificados</span></article>
       <article><small>Sitio público</small><strong>PROTEGIDO</strong><span>Esta sección no publica cambios</span></article>
     </section>
 
