@@ -201,8 +201,8 @@ export default async function MasterGamesPage(){
     <section className={styles.kpis}>
       <article><small>Portafolio</small><strong>{gameRows.length}/{portfolioCapacity}</strong><span>{availableSlots} espacios disponibles</span></article>
       <article><small>Etapas abiertas</small><strong>{activeMilestones.length}</strong><span>Producción activa</span></article>
-      <article><small>En riesgo o bloqueados</small><strong>{blocked.length}</strong><span>Excepciones</span></article>
-      <article><small>Salud crítica</small><strong>{redGames.length}</strong><span>Críticos o pausados</span></article>
+      <article className={blocked.length?styles.kpiAttention:undefined}><small>En riesgo o bloqueados</small><strong>{blocked.length}</strong><span>{blocked.length?"Requieren atención":"Sin excepciones activas"}</span></article>
+      <article className={redGames.length?styles.kpiAttention:undefined}><small>Salud crítica</small><strong>{redGames.length}</strong><span>{redGames.length?"Críticos o pausados":"Sin títulos críticos"}</span></article>
     </section>
 
     <section className={styles.kpis}>
@@ -319,7 +319,7 @@ export default async function MasterGamesPage(){
     </section>
 
     <section className={styles.grid}>
-      {gameRows.map((g:any)=><article key={g.id} className={styles.card}>
+      {gameRows.map((g:any)=><article key={g.id} className={`${styles.card} ${["red","paused"].includes(g.health_status)?styles.cardAttention:g.health_status==="amber"?styles.cardWarning:""}`}>
         <div className={styles.cardTop}>
           <span className={g.health_status==="green"?styles.badgeActive:styles.badgePlanned}>{healthLabel(g.health_status)}</span>
           <em>{stageLabel(g.lifecycle_stage)}</em>
@@ -340,7 +340,7 @@ export default async function MasterGamesPage(){
     </section>
 
     <section className={styles.grid}>
-      {milestoneRows.map((m:any)=><article key={m.id} className={styles.card}>
+      {milestoneRows.map((m:any)=><article key={m.id} className={`${styles.card} ${["blocked","at_risk"].includes(m.status)?styles.cardAttention:""}`}>
         <div className={styles.cardTop}>
           <span className={m.status==="completed"?styles.badgeActive:styles.badgePlanned}>{milestoneStatusLabel(m.status)}</span>
           <em>{m.progress_percent}%</em>
