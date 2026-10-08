@@ -144,12 +144,14 @@ export default async function MasterOrganizacionesPage(){
     {data:partners},
     {data:deals},
     {count:editions},
-    {count:campaigns}
+    {count:campaigns},
+    {data:gameSignals}
   ]=await Promise.all([
     supabase.from("partner_organizations").select("id,name,partner_type,status,contact_name,contact_email,territory,website,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("licensing_deals").select("id,partner_id,deal_name,ip_name,deal_type,status,territory,exclusivity,start_date,end_date,value_cents,currency,royalty_bps,next_action,next_action_at,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("book_editions").select("*",{count:"exact",head:true}),
-    supabase.from("campaigns").select("*",{count:"exact",head:true})
+    supabase.from("campaigns").select("*",{count:"exact",head:true}),
+    supabase.from("game_purchase_events").select("provider,platform,status").limit(5000)
   ]);
 
   const partnerRows=(partners||[]) as any[];
@@ -158,6 +160,10 @@ export default async function MasterOrganizacionesPage(){
   const pipelineAcuerdos=dealRows.filter(d=>["pipeline","qualified","negotiation","contracting"].includes(d.status));
   const pipelineValue=pipelineAcuerdos.reduce((a,d)=>a+Number(d.value_cents||0),0);
   const currency=pipelineAcuerdos[0]?.currency||dealRows[0]?.currency||"USD";
+  const gameSignalRows=(gameSignals||[]) as any[];
+  const detectedProviders=[...new Set(gameSignalRows.map(x=>x.provider).filter(Boolean))];
+  const detectedPlatforms=[...new Set(gameSignalRows.map(x=>x.platform).filter(Boolean))];
+  const providerIssues=gameSignalRows.filter(x=>["failed","chargeback"].includes(x.status)).length;
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.modulePartners}`}>
     <header className={styles.topbar}>
@@ -179,6 +185,14 @@ export default async function MasterOrganizacionesPage(){
       <article><small>Acuerdos activos</small><strong>{activeAcuerdos.length}</strong><span>Licencias / distribución</span></article>
       <article><small>Acuerdos en proceso</small><strong>{pipelineAcuerdos.length}</strong><span>{money(pipelineValue,currency)}</span></article>
       <article><small>Ediciones</small><strong>{(editions||0).toLocaleString()}</strong><span>Señal editorial</span></article>
+    </section>
+
+    <section className={styles.sectionHead}><div><span>FREEMIUM · ALIANZAS</span><h2>Señales de oportunidad</h2></div><p>Plataformas y proveedores detectados en actividad real. No se convierten en aliados ni acuerdos sin validación humana.</p></section>
+    <section className={styles.kpis}>
+      <article><small>Plataformas detectadas</small><strong>{detectedPlatforms.length}</strong><span>{detectedPlatforms.length?detectedPlatforms.join(" · "):"Sin actividad todavía"}</span></article>
+      <article><small>Proveedores detectados</small><strong>{detectedProviders.length}</strong><span>{detectedProviders.length?detectedProviders.join(" · "):"Sin actividad todavía"}</span></article>
+      <article className={providerIssues?styles.kpiAttention:undefined}><small>Incidencias asociadas</small><strong>{providerIssues}</strong><span>{providerIssues?"Fallos o chargebacks":"Sin incidencias"}</span></article>
+      <article><small>Conversión a alianza</small><strong className={styles.kpiCompactValue}>MANUAL</strong><span>Requiere evaluación y acuerdo formal</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>ORGANIZACIONES</span><h2>Organizaciones</h2></div></section>
