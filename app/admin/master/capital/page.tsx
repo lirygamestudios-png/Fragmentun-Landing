@@ -181,6 +181,12 @@ export default async function MasterCapitalPage(){
   const paidRows=(orders||[]) as any[];
   const commercialRevenue=paidRows.reduce((a,o)=>a+Number(o.total_cents||0),0);
   const revenueCurrency=paidRows[0]?.currency||"USD";
+  const gamePurchaseRows=(gamePurchases||[]) as any[];
+  const paidGamePurchases=gamePurchaseRows.filter(p=>p.status==="paid");
+  const gameRevenue=paidGamePurchases.reduce((a,p)=>a+Number(p.gross_cents||0),0);
+  const gameNetRevenue=paidGamePurchases.reduce((a,p)=>a+Number((p.net_cents??p.gross_cents)||0),0);
+  const gameRevenueCurrency=paidGamePurchases[0]?.currency||"USD";
+  const payingPlayers=new Set(paidGamePurchases.map(p=>p.player_ref).filter(Boolean)).size;
   const open=opportunityRows.filter(o=>o.status==="open"||o.status==="on_hold");
   const pipelineValue=open.reduce((a,o)=>a+Number(o.target_amount_cents||0),0);
   const committedValue=opportunityRows.reduce((a,o)=>a+Number(o.committed_amount_cents||0),0);
@@ -308,6 +314,14 @@ export default async function MasterCapitalPage(){
         <MasterSubmitButton className={styles.formButton} disabled={!opportunityRows.length} disabledReason="No hay oportunidades de capital registradas para actualizar.">Actualizar oportunidad</MasterSubmitButton>
       </MasterActionForm>
     </section></details>
+
+    <section className={styles.sectionHead}><div><span>FREEMIUM · EVIDENCIA</span><h2>Tracción del primer juego</h2></div><p>Señales comerciales reales para acompañar conversaciones de capital. No alteran valuaciones ni probabilidades del pipeline automáticamente.</p></section>
+    <section className={styles.kpis}>
+      <article><small>Jugadores pagadores</small><strong>{payingPlayers.toLocaleString()}</strong><span>{paidGamePurchases.length} compras pagadas</span></article>
+      <article><small>Ingresos in-game brutos</small><strong className={styles.kpiLongValue}>{money(gameRevenue,gameRevenueCurrency)}</strong><span>Evidencia comercial</span></article>
+      <article><small>Ingresos in-game netos</small><strong className={styles.kpiLongValue}>{money(gameNetRevenue,gameRevenueCurrency)}</strong><span>Después de cargos registrados</span></article>
+      <article><small>Impacto en valuación</small><strong className={styles.kpiCompactValue}>MANUAL</strong><span>Debe evaluarse por separado</span></article>
+    </section>
 
     <section className={styles.sectionHead}><div><span>EVIDENCIA COMERCIAL</span><h2>Ingresos observados</h2></div><p>Se muestra como evidencia comercial existente y permanece separado de la captación de capital.</p></section>
     <section className={styles.kpis}>
