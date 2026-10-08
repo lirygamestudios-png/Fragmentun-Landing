@@ -937,3 +937,22 @@
 .modulePublishing .cardWarning .cardTop em{
   color:#ffc85e!important;
 }
+
+
+/* Comercio — estado operativo */
+.cardMuted{
+  opacity:.72;
+  border-style:dashed!important;
+}
+.moduleCommerce .card p strong{
+  color:#eaf2ff;
+  font-weight:800;
+}
+.moduleCommerce .cardAttention .cardTop em,
+.moduleCommerce .cardAttention .cardTop span{
+  color:#ff91aa!important;
+}
+.moduleCommerce .cardWarning .cardTop em,
+.moduleCommerce .cardWarning .cardTop span{
+  color:#ffc85e!important;
+}
