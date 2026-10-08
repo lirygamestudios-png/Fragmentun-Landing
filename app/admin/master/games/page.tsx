@@ -71,6 +71,9 @@ async function createGame(formData:FormData){
   const allowedStages=new Set(["concept","pre_production","vertical_slice","production","alpha","beta","release_candidate","launch","liveops","sunset"]);
   const allowedHealth=new Set(["green","amber","red","paused"]);
   if(!allowedStages.has(stage)||!allowedHealth.has(health)) throw new Error("invalid_game_state");
+  const{count:existingGames,error:countError}=await supabase.from("game_titles").select("*",{count:"exact",head:true});
+  if(countError) throw new Error(countError.message);
+  if((existingGames||0)>=9) throw new Error("portfolio_capacity_reached");
   const{error}=await supabase.from("game_titles").insert({
     name,slug,ip_name:ipName,lifecycle_stage:stage,health_status:health,
     platform_scope:platforms,summary,target_release_date:targetRelease,created_by:user.id
@@ -176,6 +179,9 @@ export default async function MasterGamesPage(){
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
   const primaryGame=gameRows[0]||null;
+  const portfolioCapacity=9;
+  const availableSlots=Math.max(0,portfolioCapacity-gameRows.length);
+  const portfolioUsage=Math.min(100,Math.round((gameRows.length/portfolioCapacity)*100));
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleGames}`}>
     <header className={styles.topbar}>
@@ -193,7 +199,7 @@ export default async function MasterGamesPage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Títulos</small><strong>{gameRows.length}</strong><span>Juegos registrados</span></article>
+      <article><small>Portafolio</small><strong>{gameRows.length}/{portfolioCapacity}</strong><span>{availableSlots} espacios disponibles</span></article>
       <article><small>Etapas abiertas</small><strong>{activeMilestones.length}</strong><span>Producción activa</span></article>
       <article><small>En riesgo o bloqueados</small><strong>{blocked.length}</strong><span>Excepciones</span></article>
       <article><small>Salud crítica</small><strong>{redGames.length}</strong><span>Críticos o pausados</span></article>
@@ -202,6 +208,26 @@ export default async function MasterGamesPage(){
     <section className={styles.kpis}>
       <article><small>Responsable</small><strong>{primaryGame?ownerName(primaryGame.owner_user_id):"Sin asignar"}</strong><span>{primaryGame?primaryGame.name:"Primer juego pendiente"}</span></article>
       <article><small>Fecha objetivo</small><strong>{primaryGame?.target_release_date||"Sin definir"}</strong><span>{primaryGame?"Lanzamiento previsto":"Primer juego pendiente"}</span></article>
+    </section>
+
+    <section className={styles.portfolioCapacity}>
+      <div className={styles.capacityHeader}>
+        <div><span>CAPACIDAD DEL PORTAFOLIO</span><h2>9 videojuegos · incorporación progresiva</h2></div>
+        <div className={styles.capacityProgress} aria-label={`${portfolioUsage}% del portafolio ocupado`}>
+          <b>{gameRows.length}/9</b>
+          <span><i style={{width:`${portfolioUsage}%`}}></i></span>
+        </div>
+      </div>
+      <div className={styles.capacityGrid}>
+        {Array.from({length:portfolioCapacity},(_,index)=>{
+          const game=gameRows[index];
+          return <article key={game?.id||`slot-${index}`} className={`${styles.capacitySlot} ${game?styles.capacitySlotFilled:styles.capacitySlotEmpty}`}>
+            <span className={styles.capacityIndex}>{String(index+1).padStart(2,"0")}</span>
+            <strong className={styles.capacityName}>{game?.name||"Disponible"}</strong>
+            <small className={styles.capacityMeta}>{game?stageLabel(game.lifecycle_stage):"Preparado para futuro título"}</small>
+          </article>;
+        })}
+      </div>
     </section>
 
     {["admin","editor"].includes(profile.role)&&<details id="game-advanced" className={styles.advancedPanel}>
@@ -229,7 +255,7 @@ export default async function MasterGamesPage(){
           <label>Fecha objetivo<input type="date" name="target_release_date"/></label>
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3} placeholder="Estado y objetivo del proyecto"/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} type="submit">Registrar juego</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={gameRows.length>=portfolioCapacity} disabledReason="El portafolio ya alcanzó su capacidad máxima de 9 videojuegos.">Registrar juego</MasterSubmitButton>
       </MasterActionForm>
 
       <MasterActionForm action={createMilestone} className={styles.adminForm} successText="Hito registrado correctamente.">
