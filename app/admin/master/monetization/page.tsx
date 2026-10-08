@@ -87,8 +87,8 @@ export default async function MasterMonetizationPage(){
   if(!profile) redirect("/admin/lirygames/login?unauthorized=1");
 
   const[
-    {data:products},
-    {data:orders},
+    {data:products,error:productsError},
+    {data:orders,error:ordersError},
     {count:amazonClicks},
     {count:merchClicks},
     {data:games},
@@ -110,6 +110,8 @@ export default async function MasterMonetizationPage(){
     supabase.from("game_engagement_daily").select("metric_date,game_id,platform,active_players,new_players,sessions,session_minutes").order("metric_date",{ascending:false}).limit(500)
   ]);
 
+  const productsAvailable=!productsError;
+  const ordersAvailable=!ordersError;
   const productRows=(products||[]) as any[];
   const orderRows=(orders||[]) as any[];
   const paid=orderRows.filter(o=>o.payment_status==="paid");
@@ -172,9 +174,9 @@ export default async function MasterMonetizationPage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Productos activos</small><strong>{active.length}</strong><span>{featured.length} destacados</span></article>
-      <article><small>Ingresos cobrados</small><strong className={styles.kpiLongValue}>{money(revenue,currency)}</strong><span>Solo órdenes reales</span></article>
-      <article><small>Margen</small><strong className={styles.kpiLongValue}>{money(margin,currency)}</strong><span>Solo órdenes reales</span></article>
+      <article><small>Productos activos</small><strong>{productsAvailable?active.length:"NO DISPONIBLE"}</strong><span>{productsAvailable?featured.length+" destacados":"No se pudo consultar el catálogo"}</span></article>
+      <article><small>Ingresos cobrados</small><strong className={styles.kpiLongValue}>{ordersAvailable?money(revenue,currency):"NO DISPONIBLE"}</strong><span>Solo órdenes reales de la muestra consultada</span></article>
+      <article><small>Margen</small><strong className={styles.kpiLongValue}>{ordersAvailable?money(margin,currency):"NO DISPONIBLE"}</strong><span>Solo órdenes reales de la muestra consultada</span></article>
       <article><small>Interacciones externas</small><strong>{((amazonClicks||0)+(merchClicks||0)).toLocaleString()}</strong><span>Amazon + tienda</span></article>
     </section>
 
@@ -283,7 +285,7 @@ export default async function MasterMonetizationPage(){
         <h3>{p.name_es||p.name_en||p.sku||"Producto"}</h3>
         <p>{p.price_cents!=null?money(p.price_cents,p.currency||"USD"):"Precio por definir"} · {paymentProviderLabel(p.payment_provider)}<br/>Disponibilidad: {stockLabel(p.stock_status)}</p>
       </article>)}
-      {!productRows.length&&<article className={styles.card}><h3>Catálogo aún vacío</h3><p>La estructura de monetización está lista para cargar productos cuando corresponda.</p></article>}
+      {!productRows.length&&<article className={styles.card}><h3>{productsAvailable?"Catálogo aún vacío":"Catálogo no disponible"}</h3><p>{productsAvailable?"La estructura de monetización está lista para cargar productos cuando corresponda.":"No se pudo consultar el catálogo comercial; intenta nuevamente más tarde."}</p></article>}
     </section>
   </main>;
 }
