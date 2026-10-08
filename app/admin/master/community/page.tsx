@@ -58,17 +58,29 @@ async function addAction(formData:FormData){
   const description=String(formData.get("description")||"").trim()||null;
   const delta=Number(formData.get("points_delta")||0);
   const allowed=new Set(["share","referral","comment","event","survey","beta_signup","beta_feedback","purchase","community_join","other"]);
-  if(!memberId||!allowed.has(type)||!Number.isFinite(delta)) throw new Error("invalid_action");
-  const{error}=await supabase.from("community_actions").insert({
-    member_id:memberId,action_type:type,source,description,points_delta:Math.trunc(delta),created_by:user.id
-  });
-  if(error) throw new Error(error.message);
-  if(delta!==0){
-    const{data:m}=await supabase.from("community_members").select("points").eq("id",memberId).maybeSingle();
-    await supabase.from("community_members").update({
-      points:Math.max(0,Number(m?.points||0)+Math.trunc(delta)),
-      last_activity_at:new Date().toISOString(),updated_at:new Date().toISOString()
-    }).eq("id",memberId);
+  if(!memberId||!allowed.has(type)||!Number.isFinite(delta)||!Number.isInteger(delta)) throw new Error("invalid_action");
+
+  const{data:member,error:memberError}=await supabase.from("community_members").select("points,status").eq("id",memberId).maybeSingle();
+  if(memberError) throw new Error(memberError.message);
+  if(!member) throw new Error("member_not_found");
+  if(["blocked","left"].includes(member.status)) throw new Error("member_not_active");
+
+  const currentPoints=Number(member.points||0);
+  const requestedDelta=Math.trunc(delta);
+  const effectiveDelta=requestedDelta<0?Math.max(requestedDelta,-currentPoints):requestedDelta;
+  const nextPoints=currentPoints+effectiveDelta;
+
+  const{data:action,error}=await supabase.from("community_actions").insert({
+    member_id:memberId,action_type:type,source,description,points_delta:effectiveDelta,created_by:user.id
+  }).select("id").single();
+  if(error||!action) throw new Error(error?.message||"community_action_create_failed");
+
+  const{error:updateError}=await supabase.from("community_members").update({
+    points:nextPoints,last_activity_at:new Date().toISOString(),updated_at:new Date().toISOString()
+  }).eq("id",memberId);
+  if(updateError){
+    await supabase.from("community_actions").delete().eq("id",action.id);
+    throw new Error(updateError.message);
   }
   revalidatePath("/admin/master/community");
 }
@@ -81,15 +93,15 @@ async function updateMember(formData:FormData){
   const status=String(formData.get("status")||"active");
   const tier=String(formData.get("tier")||"member");
   const source=String(formData.get("source")||"").trim()||null;
-  const points=Math.max(0,Math.trunc(Number(formData.get("points")||0)));
+  const points=Number(formData.get("points")||0);
   const betaPriority=String(formData.get("beta_priority")||"false")==="true";
   const tags=String(formData.get("tags")||"").split(",").map(x=>x.trim()).filter(Boolean);
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedEstado=new Set(["active","inactive","blocked","left"]);
   const allowedNivel=new Set(["member","engaged","advocate","beta_priority","moderator"]);
-  if(!id||!allowedEstado.has(status)||!allowedNivel.has(tier)||!Number.isFinite(points)) throw new Error("invalid_member_update");
+  if(!id||!allowedEstado.has(status)||!allowedNivel.has(tier)||!Number.isFinite(points)||!Number.isInteger(points)||points<0) throw new Error("invalid_member_update");
   const{error}=await supabase.from("community_members").update({
-    status,tier,points,beta_priority:betaPriority||tier==="beta_priority",source,tags,notes,updated_at:new Date().toISOString()
+    status,tier,points,beta_priority:status==="active"&&(betaPriority||tier==="beta_priority"),source,tags,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
   if(error) throw new Error(error.message);
   revalidatePath("/admin/master/community");
