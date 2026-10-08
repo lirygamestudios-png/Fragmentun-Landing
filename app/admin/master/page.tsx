@@ -79,7 +79,12 @@ export default async function MasterAdminPage(){
     {data:accessReviews},
     {data:contracts},
     {data:techChanges},
-    {data:fundraising}
+    {data:fundraising},
+    {data:latestGate},
+    {count:virtualItems,error:virtualItemsError},
+    {count:virtualOffers,error:virtualOffersError},
+    {count:pendingEntitlements,error:pendingEntitlementsError},
+    {count:failedEntitlements,error:failedEntitlementsError}
   ]=await Promise.all([
     supabase.from("leads").select("*",{count:"exact",head:true}),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}),
@@ -98,7 +103,12 @@ export default async function MasterAdminPage(){
     supabase.from("security_access_reviews").select("id,review_status,risk_level,due_date"),
     supabase.from("legal_contracts").select("id,status,expiration_date,auto_renew,renewal_notice_days"),
     supabase.from("tech_changes").select("id,status,risk_level,planned_at,target_environment"),
-    supabase.from("fundraising_opportunities").select("id,status,stage,probability,expected_close_date,next_action_at")
+    supabase.from("fundraising_opportunities").select("id,status,stage,probability,expected_close_date,next_action_at"),
+    supabase.from("release_gates").select("gate_code,status,target_commit,target_deployment_id,environment").eq("environment","preview").order("created_at",{ascending:false}).limit(1).maybeSingle(),
+    supabase.from("game_virtual_items").select("*",{count:"exact",head:true}).eq("active",true),
+    supabase.from("game_virtual_item_offers").select("*",{count:"exact",head:true}).eq("active",true),
+    supabase.from("game_entitlements").select("*",{count:"exact",head:true}).eq("status","pending"),
+    supabase.from("game_entitlements").select("*",{count:"exact",head:true}).eq("status","failed")
   ]);
 
   const liveSnapshot=await liveSnapshotPromise;
@@ -150,6 +160,14 @@ export default async function MasterAdminPage(){
   }).length;
   const overdueTotal=overdueWork+overdueRisks+overdueReviews+fundraisingDue;
   const criticalExceptions=gamesAtRisk+milestonesAtRisk+releaseRisks+highRiskAprobaciones+blockedWork+highRisks+criticalSecurity+riskyTechChanges;
+  const currentCommit=process.env.VERCEL_GIT_COMMIT_SHA||null;
+  const currentDeployment=process.env.VERCEL_DEPLOYMENT_ID||null;
+  const gateMatches=Boolean(latestGate&&currentCommit&&currentDeployment&&latestGate.target_commit===currentCommit&&latestGate.target_deployment_id===currentDeployment);
+  const gateCurrent=gateMatches&&latestGate?.status==="approved";
+  const gateLabel=!latestGate?"SIN REVISIÓN":!currentCommit||!currentDeployment?"NO VERIFICABLE":!gateMatches?"DESACTUALIZADA":latestGate.status==="approved"?"APROBADA":"PENDIENTE";
+  const freemiumReadable=![virtualItemsError,virtualOffersError,pendingEntitlementsError,failedEntitlementsError].some(Boolean);
+  const deliveryIssues=(pendingEntitlements||0)+(failedEntitlements||0);
+  const freemiumPrepared=freemiumReadable&&(virtualItems||0)>0&&(virtualOffers||0)>0&&deliveryIssues===0;
 
   return <main className={`${styles.workspace} ${styles.commanderWorkspace}`}>
       <header className={styles.commandHero}>
@@ -166,6 +184,23 @@ export default async function MasterAdminPage(){
       </header>
 
       <MasterCommanderLive initial={liveSnapshot}/>
+
+      <section className={styles.commandSectionHead}>
+        <div><span>CONTROL DE PRELANZAMIENTO</span><h2>Revisión y preparación FREEMIUM</h2></div>
+        <p>Indicadores de la versión de prueba. Ninguno aprueba ni publica cambios automáticamente.</p>
+      </section>
+      <section className={styles.commandAlertGrid}>
+        <a href="/admin/master/releases" className={gateCurrent?styles.commandAlertStable:styles.commandAlertCritical}>
+          <div><span>REVISIÓN DE PUBLICACIÓN</span><strong>{gateCurrent?"OK":"!"}</strong></div>
+          <h3>{gateLabel}</h3>
+          <p>{latestGate?.gate_code||"Sin revisión registrada"} · {gateCurrent?"La aprobación corresponde al código y despliegue actuales.":"Se requiere revisión humana para el Preview actual."}</p>
+        </a>
+        <a href="/admin/master/monetization" className={freemiumPrepared?styles.commandAlertStable:styles.commandAlertCritical}>
+          <div><span>FREEMIUM</span><strong>{freemiumReadable?(virtualItems||0):"—"}</strong></div>
+          <h3>{freemiumPrepared?"PREPARADO":"EN PREPARACIÓN"}</h3>
+          <p>{freemiumReadable?`${virtualItems||0} artículos · ${virtualOffers||0} ofertas · ${deliveryIssues} entregas por revisar`:"Datos de monetización no disponibles."} Preparación no equivale a autorización de lanzamiento.</p>
+        </a>
+      </section>
 
       <section className={styles.commandQuickGrid} aria-label="Accesos rápidos del centro de mando">
         <a href="/admin/master/operations"><span>01</span><div><small>OPERACIÓN</small><strong>Trabajo y decisiones</strong></div><b>→</b></a>
