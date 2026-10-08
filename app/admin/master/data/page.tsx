@@ -159,7 +159,7 @@ export default async function MasterDataPage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Fuentes activas</small><strong>{activeSources.length}</strong><span>{degradedSources.length} degradadas</span></article>
+      <article className={degradedSources.length?styles.kpiAttention:undefined}><small>Fuentes activas</small><strong>{activeSources.length}</strong><span>{degradedSources.length?degradedSources.length+" degradadas":"Sin fuentes degradadas"}</span></article>
       <article><small>Métricas definidas</small><strong>{metricRows.length}</strong><span>Métricas registradas</span></article>
       <article><small>Eventos 30 días</small><strong>{(events||0).toLocaleString()}</strong><span>Actividad registrada</span></article>
       <article><small>Conversión de contactos</small><strong>{conversion.toFixed(1)}%</strong><span>Contactos / visitas</span></article>
@@ -167,8 +167,8 @@ export default async function MasterDataPage(){
 
     <section className={styles.sectionHead}><div><span>FUENTES</span><h2>Fuentes</h2></div><p>Inventario de bases, APIs, plataformas y otras fuentes de datos.</p></section>
     <section className={styles.grid}>
-      {sourceRows.map((s:any)=><article key={s.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={s.status==="active"?styles.badgeActivo:styles.badgePlanned}>{dataEstadoLabel(s.status)}</span><em>{sourceTypeLabel(s.source_type)}</em></div>
+      {sourceRows.map((s:any)=><article key={s.id} className={`${styles.card} ${s.status==="degraded"?styles.cardAttention:s.status==="paused"?styles.cardWarning:["deprecated","retired"].includes(s.status)?styles.cardMuted:""}`}>
+        <div className={styles.cardTop}><span className={s.status==="active"?styles.badgeActive:styles.badgePlanned}>{dataEstadoLabel(s.status)}</span><em>{sourceTypeLabel(s.source_type)}</em></div>
         <h3>{s.name}</h3><p>{s.system_name||"Sistema no registrado"}<br/>Responsable: {ownerName(s.owner_user_id)}<br/>{s.freshness_target_minutes!=null?"Actualización: "+s.freshness_target_minutes+" min":"Actualización no definida"}</p>
       </article>)}
       {!sourceRows.length&&<article className={styles.card}><h3>Registro de fuentes preparado</h3><p>No se han formalizado fuentes todavía.</p></article>}
@@ -176,8 +176,8 @@ export default async function MasterDataPage(){
 
     <section className={styles.sectionHead}><div><span>MÉTRICAS</span><h2>Definiciones de métricas</h2></div><p>Una sola definición por métrica para evitar interpretaciones distintas entre módulos.</p></section>
     <section className={styles.grid}>
-      {metricRows.map((m:any)=><article key={m.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActivo:styles.badgePlanned}>{dataEstadoLabel(m.status)}</span><em>{m.domain}</em></div>
+      {metricRows.map((m:any)=><article key={m.id} className={`${styles.card} ${m.status==="draft"?styles.cardWarning:m.status==="deprecated"?styles.cardMuted:""}`}>
+        <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActive:styles.badgePlanned}>{dataEstadoLabel(m.status)}</span><em>{m.domain}</em></div>
         <h3>{m.name}</h3><p>Responsable: {ownerName(m.owner_user_id)}<br/>{m.definition}<br/>{m.formula?"Fórmula registrada":"Fórmula no registrada"} · {m.unit||"sin unidad"}<br/>{m.source_table?"Fuente asociada":"Fuente no asociada"}</p>
       </article>)}
       {!metricRows.length&&<article className={styles.card}><h3>Sin métricas definidas</h3><p>Las definiciones corporativas se registrarán aquí.</p></article>}
@@ -249,7 +249,7 @@ export default async function MasterDataPage(){
     <section className={styles.sectionHead}><div><span>SEÑALES RECIENTES</span><h2>Señales recientes</h2></div><p>Actividad reciente registrada por el sistema.</p></section>
     <section className={styles.grid}>
       {(recentEvents||[]).map((e:any,i:number)=><article key={i} className={styles.card}>
-        <div className={styles.cardTop}><span className={styles.badgeActivo}>REAL</span><em>{new Date(e.created_at).toLocaleString("es-US")}</em></div>
+        <div className={styles.cardTop}><span className={styles.badgeActive}>REAL</span><em>{new Date(e.created_at).toLocaleString("es-US")}</em></div>
         <h3>Actividad registrada</h3>
         <p>{[e.source,e.medium].filter(Boolean).join(" · ")||"Directo / sin atribución"}</p>
       </article>)}
