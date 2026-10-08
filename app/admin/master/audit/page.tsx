@@ -31,7 +31,7 @@ function resourceLabel(value:string){
 export default async function MasterAuditPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
-  if(!user) redirect("/admin/login");
+  if(!user) redirect("/admin/lirygames/login");
 
   const{data:profile}=await supabase
     .from("admin_profiles")
