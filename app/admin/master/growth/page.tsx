@@ -38,14 +38,16 @@ async function updateContact(formData:FormData){
   const contactId=String(formData.get("contact_id")||"").trim();
   const lifecycle=String(formData.get("lifecycle_stage")||"lead");
   const status=String(formData.get("status")||"active");
-  const score=Math.max(0,Math.min(100,Number(formData.get("score")||0)));
+  const score=Number(formData.get("score")||0);
   const notes=String(formData.get("notes")||"").trim()||null;
   const nextAction=String(formData.get("next_action_at")||"").trim()||null;
   const allowedEtapa=new Set(["subscriber","lead","mql","sql","opportunity","customer","advocate","inactive"]);
   const allowedStatus=new Set(["active","nurturing","qualified","contacted","won","lost","unsubscribed","suppressed"]);
-  if(!contactId||!allowedEtapa.has(lifecycle)||!allowedStatus.has(status)||!Number.isFinite(score)) throw new Error("invalid_contact_update");
+  if(!contactId||!allowedEtapa.has(lifecycle)||!allowedStatus.has(status)||!Number.isFinite(score)||!Number.isInteger(score)||score<0||score>100) throw new Error("invalid_contact_update");
 
-  const{data:before}=await supabase.from("crm_contacts").select("lifecycle_stage,status,score,notes").eq("id",contactId).maybeSingle();
+  const{data:before,error:beforeError}=await supabase.from("crm_contacts").select("lifecycle_stage,status,score,notes").eq("id",contactId).maybeSingle();
+  if(beforeError) throw new Error(beforeError.message);
+  if(!before) throw new Error("contact_not_found");
   const{error}=await supabase.from("crm_contacts").update({
     lifecycle_stage:lifecycle,status,score,notes,next_action_at:nextAction,updated_at:new Date().toISOString()
   }).eq("id",contactId);
@@ -56,10 +58,11 @@ async function updateContact(formData:FormData){
   if(before?.status!==status) changes.push("status "+before?.status+" → "+status);
   if(before?.score!==score) changes.push("score "+String(before?.score??"—")+" → "+String(score));
   if(changes.length){
-    await supabase.from("crm_activities").insert({
+    const{error:activityError}=await supabase.from("crm_activities").insert({
       contact_id:contactId,activity_type:"status_change",direction:"system",
-      subject:"CRM actualizado",body:changes.join(" · "),created_by:user.id
+      subject:"Seguimiento actualizado",body:changes.join(" · "),created_by:user.id
     });
+    if(activityError) throw new Error(activityError.message);
   }
   revalidatePath("/admin/master/growth");
 }
@@ -77,7 +80,10 @@ async function addActivity(formData:FormData){
     contact_id:contactId,activity_type:type,direction:"outbound",subject,body,created_by:user.id
   });
   if(error) throw new Error(error.message);
-  await supabase.from("crm_contacts").update({last_activity_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq("id",contactId);
+  const{error:touchError}=await supabase.from("crm_contacts").update({
+    last_activity_at:new Date().toISOString(),updated_at:new Date().toISOString()
+  }).eq("id",contactId);
+  if(touchError) throw new Error(touchError.message);
   revalidatePath("/admin/master/growth");
 }
 
