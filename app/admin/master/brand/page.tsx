@@ -5,6 +5,10 @@ import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
+function invalidDateRange(start:string|null,end:string|null){
+  return Boolean(start&&end&&end<start);
+}
+
 function narrativeEstadoLabel(value:string){
   const map:Record<string,string>={draft:"BORRADOR",review:"EN REVISIÓN",active:"ACTIVA",archived:"ARCHIVADA"};
   return map[value]||String(value||"").toUpperCase();
@@ -59,7 +63,7 @@ async function createCommunicationCampaign(formData:FormData){
   const startDate=String(formData.get("start_date")||"").trim()||null;
   const endDate=String(formData.get("end_date")||"").trim()||null;
   const allowed=new Set(["brand","pr","launch","community","investor","reputation","crisis","content","other"]);
-  if(!name||!allowed.has(type)) throw new Error("invalid_campaign");
+  if(!name||!allowed.has(type)||invalidDateRange(startDate,endDate)) throw new Error("invalid_campaign");
   const{error}=await supabase.from("communication_campaigns").insert({
     name,campaign_type:type,audience,channel_scope:channels,objective,start_date:startDate,end_date:endDate,created_by:user.id
   });
@@ -105,7 +109,7 @@ async function updateCommunicationCampaign(formData:FormData){
   const endDate=String(formData.get("end_date")||"").trim()||null;
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedEstado=new Set(["planned","active","paused","completed","canceled"]);
-  if(!id||!allowedEstado.has(status)) throw new Error("invalid_comms_update");
+  if(!id||!allowedEstado.has(status)||invalidDateRange(startDate,endDate)||(["active","completed"].includes(status)&&(!ownerUserId||!objective||channels.length===0))||(status==="completed"&&!endDate)) throw new Error("invalid_comms_update");
   const{error}=await supabase.from("communication_campaigns").update({
     status,owner_user_id:ownerUserId,audience,channel_scope:channels,objective,start_date:startDate,end_date:endDate,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
