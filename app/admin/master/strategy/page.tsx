@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function invalidDateRange(start:string|null,end:string|null){
   return Boolean(start&&end&&end<start);
@@ -195,7 +196,7 @@ export default async function MasterStrategyPage(){
     </section>
 
     {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}><summary>Opciones avanzadas</summary><section className={styles.adminForms}>
-      <form action={createObjective} className={styles.adminForm}>
+      <MasterActionForm action={createObjective} className={styles.adminForm} successText="Objetivo registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO OBJETIVO</span><h2>Registrar objetivo</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="crecimiento-trimestre-4"/></label>
@@ -207,9 +208,9 @@ export default async function MasterStrategyPage(){
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar objetivo</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={createKeyResult} className={styles.adminForm}>
+      <MasterActionForm action={createKeyResult} className={styles.adminForm} successText="Resultado clave registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO RESULTADO</span><h2>Registrar resultado medible</h2></div>
         <div className={styles.formGrid}>
           <label>Objetivo<select name="objective_id" required defaultValue=""><option value="" disabled>Seleccionar objetivo</option>{objectiveRows.map((o:any)=><option key={o.id} value={o.id}>{o.title}</option>)}</select></label>
@@ -222,12 +223,12 @@ export default async function MasterStrategyPage(){
           <label>Fecha objetivo<input type="date" name="target_date"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit" disabled={!objectiveRows.length} disabledReason="Primero registra un objetivo para poder añadir un resultado medible.">Registrar resultado</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
     </section></details>}
 
 
     {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}><summary>Opciones avanzadas</summary><section className={styles.adminForms}>
-      <form action={updateObjective} className={styles.adminForm}>
+      <MasterActionForm action={updateObjective} className={styles.adminForm} successText="Objetivo actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR OBJETIVO</span><h2>Actualizar objetivo</h2></div>
         <div className={styles.formGrid}>
           <label>Objetivo<select name="objective_id" required defaultValue=""><option value="" disabled>Seleccionar objetivo</option>{objectiveRows.map((o:any)=><option key={o.id} value={o.id}>{o.code} · {o.title}</option>)}</select></label>
@@ -240,9 +241,9 @@ export default async function MasterStrategyPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!objectiveRows.length} disabledReason="No hay objetivos registrados para actualizar.">Actualizar objetivo</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={updateKeyResult} className={styles.adminForm}>
+      <MasterActionForm action={updateKeyResult} className={styles.adminForm} successText="Resultado clave actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR RESULTADO</span><h2>Actualizar resultado</h2></div>
         <div className={styles.formGrid}>
           <label>Resultado<select name="key_result_id" required defaultValue=""><option value="" disabled>Seleccionar resultado</option>{krRows.map((kr:any)=><option key={kr.id} value={kr.id}>{kr.title}</option>)}</select></label>
@@ -254,7 +255,7 @@ export default async function MasterStrategyPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!krRows.length} disabledReason="No hay resultados medibles registrados para actualizar.">Actualizar resultado</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
     </section></details>}
 
     <section className={styles.sectionHead}><div><span>SEÑALES OPERATIVAS</span><h2>Línea base real</h2></div><p>Estas métricas sirven como referencia operativa; no sustituyen las metas definidas.</p></section>
