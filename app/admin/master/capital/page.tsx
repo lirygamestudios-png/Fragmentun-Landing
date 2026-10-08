@@ -8,6 +8,27 @@ function money(cents:number|null|undefined,currency="USD"){
   return new Intl.NumberFormat("en-US",{style:"currency",currency}).format((cents||0)/100);
 }
 
+function investorStatusLabel(value:string){
+  const map:Record<string,string>={prospect:"PROSPECTO",contacted:"CONTACTADO",engaged:"EN CONVERSACIÓN",diligence:"EN REVISIÓN",committed:"COMPROMETIDO",passed:"DESCARTADO",inactive:"INACTIVO"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+function investorTypeLabel(value:string){
+  const map:Record<string,string>={angel:"Inversionista ángel",family_office:"Oficina familiar",vc:"Capital de riesgo",strategic:"Estratégico",publisher:"Editorial / publicador",grant:"Subvención",lender:"Prestamista",other:"Otro"};
+  return map[value]||String(value||"").replaceAll("_"," ");
+}
+function investorStageLabel(value:string){
+  const map:Record<string,string>={research:"Investigación",intro:"Presentación inicial",meeting:"Reunión",follow_up:"Seguimiento",materials_sent:"Material enviado",diligence:"Revisión",term_discussion:"Discusión de términos",closed:"Cerrado"};
+  return map[value]||String(value||"").replaceAll("_"," ");
+}
+function opportunityStageLabel(value:string){
+  const map:Record<string,string>={prospect:"PROSPECTO",qualified:"CALIFICADA",meeting:"REUNIÓN",materials:"MATERIALES",diligence:"REVISIÓN",term_sheet:"HOJA DE TÉRMINOS",negotiation:"NEGOCIACIÓN",committed:"COMPROMETIDA",closed_won:"CERRADA GANADA",closed_lost:"CERRADA PERDIDA"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+function priorityLabel(value:string){
+  const map:Record<string,string>={low:"BAJA",medium:"MEDIA",high:"ALTA",critical:"CRÍTICA"};
+  return map[value]||String(value||"").toUpperCase();
+}
+
 async function requireCapitalAdmin(){
   "use server";
   const supabase=await createSupabaseServerClient();
@@ -154,7 +175,7 @@ export default async function MasterCapitalPage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · CAPITAL</span><h1>Capital e Inversionistas</h1><p>Seguimiento de inversionistas y oportunidades de capital. La estructura societaria permanece separada de este registro.</p></div>
+      <div><span className={styles.eyebrow}>LIRYGAMES · CAPITAL</span><h1>Capital e Inversionistas</h1><p>Seguimiento de inversionistas y oportunidades de capital. La estructura societaria permanece separada de este registro.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
@@ -168,9 +189,9 @@ export default async function MasterCapitalPage(){
     <section className={styles.sectionHead}><div><span>INVERSIONISTAS</span><h2>Inversionistas</h2></div><p>Registro privado visible solo para administradores.</p></section>
     <section className={styles.grid}>
       {investorRows.map((i:any)=><article key={i.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={["engaged","diligence","committed"].includes(i.status)?styles.badgeActive:styles.badgePlanned}>{String(i.status).toUpperCase()}</span><em>{i.priority}</em></div>
+        <div className={styles.cardTop}><span className={["engaged","diligence","committed"].includes(i.status)?styles.badgeActive:styles.badgePlanned}>{investorStatusLabel(i.status)}</span><em>{priorityLabel(i.priority)}</em></div>
         <h3>{i.name}</h3>
-        <p>{i.organization||"Sin organización"} · {i.investor_type}<br/>Responsable: {ownerName(i.owner_user_id)}<br/>{i.email||"Email no registrado"}<br/>Etapa: {i.stage}</p>
+        <p>{i.organization||"Sin organización"} · {investorTypeLabel(i.investor_type)}<br/>Responsable: {ownerName(i.owner_user_id)}<br/>{i.email||"Correo no registrado"}<br/>Etapa: {investorStageLabel(i.stage)}</p>
       </article>)}
       {!investorRows.length&&<article className={styles.card}><h3>Registro de inversionistas preparado</h3><p>No se han cargado inversionistas todavía. No se importan contactos personales automáticamente.</p></article>}
     </section>
@@ -178,7 +199,7 @@ export default async function MasterCapitalPage(){
     <section className={styles.sectionHead}><div><span>CAPITAL</span><h2>Oportunidades</h2></div><p>Seguimiento por monto, probabilidad, etapa, fecha y próxima acción.</p></section>
     <section className={styles.grid}>
       {opportunityRows.map((o:any)=><article key={o.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={o.status==="won"?styles.badgeActive:styles.badgePlanned}>{String(o.stage).toUpperCase()}</span><em>{o.probability}%</em></div>
+        <div className={styles.cardTop}><span className={o.status==="won"?styles.badgeActive:styles.badgePlanned}>{opportunityStageLabel(o.stage)}</span><em>{o.probability}%</em></div>
         <h3>{o.name}</h3>
         <p>{money(o.target_amount_cents,o.currency)} objetivo · {money(o.committed_amount_cents,o.currency)} comprometido<br/>Responsable: {ownerName(o.owner_user_id)}<br/>{o.expected_close_date||"Sin fecha"} · {o.next_action||"Próxima acción pendiente"}</p>
       </article>)}
@@ -191,10 +212,10 @@ export default async function MasterCapitalPage(){
         <div className={styles.formGrid}>
           <label>Nombre<input name="name" required placeholder="Nombre"/></label>
           <label>Organización<input name="organization" placeholder="Firma / empresa"/></label>
-          <label>Email<input type="email" name="email" placeholder="correo"/></label>
+          <label>Correo<input type="email" name="email" placeholder="correo"/></label>
           <label>Tipo<select name="investor_type" defaultValue="other">
             <option value="angel">Inversionista ángel</option><option value="family_office">Oficina familiar</option><option value="vc">Capital de riesgo</option>
-            <option value="strategic">Estratégico</option><option value="publisher">Editorial / publisher</option><option value="grant">Subvención</option>
+            <option value="strategic">Estratégico</option><option value="publisher">Editorial / publicador</option><option value="grant">Subvención</option>
             <option value="lender">Prestamista</option><option value="other">Otro</option>
           </select></label>
           <label>Prioridad<select name="priority" defaultValue="medium">
