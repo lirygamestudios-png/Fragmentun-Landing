@@ -70,7 +70,7 @@ export function MasterSidebar({displayName,role}:{displayName:string;role:string
       <div className={styles.navAreasLabel}>ÁREAS DE GESTIÓN</div>
       {groups.map(group=>{
         const groupActive=group.items.some(([href])=>pathname===href||pathname.startsWith(href+"/"));
-        return <details className={styles.navSubmenu} key={group.label} defaultOpen={groupActive}>
+        return <details className={styles.navSubmenu} key={group.label} open={groupActive}>
           <summary><span>{group.label}</span><i>{group.items.length}</i></summary>
           <nav className={styles.nav} aria-label={group.label}>
             {group.items.map(([href,icon,label])=>{
