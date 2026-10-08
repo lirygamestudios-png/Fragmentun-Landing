@@ -470,3 +470,308 @@
 @media(max-width:480px){
   .capacityGrid{grid-template-columns:repeat(2,1fr)}
 }
+
+
+/* Commander Center */
+.commanderWorkspace{max-width:1800px}
+.commandHero{
+  position:relative;
+  overflow:hidden;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:28px;
+  align-items:center;
+  padding:28px 30px;
+  margin-bottom:16px;
+  border:1px solid rgba(79,216,255,.26);
+  border-radius:14px;
+  background:
+    radial-gradient(circle at 86% 12%,rgba(156,92,255,.22),transparent 25%),
+    radial-gradient(circle at 61% 100%,rgba(79,216,255,.08),transparent 30%),
+    linear-gradient(135deg,rgba(15,17,43,.985),rgba(6,8,22,.99));
+  box-shadow:0 24px 70px rgba(0,0,0,.28),0 0 44px rgba(124,77,255,.07),inset 0 1px rgba(255,255,255,.04);
+}
+.commandHero::after{
+  content:"";
+  position:absolute;
+  inset:auto 8% 0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--liry-violet),var(--liry-cyan),transparent);
+  opacity:.72
+}
+.commandHeroKicker{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:var(--liry-cyan);
+  font-size:.62rem;
+  font-weight:900;
+  letter-spacing:.22em
+}
+.commandHero h1{
+  margin:9px 0 9px;
+  font-family:"Orbitron","Rajdhani",Inter,system-ui,sans-serif;
+  font-size:clamp(2.05rem,4vw,3.45rem);
+  line-height:1;
+  letter-spacing:.035em
+}
+.commandHero p{max-width:850px;margin:0;color:#91a0b9;line-height:1.6}
+.commandHeroSide{
+  min-width:245px;
+  padding:15px 16px;
+  border-radius:11px;
+  border:1px solid rgba(92,230,154,.20);
+  background:linear-gradient(180deg,rgba(9,29,34,.76),rgba(8,15,30,.86));
+  box-shadow:inset 0 1px rgba(255,255,255,.025)
+}
+.commandHeroSide span,.commandHeroSide strong,.commandHeroSide small{display:block}
+.commandHeroSide span{color:#71829b;font-size:.56rem;letter-spacing:.17em}
+.commandHeroSide strong{margin-top:7px;color:var(--liry-green);font-size:.79rem;letter-spacing:.08em}
+.commandHeroSide small{margin-top:6px;color:#8392a8;font-size:.68rem;line-height:1.45}
+
+.commandStatusBar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin:0 0 14px;
+  padding:10px 13px;
+  border:1px solid rgba(107,193,255,.13);
+  border-radius:9px;
+  background:rgba(8,11,27,.82)
+}
+.commandStatusBar>div{display:flex;align-items:center;gap:8px}
+.commandStatusBar strong{font-size:.61rem;letter-spacing:.13em;color:#dceaff}
+.commandStatusBar span{color:#667691;font-size:.62rem}
+.signalOffline{width:6px;height:6px;border-radius:50%;background:var(--liry-red);box-shadow:0 0 9px rgba(255,102,138,.65)}
+
+.commandKpis{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:10px
+}
+.commandKpis article{
+  position:relative;
+  overflow:hidden;
+  min-height:116px;
+  padding:15px 15px 14px;
+  border-radius:10px;
+  border:1px solid rgba(99,191,255,.17);
+  background:linear-gradient(180deg,rgba(13,16,39,.985),rgba(8,10,25,.99));
+  box-shadow:0 14px 34px rgba(0,0,0,.17),inset 0 1px rgba(255,255,255,.02)
+}
+.commandKpis article::before{
+  content:"";
+  position:absolute;
+  left:12px;right:12px;bottom:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(124,77,255,.75),rgba(79,216,255,.72),transparent)
+}
+.commandKpis small,.commandKpis span{display:block}
+.commandKpis small{color:#7e8ca3;font-size:.61rem;letter-spacing:.11em;text-transform:uppercase}
+.commandKpis strong{
+  display:block;
+  margin:9px 0 7px;
+  color:#fff;
+  font-family:"Orbitron","Rajdhani",Inter,system-ui,sans-serif;
+  font-size:clamp(1.24rem,2vw,1.85rem);
+  line-height:1
+}
+.commandKpis span{color:#62718a;font-size:.61rem;line-height:1.45}
+.commandKpiPrimary{
+  border-color:rgba(79,216,255,.34)!important;
+  background:radial-gradient(circle at 82% 10%,rgba(79,216,255,.10),transparent 34%),linear-gradient(180deg,rgba(14,21,43,.99),rgba(8,11,27,.99))!important;
+  box-shadow:0 16px 36px rgba(0,0,0,.20),0 0 28px rgba(79,216,255,.06)!important
+}
+
+.commandSectionHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:26px;
+  margin:34px 0 14px;
+  padding:0 2px 11px;
+  border-bottom:1px solid rgba(85,190,255,.12)
+}
+.commandSectionHead span{color:var(--liry-cyan);font-size:.58rem;font-weight:850;letter-spacing:.2em}
+.commandSectionHead h2{margin:5px 0 0;font-size:1.35rem}
+.commandSectionHead p{max-width:570px;margin:0;color:#75839a;font-size:.73rem;line-height:1.5}
+
+.commandGameGrid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px
+}
+.commandGameCard,.commandEmptyFleet{
+  min-width:0;
+  padding:17px;
+  border:1px solid rgba(156,92,255,.23);
+  border-radius:11px;
+  background:radial-gradient(circle at 90% 6%,rgba(156,92,255,.10),transparent 34%),linear-gradient(180deg,rgba(13,16,39,.985),rgba(8,10,25,.99));
+  box-shadow:0 14px 36px rgba(0,0,0,.17),inset 0 1px rgba(255,255,255,.02)
+}
+.commandGameTop{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.commandGameTop em{font-style:normal;color:#667590;font-size:.58rem;letter-spacing:.12em}
+.commandGameCard h3{margin:14px 0 14px;font-size:1.05rem}
+.commandGameMetrics{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:7px
+}
+.commandGameMetrics>div{
+  min-width:0;
+  padding:9px;
+  border-radius:8px;
+  border:1px solid rgba(100,190,255,.11);
+  background:rgba(5,7,19,.55)
+}
+.commandGameMetrics small,.commandGameMetrics span{display:block}
+.commandGameMetrics small{color:#697892;font-size:.55rem;text-transform:uppercase}
+.commandGameMetrics strong{display:block;overflow:hidden;text-overflow:ellipsis;margin:6px 0 5px;color:#f3f6ff;font-size:.82rem}
+.commandGameMetrics span{color:#586780;font-size:.53rem;line-height:1.35}
+.commandEmptyFleet{grid-column:1/-1;min-height:150px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border-style:dashed}
+.commandEmptyFleet>span{color:var(--liry-violet-2);font-size:.58rem;letter-spacing:.18em;font-weight:850}
+.commandEmptyFleet h3{margin:8px 0 6px;font-size:1.08rem}
+.commandEmptyFleet p{max-width:620px;margin:0;color:#718098;font-size:.72rem;line-height:1.55}
+.commandEmptyFleet a{margin-top:13px;color:var(--liry-cyan);text-decoration:none;font-size:.7rem;font-weight:800}
+
+.commandAlertGrid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:11px
+}
+.commandAlertGrid>a{
+  text-decoration:none;
+  color:inherit;
+  padding:15px;
+  border-radius:10px;
+  background:linear-gradient(180deg,rgba(13,16,37,.98),rgba(8,10,24,.99));
+  transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease
+}
+.commandAlertGrid>a:hover{transform:translateY(-2px)}
+.commandAlertGrid>a>div{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.commandAlertGrid span{font-size:.57rem;letter-spacing:.15em;font-weight:850}
+.commandAlertGrid strong{font-family:"Orbitron","Rajdhani",Inter,system-ui,sans-serif;font-size:1rem}
+.commandAlertGrid h3{margin:13px 0 6px;font-size:.9rem}
+.commandAlertGrid p{margin:0;color:#718098;font-size:.68rem;line-height:1.48}
+.commandAlertCritical{
+  border:1px solid rgba(255,102,138,.24);
+  box-shadow:inset 2px 0 rgba(255,102,138,.72),0 12px 30px rgba(0,0,0,.15)
+}
+.commandAlertCritical span,.commandAlertCritical strong{color:#ff8eaa}
+.commandAlertStable{
+  border:1px solid rgba(92,230,154,.16);
+  box-shadow:inset 2px 0 rgba(92,230,154,.55),0 12px 30px rgba(0,0,0,.15)
+}
+.commandAlertStable span,.commandAlertStable strong{color:#67dda0}
+
+.commandPulseGrid{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:9px
+}
+.commandPulseGrid a{
+  min-width:0;
+  text-decoration:none;
+  color:inherit;
+  padding:13px;
+  border:1px solid rgba(91,190,255,.13);
+  border-radius:9px;
+  background:rgba(10,13,31,.83);
+  transition:border-color .16s ease,background .16s ease
+}
+.commandPulseGrid a:hover{border-color:rgba(79,216,255,.38);background:rgba(14,18,41,.95)}
+.commandPulseGrid span,.commandPulseGrid strong,.commandPulseGrid small{display:block}
+.commandPulseGrid span{color:#71819b;font-size:.54rem;letter-spacing:.13em}
+.commandPulseGrid strong{margin:8px 0 6px;overflow:hidden;text-overflow:ellipsis;color:#f5f7ff;font-size:1rem}
+.commandPulseGrid small{color:#5d6d86;font-size:.58rem;line-height:1.4}
+
+.commandFooterNote{
+  margin-top:32px;
+  padding:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  border:1px solid rgba(124,77,255,.18);
+  border-radius:10px;
+  background:linear-gradient(90deg,rgba(124,77,255,.065),rgba(79,216,255,.025))
+}
+.commandFooterNote strong,.commandFooterNote span{display:block}
+.commandFooterNote strong{font-size:.78rem;color:#dfe8fb}
+.commandFooterNote span{margin-top:4px;color:#6f7d96;font-size:.68rem;line-height:1.45}
+.commandFooterNote a{white-space:nowrap;color:var(--liry-cyan);font-size:.69rem;font-weight:800;text-decoration:none}
+
+/* Navegación jerárquica del Commander Center */
+.commandNav{display:grid;gap:7px;padding:17px 0 18px;border-bottom:1px solid rgba(97,194,255,.11)}
+.commandNav a{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px;
+  border-radius:9px;
+  border:1px solid rgba(92,193,255,.10);
+  background:linear-gradient(90deg,rgba(124,77,255,.07),rgba(79,216,255,.025));
+  color:#a4b0c7;
+  text-decoration:none
+}
+.commandNav a>span:last-child{min-width:0}
+.commandNav strong,.commandNav small{display:block}
+.commandNav strong{font-size:.68rem;letter-spacing:.08em;color:#dce7f8}
+.commandNav small{margin-top:3px;color:#60708a;font-size:.55rem}
+.commandNavIcon{width:24px;color:var(--liry-cyan);text-align:center;text-shadow:0 0 10px rgba(79,216,255,.48)}
+.commandNav .commandNavActive{
+  border-color:rgba(79,216,255,.36);
+  background:linear-gradient(90deg,rgba(124,77,255,.19),rgba(79,216,255,.07));
+  box-shadow:inset 2px 0 var(--liry-cyan),0 0 20px rgba(124,77,255,.08)
+}
+.navAreasLabel{padding:16px 9px 8px;color:#4f5f7a;font-size:.52rem;letter-spacing:.2em;font-weight:850}
+.navSubmenu{margin-bottom:6px}
+.navSubmenu summary{
+  cursor:pointer;
+  list-style:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  min-height:35px;
+  padding:7px 9px;
+  border-radius:7px;
+  color:#64728d;
+  font-size:.56rem;
+  letter-spacing:.16em;
+  font-weight:850;
+  transition:color .15s ease,background .15s ease
+}
+.navSubmenu summary::-webkit-details-marker{display:none}
+.navSubmenu summary:hover{color:#aab7d0;background:rgba(255,255,255,.025)}
+.navSubmenu summary i{
+  font-style:normal;
+  min-width:19px;
+  height:19px;
+  display:grid;
+  place-items:center;
+  border-radius:999px;
+  background:rgba(124,77,255,.10);
+  color:#7b89a5;
+  font-size:.5rem
+}
+.navSubmenu[open] summary{color:#91a0bd}
+.navSubmenu .nav{padding:4px 0 4px 4px}
+
+@media(max-width:1350px){
+  .commandKpis{grid-template-columns:repeat(3,1fr)}
+  .commandPulseGrid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:1000px){
+  .commandGameGrid,.commandAlertGrid{grid-template-columns:repeat(2,1fr)}
+  .commandHero{grid-template-columns:1fr}
+  .commandHeroSide{min-width:0}
+}
+@media(max-width:700px){
+  .commandKpis,.commandGameGrid,.commandAlertGrid,.commandPulseGrid{grid-template-columns:1fr}
+  .commandStatusBar,.commandSectionHead,.commandFooterNote{display:block}
+  .commandStatusBar>div+div{margin-top:8px}
+  .commandSectionHead p{margin-top:8px}
+  .commandGameMetrics{grid-template-columns:1fr}
+  .commandFooterNote a{display:inline-block;margin-top:12px}
+}
