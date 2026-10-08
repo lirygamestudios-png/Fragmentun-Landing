@@ -6,7 +6,7 @@ import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
 
 function lifecycleLabel(value:string){
-  const map:Record<string,string>={subscriber:"SUSCRIPTOR",lead:"CONTACTO",mql:"INTERESADO",sql:"CALIFICADO",opportunity:"OPORTUNIDAD",customer:"CLIENTE",advocate:"PROMOTOR",inactive:"INACTIVO"};
+  const map:Record<string,string>={subscriber:"SUSCRIPTOR",lead:"CONTACTO",mql:"INTERESADO",sql:"CONTACTO CALIFICADO",opportunity:"OPORTUNIDAD",customer:"CLIENTE",advocate:"PROMOTOR",inactive:"INACTIVO"};
   return map[value]||String(value||"").toUpperCase();
 }
 
@@ -16,7 +16,7 @@ function contactStatusLabel(value:string){
 }
 
 function activityLabel(value:string){
-  const map:Record<string,string>={note:"NOTA",email:"EMAIL",call:"LLAMADA",dm:"MENSAJE",meeting:"REUNIÓN",form:"FORMULARIO",test:"PRUEBA",share:"COMPARTIDO",amazon_click:"CLIC AMAZON",purchase:"COMPRA",status_change:"CAMBIO DE ESTADO",score_change:"CAMBIO DE PRIORIDAD",other:"OTRO"};
+  const map:Record<string,string>={note:"NOTA",email:"CORREO",call:"LLAMADA",dm:"MENSAJE DIRECTO",meeting:"REUNIÓN",form:"FORMULARIO",test:"PRUEBA",share:"COMPARTIDO",amazon_click:"CLIC AMAZON",purchase:"COMPRA",status_change:"CAMBIO DE ESTADO",score_change:"CAMBIO DE PRIORIDAD",other:"OTRO"};
   return map[value]||String(value||"").toUpperCase();
 }
 
@@ -117,13 +117,13 @@ export default async function MasterGrowthPage(){
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · CRECIMIENTO</span><h1>Crecimiento</h1><p>Captación, conversión y seguimiento de contactos conectados al embudo real de FRAGMENTUN.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Visitas 30D</small><strong>{(views||0).toLocaleString()}</strong><span>Entrada al embudo</span></article>
-      <article><small>Contactos 30D</small><strong>{(leads||0).toLocaleString()}</strong><span>{leadRate.toFixed(1)}% conversión</span></article>
-      <article><small>Paso a Amazon</small><strong>{amazonCtr.toFixed(1)}%</strong><span>{(amazonClicks||0).toLocaleString()} clicks</span></article>
+      <article><small>Visitas 30 días</small><strong>{(views||0).toLocaleString()}</strong><span>Entrada al embudo</span></article>
+      <article><small>Contactos 30 días</small><strong>{(leads||0).toLocaleString()}</strong><span>{leadRate.toFixed(1)}% conversión</span></article>
+      <article><small>Paso a Amazon</small><strong>{amazonCtr.toFixed(1)}%</strong><span>{(amazonClicks||0).toLocaleString()} clics</span></article>
       <article><small>Compartidos</small><strong>{shareRate.toFixed(1)}%</strong><span>{(shareClicks||0).toLocaleString()} compartidos</span></article>
     </section>
 
@@ -157,7 +157,7 @@ export default async function MasterGrowthPage(){
           </select></label>
           <label>Etapa<select name="lifecycle_stage" defaultValue="lead">
             <option value="subscriber">Suscriptor</option><option value="lead">Contacto</option>
-            <option value="mql">MQL</option><option value="sql">SQL</option>
+            <option value="mql">Interesado</option><option value="sql">Contacto calificado</option>
             <option value="opportunity">Oportunidad</option><option value="customer">Cliente</option>
             <option value="advocate">Promotor</option><option value="inactive">Inactivo</option>
           </select></label>
@@ -182,8 +182,8 @@ export default async function MasterGrowthPage(){
             {contactRows.map((x:any)=><option key={x.id} value={x.id}>{x.leads?.name||x.leads?.email}</option>)}
           </select></label>
           <label>Tipo<select name="activity_type" defaultValue="note">
-            <option value="note">Nota</option><option value="email">Email</option><option value="call">Llamada</option>
-            <option value="dm">DM</option><option value="meeting">Reunión</option><option value="other">Otro</option>
+            <option value="note">Nota</option><option value="email">Correo</option><option value="call">Llamada</option>
+            <option value="dm">Mensaje directo</option><option value="meeting">Reunión</option><option value="other">Otro</option>
           </select></label>
           <label className={styles.span2}>Asunto<input name="subject" placeholder="Seguimiento"/></label>
           <label className={styles.span2}>Detalle<textarea name="body" rows={4} placeholder="Detalle de la interacción"/></label>
