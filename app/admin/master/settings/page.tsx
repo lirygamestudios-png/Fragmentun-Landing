@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function settingStatusLabel(value:string){
   const map:Record<string,string>={active:"ACTIVO",inactive:"INACTIVO",deprecated:"OBSOLETO"};
@@ -156,7 +157,7 @@ export default async function SettingsPage(){
     </section>
 
     <details className={styles.advancedPanel}><summary>Opciones avanzadas</summary><section className={styles.adminForms}>
-      <form action={createSetting} className={styles.adminForm}>
+      <MasterActionForm action={createSetting} className={styles.adminForm} successText="Parámetro registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO PARÁMETRO</span><h2>Registrar parámetro</h2></div>
         <div className={styles.formGrid}>
           <label>Clave<input name="setting_key" required placeholder="interfaz.idioma_predeterminado"/></label>
@@ -167,9 +168,9 @@ export default async function SettingsPage(){
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton}>Registrar parámetro</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={createFlag} className={styles.adminForm}>
+      <MasterActionForm action={createFlag} className={styles.adminForm} successText="Control registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO CONTROL</span><h2>Registrar control de activación</h2></div>
         <div className={styles.formGrid}>
           <label>Clave<input name="flag_key" required placeholder="control.nueva_funcion"/></label>
@@ -179,11 +180,11 @@ export default async function SettingsPage(){
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton}>Registrar control</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
     </section>
 
     <section className={styles.adminForms}>
-      <form action={updateSetting} className={styles.adminForm}>
+      <MasterActionForm action={updateSetting} className={styles.adminForm} successText="Parámetro actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR PARÁMETRO</span><h2>Actualizar parámetro</h2></div>
         <div className={styles.formGrid}>
           <label>Parámetro<select name="setting_id" required defaultValue=""><option value="" disabled>Seleccionar parámetro</option>{settingRows.map((s:any)=><option key={s.id} value={s.id}>{s.setting_key} · {s.label}</option>)}</select></label>
@@ -193,9 +194,9 @@ export default async function SettingsPage(){
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!settingRows.length} disabledReason="No hay parámetros registrados para actualizar.">Actualizar parámetro</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={updateFlag} className={styles.adminForm}>
+      <MasterActionForm action={updateFlag} className={styles.adminForm} successText="Control actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR CONTROL</span><h2>Actualizar control de activación</h2></div>
         <div className={styles.formGrid}>
           <label>Control<select name="flag_id" required defaultValue=""><option value="" disabled>Seleccionar control</option>{flagRows.map((f:any)=><option key={f.id} value={f.id}>{f.flag_key} · {f.label}</option>)}</select></label>
@@ -207,7 +208,7 @@ export default async function SettingsPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!flagRows.length} disabledReason="No hay controles de activación registrados para actualizar.">Actualizar control</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
     </section></details>
 
     <section className={styles.notice}>
