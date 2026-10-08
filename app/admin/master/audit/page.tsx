@@ -2,6 +2,32 @@ import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
+function actionLabel(value:string){
+  const map:Record<string,string>={INSERT:"CREACIÓN",UPDATE:"ACTUALIZACIÓN",DELETE:"ELIMINACIÓN"};
+  return map[value]||String(value||"").toUpperCase();
+}
+function resourceLabel(value:string){
+  const map:Record<string,string>={
+    admin_profiles:"Perfiles administrativos",
+    admin_access_allowlist:"Lista de acceso",
+    leads:"Contactos",
+    books:"Libros",
+    media_assets:"Recursos multimedia",
+    characters:"Personajes",
+    campaigns:"Campañas",
+    ops_work_items:"Trabajo operativo",
+    ops_decisions:"Decisiones",
+    security_incidents:"Incidentes de seguridad",
+    security_access_reviews:"Revisiones de acceso",
+    finance_transactions:"Movimientos financieros",
+    feature_flags:"Controles de activación",
+    corporate_settings:"Configuración",
+    release_gates:"Revisiones de publicación",
+    release_gate_checks:"Comprobaciones de publicación"
+  };
+  return map[value]||String(value||"").replaceAll("_"," ").replace(/\b\w/g,m=>m.toUpperCase());
+}
+
 export default async function MasterAuditPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -46,51 +72,51 @@ export default async function MasterAuditPage(){
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div>
-        <span className={styles.eyebrow}>MASTER ADMIN · AUDITORÍA</span>
-        <h1>Auditoría transversal</h1>
-        <p>Cambios administrativos registrados automáticamente mediante triggers de base de datos.</p>
+        <span className={styles.eyebrow}>LIRYGAMES · AUDITORÍA</span>
+        <h1>Auditoría</h1>
+        <p>Cambios administrativos registrados automáticamente para mantener trazabilidad.</p>
       </div>
-      <a className={styles.publicSite} href="/admin/master">← Command Center</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Eventos totales</small><strong>{(total||0).toLocaleString()}</strong><span>admin_audit_log</span></article>
-      <article><small>INSERT recientes</small><strong>{inserts}</strong><span>Últimos 100 eventos</span></article>
-      <article><small>UPDATE recientes</small><strong>{updates}</strong><span>Últimos 100 eventos</span></article>
-      <article><small>DELETE recientes</small><strong>{deletes}</strong><span>Últimos 100 eventos</span></article>
+      <article><small>Eventos totales</small><strong>{(total||0).toLocaleString()}</strong><span>Historial administrativo</span></article>
+      <article><small>Creaciones recientes</small><strong>{inserts}</strong><span>Últimos 100 eventos</span></article>
+      <article><small>Actualizaciones recientes</small><strong>{updates}</strong><span>Últimos 100 eventos</span></article>
+      <article><small>Eliminaciones recientes</small><strong>{deletes}</strong><span>Últimos 100 eventos</span></article>
     </section>
 
     <section className={styles.sectionHead}>
-      <div><span>CHANGE STREAM</span><h2>Actividad reciente</h2></div>
-      <p>Se muestran metadatos del cambio. Los payloads old/new permanecen fuera de esta vista resumida.</p>
+      <div><span>HISTORIAL</span><h2>Actividad reciente</h2></div>
+      <p>Se muestran los datos básicos de cada cambio; el detalle sensible permanece fuera de esta vista resumida.</p>
     </section>
 
     <section className={styles.grid}>
       {rows.map((row:any)=><article key={row.id} className={styles.card}>
         <div className={styles.cardTop}>
-          <span className={row.action==="DELETE"?styles.badgePlanned:styles.badgeActive}>{row.action}</span>
+          <span className={row.action==="DELETE"?styles.badgePlanned:styles.badgeActive}>{actionLabel(row.action)}</span>
           <em>{new Date(row.created_at).toLocaleString("es-US")}</em>
         </div>
-        <h3>{row.table_name}</h3>
-        <p>Registro: {row.record_id||"—"}<br/>Actor: {actorName(row.user_id)}</p>
+        <h3>{resourceLabel(row.table_name)}</h3>
+        <p>Registro: {row.record_id||"—"}<br/>Responsable: {actorName(row.user_id)}</p>
       </article>)}
       {!rows.length&&<article className={styles.card}><h3>Sin eventos</h3><p>Los cambios futuros en registros maestros aparecerán automáticamente aquí.</p></article>}
     </section>
 
     <section className={styles.sectionHead}>
-      <div><span>HOTSPOTS</span><h2>Tablas con más cambios recientes</h2></div>
+      <div><span>ACTIVIDAD</span><h2>Áreas con más cambios recientes</h2></div>
     </section>
     <section className={styles.grid}>
       {topTables.map(([name,count])=><article key={name} className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>AUDITADO</span><em>{count} eventos</em></div>
-        <h3>{name}</h3><p>Presencia dentro de los últimos 100 cambios administrativos.</p>
+        <h3>{resourceLabel(name)}</h3><p>Presencia dentro de los últimos 100 cambios administrativos.</p>
       </article>)}
-      {!topTables.length&&<article className={styles.card}><h3>Sin hotspots</h3><p>La auditoría está activa y lista para registrar cambios.</p></article>}
+      {!topTables.length&&<article className={styles.card}><h3>Sin áreas destacadas</h3><p>La auditoría está activa y lista para registrar cambios.</p></article>}
     </section>
 
     <section className={styles.notice}>
-      <div><strong>Cobertura</strong><span>60 tablas del ecosistema con INSERT / UPDATE / DELETE auditados.</span></div>
-      <code>admin_audit_log</code>
+      <div><strong>Cobertura</strong><span>El historial administrativo registra creaciones, actualizaciones y eliminaciones relevantes del ecosistema.</span></div>
+      <code>Trazabilidad activa</code>
     </section>
   </main>;
 }
