@@ -216,6 +216,14 @@ export default async function MasterTechnologyPage(){
       <article><small>Administradores</small><strong>{(profiles||0).toLocaleString()}</strong><span>Usuarios administrativos</span></article>
     </section>
 
+    <section className={styles.notice}>
+      <div>
+        <strong>Preparación FREEMIUM</strong>
+        <span>{process.env.GAME_INGEST_SECRET?"Ingreso firmado configurado.":"Ingreso firmado pendiente hasta el primer juego online."} {latestGamePurchase?"Hay compras in-game registradas.":"Sin compras in-game todavía."} {latestGameMetric?"Telemetría recibida.":"Sin telemetría todavía."}</span>
+      </div>
+      <code>{((gameEntitlements||[]) as any[]).filter(e=>["pending","failed"].includes(e.status)).length} entregas por revisar</code>
+    </section>
+
     <section className={styles.sectionHead}><div><span>SERVICIOS</span><h2>Servicios técnicos</h2></div><p>Componentes y proveedores técnicos registrados.</p></section>
     <section className={styles.grid}>
       {serviceRows.map((s:any)=><article key={s.id} className={`${styles.card} ${s.status==="degraded"||s.criticality==="critical"?styles.cardAttention:s.status==="maintenance"||s.criticality==="high"?styles.cardWarning:["deprecated","retired"].includes(s.status)?styles.cardMuted:""}`}>
