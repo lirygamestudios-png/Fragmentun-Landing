@@ -25,7 +25,7 @@ async function requireCommunityEditor(){
   "use server";
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
-  if(!user) redirect("/admin/login");
+  if(!user) redirect("/admin/lirygames/login");
   if(!(await hasSatisfiedMfa(supabase))) throw new Error("mfa_required");
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile||!["admin","editor","marketing"].includes(profile.role)) throw new Error("forbidden");
@@ -111,9 +111,9 @@ async function updateMember(formData:FormData){
 export default async function CommunityPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
-  if(!user) redirect("/admin/login");
+  if(!user) redirect("/admin/lirygames/login");
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
-  if(!profile) redirect("/admin/login?unauthorized=1");
+  if(!profile) redirect("/admin/lirygames/login?unauthorized=1");
 
   const[{data:members},{data:actions},{count:crmContacts},{count:shareClicks}]=await Promise.all([
     supabase.from("community_members").select("id,display_name,handle,email,status,tier,points,beta_priority,source,joined_at,last_activity_at,tags,notes").order("points",{ascending:false}),
