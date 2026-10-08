@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function vendorEstadoLabel(value:string){
   const map:Record<string,string>={prospect:"PROSPECTO",active:"ACTIVO",on_hold:"EN PAUSA",inactive:"INACTIVO",terminated:"FINALIZADO"};
@@ -129,7 +130,7 @@ export default async function MasterSuppliersPage(){
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar proveedores manualmente.</p>
         <section className={styles.adminForms}>
-      <form action={createProveedor} className={styles.adminForm}>
+      <MasterActionForm action={createProveedor} className={styles.adminForm} successText="Proveedor registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO PROVEEDOR</span><h2>Registrar proveedor</h2></div>
         <div className={styles.formGrid}>
           <label>Nombre<input name="name" required/></label>
@@ -147,12 +148,12 @@ export default async function MasterSuppliersPage(){
           <label>Preferido<select name="preferred" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar proveedor</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
     </section>
 
 
     <section className={styles.adminForms}>
-      <form action={updateProveedor} className={styles.adminForm}>
+      <MasterActionForm action={updateProveedor} className={styles.adminForm} successText="Proveedor actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR PROVEEDOR</span><h2>Actualizar proveedor</h2></div>
         <div className={styles.formGrid}>
           <label>Proveedor<select name="vendor_id" required defaultValue=""><option value="" disabled>Seleccionar proveedor</option>{vendorRows.map((v:any)=><option key={v.id} value={v.id}>{v.name}</option>)}</select></label>
@@ -166,7 +167,7 @@ export default async function MasterSuppliersPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!vendorRows.length} disabledReason="No hay proveedores registrados para actualizar.">Actualizar proveedor</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
     </details>
 
