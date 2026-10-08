@@ -22,7 +22,7 @@ export default async function QaFinalPage(){
     {data:gameEntitlements}
   ]=await Promise.all([
     supabase.from("runtime_validation_runs").select("status,executed_at,run_code,deployment_id,commit_sha").eq("environment","preview").order("executed_at",{ascending:false}).limit(1).maybeSingle(),
-    supabase.from("release_gates").select("status,gate_code,created_at,target_deployment_id,target_commit").eq("environment","preview").order("created_at",{ascending:false}).limit(1).maybeSingle(),
+    supabase.from("release_gates").select("id,status,gate_code,created_at,target_deployment_id,target_commit").eq("environment","preview").order("created_at",{ascending:false}).limit(1).maybeSingle(),
     supabase.from("security_incidents").select("*",{count:"exact",head:true}).not("status","in","(resolved,closed)"),
     supabase.from("automation_approvals").select("*",{count:"exact",head:true}).eq("status","pending"),
     supabase.from("release_gate_checks").select("*",{count:"exact",head:true}).eq("status","failed").eq("blocking",true),
@@ -33,6 +33,11 @@ export default async function QaFinalPage(){
     supabase.from("game_entitlements").select("status").limit(5000)
   ]);
 
+  const{data:gateChecks,error:gateChecksError}=latestGate?.id
+    ?await supabase.from("release_gate_checks").select("status,blocking,check_code").eq("release_gate_id",latestGate.id)
+    :{data:[],error:null};
+  const blockingChecks=(gateChecks||[]).filter(c=>c.blocking&&c.check_code!=="human-release-approval");
+  const gateBlockingChecksOk=!gateChecksError&&blockingChecks.length>0&&blockingChecks.every(c=>c.status==="passed")&&blockingChecks.some(c=>c.check_code==="runtime-smoke"&&c.status==="passed");
   const validationOk=latestValidation?.status==="passed";
   const currentDeployment=process.env.VERCEL_DEPLOYMENT_ID||null;
   const currentCommit=process.env.VERCEL_GIT_COMMIT_SHA||null;
@@ -46,11 +51,11 @@ export default async function QaFinalPage(){
     latestValidation?.commit_sha===currentCommit&&latestGate?.target_deployment_id===currentDeployment&&
     latestGate?.target_commit===currentCommit
   );
-  const gateReady=gateApproved&&validationOk&&gateMatchesValidation&&validationIsCurrent;
+  const gateReady=gateApproved&&validationOk&&gateMatchesValidation&&validationIsCurrent&&gateBlockingChecksOk;
   const gateLabel=!latestGate?"SIN REVISIÓN":!gateApproved?"REVISAR":!validationIsCurrent?"NUEVA PRUEBA":gateMatchesValidation?"APROBADA":"VERSIÓN DISTINTA";
   const incidentsOk=(openIncidents||0)===0;
   const approvalsOk=(pendingApprovals||0)===0;
-  const checksOk=(failedChecks||0)===0;
+  const checksOk=(failedChecks||0)===0&&gateBlockingChecksOk;
   const entitlementIssues=((gameEntitlements||[]) as any[]).filter(e=>["pending","failed"].includes(e.status)).length;
   const freemiumPrepared=(virtualItems||0)>0&&(virtualOffers||0)>0&&entitlementIssues===0;
   const ready=validationOk&&validationIsCurrent&&gateReady&&incidentsOk&&approvalsOk&&checksOk;
