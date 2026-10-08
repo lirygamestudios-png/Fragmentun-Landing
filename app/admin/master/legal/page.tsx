@@ -299,7 +299,7 @@ export default async function MasterLegalPage(){
           <label>Inicio<input type="date" name="start_date"/></label>
           <label>Fin<input type="date" name="end_date"/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!assetRows.length}>Registrar derecho</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!assetRows.length} disabledReason="Primero registra un activo de propiedad intelectual para poder añadir un derecho o licencia.">Registrar derecho</MasterSubmitButton>
       </form>
 
       <form action={createContract} className={styles.adminForm}>
@@ -336,7 +336,7 @@ export default async function MasterLegalPage(){
           <label>Fecha registro<input type="date" name="registration_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!assetRows.length}>Actualizar activo</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!assetRows.length} disabledReason="No hay activos de propiedad intelectual registrados para actualizar.">Actualizar activo</MasterSubmitButton>
       </form>
 
       <form action={updateRight} className={styles.adminForm}>
@@ -352,7 +352,7 @@ export default async function MasterLegalPage(){
           <label>Fin<input type="date" name="end_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!rightRows.length}>Actualizar derecho</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!rightRows.length} disabledReason="No hay derechos o licencias registrados para actualizar.">Actualizar derecho</MasterSubmitButton>
       </form>
 
       <form action={updateContract} className={styles.adminForm}>
@@ -369,7 +369,7 @@ export default async function MasterLegalPage(){
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!contractRows.length}>Actualizar contrato</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!contractRows.length} disabledReason="No hay contratos registrados para actualizar.">Actualizar contrato</MasterSubmitButton>
       </form>
       </section>
     </details>
