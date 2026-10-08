@@ -409,3 +409,42 @@
   filter:brightness(1.055);
   box-shadow:0 0 0 1px rgba(74,144,217,.18),0 8px 22px rgba(0,0,0,.18);
 }
+
+
+/* UX LIRYGAMES · Bloque 3: links y controles secundarios FRAGMENTUN */
+.approvedPanelAction,
+.adminSeoCardHead a,
+.reviewSource,
+.adminCardLink,
+.adminMediaModalActions a,
+.adminMediaModalActions button{
+  transition:transform .16s ease,color .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+.approvedPanelAction:hover,
+.adminSeoCardHead a:hover,
+.reviewSource:hover,
+.adminCardLink:hover{
+  color:#9ecbfa!important;
+  text-decoration:none!important;
+  transform:translateY(-1px);
+  text-shadow:0 0 14px rgba(74,144,217,.14);
+}
+.adminMediaModalActions a:hover,
+.adminMediaModalActions button:not(:disabled):hover{
+  transform:translateY(-2px);
+  border-color:rgba(74,144,217,.58)!important;
+  background:rgba(74,144,217,.10)!important;
+  color:#fff!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.22),0 0 16px rgba(74,144,217,.08);
+}
+.adminMediaModalActions a:active,
+.adminMediaModalActions button:not(:disabled):active{
+  transform:translateY(0) scale(.985);
+}
+.adminInlineStatus,
+.authStatus{
+  transition:border-color .18s ease,background .18s ease,color .18s ease,box-shadow .18s ease;
+}
+.adminInlineStatus{
+  color:#b8d9f8;
+}
