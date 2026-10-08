@@ -90,6 +90,9 @@ async function addCheck(formData:FormData){
   const type=String(formData.get("check_type")||"manual");
   const blocking=String(formData.get("blocking")||"true")==="true";
   if(!gateId||!code||!label||!["build","runtime","security","data","business","manual"].includes(type)) throw new Error("invalid_check");
+  const{data:gate,error:gateError}=await supabase.from("release_gates").select("status").eq("id",gateId).maybeSingle();
+  if(gateError) throw new Error(gateError.message);
+  if(!gate||!["draft","in_review","blocked"].includes(gate.status)) throw new Error("gate_not_editable");
   const{error}=await supabase.from("release_gate_checks").insert({
     release_gate_id:gateId,check_code:code,label,check_type:type,blocking,status:"pending"
   });
@@ -104,9 +107,14 @@ async function updateCheck(formData:FormData){
   const status=String(formData.get("status")||"pending");
   const evidence=String(formData.get("evidence")||"").trim()||null;
   if(!id||!["pending","passed","failed","waived"].includes(status)) throw new Error("invalid_check_update");
-  const{data:existingCheck,error:existingCheckError}=await supabase.from("release_gate_checks").select("blocking").eq("id",id).maybeSingle();
+  const{data:existingCheck,error:existingCheckError}=await supabase.from("release_gate_checks").select("blocking,release_gate_id,check_code").eq("id",id).maybeSingle();
   if(existingCheckError) throw new Error(existingCheckError.message);
   if(!existingCheck) throw new Error("check_not_found");
+  const{data:gate,error:gateError}=await supabase.from("release_gates").select("status").eq("id",existingCheck.release_gate_id).maybeSingle();
+  if(gateError) throw new Error(gateError.message);
+  if(!gate||!["draft","in_review","blocked"].includes(gate.status)) throw new Error("gate_not_editable");
+  if(existingCheck.check_code==="human-release-approval") throw new Error("human_approval_check_protected");
+  if(existingCheck.check_code==="runtime-smoke"&&status==="passed") throw new Error("use_authenticated_runtime_validation");
   if(status==="waived"&&existingCheck.blocking&&!evidence) throw new Error("waiver_evidence_required");
   const{error}=await supabase.from("release_gate_checks").update({
     status,evidence,checked_by:user.id,checked_at:status==="pending"?null:new Date().toISOString(),updated_at:new Date().toISOString()
@@ -181,7 +189,14 @@ async function updateGate(formData:FormData){
   const id=String(formData.get("gate_id")||"").trim();
   const status=String(formData.get("status")||"in_review");
   const notes=String(formData.get("notes")||"").trim()||null;
+  const humanConfirmation=String(formData.get("human_confirmation")||"");
   if(!id||!["draft","in_review","blocked","approved","canceled"].includes(status)) throw new Error("invalid_gate_status");
+  const{data:existingGate,error:existingGateError}=await supabase.from("release_gates").select("status,environment").eq("id",id).maybeSingle();
+  if(existingGateError) throw new Error(existingGateError.message);
+  if(!existingGate) throw new Error("gate_not_found");
+  if(["approved","canceled"].includes(existingGate.status)) throw new Error("gate_finalized");
+  if(status==="approved"&&existingGate.environment!=="preview") throw new Error("preview_approval_only");
+  if(status==="approved"&&humanConfirmation!=="confirm_release_review") throw new Error("explicit_human_confirmation_required");
   if(status==="approved"){
     const[{data:checks},{data:gate},{data:latestValidation}]=await Promise.all([
       supabase.from("release_gate_checks").select("status,blocking,check_code").eq("release_gate_id",id),
@@ -455,6 +470,7 @@ export default async function ReleaseGatePage(){
             <label>Revisión<select name="gate_id" required defaultValue=""><option value="" disabled>Seleccionar revisión</option>{gateRows.map((g:any)=><option key={g.id} value={g.id}>{g.gate_code} · {g.title}</option>)}</select></label>
             <label>Estado<select name="status" defaultValue="in_review"><option value="draft">Borrador</option><option value="in_review">En revisión</option><option value="blocked">Bloqueada</option><option value="approved">Aprobada</option><option value="canceled">Cancelada</option></select></label>
             <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
+            <label className={styles.span2}>Confirmación humana para aprobar<select name="human_confirmation" defaultValue=""><option value="">Sin confirmar</option><option value="confirm_release_review">Confirmo que he revisado la versión y autorizo la aprobación manual de esta revisión (no publica producción)</option></select></label>
           </div>
           <MasterSubmitButton className={styles.formButton} disabled={!gateRows.length} disabledReason="No hay revisiones registradas para actualizar.">Actualizar revisión</MasterSubmitButton>
         </MasterActionForm>
