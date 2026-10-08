@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function validPercent(value:number){
   return Number.isInteger(value)&&value>=0&&value<=100;
@@ -209,7 +210,7 @@ export default async function MasterPeoplePage(){
     </section>
 
     {profile.role==="admin"&&<details className={styles.advancedPanel}><summary>Opciones avanzadas</summary><section className={styles.adminForms}>
-      <form action={createMember} className={styles.adminForm}>
+      <MasterActionForm action={createMember} className={styles.adminForm} successText="Persona registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVO MIEMBRO</span><h2>Registrar persona</h2></div>
         <div className={styles.formGrid}>
           <label>Nombre<input name="display_name" required placeholder="Nombre completo"/></label>
@@ -226,9 +227,9 @@ export default async function MasterPeoplePage(){
           <label className={styles.span2}>Habilidades<input name="skills" placeholder="Unity, Marketing, Producción"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar miembro</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={createAssignment} className={styles.adminForm}>
+      <MasterActionForm action={createAssignment} className={styles.adminForm} successText="Asignación registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA ASIGNACIÓN</span><h2>Asignar capacidad</h2></div>
         <div className={styles.formGrid}>
           <label>Miembro<select name="member_id" required defaultValue="">
@@ -245,11 +246,11 @@ export default async function MasterPeoplePage(){
           <label>Fin<input type="date" name="end_date"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit" disabled={!memberRows.length} disabledReason="Primero registra una persona para poder crear una asignación.">Registrar asignación</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
     </section>
 
     <section className={styles.adminForms}>
-      <form action={updateMember} className={styles.adminForm}>
+      <MasterActionForm action={updateMember} className={styles.adminForm} successText="Persona actualizada correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR PERSONA</span><h2>Actualizar miembro</h2></div>
         <div className={styles.formGrid}>
           <label>Miembro<select name="member_id" required defaultValue=""><option value="" disabled>Seleccionar miembro</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name}</option>)}</select></label>
@@ -264,9 +265,9 @@ export default async function MasterPeoplePage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length} disabledReason="No hay personas registradas para actualizar.">Actualizar miembro</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={updateAssignment} className={styles.adminForm}>
+      <MasterActionForm action={updateAssignment} className={styles.adminForm} successText="Asignación actualizada correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR ASIGNACIÓN</span><h2>Actualizar capacidad</h2></div>
         <div className={styles.formGrid}>
           <label>Asignación<select name="assignment_id" required defaultValue=""><option value="" disabled>Seleccionar asignación</option>{assignmentRows.map((a:any)=><option key={a.id} value={a.id}>{memberRows.find(m=>m.id===a.member_id)?.display_name||"Miembro"} · {a.domain}</option>)}</select></label>
@@ -278,7 +279,7 @@ export default async function MasterPeoplePage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!assignmentRows.length} disabledReason="No hay asignaciones registradas para actualizar.">Actualizar asignación</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
     </section></details>}
 
     <section className={styles.sectionHead}><div><span>SEÑALES ADMINISTRATIVAS</span><h2>Señales administrativas</h2></div></section>
