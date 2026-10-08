@@ -242,7 +242,7 @@ export default async function MasterPublishingPage(){
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
           <label className={styles.span2}>Territorios<input name="territories" placeholder="EE. UU., Latinoamérica, Europa"/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!gameRows.length}>Registrar lanzamiento</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!gameRows.length} disabledReason="Primero registra un juego para poder crear un lanzamiento.">Registrar lanzamiento</MasterSubmitButton>
       </form>
       </section>
 
@@ -255,7 +255,7 @@ export default async function MasterPublishingPage(){
           <label>Activo<select name="active" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
           <label className={styles.span2}>Regiones<input name="region_scope" placeholder="EE. UU., Latinoamérica, Europa"/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!stores.length}>Actualizar plataforma</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!stores.length} disabledReason="No hay plataformas registradas para actualizar.">Actualizar plataforma</MasterSubmitButton>
       </form>
 
       <form action={updateRelease} className={styles.adminForm}>
@@ -271,7 +271,7 @@ export default async function MasterPublishingPage(){
           <label className={styles.span2}>Enlace de la tienda<input name="store_url"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!releaseRows.length}>Actualizar lanzamiento</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!releaseRows.length} disabledReason="No hay lanzamientos registrados para actualizar.">Actualizar lanzamiento</MasterSubmitButton>
       </form>
       </section>
     </details>}
