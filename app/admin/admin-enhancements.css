@@ -448,3 +448,34 @@
 .adminInlineStatus{
   color:#b8d9f8;
 }
+
+
+/* UX LIRYGAMES · Bloque 4: campos y formularios FRAGMENTUN */
+.adminInteriorShell input:not([type="checkbox"]):not([type="radio"]),
+.adminInteriorShell select,
+.adminInteriorShell textarea{
+  transition:border-color .18s ease,background .18s ease,box-shadow .18s ease,transform .16s ease;
+}
+.adminInteriorShell input:not([type="checkbox"]):not([type="radio"]):hover,
+.adminInteriorShell select:hover,
+.adminInteriorShell textarea:hover{
+  border-color:rgba(74,144,217,.34)!important;
+  background:#071522!important;
+}
+.adminInteriorShell input:not([type="checkbox"]):not([type="radio"]):focus,
+.adminInteriorShell select:focus,
+.adminInteriorShell textarea:focus{
+  border-color:rgba(74,144,217,.72)!important;
+  background:#071522!important;
+  box-shadow:0 0 0 3px rgba(74,144,217,.10),0 8px 22px rgba(0,0,0,.14)!important;
+}
+.adminInteriorShell input[type="checkbox"],
+.adminInteriorShell input[type="radio"]{
+  accent-color:#4A90D9;
+  transition:filter .16s ease,transform .16s ease;
+}
+.adminInteriorShell input[type="checkbox"]:hover,
+.adminInteriorShell input[type="radio"]:hover{
+  filter:brightness(1.15);
+  transform:scale(1.04);
+}
