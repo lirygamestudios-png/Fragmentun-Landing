@@ -6,15 +6,18 @@ export function AdminSagaEditor(){
   const[books,setBooks]=useState<any[]>([]);
   const[media,setMedia]=useState<any[]>([]);
   const[msg,setMsg]=useState("");
+  const[loadError,setLoadError]=useState(false);
   const[uploading,setUploading]=useState("");
   const[uploadStatus,setUploadStatus]=useState<Record<string,string>>({});
   const supabase=useMemo(()=>createSupabaseBrowserClient(),[]);
 
-  const loadMedia=()=>fetch("/api/admin/media").then(r=>r.json()).then(j=>setMedia((j.data||[]).filter((m:any)=>m.kind==="image"&&m.public_visible)));
+  const loadMedia=()=>fetch("/api/admin/media").then(async r=>{const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error("load_failed");setMedia((j.data||[]).filter((m:any)=>m.kind==="image"&&m.public_visible))});
 
   useEffect(()=>{
-    fetch("/api/admin/saga").then(r=>r.json()).then(j=>setBooks(j.data||[]));
-    loadMedia();
+    Promise.all([
+      fetch("/api/admin/saga").then(async r=>{const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error("load_failed");setBooks(j.data||[])}),
+      loadMedia()
+    ]).then(()=>setLoadError(false)).catch(()=>setLoadError(true));
   },[]);
 
   function setBook(i:number,k:string,v:any){
@@ -33,6 +36,7 @@ export function AdminSagaEditor(){
       ?{...b,editions:[...(b.editions||[]),{locale:"fr",marketplace:"amazon.com",asin:"",amazon_url:"",status:"coming_soon",cover_media_slug:""}]}
       :b
     ));
+    setMsg("Nueva edición añadida. Completa sus datos y pulsa Guardar libro.");
   }
 
   async function persistBook(book:any){
@@ -129,6 +133,8 @@ export function AdminSagaEditor(){
       setUploading("");
     }
   }
+
+  if(loadError)return <section className="card"><p className="adminSaveFeedback error">No fue posible cargar la información de la saga.</p><button type="button" className="btn btnGhost" onClick={()=>window.location.reload()}>Reintentar</button></section>;
 
   return <div className="adminBookGrid">
     {books.map((b,i)=><article className="card adminSagaBookCard" key={b.id}>
