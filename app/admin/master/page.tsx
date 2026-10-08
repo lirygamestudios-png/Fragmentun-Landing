@@ -198,7 +198,7 @@ export default async function MasterAdminPage(){
         </a>
         <a href="/admin/master/monetization" className={freemiumPrepared?styles.commandAlertStable:styles.commandAlertCritical}>
           <div><span>FREEMIUM</span><strong>{freemiumReadable?(virtualItems||0):"—"}</strong></div>
-          <h3>{freemiumPrepared?"PREPARADO":"EN PREPARACIÓN"}</h3>
+          <h3>{!freemiumReadable?"DATOS NO DISPONIBLES":freemiumPrepared?"PREPARADO":"EN PREPARACIÓN"}</h3>
           <p>{freemiumReadable?`${virtualItems||0} artículos · ${virtualOffers||0} ofertas · ${deliveryIssues} entregas por revisar`:"Datos de monetización no disponibles."} Preparación no equivale a autorización de lanzamiento.</p>
         </a>
       </section>
