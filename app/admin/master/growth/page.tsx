@@ -45,7 +45,7 @@ async function updateContact(formData:FormData){
   const allowedStatus=new Set(["active","nurturing","qualified","contacted","won","lost","unsubscribed","suppressed"]);
   if(!contactId||!allowedEtapa.has(lifecycle)||!allowedStatus.has(status)||!Number.isFinite(score)||!Number.isInteger(score)||score<0||score>100) throw new Error("invalid_contact_update");
 
-  const{data:before,error:beforeError}=await supabase.from("crm_contacts").select("lifecycle_stage,status,score,notes").eq("id",contactId).maybeSingle();
+  const{data:before,error:beforeError}=await supabase.from("crm_contacts").select("lifecycle_stage,status,score,notes,next_action_at").eq("id",contactId).maybeSingle();
   if(beforeError) throw new Error(beforeError.message);
   if(!before) throw new Error("contact_not_found");
   const{error}=await supabase.from("crm_contacts").update({
@@ -62,7 +62,18 @@ async function updateContact(formData:FormData){
       contact_id:contactId,activity_type:"status_change",direction:"system",
       subject:"Seguimiento actualizado",body:changes.join(" · "),created_by:user.id
     });
-    if(activityError) throw new Error(activityError.message);
+    if(activityError){
+      const{error:rollbackError}=await supabase.from("crm_contacts").update({
+        lifecycle_stage:before.lifecycle_stage,
+        status:before.status,
+        score:before.score,
+        notes:before.notes,
+        next_action_at:before.next_action_at,
+        updated_at:new Date().toISOString()
+      }).eq("id",contactId);
+      if(rollbackError) throw new Error("growth_audit_and_rollback_failed");
+      throw new Error(activityError.message);
+    }
   }
   revalidatePath("/admin/master/growth");
 }
@@ -76,14 +87,18 @@ async function addActivity(formData:FormData){
   const body=String(formData.get("body")||"").trim()||null;
   const allowed=new Set(["note","email","call","dm","meeting","form","test","share","amazon_click","purchase","status_change","score_change","other"]);
   if(!contactId||!allowed.has(type)) throw new Error("invalid_activity");
-  const{error}=await supabase.from("crm_activities").insert({
+  const{data:activity,error}=await supabase.from("crm_activities").insert({
     contact_id:contactId,activity_type:type,direction:"outbound",subject,body,created_by:user.id
-  });
-  if(error) throw new Error(error.message);
+  }).select("id").single();
+  if(error||!activity) throw new Error(error?.message||"activity_create_failed");
+  const touchedAt=new Date().toISOString();
   const{error:touchError}=await supabase.from("crm_contacts").update({
-    last_activity_at:new Date().toISOString(),updated_at:new Date().toISOString()
+    last_activity_at:touchedAt,updated_at:touchedAt
   }).eq("id",contactId);
-  if(touchError) throw new Error(touchError.message);
+  if(touchError){
+    await supabase.from("crm_activities").delete().eq("id",activity.id);
+    throw new Error(touchError.message);
+  }
   revalidatePath("/admin/master/growth");
 }
 
