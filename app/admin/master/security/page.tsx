@@ -193,6 +193,18 @@ export default async function MasterSecurityPage(){
       <article><small>Eventos de auditoría</small><strong>{(adminEvents||0).toLocaleString()}</strong><span>Trazabilidad</span></article>
     </section>
 
+    <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · SEGURIDAD</span><h2>Señales del canal de juego</h2></div>
+      <p>Indicadores operativos de pagos y entrega digital. No se convierten automáticamente en incidentes formales.</p>
+    </section>
+
+    <section className={styles.kpis}>
+      <article className={failedGamePayments?styles.kpiAttention:undefined}><small>Pagos fallidos</small><strong>{failedGamePayments}</strong><span>{failedGamePayments?"Requieren revisión":"Sin fallos registrados"}</span></article>
+      <article className={chargebacks?styles.kpiAttention:undefined}><small>Chargebacks</small><strong>{chargebacks}</strong><span>{chargebacks?"Requieren revisión":"Sin contracargos"}</span></article>
+      <article className={deliveryIssues?styles.kpiAttention:undefined}><small>Entregas digitales</small><strong>{deliveryIssues}</strong><span>{deliveryIssues?"Pendientes o fallidas":"Sin incidencias"}</span></article>
+      <article><small>Canal in-game</small><strong className={styles.kpiCompactValue}>PROTEGIDO</strong><span>Ingreso firmado desde servidor</span></article>
+    </section>
+
     <section className={styles.sectionHead}><div><span>INCIDENTES</span><h2>Incidentes de seguridad</h2></div><p>Registro persistente y privado; empieza vacío hasta que exista un incidente real que documentar.</p></section>
     <section className={styles.grid}>
       {incidentRows.map((i:any)=><article key={i.id} className={`${styles.card} ${!["resolved","closed"].includes(i.status)&&i.severity==="critical"?styles.cardAttention:!["resolved","closed"].includes(i.status)&&i.severity==="high"?styles.cardWarning:["resolved","closed"].includes(i.status)?styles.cardMuted:""}`}>
