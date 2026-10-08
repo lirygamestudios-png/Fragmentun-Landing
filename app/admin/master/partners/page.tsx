@@ -183,8 +183,8 @@ export default async function MasterOrganizacionesPage(){
 
     <section className={styles.sectionHead}><div><span>ORGANIZACIONES</span><h2>Organizaciones</h2></div></section>
     <section className={styles.grid}>
-      {partnerRows.map((p:any)=><article key={p.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={p.status==="active"?styles.badgeActivo:styles.badgePlanned}>{partnerEstadoLabel(p.status)}</span><em>{p.partner_type}</em></div>
+      {partnerRows.map((p:any)=><article key={p.id} className={`${styles.card} ${p.status==="paused"?styles.cardWarning:["inactive","ended"].includes(p.status)?styles.cardMuted:""}`}>
+        <div className={styles.cardTop}><span className={p.status==="active"?styles.badgeActive:styles.badgePlanned}>{partnerEstadoLabel(p.status)}</span><em>{p.partner_type}</em></div>
         <h3>{p.name}</h3><p>{p.contact_name||"Sin contacto"} · {p.contact_email||"Sin correo"}<br/>{p.territory||"Territorio pendiente"}</p>
       </article>)}
       {!partnerRows.length&&<article className={styles.card}><h3>Registro de organizaciones preparado</h3><p>No se han cargado organizaciones reales todavía.</p></article>}
@@ -192,8 +192,8 @@ export default async function MasterOrganizacionesPage(){
 
     <section className={styles.sectionHead}><div><span>ACUERDOS Y LICENCIAS</span><h2>Licencias y acuerdos</h2></div></section>
     <section className={styles.grid}>
-      {dealRows.map((d:any)=><article key={d.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={d.status==="active"?styles.badgeActivo:styles.badgePlanned}>{dealEstadoLabel(d.status)}</span><em>{d.deal_type}</em></div>
+      {dealRows.map((d:any)=><article key={d.id} className={`${styles.card} ${["expired","lost","canceled"].includes(d.status)?styles.cardMuted:d.status==="negotiation"||d.status==="contracting"?styles.cardPriority:""}`}>
+        <div className={styles.cardTop}><span className={d.status==="active"?styles.badgeActive:styles.badgePlanned}>{dealEstadoLabel(d.status)}</span><em>{d.deal_type}</em></div>
         <h3>{d.deal_name}</h3><p>{d.ip_name||"IP por definir"} · {d.territory||"Sin territorio"}<br/>{money(d.value_cents,d.currency)} · {d.royalty_bps!=null?(d.royalty_bps/100).toFixed(2)+"% regalía":"Regalía no registrada"}</p>
       </article>)}
       {!dealRows.length&&<article className={styles.card}><h3>Registro de acuerdos vacío</h3><p>Los acuerdos reales se registrarán aquí.</p></article>}
