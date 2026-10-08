@@ -91,6 +91,7 @@ export async function GET(){
     project:"FRAGMENTUN",
     purpose:"content_recovery",
     status:failures.length?"PARTIAL":"COMPLETE",
+    failed_tables:[...failures],
     table_counts:counts,
     recovery_order:[...RECOVERY_ORDER],
     includes:[...TABLES],
@@ -107,9 +108,12 @@ export async function GET(){
       "secrets"
     ],
     notes:[
-      "Este backup contiene contenido y metadatos restaurables, no datos personales de leads ni credenciales.",
-      "Los archivos binarios de Supabase Storage no se incluyen; media_manifest conserva sus rutas para validación y recuperación.",
-      "Restaurar respetando recovery_order para evitar referencias huérfanas."
+      "Esta copia contiene contenido y datos de recuperación, no información personal de contactos ni credenciales.",
+      "Los archivos almacenados no se incluyen como binarios; media_manifest conserva sus rutas para validación y recuperación.",
+      "Restaurar respetando recovery_order para evitar referencias huérfanas.",
+      failures.length
+        ?"La copia es parcial. Revisa failed_tables antes de iniciar una recuperación."
+        :"La copia contiene todas las tablas previstas para recuperación de contenido."
     ],
     media_manifest,
     data:backup
