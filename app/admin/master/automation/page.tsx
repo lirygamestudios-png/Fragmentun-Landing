@@ -193,11 +193,20 @@ export default async function MasterAutomationPage(){
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleAutomation}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · AUTOMATIZACIÓN E IA</span><h1>Automatización e IA</h1><p>Automatizaciones, agentes, aprobaciones y controles de seguridad.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">AI</span>
+      <div className={styles.moduleStripCopy}><small>AUTOMATIZACIÓN E IA</small><strong>Flujos, autonomía y aprobaciones</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Automatizaciones conectadas</span>
+        <span>Ejecución gobernada · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Automatizaciones activas</small><strong>{activeAutomatizaciones}</strong><span>{workflowRows.length} registrados</span></article>
