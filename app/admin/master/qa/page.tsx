@@ -72,8 +72,8 @@ export default async function QaFinalPage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Última prueba</small><strong>{validationLabel}</strong><span>{latestValidation?.executed_at?new Date(latestValidation.executed_at).toLocaleString("es-US"):"Sin prueba registrada"}</span></article>
-      <article><small>Revisión de publicación</small><strong>{gateLabel}</strong><span>{!gateMatchesValidation&&latestGate?"La revisión aprobada corresponde a otra versión":latestGate?.created_at?new Date(latestGate.created_at).toLocaleString("es-US"):"Sin revisión registrada"}</span></article>
+      <article><small>Última prueba</small><strong className={styles.kpiCompactValue}>{validationLabel}</strong><span>{latestValidation?.executed_at?new Date(latestValidation.executed_at).toLocaleString("es-US"):"Sin prueba registrada"}</span></article>
+      <article><small>Revisión de publicación</small><strong className={styles.kpiCompactValue}>{gateLabel}</strong><span>{!gateMatchesValidation&&latestGate?"La revisión aprobada corresponde a otra versión":latestGate?.created_at?new Date(latestGate.created_at).toLocaleString("es-US"):"Sin revisión registrada"}</span></article>
       <article><small>Incidentes abiertos</small><strong>{openIncidents||0}</strong><span>{incidentsOk?"Sin bloqueos":"Requiere revisión"}</span></article>
       <article><small>Comprobaciones bloqueantes fallidas</small><strong>{failedChecks||0}</strong><span>{checksOk?"Sin fallos":"Requiere corrección"}</span></article>
     </section>
