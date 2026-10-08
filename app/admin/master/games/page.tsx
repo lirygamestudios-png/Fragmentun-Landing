@@ -169,7 +169,8 @@ export default async function MasterGamesPage(){
     supabase.from("books").select("*",{count:"exact",head:true}),
     supabase.from("characters").select("*",{count:"exact",head:true}),
     supabase.from("media_assets").select("*",{count:"exact",head:true}),
-    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true}),
+    supabase.from("game_virtual_items").select("id,game_id,active")
   ]);
 
   const gameRows=(games||[]) as any[];
