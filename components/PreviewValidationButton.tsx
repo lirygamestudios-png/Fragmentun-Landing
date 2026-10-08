@@ -13,6 +13,17 @@ type CheckResult={
   latency:number;
 };
 
+function validationErrorMessage(code:string){
+  const map:Record<string,string>={
+    mfa_required:"Completa la verificación en dos pasos antes de guardar esta validación.",
+    forbidden:"Tu usuario no tiene permiso para guardar esta validación.",
+    validation_results_save_failed:"La prueba terminó, pero no fue posible guardar sus resultados.",
+    invalid_results:"Los resultados de la prueba no tienen un formato válido.",
+    invalid_run_code:"No fue posible identificar correctamente esta ejecución."
+  };
+  return map[code]||"La comprobación terminó, pero no fue posible guardar el resultado.";
+}
+
 export function PreviewValidationButton(){
   const[loading,setLoading]=useState(false);
   const[message,setMessage]=useState("");
@@ -78,7 +89,7 @@ export function PreviewValidationButton(){
       window.setTimeout(()=>window.location.reload(),900);
     }catch(error:any){
       setOk(false);
-      setMessage("La comprobación terminó, pero no fue posible guardar el resultado.");
+      setMessage(validationErrorMessage(String(error?.message||error)));
     }finally{
       setLoading(false);
     }
@@ -88,6 +99,6 @@ export function PreviewValidationButton(){
     <button type="button" onClick={run} disabled={loading} className="masterQaButton">
       {loading?"Comprobando…":"Comprobar versión de prueba"}
     </button>
-    {message&&<p role="status" style={{margin:"8px 0 0",fontSize:".74rem",color:ok===false?"#ffaaaa":ok===true?"#8aebbd":"#9fb0c6"}}>{message}</p>}
+    {message&&<p role={ok===false?"alert":"status"} aria-live="polite" style={{margin:"8px 0 0",fontSize:".74rem",color:ok===false?"#ffaaaa":ok===true?"#8aebbd":"#9fb0c6"}}>{message}</p>}
   </div>;
 }
