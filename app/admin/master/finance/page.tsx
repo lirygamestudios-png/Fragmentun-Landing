@@ -28,7 +28,7 @@ async function requireFinanceEditor(){
   "use server";
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
-  if(!user) redirect("/admin/login");
+  if(!user) redirect("/admin/lirygames/login");
   if(!(await hasSatisfiedMfa(supabase))) throw new Error("mfa_required");
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile||!["admin","editor"].includes(profile.role)) throw new Error("forbidden");
@@ -120,9 +120,9 @@ async function updateFinanceTransaction(formData:FormData){
 export default async function MasterFinancePage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
-  if(!user) redirect("/admin/login");
+  if(!user) redirect("/admin/lirygames/login");
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
-  if(!profile) redirect("/admin/login?unauthorized=1");
+  if(!profile) redirect("/admin/lirygames/login?unauthorized=1");
 
   const[
     {data:orders},
