@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function incidentStatusLabel(value:string){
   const map:Record<string,string>={open:"ABIERTO",investigating:"INVESTIGANDO",contained:"CONTENIDO",monitoring:"EN SEGUIMIENTO",resolved:"RESUELTO",closed:"CERRADO"};
@@ -196,7 +197,7 @@ export default async function MasterSecurityPage(){
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar incidentes y revisiones de acceso manualmente.</p>
         <section className={styles.adminForms}>
-      <form action={createIncident} className={styles.adminForm}>
+      <MasterActionForm action={createIncident} className={styles.adminForm} successText="Incidente registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO INCIDENTE</span><h2>Registrar incidente</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="incident_code" required placeholder="sec-2026-001"/></label>
@@ -210,9 +211,9 @@ export default async function MasterSecurityPage(){
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar incidente</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={createAccessRevisión} className={styles.adminForm}>
+      <MasterActionForm action={createAccessRevisión} className={styles.adminForm} successText="Revisión de acceso registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA REVISIÓN</span><h2>Registrar revisión de acceso</h2></div>
         <div className={styles.formGrid}>
           <label>Tipo<select name="subject_type" defaultValue="admin_user"><option value="admin_user">Usuario administrativo</option><option value="service_account">Cuenta de servicio</option><option value="integration">Integración</option><option value="vendor">Proveedor</option><option value="other">Otro</option></select></label>
@@ -223,12 +224,12 @@ export default async function MasterSecurityPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar revisión</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
     </section>
 
 
     <section className={styles.adminForms}>
-      <form action={updateIncident} className={styles.adminForm}>
+      <MasterActionForm action={updateIncident} className={styles.adminForm} successText="Incidente actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR INCIDENTE</span><h2>Actualizar respuesta</h2></div>
         <div className={styles.formGrid}>
           <label>Incidente<select name="incident_id" required defaultValue=""><option value="" disabled>Seleccionar incidente</option>{incidentRows.map((i:any)=><option key={i.id} value={i.id}>{i.incident_code} · {i.title}</option>)}</select></label>
@@ -240,9 +241,9 @@ export default async function MasterSecurityPage(){
           <label className={styles.span2}>Remediación<textarea name="remediation" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!incidentRows.length} disabledReason="No hay incidentes registrados para actualizar.">Actualizar incidente</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={updateAccessRevisión} className={styles.adminForm}>
+      <MasterActionForm action={updateAccessRevisión} className={styles.adminForm} successText="Revisión de acceso actualizada correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR REVISIÓN</span><h2>Actualizar acceso</h2></div>
         <div className={styles.formGrid}>
           <label>Revisión<select name="review_id" required defaultValue=""><option value="" disabled>Seleccionar revisión</option>{reviewRows.map((r:any)=><option key={r.id} value={r.id}>{r.subject_name||r.subject_ref}</option>)}</select></label>
@@ -253,7 +254,7 @@ export default async function MasterSecurityPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!reviewRows.length} disabledReason="No hay revisiones de acceso registradas para actualizar.">Actualizar revisión</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
     </details>
 
