@@ -5,6 +5,13 @@ import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
+function invalidDateRange(start:string|null,end:string|null){
+  return Boolean(start&&end&&end<start);
+}
+function validProgress(value:number){
+  return Number.isInteger(value)&&value>=0&&value<=100;
+}
+
 function strategyStatusLabel(value:string){
   const map:Record<string,string>={planned:"PLANIFICADO",active:"ACTIVO",at_risk:"EN RIESGO",completed:"COMPLETADO",canceled:"CANCELADO",draft:"BORRADOR"};
   return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
@@ -41,7 +48,7 @@ async function createObjective(formData:FormData){
   const targetDate=String(formData.get("target_date")||"").trim()||null;
   const allowedHorizon=new Set(["month","quarter","year","multi_year"]);
   const allowedPriority=new Set(["low","medium","high","critical"]);
-  if(!code||!title||!allowedHorizon.has(horizon)||!allowedPriority.has(priority)) throw new Error("invalid_objective");
+  if(!code||!title||!allowedHorizon.has(horizon)||!allowedPriority.has(priority)||invalidDateRange(startDate,targetDate)) throw new Error("invalid_objective");
   const{error}=await supabase.from("strategy_objectives").insert({
     code,title,description,horizon,priority,start_date:startDate,target_date:targetDate,created_by:user.id
   });
@@ -81,13 +88,13 @@ async function updateObjective(formData:FormData){
   const priority=String(formData.get("priority")||"medium");
   const ownerRaw=String(formData.get("owner_user_id")||"").trim();
   const ownerUserId=ownerRaw||null;
-  const progress=Math.max(0,Math.min(100,Number(formData.get("progress_percent")||0)));
+  const progress=Number(formData.get("progress_percent")||0);
   const startDate=String(formData.get("start_date")||"").trim()||null;
   const targetDate=String(formData.get("target_date")||"").trim()||null;
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedStatus=new Set(["planned","active","at_risk","completed","canceled"]);
   const allowedPriority=new Set(["low","medium","high","critical"]);
-  if(!id||!allowedStatus.has(status)||!allowedPriority.has(priority)||!Number.isFinite(progress)) throw new Error("invalid_objective_update");
+  if(!id||!allowedStatus.has(status)||!allowedPriority.has(priority)||!validProgress(progress)||invalidDateRange(startDate,targetDate)||(status==="completed"&&progress!==100)) throw new Error("invalid_objective_update");
   const{error}=await supabase.from("strategy_objectives").update({
     status,priority,owner_user_id:ownerUserId,progress_percent:Math.trunc(progress),start_date:startDate,target_date:targetDate,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
