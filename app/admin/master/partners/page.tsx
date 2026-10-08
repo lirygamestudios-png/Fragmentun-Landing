@@ -162,7 +162,7 @@ export default async function MasterOrganizacionesPage(){
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.modulePartners}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · ALIANZAS Y LICENCIAS</span><h1>Alianzas y Licencias</h1><p>Registro de organizaciones aliadas y acuerdos/licencias.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.moduleStrip} aria-label="Estado del módulo">
