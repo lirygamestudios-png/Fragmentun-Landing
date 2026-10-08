@@ -2228,3 +2228,187 @@
     width:100%;
   }
 }
+
+
+/* Ronda visual: Checklist · QA · Reports */
+.moduleChecklist .sectionHead,
+.moduleQa .sectionHead,
+.moduleReports .sectionHead{
+  margin:32px 0 14px;
+  padding-bottom:10px;
+}
+
+.moduleChecklist .kpis article,
+.moduleQa .kpis article,
+.moduleReports .kpis article{
+  padding:16px;
+  border-radius:11px;
+}
+
+.moduleChecklist .card,
+.moduleQa .card,
+.moduleReports .card{
+  min-height:148px;
+  padding:16px;
+  border-radius:11px;
+}
+
+.moduleChecklist .moduleStrip,
+.moduleQa .moduleStrip,
+.moduleReports .moduleStrip{
+  margin:-6px 0 16px;
+  border-radius:11px;
+}
+
+.moduleChecklist .cardTop em,
+.moduleQa .cardTop em,
+.moduleReports .cardTop em{
+  max-width:48%;
+  text-align:right;
+  overflow-wrap:anywhere;
+}
+
+.moduleChecklist .card p,
+.moduleQa .card p,
+.moduleReports .card p,
+.moduleChecklist .card h3,
+.moduleQa .card h3,
+.moduleReports .card h3{
+  overflow-wrap:anywhere;
+}
+
+.moduleChecklist .kpis small,
+.moduleQa .kpis small,
+.moduleReports .kpis small,
+.moduleChecklist .kpis span,
+.moduleQa .kpis span,
+.moduleReports .kpis span{
+  overflow-wrap:anywhere;
+}
+
+.moduleChecklist .notice,
+.moduleQa .notice,
+.moduleReports .notice{
+  padding:16px 18px;
+  border-radius:11px;
+}
+
+.moduleChecklist .grid{
+  gap:12px;
+}
+
+.moduleChecklist .card{
+  min-height:136px;
+}
+
+.moduleChecklist .card h3{
+  margin-top:13px;
+}
+
+.moduleQa .notice code{
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+
+.moduleReports .reportActions{
+  gap:18px;
+  padding:16px 18px;
+  border-radius:11px;
+}
+
+.moduleReports .reportActions strong,
+.moduleReports .reportActions span{
+  overflow-wrap:anywhere;
+}
+
+.moduleReports .reportSheet{
+  padding:18px;
+  border-radius:11px;
+}
+
+.moduleReports .reportSheet>header{
+  gap:14px;
+  padding-bottom:14px;
+}
+
+.moduleReports .reportTable>div{
+  min-width:0;
+  padding:11px 4px;
+}
+
+.moduleReports .reportTable span,
+.moduleReports .reportTable strong{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+
+.moduleReports .reportTable strong{
+  font-size:.82rem;
+}
+
+@media(min-width:1050px){
+  .moduleChecklist .moduleStrip,
+  .moduleQa .moduleStrip,
+  .moduleReports .moduleStrip{
+    grid-template-columns:auto minmax(180px,1fr) auto;
+    gap:14px;
+  }
+  .moduleChecklist .moduleStripMeta,
+  .moduleQa .moduleStripMeta,
+  .moduleReports .moduleStripMeta{
+    grid-column:auto;
+    justify-content:flex-end;
+    padding-top:0;
+  }
+}
+
+@media(max-width:900px){
+  .moduleChecklist .moduleStrip,
+  .moduleQa .moduleStrip,
+  .moduleReports .moduleStrip{
+    grid-template-columns:auto 1fr;
+  }
+  .moduleChecklist .moduleStripMeta,
+  .moduleQa .moduleStripMeta,
+  .moduleReports .moduleStripMeta{
+    grid-column:1/-1;
+    justify-content:flex-start;
+    padding-top:2px;
+  }
+
+  .moduleReports .reportActions{
+    align-items:flex-start;
+  }
+
+  .moduleReports .reportSheet>header{
+    align-items:flex-start;
+  }
+}
+
+@media(max-width:600px){
+  .moduleChecklist .sectionHead,
+  .moduleQa .sectionHead,
+  .moduleReports .sectionHead{
+    margin:28px 0 12px;
+  }
+
+  .moduleChecklist .cardTop,
+  .moduleQa .cardTop,
+  .moduleReports .cardTop{
+    align-items:flex-start;
+  }
+
+  .moduleChecklist .notice,
+  .moduleQa .notice,
+  .moduleReports .notice{
+    padding:14px;
+  }
+
+  .moduleReports .reportActions{
+    padding:14px;
+  }
+
+  .moduleReports .reportSheet{
+    padding:14px;
+  }
+}
