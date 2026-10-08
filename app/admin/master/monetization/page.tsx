@@ -52,7 +52,7 @@ async function createVirtualItem(formData:FormData){
   const allowedItemTypes=new Set(["skin","cosmetic","attack_item","booster","consumable","currency_pack","battle_pass","expansion","premium_access","subscription","other"]);
   const allowedRarity=new Set(["standard","common","uncommon","rare","epic","legendary","exclusive"]);
   const allowedGrant=new Set(["durable","consumable","timed"]);
-  if(!gameId||!sku||!name||!allowedItemTypes.has(itemType)||!allowedRarity.has(rarity)||!allowedGrant.has(grantType)) throw new Error("invalid_virtual_item");
+  if(!gameId||!sku||!name||sku.length>120||name.length>160||(description&&description.length>2000)||!allowedItemTypes.has(itemType)||!allowedRarity.has(rarity)||!allowedGrant.has(grantType)) throw new Error("invalid_virtual_item");
   if(grantType==="timed"&&(!durationSeconds||!Number.isSafeInteger(durationSeconds)||durationSeconds<=0)) throw new Error("timed_duration_required");
   const{data:targetGame,error:targetGameError}=await supabase.from("game_titles").select("id").eq("id",gameId).maybeSingle();
   if(targetGameError||!targetGame) throw new Error("game_not_found");
