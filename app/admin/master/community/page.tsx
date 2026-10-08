@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function tierLabel(value:string){
   const map:Record<string,string>={member:"MIEMBRO",engaged:"PARTICIPATIVO",advocate:"PROMOTOR",beta_priority:"PRIORIDAD BETA",moderator:"MODERADOR"};
@@ -164,7 +165,7 @@ export default async function CommunityPage(){
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar miembros y participación manualmente.</p>
       <section className={styles.adminForms}>
-      <form action={createMember} className={styles.adminForm}>
+      <MasterActionForm action={createMember} className={styles.adminForm} successText="Miembro registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO MIEMBRO</span><h2>Registrar comunidad</h2></div>
         <div className={styles.formGrid}>
           <label>Nombre<input name="display_name"/></label>
@@ -174,9 +175,9 @@ export default async function CommunityPage(){
           <label>Nivel<select name="tier" defaultValue="member"><option value="member">Miembro</option><option value="engaged">Participativo</option><option value="advocate">Promotor</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderador</option></select></label>
         </div>
         <MasterSubmitButton className={styles.formButton}>Registrar miembro</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={addAction} className={styles.adminForm}>
+      <MasterActionForm action={addAction} className={styles.adminForm} successText="Participación registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA ACTIVIDAD</span><h2>Registrar participación</h2></div>
         <div className={styles.formGrid}>
           <label>Miembro<select name="member_id" required defaultValue=""><option value="" disabled>Seleccionar miembro</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name||m.handle||m.email}</option>)}</select></label>
@@ -186,11 +187,11 @@ export default async function CommunityPage(){
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length} disabledReason="Primero registra un miembro para poder añadir participación.">Registrar actividad</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
 
       <section className={styles.adminForms}>
-      <form action={updateMember} className={styles.adminForm}>
+      <MasterActionForm action={updateMember} className={styles.adminForm} successText="Miembro actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR MIEMBRO</span><h2>Actualizar comunidad</h2></div>
         <div className={styles.formGrid}>
           <label>Miembro<select name="member_id" required defaultValue=""><option value="" disabled>Seleccionar miembro</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name||m.handle||m.email}</option>)}</select></label>
@@ -203,7 +204,7 @@ export default async function CommunityPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length} disabledReason="No hay miembros registrados para actualizar.">Actualizar miembro</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
     </details>}
 
