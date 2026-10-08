@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function techEstadoLabel(value:string){
   const map:Record<string,string>={active:"ACTIVO",degraded:"DEGRADADO",maintenance:"MANTENIMIENTO",deprecated:"OBSOLETO",retired:"RETIRADO",planned:"PLANIFICADO",approved:"APROBADO",in_progress:"EN CURSO",completed:"COMPLETADO",failed:"FALLIDO",rolled_back:"REVERTIDO",canceled:"CANCELADO"};
@@ -222,7 +223,7 @@ export default async function MasterTechnologyPage(){
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar servicios y cambios técnicos manualmente.</p>
       <section className={styles.adminForms}>
-      <form action={createService} className={styles.adminForm}>
+      <MasterActionForm action={createService} className={styles.adminForm} successText="Servicio registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO SERVICIO</span><h2>Registrar componente</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="vercel-web"/></label>
@@ -239,9 +240,9 @@ export default async function MasterTechnologyPage(){
           <label>URL<input name="url"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar servicio</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={createChange} className={styles.adminForm}>
+      <MasterActionForm action={createChange} className={styles.adminForm} successText="Cambio técnico registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO CAMBIO</span><h2>Registrar cambio técnico</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="change_code" required placeholder="chg-2026-001"/></label>
@@ -255,11 +256,11 @@ export default async function MasterTechnologyPage(){
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar cambio</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
 
       <section className={styles.adminForms}>
-      <form action={updateService} className={styles.adminForm}>
+      <MasterActionForm action={updateService} className={styles.adminForm} successText="Servicio actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR SERVICIO</span><h2>Actualizar componente</h2></div>
         <div className={styles.formGrid}>
           <label>Servicio<select name="service_id" required defaultValue=""><option value="" disabled>Seleccionar servicio</option>{serviceRows.map((s:any)=><option key={s.id} value={s.id}>{s.code} · {s.name}</option>)}</select></label>
@@ -273,9 +274,9 @@ export default async function MasterTechnologyPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!serviceRows.length} disabledReason="No hay servicios técnicos registrados para actualizar.">Actualizar servicio</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={updateChange} className={styles.adminForm}>
+      <MasterActionForm action={updateChange} className={styles.adminForm} successText="Cambio técnico actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR CAMBIO</span><h2>Actualizar cambio</h2></div>
         <div className={styles.formGrid}>
           <label>Cambio<select name="change_id" required defaultValue=""><option value="" disabled>Seleccionar cambio</option>{changeRows.map((x:any)=><option key={x.id} value={x.id}>{x.change_code} · {x.title}</option>)}</select></label>
@@ -288,7 +289,7 @@ export default async function MasterTechnologyPage(){
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!changeRows.length} disabledReason="No hay cambios técnicos registrados para actualizar.">Actualizar cambio</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
     </details>}
 
