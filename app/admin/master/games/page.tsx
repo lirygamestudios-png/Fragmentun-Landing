@@ -360,7 +360,7 @@ export default async function MasterGamesPage(){
       <article><small>Libros</small><strong>{(books||0).toLocaleString()}</strong><span>Base creativa</span></article>
       <article><small>Personajes</small><strong>{(characters||0).toLocaleString()}</strong><span>Universo narrativo</span></article>
       <article><small>Recursos</small><strong>{(media||0).toLocaleString()}</strong><span>Archivos registrados</span></article>
-      <article><small>Acceso a datos</small><strong>PROTEGIDO</strong><span>Acceso administrativo</span></article>
+      <article><small>Acceso a datos</small><strong className={styles.kpiCompactValue}>PROTEGIDO</strong><span>Acceso administrativo</span></article>
     </section>
   </main>;
 }
