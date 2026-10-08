@@ -45,6 +45,7 @@ export async function POST(request:NextRequest){
   const body=await request.json().catch(()=>null);
   const email=String(body?.email??"").trim().toLowerCase();
   const password=String(body?.password??"");
+  const context=String(body?.context??"").trim().toLowerCase();
 
   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!password){
     return NextResponse.json({ok:false,error:"invalid_credentials"},{status:400});
@@ -69,6 +70,17 @@ export async function POST(request:NextRequest){
     return NextResponse.json({ok:false,error:"unauthorized"},{status:403});
   }
 
+  if(context==="lirygames"){
+    await supabase.from("admin_mfa_context_sessions")
+      .delete()
+      .eq("user_id",data.user.id)
+      .eq("context","lirygames_commander");
+  }
+
   const mfa=await getMfaState(supabase);
-  return NextResponse.json({ok:true,role:profile.role,mfa_state:mfa.state,redirect:mfa.state==="satisfied"?"/admin":"/admin/mfa"});
+  const response=NextResponse.json({ok:true,role:profile.role,mfa_state:mfa.state,redirect:mfa.state==="satisfied"?"/admin":"/admin/mfa"});
+  if(context==="lirygames"){
+    response.cookies.set("liry_mfa_context","",{httpOnly:true,path:"/admin",maxAge:0,sameSite:"strict",secure:process.env.NODE_ENV==="production"});
+  }
+  return response;
 }
