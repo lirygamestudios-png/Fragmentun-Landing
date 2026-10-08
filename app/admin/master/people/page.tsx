@@ -172,11 +172,20 @@ export default async function MasterPeoplePage(){
   const committed=activeAssignments.reduce((a,x)=>a+Number(x.allocation_percent||0),0);
   const departments=new Set(activeMembers.map(m=>m.department).filter(Boolean));
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.modulePeople}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · PERSONAS</span><h1>Personas</h1><p>Equipo, disponibilidad y asignaciones, separado de los permisos del sistema.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">PE</span>
+      <div className={styles.moduleStripCopy}><small>PERSONAS Y CAPACIDAD</small><strong>Equipo, disponibilidad y asignaciones</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Estructura de equipo conectada</span>
+        <span>Gestión sensible · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Miembros activos</small><strong>{activeMembers.length}</strong><span>Equipo registrado</span></article>
