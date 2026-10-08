@@ -112,10 +112,12 @@ export default async function SettingsPage(){
   if(!profile) redirect("/admin/lirygames/login?unauthorized=1");
   if(profile.role!=="admin") redirect("/admin/master");
 
-  const[{data:settings},{data:flags},{data:owners}]=await Promise.all([
+  const[{data:settings},{data:flags},{data:owners},{count:virtualItems},{count:virtualOffers}]=await Promise.all([
     supabase.from("corporate_settings").select("id,setting_key,category,label,description,value_json,environment_scope,status,updated_at").order("category",{ascending:true}),
     supabase.from("feature_flags").select("id,flag_key,label,description,enabled,environment_scope,rollout_percent,owner_user_id,notes,updated_at").order("flag_key",{ascending:true}),
-    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true}),
+    supabase.from("game_virtual_items").select("*",{count:"exact",head:true}).eq("active",true),
+    supabase.from("game_virtual_item_offers").select("*",{count:"exact",head:true}).eq("active",true)
   ]);
 
   const settingRows=(settings||[]) as any[];
@@ -145,6 +147,14 @@ export default async function SettingsPage(){
       <article><small>Controles de activación</small><strong>{flagRows.length}</strong><span>{enabledFlags.length} activos</span></article>
       <article><small>Credenciales</small><strong className={styles.kpiCompactValue}>PROHIBIDO</strong><span>Solo parámetros no sensibles</span></article>
       <article><small>Acceso</small><strong className={styles.kpiCompactValue}>ADMINISTRADOR</strong><span>Acceso restringido</span></article>
+    </section>
+
+    <section className={styles.sectionHead}><div><span>FREEMIUM · CONFIGURACIÓN</span><h2>Estado de preparación</h2></div><p>Resumen seguro del circuito de monetización. Las credenciales permanecen fuera de este panel.</p></section>
+    <section className={styles.kpis}>
+      <article><small>Ingreso firmado</small><strong className={styles.kpiCompactValue}>{process.env.GAME_INGEST_SECRET?"CONFIGURADO":"PENDIENTE"}</strong><span>{process.env.GAME_INGEST_SECRET?"Disponible solo en servidor":"Se activará con el primer juego online"}</span></article>
+      <article><small>Artículos virtuales activos</small><strong>{virtualItems||0}</strong><span>Catálogo FREEMIUM</span></article>
+      <article><small>Ofertas activas</small><strong>{virtualOffers||0}</strong><span>Precios/plataformas</span></article>
+      <article><small>Secretos visibles</small><strong className={styles.kpiCompactValue}>NO</strong><span>Fuera del panel administrativo</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>PARÁMETROS</span><h2>Parámetros operativos</h2></div></section>
