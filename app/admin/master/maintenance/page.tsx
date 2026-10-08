@@ -36,7 +36,7 @@ export default async function MaintenancePage(){
     supabase.from("tech_changes").select("status,risk_level,created_at").order("created_at",{ascending:false}).limit(1).maybeSingle()
   ]);
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleMaintenance}`}>
     <header className={styles.topbar}>
       <div>
         <span className={styles.eyebrow}>LIRYGAMES · MANTENIMIENTO</span>
@@ -45,6 +45,15 @@ export default async function MaintenancePage(){
       </div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">MT</span>
+      <div className={styles.moduleStripCopy}><small>MANTENIMIENTO</small><strong>Rutinas, pruebas y continuidad</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Estado operativo conectado</span>
+        <span>Mantenimiento controlado</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Acciones registradas</small><strong>{(auditCount||0).toLocaleString()}</strong><span>Historial administrativo</span></article>
