@@ -18,7 +18,7 @@ export default async function LiryGamesMfaPage(){
 
   const factors=await supabase.auth.mfa.listFactors();
   const factor=(factors.data?.totp||[]).find((f:any)=>
-    f.status==="verified"&&String(f.friendly_name||"").trim().toLowerCase()==="lirygames admin"
+    f.status==="verified"&&String(f.friendly_name||"").trim().toLowerCase()==="lirygames commander"
   );
   if(!factor)redirect("/admin/lirygames/mfa/setup");
 
@@ -43,7 +43,7 @@ export default async function LiryGamesMfaPage(){
         <h2>Verificar segundo factor</h2>
         <p className="lead">Abre tu app autenticadora y escribe el código temporal.</p>
         <LiryGamesMfaVerifyForm factorId={factor.id}/>
-        <p className="note">Autenticador: {factor.friendly_name||"LIRYGAMES Admin"}</p>
+        <p className="note">Autenticador: {factor.friendly_name||"LIRYGAMES Commander"}</p>
       </section>
     </section>
   </main>;
