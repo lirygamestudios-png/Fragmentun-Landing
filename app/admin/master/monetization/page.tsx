@@ -91,7 +91,7 @@ export default async function MasterMonetizationPage(){
     {data:orders,error:ordersError},
     {count:amazonClicks,error:amazonClicksError},
     {count:merchClicks,error:merchClicksError},
-    {data:games},
+    {data:games,error:gamesError},
     {data:virtualItems,error:virtualItemsError},
     {data:virtualOffers,error:virtualOffersError},
     {data:gamePurchases,error:gamePurchasesError},
@@ -121,6 +121,7 @@ export default async function MasterMonetizationPage(){
   const currency=paid[0]?.currency||productRows[0]?.currency||"USD";
   const active=productRows.filter(p=>p.active);
   const featured=productRows.filter(p=>p.featured);
+  const gamesAvailable=!gamesError;
   const gameRows=(games||[]) as any[];
   const virtualItemRows=(virtualItems||[]) as any[];
   const virtualOfferRows=(virtualOffers||[]) as any[];
@@ -229,7 +230,7 @@ export default async function MasterMonetizationPage(){
             <label>Duración (segundos)<input type="number" min="1" name="duration_seconds" placeholder="Solo para temporal"/></label>
             <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
           </div>
-          <MasterSubmitButton className={styles.formButton} disabled={!gameRows.length} disabledReason="Primero registra al menos un videojuego real.">Registrar artículo</MasterSubmitButton>
+          <MasterSubmitButton className={styles.formButton} disabled={!gamesAvailable||!gameRows.length} disabledReason={gamesAvailable?"Primero registra al menos un videojuego real.":"No se pudo consultar la lista de videojuegos."}>Registrar artículo</MasterSubmitButton>
         </MasterActionForm>
 
         <MasterActionForm action={createVirtualOffer} className={styles.adminForm} successText="Oferta virtual registrada correctamente.">
@@ -242,7 +243,7 @@ export default async function MasterMonetizationPage(){
             <label>Moneda<input name="currency" defaultValue="USD" maxLength={3}/></label>
             <label>Regiones<input name="region_scope" placeholder="US, DO, MX"/></label>
           </div>
-          <MasterSubmitButton className={styles.formButton} disabled={!virtualItemRows.length} disabledReason="Primero registra un artículo virtual.">Registrar oferta</MasterSubmitButton>
+          <MasterSubmitButton className={styles.formButton} disabled={!itemDataAvailable||!virtualItemRows.length} disabledReason={itemDataAvailable?"Primero registra un artículo virtual.":"No se pudo consultar el catálogo virtual."}>Registrar oferta</MasterSubmitButton>
         </MasterActionForm>
       </section>
     </details>}
@@ -270,7 +271,7 @@ export default async function MasterMonetizationPage(){
       {purchaseRows.slice(0,12).map((p:any)=><article key={p.id} className={`${styles.card} ${["failed","chargeback"].includes(p.status)?styles.cardAttention:p.status==="pending"?styles.cardWarning:""}`}>
         <div className={styles.cardTop}><span className={p.status==="paid"?styles.badgeActive:styles.badgePlanned}>{String(p.status).replaceAll("_"," ").toUpperCase()}</span><em>{String(p.platform||"").toUpperCase()}</em></div>
         <h3>{itemName(p.item_id)}</h3>
-        <p>{gameName(p.game_id)} · {money(p.gross_cents,p.currency||"USD")} bruto · {money(p.net_cents??0,p.currency||"USD")} neto<br/>Jugador: {String(p.player_ref||"").slice(0,10)}… · {p.provider}</p>
+        <p>{gameName(p.game_id)} · {money(p.gross_cents,p.currency||"USD")} bruto · {money(p.net_cents??(Number(p.gross_cents||0)-Number(p.fee_cents||0)-Number(p.tax_cents||0)),p.currency||"USD")} neto<br/>Jugador: {String(p.player_ref||"").slice(0,10)}… · {p.provider}</p>
       </article>)}
       {!purchaseRows.length&&<article className={styles.card}><h3>{purchaseDataAvailable?"Sin compras in-game todavía":"Compras no disponibles"}</h3><p>{purchaseDataAvailable?"Esta sección se alimentará automáticamente cuando los videojuegos comiencen a procesar compras reales.":"No se pudo consultar el historial de compras. No significa que las ventas sean cero."}</p></article>}
     </section>
