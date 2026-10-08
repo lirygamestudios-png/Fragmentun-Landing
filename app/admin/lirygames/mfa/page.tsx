@@ -1,6 +1,5 @@
 import {redirect} from "next/navigation";
 import {createSupabaseServerClient} from "../../../../lib/supabase/server";
-import {getMfaState} from "../../../../lib/supabase/mfa";
 import {LiryGamesMfaVerifyForm} from "../../../../components/LiryGamesMfaVerifyForm";
 
 export const dynamic="force-dynamic";
@@ -17,14 +16,11 @@ export default async function LiryGamesMfaPage(){
 
   if(!profile)redirect("/admin/lirygames/login?unauthorized=1");
 
-  const state=await getMfaState(supabase);
-  if(state.state==="satisfied")redirect("/admin/master");
-
   const factors=await supabase.auth.mfa.listFactors();
-  const verifiedTotp=(factors.data?.totp||[]).filter((f:any)=>f.status==="verified");
-  if(!verifiedTotp.length)redirect("/admin/lirygames/mfa/setup");
-
-  const factor=verifiedTotp[0];
+  const factor=(factors.data?.totp||[]).find((f:any)=>
+    f.status==="verified"&&String(f.friendly_name||"").trim().toLowerCase()==="lirygames admin"
+  );
+  if(!factor)redirect("/admin/lirygames/mfa/setup");
 
   return <main className="authShell authShellLiry">
     <section className="authExperience">
