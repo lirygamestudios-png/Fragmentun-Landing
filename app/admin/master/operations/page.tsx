@@ -117,7 +117,10 @@ export default async function MasterOperationsPage(){
     {count:characters},
     {data:latestLead},
     {data:latestEvent},
-    {data:owners}
+    {data:owners},
+    {data:latestGamePurchase},
+    {data:latestGameMetric},
+    {data:gameEntitlements}
   ]=await Promise.all([
     supabase.from("ops_work_items").select("id,code,title,domain,work_type,status,priority,owner_user_id,due_date,next_action,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("ops_decisions").select("id,decision_code,title,domain,status,owner_user_id,approved_by,decision,rationale,decision_date,review_date,created_at").order("created_at",{ascending:false}),
@@ -127,7 +130,10 @@ export default async function MasterOperationsPage(){
     supabase.from("characters").select("*",{count:"exact",head:true}),
     supabase.from("leads").select("created_at,email").order("created_at",{ascending:false}).limit(1).maybeSingle(),
     supabase.from("analytics_events").select("created_at,event_name").order("created_at",{ascending:false}).limit(1).maybeSingle(),
-    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true}),
+    supabase.from("game_purchase_events").select("status,purchased_at").order("purchased_at",{ascending:false}).limit(1).maybeSingle(),
+    supabase.from("game_engagement_daily").select("metric_date,updated_at,active_players").order("updated_at",{ascending:false}).limit(1).maybeSingle(),
+    supabase.from("game_entitlements").select("status").limit(5000)
   ]);
 
   const workRows=(workItems||[]) as any[];
