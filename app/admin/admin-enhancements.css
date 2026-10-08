@@ -769,3 +769,30 @@
   outline-offset:3px;
   box-shadow:0 0 0 4px rgba(74,144,217,.10);
 }
+
+
+/* UX LIRYGAMES · Bloque 13: respuesta táctil móvil FRAGMENTUN */
+@media(hover:none) and (pointer:coarse){
+  .adminInteriorNav a,
+  .adminInteriorSite,
+  .adminMain .btn,
+  .adminMain button,
+  .adminList button,
+  .adminSaleModeChoices button,
+  .adminMediaTileActions button,
+  .adminMediaModalClose{
+    -webkit-tap-highlight-color:transparent;
+  }
+  .adminInteriorNav a:active,
+  .adminInteriorSite:active,
+  .adminMain .btn:active,
+  .adminMain button:not(:disabled):active,
+  .adminList button:active,
+  .adminSaleModeChoices button:active,
+  .adminMediaTileActions button:active,
+  .adminMediaModalClose:active{
+    transform:scale(.975);
+    background-color:rgba(74,144,217,.12);
+    box-shadow:0 0 0 2px rgba(74,144,217,.10);
+  }
+}
