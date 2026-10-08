@@ -59,13 +59,14 @@ export function AdminMediaLibrary(){
   const[file,setFile]=useState<File|null>(null);
   const[form,setForm]=useState({slug:"",kind:"image",category:"other",alt_es:"",alt_en:"",bucket:"official-media",public_visible:true});
   const[msg,setMsg]=useState("");
+  const[loadError,setLoadError]=useState(false);
   const[query,setQuery]=useState("");
   const[category,setCategory]=useState("all");
   const[kind,setKind]=useState("all");
   const[selected,setSelected]=useState<any|null>(null);
   const[copied,setCopied]=useState(false);
   const supabase=useMemo(()=>createSupabaseBrowserClient(),[]);
-  const load=()=>fetch("/api/admin/media").then(r=>r.json()).then(j=>setRows(j.data||[]));
+  const load=()=>fetch("/api/admin/media").then(async r=>{const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error("load_failed");setRows(j.data||[]);setLoadError(false)}).catch(()=>setLoadError(true));
   useEffect(()=>{load()},[]);
 
   const filtered=useMemo(()=>rows.filter(row=>{
@@ -82,20 +83,24 @@ export function AdminMediaLibrary(){
     setMsg("Subiendo…");
     const safe=file.name.toLowerCase().replace(/[^a-z0-9._-]+/g,"-");
     const path=`${form.slug}/${Date.now()}-${safe}`;
-    const{error}=await supabase.storage.from(form.bucket).upload(path,file,{upsert:false,contentType:file.type||undefined});
-    if(error){setMsg(error.message);return}
-    const r=await fetch("/api/admin/media",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-      slug:form.slug,kind:form.kind,storage_path:`${form.bucket}/${path}`,alt_es:form.alt_es,alt_en:form.alt_en,
-      protected:form.bucket==="editorial-media",public_visible:form.public_visible&&form.bucket!=="editorial-media",
-      metadata:{filename:file.name,size:file.size,mime:file.type,bucket:form.bucket,path,category:form.category}
-    })});
-    if(!r.ok){
-      await supabase.storage.from(form.bucket).remove([path]).catch(()=>{});
-      setMsg("No fue posible registrar el recurso. La subida fue revertida.");
-      return;
+    try{
+      const{error}=await supabase.storage.from(form.bucket).upload(path,file,{upsert:false,contentType:file.type||undefined});
+      if(error){setMsg("No fue posible subir el archivo.");return}
+      const r=await fetch("/api/admin/media",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+        slug:form.slug,kind:form.kind,storage_path:`${form.bucket}/${path}`,alt_es:form.alt_es,alt_en:form.alt_en,
+        protected:form.bucket==="editorial-media",public_visible:form.public_visible&&form.bucket!=="editorial-media",
+        metadata:{filename:file.name,size:file.size,mime:file.type,bucket:form.bucket,path,category:form.category}
+      })});
+      if(!r.ok){
+        await supabase.storage.from(form.bucket).remove([path]).catch(()=>{});
+        setMsg("No fue posible registrar el recurso. La subida fue revertida.");
+        return;
+      }
+      setMsg("GUARDADO SATISFACTORIAMENTE");
+      setFile(null);setForm(v=>({...v,slug:"",alt_es:"",alt_en:""}));load()
+    }catch{
+      setMsg("No fue posible completar la subida. Revisa la conexión e inténtalo nuevamente.");
     }
-    setMsg("GUARDADO SATISFACTORIAMENTE");
-    setFile(null);setForm(v=>({...v,slug:"",alt_es:"",alt_en:""}));load()
   }
 
   async function copyUrl(row:any){
@@ -105,8 +110,13 @@ export function AdminMediaLibrary(){
       await navigator.clipboard.writeText(url);
       setCopied(true);
       window.setTimeout(()=>setCopied(false),1800);
-    }catch{}
+    }catch{
+      setCopied(false);
+      setMsg("No fue posible copiar la URL.");
+    }
   }
+
+  if(loadError)return <div className="adminMediaExperience"><section className="card"><p className="adminSaveFeedback error">No fue posible cargar la biblioteca de medios.</p><button type="button" className="btn btnGhost" onClick={()=>window.location.reload()}>Reintentar</button></section></div>;
 
   return <div className="adminMediaExperience">
     <section className="card adminMediaUploadCard">
