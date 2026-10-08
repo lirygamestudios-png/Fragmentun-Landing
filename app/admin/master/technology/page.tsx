@@ -38,7 +38,7 @@ async function requireTechEditor(){
   if(!(await hasSatisfiedMfa(supabase))) throw new Error("mfa_required");
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile||!["admin","editor"].includes(profile.role)) throw new Error("forbidden");
-  return {supabase,user};
+  return {supabase,user,profile};
 }
 
 async function createService(formData:FormData){
@@ -80,6 +80,7 @@ async function createChange(formData:FormData){
   const allowedRisk=new Set(["low","medium","high","critical"]);
   const allowedEnv=new Set(["development","preview","staging","production","shared"]);
   if(!code||!title||!allowedType.has(type)||!allowedRisk.has(risk)||!allowedEnv.has(env)) throw new Error("invalid_change");
+  if(env==="production"&&["high","critical"].includes(risk)&&!rollback) throw new Error("rollback_plan_required");
   const{error}=await supabase.from("tech_changes").insert({
     change_code:code,title,change_type:type,risk_level:risk,service_id:serviceId,target_environment:env,
     planned_at:plannedAt,rollback_plan:rollback,summary,created_by:user.id
@@ -115,7 +116,7 @@ async function updateService(formData:FormData){
 
 async function updateChange(formData:FormData){
   "use server";
-  const {supabase,user}=await requireTechEditor();
+  const {supabase,user,profile}=await requireTechEditor();
   const id=String(formData.get("change_id")||"").trim();
   const status=String(formData.get("status")||"planned");
   const risk=String(formData.get("risk_level")||"medium");
@@ -129,6 +130,10 @@ async function updateChange(formData:FormData){
   const allowedRisk=new Set(["low","medium","high","critical"]);
   const allowedEnv=new Set(["development","preview","staging","production","shared"]);
   if(!id||!allowedEstado.has(status)||!allowedRisk.has(risk)||!allowedEnv.has(env)) throw new Error("invalid_change_update");
+  const protectedProduction=env==="production"&&["high","critical"].includes(risk);
+  if(protectedProduction&&["approved","in_progress","completed"].includes(status)&&!rollback) throw new Error("rollback_plan_required");
+  if(protectedProduction&&["approved","in_progress","completed"].includes(status)&&profile.role!=="admin") throw new Error("admin_approval_required");
+  if(status==="approved"&&profile.role!=="admin") throw new Error("admin_approval_required");
   const patch:any={
     status,risk_level:risk,owner_user_id:ownerUserId,target_environment:env,planned_at:plannedAt,
     rollback_plan:rollback,summary,updated_at:new Date().toISOString()
