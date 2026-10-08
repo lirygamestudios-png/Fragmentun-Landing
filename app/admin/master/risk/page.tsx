@@ -205,7 +205,7 @@ export default async function MasterRiskPage(){
           <label>URL evidencia<input name="evidence_url"/></label>
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!riskRows.length}>Registrar evidencia</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!riskRows.length} disabledReason="Primero registra un riesgo para poder añadir evidencia.">Registrar evidencia</MasterSubmitButton>
       </form>
       </section>
 
@@ -225,7 +225,7 @@ export default async function MasterRiskPage(){
           <label className={styles.span2}>Mitigación<textarea name="mitigation" rows={3}/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!riskRows.length}>Actualizar riesgo</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!riskRows.length} disabledReason="No hay riesgos registrados para actualizar.">Actualizar riesgo</MasterSubmitButton>
       </form>
       </section>
     </details>}
