@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function validPercent(value:number){
   return Number.isInteger(value)&&value>=0&&value<=100;
@@ -198,7 +199,7 @@ export default async function MasterGamesPage(){
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar juegos y etapas manualmente.</p>
       <section className={styles.adminForms}>
-      <form action={createGame} className={styles.adminForm}>
+      <MasterActionForm action={createGame} className={styles.adminForm} successText="Juego registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO TÍTULO</span><h2>Registrar videojuego</h2></div>
         <div className={styles.formGrid}>
           <label>Nombre<input name="name" required placeholder="Nombre del juego"/></label>
@@ -220,9 +221,9 @@ export default async function MasterGamesPage(){
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3} placeholder="Estado y objetivo del proyecto"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar juego</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={createMilestone} className={styles.adminForm}>
+      <MasterActionForm action={createMilestone} className={styles.adminForm} successText="Hito registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVA ETAPA</span><h2>Registrar etapa</h2></div>
         <div className={styles.formGrid}>
           <label>Juego<select name="game_id" required defaultValue="">
@@ -241,11 +242,11 @@ export default async function MasterGamesPage(){
           <label className={styles.span2}>Condiciones para completar<textarea name="exit_criteria" rows={3} placeholder="Condiciones para considerar la etapa completada"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit" disabled={!gameRows.length} disabledReason="Primero registra un juego para poder añadir una etapa.">Registrar etapa</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
 
       <section className={styles.adminForms}>
-      <form action={updateGame} className={styles.adminForm}>
+      <MasterActionForm action={updateGame} className={styles.adminForm} successText="Juego actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR JUEGO</span><h2>Actualizar producción</h2></div>
         <div className={styles.formGrid}>
           <label>Juego<select name="game_id" required defaultValue=""><option value="" disabled>Seleccionar juego</option>{gameRows.map((g:any)=><option key={g.id} value={g.id}>{g.name}</option>)}</select></label>
@@ -258,9 +259,9 @@ export default async function MasterGamesPage(){
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!gameRows.length} disabledReason="No hay juegos registrados para actualizar.">Actualizar juego</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={updateMilestone} className={styles.adminForm}>
+      <MasterActionForm action={updateMilestone} className={styles.adminForm} successText="Hito actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR ETAPA</span><h2>Actualizar etapa</h2></div>
         <div className={styles.formGrid}>
           <label>Etapa<select name="milestone_id" required defaultValue=""><option value="" disabled>Seleccionar etapa</option>{milestoneRows.map((m:any)=><option key={m.id} value={m.id}>{m.name}</option>)}</select></label>
@@ -272,7 +273,7 @@ export default async function MasterGamesPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!milestoneRows.length} disabledReason="No hay etapas registradas para actualizar.">Actualizar etapa</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
     </details>}
 
