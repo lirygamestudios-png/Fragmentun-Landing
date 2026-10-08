@@ -313,8 +313,8 @@ export default async function MasterCapitalPage(){
     <section className={styles.kpis}>
       <article><small>Ingresos pagados</small><strong>{money(commercialRevenue,revenueCurrency)}</strong><span>Ventas registradas</span></article>
       <article><small>Órdenes pagadas</small><strong>{(paidOrders||0).toLocaleString()}</strong><span>Comercio</span></article>
-      <article><small>Estructura accionaria</small><strong>SEPARADA</strong><span>Separada del registro de inversionistas</span></article>
-      <article><small>Acceso</small><strong>ADMINISTRADOR</strong><span>Acceso restringido</span></article>
+      <article><small>Estructura accionaria</small><strong className={styles.kpiCompactValue}>SEPARADA</strong><span>Separada del registro de inversionistas</span></article>
+      <article><small>Acceso</small><strong className={styles.kpiCompactValue}>ADMINISTRADOR</strong><span>Acceso restringido</span></article>
     </section>
   </main>;
 }
