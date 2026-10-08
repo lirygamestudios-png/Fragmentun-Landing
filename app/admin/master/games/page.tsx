@@ -8,10 +8,10 @@ function stageLabel(stage:string){
   const map:Record<string,string>={
     concept:"Concepto",
     pre_production:"Preproducción",
-    vertical_slice:"Vertical Slice",
+    vertical_slice:"Demostración jugable",
     production:"Producción",
-    alpha:"Alpha",
-    beta:"Beta",
+    alpha:"Versión alfa",
+    beta:"Versión beta",
     release_candidate:"Candidato a lanzamiento",
     launch:"Lanzamiento",
     liveops:"Operación en vivo",
@@ -31,7 +31,7 @@ function milestoneStatusLabel(value:string){
 }
 
 function milestoneTypeLabel(value:string){
-  const map:Record<string,string>={pre_production:"Preproducción",vertical_slice:"Vertical Slice",production:"Producción",alpha:"Alpha",beta:"Beta",release_candidate:"Candidato a lanzamiento",launch:"Lanzamiento",liveops:"Operación en vivo",technical:"Técnico",publishing:"Publicación"};
+  const map:Record<string,string>={pre_production:"Preproducción",vertical_slice:"Demostración jugable",production:"Producción",alpha:"Versión alfa",beta:"Versión beta",release_candidate:"Candidato a lanzamiento",launch:"Lanzamiento",liveops:"Operación en vivo",technical:"Técnico",publishing:"Publicación"};
   return map[value]||value;
 }
 
@@ -170,11 +170,11 @@ export default async function MasterGamesPage(){
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · JUEGOS</span><h1>Juegos</h1><p>Seguimiento de títulos, avances y estado de producción.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
-      <article><small>Títulos</small><strong>{gameRows.length}</strong><span>game_titles</span></article>
+      <article><small>Títulos</small><strong>{gameRows.length}</strong><span>Juegos registrados</span></article>
       <article><small>Etapas abiertas</small><strong>{activeMilestones.length}</strong><span>Producción activa</span></article>
       <article><small>En riesgo o bloqueados</small><strong>{blocked.length}</strong><span>Excepciones</span></article>
       <article><small>Salud crítica</small><strong>{redGames.length}</strong><span>Críticos o pausados</span></article>
@@ -312,10 +312,10 @@ export default async function MasterGamesPage(){
       <p>El sistema conecta el futuro portfolio de juegos con el contenido editorial y multimedia existente.</p>
     </section>
     <section className={styles.kpis}>
-      <article><small>Libros</small><strong>{(books||0).toLocaleString()}</strong><span>IP base</span></article>
-      <article><small>Personajes</small><strong>{(characters||0).toLocaleString()}</strong><span>Worldbuilding</span></article>
-      <article><small>Media</small><strong>{(media||0).toLocaleString()}</strong><span>Assets registrados</span></article>
-      <article><small>RLS</small><strong>ACTIVO</strong><span>Acceso administrativo</span></article>
+      <article><small>Libros</small><strong>{(books||0).toLocaleString()}</strong><span>Base creativa</span></article>
+      <article><small>Personajes</small><strong>{(characters||0).toLocaleString()}</strong><span>Universo narrativo</span></article>
+      <article><small>Recursos</small><strong>{(media||0).toLocaleString()}</strong><span>Archivos registrados</span></article>
+      <article><small>Acceso a datos</small><strong>PROTEGIDO</strong><span>Acceso administrativo</span></article>
     </section>
   </main>;
 }
