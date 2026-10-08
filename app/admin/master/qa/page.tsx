@@ -36,23 +36,17 @@ export default async function QaFinalPage(){
   const validationOk=latestValidation?.status==="passed";
   const currentDeployment=process.env.VERCEL_DEPLOYMENT_ID||null;
   const currentCommit=process.env.VERCEL_GIT_COMMIT_SHA||null;
-  const validationMatchesCurrentDeployment=!currentDeployment||!latestValidation?.deployment_id||latestValidation.deployment_id===currentDeployment;
-  const validationMatchesCurrentCommit=!currentCommit||!latestValidation?.commit_sha||latestValidation.commit_sha===currentCommit;
+  const validationMatchesCurrentDeployment=Boolean(currentDeployment&&latestValidation?.deployment_id===currentDeployment);
+  const validationMatchesCurrentCommit=Boolean(currentCommit&&latestValidation?.commit_sha===currentCommit);
   const validationIsCurrent=validationMatchesCurrentDeployment&&validationMatchesCurrentCommit;
   const validationLabel=!latestValidation?"SIN PRUEBA":!validationOk?"REVISAR":validationIsCurrent?"CORRECTA":"DESACTUALIZADA";
   const gateApproved=latestGate?.status==="approved";
-  const validationDeployment=latestValidation?.deployment_id||null;
-  const gateDeployment=latestGate?.target_deployment_id||null;
-  const validationCommit=latestValidation?.commit_sha||null;
-  const gateCommit=latestGate?.target_commit||null;
-  const sameDeployment=validationDeployment&&gateDeployment
-    ?validationDeployment===gateDeployment
-    :true;
-  const sameCommit=validationCommit&&gateCommit
-    ?validationCommit===gateCommit
-    :true;
-  const gateMatchesValidation=sameDeployment&&sameCommit;
-  const gateReady=gateApproved&&gateMatchesValidation&&validationIsCurrent;
+  const gateMatchesValidation=Boolean(
+    currentDeployment&&currentCommit&&latestValidation?.deployment_id===currentDeployment&&
+    latestValidation?.commit_sha===currentCommit&&latestGate?.target_deployment_id===currentDeployment&&
+    latestGate?.target_commit===currentCommit
+  );
+  const gateReady=gateApproved&&validationOk&&gateMatchesValidation&&validationIsCurrent;
   const gateLabel=!latestGate?"SIN REVISIÓN":!gateApproved?"REVISAR":!validationIsCurrent?"NUEVA PRUEBA":gateMatchesValidation?"APROBADA":"VERSIÓN DISTINTA";
   const incidentsOk=(openIncidents||0)===0;
   const approvalsOk=(pendingApprovals||0)===0;
