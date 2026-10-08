@@ -177,11 +177,20 @@ export default async function MasterGamesPage(){
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
   const primaryGame=gameRows[0]||null;
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleGames}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · JUEGOS</span><h1>Juegos</h1><p>Seguimiento de títulos, avances y estado de producción.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">JG</span>
+      <div className={styles.moduleStripCopy}><small>PRODUCCIÓN INTERACTIVA</small><strong>Portfolio y avance de juegos</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Pipeline de producción conectado</span>
+        <span>Cambios protegidos · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Títulos</small><strong>{gameRows.length}</strong><span>Juegos registrados</span></article>
