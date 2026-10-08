@@ -58,7 +58,7 @@ export default async function MasterReportsPage(){
   const metricRows=(gameMetrics||[]) as any[];
   const paidGamePurchases=gamePurchaseRows.filter(x=>x.status==="paid");
   const gameGross=paidGamePurchases.reduce((a,x)=>a+Number(x.gross_cents||0),0);
-  const gameNet=paidGamePurchases.reduce((a,x)=>a+Number(x.net_cents??x.gross_cents||0),0);
+  const gameNet=paidGamePurchases.reduce((a,x)=>a+Number((x.net_cents??x.gross_cents)||0),0);
   const gameCurrency=paidGamePurchases[0]?.currency||"USD";
   const gamePayers=new Set(paidGamePurchases.map(x=>x.player_ref).filter(Boolean)).size;
   const entitlementIssues=entitlementRows.filter(x=>["pending","failed"].includes(x.status)).length;
