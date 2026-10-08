@@ -281,8 +281,8 @@ export default async function MasterOrganizacionesPage(){
     <section className={styles.kpis}>
       <article><small>Campañas</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Salida al mercado</span></article>
       <article><small>Ediciones</small><strong>{(editions||0).toLocaleString()}</strong><span>Catálogo</span></article>
-      <article><small>Acceso</small><strong>ADMINISTRADOR</strong><span>Acceso a datos restringido</span></article>
-      <article><small>Contratos</small><strong>SEPARADOS</strong><span>Legal e IP</span></article>
+      <article><small>Acceso</small><strong className={styles.kpiCompactValue}>ADMINISTRADOR</strong><span>Acceso a datos restringido</span></article>
+      <article><small>Contratos</small><strong className={styles.kpiCompactValue}>SEPARADOS</strong><span>Legal e IP</span></article>
     </section>
   </main>;
 }
