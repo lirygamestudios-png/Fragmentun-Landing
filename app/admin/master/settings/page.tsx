@@ -190,7 +190,7 @@ export default async function SettingsPage(){
           <label className={styles.span2}>Valor<input name="value"/></label>
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!settingRows.length}>Actualizar parámetro</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!settingRows.length} disabledReason="No hay parámetros registrados para actualizar.">Actualizar parámetro</MasterSubmitButton>
       </form>
 
       <form action={updateFlag} className={styles.adminForm}>
@@ -204,7 +204,7 @@ export default async function SettingsPage(){
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!flagRows.length}>Actualizar control</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!flagRows.length} disabledReason="No hay controles de activación registrados para actualizar.">Actualizar control</MasterSubmitButton>
       </form>
     </section></details>
 
