@@ -5,21 +5,29 @@ import { FormEvent,useState } from "react";
 export default function ForgotPasswordPage(){
   const[email,setEmail]=useState("");
   const[status,setStatus]=useState("");
+  const[statusType,setStatusType]=useState<"info"|"success"|"error">("info");
   const[loading,setLoading]=useState(false);
 
   async function submit(event:FormEvent){
     event.preventDefault();
     setLoading(true);
-    setStatus("");
-
-    await fetch("/api/auth/forgot-password",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({email})
-    });
-
-    setLoading(false);
-    setStatus("Si existe una cuenta asociada a ese correo, recibirás un enlace seguro para restablecer la contraseña.");
+    setStatusType("info");
+    setStatus("Enviando enlace seguro…");
+    try{
+      const r=await fetch("/api/auth/forgot-password",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({email})
+      });
+      if(!r.ok)throw new Error("request_failed");
+      setStatusType("success");
+      setStatus("Si existe una cuenta asociada a ese correo, recibirás un enlace seguro para restablecer la contraseña.");
+    }catch{
+      setStatusType("error");
+      setStatus("No fue posible enviar la solicitud. Revisa tu conexión e inténtalo nuevamente.");
+    }finally{
+      setLoading(false);
+    }
   }
 
   return <main className="authShell authRecoveryShell">
@@ -43,7 +51,7 @@ export default function ForgotPasswordPage(){
         <Link href="/admin/login">Volver al acceso</Link>
       </div>
 
-      {status&&<div className="formNotice" role="status">{status}</div>}
+      {status&&<div className={`authStatus ${statusType}`} role="status" aria-live="polite">{status}</div>}
     </section>
   </main>;
 }
