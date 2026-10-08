@@ -253,7 +253,7 @@ export default async function MasterOperationsPage(){
           <label className={styles.span2}>Próxima acción<input name="next_action"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!workRows.length}>Actualizar trabajo</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!workRows.length} disabledReason="No hay trabajos registrados para actualizar.">Actualizar trabajo</MasterSubmitButton>
       </form>
 
       <form action={updateDecision} className={styles.adminForm}>
@@ -266,7 +266,7 @@ export default async function MasterOperationsPage(){
           <label className={styles.span2}>Decisión<textarea name="decision" rows={3}/></label>
           <label className={styles.span2}>Motivo<textarea name="rationale" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!decisionRows.length}>Actualizar decisión</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!decisionRows.length} disabledReason="No hay decisiones registradas para actualizar.">Actualizar decisión</MasterSubmitButton>
       </form>
       </section>
     </details>}
