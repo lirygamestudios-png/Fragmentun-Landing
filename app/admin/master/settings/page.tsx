@@ -4,6 +4,15 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
+function settingStatusLabel(value:string){
+  const map:Record<string,string>={active:"ACTIVO",inactive:"INACTIVO",deprecated:"OBSOLETO"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+function scopeLabel(value:string){
+  const map:Record<string,string>={shared:"COMPARTIDO",development:"DESARROLLO",preview:"VERSIÓN DE PRUEBA",production:"PRODUCCIÓN"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
 async function requireAdmin(){
   "use server";
   const supabase=await createSupabaseServerClient();
@@ -115,7 +124,7 @@ export default async function SettingsPage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · CONFIGURACIÓN</span><h1>Configuración</h1><p>Parámetros operativos y controles de activación. Las credenciales y tokens permanecen fuera de este panel.</p></div>
+      <div><span className={styles.eyebrow}>LIRYGAMES · CONFIGURACIÓN</span><h1>Configuración</h1><p>Parámetros operativos y controles de activación. Las credenciales y claves sensibles permanecen fuera de este panel.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
@@ -129,8 +138,8 @@ export default async function SettingsPage(){
     <section className={styles.sectionHead}><div><span>PARÁMETROS</span><h2>Parámetros operativos</h2></div></section>
     <section className={styles.grid}>
       {settingRows.map((s:any)=><article key={s.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={s.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(s.status).toUpperCase()}</span><em>{s.environment_scope}</em></div>
-        <h3>{s.label}</h3><p>{s.setting_key} · {s.category}<br/>{s.description||"Sin descripción"}<br/>Valor: {String(s.value_json?.value??"—")}</p>
+        <div className={styles.cardTop}><span className={s.status==="active"?styles.badgeActive:styles.badgePlanned}>{settingStatusLabel(s.status)}</span><em>{scopeLabel(s.environment_scope)}</em></div>
+        <h3>{s.label}</h3><p>{s.description||"Sin descripción"}<br/>Categoría: {s.category}<br/>Valor: {String(s.value_json?.value??"—")}</p>
       </article>)}
       {!settingRows.length&&<article className={styles.card}><h3>Registro de parámetros preparado</h3><p>No hay parámetros corporativos cargados todavía.</p></article>}
     </section>
@@ -138,8 +147,8 @@ export default async function SettingsPage(){
     <section className={styles.sectionHead}><div><span>CONTROLES DE ACTIVACIÓN</span><h2>Controles de activación</h2></div><p>Los controles nacen desactivados; su activación sigue un flujo controlado.</p></section>
     <section className={styles.grid}>
       {flagRows.map((f:any)=><article key={f.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={f.enabled?styles.badgeActive:styles.badgePlanned}>{f.enabled?"ACTIVO":"INACTIVO"}</span><em>{f.environment_scope}</em></div>
-        <h3>{f.label}</h3><p>{f.flag_key}<br/>Responsable: {ownerName(f.owner_user_id)}<br/>{f.description||"Sin descripción"}<br/>Activación: {f.rollout_percent}%</p>
+        <div className={styles.cardTop}><span className={f.enabled?styles.badgeActive:styles.badgePlanned}>{f.enabled?"ACTIVO":"INACTIVO"}</span><em>{scopeLabel(f.environment_scope)}</em></div>
+        <h3>{f.label}</h3><p>Responsable: {ownerName(f.owner_user_id)}<br/>{f.description||"Sin descripción"}<br/>Activación: {f.rollout_percent}%</p>
       </article>)}
       {!flagRows.length&&<article className={styles.card}><h3>Registro de controles preparado</h3><p>No hay controles cargados todavía.</p></article>}
     </section>
@@ -148,10 +157,10 @@ export default async function SettingsPage(){
       <form action={createSetting} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVO PARÁMETRO</span><h2>Registrar parámetro</h2></div>
         <div className={styles.formGrid}>
-          <label>Clave<input name="setting_key" required placeholder="ui.default_locale"/></label>
+          <label>Clave<input name="setting_key" required placeholder="interfaz.idioma_predeterminado"/></label>
           <label>Nombre visible<input name="label" required/></label>
           <label>Categoría<input name="category" defaultValue="general"/></label>
-          <label>Entorno<select name="environment_scope" defaultValue="shared"><option value="shared">Compartido</option><option value="development">Desarrollo</option><option value="preview">Vista previa</option><option value="production">Producción</option></select></label>
+          <label>Entorno<select name="environment_scope" defaultValue="shared"><option value="shared">Compartido</option><option value="development">Desarrollo</option><option value="preview">Versión de prueba</option><option value="production">Producción</option></select></label>
           <label className={styles.span2}>Valor<input name="value"/></label>
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
@@ -161,7 +170,7 @@ export default async function SettingsPage(){
       <form action={createFlag} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVO CONTROL</span><h2>Registrar control de activación</h2></div>
         <div className={styles.formGrid}>
-          <label>Clave<input name="flag_key" required placeholder="master.experimental_feature"/></label>
+          <label>Clave<input name="flag_key" required placeholder="control.nueva_funcion"/></label>
           <label>Nombre visible<input name="label" required/></label>
           <label>Entorno<select name="environment_scope" defaultValue="preview"><option value="shared">Compartido</option><option value="development">Desarrollo</option><option value="preview">Vista previa</option><option value="production">Producción</option></select></label>
           <label>Porcentaje de activación<input type="number" min="0" max="100" name="rollout_percent" defaultValue="0"/></label>
