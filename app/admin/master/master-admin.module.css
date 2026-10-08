@@ -1701,3 +1701,118 @@
     align-items:flex-start;
   }
 }
+
+
+/* Ronda visual: Datos · Automatización · Riesgos */
+.moduleData .sectionHead,
+.moduleAutomation .sectionHead,
+.moduleRisk .sectionHead{
+  margin:32px 0 14px;
+  padding-bottom:10px;
+}
+
+.moduleData .kpis article,
+.moduleAutomation .kpis article,
+.moduleRisk .kpis article{
+  padding:16px;
+  border-radius:11px;
+}
+
+.moduleData .card,
+.moduleAutomation .card,
+.moduleRisk .card{
+  min-height:148px;
+  padding:16px;
+  border-radius:11px;
+}
+
+.moduleData .adminForms,
+.moduleAutomation .adminForms,
+.moduleRisk .adminForms{
+  margin:30px 0;
+  gap:14px;
+}
+
+.moduleData .adminForm,
+.moduleAutomation .adminForm,
+.moduleRisk .adminForm{
+  padding:18px;
+  border-radius:11px;
+}
+
+.moduleData .moduleStrip,
+.moduleAutomation .moduleStrip,
+.moduleRisk .moduleStrip{
+  margin:-6px 0 16px;
+  border-radius:11px;
+}
+
+.moduleData .cardTop em,
+.moduleAutomation .cardTop em,
+.moduleRisk .cardTop em{
+  max-width:48%;
+  text-align:right;
+  overflow-wrap:anywhere;
+}
+
+.moduleData .card p,
+.moduleAutomation .card p,
+.moduleRisk .card p,
+.moduleData .card h3,
+.moduleAutomation .card h3,
+.moduleRisk .card h3{
+  overflow-wrap:anywhere;
+}
+
+.moduleData .kpis small,
+.moduleAutomation .kpis small,
+.moduleRisk .kpis small,
+.moduleData .kpis span,
+.moduleAutomation .kpis span,
+.moduleRisk .kpis span{
+  overflow-wrap:anywhere;
+}
+
+@media(min-width:1050px){
+  .moduleData .moduleStrip,
+  .moduleAutomation .moduleStrip,
+  .moduleRisk .moduleStrip{
+    grid-template-columns:auto minmax(180px,1fr) auto;
+    gap:14px;
+  }
+  .moduleData .moduleStripMeta,
+  .moduleAutomation .moduleStripMeta,
+  .moduleRisk .moduleStripMeta{
+    grid-column:auto;
+    justify-content:flex-end;
+    padding-top:0;
+  }
+}
+
+@media(max-width:900px){
+  .moduleData .moduleStrip,
+  .moduleAutomation .moduleStrip,
+  .moduleRisk .moduleStrip{
+    grid-template-columns:auto 1fr;
+  }
+  .moduleData .moduleStripMeta,
+  .moduleAutomation .moduleStripMeta,
+  .moduleRisk .moduleStripMeta{
+    grid-column:1/-1;
+    justify-content:flex-start;
+    padding-top:2px;
+  }
+}
+
+@media(max-width:600px){
+  .moduleData .sectionHead,
+  .moduleAutomation .sectionHead,
+  .moduleRisk .sectionHead{
+    margin:28px 0 12px;
+  }
+  .moduleData .cardTop,
+  .moduleAutomation .cardTop,
+  .moduleRisk .cardTop{
+    align-items:flex-start;
+  }
+}
