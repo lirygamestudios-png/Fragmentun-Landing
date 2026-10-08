@@ -127,7 +127,7 @@ export function AdminCommerceManager(){
   }
 
   async function saveOrder(o:Order,patch:Partial<Order>={}){
-    setBusy(true);
+    setBusy(true);showMessage("Actualizando pedido…","info");
     try{
       const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"order",...o,...patch})});
       const j=await r.json().catch(()=>({}));
@@ -138,7 +138,7 @@ export function AdminCommerceManager(){
   }
 
   async function createFulfillment(orderId:string){
-    setBusy(true);
+    setBusy(true);showMessage("Creando envío…","info");
     try{
       const r=await fetch("/api/admin/commerce/manage",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"fulfillment",order_id:orderId})});
       const j=await r.json().catch(()=>({}));
@@ -149,7 +149,7 @@ export function AdminCommerceManager(){
   }
 
   async function saveFulfillment(f:Fulfillment,patch:Partial<Fulfillment>={}){
-    setBusy(true);
+    setBusy(true);showMessage("Guardando envío…","info");
     const payload={...f,...patch};
     try{
       const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"fulfillment",...payload})});
