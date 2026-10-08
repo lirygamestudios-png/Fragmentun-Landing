@@ -43,7 +43,7 @@ export default async function MasterIntegrationsPage(){
   const latest=rows[0];
   const providers=Array.from(new Set(rows.map(x=>x.integration).filter(Boolean)));
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleIntegrations}`}>
     <header className={styles.topbar}>
       <div>
         <span className={styles.eyebrow}>LIRYGAMES · INTEGRACIONES</span>
@@ -52,6 +52,15 @@ export default async function MasterIntegrationsPage(){
       </div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">IN</span>
+      <div className={styles.moduleStripCopy}><small>INTEGRACIONES</small><strong>Conexiones externas y actividad</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Servicios externos conectados</span>
+        <span>Credenciales protegidas</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Servicios detectados</small><strong>{providers.length}</strong><span>Con actividad registrada</span></article>
