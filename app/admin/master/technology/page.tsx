@@ -204,15 +204,15 @@ export default async function MasterTechnologyPage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Servicios</small><strong>{serviceRows.length}</strong><span>{degraded} con incidencia o mantenimiento</span></article>
-      <article><small>Cambios abiertos</small><strong>{openChanges.length}</strong><span>{riskyChanges.length} de riesgo alto o crítico</span></article>
+      <article className={degraded?styles.kpiAttention:undefined}><small>Servicios</small><strong>{serviceRows.length}</strong><span>{degraded?degraded+" con incidencia o mantenimiento":"Sin servicios degradados"}</span></article>
+      <article className={riskyChanges.length?styles.kpiAttention:undefined}><small>Cambios abiertos</small><strong>{openChanges.length}</strong><span>{riskyChanges.length?riskyChanges.length+" de riesgo alto o crítico":"Sin cambios de riesgo alto"}</span></article>
       <article><small>Eventos</small><strong>{(events||0).toLocaleString()}</strong><span>Analítica acumulada</span></article>
       <article><small>Administradores</small><strong>{(profiles||0).toLocaleString()}</strong><span>Usuarios administrativos</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>SERVICIOS</span><h2>Servicios técnicos</h2></div><p>Componentes y proveedores técnicos registrados.</p></section>
     <section className={styles.grid}>
-      {serviceRows.map((s:any)=><article key={s.id} className={styles.card}>
+      {serviceRows.map((s:any)=><article key={s.id} className={`${styles.card} ${s.status==="degraded"||s.criticality==="critical"?styles.cardAttention:s.status==="maintenance"||s.criticality==="high"?styles.cardWarning:["deprecated","retired"].includes(s.status)?styles.cardMuted:""}`}>
         <div className={styles.cardTop}><span className={s.status==="active"?styles.badgeActive:styles.badgePlanned}>{techEstadoLabel(s.status)}</span><em>{riskLabel(s.criticality)}</em></div>
         <h3>{s.name}</h3><p>{serviceTypeLabel(s.service_type)} · {s.provider||"Proveedor no registrado"}<br/>Responsable: {ownerName(s.owner_user_id)}<br/>{environmentLabel(s.environment)} · {s.version||"Sin versión"}<br/>{s.url||"URL no registrada"}</p>
       </article>)}
@@ -221,7 +221,7 @@ export default async function MasterTechnologyPage(){
 
     <section className={styles.sectionHead}><div><span>CAMBIOS</span><h2>Cambios técnicos</h2></div><p>Cambios técnicos con riesgo, entorno objetivo y plan de reversión.</p></section>
     <section className={styles.grid}>
-      {changeRows.map((c:any)=><article key={c.id} className={styles.card}>
+      {changeRows.map((c:any)=><article key={c.id} className={`${styles.card} ${c.status==="failed"||c.risk_level==="critical"?styles.cardAttention:c.risk_level==="high"||c.status==="in_progress"?styles.cardWarning:["rolled_back","canceled"].includes(c.status)?styles.cardMuted:c.status==="approved"?styles.cardPriority:""}`}>
         <div className={styles.cardTop}><span className={c.status==="completed"?styles.badgeActive:styles.badgePlanned}>{techEstadoLabel(c.status)}</span><em>{riskLabel(c.risk_level)}</em></div>
         <h3>{c.title}</h3><p>{changeTypeLabel(c.change_type)}<br/>Responsable: {ownerName(c.owner_user_id)}<br/>{environmentLabel(c.target_environment)} · {c.planned_at?new Date(c.planned_at).toLocaleString("es-US"):"Sin fecha"}<br/>{c.rollback_plan?"Plan de reversión definido":"Plan de reversión pendiente"}</p>
       </article>)}
