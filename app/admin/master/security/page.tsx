@@ -83,6 +83,8 @@ async function updateIncident(formData:FormData){
   const allowedEstado=new Set(["open","investigating","contained","monitoring","resolved","closed"]);
   const allowedSeverity=new Set(["low","medium","high","critical"]);
   if(!id||!allowedEstado.has(status)||!allowedSeverity.has(severity)) throw new Error("invalid_incident_update");
+  if(["high","critical"].includes(severity)&&["contained","monitoring","resolved","closed"].includes(status)&&!ownerUserId) throw new Error("incident_owner_required");
+  if(["resolved","closed"].includes(status)&&(!rootCause||!remediation)) throw new Error("incident_resolution_incomplete");
   const patch:any={
     status,severity,owner_user_id:ownerUserId,summary,root_cause:rootCause,remediation,updated_at:new Date().toISOString()
   };
