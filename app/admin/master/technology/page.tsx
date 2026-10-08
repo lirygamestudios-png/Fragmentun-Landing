@@ -188,11 +188,20 @@ export default async function MasterTechnologyPage(){
     ["Versión de prueba","Separada","Cambios aislados de producción"]
   ];
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleTechnology}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · TECNOLOGÍA</span><h1>Tecnología</h1><p>Inventario técnico, cambios controlados y salud del ecosistema.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">TC</span>
+      <div className={styles.moduleStripCopy}><small>TECNOLOGÍA Y PLATAFORMA</small><strong>Servicios, cambios y continuidad</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Infraestructura y cambios conectados</span>
+        <span>Operación técnica protegida</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Servicios</small><strong>{serviceRows.length}</strong><span>{degraded} con incidencia o mantenimiento</span></article>
