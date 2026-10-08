@@ -49,7 +49,7 @@ async function createVirtualItem(formData:FormData){
   const description=String(formData.get("description")||"").trim()||null;
   const durationRaw=String(formData.get("duration_seconds")||"").trim();
   const durationSeconds=durationRaw?Number(durationRaw):null;
-  const allowedItemTypes=new Set(["skin","cosmetic","booster","consumable","currency_pack","battle_pass","expansion","premium_access","subscription","other"]);
+  const allowedItemTypes=new Set(["skin","cosmetic","attack_item","booster","consumable","currency_pack","battle_pass","expansion","premium_access","subscription","other"]);
   const allowedRarity=new Set(["standard","common","uncommon","rare","epic","legendary","exclusive"]);
   const allowedGrant=new Set(["durable","consumable","timed"]);
   if(!gameId||!sku||!name||!allowedItemTypes.has(itemType)||!allowedRarity.has(rarity)||!allowedGrant.has(grantType)) throw new Error("invalid_virtual_item");
@@ -173,6 +173,57 @@ export default async function MasterMonetizationPage(){
       <article><small>Conversión diaria</small><strong>{payerConversion.toFixed(2)}%</strong><span>{latestMetricDate?latestPayers+" de "+latestActivePlayers+" jugadores activos":"Sin telemetría diaria"}</span></article>
       <article className={pendingEntitlements.length?styles.kpiAttention:undefined}><small>Entregas digitales pendientes</small><strong>{pendingEntitlements.length}</strong><span>{pendingEntitlements.length?"Requieren revisión":"Sin incidencias de entrega"}</span></article>
     </section>
+
+    {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}>
+      <summary>Gestionar catálogo FREEMIUM</summary>
+      <p className={styles.advancedHint}>Aquí se define qué se vende. Las compras y entregas llegan automáticamente desde el backend de cada videojuego.</p>
+      <section className={styles.adminForms}>
+        <MasterActionForm action={createVirtualItem} className={styles.adminForm} successText="Artículo virtual registrado correctamente.">
+          <div className={styles.formTitle}><span>CATÁLOGO VIRTUAL</span><h2>Registrar artículo</h2></div>
+          <div className={styles.formGrid}>
+            <label>Juego<select name="game_id" required defaultValue=""><option value="" disabled>Seleccionar juego</option>{gameRows.map((g:any)=><option key={g.id} value={g.id}>{g.name}</option>)}</select></label>
+            <label>SKU<input name="sku" required placeholder="skin-001"/></label>
+            <label>Nombre<input name="name" required placeholder="Nombre del artículo"/></label>
+            <label>Tipo<select name="item_type" defaultValue="skin">
+              <option value="skin">Skin</option>
+              <option value="cosmetic">Cosmético</option>
+              <option value="attack_item">Elemento de ataque</option>
+              <option value="booster">Booster</option>
+              <option value="consumable">Consumible</option>
+              <option value="currency_pack">Paquete de moneda</option>
+              <option value="battle_pass">Battle Pass</option>
+              <option value="expansion">Expansión</option>
+              <option value="premium_access">Acceso premium</option>
+              <option value="subscription">Suscripción</option>
+              <option value="other">Otro</option>
+            </select></label>
+            <label>Rareza<select name="rarity" defaultValue="standard">
+              <option value="standard">Estándar</option><option value="common">Común</option><option value="uncommon">Poco común</option>
+              <option value="rare">Raro</option><option value="epic">Épico</option><option value="legendary">Legendario</option><option value="exclusive">Exclusivo</option>
+            </select></label>
+            <label>Entrega<select name="grant_type" defaultValue="durable">
+              <option value="durable">Permanente</option><option value="consumable">Consumible</option><option value="timed">Temporal</option>
+            </select></label>
+            <label>Duración (segundos)<input type="number" min="1" name="duration_seconds" placeholder="Solo para temporal"/></label>
+            <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
+          </div>
+          <MasterSubmitButton className={styles.formButton} disabled={!gameRows.length} disabledReason="Primero registra al menos un videojuego real.">Registrar artículo</MasterSubmitButton>
+        </MasterActionForm>
+
+        <MasterActionForm action={createVirtualOffer} className={styles.adminForm} successText="Oferta virtual registrada correctamente.">
+          <div className={styles.formTitle}><span>PRECIO POR PLATAFORMA</span><h2>Registrar oferta</h2></div>
+          <div className={styles.formGrid}>
+            <label>Artículo<select name="item_id" required defaultValue=""><option value="" disabled>Seleccionar artículo</option>{virtualItemRows.map((i:any)=><option key={i.id} value={i.id}>{gameName(i.game_id)} · {i.name}</option>)}</select></label>
+            <label>Plataforma<input name="platform" required placeholder="Steam / PlayStation / Xbox / Web"/></label>
+            <label>SKU externo<input name="external_sku" placeholder="SKU de plataforma"/></label>
+            <label>Precio<input type="number" min="0" step="0.01" name="price" required placeholder="4.99"/></label>
+            <label>Moneda<input name="currency" defaultValue="USD" maxLength={3}/></label>
+            <label>Regiones<input name="region_scope" placeholder="US, DO, MX"/></label>
+          </div>
+          <MasterSubmitButton className={styles.formButton} disabled={!virtualItemRows.length} disabledReason="Primero registra un artículo virtual.">Registrar oferta</MasterSubmitButton>
+        </MasterActionForm>
+      </section>
+    </details>}
 
     <section className={styles.sectionHead}>
       <div><span>CATÁLOGO VIRTUAL</span><h2>Artículos y ofertas in-game</h2></div>
