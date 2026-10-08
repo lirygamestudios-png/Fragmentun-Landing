@@ -22,11 +22,11 @@ export default async function AdminMfaPage(){
   if(state.state==="satisfied") redirect("/admin");
 
   const factors=await supabase.auth.mfa.listFactors();
-  const verifiedTotp=(factors.data?.totp||[]).filter((f:any)=>f.status==="verified");
+  const factor=(factors.data?.totp||[]).find((f:any)=>
+    f.status==="verified"&&String(f.friendly_name||"").trim().toLowerCase()==="fragmentun admin"
+  );
 
-  if(!verifiedTotp.length) redirect("/admin/mfa/setup");
-
-  const factor=verifiedTotp[0];
+  if(!factor) redirect("/admin/mfa/setup");
 
   return <main className="authShell authShellFragmentun">
     <section className="authExperience">
