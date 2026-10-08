@@ -167,13 +167,15 @@ export default async function MasterCapitalPage(){
     {data:opportunities},
     {count:paidOrders},
     {data:orders},
-    {data:owners}
+    {data:owners},
+    {data:gamePurchases}
   ]=await Promise.all([
     supabase.from("investor_contacts").select("id,name,organization,email,investor_type,status,stage,priority,owner_user_id,next_action_at,last_contact_at,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("fundraising_opportunities").select("id,investor_id,name,opportunity_type,stage,status,target_amount_cents,committed_amount_cents,currency,probability,expected_close_date,owner_user_id,next_action,next_action_at,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("shop_orders").select("*",{count:"exact",head:true}).eq("payment_status","paid"),
     supabase.from("shop_orders").select("total_cents,currency,payment_status").eq("payment_status","paid").limit(500),
-    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true}),
+    supabase.from("game_purchase_events").select("player_ref,gross_cents,net_cents,currency,status,purchased_at").order("purchased_at",{ascending:false}).limit(5000)
   ]);
 
   const investorRows=(investors||[]) as any[];
