@@ -87,6 +87,36 @@ export default async function MasterChecklistPage(){
     </section>
 
     <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · PREPARACIÓN</span><h2>Qué debe quedar visible antes del primer juego</h2></div>
+      <p>Revisión visual del circuito de monetización y telemetría antes de conectar tráfico real.</p>
+    </section>
+
+    <section className={styles.kpis}>
+      <article><small>Catálogo virtual</small><strong>✓</strong><span>Artículos, ofertas y precios por plataforma</span></article>
+      <article><small>Compras in-game</small><strong>✓</strong><span>Transacciones reales y estados de pago</span></article>
+      <article><small>Entitlements</small><strong>✓</strong><span>Entrega digital y alertas de incidencia</span></article>
+      <article><small>Telemetría</small><strong>✓</strong><span>Jugadores activos, sesiones y conversión</span></article>
+    </section>
+
+    <section className={styles.grid}>
+      {[
+        ["Monetización","Catálogo virtual, ARPPU, ingresos y entregas digitales."],
+        ["Juegos","Estado FREEMIUM por título y conexión de telemetría."],
+        ["Comercio","Compras in-game separadas de pedidos físicos."],
+        ["Finanzas","Bruto, neto, comisiones e impuestos in-game."],
+        ["Datos","Actividad, pagadores, conversión y plataformas."],
+        ["Crecimiento","Embudo de jugador gratuito a pagador."],
+        ["Comunidad","Señales agregadas sin cruzar identidades."],
+        ["Integraciones","Endpoint firmado y proveedores/plataformas."],
+        ["Riesgos y Controles","Chargebacks, fallos y dependencia de proveedor."],
+        ["Reportes","Indicadores FREEMIUM en resumen ejecutivo."]
+      ].map(([name,detail])=><article key={name} className={styles.card}>
+        <div className={styles.cardTop}><span className={styles.badgeActive}>PREPARADO</span><em>FREEMIUM</em></div>
+        <h3>{name}</h3><p>{detail}</p>
+      </article>)}
+    </section>
+
+    <section className={styles.sectionHead}>
       <div><span>CRITERIOS</span><h2>Qué revisar en cada pantalla</h2></div>
     </section>
 
