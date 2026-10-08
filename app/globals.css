@@ -5418,3 +5418,123 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
   position:relative;
   z-index:1
 }
+
+
+/* FRAGMENTUN Admin — experiencia de interacción alineada con LIRYGAMES.
+   Solo microinteracciones: no altera layout, contenido ni arquitectura visual. */
+.adminMain .btn,
+.adminMain button:not(.menuButton),
+.controlCenter .controlGhostButton,
+.controlCenter .controlPrimaryButton,
+.controlCenter button{
+  transition:
+    transform .16s ease,
+    border-color .18s ease,
+    background .18s ease,
+    color .18s ease,
+    box-shadow .18s ease,
+    filter .18s ease;
+}
+
+.adminMain .btn:not(:disabled):hover,
+.adminMain button:not(:disabled):not(.menuButton):hover,
+.controlCenter .controlGhostButton:hover,
+.controlCenter .controlPrimaryButton:hover,
+.controlCenter button:not(:disabled):hover{
+  transform:translateY(-2px);
+  border-color:rgba(74,144,217,.72);
+  box-shadow:
+    0 10px 28px rgba(0,0,0,.28),
+    0 0 0 1px rgba(74,144,217,.10),
+    0 0 22px rgba(74,144,217,.13);
+  filter:brightness(1.05);
+}
+
+.adminMain .btn:not(:disabled):active,
+.adminMain button:not(:disabled):not(.menuButton):active,
+.controlCenter .controlGhostButton:active,
+.controlCenter .controlPrimaryButton:active,
+.controlCenter button:not(:disabled):active{
+  transform:translateY(0) scale(.985);
+  border-color:rgba(74,144,217,.92);
+  box-shadow:
+    inset 0 2px 8px rgba(0,0,0,.28),
+    0 0 0 2px rgba(74,144,217,.12),
+    0 0 18px rgba(74,144,217,.16);
+  filter:brightness(.98);
+}
+
+.adminMain .btnPrimary:not(:disabled):hover,
+.controlCenter .controlPrimaryButton:hover{
+  background:linear-gradient(135deg,#5aa2ec,#3b7fc7);
+  color:#f7fbff;
+  border-color:rgba(111,183,255,.72);
+}
+
+.adminMain .btnPrimary:not(:disabled):active,
+.controlCenter .controlPrimaryButton:active{
+  background:linear-gradient(135deg,#3f86cf,#2f6daf);
+  color:#fff;
+}
+
+.adminMain .btnGhost:not(:disabled):hover,
+.controlCenter .controlGhostButton:hover{
+  background:rgba(74,144,217,.13);
+  color:#f7fbff;
+}
+
+.adminMain button:focus-visible,
+.adminMain a.btn:focus-visible,
+.controlCenter button:focus-visible,
+.controlCenter a:focus-visible{
+  outline:2px solid #4A90D9;
+  outline-offset:3px;
+  box-shadow:0 0 0 4px rgba(74,144,217,.11);
+}
+
+.adminMain button:disabled,
+.adminMain .btn:disabled,
+.controlCenter button:disabled{
+  opacity:.48;
+  cursor:not-allowed;
+  transform:none!important;
+  box-shadow:none!important;
+  filter:none!important;
+}
+
+/* Estados de respuesta: azul profundo + verde elegante */
+.adminMain .adminSaveFeedback.success,
+.controlCenter .adminSaveFeedback.success{
+  border-color:rgba(64,211,155,.42);
+  background:linear-gradient(180deg,rgba(64,211,155,.115),rgba(19,92,68,.08));
+  color:#8aebbd;
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.16),
+    0 0 22px rgba(64,211,155,.08);
+}
+
+.adminMain .adminSaveFeedback.error,
+.controlCenter .adminSaveFeedback.error{
+  border-color:rgba(255,92,92,.40);
+  background:linear-gradient(180deg,rgba(255,92,92,.10),rgba(100,24,30,.08));
+  color:#ffaaaa;
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.16),
+    0 0 18px rgba(255,92,92,.06);
+}
+
+.adminMain .adminSaveFeedback:not(.success):not(.error),
+.controlCenter .adminSaveFeedback:not(.success):not(.error){
+  border-color:rgba(74,144,217,.30);
+  background:rgba(74,144,217,.075);
+  color:#b8d9f8;
+}
+
+/* Selectores y controles de modo: misma sensación táctil sin cambiar diseño */
+.adminMain .adminSaleModeChoices button:not(:disabled):hover{
+  border-color:rgba(74,144,217,.68);
+  background:linear-gradient(180deg,rgba(74,144,217,.12),rgba(10,22,40,.86));
+}
+.adminMain .adminSaleModeChoices button:not(:disabled):active{
+  transform:scale(.985);
+}
