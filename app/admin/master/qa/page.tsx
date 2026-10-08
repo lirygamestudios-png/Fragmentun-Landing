@@ -49,14 +49,14 @@ export default async function QaFinalPage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Última prueba</small><strong>{validationOk?"CORRECTA":"PENDIENTE"}</strong><span>{latestValidation?.run_code||"Sin prueba registrada"}</span></article>
-      <article><small>Revisión de publicación</small><strong>{gateReady?"APROBADA":"PENDIENTE"}</strong><span>{latestGate?.gate_code||"Sin revisión registrada"}</span></article>
+      <article><small>Última prueba</small><strong>{validationOk?"CORRECTA":"PENDIENTE"}</strong><span>{latestValidation?.executed_at?new Date(latestValidation.executed_at).toLocaleString("es-US"):"Sin prueba registrada"}</span></article>
+      <article><small>Revisión de publicación</small><strong>{gateReady?"APROBADA":"PENDIENTE"}</strong><span>{latestGate?.created_at?new Date(latestGate.created_at).toLocaleString("es-US"):"Sin revisión registrada"}</span></article>
       <article><small>Incidentes abiertos</small><strong>{openIncidents||0}</strong><span>{incidentsOk?"Sin bloqueos":"Requiere revisión"}</span></article>
       <article><small>Comprobaciones bloqueantes fallidas</small><strong>{failedChecks||0}</strong><span>{checksOk?"Sin fallos":"Requiere corrección"}</span></article>
     </section>
 
     <section className={styles.sectionHead}>
-      <div><span>PREPARACIÓN</span><h2>Pasos previos a la corrida final</h2></div>
+      <div><span>PREPARACIÓN</span><h2>Pasos previos a la prueba final</h2></div>
       <p>Las pruebas finales deben combinar revisión visual, pruebas funcionales, seguridad, integraciones y evidencia antes de cualquier publicación.</p>
     </section>
 
@@ -93,15 +93,15 @@ export default async function QaFinalPage(){
       </a>
       <article className={styles.card}>
         <div className={styles.cardTop}><span className={approvalsOk?styles.badgeActive:styles.badgePlanned}>{approvalsOk?"SIN PENDIENTES":"PENDIENTES"}</span><em>APROBACIONES</em></div>
-        <h3>Decisiones automáticas</h3>
-        <p>{pendingApprovals||0} aprobaciones pendientes registradas.</p>
+        <h3>Aprobaciones pendientes</h3>
+        <p>{pendingApprovals||0} decisiones pendientes de aprobación.</p>
       </article>
     </section>
 
     <section className={styles.notice}>
       <div>
         <strong>Publicación manual obligatoria</strong>
-        <span>Incluso con todas las comprobaciones correctas, esta pantalla no promueve el Preview ni modifica producción automáticamente.</span>
+        <span>Incluso con todas las comprobaciones correctas, esta pantalla no publica la versión de prueba ni modifica producción automáticamente.</span>
       </div>
       <code>PUBLICACIÓN MANUAL</code>
     </section>
