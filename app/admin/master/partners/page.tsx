@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function invalidDateRange(start:string|null,end:string|null){
   return Boolean(start&&end&&end<start);
@@ -193,7 +194,7 @@ export default async function MasterOrganizacionesPage(){
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar organizaciones, acuerdos y licencias manualmente.</p>
         <section className={styles.adminForms}>
-      <form action={createOrganización} className={styles.adminForm}>
+      <MasterActionForm action={createOrganización} className={styles.adminForm} successText="Organización registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA ORGANIZACIÓN</span><h2>Registrar organización</h2></div>
         <div className={styles.formGrid}>
           <label>Nombre<input name="name" required/></label>
@@ -208,9 +209,9 @@ export default async function MasterOrganizacionesPage(){
           <label>Web<input name="website"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar organización</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={createAcuerdo} className={styles.adminForm}>
+      <MasterActionForm action={createAcuerdo} className={styles.adminForm} successText="Acuerdo o licencia registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO ACUERDO</span><h2>Registrar acuerdo</h2></div>
         <div className={styles.formGrid}>
           <label>Organización<select name="partner_id" defaultValue=""><option value="">Sin organización</option>{partnerRows.map((p:any)=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
@@ -227,12 +228,12 @@ export default async function MasterOrganizacionesPage(){
           <label>Regalía %<input type="number" min="0" max="100" step="0.01" name="royalty_percent"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar acuerdo</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
     </section>
 
 
     <section className={styles.adminForms}>
-      <form action={updateOrganización} className={styles.adminForm}>
+      <MasterActionForm action={updateOrganización} className={styles.adminForm} successText="Organización actualizada correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR ORGANIZACIÓN</span><h2>Actualizar relación</h2></div>
         <div className={styles.formGrid}>
           <label>Organización<select name="partner_id" required defaultValue=""><option value="" disabled>Seleccionar organización</option>{partnerRows.map((p:any)=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
@@ -244,9 +245,9 @@ export default async function MasterOrganizacionesPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!partnerRows.length} disabledReason="No hay organizaciones registradas para actualizar.">Actualizar organización</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={updateAcuerdo} className={styles.adminForm}>
+      <MasterActionForm action={updateAcuerdo} className={styles.adminForm} successText="Acuerdo o licencia actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR ACUERDO</span><h2>Actualizar acuerdo/licencia</h2></div>
         <div className={styles.formGrid}>
           <label>Acuerdo<select name="deal_id" required defaultValue=""><option value="" disabled>Seleccionar acuerdo</option>{dealRows.map((d:any)=><option key={d.id} value={d.id}>{d.deal_name}</option>)}</select></label>
@@ -263,7 +264,7 @@ export default async function MasterOrganizacionesPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!dealRows.length} disabledReason="No hay acuerdos o licencias registrados para actualizar.">Actualizar acuerdo</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
     </details>
 
