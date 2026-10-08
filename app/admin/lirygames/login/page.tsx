@@ -24,7 +24,7 @@ export default function LiryGamesLoginPage(){
       const r=await fetch("/api/auth/login",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({email,password})
+        body:JSON.stringify({email,password,context:"lirygames"})
       });
       const j=await r.json().catch(()=>({}));
       if(r.ok){
