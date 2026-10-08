@@ -133,7 +133,9 @@ export default async function MasterBrandPage(){
     {count:campaigns},
     {count:reviews},
     {count:shareClicks},
-    {data:owners}
+    {data:owners},
+    {data:gameMetrics},
+    {data:gamePurchases}
   ]=await Promise.all([
     supabase.from("brand_narratives").select("id,code,name,audience,message_pillar,key_message,proof_points,status,owner_user_id,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("communication_campaigns").select("id,name,campaign_type,status,audience,channel_scope,objective,start_date,end_date,owner_user_id,notes,created_at").order("created_at",{ascending:false}),
@@ -142,7 +144,9 @@ export default async function MasterBrandPage(){
     supabase.from("campaigns").select("*",{count:"exact",head:true}),
     supabase.from("reviews").select("*",{count:"exact",head:true}),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","share_click"),
-    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true}),
+    supabase.from("game_engagement_daily").select("metric_date,active_players,new_players").order("metric_date",{ascending:false}).limit(1000),
+    supabase.from("game_purchase_events").select("player_ref,gross_cents,currency,status,purchased_at").order("purchased_at",{ascending:false}).limit(5000)
   ]);
 
   const narrativeRows=(narratives||[]) as any[];
@@ -151,6 +155,16 @@ export default async function MasterBrandPage(){
   const activeComms=commRows.filter(c=>c.status==="active").length;
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
+  const metricRows=(gameMetrics||[]) as any[];
+  const purchaseRows=(gamePurchases||[]) as any[];
+  const latestGameDate=metricRows[0]?.metric_date||null;
+  const latestMetrics=latestGameDate?metricRows.filter(m=>m.metric_date===latestGameDate):[];
+  const activePlayers=latestMetrics.reduce((a,m)=>a+Number(m.active_players||0),0);
+  const newPlayers=latestMetrics.reduce((a,m)=>a+Number(m.new_players||0),0);
+  const paidGamePurchases=purchaseRows.filter(p=>p.status==="paid");
+  const payingPlayers=new Set(paidGamePurchases.map(p=>p.player_ref).filter(Boolean)).size;
+  const gameRevenue=paidGamePurchases.reduce((a,p)=>a+Number(p.gross_cents||0),0);
+  const gameCurrency=paidGamePurchases[0]?.currency||"USD";
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleBrand}`}>
     <header className={styles.topbar}>
@@ -172,6 +186,14 @@ export default async function MasterBrandPage(){
       <article><small>Campañas comunicación</small><strong>{activeComms}</strong><span>{commRows.length} registradas</span></article>
       <article><small>Contenido localizado</small><strong>{(content||0).toLocaleString()}</strong><span>Español e inglés</span></article>
       <article><small>Multimedia</small><strong>{(media||0).toLocaleString()}</strong><span>Activos existentes</span></article>
+    </section>
+
+    <section className={styles.sectionHead}><div><span>FREEMIUM · TRACCIÓN</span><h2>Evidencia para marca</h2></div><p>Actividad y monetización real pueden servir como respaldo de comunicación, pero no crean narrativas o campañas automáticamente.</p></section>
+    <section className={styles.kpis}>
+      <article><small>Jugadores activos</small><strong>{activePlayers.toLocaleString()}</strong><span>{latestGameDate||"Sin telemetría diaria"}</span></article>
+      <article><small>Nuevos jugadores</small><strong>{newPlayers.toLocaleString()}</strong><span>Última lectura diaria</span></article>
+      <article><small>Jugadores pagadores</small><strong>{payingPlayers.toLocaleString()}</strong><span>{paidGamePurchases.length} compras pagadas</span></article>
+      <article><small>Ingresos in-game</small><strong className={styles.kpiLongValue}>{new Intl.NumberFormat("en-US",{style:"currency",currency:gameCurrency}).format(gameRevenue/100)}</strong><span>Evidencia comercial, no mensaje automático</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>NARRATIVA CORPORATIVA</span><h2>Narrativa corporativa</h2></div><p>Pilares, audiencias, mensajes y evidencias de respaldo del estudio.</p></section>
