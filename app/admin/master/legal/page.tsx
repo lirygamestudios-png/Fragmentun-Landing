@@ -217,11 +217,20 @@ export default async function MasterLegalPage(){
   });
   const disputed=assetRows.filter(a=>a.status==="disputed").length+rightRows.filter(r=>r.status==="disputed").length;
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleLegal}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · LEGAL E IP</span><h1>Legal e IP</h1><p>Registro persistente de activos, derechos/licencias y contratos con acceso administrativo restringido.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">IP</span>
+      <div className={styles.moduleStripCopy}><small>LEGAL E IP</small><strong>Activos, derechos y contratos</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Registro legal conectado</span>
+        <span>Gestión exclusiva · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Activos de propiedad intelectual</small><strong>{assetRows.length}</strong><span>Registrados</span></article>
