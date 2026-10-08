@@ -237,7 +237,7 @@ export default async function MasterLegalPage(){
         <h3>{r.right_type}</h3>
         <p>{assetRows.find(a=>a.id===r.asset_id)?.name||"Activo"} · {r.territory}<br/>{r.holder_name||"Titular pendiente"}{r.licensee_name?" → "+r.licensee_name:""}<br/>{r.start_date||"sin inicio"} → {r.end_date||"sin vencimiento"}</p>
       </article>)}
-      {!rightRows.length&&<article className={styles.card}><h3>Derechos Matrix vacía</h3><p>Los derechos se registrarán únicamente contra activos IP reales.</p></article>}
+      {!rightRows.length&&<article className={styles.card}><h3>Matriz de derechos vacía</h3><p>Los derechos se registrarán únicamente contra activos IP reales.</p></article>}
     </section>
 
     <section className={styles.sectionHead}><div><span>CONTRATOS</span><h2>Contratos</h2></div><p>Registro operativo de contratos; los documentos firmados pueden almacenarse después en un repositorio documental controlado.</p></section>
@@ -247,7 +247,7 @@ export default async function MasterLegalPage(){
         <h3>{c.title}</h3>
         <p>{c.counterparty||"Sin contraparte"} · {c.contract_code}<br/>Responsable: {ownerName(c.owner_user_id)}<br/>{c.effective_date||"Sin fecha efectiva"} → {c.expiration_date||"Sin vencimiento"}<br/>Renovación automática: {c.auto_renew?"Sí":"No"} · {c.value_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:c.currency||"USD"}).format(Number(c.value_cents)/100):"Valor no registrado"}</p>
       </article>)}
-      {!contractRows.length&&<article className={styles.card}><h3>CONTRATOS preparado</h3><p>No hay contratos cargados todavía.</p></article>}
+      {!contractRows.length&&<article className={styles.card}><h3>Registro de contratos preparado</h3><p>No hay contratos cargados todavía.</p></article>}
     </section>
 
     <details className={styles.advancedPanel}>
@@ -266,7 +266,7 @@ export default async function MasterLegalPage(){
             <option value="music">Música</option><option value="video">Video</option><option value="software">Software</option><option value="other">Otro</option>
           </select></label>
           <label>Entidad titular<input name="owner_entity" placeholder="LIRYGAMES STUDIOS"/></label>
-          <label>Jurisdicción<input name="jurisdiction" placeholder="US / RD / Mundial"/></label>
+          <label>Jurisdicción<input name="jurisdiction" placeholder="EE. UU. / RD / Mundial"/></label>
           <label>Registro<input name="registration_number" placeholder="Número de registro"/></label>
           <label>Fecha registro<input type="date" name="registration_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
@@ -282,8 +282,8 @@ export default async function MasterLegalPage(){
             {assetRows.map((a:any)=><option key={a.id} value={a.id}>{a.name}</option>)}
           </select></label>
           <label>Derecho<select name="right_type" defaultValue="copyright">
-            <option value="copyright">Copyright</option><option value="trademark">Marca registrada</option><option value="publishing">Publicación</option>
-            <option value="audiovisual">Audiovisual</option><option value="game">Videojuego</option><option value="merchandising">Merchandising</option>
+            <option value="copyright">Derechos de autor</option><option value="trademark">Marca registrada</option><option value="publishing">Publicación</option>
+            <option value="audiovisual">Audiovisual</option><option value="game">Videojuego</option><option value="merchandising">Productos derivados</option>
             <option value="translation">Traducción</option><option value="distribution">Distribución</option><option value="adaptation">Adaptación</option><option value="music">Música</option><option value="other">Otro</option>
           </select></label>
           <label>Territorio<input name="territory" defaultValue="mundial"/></label>
@@ -306,9 +306,9 @@ export default async function MasterLegalPage(){
         <div className={styles.formTitle}><span>NUEVO CONTRATO</span><h2>Registrar contrato</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="contract_code" required placeholder="nda-001"/></label>
-          <label>Título<input name="title" required placeholder="NDA - Partner"/></label>
+          <label>Título<input name="title" required placeholder="Acuerdo de confidencialidad - Socio"/></label>
           <label>Tipo<select name="contract_type" defaultValue="nda">
-            <option value="nda">NDA</option><option value="license">Licencia</option><option value="publishing">Publicación</option>
+            <option value="nda">Acuerdo de confidencialidad</option><option value="license">Licencia</option><option value="publishing">Publicación</option>
             <option value="development">Desarrollo</option><option value="employment">Empleo</option><option value="contractor">Contratista</option>
             <option value="vendor">Proveedor</option><option value="distribution">Distribución</option><option value="investment">Inversión</option><option value="partnership">Alianza</option><option value="other">Otro</option>
           </select></label>
@@ -356,7 +356,7 @@ export default async function MasterLegalPage(){
       </form>
 
       <form action={updateContract} className={styles.adminForm}>
-        <div className={styles.formTitle}><span>GESTIONAR CONTRATO</span><h2>Actualizar CONTRATOS</h2></div>
+        <div className={styles.formTitle}><span>GESTIONAR CONTRATO</span><h2>Actualizar contrato</h2></div>
         <div className={styles.formGrid}>
           <label>Contrato<select name="contract_id" required defaultValue=""><option value="" disabled>Seleccionar contrato</option>{contractRows.map((c:any)=><option key={c.id} value={c.id}>{c.contract_code} · {c.title}</option>)}</select></label>
           <label>Estado<select name="status" defaultValue="review"><option value="draft">Borrador</option><option value="review">En revisión</option><option value="signature">En firma</option><option value="active">Activo</option><option value="expired">Vencido</option><option value="terminated">Terminado</option><option value="canceled">Cancelado</option></select></label>
@@ -379,7 +379,7 @@ export default async function MasterLegalPage(){
       <article><small>Libros</small><strong>{(books||0).toLocaleString()}</strong><span>Catálogo editorial</span></article>
       <article><small>Multimedia</small><strong>{(media||0).toLocaleString()}</strong><span>Activos operativos</span></article>
       <article><small>Personajes</small><strong>{(characters||0).toLocaleString()}</strong><span>Universo creativo</span></article>
-      <article><small>Acceso</small><strong>ADMINISTRADOR</strong><span>RLS restringido</span></article>
+      <article><small>Acceso</small><strong>ADMINISTRADOR</strong><span>Acceso a datos restringido</span></article>
     </section>
   </main>;
 }
