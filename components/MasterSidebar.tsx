@@ -49,8 +49,12 @@ export function MasterSidebar({displayName,role}:{displayName:string;role:string
 
   return <aside className={styles.sidebar}>
     <div className={styles.brand}>
-      <span className={styles.sigil}>✦</span>
-      <div><strong>LIRYGAMES</strong><small>MASTER ADMIN</small></div>
+      <span className={styles.sigil} aria-hidden="true"><i></i><b></b></span>
+      <div className={styles.wordmark}>
+        <strong>LIRY</strong>
+        <span>GAMES STUDIOS</span>
+        <small>MASTER ADMIN</small>
+      </div>
     </div>
 
     <div className={styles.navScroll}>
