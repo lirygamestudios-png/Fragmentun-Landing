@@ -4,7 +4,7 @@ import {usePathname} from "next/navigation";
 import {createSupabaseBrowserClient} from "../lib/supabase/browser";
 import {AdminMfaGate} from "./AdminMfaGate";
 
-const publicAdminPaths=["/admin/login","/admin/forgot-password","/admin/reset-password","/admin/mfa"];
+const publicAdminPaths=["/admin/login","/admin/forgot-password","/admin/reset-password","/admin/mfa","/admin/lirygames"];
 
 export function AdminMfaBoundary({children}:{children:React.ReactNode}){
   const pathname=usePathname();
