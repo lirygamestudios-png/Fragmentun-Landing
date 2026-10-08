@@ -172,11 +172,20 @@ export default async function MasterPublishingPage(){
   const open=releaseRows.filter(r=>!["live","canceled","sunset"].includes(r.status));
   const certRisk=releaseRows.filter(r=>r.certification_status==="failed"||r.status==="blocked"||r.status==="delayed");
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.modulePublishing}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · PUBLICACIÓN</span><h1>Publicación</h1><p>Plataformas, lanzamientos, certificación y calendario comercial.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">PB</span>
+      <div className={styles.moduleStripCopy}><small>PUBLICACIÓN Y DISTRIBUCIÓN</small><strong>Lanzamientos y canales comerciales</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Calendario comercial conectado</span>
+        <span>Cambios protegidos · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Plataformas</small><strong>{stores.length}</strong><span>Plataformas registradas</span></article>
