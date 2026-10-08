@@ -31,6 +31,7 @@ const screens=[
   ["Mantenimiento","/admin/master/maintenance","Rutinas operativas"],
   ["Estado y Pruebas","/admin/master/observability","Validación de la versión de prueba"],
   ["Revisión antes de publicar","/admin/master/releases","Evidencia y aprobación"],
+  ["Pruebas finales","/admin/master/qa","Preparación final antes de publicación"],
   ["Auditoría","/admin/master/audit","Trazabilidad administrativa"]
 ] as const;
 
@@ -54,7 +55,7 @@ export default async function MasterChecklistPage(){
     <section className={styles.notice}>
       <div>
         <strong>Objetivo de esta etapa</strong>
-        <span>Confirmar presencia de campos, claridad visual, responsive y coherencia. La funcionalidad profunda se valida en las corridas finales.</span>
+        <span>Confirmar presencia de campos, claridad visual, adaptación a distintos tamaños de pantalla y coherencia. La funcionalidad profunda se valida en las pruebas finales.</span>
       </div>
       <code>{screens.length} pantallas</code>
     </section>
@@ -83,7 +84,7 @@ export default async function MasterChecklistPage(){
     <section className={styles.kpis}>
       <article><small>1 · Estructura</small><strong>✓</strong><span>Títulos, campos, tarjetas y secciones visibles</span></article>
       <article><small>2 · Lenguaje</small><strong>✓</strong><span>Términos simples y empresariales</span></article>
-      <article><small>3 · Responsive</small><strong>✓</strong><span>Escritorio, tablet y móvil</span></article>
+      <article><small>3 · Adaptación</small><strong>✓</strong><span>Escritorio, tablet y móvil</span></article>
       <article><small>4 · Accesibilidad</small><strong>✓</strong><span>Foco, contraste, controles y lectura</span></article>
     </section>
   </main>;
