@@ -67,8 +67,8 @@ export default async function MasterMonetizationPage(){
 
     <section className={styles.kpis}>
       <article><small>Productos activos</small><strong>{active.length}</strong><span>{featured.length} destacados</span></article>
-      <article><small>Ingresos cobrados</small><strong>{money(revenue,currency)}</strong><span>Solo órdenes reales</span></article>
-      <article><small>Margen</small><strong>{money(margin,currency)}</strong><span>Solo órdenes reales</span></article>
+      <article><small>Ingresos cobrados</small><strong className={styles.kpiLongValue}>{money(revenue,currency)}</strong><span>Solo órdenes reales</span></article>
+      <article><small>Margen</small><strong className={styles.kpiLongValue}>{money(margin,currency)}</strong><span>Solo órdenes reales</span></article>
       <article><small>Interacciones externas</small><strong>{((amazonClicks||0)+(merchClicks||0)).toLocaleString()}</strong><span>Amazon + tienda</span></article>
     </section>
 
