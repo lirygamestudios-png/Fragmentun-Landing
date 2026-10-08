@@ -44,7 +44,7 @@ async function createProveedor(formData:FormData){
   const preferred=String(formData.get("preferred")||"false")==="true";
   const allowedType=new Set(["manufacturing","fulfillment","software","hosting","professional_services","marketing","art","audio","qa","localization","legal","finance","other"]);
   const allowedRisk=new Set(["low","medium","high","critical"]);
-  if(!name||!allowedType.has(vendorType)||!allowedRisk.has(risk)) throw new Error("invalid_vendor");
+  if(!name||!allowedType.has(vendorType)||!allowedRisk.has(risk)||(preferred&&risk==="critical")) throw new Error("invalid_vendor");
   const{error}=await supabase.from("vendor_master").insert({
     name,vendor_type:vendorType,contact_name:contactName,contact_email:contactEmail,country,payment_terms:paymentTerms,risk_rating:risk,preferred,created_by:user.id
   });
@@ -67,7 +67,7 @@ async function updateProveedor(formData:FormData){
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedEstado=new Set(["prospect","active","on_hold","inactive","terminated"]);
   const allowedRisk=new Set(["low","medium","high","critical"]);
-  if(!id||!allowedEstado.has(status)||!allowedRisk.has(risk)) throw new Error("invalid_vendor_update");
+  if(!id||!allowedEstado.has(status)||!allowedRisk.has(risk)||(preferred&&(risk==="critical"||["inactive","terminated"].includes(status)))) throw new Error("invalid_vendor_update");
   const{error}=await supabase.from("vendor_master").update({
     status,risk_rating:risk,preferred,contact_name:contactName,contact_email:contactEmail,
     country,payment_terms:paymentTerms,notes,updated_at:new Date().toISOString()
