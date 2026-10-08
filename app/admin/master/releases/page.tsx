@@ -117,10 +117,11 @@ async function updateCheck(formData:FormData){
   if(existingCheck.check_code==="human-release-approval") throw new Error("human_approval_check_protected");
   if(existingCheck.check_code==="runtime-smoke") throw new Error("runtime_check_managed_by_validation_only");
   if(status==="waived"&&existingCheck.blocking&&!evidence) throw new Error("waiver_evidence_required");
-  const{error}=await supabase.from("release_gate_checks").update({
+  const{data:updatedCheck,error}=await supabase.from("release_gate_checks").update({
     status,evidence,checked_by:user.id,checked_at:status==="pending"?null:new Date().toISOString(),updated_at:new Date().toISOString()
-  }).eq("id",id);
+  }).eq("id",id).eq("release_gate_id",existingCheck.release_gate_id).select("id").maybeSingle();
   if(error) throw new Error(error.message);
+  if(!updatedCheck) throw new Error("check_changed_retry");
   revalidatePath("/admin/master/releases");
 }
 
