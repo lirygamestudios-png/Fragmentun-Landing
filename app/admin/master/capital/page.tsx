@@ -189,11 +189,20 @@ export default async function MasterCapitalPage(){
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleCapital}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · CAPITAL</span><h1>Capital e Inversionistas</h1><p>Seguimiento de inversionistas y oportunidades de capital. La estructura societaria permanece separada de este registro.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">CP</span>
+      <div className={styles.moduleStripCopy}><small>CAPITAL E INVERSORES</small><strong>Pipeline de inversión y oportunidades</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Seguimiento privado de capital</span>
+        <span>Acceso exclusivo de administrador</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Inversionistas</small><strong>{investorRows.length}</strong><span>Contactos registrados</span></article>
