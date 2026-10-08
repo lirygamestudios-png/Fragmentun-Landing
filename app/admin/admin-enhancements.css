@@ -744,3 +744,28 @@
 .adminShopToggle input:checked + b{
   color:#8cebbf;
 }
+
+
+/* UX LIRYGAMES · Bloque 12: controles de cierre y retorno FRAGMENTUN */
+.adminMediaModalClose,
+.adminInteriorSite,
+.adminTopbar .btnGhost,
+.authLinks a{
+  transition:transform .16s ease,border-color .18s ease,background .18s ease,color .18s ease,box-shadow .18s ease;
+}
+.adminTopbar .btnGhost:hover,
+.authLinks a:hover{
+  transform:translateY(-1px);
+  color:#a9d3fb;
+}
+.adminTopbar .btnGhost:active,
+.authLinks a:active{
+  transform:translateY(0) scale(.985);
+}
+.adminMediaModalClose:focus-visible,
+.adminTopbar .btnGhost:focus-visible,
+.authLinks a:focus-visible{
+  outline:2px solid #4A90D9;
+  outline-offset:3px;
+  box-shadow:0 0 0 4px rgba(74,144,217,.10);
+}
