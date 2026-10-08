@@ -203,6 +203,9 @@
 .moduleOperations{--module-accent:#4fd8ff;--module-accent-rgb:79,216,255}
 .moduleGames{--module-accent:#9c5cff;--module-accent-rgb:156,92,255}
 .modulePublishing{--module-accent:#e04cff;--module-accent-rgb:224,76,255}
+.moduleGrowth{--module-accent:#4fd8ff;--module-accent-rgb:79,216,255}
+.moduleMonetization{--module-accent:#e04cff;--module-accent-rgb:224,76,255}
+.moduleCommerce{--module-accent:#9c5cff;--module-accent-rgb:156,92,255}
 
 .modulePage .topbar{
   border-color:rgba(var(--module-accent-rgb),.28);
