@@ -1078,3 +1078,22 @@
 .moduleLegal .cardMuted{
   opacity:.66;
 }
+
+
+/* Configuración, Copias y Mantenimiento */
+.moduleSettings .cardPriority .cardTop em,
+.moduleBackups .cardPriority .cardTop em,
+.moduleMaintenance .cardPriority .cardTop em{
+  color:#8ce9ff!important;
+}
+.moduleSettings .cardWarning .cardTop em,
+.moduleMaintenance .cardWarning .cardTop em{
+  color:#ffc85e!important;
+}
+.moduleMaintenance .cardAttention .cardTop em{
+  color:#ff91aa!important;
+}
+.moduleSettings .cardMuted,
+.moduleBackups .cardMuted{
+  opacity:.66;
+}
