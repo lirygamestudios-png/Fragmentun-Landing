@@ -212,7 +212,7 @@ export default async function MasterStrategyPage(){
           <label>Objetivo<input type="number" step="any" name="target_value"/></label>
           <label>Fecha objetivo<input type="date" name="target_date"/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!objectiveRows.length}>Registrar resultado</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!objectiveRows.length} disabledReason="Primero registra un objetivo para poder añadir un resultado medible.">Registrar resultado</MasterSubmitButton>
       </form>
     </section></details>}
 
@@ -230,7 +230,7 @@ export default async function MasterStrategyPage(){
           <label>Objetivo<input type="date" name="target_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!objectiveRows.length}>Actualizar objetivo</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!objectiveRows.length} disabledReason="No hay objetivos registrados para actualizar.">Actualizar objetivo</MasterSubmitButton>
       </form>
 
       <form action={updateKeyResult} className={styles.adminForm}>
@@ -244,7 +244,7 @@ export default async function MasterStrategyPage(){
           <label>Fecha objetivo<input type="date" name="target_date"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!krRows.length}>Actualizar resultado</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!krRows.length} disabledReason="No hay resultados medibles registrados para actualizar.">Actualizar resultado</MasterSubmitButton>
       </form>
     </section></details>}
 
