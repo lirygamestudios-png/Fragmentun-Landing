@@ -171,7 +171,7 @@ export default async function CommunityPage(){
           <label>Fuente<input name="source"/></label>
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length}>Registrar actividad</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length} disabledReason="Primero registra un miembro para poder añadir participación.">Registrar actividad</MasterSubmitButton>
       </form>
       </section>
 
@@ -188,7 +188,7 @@ export default async function CommunityPage(){
           <label className={styles.span2}>Etiquetas<input name="tags" placeholder="beta, promotor, creador"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length}>Actualizar miembro</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length} disabledReason="No hay miembros registrados para actualizar.">Actualizar miembro</MasterSubmitButton>
       </form>
       </section>
     </details>}
