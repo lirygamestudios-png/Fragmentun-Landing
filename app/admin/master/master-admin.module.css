@@ -1495,3 +1495,100 @@
     align-items:flex-start;
   }
 }
+
+
+/* Ronda visual: Alianzas · Proveedores · Marca */
+.modulePartners .sectionHead,
+.moduleSuppliers .sectionHead,
+.moduleBrand .sectionHead{
+  margin:32px 0 14px;
+  padding-bottom:10px;
+}
+
+.modulePartners .kpis article,
+.moduleSuppliers .kpis article,
+.moduleBrand .kpis article{
+  padding:16px;
+  border-radius:11px;
+}
+
+.modulePartners .card,
+.moduleSuppliers .card,
+.moduleBrand .card{
+  min-height:148px;
+  padding:16px;
+  border-radius:11px;
+}
+
+.modulePartners .adminForms,
+.moduleSuppliers .adminForms,
+.moduleBrand .adminForms{
+  margin:30px 0;
+  gap:14px;
+}
+
+.modulePartners .adminForm,
+.moduleSuppliers .adminForm,
+.moduleBrand .adminForm{
+  padding:18px;
+  border-radius:11px;
+}
+
+.modulePartners .moduleStrip,
+.moduleSuppliers .moduleStrip,
+.moduleBrand .moduleStrip{
+  margin:-6px 0 16px;
+  border-radius:11px;
+}
+
+.modulePartners .cardTop em,
+.moduleSuppliers .cardTop em,
+.moduleBrand .cardTop em{
+  max-width:48%;
+  text-align:right;
+  overflow-wrap:anywhere;
+}
+
+@media(min-width:1050px){
+  .modulePartners .moduleStrip,
+  .moduleSuppliers .moduleStrip,
+  .moduleBrand .moduleStrip{
+    grid-template-columns:auto minmax(180px,1fr) auto;
+    gap:14px;
+  }
+  .modulePartners .moduleStripMeta,
+  .moduleSuppliers .moduleStripMeta,
+  .moduleBrand .moduleStripMeta{
+    grid-column:auto;
+    justify-content:flex-end;
+    padding-top:0;
+  }
+}
+
+@media(max-width:900px){
+  .modulePartners .moduleStrip,
+  .moduleSuppliers .moduleStrip,
+  .moduleBrand .moduleStrip{
+    grid-template-columns:auto 1fr;
+  }
+  .modulePartners .moduleStripMeta,
+  .moduleSuppliers .moduleStripMeta,
+  .moduleBrand .moduleStripMeta{
+    grid-column:1/-1;
+    justify-content:flex-start;
+    padding-top:2px;
+  }
+}
+
+@media(max-width:600px){
+  .modulePartners .sectionHead,
+  .moduleSuppliers .sectionHead,
+  .moduleBrand .sectionHead{
+    margin:28px 0 12px;
+  }
+  .modulePartners .cardTop,
+  .moduleSuppliers .cardTop,
+  .moduleBrand .cardTop{
+    align-items:flex-start;
+  }
+}
