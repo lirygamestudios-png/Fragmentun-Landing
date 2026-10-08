@@ -8,6 +8,8 @@ export async function POST(request:NextRequest){
 
   const body=await request.json().catch(()=>null);
   const email=String(body?.email??"").trim().toLowerCase();
+  const context=String(body?.context??"");
+  const resetPath=context==="lirygames"?"/admin/lirygames/reset-password":"/admin/reset-password";
 
   if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
     return NextResponse.json({ok:true});
@@ -19,7 +21,7 @@ export async function POST(request:NextRequest){
   const supabase=await createSupabaseServerClient();
   const origin=new URL(request.url).origin;
   await supabase.auth.resetPasswordForEmail(email,{
-    redirectTo:`${origin}/auth/callback?next=/admin/reset-password`
+    redirectTo:`${origin}/auth/callback?next=${resetPath}`
   });
 
   // Always return success so the endpoint does not reveal whether an account exists.
