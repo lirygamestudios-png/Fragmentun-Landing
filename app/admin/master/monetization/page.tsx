@@ -128,6 +128,7 @@ export default async function MasterMonetizationPage(){
   // Los importes de distintas monedas no se suman ni se convierten implícitamente.
   const inGameCurrency=paidGamePurchases[0]?.currency||virtualOfferRows[0]?.currency||"USD";
   const paidPurchasesInCurrency=paidGamePurchases.filter(p=>p.currency===inGameCurrency);
+  const{count:allPaidCount,error:allPaidError}=await supabase.from("game_purchase_events").select("*",{count:"exact",head:true}).eq("status","paid").eq("currency",inGameCurrency);
   const multipleGameCurrencies=new Set(paidGamePurchases.map(p=>p.currency).filter(Boolean)).size>1;
   const inGameGross=paidPurchasesInCurrency.reduce((a,p)=>a+Number(p.gross_cents||0),0);
   const inGameNet=paidPurchasesInCurrency.reduce((a,p)=>a+Number(p.net_cents??(Number(p.gross_cents||0)-Number(p.fee_cents||0)-Number(p.tax_cents||0))),0);
@@ -179,6 +180,7 @@ export default async function MasterMonetizationPage(){
 
     <section className={styles.kpis}>
       <article><small>Artículos virtuales activos</small><strong>{virtualItemRows.filter(i=>i.active).length}</strong><span>{virtualOfferRows.filter(o=>o.active).length} ofertas activas</span></article>
+      <article><small>Compras pagadas acumuladas</small><strong>{allPaidError?"NO DISPONIBLE":(allPaidCount??0).toLocaleString()}</strong><span>Recuento completo de compras pagadas en {inGameCurrency}; no representa ingresos totales</span></article>
       <article><small>Ingresos in-game brutos (muestra)</small><strong className={styles.kpiLongValue}>{money(inGameGross,inGameCurrency)}</strong><span>{paidPurchasesInCurrency.length} compras pagadas · {inGameCurrency}{multipleGameCurrencies?" · Existen otras monedas":""} · Últimas 2,000 compras consultadas</span></article>
       <article><small>Ingresos in-game netos (muestra)</small><strong className={styles.kpiLongValue}>{money(inGameNet,inGameCurrency)}</strong><span>Después de comisiones e impuestos registrados · {inGameCurrency}{multipleGameCurrencies?" · Otras monedas excluidas":""} · Máximo 2,000 compras recientes</span></article>
       <article><small>Jugadores pagadores (muestra)</small><strong>{payingPlayers.size}</strong><span>{arppu===null?"ARPPU sin compradores":"ARPPU de muestra "+money(arppu,inGameCurrency)} · {inGameCurrency} · Máximo 2,000 compras recientes</span></article>
