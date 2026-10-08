@@ -343,3 +343,121 @@
   .moduleStrip{margin-top:-6px;padding:11px}
   .moduleStripMeta span{white-space:normal}
 }
+
+
+/* Portafolio 9 juegos */
+.portfolioCapacity{
+  margin:18px 0 34px;
+  padding:18px;
+  border:1px solid rgba(156,92,255,.24);
+  border-radius:12px;
+  background:linear-gradient(180deg,rgba(14,16,41,.96),rgba(8,10,25,.985));
+  box-shadow:0 16px 38px rgba(0,0,0,.20),0 0 30px rgba(156,92,255,.06),inset 0 1px rgba(255,255,255,.025);
+}
+.capacityHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:18px;
+  padding-bottom:14px;
+  border-bottom:1px solid rgba(114,202,255,.12);
+}
+.capacityHeader span{
+  display:block;
+  color:var(--liry-violet-2);
+  font-size:.61rem;
+  letter-spacing:.20em;
+  font-weight:800;
+}
+.capacityHeader h2{
+  margin:5px 0 0;
+  font-size:1.18rem;
+}
+.capacityProgress{
+  min-width:170px;
+  text-align:right;
+}
+.capacityProgress b{
+  display:block;
+  color:#fff;
+  font-family:"Orbitron","Rajdhani",Inter,system-ui,sans-serif;
+  font-size:1rem;
+  letter-spacing:.05em;
+}
+.capacityProgress>span{
+  display:block;
+  width:170px;
+  height:6px;
+  margin-top:7px;
+  margin-left:auto;
+  overflow:hidden;
+  border-radius:999px;
+  background:#11152b;
+  border:1px solid rgba(91,184,255,.15);
+}
+.capacityProgress i{
+  display:block;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,var(--liry-violet),var(--liry-magenta),var(--liry-cyan));
+  box-shadow:0 0 12px rgba(156,92,255,.36);
+}
+.capacityGrid{
+  display:grid;
+  grid-template-columns:repeat(9,minmax(0,1fr));
+  gap:8px;
+  margin-top:14px;
+}
+.capacitySlot{
+  min-width:0;
+  min-height:92px;
+  padding:10px;
+  border-radius:9px;
+  border:1px solid rgba(105,194,255,.13);
+  background:linear-gradient(180deg,rgba(12,15,35,.95),rgba(7,9,22,.98));
+}
+.capacitySlotFilled{
+  border-color:rgba(156,92,255,.34);
+  box-shadow:inset 0 0 18px rgba(156,92,255,.035),0 0 16px rgba(156,92,255,.045);
+}
+.capacitySlotEmpty{
+  opacity:.72;
+  border-style:dashed;
+}
+.capacityIndex{
+  display:block;
+  color:#596985;
+  font-size:.55rem;
+  letter-spacing:.12em;
+}
+.capacityName{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  margin-top:10px;
+  color:#e9edff;
+  font-size:.72rem;
+}
+.capacitySlotFilled .capacityName{
+  color:#d8cbff;
+}
+.capacityMeta{
+  display:block;
+  margin-top:4px;
+  color:#6f7d96;
+  font-size:.58rem;
+  line-height:1.35;
+}
+@media(max-width:1280px){
+  .capacityGrid{grid-template-columns:repeat(5,1fr)}
+}
+@media(max-width:800px){
+  .capacityHeader{display:block}
+  .capacityProgress{margin-top:14px;text-align:left}
+  .capacityProgress>span{margin-left:0}
+  .capacityGrid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:480px){
+  .capacityGrid{grid-template-columns:repeat(2,1fr)}
+}
