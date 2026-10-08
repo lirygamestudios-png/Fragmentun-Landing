@@ -37,7 +37,7 @@ export function PreviewValidationButton(){
 
     const checks=[
       {name:"Página pública",path:"/es",expected:200},
-      {name:"Acceso al Admin",path:"/admin/login",expected:200},
+      {name:"Acceso LIRYGAMES",path:"/admin/lirygames/login",expected:200},
       {name:"Panel LIRYGAMES",path:"/admin/master",expected:200},
       {name:"Estado del sistema",path:"/api/admin/status",expected:200},
       {name:"Comercio",path:"/api/admin/commerce",expected:200},
