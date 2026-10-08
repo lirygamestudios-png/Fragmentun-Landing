@@ -33,12 +33,24 @@ export default async function MasterMonetizationPage(){
     {data:products},
     {data:orders},
     {count:amazonClicks},
-    {count:merchClicks}
+    {count:merchClicks},
+    {data:games},
+    {data:virtualItems},
+    {data:virtualOffers},
+    {data:gamePurchases},
+    {data:entitlements},
+    {data:engagement}
   ]=await Promise.all([
     supabase.from("shop_products").select("sku,name_es,name_en,price_cents,currency,mode,payment_provider,active,featured,stock_status").order("sort_order",{ascending:true}).limit(100),
     supabase.from("shop_orders").select("total_cents,margin_cents,currency,payment_status").limit(500),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","amazon_click"),
-    supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","merch_click")
+    supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","merch_click"),
+    supabase.from("game_titles").select("id,name,slug").order("name",{ascending:true}),
+    supabase.from("game_virtual_items").select("id,game_id,sku,name,item_type,rarity,grant_type,duration_seconds,active,created_at").order("created_at",{ascending:false}).limit(250),
+    supabase.from("game_virtual_item_offers").select("id,item_id,platform,currency,price_cents,active,created_at").order("created_at",{ascending:false}).limit(500),
+    supabase.from("game_purchase_events").select("id,game_id,item_id,player_ref,platform,provider,quantity,gross_cents,fee_cents,tax_cents,net_cents,currency,status,source_channel,purchased_at").order("purchased_at",{ascending:false}).limit(2000),
+    supabase.from("game_entitlements").select("id,game_id,player_ref,item_id,purchase_id,quantity,status,granted_at,expires_at,created_at").order("created_at",{ascending:false}).limit(2000),
+    supabase.from("game_engagement_daily").select("metric_date,game_id,platform,active_players,new_players,sessions,session_minutes").order("metric_date",{ascending:false}).limit(500)
   ]);
 
   const productRows=(products||[]) as any[];
@@ -49,6 +61,25 @@ export default async function MasterMonetizationPage(){
   const currency=paid[0]?.currency||productRows[0]?.currency||"USD";
   const active=productRows.filter(p=>p.active);
   const featured=productRows.filter(p=>p.featured);
+  const gameRows=(games||[]) as any[];
+  const virtualItemRows=(virtualItems||[]) as any[];
+  const virtualOfferRows=(virtualOffers||[]) as any[];
+  const purchaseRows=(gamePurchases||[]) as any[];
+  const entitlementRows=(entitlements||[]) as any[];
+  const engagementRows=(engagement||[]) as any[];
+  const paidGamePurchases=purchaseRows.filter(p=>p.status==="paid");
+  const inGameGross=paidGamePurchases.reduce((a,p)=>a+Number(p.gross_cents||0),0);
+  const inGameNet=paidGamePurchases.reduce((a,p)=>a+Number(p.net_cents??(Number(p.gross_cents||0)-Number(p.fee_cents||0)-Number(p.tax_cents||0))),0);
+  const inGameCurrency=paidGamePurchases[0]?.currency||virtualOfferRows[0]?.currency||"USD";
+  const payingPlayers=new Set(paidGamePurchases.map(p=>p.player_ref).filter(Boolean));
+  const arppu=payingPlayers.size?Math.round(inGameGross/payingPlayers.size):0;
+  const latestMetricDate=engagementRows[0]?.metric_date||null;
+  const latestActivePlayers=latestMetricDate?engagementRows.filter(r=>r.metric_date===latestMetricDate).reduce((a,r)=>a+Number(r.active_players||0),0):0;
+  const latestPayers=latestMetricDate?new Set(paidGamePurchases.filter(p=>String(p.purchased_at||"").slice(0,10)===latestMetricDate).map(p=>p.player_ref)).size:0;
+  const payerConversion=latestActivePlayers?((latestPayers/latestActivePlayers)*100):0;
+  const pendingEntitlements=entitlementRows.filter(e=>["pending","failed"].includes(e.status));
+  const gameName=(id:string)=>gameRows.find(g=>g.id===id)?.name||"Juego";
+  const itemName=(id:string|null|undefined)=>virtualItemRows.find(i=>i.id===id)?.name||"Artículo";
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleMonetization}`}>
     <header className={styles.topbar}>
