@@ -191,12 +191,14 @@ export default async function ReleaseGatePage(){
     {data:gates},
     {data:checks},
     {data:links},
-    {data:actors}
+    {data:actors},
+    {data:latestValidation}
   ]=await Promise.all([
     supabase.from("release_gates").select("*").order("created_at",{ascending:false}),
     supabase.from("release_gate_checks").select("*").order("created_at",{ascending:true}),
     supabase.from("master_entity_links").select("*").eq("status","active").order("created_at",{ascending:false}).limit(100),
-    supabase.from("admin_profiles").select("user_id,display_name,role")
+    supabase.from("admin_profiles").select("user_id,display_name,role"),
+    supabase.from("runtime_validation_runs").select("status,deployment_id,commit_sha,executed_at").eq("environment","preview").order("executed_at",{ascending:false}).limit(1).maybeSingle()
   ]);
 
   const gateRows=(gates||[]) as any[];
@@ -211,7 +213,14 @@ export default async function ReleaseGatePage(){
   const activeGate=gateRows[0];
   const activeGateChecks=activeGate?checkRows.filter(c=>c.release_gate_id===activeGate.id):[];
   const runtimeEvidence=activeGateChecks.find(c=>c.check_code==="runtime-smoke");
-  const evidenceIntegrated=runtimeEvidence?.status==="passed";
+  const validationPassed=latestValidation?.status==="passed";
+  const deploymentMatches=Boolean(latestValidation?.deployment_id&&activeGate?.target_deployment_id)
+    ?latestValidation.deployment_id===activeGate.target_deployment_id
+    :true;
+  const commitMatches=Boolean(latestValidation?.commit_sha&&activeGate?.target_commit)
+    ?latestValidation.commit_sha===activeGate.target_commit
+    :true;
+  const evidenceIntegrated=runtimeEvidence?.status==="passed"&&validationPassed&&deploymentMatches&&commitMatches;
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
