@@ -52,7 +52,9 @@ export default async function QaFinalPage(){
     latestGate?.target_commit===currentCommit
   );
   const gateReady=gateApproved&&validationOk&&gateMatchesValidation&&validationIsCurrent&&gateBlockingChecksOk;
-  const gateLabel=!latestGate?"SIN REVISIÓN":!gateApproved?"REVISAR":!validationIsCurrent?"NUEVA PRUEBA":gateMatchesValidation?"APROBADA":"VERSIÓN DISTINTA";
+  const gateBlockingPending=blockingChecks.filter(c=>c.status!=="passed").length;
+  const gateBlockingLabel=gateChecksError?"NO DISPONIBLE":!latestGate?"SIN REVISIÓN":!blockingChecks.length?"SIN COMPROBACIONES":gateBlockingPending?`${gateBlockingPending} PENDIENTES`:"COMPLETAS";
+  const gateLabel=!latestGate?"SIN REVISIÓN":!gateApproved?"REVISAR":!validationIsCurrent?"NUEVA PRUEBA":!gateMatchesValidation?"VERSIÓN DISTINTA":gateBlockingChecksOk?"APROBADA":"COMPROBACIONES PENDIENTES";
   const incidentsOk=(openIncidents||0)===0;
   const approvalsOk=(pendingApprovals||0)===0;
   const checksOk=(failedChecks||0)===0&&gateBlockingChecksOk;
@@ -91,7 +93,7 @@ export default async function QaFinalPage(){
       <article><small>Última prueba</small><strong className={styles.kpiCompactValue}>{validationLabel}</strong><span>{latestValidation?.executed_at?new Date(latestValidation.executed_at).toLocaleString("es-US"):"Sin prueba registrada"}</span></article>
       <article><small>Revisión de publicación</small><strong className={styles.kpiCompactValue}>{gateLabel}</strong><span>{!gateMatchesValidation&&latestGate?"La revisión aprobada corresponde a otra versión":latestGate?.created_at?new Date(latestGate.created_at).toLocaleString("es-US"):"Sin revisión registrada"}</span></article>
       <article><small>Incidentes abiertos</small><strong>{openIncidents||0}</strong><span>{incidentsOk?"Sin bloqueos":"Requiere revisión"}</span></article>
-      <article><small>Comprobaciones bloqueantes fallidas</small><strong>{failedChecks||0}</strong><span>{checksOk?"Sin fallos":"Requiere corrección"}</span></article>
+      <article className={!gateBlockingChecksOk?styles.kpiAttention:undefined}><small>Comprobaciones obligatorias</small><strong className={styles.kpiCompactValue}>{gateBlockingLabel}</strong><span>{gateChecksError?"No se pudo comprobar la evidencia":`${failedChecks||0} fallidas en el historial · ${gateBlockingPending} sin completar en esta revisión`}</span></article>
     </section>
 
     <section className={styles.sectionHead}>
