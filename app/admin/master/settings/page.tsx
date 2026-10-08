@@ -149,7 +149,7 @@ export default async function SettingsPage(){
 
     <section className={styles.sectionHead}><div><span>PARÁMETROS</span><h2>Parámetros operativos</h2></div></section>
     <section className={styles.grid}>
-      {settingRows.map((s:any)=><article key={s.id} className={styles.card}>
+      {settingRows.map((s:any)=><article key={s.id} className={`${styles.card} ${["inactive","deprecated"].includes(s.status)?styles.cardMuted:s.environment_scope==="production"?styles.cardPriority:""}`}>
         <div className={styles.cardTop}><span className={s.status==="active"?styles.badgeActive:styles.badgePlanned}>{settingStatusLabel(s.status)}</span><em>{scopeLabel(s.environment_scope)}</em></div>
         <h3>{s.label}</h3><p>{s.description||"Sin descripción"}<br/>Categoría: {s.category}<br/>Valor: {String(s.value_json?.value??"—")}</p>
       </article>)}
@@ -158,7 +158,7 @@ export default async function SettingsPage(){
 
     <section className={styles.sectionHead}><div><span>CONTROLES DE ACTIVACIÓN</span><h2>Controles de activación</h2></div><p>Los controles nacen desactivados; su activación sigue un flujo controlado.</p></section>
     <section className={styles.grid}>
-      {flagRows.map((f:any)=><article key={f.id} className={styles.card}>
+      {flagRows.map((f:any)=><article key={f.id} className={`${styles.card} ${!f.enabled?styles.cardMuted:f.environment_scope==="production"?styles.cardWarning:styles.cardPriority}`}>
         <div className={styles.cardTop}><span className={f.enabled?styles.badgeActive:styles.badgePlanned}>{f.enabled?"ACTIVO":"INACTIVO"}</span><em>{scopeLabel(f.environment_scope)}</em></div>
         <h3>{f.label}</h3><p>Responsable: {ownerName(f.owner_user_id)}<br/>{f.description||"Sin descripción"}<br/>Activación: {f.rollout_percent}%</p>
       </article>)}
