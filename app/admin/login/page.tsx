@@ -8,6 +8,7 @@ export default function AdminLoginPage(){
   const[email,setEmail]=useState("");
   const[password,setPassword]=useState("");
   const[status,setStatus]=useState("");
+  const[statusType,setStatusType]=useState<"info"|"success"|"error">("info");
   const[loading,setLoading]=useState(false);
 
   useEffect(()=>{
@@ -19,25 +20,34 @@ export default function AdminLoginPage(){
   async function signIn(event:FormEvent){
     event.preventDefault();
     setLoading(true);
+    setStatusType("info");
     setStatus("Verificando acceso…");
-    const r=await fetch("/api/auth/login",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({email,password})
-    });
-    const j=await r.json().catch(()=>({}));
-    if(r.ok){
-      const destination=typeof j.redirect==="string"&&j.redirect.startsWith("/admin")?j.redirect:"/admin";
-      setStatus(destination==="/admin/mfa"
-        ?"Credenciales correctas. Verifica el segundo factor…"
-        :"Acceso correcto. Abriendo Panel de administración…");
-      window.location.assign(destination);
-      return;
+    try{
+      const r=await fetch("/api/auth/login",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({email,password})
+      });
+      const j=await r.json().catch(()=>({}));
+      if(r.ok){
+        const destination=typeof j.redirect==="string"&&j.redirect.startsWith("/admin")?j.redirect:"/admin";
+        setStatusType("success");
+        setStatus(destination==="/admin/mfa"
+          ?"Credenciales correctas. Verifica el segundo factor…"
+          :"Acceso correcto. Abriendo Panel de administración…");
+        window.location.assign(destination);
+        return;
+      }
+      setStatusType("error");
+      setStatus(j.error==="unauthorized"
+        ?"La cuenta existe, pero no tiene permisos para entrar al Panel de administración."
+        :"Correo o contraseña incorrectos.");
+    }catch{
+      setStatusType("error");
+      setStatus("No fue posible conectar con el servicio de acceso. Revisa tu conexión e inténtalo nuevamente.");
+    }finally{
+      setLoading(false);
     }
-    setLoading(false);
-    setStatus(j.error==="unauthorized"
-      ?"La cuenta existe, pero no tiene permisos para entrar al Panel de administración."
-      :"Correo o contraseña incorrectos.");
   }
 
   return <main className="authShell authShellFragmentun">
@@ -76,7 +86,7 @@ export default function AdminLoginPage(){
           <Link href="/admin/forgot-password">¿Olvidaste tu contraseña?</Link>
           <Link href="/es">Volver al sitio</Link>
         </div>
-        {status&&<p className="note authStatus" role="status">{status}</p>}
+        {status&&<p className={`note authStatus ${statusType}`} role="status" aria-live="polite">{status}</p>}
       </section>
     </section>
   </main>;
