@@ -4,19 +4,48 @@ import {FragmentunProcessOverlay} from "./FragmentunProcessOverlay";
 
 export function AdminSystemStatus(){
   const[data,setData]=useState<any>(null);
+  const[loadError,setLoadError]=useState(false);
+  const[backupMsg,setBackupMsg]=useState("");
 
   useEffect(()=>{
-    fetch("/api/admin/status").then(r=>r.json()).then(setData);
+    fetch("/api/admin/status").then(async r=>{
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error("load_failed");
+      setData(j);setLoadError(false);
+    }).catch(()=>setLoadError(true));
   },[]);
 
+  if(loadError)return <section className="card"><p className="adminSaveFeedback error">No fue posible cargar el estado del sistema.</p><button type="button" className="btn btnGhost" onClick={()=>window.location.reload()}>Reintentar</button></section>;
   if(!data)return <FragmentunProcessOverlay compact state="loading" title="CARGANDO ESTADO…"/>;
-  if(data.error)return <p>No fue posible cargar el estado.</p>;
+  if(data.error)return <p className="adminSaveFeedback error">No fue posible cargar el estado.</p>;
 
   const ops=data.operations||{};
   const checks=data.checks||[];
   const emailEs=checks.find((c:any)=>c.key==="mailerlite_automation_es");
   const emailEn=checks.find((c:any)=>c.key==="mailerlite_automation_en");
   const emailReady=!!emailEs?.ok&&!!emailEn?.ok;
+
+  async function downloadBackup(){
+    setBackupMsg("Preparando copia de seguridad…");
+    try{
+      const r=await fetch("/api/admin/backup");
+      const j=r.ok?null:await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error(j?.error||"backup_failed");
+      const blob=await r.blob();
+      const disposition=r.headers.get("content-disposition")||"";
+      const match=disposition.match(/filename="([^"]+)"/);
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement("a");
+      a.href=url;a.download=match?.[1]||"fragmentun-backup.json";
+      document.body.appendChild(a);a.click();a.remove();
+      window.setTimeout(()=>URL.revokeObjectURL(url),1000);
+      setBackupMsg(r.headers.get("x-fragmentun-backup-status")==="partial"
+        ?"La copia se descargó, pero contiene elementos pendientes de recuperación."
+        :"Copia de seguridad descargada correctamente.");
+    }catch{
+      setBackupMsg("No fue posible descargar la copia de seguridad.");
+    }
+  }
 
   return <div className="adminSecondaryModule adminStatusModule">
     <div className="kpis">
@@ -66,7 +95,7 @@ export function AdminSystemStatus(){
     <div className="card adminSecondaryPanel">
       <h2>Recuperación</h2>
       <p className="note">Genera una copia de seguridad versionada del contenido y metadatos públicos. No incluye registros de usuarios, credenciales ni otros datos sensibles.</p>
-      <a className="btn btnPrimary" href="/api/admin/backup">Descargar copia de seguridad</a>
+      <button className="btn btnPrimary" type="button" onClick={downloadBackup}>Descargar copia de seguridad</button>{backupMsg&&<p role="status" className={backupMsg.toLowerCase().includes("no fue")?"adminSaveFeedback error":backupMsg.toLowerCase().includes("correctamente")?"adminSaveFeedback success":"adminSaveFeedback"}>{backupMsg}</p>}
     </div>
 
     <div className="card adminSecondaryPanel">
