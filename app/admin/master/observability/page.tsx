@@ -52,14 +52,18 @@ async function validateCurrentPreview(){
     try{
       const response=await fetch(baseUrl+check.path,{method:"GET",redirect:"manual",cache:"no-store"});
       const actual=response.status;
-      const passed=actual===check.expected;
-      if(!passed) failed++;
       const location=response.headers.get("location");
+      const protectedPage=check.expected===307;
+      const validRedirect=protectedPage&&[302,303,307,308].includes(actual)&&Boolean(location?.includes("/admin/login"));
+      const passed=protectedPage?validRedirect:actual===check.expected;
+      if(!passed) failed++;
       const{error}=await supabase.from("runtime_validation_results").insert({
         run_id:run.id,check_name:check.name,request_path:check.path,method:"GET",
         expected_status:check.expected,actual_status:actual,redirect_location:location,
         status:passed?"passed":"failed",latency_ms:Date.now()-started,
-        detail:passed?"Respuesta esperada.":"Respuesta distinta a la esperada."
+        detail:passed
+          ?(protectedPage?"Acceso protegido: redirección correcta al inicio de sesión.":"Respuesta esperada.")
+          :"Respuesta distinta a la esperada."
       });
       if(error) throw error;
     }catch(error:any){
