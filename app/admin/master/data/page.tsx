@@ -214,7 +214,7 @@ export default async function MasterDataPage(){
           <label>Actualización objetivo (min)<input type="number" min="0" name="freshness_target_minutes"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!sourceRows.length}>Actualizar fuente</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!sourceRows.length} disabledReason="No hay fuentes de datos registradas para actualizar.">Actualizar fuente</MasterSubmitButton>
       </form>
 
       <form action={updateMetric} className={styles.adminForm}>
@@ -229,7 +229,7 @@ export default async function MasterDataPage(){
           <label className={styles.span2}>Definición<textarea name="definition" rows={3}/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!metricRows.length}>Actualizar métrica</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!metricRows.length} disabledReason="No hay métricas registradas para actualizar.">Actualizar métrica</MasterSubmitButton>
       </form>
       </section>
     </details>}
