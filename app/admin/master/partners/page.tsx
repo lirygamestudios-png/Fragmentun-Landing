@@ -166,7 +166,7 @@ export default async function MasterOrganizacionesPage(){
     <section className={styles.grid}>
       {partnerRows.map((p:any)=><article key={p.id} className={styles.card}>
         <div className={styles.cardTop}><span className={p.status==="active"?styles.badgeActivo:styles.badgePlanned}>{partnerEstadoLabel(p.status)}</span><em>{p.partner_type}</em></div>
-        <h3>{p.name}</h3><p>{p.contact_name||"Sin contacto"} · {p.contact_email||"Sin email"}<br/>{p.territory||"Territorio pendiente"}</p>
+        <h3>{p.name}</h3><p>{p.contact_name||"Sin contacto"} · {p.contact_email||"Sin correo"}<br/>{p.territory||"Territorio pendiente"}</p>
       </article>)}
       {!partnerRows.length&&<article className={styles.card}><h3>Registro de organizaciones preparado</h3><p>No se han cargado organizaciones reales todavía.</p></article>}
     </section>
@@ -191,10 +191,10 @@ export default async function MasterOrganizacionesPage(){
           <label>Tipo<select name="partner_type" defaultValue="other">
             <option value="publisher">Editorial</option><option value="platform">Plataforma</option><option value="distributor">Distribuidor</option>
             <option value="licensor">Licenciante</option><option value="licensee">Licenciatario</option><option value="co_dev">Codesarrollo</option>
-            <option value="marketing">Marketing</option><option value="media">Medios</option><option value="retail">Venta minorista</option><option value="strategic">Estratégico</option><option value="other">Otro</option>
+            <option value="marketing">Mercadeo</option><option value="media">Medios</option><option value="retail">Venta minorista</option><option value="strategic">Estratégico</option><option value="other">Otro</option>
           </select></label>
           <label>Contacto<input name="contact_name"/></label>
-          <label>Email<input type="email" name="contact_email"/></label>
+          <label>Correo<input type="email" name="contact_email"/></label>
           <label>Territorio<input name="territory"/></label>
           <label>Web<input name="website"/></label>
         </div>
@@ -209,7 +209,7 @@ export default async function MasterOrganizacionesPage(){
           <label>IP<input name="ip_name"/></label>
           <label>Tipo<select name="deal_type" defaultValue="license">
             <option value="license">Licencia</option><option value="distribution">Distribución</option><option value="publishing">Publicación</option>
-            <option value="co_development">Codesarrolloelopment</option><option value="marketing">Marketing</option><option value="merchandising">Merchandising</option><option value="adaptation">Adaptación</option><option value="other">Otro</option>
+            <option value="co_development">Codesarrollo</option><option value="marketing">Marketing</option><option value="merchandising">Productos derivados</option><option value="adaptation">Adaptación</option><option value="other">Otro</option>
           </select></label>
           <label>Territorio<input name="territory"/></label>
           <label>Exclusividad<select name="exclusivity" defaultValue="unknown"><option value="exclusive">Exclusivo</option><option value="non_exclusive">No exclusivo</option><option value="shared">Compartido</option><option value="unknown">Desconocido</option></select></label>
@@ -262,7 +262,7 @@ export default async function MasterOrganizacionesPage(){
     <section className={styles.kpis}>
       <article><small>Campañas</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Salida al mercado</span></article>
       <article><small>Ediciones</small><strong>{(editions||0).toLocaleString()}</strong><span>Catálogo</span></article>
-      <article><small>Acceso</small><strong>ADMINISTRADOR</strong><span>RLS restringido</span></article>
+      <article><small>Acceso</small><strong>ADMINISTRADOR</strong><span>Acceso a datos restringido</span></article>
       <article><small>Contratos</small><strong>SEPARADOS</strong><span>Legal e IP</span></article>
     </section>
   </main>;
