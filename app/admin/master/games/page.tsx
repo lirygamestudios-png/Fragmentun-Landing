@@ -162,7 +162,10 @@ export default async function MasterGamesPage(){
     {count:characters},
     {count:media},
     {data:owners},
-    {data:virtualItems}
+    {data:virtualItems},
+    {data:gamePurchases},
+    {data:entitlements},
+    {data:engagement}
   ]=await Promise.all([
     supabase.from("game_titles").select("id,slug,name,ip_name,platform_scope,lifecycle_stage,health_status,owner_user_id,target_release_date,budget_cents,currency,summary,created_at").order("created_at",{ascending:true}),
     supabase.from("game_milestones").select("id,game_id,name,milestone_type,status,target_date,completed_at,owner_user_id,progress_percent,exit_criteria,notes,created_at").order("target_date",{ascending:true}),
@@ -170,7 +173,10 @@ export default async function MasterGamesPage(){
     supabase.from("characters").select("*",{count:"exact",head:true}),
     supabase.from("media_assets").select("*",{count:"exact",head:true}),
     supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true}),
-    supabase.from("game_virtual_items").select("id,game_id,active")
+    supabase.from("game_virtual_items").select("id,game_id,active"),
+    supabase.from("game_purchase_events").select("id,game_id,status,purchased_at").order("purchased_at",{ascending:false}).limit(5000),
+    supabase.from("game_entitlements").select("id,game_id,status"),
+    supabase.from("game_engagement_daily").select("metric_date,game_id,active_players").order("metric_date",{ascending:false}).limit(500)
   ]);
 
   const gameRows=(games||[]) as any[];
@@ -184,6 +190,19 @@ export default async function MasterGamesPage(){
   const portfolioCapacity=9;
   const availableSlots=Math.max(0,portfolioCapacity-gameRows.length);
   const portfolioUsage=Math.min(100,Math.round((gameRows.length/portfolioCapacity)*100));
+  const virtualItemRows=(virtualItems||[]) as any[];
+  const purchaseRows=(gamePurchases||[]) as any[];
+  const entitlementRows=(entitlements||[]) as any[];
+  const engagementRows=(engagement||[]) as any[];
+  const latestMetricDate=engagementRows[0]?.metric_date||null;
+  const activePlayersToday=latestMetricDate?engagementRows.filter(e=>e.metric_date===latestMetricDate).reduce((a,e)=>a+Number(e.active_players||0),0):0;
+  const paidPurchases=purchaseRows.filter(p=>p.status==="paid");
+  const gamesWithEconomy=new Set(virtualItemRows.filter(i=>i.active).map(i=>i.game_id));
+  const entitlementAlerts=entitlementRows.filter(e=>["pending","failed"].includes(e.status));
+  const gameVirtualItems=(id:string)=>virtualItemRows.filter(i=>i.game_id===id&&i.active).length;
+  const gamePaidPurchases=(id:string)=>paidPurchases.filter(p=>p.game_id===id).length;
+  const gamePlayers=(id:string)=>latestMetricDate?engagementRows.filter(e=>e.game_id===id&&e.metric_date===latestMetricDate).reduce((a,e)=>a+Number(e.active_players||0),0):0;
+  const gameEntitlementAlerts=(id:string)=>entitlementAlerts.filter(e=>e.game_id===id).length;
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleGames}`}>
     <header className={styles.topbar}>
@@ -210,6 +229,18 @@ export default async function MasterGamesPage(){
     <section className={`${styles.kpis} ${styles.kpisPair}`}>
       <article><small>Responsable</small><strong>{primaryGame?ownerName(primaryGame.owner_user_id):"Sin asignar"}</strong><span>{primaryGame?primaryGame.name:"Primer juego pendiente"}</span></article>
       <article><small>Fecha objetivo</small><strong>{primaryGame?.target_release_date||"Sin definir"}</strong><span>{primaryGame?"Lanzamiento previsto":"Primer juego pendiente"}</span></article>
+    </section>
+
+    <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · CONEXIÓN</span><h2>Economía y telemetría por juego</h2></div>
+      <p>Estado real de catálogo virtual, compras pagadas, jugadores activos y entregas digitales por título.</p>
+    </section>
+
+    <section className={styles.kpis}>
+      <article><small>Juegos con economía</small><strong>{gamesWithEconomy.size}/{gameRows.length||0}</strong><span>Con artículos virtuales activos</span></article>
+      <article><small>Jugadores activos hoy</small><strong>{activePlayersToday.toLocaleString()}</strong><span>{latestMetricDate||"Sin telemetría diaria"}</span></article>
+      <article><small>Compras in-game pagadas</small><strong>{paidPurchases.length}</strong><span>Eventos reales recibidos</span></article>
+      <article className={entitlementAlerts.length?styles.kpiAttention:undefined}><small>Entregas por revisar</small><strong>{entitlementAlerts.length}</strong><span>{entitlementAlerts.length?"Pendientes o fallidas":"Sin incidencias"}</span></article>
     </section>
 
     <section className={styles.portfolioCapacity}>
@@ -327,7 +358,7 @@ export default async function MasterGamesPage(){
           <em>{stageLabel(g.lifecycle_stage)}</em>
         </div>
         <h3>{g.name}</h3>
-        <p>{g.ip_name||"IP sin asignar"}<br/>Responsable: {ownerName(g.owner_user_id)}<br/>{(g.platform_scope||[]).length?(g.platform_scope||[]).join(" · "):"Plataformas por definir"}<br/>{g.target_release_date?"Lanzamiento objetivo: "+g.target_release_date:"Sin fecha objetivo"} · {g.budget_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:g.currency||"USD"}).format(Number(g.budget_cents)/100):"Presupuesto por definir"}</p>
+        <p>{g.ip_name||"IP sin asignar"}<br/>Responsable: {ownerName(g.owner_user_id)}<br/>{(g.platform_scope||[]).length?(g.platform_scope||[]).join(" · "):"Plataformas por definir"}<br/>{g.target_release_date?"Lanzamiento objetivo: "+g.target_release_date:"Sin fecha objetivo"} · {g.budget_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:g.currency||"USD"}).format(Number(g.budget_cents)/100):"Presupuesto por definir"}<br/>FREEMIUM: {gameVirtualItems(g.id)} artículos · {gamePaidPurchases(g.id)} compras · {gamePlayers(g.id)} jugadores activos{gameEntitlementAlerts(g.id)?` · ${gameEntitlementAlerts(g.id)} entregas por revisar`:""}</p>
       </article>)}
       {!gameRows.length&&<article className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgePlanned}>LISTO</span><em>GAME REGISTRY</em></div>
