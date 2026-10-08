@@ -64,7 +64,7 @@ export default async function MasterReportsPage(){
       <div>
         <span className={styles.eyebrow}>LIRYGAMES · REPORTES</span>
         <h1>Reportes</h1>
-        <p>Resumen ejecutivo del estudio para consulta en pantalla, impresión y exportación.</p>
+        <p>Resumen ejecutivo del estudio para consulta, impresión, guardado en PDF y exportación.</p>
       </div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
@@ -86,13 +86,13 @@ export default async function MasterReportsPage(){
 
     <section className={styles.sectionHead}>
       <div><span>RESUMEN EJECUTIVO</span><h2>Indicadores del estudio</h2></div>
-      <p>Los valores se toman de los registros actuales del Master Admin. No se generan cifras ficticias.</p>
+      <p>Los valores se toman de los registros actuales del Panel LIRYGAMES. No se generan cifras ficticias.</p>
     </section>
 
     <section className={styles.reportSheet}>
       <header>
         <div><span>LIRYGAMES STUDIOS</span><h2>Reporte Ejecutivo</h2></div>
-        <small>Generado desde el Master Admin</small>
+        <small>Generado desde el Panel LIRYGAMES</small>
       </header>
       <div className={styles.reportTable}>
         {rows.map(row=><div key={row.label}><span>{row.label}</span><strong>{row.value}</strong></div>)}
@@ -101,7 +101,7 @@ export default async function MasterReportsPage(){
 
     <section className={styles.sectionHead}>
       <div><span>REPORTES ESPECIALIZADOS</span><h2>Accesos directos</h2></div>
-      <p>Los reportes especializados conservan sus propias fuentes y presentación.</p>
+      <p>Los reportes especializados conservan sus propios datos y presentación.</p>
     </section>
 
     <section className={styles.grid}>
