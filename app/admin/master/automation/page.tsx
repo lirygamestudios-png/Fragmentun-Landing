@@ -211,13 +211,13 @@ export default async function MasterAutomationPage(){
     <section className={styles.kpis}>
       <article><small>Automatizaciones activas</small><strong>{activeAutomatizaciones}</strong><span>{workflowRows.length} registrados</span></article>
       <article><small>Agentes activos</small><strong>{activeAgents}</strong><span>{agentRows.length} registrados</span></article>
-      <article><small>Aprobaciones pendientes</small><strong>{pending.length}</strong><span>Decisión humana requerida</span></article>
-      <article><small>Paradas de emergencia</small><strong>{killCount}</strong><span>Agentes detenidos</span></article>
+      <article className={pending.length?styles.kpiAttention:undefined}><small>Aprobaciones pendientes</small><strong>{pending.length}</strong><span>{pending.length?"Decisión humana requerida":"Sin decisiones pendientes"}</span></article>
+      <article className={killCount?styles.kpiAttention:undefined}><small>Paradas de emergencia</small><strong>{killCount}</strong><span>{killCount?"Agentes detenidos":"Sin paradas activas"}</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>AUTOMATIZACIONES</span><h2>Automatizaciones</h2></div><p>Las automatizaciones empiezan vacías y se activan únicamente después de configuración y pruebas.</p></section>
     <section className={styles.grid}>
-      {workflowRows.map((w:any)=><article key={w.id} className={styles.card}>
+      {workflowRows.map((w:any)=><article key={w.id} className={`${styles.card} ${w.status==="error"?styles.cardAttention:w.status==="paused"||w.status==="testing"?styles.cardWarning:["draft","disabled"].includes(w.status)?styles.cardMuted:w.autonomy_level==="execute_with_approval"?styles.cardPriority:""}`}>
         <div className={styles.cardTop}><span className={w.status==="active"?styles.badgeActive:styles.badgePlanned}>{statusLabel(w.status)}</span><em>{autonomyLabel(w.autonomy_level)}</em></div>
         <h3>{w.name}</h3><p>{w.domain} · {triggerLabel(w.trigger_type)}<br/>Responsable: {ownerName(w.owner_user_id)}<br/>Requiere aprobación: {w.requires_approval?"Sí":"No"}</p>
       </article>)}
@@ -226,7 +226,7 @@ export default async function MasterAutomationPage(){
 
     <section className={styles.sectionHead}><div><span>AGENTES IA</span><h2>Agentes IA</h2></div><p>Los agentes no se crean ni activan automáticamente; requieren configuración explícita.</p></section>
     <section className={styles.grid}>
-      {agentRows.map((a:any)=><article key={a.id} className={styles.card}>
+      {agentRows.map((a:any)=><article key={a.id} className={`${styles.card} ${a.kill_switch?styles.cardAttention:a.status==="paused"||a.status==="testing"?styles.cardWarning:["draft","disabled"].includes(a.status)?styles.cardMuted:a.autonomy_level==="execute_with_approval"?styles.cardPriority:""}`}>
         <div className={styles.cardTop}><span className={a.kill_switch?styles.badgePlanned:styles.badgeActive}>{a.kill_switch?"PARADA ACTIVA":statusLabel(a.status)}</span><em>{autonomyLabel(a.autonomy_level)}</em></div>
         <h3>{a.name}</h3><p>{a.domain}<br/>Responsable: {ownerName(a.owner_user_id)}<br/>{a.purpose||"Propósito pendiente"}<br/>{a.model_ref||"Modelo no asignado"} · {a.cost_budget_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(a.cost_budget_cents)/100):"Presupuesto no definido"}</p>
         {profile.role==="admin"&&<MasterActionForm action={toggleKillSwitch} successText="Interruptor de emergencia actualizado correctamente.">
@@ -239,7 +239,7 @@ export default async function MasterAutomationPage(){
 
     <section className={styles.sectionHead}><div><span>APROBACIONES</span><h2>Decisiones pendientes</h2></div><p>Acciones sensibles pueden quedar detenidas aquí hasta decisión humana.</p></section>
     <section className={styles.grid}>
-      {pending.map((a:any)=><article key={a.id} className={styles.card}>
+      {pending.map((a:any)=><article key={a.id} className={`${styles.card} ${["high","critical"].includes(a.risk_level)?styles.cardAttention:styles.cardDecision}`}>
         <div className={styles.cardTop}><span className={styles.badgePlanned}>{riskLabel(a.risk_level)}</span><em>{actionTypeLabel(a.action_type)}</em></div>
         <h3>{a.action_summary}</h3>
         <p>Solicitado: {new Date(a.requested_at).toLocaleString("es-US")}</p>
