@@ -202,9 +202,9 @@ export default async function MasterOperationsPage(){
       <article><small>Recursos multimedia</small><strong>{(media||0).toLocaleString()}</strong><span>Biblioteca</span></article>
     </section>
 
-    <section className={styles.sectionHead}><div><span>TRABAJO</span><h2>Trabajo pendiente</h2></div><p>Tareas, problemas, seguimientos, revisiones y lanzamientos pendientes.</p></section>
+    <section className={styles.sectionHead}><div><span>TRABAJO</span><h2>Trabajo pendiente</h2></div><p>{blocked.length?blocked.length+" elementos requieren atención prioritaria.":"Sin bloqueos críticos registrados."} Tareas, problemas, seguimientos, revisiones y lanzamientos pendientes.</p></section>
     <section className={styles.grid}>
-      {workRows.map((w:any)=><article key={w.id} className={styles.card}>
+      {workRows.map((w:any)=><article key={w.id} className={`${styles.card} ${w.status==="blocked"||w.priority==="critical"?styles.cardAttention:""}`}>
         <div className={styles.cardTop}><span className={w.status==="completed"?styles.badgeActive:styles.badgePlanned}>{workStatusLabel(w.status)}</span><em>{priorityLabel(w.priority)}</em></div>
         <h3>{w.title}</h3><p>{w.domain} · {workTypeLabel(w.work_type)}<br/>Responsable: {ownerName(w.owner_user_id)}<br/>{w.due_date?"Fecha límite: "+w.due_date:"Sin fecha límite"}<br/>{w.next_action||"Próxima acción pendiente"}</p>
       </article>)}
@@ -213,7 +213,7 @@ export default async function MasterOperationsPage(){
 
     <section className={styles.sectionHead}><div><span>DECISIONES</span><h2>Decisiones</h2></div><p>Registro de decisiones operativas y estratégicas con motivo y fecha de revisión.</p></section>
     <section className={styles.grid}>
-      {decisionRows.map((d:any)=><article key={d.id} className={styles.card}>
+      {decisionRows.map((d:any)=><article key={d.id} className={`${styles.card} ${d.status==="proposed"?styles.cardDecision:""}`}>
         <div className={styles.cardTop}><span className={d.status==="implemented"?styles.badgeActive:styles.badgePlanned}>{decisionStatusLabel(d.status)}</span><em>{d.domain}</em></div>
         <h3>{d.title}</h3><p>Responsable: {ownerName(d.owner_user_id)}<br/>{d.decision||"Decisión pendiente"}<br/>{d.rationale||"Motivo pendiente"}<br/>{d.review_date?"Revisión: "+d.review_date:"Sin fecha de revisión"}</p>
       </article>)}
