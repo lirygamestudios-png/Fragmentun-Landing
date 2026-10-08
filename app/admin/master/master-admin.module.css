@@ -225,6 +225,9 @@
 .moduleBackups{--module-accent:#4fd8ff;--module-accent-rgb:79,216,255}
 .moduleMaintenance{--module-accent:#9c5cff;--module-accent-rgb:156,92,255}
 .moduleReleases{--module-accent:#5ce69a;--module-accent-rgb:92,230,154}
+.moduleObservability{--module-accent:#4fd8ff;--module-accent-rgb:79,216,255}
+.moduleChecklist{--module-accent:#9c5cff;--module-accent-rgb:156,92,255}
+.moduleQa{--module-accent:#5ce69a;--module-accent-rgb:92,230,154}
 
 .modulePage .topbar{
   border-color:rgba(var(--module-accent-rgb),.28);
