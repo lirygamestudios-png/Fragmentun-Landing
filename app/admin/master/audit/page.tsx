@@ -68,6 +68,9 @@ export default async function MasterAuditPage(){
   const inserts=rows.filter(r=>r.action==="INSERT").length;
   const updates=rows.filter(r=>r.action==="UPDATE").length;
   const deletes=rows.filter(r=>r.action==="DELETE").length;
+  const freemiumTables=new Set(["game_virtual_items","game_virtual_item_offers","game_purchase_events","game_entitlements","game_engagement_daily"]);
+  const freemiumRows=rows.filter(r=>freemiumTables.has(r.table_name));
+  const freemiumChanges=freemiumRows.length;
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleAudit}`}>
     <header className={styles.topbar}>
