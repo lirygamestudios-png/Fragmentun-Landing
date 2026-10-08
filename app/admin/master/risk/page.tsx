@@ -141,11 +141,20 @@ export default async function MasterRiskPage(){
     {name:"Pagos",state:(commerce?.stripe_enabled||commerce?.paypal_enabled)?"ACTIVO":"CONTROLADO",detail:(commerce?.stripe_enabled||commerce?.paypal_enabled)?"Proveedor habilitado":"Proveedores permanecen deshabilitados"}
   ];
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleRisk}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · RIESGOS Y CONTROLES</span><h1>Riesgos y Controles</h1><p>Riesgos, controles, evidencias y señales actuales del sistema.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">RC</span>
+      <div className={styles.moduleStripCopy}><small>RIESGOS Y CONTROLES</small><strong>Exposición, mitigación y evidencia</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Señales de control conectadas</span>
+        <span>Tratamiento protegido · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Riesgos abiertos</small><strong>{open.length}</strong><span>{riskRows.length} registrados</span></article>
