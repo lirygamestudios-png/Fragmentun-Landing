@@ -175,6 +175,11 @@ export default async function MasterPublishingPage(){
   const live=releaseRows.filter(r=>r.status==="live");
   const open=releaseRows.filter(r=>!["live","canceled","sunset"].includes(r.status));
   const certRisk=releaseRows.filter(r=>r.certification_status==="failed"||r.status==="blocked"||r.status==="delayed");
+  const virtualItemRows=(virtualItems||[]) as any[];
+  const virtualOfferRows=(virtualOffers||[]) as any[];
+  const gamesWithVirtualCatalog=new Set(virtualItemRows.map(i=>i.game_id));
+  const offerItemIds=new Set(virtualOfferRows.map(o=>o.item_id));
+  const pricedVirtualItems=virtualItemRows.filter(i=>offerItemIds.has(i.id)).length;
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.modulePublishing}`}>
     <header className={styles.topbar}>
@@ -196,6 +201,18 @@ export default async function MasterPublishingPage(){
       <article><small>Lanzamientos abiertos</small><strong>{open.length}</strong><span>En preparación</span></article>
       <article><small>Publicados</small><strong>{live.length}</strong><span>Lanzamientos activos</span></article>
       <article className={certRisk.length?styles.kpiAttention:undefined}><small>Riesgos</small><strong>{certRisk.length}</strong><span>{certRisk.length?"Fallidos, bloqueados o retrasados":"Sin incidencias de publicación"}</span></article>
+    </section>
+
+    <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · PUBLICACIÓN</span><h2>Preparación comercial por juego</h2></div>
+      <p>El lanzamiento base y el catálogo virtual se controlan por separado para evitar publicar un juego sin su economía preparada.</p>
+    </section>
+
+    <section className={styles.kpis}>
+      <article><small>Juegos con catálogo virtual</small><strong>{gamesWithVirtualCatalog.size}</strong><span>{gameRows.length} juegos registrados</span></article>
+      <article><small>Artículos virtuales activos</small><strong>{virtualItemRows.length}</strong><span>{pricedVirtualItems} con oferta/precio activo</span></article>
+      <article><small>Plataformas verificadas</small><strong>{stores.filter(s=>s.active&&s.account_status==="verified").length}</strong><span>{stores.length} registradas</span></article>
+      <article className={certRisk.length?styles.kpiAttention:undefined}><small>Bloqueos de publicación</small><strong>{certRisk.length}</strong><span>{certRisk.length?"Certificación o lanzamiento":"Sin bloqueos registrados"}</span></article>
     </section>
 
     <section className={styles.sectionHead}>
