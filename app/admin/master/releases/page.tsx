@@ -205,11 +205,15 @@ async function updateGate(formData:FormData){
   if(status==="approved"&&existingGate.environment!=="preview") throw new Error("preview_approval_only");
   if(status==="approved"&&humanConfirmation!=="confirm_release_review") throw new Error("explicit_human_confirmation_required");
   if(status==="approved"){
-    const[{data:checks},{data:gate},{data:latestValidation}]=await Promise.all([
+    const[{data:checks,error:checksError},{data:gate,error:gateError},{data:latestValidation,error:validationError}]=await Promise.all([
       supabase.from("release_gate_checks").select("status,blocking,check_code").eq("release_gate_id",id),
       supabase.from("release_gates").select("target_deployment_id,target_commit").eq("id",id).maybeSingle(),
       supabase.from("runtime_validation_runs").select("status,deployment_id,commit_sha").eq("environment","preview").order("executed_at",{ascending:false}).limit(1).maybeSingle()
     ]);
+    if(checksError) throw new Error(checksError.message);
+    if(gateError) throw new Error(gateError.message);
+    if(validationError) throw new Error(validationError.message);
+    if(!gate) throw new Error("gate_not_found");
     if(!(checks||[]).length) throw new Error("release_checks_required");
     const blockers=(checks||[]).filter((c:any)=>
       c.blocking&&
@@ -270,8 +274,9 @@ async function updateGate(formData:FormData){
     }
   }
 
-  const{error}=await supabase.from("release_gates").update(patch).eq("id",id);
+  const{data:updatedGate,error}=await supabase.from("release_gates").update(patch).eq("id",id).eq("status",existingGate.status).select("id").maybeSingle();
   if(error) throw new Error(error.message);
+  if(!updatedGate) throw new Error("gate_status_changed_retry");
   revalidatePath("/admin/master/releases");
 }
 
