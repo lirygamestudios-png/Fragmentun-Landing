@@ -19,6 +19,16 @@ function riskLabel(value:string){
   return map[value]||String(value||"").toUpperCase();
 }
 
+function triggerLabel(value:string){
+  const map:Record<string,string>={manual:"MANUAL",event:"EVENTO",schedule:"PROGRAMACIÓN",webhook:"EVENTO EXTERNO",condition:"CONDICIÓN"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
+function actionTypeLabel(value:string){
+  if(!value)return "ACCIÓN";
+  return String(value).replaceAll("_"," ").replace(/\b\w/g,m=>m.toUpperCase());
+}
+
 async function requireAutomationEditor(){
   "use server";
   const supabase=await createSupabaseServerClient();
@@ -180,7 +190,7 @@ export default async function MasterAutomationPage(){
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · AUTOMATIZACIÓN E IA</span><h1>Automatización e IA</h1><p>Automatizaciones, agentes, aprobaciones y controles de seguridad.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
@@ -194,7 +204,7 @@ export default async function MasterAutomationPage(){
     <section className={styles.grid}>
       {workflowRows.map((w:any)=><article key={w.id} className={styles.card}>
         <div className={styles.cardTop}><span className={w.status==="active"?styles.badgeActive:styles.badgePlanned}>{statusLabel(w.status)}</span><em>{autonomyLabel(w.autonomy_level)}</em></div>
-        <h3>{w.name}</h3><p>{w.domain} · {w.trigger_type}<br/>Responsable: {ownerName(w.owner_user_id)}<br/>Requiere aprobación: {w.requires_approval?"Sí":"No"}</p>
+        <h3>{w.name}</h3><p>{w.domain} · {triggerLabel(w.trigger_type)}<br/>Responsable: {ownerName(w.owner_user_id)}<br/>Requiere aprobación: {w.requires_approval?"Sí":"No"}</p>
       </article>)}
       {!workflowRows.length&&<article className={styles.card}><h3>Sin automatizaciones registradas</h3><p>El sistema está preparado para incorporar automatizaciones reales del estudio.</p></article>}
     </section>
@@ -202,7 +212,7 @@ export default async function MasterAutomationPage(){
     <section className={styles.sectionHead}><div><span>AGENTES IA</span><h2>Agentes IA</h2></div><p>Los agentes no se crean ni activan automáticamente; requieren configuración explícita.</p></section>
     <section className={styles.grid}>
       {agentRows.map((a:any)=><article key={a.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={a.kill_switch?styles.badgePlanned:styles.badgeActive}>{a.kill_switch?"PARADA ACTIVA":String(a.status).toUpperCase()}</span><em>{autonomyLabel(a.autonomy_level)}</em></div>
+        <div className={styles.cardTop}><span className={a.kill_switch?styles.badgePlanned:styles.badgeActive}>{a.kill_switch?"PARADA ACTIVA":statusLabel(a.status)}</span><em>{autonomyLabel(a.autonomy_level)}</em></div>
         <h3>{a.name}</h3><p>{a.domain}<br/>Responsable: {ownerName(a.owner_user_id)}<br/>{a.purpose||"Propósito pendiente"}<br/>{a.model_ref||"Modelo no asignado"} · {a.cost_budget_cents!=null?new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(a.cost_budget_cents)/100):"Presupuesto no definido"}</p>
         {profile.role==="admin"&&<form action={toggleKillSwitch}>
           <input type="hidden" name="agent_id" value={a.id}/><input type="hidden" name="next" value={String(!a.kill_switch)}/>
@@ -215,7 +225,7 @@ export default async function MasterAutomationPage(){
     <section className={styles.sectionHead}><div><span>APROBACIONES</span><h2>Decisiones pendientes</h2></div><p>Acciones sensibles pueden quedar detenidas aquí hasta decisión humana.</p></section>
     <section className={styles.grid}>
       {pending.map((a:any)=><article key={a.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={styles.badgePlanned}>{riskLabel(a.risk_level)}</span><em>{a.action_type}</em></div>
+        <div className={styles.cardTop}><span className={styles.badgePlanned}>{riskLabel(a.risk_level)}</span><em>{actionTypeLabel(a.action_type)}</em></div>
         <h3>{a.action_summary}</h3>
         <p>Solicitado: {new Date(a.requested_at).toLocaleString("es-US")}</p>
         {profile.role==="admin"&&<div>
@@ -238,7 +248,7 @@ export default async function MasterAutomationPage(){
           <label>Dominio<input name="domain" required placeholder="Crecimiento"/></label>
           <label>Activación<select name="trigger_type" defaultValue="manual">
             <option value="manual">Manual</option><option value="event">Evento</option><option value="schedule">Programación</option>
-            <option value="webhook">Webhook</option><option value="condition">Condición</option>
+            <option value="webhook">Evento externo</option><option value="condition">Condición</option>
           </select></label>
           <label>Autonomía<select name="autonomy_level" defaultValue="assistive">
             <option value="assistive">Asistencia</option><option value="recommend">Recomendación</option>
@@ -254,8 +264,8 @@ export default async function MasterAutomationPage(){
       {profile.role==="admin"&&<form action={createAgent} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVO AGENTE</span><h2>Registrar agente IA</h2></div>
         <div className={styles.formGrid}>
-          <label>Código<input name="code" required placeholder="growth-assistant"/></label>
-          <label>Nombre<input name="name" required placeholder="Crecimiento Assistant"/></label>
+          <label>Código<input name="code" required placeholder="asistente-crecimiento"/></label>
+          <label>Nombre<input name="name" required placeholder="Asistente de Crecimiento"/></label>
           <label>Dominio<input name="domain" required placeholder="Crecimiento"/></label>
           <label>Autonomía<select name="autonomy_level" defaultValue="assistive">
             <option value="assistive">Asistencia</option><option value="recommend">Recomendación</option>
@@ -291,7 +301,7 @@ export default async function MasterAutomationPage(){
           <label>Autonomía<select name="autonomy_level" defaultValue="assistive"><option value="assistive">Asistencia</option><option value="recommend">Recomendación</option><option value="execute_low_risk">Ejecución de bajo riesgo</option><option value="execute_with_approval">Ejecución con aprobación</option></select></label>
           <label>Responsable<select name="owner_user_id" defaultValue=""><option value="">Sin responsable</option>{ownerRows.map((o:any)=><option key={o.user_id} value={o.user_id}>{o.display_name||o.user_id} · {o.role}</option>)}</select></label>
           <label>Requiere aprobación<select name="requires_approval" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
-          <label>Modelo<input name="model_ref" placeholder="provider/model"/></label>
+          <label>Modelo<input name="model_ref" placeholder="Proveedor / modelo"/></label>
           <label>Presupuesto USD<input type="number" min="0" step="0.01" name="cost_budget"/></label>
           <label className={styles.span2}>Propósito<textarea name="purpose" rows={3}/></label>
         </div>
@@ -306,7 +316,7 @@ export default async function MasterAutomationPage(){
         ["Campañas",String(campaigns||0)+" configuradas"],
         ["Historial de auditoría",String(adminEvents||0)+" eventos"],
         ["Control antiabuso",String(rateRows||0)+" registros"],
-        ["Integraciones publicitarias",integrations.map(x=>x.provider+":"+(x.enabled?"on":"off")).join(" · ")||"Sin integraciones"]
+        ["Integraciones publicitarias",integrations.map(x=>x.provider+" · "+(x.enabled?"Activo":"Inactivo")).join(" · ")||"Sin integraciones"]
       ].map(([name,detail])=><article key={name} className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>CONTROL</span><em>IA / OPERACIONES</em></div>
         <h3>{name}</h3><p>{detail}</p>
