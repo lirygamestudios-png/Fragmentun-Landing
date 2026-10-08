@@ -23,23 +23,24 @@ export async function POST(request:NextRequest){
     return NextResponse.json({ok:false,error:"invalid_mfa_input"},{status:400});
   }
 
-  const factors=await supabase.auth.mfa.listFactors();
-  if(factors.error)return NextResponse.json({ok:false,error:"mfa_list_failed"},{status:400});
-
-  const factor=(factors.data?.totp||[]).find((f:any)=>
-    f.id===factorId&&String(f.friendly_name||"").trim().toLowerCase()===FACTOR_NAME
-  );
-  if(!factor)return NextResponse.json({ok:false,error:"wrong_factor"},{status:403});
-
   const challenge=await supabase.auth.mfa.challenge({factorId});
-  if(challenge.error)return NextResponse.json({ok:false,error:"mfa_challenge_failed"},{status:400});
+  if(challenge.error)return NextResponse.json({ok:false,error:"mfa_challenge_failed",detail:challenge.error.message},{status:400});
 
   const verify=await supabase.auth.mfa.verify({
     factorId,
     challengeId:challenge.data.id,
     code
   });
-  if(verify.error)return NextResponse.json({ok:false,error:"mfa_verify_failed"},{status:400});
+  if(verify.error)return NextResponse.json({ok:false,error:"mfa_verify_failed",detail:verify.error.message},{status:400});
+
+  const factors=await supabase.auth.mfa.listFactors();
+  if(factors.error)return NextResponse.json({ok:false,error:"mfa_list_failed"},{status:400});
+  const factor=(factors.data?.totp||[]).find((f:any)=>
+    f.id===factorId&&
+    f.status==="verified"&&
+    String(f.friendly_name||"").trim().toLowerCase()===FACTOR_NAME
+  );
+  if(!factor)return NextResponse.json({ok:false,error:"wrong_factor"},{status:403});
 
   const token=randomBytes(32).toString("hex");
   const tokenHash=createHash("sha256").update(token).digest("hex");
