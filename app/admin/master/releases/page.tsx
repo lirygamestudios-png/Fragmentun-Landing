@@ -120,6 +120,11 @@ async function useLatestPassedValidation(formData:FormData){
   const {supabase,user}=await requireReleaseAdmin();
   const gateId=String(formData.get("gate_id")||"").trim();
   if(!gateId) throw new Error("gate_required");
+  const{data:gate,error:gateLookupError}=await supabase.from("release_gates")
+    .select("id,status,environment,target_commit,target_deployment_id").eq("id",gateId).maybeSingle();
+  if(gateLookupError) throw new Error(gateLookupError.message);
+  if(!gate||gate.environment!=="preview") throw new Error("preview_gate_required");
+  if(!["draft","in_review","blocked"].includes(gate.status)) throw new Error("gate_not_editable");
 
   const{data:latest}=await supabase
     .from("runtime_validation_runs")
@@ -133,8 +138,10 @@ async function useLatestPassedValidation(formData:FormData){
   if(latest.status!=="passed") throw new Error("latest_validation_not_passed");
   const currentDeployment=process.env.VERCEL_DEPLOYMENT_ID||null;
   const currentCommit=process.env.VERCEL_GIT_COMMIT_SHA||null;
-  if(currentDeployment&&latest.deployment_id&&latest.deployment_id!==currentDeployment) throw new Error("release_deployment_mismatch");
-  if(currentCommit&&latest.commit_sha&&latest.commit_sha!==currentCommit) throw new Error("release_commit_mismatch");
+  if(!currentDeployment||!latest.deployment_id||latest.deployment_id!==currentDeployment) throw new Error("release_deployment_not_verified");
+  if(!currentCommit||!latest.commit_sha||latest.commit_sha!==currentCommit) throw new Error("release_commit_not_verified");
+  if(gate.target_commit&&gate.target_commit!==currentCommit) throw new Error("gate_target_commit_mismatch");
+  if(gate.target_deployment_id&&gate.target_deployment_id!==currentDeployment) throw new Error("gate_target_deployment_mismatch");
 
   const evidence=`Prueba autenticada ${latest.run_code}: todas las comprobaciones registradas como correctas. Versión ${latest.deployment_id||"—"} · código ${latest.commit_sha||"—"}.`;
 
