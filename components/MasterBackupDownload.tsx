@@ -5,10 +5,12 @@ import {useState} from "react";
 export function MasterBackupDownload(){
   const[loading,setLoading]=useState(false);
   const[message,setMessage]=useState("");
+  const[ok,setOk]=useState<boolean|null>(null);
 
   async function download(){
     if(loading)return;
     setLoading(true);
+    setOk(null);
     setMessage("Preparando copia…");
     try{
       const response=await fetch("/api/admin/backup",{credentials:"include",cache:"no-store"});
@@ -29,12 +31,14 @@ export function MasterBackupDownload(){
       a.click();
       a.remove();
       window.setTimeout(()=>URL.revokeObjectURL(url),1000);
+      setOk(status!=="partial");
       setMessage(status==="partial"
         ?"La copia se descargó, pero contiene elementos pendientes de recuperación."
         :"Copia completa preparada y descargada.");
     }catch(error:any){
       const reason=String(error?.message||error);
-      setMessage(reason==="mfa_required"?"Debes completar MFA antes de descargar la copia.":"No fue posible preparar la copia.");
+      setOk(false);
+      setMessage(reason==="mfa_required"?"Debes completar la verificación en dos pasos antes de descargar la copia.":"No fue posible preparar la copia.");
     }finally{
       setLoading(false);
     }
@@ -44,6 +48,6 @@ export function MasterBackupDownload(){
     <button type="button" className="masterQaButton" onClick={download} disabled={loading}>
       {loading?"Preparando…":"Descargar copia externa"}
     </button>
-    {message&&<p role="status" style={{margin:"8px 0 0",fontSize:".76rem",color:"#9fb0c6"}}>{message}</p>}
+    {message&&<p role="status" style={{margin:"8px 0 0",fontSize:".76rem",color:ok===false?"#ffaaaa":ok===true?"#8aebbd":"#9fb0c6"}}>{message}</p>}
   </div>;
 }
