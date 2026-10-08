@@ -1018,3 +1018,24 @@
 .modulePeople .cardAttention .cardTop em{
   color:#ff91aa!important;
 }
+
+
+/* Estrategia, Tecnología y Datos */
+.moduleStrategy .cardPriority .cardTop em,
+.moduleTechnology .cardPriority .cardTop em{
+  color:#8ce9ff!important;
+}
+.moduleStrategy .cardAttention .cardTop em,
+.moduleTechnology .cardAttention .cardTop em,
+.moduleData .cardAttention .cardTop em{
+  color:#ff91aa!important;
+}
+.moduleTechnology .cardWarning .cardTop em,
+.moduleData .cardWarning .cardTop em{
+  color:#ffc85e!important;
+}
+.moduleStrategy .cardMuted,
+.moduleTechnology .cardMuted,
+.moduleData .cardMuted{
+  opacity:.66;
+}
