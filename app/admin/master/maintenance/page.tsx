@@ -57,7 +57,7 @@ export default async function MaintenancePage(){
 
     <section className={styles.kpis}>
       <article><small>Acciones registradas</small><strong>{(auditCount||0).toLocaleString()}</strong><span>Historial administrativo</span></article>
-      <article className={lastValidation?.status==="failed"?styles.kpiAttention:undefined}><small>Última prueba</small><strong>{lastValidation?.status==="passed"?"CORRECTA":lastValidation?.status==="failed"?"REVISAR":"—"}</strong><span>{lastValidation?.executed_at?new Date(lastValidation.executed_at).toLocaleString("es-US"):"Sin pruebas"}</span></article>
+      <article className={lastValidation?.status==="failed"?styles.kpiAttention:undefined}><small>Última prueba</small><strong className={styles.kpiCompactValue}>{lastValidation?.status==="passed"?"CORRECTA":lastValidation?.status==="failed"?"REVISAR":"—"}</strong><span>{lastValidation?.executed_at?new Date(lastValidation.executed_at).toLocaleString("es-US"):"Sin pruebas"}</span></article>
       <article className={lastIncident&&!["resolved","closed"].includes(lastIncident.status)&&["high","critical"].includes(lastIncident.severity)?styles.kpiAttention:undefined}><small>Último incidente</small><strong>{statusLabel(lastIncident?.status)}</strong><span>{lastIncident?.severity?riskLabel(lastIncident.severity):"Sin incidentes registrados"}</span></article>
       <article className={lastChange&&["high","critical"].includes(lastChange.risk_level)&&!["completed","canceled","rolled_back"].includes(lastChange.status)?styles.kpiAttention:undefined}><small>Último cambio técnico</small><strong>{statusLabel(lastChange?.status)}</strong><span>{lastChange?.risk_level?riskLabel(lastChange.risk_level):"Sin cambios registrados"}</span></article>
     </section>
