@@ -819,3 +819,25 @@
     height:44px;
   }
 }
+
+
+/* UX LIRYGAMES · Bloque 15: reducción de movimiento y accesibilidad */
+@media(prefers-reduced-motion:reduce){
+  .adminInteriorShell *,
+  .adminInteriorShell *::before,
+  .adminInteriorShell *::after{
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.001ms!important;
+    scroll-behavior:auto!important;
+  }
+  .adminInteriorNav a:hover,
+  .adminMain .btn:hover,
+  .adminMain button:hover,
+  .adminList button:hover,
+  .adminMediaTileEnhanced:hover,
+  .approvedAdminKpiLink:hover,
+  .approvedMediaLink:hover{
+    transform:none!important;
+  }
+}
