@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function validCurrency(value:string){
   return /^[A-Z]{3}$/.test(value);
@@ -218,7 +219,7 @@ export default async function MasterPublishingPage(){
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar plataformas y lanzamientos manualmente.</p>
       <section className={styles.adminForms}>
-      <form action={createPlataforma} className={styles.adminForm}>
+      <MasterActionForm action={createPlataforma} className={styles.adminForm} successText="Plataforma registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA PLATAFORMA</span><h2>Registrar plataforma</h2></div>
         <div className={styles.formGrid}>
           <label>Nombre<input name="name" required placeholder="Steam"/></label>
@@ -234,9 +235,9 @@ export default async function MasterPublishingPage(){
           </select></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar plataforma</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={createRelease} className={styles.adminForm}>
+      <MasterActionForm action={createRelease} className={styles.adminForm} successText="Lanzamiento registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO LANZAMIENTO</span><h2>Registrar lanzamiento</h2></div>
         <div className={styles.formGrid}>
           <label>Juego<select name="game_id" required defaultValue="">
@@ -261,11 +262,11 @@ export default async function MasterPublishingPage(){
           <label className={styles.span2}>Territorios<input name="territories" placeholder="EE. UU., Latinoamérica, Europa"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit" disabled={!gameRows.length} disabledReason="Primero registra un juego para poder crear un lanzamiento.">Registrar lanzamiento</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
 
       <section className={styles.adminForms}>
-      <form action={updatePlataforma} className={styles.adminForm}>
+      <MasterActionForm action={updatePlataforma} className={styles.adminForm} successText="Plataforma actualizada correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR PLATAFORMA</span><h2>Actualizar plataforma</h2></div>
         <div className={styles.formGrid}>
           <label>Plataforma<select name="storefront_id" required defaultValue=""><option value="" disabled>Seleccionar plataforma</option>{stores.map((s:any)=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
@@ -274,9 +275,9 @@ export default async function MasterPublishingPage(){
           <label className={styles.span2}>Regiones<input name="region_scope" placeholder="EE. UU., Latinoamérica, Europa"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!stores.length} disabledReason="No hay plataformas registradas para actualizar.">Actualizar plataforma</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={updateRelease} className={styles.adminForm}>
+      <MasterActionForm action={updateRelease} className={styles.adminForm} successText="Lanzamiento actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR LANZAMIENTO</span><h2>Actualizar lanzamiento</h2></div>
         <div className={styles.formGrid}>
           <label>Lanzamiento<select name="release_id" required defaultValue=""><option value="" disabled>Seleccionar lanzamiento</option>{releaseRows.map((r:any)=><option key={r.id} value={r.id}>{r.release_name}</option>)}</select></label>
@@ -290,7 +291,7 @@ export default async function MasterPublishingPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!releaseRows.length} disabledReason="No hay lanzamientos registrados para actualizar.">Actualizar lanzamiento</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
     </details>}
 
