@@ -112,13 +112,27 @@ export async function POST(request:NextRequest){
 
   if(body.entity==="fulfillment"){
     if(!body.order_id)return NextResponse.json({error:"order_required"},{status:400});
+    const{data:order,error:orderError}=await x.supabase.from("shop_orders")
+      .select("id,payment_status,fulfillment_status,shipping_address")
+      .eq("id",body.order_id).maybeSingle();
+    if(orderError)return NextResponse.json({error:orderError.message},{status:500});
+    if(!order)return NextResponse.json({error:"order_not_found"},{status:404});
+    if(order.payment_status!=="paid")return NextResponse.json({error:"order_must_be_paid_before_fulfillment"},{status:409});
+    if(["delivered","returned","canceled"].includes(order.fulfillment_status)){
+      return NextResponse.json({error:"order_not_eligible_for_fulfillment"},{status:409});
+    }
+    const address=order.shipping_address&&typeof order.shipping_address==="object"?order.shipping_address:{};
+    const requiredAddress=["line1","city","postal_code","country"];
+    const missingAddress=requiredAddress.some(key=>!String((address as any)[key]||"").trim());
+    if(missingAddress)return NextResponse.json({error:"shipping_address_incomplete"},{status:409});
+
     const payload={
       order_id:body.order_id,
-      supplier:String(body.supplier||"").trim()||null,
-      carrier:String(body.carrier||"").trim()||null,
-      service:String(body.service||"").trim()||null,
+      supplier:text(body.supplier,200)||null,
+      carrier:text(body.carrier,200)||null,
+      service:text(body.service,200)||null,
       shipment_status:"pending",
-      label_provider:String(body.label_provider||"").trim()||null,
+      label_provider:text(body.label_provider,120)||null,
       created_at:new Date().toISOString(),
       updated_at:new Date().toISOString()
     };
@@ -203,19 +217,36 @@ export async function PUT(request:NextRequest){
   }
 
   if(body.entity==="fulfillment"){
+    const{data:existingFulfillment,error:fulfillmentError}=await x.supabase.from("shop_fulfillments")
+      .select("id,order_id,shipment_status").eq("id",body.id).maybeSingle();
+    if(fulfillmentError)return NextResponse.json({error:fulfillmentError.message},{status:500});
+    if(!existingFulfillment)return NextResponse.json({error:"fulfillment_not_found"},{status:404});
+    const{data:order,error:orderError}=await x.supabase.from("shop_orders")
+      .select("payment_status,fulfillment_status").eq("id",existingFulfillment.order_id).maybeSingle();
+    if(orderError)return NextResponse.json({error:orderError.message},{status:500});
+    if(!order)return NextResponse.json({error:"order_not_found"},{status:404});
+
+    const shipmentStatus=SHIPMENT_STATUSES.has(body.shipment_status)?body.shipment_status:existingFulfillment.shipment_status;
+    if(["shipped","in_transit","delivered"].includes(shipmentStatus)&&order.payment_status!=="paid"){
+      return NextResponse.json({error:"order_must_be_paid_before_shipping"},{status:409});
+    }
+    if(order.fulfillment_status==="canceled"&&shipmentStatus!=="canceled"){
+      return NextResponse.json({error:"canceled_order_cannot_ship"},{status:409});
+    }
+
     const payload={
-      supplier:String(body.supplier||"").trim()||null,
-      carrier:String(body.carrier||"").trim()||null,
-      service:String(body.service||"").trim()||null,
-      tracking_number:String(body.tracking_number||"").trim()||null,
-      tracking_url:String(body.tracking_url||"").trim()||null,
-      shipment_status:["pending","label_created","shipped","in_transit","delivered","exception","returned","canceled"].includes(body.shipment_status)?body.shipment_status:"pending",
-      package_weight_grams:Number.isFinite(Number(body.package_weight_grams))?Math.max(0,Math.round(Number(body.package_weight_grams))):null,
+      supplier:text(body.supplier,200)||null,
+      carrier:text(body.carrier,200)||null,
+      service:text(body.service,200)||null,
+      tracking_number:text(body.tracking_number,240)||null,
+      tracking_url:text(body.tracking_url,1000)||null,
+      shipment_status:shipmentStatus,
+      package_weight_grams:body.package_weight_grams===null||body.package_weight_grams===""?null:(Number.isFinite(Number(body.package_weight_grams))?Math.max(0,Math.round(Number(body.package_weight_grams))):null),
       package_dimensions:body.package_dimensions&&typeof body.package_dimensions==="object"?body.package_dimensions:{},
       label_provider:String(body.label_provider||"").trim()||null,
       shipping_label_url:String(body.shipping_label_url||"").trim()||null,
       shipping_label_format:String(body.shipping_label_format||"").trim()||null,
-      label_cost_cents:Number.isFinite(Number(body.label_cost_cents))?Math.max(0,Number(body.label_cost_cents)):0,
+      label_cost_cents:Number.isFinite(Number(body.label_cost_cents))?Math.max(0,Math.round(Number(body.label_cost_cents))):0,
       label_created_at:body.shipping_label_url?(body.label_created_at||new Date().toISOString()):null,
       shipped_at:body.shipment_status==="shipped"?(body.shipped_at||new Date().toISOString()):(body.shipped_at||null),
       delivered_at:body.shipment_status==="delivered"?(body.delivered_at||new Date().toISOString()):(body.delivered_at||null),
