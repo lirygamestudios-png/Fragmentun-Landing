@@ -205,7 +205,7 @@ export default async function ObservabilityPage(){
 
     <section className={styles.kpis}>
       <article><small>Pruebas realizadas</small><strong>{runRows.length}</strong><span>{passedRuns} correctas · {failedRuns} por revisar</span></article>
-      <article><small>Última prueba</small><strong>{statusText(latestRun?.status)}</strong><span>{latestRun?new Date(latestRun.executed_at).toLocaleString("es-US"):"Sin pruebas todavía"}</span></article>
+      <article><small>Última prueba</small><strong className={styles.kpiCompactValue}>{statusText(latestRun?.status)}</strong><span>{latestRun?new Date(latestRun.executed_at).toLocaleString("es-US"):"Sin pruebas todavía"}</span></article>
       <article><small>Comprobaciones correctas</small><strong>{latestPassed}/{latestChecks.length}</strong><span>De la última prueba</span></article>
       <article><small>Acciones registradas</small><strong>{(auditEvents||0).toLocaleString()}</strong><span>Historial de seguridad</span></article>
     </section>
