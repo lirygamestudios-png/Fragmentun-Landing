@@ -253,9 +253,9 @@ export default async function MasterMonetizationPage(){
       {virtualItemRows.slice(0,12).map((i:any)=><article key={i.id} className={`${styles.card} ${!i.active?styles.cardMuted:""}`}>
         <div className={styles.cardTop}><span className={i.active?styles.badgeActive:styles.badgePlanned}>{i.active?"ACTIVO":"INACTIVO"}</span><em>{String(i.item_type||"virtual").replaceAll("_"," ").toUpperCase()}</em></div>
         <h3>{i.name}</h3>
-        <p>{gameName(i.game_id)} · {i.sku}<br/>{String(i.grant_type||"durable").replaceAll("_"," ").toUpperCase()} · {String(i.rarity||"standard").toUpperCase()}<br/>{virtualOfferRows.filter(o=>o.item_id===i.id&&o.active).length} ofertas activas</p>
+        <p>{gameName(i.game_id)} · {i.sku}<br/>{String(i.grant_type||"durable").replaceAll("_"," ").toUpperCase()} · {String(i.rarity||"standard").toUpperCase()}<br/>{offerDataAvailable?virtualOfferRows.filter(o=>o.item_id===i.id&&o.active).length+" ofertas activas":"Ofertas no disponibles"}</p>
       </article>)}
-      {!virtualItemRows.length&&<article className={styles.card}><h3>Catálogo FREEMIUM preparado</h3><p>Cuando se registren los videojuegos reales, aquí aparecerán sus artículos virtuales y ofertas por plataforma.</p></article>}
+      {!virtualItemRows.length&&<article className={styles.card}><h3>{itemDataAvailable?"Catálogo FREEMIUM preparado":"Catálogo no disponible"}</h3><p>{itemDataAvailable?"Cuando se registren los videojuegos reales, aquí aparecerán sus artículos virtuales y ofertas por plataforma.":"No se pudieron consultar los artículos virtuales. Vuelve a intentarlo más tarde."}</p></article>}
     </section>
 
     <section className={styles.sectionHead}>
@@ -269,7 +269,7 @@ export default async function MasterMonetizationPage(){
         <h3>{itemName(p.item_id)}</h3>
         <p>{gameName(p.game_id)} · {money(p.gross_cents,p.currency||"USD")} bruto · {money(p.net_cents??0,p.currency||"USD")} neto<br/>Jugador: {String(p.player_ref||"").slice(0,10)}… · {p.provider}</p>
       </article>)}
-      {!purchaseRows.length&&<article className={styles.card}><h3>Sin compras in-game todavía</h3><p>Esta sección se alimentará automáticamente cuando los videojuegos comiencen a procesar compras reales.</p></article>}
+      {!purchaseRows.length&&<article className={styles.card}><h3>{purchaseDataAvailable?"Sin compras in-game todavía":"Compras no disponibles"}</h3><p>{purchaseDataAvailable?"Esta sección se alimentará automáticamente cuando los videojuegos comiencen a procesar compras reales.":"No se pudo consultar el historial de compras. No significa que las ventas sean cero."}</p></article>}
     </section>
 
     <section className={styles.sectionHead}>
