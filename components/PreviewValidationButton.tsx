@@ -70,11 +70,11 @@ export function PreviewValidationButton(){
       const body=await save.json().catch(()=>({}));
       if(!save.ok)throw new Error(body?.error||"save_failed");
       const passed=results.filter(r=>r.status==="passed").length;
-      const success=passed===results.length;
+      const success=body?.status==="passed";
       setOk(success);
       setMessage(success
         ?`Todo correcto: ${passed}/${results.length} comprobaciones superadas.`
-        :`Revisar: ${passed}/${results.length} comprobaciones superadas.`);
+        :`Revisar: el servidor registró la validación con observaciones.`);
       window.setTimeout(()=>window.location.reload(),900);
     }catch(error:any){
       setOk(false);
