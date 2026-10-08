@@ -15,8 +15,18 @@ function riskLabel(value:string){
 }
 
 function environmentLabel(value:string){
-  const map:Record<string,string>={development:"DESARROLLO",preview:"PRUEBAS",staging:"PREPRODUCCIÓN",production:"PRODUCCIÓN",shared:"COMPARTIDO"};
+  const map:Record<string,string>={development:"DESARROLLO",preview:"VERSIÓN DE PRUEBA",staging:"PREPARACIÓN",production:"PRODUCCIÓN",shared:"COMPARTIDO"};
   return map[value]||String(value||"").toUpperCase();
+}
+
+function serviceTypeLabel(value:string){
+  const map:Record<string,string>={application:"APLICACIÓN",database:"BASE DE DATOS",auth:"ACCESO",storage:"ALMACENAMIENTO",analytics:"ANALÍTICA",ci_cd:"DESPLIEGUE",hosting:"ALOJAMIENTO",integration:"INTEGRACIÓN",monitoring:"SUPERVISIÓN",other:"OTRO"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
+function changeTypeLabel(value:string){
+  const map:Record<string,string>={standard:"ESTÁNDAR",normal:"NORMAL",emergency:"EMERGENCIA",security:"SEGURIDAD",configuration:"CONFIGURACIÓN",dependency:"DEPENDENCIA",infrastructure:"INFRAESTRUCTURA",other:"OTRO"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
 }
 
 async function requireTechEditor(){
@@ -162,32 +172,32 @@ export default async function MasterTechnologyPage(){
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
 
   const stack=[
-    ["Frontend","Next.js 15.5.27","Vercel"],
-    ["Runtime","Node.js 24.x","Vercel Functions"],
-    ["Database/Auth","Supabase","Postgres + Auth + Storage"],
-    ["Source control","GitHub","Fragmentun-Landing"],
-    ["Production branch","main","Protegida por baseline"],
-    ["Master Admin branch","work/master-admin-implementation","Preview only"]
+    ["Aplicación web","Next.js","Alojada en Vercel"],
+    ["Ejecución","Node.js","Servicios de la aplicación"],
+    ["Datos y acceso","Supabase","Base de datos, acceso y archivos"],
+    ["Código fuente","GitHub","Repositorio del proyecto"],
+    ["Producción","Protegida","Versión pública protegida"],
+    ["Versión de prueba","Separada","Cambios aislados de producción"]
   ];
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · TECNOLOGÍA</span><h1>Tecnología</h1><p>Inventario técnico, cambios controlados y salud del ecosistema.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
       <article><small>Servicios</small><strong>{serviceRows.length}</strong><span>{degraded} con incidencia o mantenimiento</span></article>
       <article><small>Cambios abiertos</small><strong>{openChanges.length}</strong><span>{riskyChanges.length} de riesgo alto o crítico</span></article>
       <article><small>Eventos</small><strong>{(events||0).toLocaleString()}</strong><span>Analítica acumulada</span></article>
-      <article><small>Admins</small><strong>{(profiles||0).toLocaleString()}</strong><span>Usuarios administrativos</span></article>
+      <article><small>Administradores</small><strong>{(profiles||0).toLocaleString()}</strong><span>Usuarios administrativos</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>SERVICIOS</span><h2>Servicios técnicos</h2></div><p>Componentes y proveedores técnicos registrados.</p></section>
     <section className={styles.grid}>
       {serviceRows.map((s:any)=><article key={s.id} className={styles.card}>
         <div className={styles.cardTop}><span className={s.status==="active"?styles.badgeActive:styles.badgePlanned}>{techEstadoLabel(s.status)}</span><em>{riskLabel(s.criticality)}</em></div>
-        <h3>{s.name}</h3><p>{s.service_type} · {s.provider||"Proveedor no registrado"}<br/>Responsable: {ownerName(s.owner_user_id)}<br/>{environmentLabel(s.environment)} · {s.version||"Sin versión"}<br/>{s.url||"URL no registrada"}</p>
+        <h3>{s.name}</h3><p>{serviceTypeLabel(s.service_type)} · {s.provider||"Proveedor no registrado"}<br/>Responsable: {ownerName(s.owner_user_id)}<br/>{environmentLabel(s.environment)} · {s.version||"Sin versión"}<br/>{s.url||"URL no registrada"}</p>
       </article>)}
       {!serviceRows.length&&<article className={styles.card}><h3>Registro de servicios preparado</h3><p>No se han formalizado servicios técnicos todavía.</p></article>}
     </section>
@@ -196,7 +206,7 @@ export default async function MasterTechnologyPage(){
     <section className={styles.grid}>
       {changeRows.map((c:any)=><article key={c.id} className={styles.card}>
         <div className={styles.cardTop}><span className={c.status==="completed"?styles.badgeActive:styles.badgePlanned}>{techEstadoLabel(c.status)}</span><em>{riskLabel(c.risk_level)}</em></div>
-        <h3>{c.title}</h3><p>{c.change_code} · {c.change_type}<br/>Responsable: {ownerName(c.owner_user_id)}<br/>{environmentLabel(c.target_environment)} · {c.planned_at?new Date(c.planned_at).toLocaleString("es-US"):"Sin fecha"}<br/>{c.rollback_plan?"Plan de reversión definido":"Plan de reversión pendiente"}</p>
+        <h3>{c.title}</h3><p>{changeTypeLabel(c.change_type)}<br/>Responsable: {ownerName(c.owner_user_id)}<br/>{environmentLabel(c.target_environment)} · {c.planned_at?new Date(c.planned_at).toLocaleString("es-US"):"Sin fecha"}<br/>{c.rollback_plan?"Plan de reversión definido":"Plan de reversión pendiente"}</p>
       </article>)}
       {!changeRows.length&&<article className={styles.card}><h3>Sin cambios técnicos registrados</h3><p>Los cambios técnicos formales se registrarán aquí.</p></article>}
     </section>
@@ -212,8 +222,8 @@ export default async function MasterTechnologyPage(){
           <label>Nombre<input name="name" required placeholder="Web Platform"/></label>
           <label>Tipo<select name="service_type" defaultValue="application">
             <option value="application">Aplicación</option><option value="database">Base de datos</option><option value="auth">Autenticación</option>
-            <option value="storage">Almacenamiento</option><option value="analytics">Analítica</option><option value="ci_cd">CI/CD</option>
-            <option value="hosting">Alojamiento</option><option value="integration">Integración</option><option value="monitoring">Monitoreo</option><option value="other">Otro</option>
+            <option value="storage">Almacenamiento</option><option value="analytics">Analítica</option><option value="ci_cd">Despliegue</option>
+            <option value="hosting">Alojamiento</option><option value="integration">Integración</option><option value="monitoring">Supervisión</option><option value="other">Otro</option>
           </select></label>
           <label>Proveedor<input name="provider"/></label>
           <label>Entorno<select name="environment" defaultValue="production"><option value="development">Desarrollo</option><option value="preview">Pruebas</option><option value="staging">Preproducción</option><option value="production">Producción</option><option value="shared">Compartido</option></select></label>
@@ -278,7 +288,7 @@ export default async function MasterTechnologyPage(){
     <section className={styles.sectionHead}><div><span>ENTORNO TÉCNICO</span><h2>Contexto actual</h2></div></section>
     <section className={styles.grid}>
       {stack.map(([name,value,detail])=><article key={name} className={styles.card}>
-        <div className={styles.cardTop}><span className={styles.badgeActive}>ACTIVO</span><em>TECH</em></div>
+        <div className={styles.cardTop}><span className={styles.badgeActive}>ACTIVO</span><em>TECNOLOGÍA</em></div>
         <h3>{name}</h3><p><strong>{value}</strong><br/>{detail}</p>
       </article>)}
     </section>
@@ -286,8 +296,8 @@ export default async function MasterTechnologyPage(){
     <section className={styles.kpis}>
       <article><small>Controles antiabuso</small><strong>{(rateRows||0).toLocaleString()}</strong><span>Antiabuso</span></article>
       <article><small>Media</small><strong>{(media||0).toLocaleString()}</strong><span>Recursos registrados</span></article>
-      <article><small>RLS</small><strong>ACTIVO</strong><span>Administración y edición</span></article>
-      <article><small>Producción</small><strong>PROTEGIDA</strong><span>Rama principal intacta</span></article>
+      <article><small>Acceso a datos</small><strong>PROTEGIDO</strong><span>Administración y edición</span></article>
+      <article><small>Producción</small><strong>PROTEGIDA</strong><span>Versión pública intacta</span></article>
     </section>
   </main>;
 }
