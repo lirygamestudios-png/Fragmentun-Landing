@@ -20,10 +20,10 @@ export function LiryGamesMfaVerifyForm({factorId}:{factorId:string}){
     setStatusType("info");
     setStatus("Verificando código…");
     try{
-      const r=await fetch("/api/admin/mfa",{
+      const r=await fetch("/api/admin/lirygames/mfa/verify",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({action:"verify",factorId,code})
+        body:JSON.stringify({factorId,code})
       });
       const j=await r.json().catch(()=>({}));
       if(!r.ok||!j.ok){
