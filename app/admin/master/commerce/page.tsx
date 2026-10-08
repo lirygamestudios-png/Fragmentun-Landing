@@ -71,8 +71,8 @@ export default async function MasterCommercePage(){
     <section className={styles.kpis}>
       <article><small>Pedidos</small><strong>{rows.length.toLocaleString()}</strong><span>{(products||0).toLocaleString()} productos registrados</span></article>
       <article><small>Pagado</small><strong>{money(totalPaid,currency)}</strong><span>{paid.length} pedidos pagados</span></article>
-      <article><small>Pendientes</small><strong>{open.length}</strong><span>Pedidos por completar</span></article>
-      <article><small>Reembolsos</small><strong>{refunds.length}</strong><span>Con devolución/reembolso</span></article>
+      <article className={open.length?styles.kpiAttention:undefined}><small>Pendientes</small><strong>{open.length}</strong><span>{open.length?"Pedidos por completar":"Sin pedidos pendientes"}</span></article>
+      <article className={refunds.length?styles.kpiAttention:undefined}><small>Reembolsos</small><strong>{refunds.length}</strong><span>{refunds.length?"Con devolución/reembolso":"Sin reembolsos registrados"}</span></article>
     </section>
 
     <details className={styles.advancedPanel}>
@@ -111,7 +111,7 @@ export default async function MasterCommercePage(){
         ["Impuestos",simpleModeLabel(settings?.tax_mode||"manual")],
         ["Etiquetas de envío",simpleModeLabel(settings?.shipping_label_mode||"manual")],
         ["Entregas registradas",String(fulfillments||0)]
-      ].map(([name,value])=><article key={name} className={styles.card}>
+      ].map(([name,value])=><article key={name} className={`${styles.card} ${value==="Deshabilitado"?styles.cardMuted:""}`}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>COMERCIO</span><em>CONTROL</em></div>
         <h3>{name}</h3><p><strong>{value}</strong></p>
       </article>)}
@@ -119,7 +119,7 @@ export default async function MasterCommercePage(){
 
     <section className={styles.sectionHead}><div><span>ÓRDENES</span><h2>Actividad reciente</h2></div></section>
     <section className={styles.grid}>
-      {rows.slice(0,12).map((o:any)=><article key={o.order_number} className={styles.card}>
+      {rows.slice(0,12).map((o:any)=><article key={o.order_number} className={`${styles.card} ${o.payment_status==="failed"?styles.cardAttention:o.payment_status==="pending"||["unfulfilled","processing"].includes(o.fulfillment_status)?styles.cardWarning:""}`}>
         <div className={styles.cardTop}><span className={styles.badgePlanned}>{paymentLabel(o.payment_status)}</span><em>{deliveryLabel(o.fulfillment_status)}</em></div>
         <h3>{o.order_number}</h3>
         <p>{money(o.total_cents,o.currency||"USD")} · {o.customer_email||"cliente"}<br/>{new Date(o.created_at).toLocaleString("es-US")}</p>
