@@ -44,17 +44,20 @@ export default async function MasterAuditPage(){
   const[
     {data:events},
     {count:total},
-    {data:actors}
+    {data:actors},
+    {data:approvedGates}
   ]=await Promise.all([
     supabase.from("admin_audit_log")
       .select("id,user_id,action,table_name,record_id,created_at")
       .order("created_at",{ascending:false})
       .limit(100),
     supabase.from("admin_audit_log").select("*",{count:"exact",head:true}),
-    supabase.from("admin_profiles").select("user_id,display_name,role")
+    supabase.from("admin_profiles").select("user_id,display_name,role"),
+    supabase.from("release_gates").select("id,gate_code,title,status,approved_by,approved_at,target_commit,target_deployment_id").eq("status","approved").order("approved_at",{ascending:false}).limit(10)
   ]);
 
   const rows=(events||[]) as any[];
+  const approvedGateRows=(approvedGates||[]) as any[];
   const actorRows=(actors||[]) as any[];
   const actorName=(id:string|null|undefined)=>{
     const actor=actorRows.find(a=>a.user_id===id);
@@ -110,6 +113,18 @@ export default async function MasterAuditPage(){
       <article><small>Auditoría</small><strong className={styles.kpiCompactValue}>ACTIVA</strong><span>Trazabilidad administrativa</span></article>
     </section>
 
+    <section className={styles.sectionHead}>
+      <div><span>APROBACIÓN HUMANA</span><h2>Revisiones aprobadas</h2></div>
+      <p>Registro de quién aprobó cada revisión y cuándo. Una aprobación anterior no autoriza nuevas versiones.</p>
+    </section>
+    <section className={styles.grid}>
+      {approvedGateRows.map((g:any)=><article key={g.id} className={styles.card}>
+        <div className={styles.cardTop}><span className={styles.badgeActive}>APROBADA</span><em>{g.approved_at?new Date(g.approved_at).toLocaleString("es-US"):"Fecha no disponible"}</em></div>
+        <h3>{g.gate_code||g.title}</h3>
+        <p>Responsable: {g.approved_by?actorName(g.approved_by):"Sin responsable verificado"}<br/>Commit: {g.target_commit||"No registrado"}<br/>Deployment: {g.target_deployment_id||"No registrado"}</p>
+      </article>)}
+      {!approvedGateRows.length&&<article className={styles.card}><h3>Sin aprobaciones registradas</h3><p>Las futuras aprobaciones humanas aparecerán aquí cuando se registren.</p></article>}
+    </section>
     <section className={styles.sectionHead}>
       <div><span>HISTORIAL</span><h2>Actividad reciente</h2></div>
       <p>Se muestran los datos básicos de cada cambio; el detalle sensible permanece fuera de esta vista resumida.</p>
