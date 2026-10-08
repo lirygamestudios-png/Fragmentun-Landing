@@ -170,17 +170,17 @@ export default async function MasterOperationsPage(){
   };
 
   const checks=[
-    {name:"Landing FRAGMENTUN",status:"Protegida",detail:"main · baseline 8eb878e"},
-    {name:"Panel LIRYGAMES",status:"Versión de prueba",detail:"work/master-admin-implementation"},
-    {name:"Supabase",status:"Conectado",detail:"Auth + datos operativos"},
-    {name:"Analytics",status:latestEvent?"Activo":"Pendiente",detail:latestEvent?("Último: "+latestEvent.event_name):"Sin eventos"},
-    {name:"Contactos",status:latestLead?"Activo":"Pendiente",detail:latestLead?"Último registro disponible":"Sin leads"}
+    {name:"Landing FRAGMENTUN",status:"Protegida",detail:"Versión pública protegida"},
+    {name:"Panel LIRYGAMES",status:"Versión de prueba",detail:"Entorno separado de producción"},
+    {name:"Base de datos",status:"Conectado",detail:"Acceso y datos operativos"},
+    {name:"Analítica",status:latestEvent?"Activo":"Pendiente",detail:latestEvent?"Actividad reciente registrada":"Sin actividad registrada"},
+    {name:"Contactos",status:latestLead?"Activo":"Pendiente",detail:latestLead?"Último registro disponible":"Sin contactos"}
   ];
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · OPERACIONES</span><h1>Operaciones</h1><p>Trabajo pendiente, decisiones y continuidad operativa del estudio.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
@@ -282,7 +282,7 @@ export default async function MasterOperationsPage(){
     <section className={styles.kpis}>
       <article><small>Libros</small><strong>{(books||0).toLocaleString()}</strong><span>Catálogo</span></article>
       <article><small>Personajes</small><strong>{(characters||0).toLocaleString()}</strong><span>Universo IP</span></article>
-      <article><small>RLS</small><strong>ACTIVO</strong><span>Administración protegida</span></article>
+      <article><small>Acceso a datos</small><strong>PROTEGIDO</strong><span>Administración protegida</span></article>
       <article><small>Producción</small><strong>PROTEGIDA</strong><span>Sitio público intacto</span></article>
     </section>
   </main>;
