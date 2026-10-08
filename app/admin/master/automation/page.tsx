@@ -170,7 +170,10 @@ export default async function MasterAutomationPage(){
     {count:adminEvents},
     {count:rateRows},
     {data:adIntegrations},
-    {data:owners}
+    {data:owners},
+    {data:gamePurchases},
+    {data:entitlements},
+    {data:gameMetrics}
   ]=await Promise.all([
     supabase.from("automation_workflows").select("id,code,name,domain,trigger_type,status,autonomy_level,requires_approval,owner_user_id,last_run_at,last_status,created_at").order("created_at",{ascending:true}),
     supabase.from("ai_agents").select("id,code,name,domain,purpose,status,autonomy_level,kill_switch,requires_approval,owner_user_id,model_ref,cost_budget_cents,created_at").order("created_at",{ascending:true}),
@@ -179,7 +182,10 @@ export default async function MasterAutomationPage(){
     supabase.from("admin_audit_log").select("*",{count:"exact",head:true}),
     supabase.from("ingress_rate_limits").select("*",{count:"exact",head:true}),
     supabase.from("ad_integrations").select("provider,enabled").order("provider",{ascending:true}),
-    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true}),
+    supabase.from("game_purchase_events").select("status,player_ref,purchased_at").order("purchased_at",{ascending:false}).limit(5000),
+    supabase.from("game_entitlements").select("status,created_at").order("created_at",{ascending:false}).limit(5000),
+    supabase.from("game_engagement_daily").select("metric_date,active_players").order("metric_date",{ascending:false}).limit(1000)
   ]);
 
   const workflowRows=(workflows||[]) as any[];
@@ -192,6 +198,20 @@ export default async function MasterAutomationPage(){
   const integrations=(adIntegrations||[]) as any[];
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
+  const purchaseRows=(gamePurchases||[]) as any[];
+  const entitlementRows=(entitlements||[]) as any[];
+  const metricRows=(gameMetrics||[]) as any[];
+  const paymentIssues=purchaseRows.filter(p=>["failed","chargeback"].includes(p.status)).length;
+  const deliveryIssues=entitlementRows.filter(e=>["pending","failed"].includes(e.status)).length;
+  const latestDate=metricRows[0]?.metric_date||null;
+  const latestActive=latestDate?metricRows.filter(m=>m.metric_date===latestDate).reduce((a,m)=>a+Number(m.active_players||0),0):0;
+  const paidToday=latestDate?new Set(purchaseRows.filter(p=>p.status==="paid"&&String(p.purchased_at||"").slice(0,10)===latestDate).map(p=>p.player_ref)).size:0;
+  const payerConversion=latestActive?paidToday/latestActive*100:0;
+  const freemiumSignals=[
+    {name:"Incidencias de pago",value:paymentIssues,attention:paymentIssues>0,detail:"Fallos o chargebacks"},
+    {name:"Entregas digitales",value:deliveryIssues,attention:deliveryIssues>0,detail:"Pendientes o fallidas"},
+    {name:"Conversión diaria",value:Number(payerConversion.toFixed(2)),attention:false,detail:"Pagadores / jugadores activos"}
+  ];
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleAutomation}`}>
     <header className={styles.topbar}>
@@ -213,6 +233,19 @@ export default async function MasterAutomationPage(){
       <article><small>Agentes activos</small><strong>{activeAgents}</strong><span>{agentRows.length} registrados</span></article>
       <article className={pending.length?styles.kpiAttention:undefined}><small>Aprobaciones pendientes</small><strong>{pending.length}</strong><span>{pending.length?"Decisión humana requerida":"Sin decisiones pendientes"}</span></article>
       <article className={killCount?styles.kpiAttention:undefined}><small>Paradas de emergencia</small><strong>{killCount}</strong><span>{killCount?"Agentes detenidos":"Sin paradas activas"}</span></article>
+    </section>
+
+    <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · SEÑALES</span><h2>Oportunidades para automatización</h2></div>
+      <p>Lectura operativa únicamente. Ninguna señal activa workflows o agentes por sí sola; las ejecuciones siguen sujetas a configuración, permisos y aprobación humana.</p>
+    </section>
+
+    <section className={styles.grid}>
+      {freemiumSignals.map(signal=><article key={signal.name} className={`${styles.card} ${signal.attention?styles.cardAttention:""}`}>
+        <div className={styles.cardTop}><span className={signal.attention?styles.badgePlanned:styles.badgeActive}>{signal.attention?"REVISAR":"SEÑAL"}</span><em>FREEMIUM</em></div>
+        <h3>{signal.name}</h3>
+        <p><strong>{signal.value}{signal.name==="Conversión diaria"?"%":""}</strong><br/>{signal.detail}</p>
+      </article>)}
     </section>
 
     <section className={styles.sectionHead}><div><span>AUTOMATIZACIONES</span><h2>Automatizaciones</h2></div><p>Las automatizaciones empiezan vacías y se activan únicamente después de configuración y pruebas.</p></section>
