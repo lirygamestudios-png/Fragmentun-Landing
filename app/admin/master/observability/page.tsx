@@ -121,7 +121,7 @@ async function addValidationResult(formData:FormData){
   const expectedStatus=expectedRaw?Number(expectedRaw):null;
   const actualStatus=actualRaw?Number(actualRaw):null;
   if(!runId||!checkName||!requestPath||!["GET","POST","HEAD"].includes(method)||!["passed","failed","skipped"].includes(status)) throw new Error("invalid_validation_result");
-  if((expectedStatus!==null&&!Number.isInteger(expectedStatus))||(actualStatus!==null&&!Number.isInteger(actualStatus))) throw new Error("invalid_http_status");
+  if((expectedStatus!==null&&(!Number.isInteger(expectedStatus)||expectedStatus<100||expectedStatus>599))||(actualStatus!==null&&(!Number.isInteger(actualStatus)||actualStatus<100||actualStatus>599))) throw new Error("invalid_http_status");
   const{error}=await supabase.from("runtime_validation_results").insert({
     run_id:runId,check_name:checkName,request_path:requestPath,method,
     expected_status:expectedStatus,actual_status:actualStatus,redirect_location:redirectLocation,status,detail
@@ -140,7 +140,7 @@ async function closeValidationRun(formData:FormData){
   if(status==="passed"){
     const{data:results}=await supabase.from("runtime_validation_results").select("status").eq("run_id",runId);
     if(!(results||[]).length) throw new Error("validation_results_required");
-    if((results||[]).some((r:any)=>r.status==="failed")) throw new Error("failed_checks_present");
+    if((results||[]).some((r:any)=>r.status!=="passed")) throw new Error("incomplete_checks_present");
   }
   const{error}=await supabase.from("runtime_validation_runs").update({
     status,notes,updated_at:new Date().toISOString()
