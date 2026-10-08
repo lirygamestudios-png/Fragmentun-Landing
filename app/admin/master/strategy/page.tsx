@@ -4,6 +4,19 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
+function strategyStatusLabel(value:string){
+  const map:Record<string,string>={planned:"PLANIFICADO",active:"ACTIVO",at_risk:"EN RIESGO",completed:"COMPLETADO",canceled:"CANCELADO",draft:"BORRADOR"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+function priorityLabel(value:string){
+  const map:Record<string,string>={low:"BAJA",medium:"MEDIA",high:"ALTA",critical:"CRÍTICA"};
+  return map[value]||String(value||"").toUpperCase();
+}
+function horizonLabel(value:string){
+  const map:Record<string,string>={month:"Mes",quarter:"Trimestre",year:"Año",multi_year:"Varios años"};
+  return map[value]||String(value||"").replaceAll("_"," ");
+}
+
 async function requireStrategyEditor(){
   "use server";
   const supabase=await createSupabaseServerClient();
@@ -143,7 +156,7 @@ export default async function MasterStrategyPage(){
 
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
-      <div><span className={styles.eyebrow}>MASTER ADMIN · ESTRATEGIA</span><h1>Estrategia</h1><p>Objetivos, resultados y métricas conectados a la operación real.</p></div>
+      <div><span className={styles.eyebrow}>LIRYGAMES · ESTRATEGIA</span><h1>Estrategia</h1><p>Objetivos, resultados y métricas conectados a la operación real.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
@@ -157,8 +170,8 @@ export default async function MasterStrategyPage(){
     <section className={styles.sectionHead}><div><span>OBJETIVOS</span><h2>Objetivos estratégicos</h2></div><p>Cada objetivo debe registrarse de forma explícita y medible.</p></section>
     <section className={styles.grid}>
       {objectiveRows.map((o:any)=><article key={o.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={o.status==="active"?styles.badgeActive:styles.badgePlanned}>{String(o.status).toUpperCase()}</span><em>{o.priority}</em></div>
-        <h3>{o.title}</h3><p>{o.horizon} · {o.progress_percent}%<br/>Responsable: {ownerName(o.owner_user_id)}<br/>{o.start_date||"sin inicio"} → {o.target_date||"sin fecha objetivo"}<br/>{o.description||"Sin descripción"}</p>
+        <div className={styles.cardTop}><span className={o.status==="active"?styles.badgeActive:styles.badgePlanned}>{strategyStatusLabel(o.status)}</span><em>{priorityLabel(o.priority)}</em></div>
+        <h3>{o.title}</h3><p>{horizonLabel(o.horizon)} · {o.progress_percent}%<br/>Responsable: {ownerName(o.owner_user_id)}<br/>{o.start_date||"sin inicio"} → {o.target_date||"sin fecha objetivo"}<br/>{o.description||"Sin descripción"}</p>
       </article>)}
       {!objectiveRows.length&&<article className={styles.card}><h3>Registro de estrategia preparado</h3><p>No se han cargado objetivos todavía.</p></article>}
     </section>
@@ -166,7 +179,7 @@ export default async function MasterStrategyPage(){
     <section className={styles.sectionHead}><div><span>RESULTADOS</span><h2>Resultados medibles</h2></div></section>
     <section className={styles.grid}>
       {krRows.map((kr:any)=><article key={kr.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={kr.status==="completed"?styles.badgeActive:styles.badgePlanned}>{String(kr.status).toUpperCase()}</span><em>{kr.metric_name||"KPI"}</em></div>
+        <div className={styles.cardTop}><span className={kr.status==="completed"?styles.badgeActive:styles.badgePlanned}>{strategyStatusLabel(kr.status)}</span><em>{kr.metric_name||"Indicador"}</em></div>
         <h3>{kr.title}</h3><p>Responsable: {ownerName(kr.owner_user_id)}<br/>Base: {kr.baseline??"—"} {kr.unit||""}<br/>Actual: {kr.current_value??"—"} · Objetivo: {kr.target_value??"—"} {kr.unit||""}<br/>{kr.target_date||"Sin fecha"}</p>
       </article>)}
       {!krRows.length&&<article className={styles.card}><h3>Sin resultados medibles</h3><p>Los resultados se registrarán contra objetivos reales.</p></article>}
@@ -176,7 +189,7 @@ export default async function MasterStrategyPage(){
       <form action={createObjective} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVO OBJETIVO</span><h2>Registrar objetivo</h2></div>
         <div className={styles.formGrid}>
-          <label>Código<input name="code" required placeholder="q4-growth"/></label>
+          <label>Código<input name="code" required placeholder="crecimiento-trimestre-4"/></label>
           <label>Título<input name="title" required/></label>
           <label>Horizonte<select name="horizon" defaultValue="quarter"><option value="month">Mes</option><option value="quarter">Trimestre</option><option value="year">Año</option><option value="multi_year">Varios años</option></select></label>
           <label>Prioridad<select name="priority" defaultValue="medium"><option value="low">Baja</option><option value="medium">Media</option><option value="high">Alta</option><option value="critical">Crítica</option></select></label>
