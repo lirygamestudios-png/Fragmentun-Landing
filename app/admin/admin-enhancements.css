@@ -649,3 +649,45 @@
   font-weight:900;
   flex:0 0 auto;
 }
+
+
+/* UX LIRYGAMES · Bloque 9: biblioteca de medios y modal FRAGMENTUN */
+.adminMediaTileEnhanced,
+.adminMediaModal,
+.adminMediaModalClose,
+.adminMediaModalActions a,
+.adminMediaModalActions button{
+  transition:transform .16s ease,border-color .18s ease,background .18s ease,color .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+.adminMediaTileEnhanced:hover{
+  transform:translateY(-3px);
+  border-color:rgba(74,144,217,.36)!important;
+  box-shadow:0 16px 38px rgba(0,0,0,.24),0 0 20px rgba(74,144,217,.07);
+}
+.adminMediaModal{
+  border-color:rgba(74,144,217,.24);
+  box-shadow:0 42px 110px rgba(0,0,0,.58),0 0 34px rgba(74,144,217,.08);
+}
+.adminMediaModalClose:hover{
+  transform:scale(1.05);
+  border-color:rgba(74,144,217,.55);
+  background:rgba(74,144,217,.10);
+  box-shadow:0 0 18px rgba(74,144,217,.10);
+}
+.adminMediaModalClose:active{
+  transform:scale(.96);
+}
+.adminMediaModalBackdrop{
+  animation:adminModalFade .16s ease both;
+}
+.adminMediaModal{
+  animation:adminModalPop .18s ease both;
+}
+@keyframes adminModalFade{
+  from{opacity:0}
+  to{opacity:1}
+}
+@keyframes adminModalPop{
+  from{opacity:0;transform:translateY(8px) scale(.99)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
