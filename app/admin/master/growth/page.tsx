@@ -118,7 +118,9 @@ export default async function MasterGrowthPage(){
     {count:shareClicks},
     {count:campaigns},
     {data:contacts},
-    {data:activities}
+    {data:activities},
+    {data:gameMetrics},
+    {data:gamePurchases}
   ]=await Promise.all([
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","page_view").gte("created_at",since30),
     supabase.from("leads").select("*",{count:"exact",head:true}).gte("created_at",since30),
@@ -126,7 +128,9 @@ export default async function MasterGrowthPage(){
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","share_click").gte("created_at",since30),
     supabase.from("campaigns").select("*",{count:"exact",head:true}).eq("active",true),
     supabase.from("crm_contacts").select("id,lead_id,lifecycle_stage,status,score,next_action_at,last_activity_at,tags,notes,updated_at,leads(name,email,locale,source,medium,campaign,consent_marketing,mailerlite_status,emotional_profile,created_at)").order("score",{ascending:false}),
-    supabase.from("crm_activities").select("id,contact_id,activity_type,subject,body,occurred_at").order("occurred_at",{ascending:false}).limit(30)
+    supabase.from("crm_activities").select("id,contact_id,activity_type,subject,body,occurred_at").order("occurred_at",{ascending:false}).limit(30),
+    supabase.from("game_engagement_daily").select("metric_date,game_id,platform,active_players,new_players,sessions").order("metric_date",{ascending:false}).limit(1000),
+    supabase.from("game_purchase_events").select("player_ref,game_id,platform,gross_cents,currency,status,purchased_at").gte("purchased_at",since30).order("purchased_at",{ascending:false}).limit(5000)
   ]);
 
   const leadRate=(views||0)>0?((leads||0)/(views||1))*100:0;
@@ -137,6 +141,18 @@ export default async function MasterGrowthPage(){
   const qualified=contactRows.filter(x=>["mql","sql","opportunity","customer"].includes(x.lifecycle_stage)).length;
   const customers=contactRows.filter(x=>x.lifecycle_stage==="customer"||x.status==="won").length;
   const avgPrioridad=contactRows.length?contactRows.reduce((a,x)=>a+Number(x.score||0),0)/contactRows.length:0;
+  const gameMetricRows=(gameMetrics||[]) as any[];
+  const gamePurchaseRows=(gamePurchases||[]) as any[];
+  const latestGameDate=gameMetricRows[0]?.metric_date||null;
+  const latestGameMetrics=latestGameDate?gameMetricRows.filter(m=>m.metric_date===latestGameDate):[];
+  const activePlayersToday=latestGameMetrics.reduce((a,m)=>a+Number(m.active_players||0),0);
+  const newPlayersToday=latestGameMetrics.reduce((a,m)=>a+Number(m.new_players||0),0);
+  const paidGameRows=gamePurchaseRows.filter(p=>p.status==="paid");
+  const payingPlayers30d=new Set(paidGameRows.map(p=>p.player_ref).filter(Boolean)).size;
+  const latestPayers=latestGameDate?new Set(paidGameRows.filter(p=>String(p.purchased_at||"").slice(0,10)===latestGameDate).map(p=>p.player_ref)).size:0;
+  const payerConversion=activePlayersToday?latestPayers/activePlayersToday*100:0;
+  const gameRevenue30d=paidGameRows.reduce((a,p)=>a+Number(p.gross_cents||0),0);
+  const gameRevenueCurrency=paidGameRows[0]?.currency||"USD";
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleGrowth}`}>
     <header className={styles.topbar}>
@@ -158,6 +174,18 @@ export default async function MasterGrowthPage(){
       <article><small>Contactos 30 días</small><strong>{(leads||0).toLocaleString()}</strong><span>{leadRate.toFixed(1)}% conversión</span></article>
       <article><small>Paso a Amazon</small><strong>{amazonCtr.toFixed(1)}%</strong><span>{(amazonClicks||0).toLocaleString()} clics</span></article>
       <article><small>Compartidos</small><strong>{shareRate.toFixed(1)}%</strong><span>{(shareClicks||0).toLocaleString()} compartidos</span></article>
+    </section>
+
+    <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · ADQUISICIÓN</span><h2>De jugador gratuito a pagador</h2></div>
+      <p>Embudo agregado de videojuegos. No se cruza la identidad del jugador con contactos web sin una cuenta vinculada y consentimiento explícito.</p>
+    </section>
+
+    <section className={styles.kpis}>
+      <article><small>Jugadores activos hoy</small><strong>{activePlayersToday.toLocaleString()}</strong><span>{latestGameDate||"Sin telemetría diaria"}</span></article>
+      <article><small>Nuevos jugadores hoy</small><strong>{newPlayersToday.toLocaleString()}</strong><span>Activación desde los juegos</span></article>
+      <article><small>Pagadores 30 días</small><strong>{payingPlayers30d.toLocaleString()}</strong><span>{new Intl.NumberFormat("en-US",{style:"currency",currency:gameRevenueCurrency}).format(gameRevenue30d/100)} bruto</span></article>
+      <article><small>Conversión diaria a pagador</small><strong>{payerConversion.toFixed(2)}%</strong><span>Pagadores del día / jugadores activos</span></article>
     </section>
 
     <section className={styles.sectionHead}>
