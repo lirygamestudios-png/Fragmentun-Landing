@@ -2,6 +2,29 @@ import {redirect} from "next/navigation";
 import {createSupabaseServerClient} from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
+function integrationStatusLabel(value:string|undefined){
+  const map:Record<string,string>={success:"CORRECTO",error:"ERROR",pending:"PENDIENTE",warning:"ATENCIÓN",skipped:"OMITIDO"};
+  return value?(map[value]||String(value).replaceAll("_"," ").toUpperCase()):"—";
+}
+
+function eventLabel(value:string|undefined){
+  const map:Record<string,string>={
+    lead_sync:"Sincronización de contacto",
+    lead_created:"Contacto creado",
+    lead_updated:"Contacto actualizado",
+    campaign_sync:"Sincronización de campaña",
+    campaign_created:"Campaña creada",
+    webhook_received:"Evento recibido",
+    ads_sync:"Sincronización de publicidad",
+    config_update:"Configuración actualizada",
+    test_connection:"Prueba de conexión",
+    automation_trigger:"Automatización ejecutada",
+    email_send:"Envío de correo"
+  };
+  if(!value)return "Evento";
+  return map[value]||String(value).replaceAll("_"," ").replace(/\b\w/g,m=>m.toUpperCase());
+}
+
 export default async function MasterIntegrationsPage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -52,7 +75,7 @@ export default async function MasterIntegrationsPage(){
       <article className={styles.card}>
         <div className={styles.cardTop}><span className={errors?styles.badgePlanned:styles.badgeActive}>{errors?"ATENCIÓN":"ESTABLE"}</span><em>HISTORIAL</em></div>
         <h3>Actividad reciente</h3>
-        <p>{latest?String(latest.integration||"Servicio")+" · "+String(latest.event_type||"Evento")+" · "+String(latest.status||"—"):"Sin actividad registrada todavía."}</p>
+        <p>{latest?String(latest.integration||"Servicio")+" · "+eventLabel(latest.event_type)+" · "+integrationStatusLabel(latest.status):"Sin actividad registrada todavía."}</p>
       </article>
       <article className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>PROTEGIDO</span><em>SEGURIDAD</em></div>
@@ -77,7 +100,7 @@ export default async function MasterIntegrationsPage(){
           <span className={r.status==="success"?styles.badgeActive:styles.badgePlanned}>{r.status==="success"?"CORRECTO":"REVISAR"}</span>
           <em>{r.integration||"SERVICIO"}</em>
         </div>
-        <h3>{r.event_type||"Evento"}</h3>
+        <h3>{eventLabel(r.event_type)}</h3>
         <p>{r.message||"Sin mensaje adicional."}<br/>{new Date(r.created_at).toLocaleString("es-US")}</p>
       </article>)}
       {!rows.length&&<article className={styles.card}><h3>Sin eventos registrados</h3><p>El historial aparecerá aquí cuando las integraciones generen actividad.</p></article>}
