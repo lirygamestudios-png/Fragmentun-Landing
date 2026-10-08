@@ -5,12 +5,12 @@ import {useState} from "react";
 export function MasterBackupDownload(){
   const[loading,setLoading]=useState(false);
   const[message,setMessage]=useState("");
-  const[ok,setOk]=useState<boolean|null>(null);
+  const[state,setState]=useState<"info"|"success"|"warning"|"error">("info");
 
   async function download(){
     if(loading)return;
     setLoading(true);
-    setOk(null);
+    setState("info");
     setMessage("Preparando copia…");
     try{
       const response=await fetch("/api/admin/backup",{credentials:"include",cache:"no-store"});
@@ -31,13 +31,13 @@ export function MasterBackupDownload(){
       a.click();
       a.remove();
       window.setTimeout(()=>URL.revokeObjectURL(url),1000);
-      setOk(status!=="partial");
+      setState(status==="partial"?"warning":"success");
       setMessage(status==="partial"
-        ?"La copia se descargó, pero contiene elementos pendientes de recuperación."
+        ?"La copia se descargó parcialmente. Revisa los elementos pendientes antes de usarla para recuperación."
         :"Copia completa preparada y descargada.");
     }catch(error:any){
       const reason=String(error?.message||error);
-      setOk(false);
+      setState("error");
       setMessage(reason==="mfa_required"?"Debes completar la verificación en dos pasos antes de descargar la copia.":"No fue posible preparar la copia.");
     }finally{
       setLoading(false);
@@ -48,6 +48,6 @@ export function MasterBackupDownload(){
     <button type="button" className="masterQaButton" onClick={download} disabled={loading}>
       {loading?"Preparando…":"Descargar copia externa"}
     </button>
-    {message&&<p role="status" style={{margin:"8px 0 0",fontSize:".76rem",color:ok===false?"#ffaaaa":ok===true?"#8aebbd":"#9fb0c6"}}>{message}</p>}
+    {message&&<p role={state==="error"?"alert":"status"} aria-live="polite" style={{margin:"8px 0 0",fontSize:".76rem",color:state==="error"?"#ffaaaa":state==="success"?"#8aebbd":state==="warning"?"#e7c878":"#9fb0c6"}}>{message}</p>}
   </div>;
 }
