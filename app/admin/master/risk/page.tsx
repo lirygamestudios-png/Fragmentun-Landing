@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function riskStatusLabel(value:string){
   const map:Record<string,string>={open:"ABIERTO",mitigating:"EN MITIGACIÓN",accepted:"ACEPTADO",monitoring:"EN SEGUIMIENTO",closed:"CERRADO"};
@@ -175,7 +176,7 @@ export default async function MasterRiskPage(){
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar riesgos, controles y evidencias manualmente.</p>
       <section className={styles.adminForms}>
-      <form action={createRisk} className={styles.adminForm}>
+      <MasterActionForm action={createRisk} className={styles.adminForm} successText="Riesgo registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO RIESGO</span><h2>Registrar riesgo</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="sec-auth-001"/></label>
@@ -194,9 +195,9 @@ export default async function MasterRiskPage(){
           <label className={styles.span2}>Mitigación<textarea name="mitigation" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar riesgo</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={createEvidence} className={styles.adminForm}>
+      <MasterActionForm action={createEvidence} className={styles.adminForm} successText="Evidencia registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA EVIDENCIA</span><h2>Registrar evidencia de control</h2></div>
         <div className={styles.formGrid}>
           <label>Riesgo<select name="risk_id" required defaultValue=""><option value="" disabled>Seleccionar riesgo</option>{riskRows.map((r:any)=><option key={r.id} value={r.id}>{r.title}</option>)}</select></label>
@@ -209,11 +210,11 @@ export default async function MasterRiskPage(){
           <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit" disabled={!riskRows.length} disabledReason="Primero registra un riesgo para poder añadir evidencia.">Registrar evidencia</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
 
       <section className={styles.adminForms}>
-      <form action={updateRisk} className={styles.adminForm}>
+      <MasterActionForm action={updateRisk} className={styles.adminForm} successText="Riesgo actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR RIESGO</span><h2>Actualizar tratamiento</h2></div>
         <div className={styles.formGrid}>
           <label>Riesgo<select name="risk_id" required defaultValue=""><option value="" disabled>Seleccionar riesgo</option>{riskRows.map((r:any)=><option key={r.id} value={r.id}>{r.code} · {r.title}</option>)}</select></label>
@@ -229,7 +230,7 @@ export default async function MasterRiskPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit" disabled={!riskRows.length} disabledReason="No hay riesgos registrados para actualizar.">Actualizar riesgo</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
     </details>}
 
