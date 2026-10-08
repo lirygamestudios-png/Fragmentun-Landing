@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function validCurrency(value:string){
   return /^[A-Z]{3}$/.test(value);
@@ -211,7 +212,7 @@ export default async function MasterFinancePage(){
     </section>
 
     {["admin","editor"].includes(profile.role)&&<details className={styles.advancedPanel}><summary>Opciones avanzadas</summary><section className={styles.adminForms}>
-      {profile.role==="admin"&&<form action={createFinanceAccount} className={styles.adminForm}>
+      {profile.role==="admin"&&<MasterActionForm action={createFinanceAccount} className={styles.adminForm} successText="Cuenta registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA CUENTA</span><h2>Registrar cuenta financiera</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="bank-main"/></label>
@@ -224,9 +225,9 @@ export default async function MasterFinancePage(){
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar cuenta</MasterSubmitButton>
-      </form>}
+      </MasterActionForm>}
 
-      <form action={createFinanceTransaction} className={styles.adminForm}>
+      <MasterActionForm action={createFinanceTransaction} className={styles.adminForm} successText="Movimiento registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVA TRANSACCIÓN</span><h2>Registrar movimiento</h2></div>
         <div className={styles.formGrid}>
           <label>Fecha<input type="date" name="transaction_date"/></label>
@@ -250,11 +251,11 @@ export default async function MasterFinancePage(){
           <label>ID fuente<input name="source_id" placeholder="Referencia interna"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar movimiento</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
     </section>
 
     <section className={styles.adminForms}>
-      {profile.role==="admin"&&<form action={updateFinanceAccount} className={styles.adminForm}>
+      {profile.role==="admin"&&<MasterActionForm action={updateFinanceAccount} className={styles.adminForm} successText="Cuenta actualizada correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR CUENTA</span><h2>Actualizar cuenta financiera</h2></div>
         <div className={styles.formGrid}>
           <label>Cuenta<select name="account_id" required defaultValue=""><option value="" disabled>Seleccionar cuenta</option>{accountRows.map((a:any)=><option key={a.id} value={a.id}>{a.code} · {a.name}</option>)}</select></label>
@@ -262,9 +263,9 @@ export default async function MasterFinancePage(){
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!accountRows.length} disabledReason="No hay cuentas financieras registradas para actualizar.">Actualizar cuenta</MasterSubmitButton>
-      </form>}
+      </MasterActionForm>}
 
-      <form action={updateFinanceTransaction} className={styles.adminForm}>
+      <MasterActionForm action={updateFinanceTransaction} className={styles.adminForm} successText="Movimiento actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR MOVIMIENTO</span><h2>Actualizar transacción</h2></div>
         <div className={styles.formGrid}>
           <label>Transacción<select name="transaction_id" required defaultValue=""><option value="" disabled>Seleccionar movimiento</option>{txRows.map((t:any)=><option key={t.id} value={t.id}>{t.transaction_date} · {t.description}</option>)}</select></label>
@@ -276,7 +277,7 @@ export default async function MasterFinancePage(){
           <label className={styles.span2}>Descripción<input name="description"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!txRows.length} disabledReason="No hay movimientos financieros registrados para actualizar.">Actualizar movimiento</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
     </section></details>}
 
     <section className={styles.sectionHead}>
