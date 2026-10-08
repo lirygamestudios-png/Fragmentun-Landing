@@ -1592,3 +1592,112 @@
     align-items:flex-start;
   }
 }
+
+
+/* Ronda visual: Personas · Estrategia · Tecnología */
+.modulePeople .sectionHead,
+.moduleStrategy .sectionHead,
+.moduleTechnology .sectionHead{
+  margin:32px 0 14px;
+  padding-bottom:10px;
+}
+
+.modulePeople .kpis article,
+.moduleStrategy .kpis article,
+.moduleTechnology .kpis article{
+  padding:16px;
+  border-radius:11px;
+}
+
+.modulePeople .card,
+.moduleStrategy .card,
+.moduleTechnology .card{
+  min-height:148px;
+  padding:16px;
+  border-radius:11px;
+}
+
+.modulePeople .adminForms,
+.moduleStrategy .adminForms,
+.moduleTechnology .adminForms{
+  margin:30px 0;
+  gap:14px;
+}
+
+.modulePeople .adminForm,
+.moduleStrategy .adminForm,
+.moduleTechnology .adminForm{
+  padding:18px;
+  border-radius:11px;
+}
+
+.modulePeople .moduleStrip,
+.moduleStrategy .moduleStrip,
+.moduleTechnology .moduleStrip{
+  margin:-6px 0 16px;
+  border-radius:11px;
+}
+
+.modulePeople .cardTop em,
+.moduleStrategy .cardTop em,
+.moduleTechnology .cardTop em{
+  max-width:48%;
+  text-align:right;
+  overflow-wrap:anywhere;
+}
+
+.modulePeople .card p,
+.moduleStrategy .card p,
+.moduleTechnology .card p{
+  overflow-wrap:anywhere;
+}
+
+.moduleStrategy .kpis small,
+.moduleTechnology .kpis small,
+.modulePeople .kpis small{
+  overflow-wrap:anywhere;
+}
+
+@media(min-width:1050px){
+  .modulePeople .moduleStrip,
+  .moduleStrategy .moduleStrip,
+  .moduleTechnology .moduleStrip{
+    grid-template-columns:auto minmax(180px,1fr) auto;
+    gap:14px;
+  }
+  .modulePeople .moduleStripMeta,
+  .moduleStrategy .moduleStripMeta,
+  .moduleTechnology .moduleStripMeta{
+    grid-column:auto;
+    justify-content:flex-end;
+    padding-top:0;
+  }
+}
+
+@media(max-width:900px){
+  .modulePeople .moduleStrip,
+  .moduleStrategy .moduleStrip,
+  .moduleTechnology .moduleStrip{
+    grid-template-columns:auto 1fr;
+  }
+  .modulePeople .moduleStripMeta,
+  .moduleStrategy .moduleStripMeta,
+  .moduleTechnology .moduleStripMeta{
+    grid-column:1/-1;
+    justify-content:flex-start;
+    padding-top:2px;
+  }
+}
+
+@media(max-width:600px){
+  .modulePeople .sectionHead,
+  .moduleStrategy .sectionHead,
+  .moduleTechnology .sectionHead{
+    margin:28px 0 12px;
+  }
+  .modulePeople .cardTop,
+  .moduleStrategy .cardTop,
+  .moduleTechnology .cardTop{
+    align-items:flex-start;
+  }
+}
