@@ -163,6 +163,16 @@ export default async function MasterStrategyPage(){
   const amazonCtr=(views||0)>0?((amazonClicks||0)/(views||1))*100:0;
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
+  const metricRows=(gameMetrics||[]) as any[];
+  const purchaseRows=(gamePurchases||[]) as any[];
+  const latestGameDate=metricRows[0]?.metric_date||null;
+  const latestGameRows=latestGameDate?metricRows.filter(m=>m.metric_date===latestGameDate):[];
+  const activePlayers=latestGameRows.reduce((a,m)=>a+Number(m.active_players||0),0);
+  const newPlayers=latestGameRows.reduce((a,m)=>a+Number(m.new_players||0),0);
+  const paidGamePurchases=purchaseRows.filter(p=>p.status==="paid");
+  const payingPlayers=new Set(paidGamePurchases.map(p=>p.player_ref).filter(Boolean)).size;
+  const gameRevenue=paidGamePurchases.reduce((a,p)=>a+Number(p.gross_cents||0),0);
+  const gameCurrency=paidGamePurchases[0]?.currency||"USD";
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleStrategy}`}>
     <header className={styles.topbar}>
@@ -266,6 +276,14 @@ export default async function MasterStrategyPage(){
         <MasterSubmitButton className={styles.formButton} disabled={!krRows.length} disabledReason="No hay resultados medibles registrados para actualizar.">Actualizar resultado</MasterSubmitButton>
       </MasterActionForm>
     </section></details>}
+
+    <section className={styles.sectionHead}><div><span>FREEMIUM · LÍNEA BASE</span><h2>Señales del primer juego</h2></div><p>Actividad, adopción y monetización real para orientar objetivos futuros sin convertirlas automáticamente en metas estratégicas.</p></section>
+    <section className={styles.kpis}>
+      <article><small>Jugadores activos</small><strong>{activePlayers.toLocaleString()}</strong><span>{latestGameDate||"Sin telemetría diaria"}</span></article>
+      <article><small>Nuevos jugadores</small><strong>{newPlayers.toLocaleString()}</strong><span>Última lectura diaria</span></article>
+      <article><small>Jugadores pagadores</small><strong>{payingPlayers.toLocaleString()}</strong><span>{paidGamePurchases.length} compras pagadas</span></article>
+      <article><small>Ingresos in-game</small><strong className={styles.kpiLongValue}>{new Intl.NumberFormat("en-US",{style:"currency",currency:gameCurrency}).format(gameRevenue/100)}</strong><span>Evidencia operativa, no objetivo</span></article>
+    </section>
 
     <section className={styles.sectionHead}><div><span>SEÑALES OPERATIVAS</span><h2>Línea base real</h2></div><p>Estas métricas sirven como referencia operativa; no sustituyen las metas definidas.</p></section>
     <section className={styles.kpis}>
