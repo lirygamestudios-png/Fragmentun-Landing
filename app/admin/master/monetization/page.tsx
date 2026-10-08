@@ -54,6 +54,8 @@ async function createVirtualItem(formData:FormData){
   const allowedGrant=new Set(["durable","consumable","timed"]);
   if(!gameId||!sku||!name||!allowedItemTypes.has(itemType)||!allowedRarity.has(rarity)||!allowedGrant.has(grantType)) throw new Error("invalid_virtual_item");
   if(grantType==="timed"&&(!durationSeconds||!Number.isSafeInteger(durationSeconds)||durationSeconds<=0)) throw new Error("timed_duration_required");
+  const{data:targetGame,error:targetGameError}=await supabase.from("game_titles").select("id").eq("id",gameId).maybeSingle();
+  if(targetGameError||!targetGame) throw new Error("game_not_found");
   const{error}=await supabase.from("game_virtual_items").insert({
     game_id:gameId,sku,name,description,item_type:itemType,rarity,grant_type:grantType,
     duration_seconds:grantType==="timed"?Math.trunc(durationSeconds as number):null,active:true,created_by:user.id
@@ -72,6 +74,8 @@ async function createVirtualOffer(formData:FormData){
   const price=Number(formData.get("price")||0);
   const regions=String(formData.get("region_scope")||"").split(",").map(v=>v.trim()).filter(Boolean);
   if(!itemId||!platform||!Number.isFinite(price)||price<0||price>99999999||Math.round(price*100)/100!==price||!/^[A-Z]{3}$/.test(currency)) throw new Error("invalid_virtual_offer");
+  const{data:targetItem,error:targetItemError}=await supabase.from("game_virtual_items").select("id,active").eq("id",itemId).maybeSingle();
+  if(targetItemError||!targetItem||!targetItem.active) throw new Error("virtual_item_not_available");
   const{error}=await supabase.from("game_virtual_item_offers").insert({
     item_id:itemId,platform,external_sku:externalSku,currency,price_cents:Math.round(price*100),region_scope:regions,active:true,created_by:user.id
   });
