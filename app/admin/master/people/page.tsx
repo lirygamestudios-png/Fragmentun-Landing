@@ -5,6 +5,25 @@ import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
+function validPercent(value:number){
+  return Number.isInteger(value)&&value>=0&&value<=100;
+}
+function invalidDateRange(start:string|null,end:string|null){
+  return Boolean(start&&end&&end<start);
+}
+async function ensureAssignmentCapacity(supabase:any,memberId:string,allocation:number,excludeId?:string){
+  const[{data:member},{data:assignments}]=await Promise.all([
+    supabase.from("people_members").select("allocation_percent,status").eq("id",memberId).maybeSingle(),
+    supabase.from("people_assignments").select("id,allocation_percent").eq("member_id",memberId).eq("status","active")
+  ]);
+  if(!member||member.status!=="active") throw new Error("member_not_active");
+  const committed=(assignments||[])
+    .filter((a:any)=>!excludeId||a.id!==excludeId)
+    .reduce((sum:number,a:any)=>sum+Number(a.allocation_percent||0),0);
+  const capacity=Number(member.allocation_percent??100);
+  if(committed+allocation>capacity) throw new Error("member_allocation_exceeded");
+}
+
 function memberStatusLabel(value:string){
   const map:Record<string,string>={active:"ACTIVO",on_leave:"LICENCIA",inactive:"INACTIVO",ended:"FINALIZADO"};
   return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
@@ -46,10 +65,10 @@ async function createMember(formData:FormData){
   const department=String(formData.get("department")||"").trim()||null;
   const location=String(formData.get("location")||"").trim()||null;
   const startDate=String(formData.get("start_date")||"").trim()||null;
-  const allocation=Math.max(0,Math.min(100,Number(formData.get("allocation_percent")||100)));
+  const allocation=Number(formData.get("allocation_percent")||100);
   const skills=String(formData.get("skills")||"").split(",").map(x=>x.trim()).filter(Boolean);
   const allowed=new Set(["founder","employee","contractor","advisor","partner","intern","other"]);
-  if(!displayName||!allowed.has(employmentType)||!Number.isFinite(allocation)) throw new Error("invalid_member");
+  if(!displayName||!allowed.has(employmentType)||!validPercent(allocation)) throw new Error("invalid_member");
   const{error}=await supabase.from("people_members").insert({
     display_name:displayName,email,employment_type:employmentType,title,department,location,
     start_date:startDate,allocation_percent:allocation,skills,created_by:user.id
@@ -64,12 +83,13 @@ async function createAssignment(formData:FormData){
   const memberId=String(formData.get("member_id")||"").trim();
   const domain=String(formData.get("domain")||"").trim();
   const workstream=String(formData.get("workstream")||"").trim()||null;
-  const allocation=Math.max(0,Math.min(100,Number(formData.get("allocation_percent")||0)));
+  const allocation=Number(formData.get("allocation_percent")||0);
   const priority=String(formData.get("priority")||"medium");
   const startDate=String(formData.get("start_date")||"").trim()||null;
   const endDate=String(formData.get("end_date")||"").trim()||null;
   const allowedPriority=new Set(["low","medium","high","critical"]);
-  if(!memberId||!domain||!allowedPriority.has(priority)||!Number.isFinite(allocation)) throw new Error("invalid_assignment");
+  if(!memberId||!domain||!allowedPriority.has(priority)||!validPercent(allocation)||invalidDateRange(startDate,endDate)) throw new Error("invalid_assignment");
+  await ensureAssignmentCapacity(supabase,memberId,allocation);
   const{error}=await supabase.from("people_assignments").insert({
     member_id:memberId,domain,workstream,allocation_percent:allocation,priority,start_date:startDate,end_date:endDate,created_by:user.id
   });
@@ -89,11 +109,12 @@ async function updateMember(formData:FormData){
   const managerId=managerRaw||null;
   const location=String(formData.get("location")||"").trim()||null;
   const endDate=String(formData.get("end_date")||"").trim()||null;
-  const allocation=Math.max(0,Math.min(100,Number(formData.get("allocation_percent")||100)));
+  const allocation=Number(formData.get("allocation_percent")||100);
   const skills=String(formData.get("skills")||"").split(",").map(x=>x.trim()).filter(Boolean);
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedStatus=new Set(["active","on_leave","inactive","ended"]);
-  if(!id||!allowedStatus.has(status)||!Number.isFinite(allocation)) throw new Error("invalid_member_update");
+  const{data:existing}=await supabase.from("people_members").select("start_date").eq("id",id).maybeSingle();
+  if(!id||!existing||!allowedStatus.has(status)||!validPercent(allocation)||invalidDateRange(existing.start_date,endDate)||managerId===id) throw new Error("invalid_member_update");
   const{error}=await supabase.from("people_members").update({
     status,title,department,manager_id:managerId,location,end_date:endDate,
     allocation_percent:Math.trunc(allocation),skills,notes,updated_at:new Date().toISOString()
@@ -107,14 +128,16 @@ async function updateAssignment(formData:FormData){
   const {supabase}=await requirePeopleAdmin();
   const id=String(formData.get("assignment_id")||"").trim();
   const status=String(formData.get("status")||"active");
-  const allocation=Math.max(0,Math.min(100,Number(formData.get("allocation_percent")||0)));
+  const allocation=Number(formData.get("allocation_percent")||0);
   const priority=String(formData.get("priority")||"medium");
   const startDate=String(formData.get("start_date")||"").trim()||null;
   const endDate=String(formData.get("end_date")||"").trim()||null;
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedStatus=new Set(["planned","active","paused","completed","canceled"]);
   const allowedPriority=new Set(["low","medium","high","critical"]);
-  if(!id||!allowedStatus.has(status)||!allowedPriority.has(priority)||!Number.isFinite(allocation)) throw new Error("invalid_assignment_update");
+  const{data:existingAssignment}=await supabase.from("people_assignments").select("member_id").eq("id",id).maybeSingle();
+  if(!id||!existingAssignment||!allowedStatus.has(status)||!allowedPriority.has(priority)||!validPercent(allocation)||invalidDateRange(startDate,endDate)) throw new Error("invalid_assignment_update");
+  if(status==="active") await ensureAssignmentCapacity(supabase,existingAssignment.member_id,allocation,id);
   const{error}=await supabase.from("people_assignments").update({
     status,allocation_percent:Math.trunc(allocation),priority,start_date:startDate,end_date:endDate,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
