@@ -199,7 +199,7 @@ export default async function CommunityPage(){
       </MasterActionForm>
       </section>
 
-      <section className={styles.adminForms}>
+      <section className={`${styles.adminForms} ${styles.adminFormsSingle}`}>
       <MasterActionForm action={updateMember} className={styles.adminForm} successText="Miembro actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR MIEMBRO</span><h2>Actualizar comunidad</h2></div>
         <div className={styles.formGrid}>
