@@ -115,11 +115,13 @@ export default async function CommunityPage(){
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile) redirect("/admin/lirygames/login?unauthorized=1");
 
-  const[{data:members},{data:actions},{count:crmContacts},{count:shareClicks}]=await Promise.all([
+  const[{data:members},{data:actions},{count:crmContacts},{count:shareClicks},{data:gameMetrics},{data:gamePurchases}]=await Promise.all([
     supabase.from("community_members").select("id,display_name,handle,email,status,tier,points,beta_priority,source,joined_at,last_activity_at,tags,notes").order("points",{ascending:false}),
     supabase.from("community_actions").select("id,member_id,action_type,source,points_delta,description,occurred_at").order("occurred_at",{ascending:false}).limit(50),
     supabase.from("crm_contacts").select("*",{count:"exact",head:true}),
-    supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","share_click")
+    supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","share_click"),
+    supabase.from("game_engagement_daily").select("metric_date,game_id,platform,active_players,new_players,sessions").order("metric_date",{ascending:false}).limit(1000),
+    supabase.from("game_purchase_events").select("player_ref,game_id,platform,status,purchased_at").order("purchased_at",{ascending:false}).limit(5000)
   ]);
 
   const memberRows=(members||[]) as any[];
@@ -128,6 +130,13 @@ export default async function CommunityPage(){
   const beta=memberRows.filter(m=>m.beta_priority||m.tier==="beta_priority");
   const advocates=memberRows.filter(m=>m.tier==="advocate");
   const totalPoints=memberRows.reduce((a,m)=>a+Number(m.points||0),0);
+  const gameMetricRows=(gameMetrics||[]) as any[];
+  const gamePurchaseRows=(gamePurchases||[]) as any[];
+  const latestGameDate=gameMetricRows[0]?.metric_date||null;
+  const latestGameMetrics=latestGameDate?gameMetricRows.filter(m=>m.metric_date===latestGameDate):[];
+  const activePlayersToday=latestGameMetrics.reduce((a,m)=>a+Number(m.active_players||0),0);
+  const newPlayersToday=latestGameMetrics.reduce((a,m)=>a+Number(m.new_players||0),0);
+  const payingPlayers=new Set(gamePurchaseRows.filter(p=>p.status==="paid").map(p=>p.player_ref).filter(Boolean)).size;
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleCommunity}`}>
     <header className={styles.topbar}>
@@ -149,6 +158,18 @@ export default async function CommunityPage(){
       <article><small>Prioridad beta</small><strong>{beta.length}</strong><span>Acceso prioritario</span></article>
       <article><small>Promotores</small><strong>{advocates.length}</strong><span>Miembros que impulsan la comunidad</span></article>
       <article><small>Puntos</small><strong>{totalPoints.toLocaleString()}</strong><span>Participación acumulada</span></article>
+    </section>
+
+    <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · COMUNIDAD</span><h2>Señales de jugadores</h2></div>
+      <p>Lectura agregada de actividad y pago. No se vincula automáticamente un jugador con un miembro de comunidad sin cuenta unificada y consentimiento.</p>
+    </section>
+
+    <section className={styles.kpis}>
+      <article><small>Jugadores activos hoy</small><strong>{activePlayersToday.toLocaleString()}</strong><span>{latestGameDate||"Sin telemetría diaria"}</span></article>
+      <article><small>Nuevos jugadores hoy</small><strong>{newPlayersToday.toLocaleString()}</strong><span>Actividad de videojuegos</span></article>
+      <article><small>Jugadores pagadores</small><strong>{payingPlayers.toLocaleString()}</strong><span>Identidades de juego agregadas</span></article>
+      <article><small>Identidad unificada</small><strong className={styles.kpiCompactValue}>PENDIENTE</strong><span>Sin cruce automático web/juego</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>MIEMBROS</span><h2>Miembros</h2></div><p>La información comercial se mantiene separada; aquí se gestiona la relación con la comunidad y su participación.</p></section>
