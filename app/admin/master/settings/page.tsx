@@ -52,8 +52,8 @@ async function createFlag(formData:FormData){
   const label=String(formData.get("label")||"").trim();
   const description=String(formData.get("description")||"").trim()||null;
   const scope=String(formData.get("environment_scope")||"preview");
-  const rollout=Math.max(0,Math.min(100,Number(formData.get("rollout_percent")||0)));
-  if(!key||!label||!["shared","development","preview","production"].includes(scope)||!Number.isFinite(rollout)) throw new Error("invalid_flag");
+  const rollout=Number(formData.get("rollout_percent")||0);
+  if(!key||!label||!["shared","development","preview","production"].includes(scope)||!Number.isFinite(rollout)||!Number.isInteger(rollout)||rollout<0||rollout>100) throw new Error("invalid_flag");
   const{error}=await supabase.from("feature_flags").insert({
     flag_key:key,label,description,environment_scope:scope,rollout_percent:rollout,enabled:false,updated_by:user.id,created_by:user.id
   });
@@ -93,7 +93,7 @@ async function updateFlag(formData:FormData){
   const ownerUserId=ownerRaw||null;
   const description=String(formData.get("description")||"").trim()||null;
   const notes=String(formData.get("notes")||"").trim()||null;
-  if(!id||!["shared","development","preview","production"].includes(scope)||!Number.isFinite(rollout)) throw new Error("invalid_flag_update");
+  if(!id||!["shared","development","preview","production"].includes(scope)||!Number.isFinite(rollout)||!Number.isInteger(rollout)||rollout<0||rollout>100||(enabled&&!ownerUserId)) throw new Error("invalid_flag_update");
   if(enabled&&scope==="production") throw new Error("production_flag_requires_release_approval");
   const{error}=await supabase.from("feature_flags").update({
     enabled,environment_scope:scope,rollout_percent:Math.trunc(rollout),owner_user_id:ownerUserId,
