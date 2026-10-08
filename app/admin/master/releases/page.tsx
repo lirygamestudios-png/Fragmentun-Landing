@@ -243,10 +243,10 @@ export default async function ReleaseGatePage(){
     {gateRows.length>0&&<section className={styles.notice}>
       {evidenceIntegrated
         ?<div><strong>Evidencia integrada</strong><span>La última prueba correcta quedó registrada como evidencia. Falta únicamente la aprobación humana antes de cualquier publicación.</span></div>
-        :<><div><strong>Integrar última prueba correcta</strong><span>Usa la última comprobación correcta como evidencia de esta revisión. No publica ni aprueba producción.</span></div>
+        :<><div><strong>Integrar última prueba</strong><span>Solo puede usarse la prueba más reciente si terminó correctamente. Si la última prueba falló, primero debe corregirse y repetirse.</span></div>
           <form action={useLatestPassedValidation}>
             <input type="hidden" name="gate_id" value={gateRows[0].id}/>
-            <MasterSubmitButton className={styles.formButton}>Usar última prueba correcta</MasterSubmitButton>
+            <MasterSubmitButton className={styles.formButton}>Usar última prueba</MasterSubmitButton>
           </form></>}
       {evidenceIntegrated&&<code>APROBACIÓN HUMANA PENDIENTE</code>}
     </section>}
