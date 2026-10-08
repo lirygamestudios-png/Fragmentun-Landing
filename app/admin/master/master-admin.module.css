@@ -995,3 +995,26 @@
 .moduleCapital .cardAttention .cardTop em{
   color:#ff91aa!important;
 }
+
+
+/* Proveedores, Marca y Personas */
+.moduleSuppliers .cardWarning .cardTop em,
+.moduleBrand .cardWarning .cardTop em,
+.modulePeople .cardWarning .cardTop em{
+  color:#ffc85e!important;
+}
+.moduleSuppliers .cardPriority .cardTop em,
+.moduleBrand .cardPriority .cardTop em,
+.modulePeople .cardPriority .cardTop em{
+  color:#8ce9ff!important;
+}
+.moduleSuppliers .cardMuted,
+.moduleBrand .cardMuted,
+.modulePeople .cardMuted{
+  opacity:.66;
+}
+.moduleSuppliers .cardAttention .cardTop em,
+.moduleBrand .cardAttention .cardTop em,
+.modulePeople .cardAttention .cardTop em{
+  color:#ff91aa!important;
+}
