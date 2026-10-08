@@ -1392,3 +1392,106 @@
     align-items:flex-start;
   }
 }
+
+
+/* Ronda visual: Comunidad · Finanzas · Capital */
+.moduleCommunity .sectionHead,
+.moduleFinance .sectionHead,
+.moduleCapital .sectionHead{
+  margin:32px 0 14px;
+  padding-bottom:10px;
+}
+
+.moduleCommunity .kpis article,
+.moduleFinance .kpis article,
+.moduleCapital .kpis article{
+  padding:16px;
+  border-radius:11px;
+}
+
+.moduleCommunity .card,
+.moduleFinance .card,
+.moduleCapital .card{
+  min-height:148px;
+  padding:16px;
+  border-radius:11px;
+}
+
+.moduleCommunity .adminForms,
+.moduleFinance .adminForms,
+.moduleCapital .adminForms{
+  margin:30px 0;
+  gap:14px;
+}
+
+.moduleCommunity .adminForm,
+.moduleFinance .adminForm,
+.moduleCapital .adminForm{
+  padding:18px;
+  border-radius:11px;
+}
+
+.moduleCommunity .moduleStrip,
+.moduleFinance .moduleStrip,
+.moduleCapital .moduleStrip{
+  margin:-6px 0 16px;
+  border-radius:11px;
+}
+
+.moduleCommunity .cardTop em,
+.moduleFinance .cardTop em,
+.moduleCapital .cardTop em{
+  max-width:48%;
+  text-align:right;
+  overflow-wrap:anywhere;
+}
+
+.moduleFinance .kpis strong,
+.moduleCapital .kpis strong{
+  max-width:100%;
+  overflow-wrap:anywhere;
+}
+
+@media(min-width:1050px){
+  .moduleCommunity .moduleStrip,
+  .moduleFinance .moduleStrip,
+  .moduleCapital .moduleStrip{
+    grid-template-columns:auto minmax(180px,1fr) auto;
+    gap:14px;
+  }
+  .moduleCommunity .moduleStripMeta,
+  .moduleFinance .moduleStripMeta,
+  .moduleCapital .moduleStripMeta{
+    grid-column:auto;
+    justify-content:flex-end;
+    padding-top:0;
+  }
+}
+
+@media(max-width:900px){
+  .moduleCommunity .moduleStrip,
+  .moduleFinance .moduleStrip,
+  .moduleCapital .moduleStrip{
+    grid-template-columns:auto 1fr;
+  }
+  .moduleCommunity .moduleStripMeta,
+  .moduleFinance .moduleStripMeta,
+  .moduleCapital .moduleStripMeta{
+    grid-column:1/-1;
+    justify-content:flex-start;
+    padding-top:2px;
+  }
+}
+
+@media(max-width:600px){
+  .moduleCommunity .sectionHead,
+  .moduleFinance .sectionHead,
+  .moduleCapital .sectionHead{
+    margin:28px 0 12px;
+  }
+  .moduleCommunity .cardTop,
+  .moduleFinance .cardTop,
+  .moduleCapital .cardTop{
+    align-items:flex-start;
+  }
+}
