@@ -178,15 +178,15 @@ export default async function MasterSecurityPage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Incidentes abiertos</small><strong>{openIncidents.length}</strong><span>{criticalIncidents.length} altos o críticos</span></article>
-      <article><small>Revisiones de acceso</small><strong>{pendingReviews.length}</strong><span>{overdueReviews.length} vencidas</span></article>
+      <article className={criticalIncidents.length?styles.kpiAttention:undefined}><small>Incidentes abiertos</small><strong>{openIncidents.length}</strong><span>{criticalIncidents.length?criticalIncidents.length+" altos o críticos":"Sin incidentes de alta severidad"}</span></article>
+      <article className={overdueReviews.length?styles.kpiAttention:undefined}><small>Revisiones de acceso</small><strong>{pendingReviews.length}</strong><span>{overdueReviews.length?overdueReviews.length+" vencidas":"Sin revisiones vencidas"}</span></article>
       <article><small>Usuarios administrativos</small><strong>{(profiles||0).toLocaleString()}</strong><span>Provisionados</span></article>
       <article><small>Eventos de auditoría</small><strong>{(adminEvents||0).toLocaleString()}</strong><span>Trazabilidad</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>INCIDENTES</span><h2>Incidentes de seguridad</h2></div><p>Registro persistente y privado; empieza vacío hasta que exista un incidente real que documentar.</p></section>
     <section className={styles.grid}>
-      {incidentRows.map((i:any)=><article key={i.id} className={styles.card}>
+      {incidentRows.map((i:any)=><article key={i.id} className={`${styles.card} ${!["resolved","closed"].includes(i.status)&&i.severity==="critical"?styles.cardAttention:!["resolved","closed"].includes(i.status)&&i.severity==="high"?styles.cardWarning:["resolved","closed"].includes(i.status)?styles.cardMuted:""}`}>
         <div className={styles.cardTop}><span className={["resolved","closed"].includes(i.status)?styles.badgeActive:styles.badgePlanned}>{incidentStatusLabel(i.status)}</span><em>{severityLabel(i.severity)}</em></div>
         <h3>{i.title}</h3><p>{i.incident_code} · {i.category}<br/>Responsable: {ownerName(i.owner_user_id)}<br/>{new Date(i.detected_at).toLocaleString("es-US")}<br/>{i.summary||"Sin resumen"}</p>
       </article>)}
@@ -195,7 +195,7 @@ export default async function MasterSecurityPage(){
 
     <section className={styles.sectionHead}><div><span>REVISIONES DE ACCESO</span><h2>Revisiones de acceso</h2></div></section>
     <section className={styles.grid}>
-      {reviewRows.map((r:any)=><article key={r.id} className={styles.card}>
+      {reviewRows.map((r:any)=><article key={r.id} className={`${styles.card} ${r.review_status==="change_required"||(["high","critical"].includes(r.risk_level)&&r.review_status==="pending")?styles.cardAttention:r.review_status==="expired"?styles.cardWarning:["approved","revoked"].includes(r.review_status)?styles.cardMuted:""}`}>
         <div className={styles.cardTop}><span className={r.review_status==="approved"?styles.badgeActive:styles.badgePlanned}>{reviewEstadoLabel(r.review_status)}</span><em>{severityLabel(r.risk_level)}</em></div>
         <h3>{r.subject_name||r.subject_ref}</h3><p>{r.subject_type==="admin_user"?"Usuario administrativo":r.subject_type==="service_account"?"Cuenta de servicio":r.subject_type==="integration"?"Integración":r.subject_type==="vendor"?"Proveedor":"Otro"}<br/>Revisor: {ownerName(r.reviewer_user_id)}<br/>{r.due_date?"Fecha límite: "+r.due_date:"Sin fecha límite"}<br/>{r.notes||"Sin notas"}</p>
       </article>)}
