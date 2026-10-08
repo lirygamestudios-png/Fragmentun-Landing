@@ -893,3 +893,21 @@
   box-shadow:inset 0 0 24px rgba(255,102,138,.035),0 14px 34px rgba(0,0,0,.18)!important;
 }
 .kpiAttention strong{color:#ff91aa!important}
+
+
+/* Operaciones — prioridades y decisiones */
+.cardAttention{
+  border-color:rgba(255,102,138,.30)!important;
+  background:
+    linear-gradient(180deg,rgba(44,15,34,.16),rgba(13,16,38,.985)),
+    linear-gradient(180deg,rgba(13,16,38,.985),rgba(8,10,24,.985))!important;
+  box-shadow:inset 2px 0 rgba(255,102,138,.72),0 14px 34px rgba(0,0,0,.18)!important;
+}
+.cardAttention .cardTop em{color:#ff91aa!important}
+.cardDecision{
+  border-color:rgba(156,92,255,.26)!important;
+  box-shadow:inset 2px 0 rgba(156,92,255,.66),0 14px 34px rgba(0,0,0,.17)!important;
+}
+.moduleOperations .sectionHead p{
+  max-width:620px;
+}
