@@ -17,17 +17,22 @@ export async function POST(request:NextRequest){
   const results=Array.isArray(body?.results)?body.results:[];
   if(!results.length||results.length>20)return NextResponse.json({error:"invalid_results"},{status:400});
 
-  const clean=results.map((r:any)=>({
-    check_name:String(r?.name||"").slice(0,160),
-    request_path:String(r?.path||"").slice(0,500),
-    method:"GET",
-    expected_status:Number.isInteger(r?.expected)?r.expected:null,
-    actual_status:Number.isInteger(r?.actual)?r.actual:null,
-    redirect_location:r?.redirect?String(r.redirect).slice(0,1000):null,
-    status:r?.status==="passed"?"passed":"failed",
-    latency_ms:Number.isInteger(r?.latency)?Math.max(0,Math.min(120000,r.latency)):null,
-    detail:r?.detail?String(r.detail).slice(0,1200):null
-  }));
+  const clean=results.map((r:any)=>{
+    const expectedStatus=Number.isInteger(r?.expected)?r.expected:null;
+    const actualStatus=Number.isInteger(r?.actual)?r.actual:null;
+    const passed=expectedStatus!==null&&actualStatus===expectedStatus;
+    return {
+      check_name:String(r?.name||"").slice(0,160),
+      request_path:String(r?.path||"").slice(0,500),
+      method:"GET",
+      expected_status:expectedStatus,
+      actual_status:actualStatus,
+      redirect_location:r?.redirect?String(r.redirect).slice(0,1000):null,
+      status:passed?"passed":"failed",
+      latency_ms:Number.isInteger(r?.latency)?Math.max(0,Math.min(120000,r.latency)):null,
+      detail:passed?"Respuesta correcta.":(r?.detail?String(r.detail).slice(0,1200):"La respuesta fue distinta a la esperada.")
+    };
+  });
 
   if(clean.some((r:any)=>!r.check_name||!r.request_path)){
     return NextResponse.json({error:"invalid_result_shape"},{status:400});
