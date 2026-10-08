@@ -32,6 +32,8 @@ const groups=[
     ["/admin/master/security","◇","Seguridad"],
     ["/admin/master/legal","§","Legal e IP"],
     ["/admin/master/integrations","↗","Integraciones"],
+    ["/admin/master/audit","≋","Auditoría"],
+    ["/admin/master/settings","⚙","Configuración"],
     ["/admin/master/backups","⤓","Copias"],
     ["/admin/master/maintenance","◆","Mantenimiento"],
     ["/admin/master/releases","✓","Revisión para publicar"],
