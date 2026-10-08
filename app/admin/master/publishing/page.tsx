@@ -191,7 +191,7 @@ export default async function MasterPublishingPage(){
       <article><small>Plataformas</small><strong>{stores.length}</strong><span>Plataformas registradas</span></article>
       <article><small>Lanzamientos abiertos</small><strong>{open.length}</strong><span>En preparación</span></article>
       <article><small>Publicados</small><strong>{live.length}</strong><span>Lanzamientos activos</span></article>
-      <article><small>Riesgos</small><strong>{certRisk.length}</strong><span>Fallidos, bloqueados o retrasados</span></article>
+      <article className={certRisk.length?styles.kpiAttention:undefined}><small>Riesgos</small><strong>{certRisk.length}</strong><span>{certRisk.length?"Fallidos, bloqueados o retrasados":"Sin incidencias de publicación"}</span></article>
     </section>
 
     <section className={styles.sectionHead}>
@@ -199,7 +199,7 @@ export default async function MasterPublishingPage(){
       <p>Cuentas y canales reales como Steam, PlayStation, Xbox, Nintendo, Epic y otros canales de distribución.</p>
     </section>
     <section className={styles.grid}>
-      {stores.map((s:any)=><article key={s.id} className={styles.card}>
+      {stores.map((s:any)=><article key={s.id} className={`${styles.card} ${["restricted","suspended"].includes(s.account_status)?styles.cardAttention:""}`}>
         <div className={styles.cardTop}><span className={s.active?styles.badgeActive:styles.badgePlanned}>{s.active?"ACTIVO":"INACTIVO"}</span><em>{accountStatusLabel(s.account_status)}</em></div>
         <h3>{s.name}</h3>
         <p>{s.platform}<br/>{(s.region_scope||[]).length?(s.region_scope||[]).join(" · "):"Regiones por definir"}</p>
@@ -212,7 +212,7 @@ export default async function MasterPublishingPage(){
       <p>Cada lanzamiento queda vinculado a un juego y, cuando aplique, a una plataforma, con estado, certificación, territorios, precio y fecha objetivo.</p>
     </section>
     <section className={styles.grid}>
-      {releaseRows.map((r:any)=><article key={r.id} className={styles.card}>
+      {releaseRows.map((r:any)=><article key={r.id} className={`${styles.card} ${["blocked","delayed"].includes(r.status)||r.certification_status==="failed"?styles.cardAttention:r.status==="certification"?styles.cardWarning:""}`}>
         <div className={styles.cardTop}>
           <span className={r.status==="live"?styles.badgeActive:styles.badgePlanned}>{releaseStatusLabel(r.status)}</span>
           <em>{certificationLabel(r.certification_status)}</em>
