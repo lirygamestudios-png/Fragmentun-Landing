@@ -122,14 +122,14 @@ export default async function MasterSuppliersPage(){
     <section className={styles.kpis}>
       <article><small>Proveedores</small><strong>{vendorRows.length}</strong><span>Registrados</span></article>
       <article><small>Preferidos</small><strong>{preferred}</strong><span>Proveedores preferidos</span></article>
-      <article><small>Riesgo alto o crítico</small><strong>{highRisk}</strong><span>Requieren atención</span></article>
+      <article className={highRisk?styles.kpiAttention:undefined}><small>Riesgo alto o crítico</small><strong>{highRisk}</strong><span>{highRisk?"Requieren atención":"Sin proveedores de riesgo alto"}</span></article>
       <article><small>Órdenes</small><strong>{(orders||0).toLocaleString()}</strong><span>Demanda comercial</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>PROVEEDORES</span><h2>Proveedores registrados</h2></div></section>
     <section className={styles.grid}>
-      {vendorRows.map((v:any)=><article key={v.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={v.status==="active"?styles.badgeActivo:styles.badgePlanned}>{vendorEstadoLabel(v.status)}</span><em>{riskLabel(v.risk_rating)}</em></div>
+      {vendorRows.map((v:any)=><article key={v.id} className={`${styles.card} ${v.risk_rating==="critical"?styles.cardAttention:v.risk_rating==="high"?styles.cardWarning:["inactive","terminated"].includes(v.status)?styles.cardMuted:v.preferred?styles.cardPriority:""}`}>
+        <div className={styles.cardTop}><span className={v.status==="active"?styles.badgeActive:styles.badgePlanned}>{vendorEstadoLabel(v.status)}</span><em>{riskLabel(v.risk_rating)}</em></div>
         <h3>{v.name}</h3><p>{vendorTypeLabel(v.vendor_type)} · {v.country||"País pendiente"}<br/>{v.contact_name||"Sin contacto"} · {v.contact_email||"Sin correo"}<br/>{v.payment_terms||"Condiciones de pago pendientes"}{v.preferred?" · Preferidos":""}</p>
       </article>)}
       {!vendorRows.length&&<article className={styles.card}><h3>Registro de proveedores preparado</h3><p>No se han cargado proveedores formales todavía.</p></article>}
