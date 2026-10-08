@@ -369,3 +369,43 @@
   color:#fff;
   box-shadow:0 8px 22px rgba(0,0,0,.20),0 0 16px rgba(74,144,217,.09);
 }
+
+
+/* UX LIRYGAMES · Bloque 2: selectores y pestañas FRAGMENTUN */
+.adminList button,
+.adminSaleModeChoices button,
+.adminMediaTileActions button,
+.adminMediaThumbButton,
+.approvedAdminRange summary,
+.organicDestinationShortcuts .btn{
+  transition:transform .16s ease,border-color .18s ease,background .18s ease,color .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+.adminList button:hover,
+.adminMediaTileActions button:hover,
+.approvedAdminRange summary:hover,
+.organicDestinationShortcuts .btn:hover{
+  transform:translateY(-2px);
+  border-color:rgba(74,144,217,.55)!important;
+  background:rgba(74,144,217,.09)!important;
+  color:#f6fbff!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.20),0 0 16px rgba(74,144,217,.08);
+}
+.adminList button:active,
+.adminSaleModeChoices button:active,
+.adminMediaTileActions button:active,
+.adminMediaThumbButton:active,
+.approvedAdminRange summary:active,
+.organicDestinationShortcuts .btn:active{
+  transform:translateY(0) scale(.985);
+}
+.adminList button.active{
+  border-color:rgba(74,144,217,.62)!important;
+  background:linear-gradient(180deg,rgba(74,144,217,.13),rgba(13,27,45,.92))!important;
+  box-shadow:0 8px 22px rgba(0,0,0,.20),inset 3px 0 0 #4A90D9;
+}
+.adminList button.active strong{color:#fff}
+.adminList button.active span{color:#8fbbe5}
+.adminMediaThumbButton:hover{
+  filter:brightness(1.055);
+  box-shadow:0 0 0 1px rgba(74,144,217,.18),0 8px 22px rgba(0,0,0,.18);
+}
