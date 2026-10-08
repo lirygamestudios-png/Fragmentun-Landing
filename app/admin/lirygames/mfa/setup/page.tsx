@@ -18,9 +18,8 @@ export default function LiryGamesMfaSetupPage(){
       const j=await r.json().catch(()=>({}));
       if(r.status===401){router.replace("/admin/lirygames/login");return;}
       if(!r.ok){setMessageType("error");setMessage("No fue posible comprobar la verificación en dos pasos.");return;}
-      if(j.state==="satisfied"){window.location.assign("/admin/master");return;}
       const totp=j.factors?.totp||[];
-      const verified=totp.find((f:any)=>f.status==="verified");
+      const verified=totp.find((f:any)=>f.status==="verified"&&String(f.friendly_name||"").trim().toLowerCase()==="lirygames admin");
       if(verified){window.location.assign("/admin/lirygames/mfa");return;}
     })();
   },[router]);
