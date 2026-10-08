@@ -17,7 +17,7 @@ export default function LiryGamesForgotPasswordPage(){
       const r=await fetch("/api/auth/forgot-password",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({email})
+        body:JSON.stringify({email,context:"lirygames"})
       });
       if(!r.ok)throw new Error("request_failed");
       setStatusType("success");
