@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "../../../lib/supabase/server";
 import { getMfaState } from "../../../lib/supabase/mfa";
+import { AdminMfaVerifyForm } from "../../../components/AdminMfaVerifyForm";
 
 export const dynamic="force-dynamic";
 
@@ -32,32 +33,25 @@ export default async function AdminMfaPage(){
       <div className="authStoryPanel">
         <div className="authBrandLockup">
           <img src="/fragmentun-mark.png" alt="" width="74" height="74"/>
-          <div><strong>LIRYGAMES STUDIOS</strong><span>SEGURIDAD ADMIN</span></div>
+          <div><strong>FRAGMENTUN</strong><span>SEGURIDAD DEL PANEL</span></div>
         </div>
         <div className="authStoryCopy">
-          <div className="kicker">SEGUNDO FACTOR · TOTP</div>
-          <h1>Verifica tu sesión administrativa.</h1>
-          <p>Introduce el código temporal de tu autenticador para elevar esta sesión a AAL2.</p>
+          <div className="kicker">VERIFICACIÓN EN DOS PASOS</div>
+          <h1>Confirma que realmente eres tú.</h1>
+          <p>Introduce el código temporal de tu aplicación autenticadora para completar el acceso administrativo.</p>
         </div>
-        <div className="authStoryFooter">MASTER ADMIN · SECURITY GATE</div>
+        <div className="authStoryFooter">JOSÉ LIRANZO · FRAGMENTUN</div>
       </div>
 
       <section className="authCard authCardPremium">
-        <div className="authCardMark"><img src="/fragmentun-mark.png" alt="LIRYGAMES" width="54" height="54"/></div>
-        <div className="kicker">MFA</div>
+        <div className="authCardMark"><img src="/fragmentun-mark.png" alt="FRAGMENTUN" width="54" height="54"/></div>
+        <div className="kicker">SEGUNDO FACTOR</div>
         <h2>Verificar segundo factor</h2>
         <p className="lead">Abre tu app autenticadora y escribe el código temporal.</p>
 
-        <form className="authForm" action="/admin/mfa/verify" method="post">
-          <input type="hidden" name="factorId" value={factor.id}/>
-          <label>
-            <span>Código de verificación</span>
-            <input name="code" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6,8}" minLength={6} maxLength={8} required autoFocus/>
-          </label>
-          <button className="btn btnPrimary authSubmit" type="submit">Verificar MFA</button>
-        </form>
+        <AdminMfaVerifyForm factorId={factor.id}/>
 
-        <p className="note">Factor: {factor.friendly_name||"LIRYGAMES Admin"}</p>
+        <p className="note">Autenticador: {factor.friendly_name||"FRAGMENTUN Admin"}</p>
       </section>
     </section>
   </main>;
