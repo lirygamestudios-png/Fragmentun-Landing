@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 
 function lifecycleLabel(value:string){
@@ -171,7 +172,7 @@ export default async function MasterGrowthPage(){
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para actualizar contactos o registrar interacciones manualmente.</p>
       <section className={styles.adminForms}>
-      <form action={updateContact} className={styles.adminForm}>
+      <MasterActionForm action={updateContact} className={styles.adminForm} successText="Contacto actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIÓN DE CONTACTOS</span><h2>Actualizar contacto</h2></div>
         <div className={styles.formGrid}>
           <label>Contacto<select name="contact_id" required defaultValue="">
@@ -195,9 +196,9 @@ export default async function MasterGrowthPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3} placeholder="Notas internas del contacto"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Guardar contacto</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={addActivity} className={styles.adminForm}>
+      <MasterActionForm action={addActivity} className={styles.adminForm} successText="Actividad registrada correctamente.">
         <div className={styles.formTitle}><span>ACTIVIDAD</span><h2>Registrar interacción</h2></div>
         <div className={styles.formGrid}>
           <label>Contacto<select name="contact_id" required defaultValue="">
@@ -212,7 +213,7 @@ export default async function MasterGrowthPage(){
           <label className={styles.span2}>Detalle<textarea name="body" rows={4} placeholder="Detalle de la interacción"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar actividad</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
     </details>}
 
