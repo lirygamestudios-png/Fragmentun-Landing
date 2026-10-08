@@ -206,9 +206,9 @@ export default async function MasterCapitalPage(){
 
     <section className={styles.kpis}>
       <article><small>Inversionistas</small><strong>{investorRows.length}</strong><span>Contactos registrados</span></article>
-      <article><small>Oportunidades abiertas</small><strong>{money(pipelineValue,pipelineCurrency)}</strong><span>{open.length} oportunidades abiertas</span></article>
-      <article><small>Valor estimado</small><strong>{money(weighted,pipelineCurrency)}</strong><span>Probabilidad aplicada</span></article>
-      <article><small>Capital comprometido</small><strong>{money(committedValue,pipelineCurrency)}</strong><span>Solo compromisos registrados</span></article>
+      <article><small>Oportunidades abiertas</small><strong className={styles.kpiLongValue}>{money(pipelineValue,pipelineCurrency)}</strong><span>{open.length} oportunidades abiertas</span></article>
+      <article><small>Valor estimado</small><strong className={styles.kpiLongValue}>{money(weighted,pipelineCurrency)}</strong><span>Probabilidad aplicada</span></article>
+      <article><small>Capital comprometido</small><strong className={styles.kpiLongValue}>{money(committedValue,pipelineCurrency)}</strong><span>Solo compromisos registrados</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>INVERSIONISTAS</span><h2>Inversionistas</h2></div><p>Registro privado visible solo para administradores.</p></section>
@@ -311,7 +311,7 @@ export default async function MasterCapitalPage(){
 
     <section className={styles.sectionHead}><div><span>EVIDENCIA COMERCIAL</span><h2>Ingresos observados</h2></div><p>Se muestra como evidencia comercial existente y permanece separado de la captación de capital.</p></section>
     <section className={styles.kpis}>
-      <article><small>Ingresos pagados</small><strong>{money(commercialRevenue,revenueCurrency)}</strong><span>Ventas registradas</span></article>
+      <article><small>Ingresos pagados</small><strong className={styles.kpiLongValue}>{money(commercialRevenue,revenueCurrency)}</strong><span>Ventas registradas</span></article>
       <article><small>Órdenes pagadas</small><strong>{(paidOrders||0).toLocaleString()}</strong><span>Comercio</span></article>
       <article><small>Estructura accionaria</small><strong className={styles.kpiCompactValue}>SEPARADA</strong><span>Separada del registro de inversionistas</span></article>
       <article><small>Acceso</small><strong className={styles.kpiCompactValue}>ADMINISTRADOR</strong><span>Acceso restringido</span></article>
