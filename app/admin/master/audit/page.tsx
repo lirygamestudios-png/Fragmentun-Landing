@@ -99,6 +99,18 @@ export default async function MasterAuditPage(){
     </section>
 
     <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · TRAZABILIDAD</span><h2>Actividad administrativa de videojuegos</h2></div>
+      <p>Cambios recientes sobre catálogo virtual, compras, entitlements y telemetría. El detalle sensible permanece fuera de esta vista.</p>
+    </section>
+
+    <section className={styles.kpis}>
+      <article><small>Eventos FREEMIUM</small><strong>{freemiumChanges}</strong><span>Dentro de los últimos 100 cambios</span></article>
+      <article><small>Áreas con actividad</small><strong>{new Set(freemiumRows.map(r=>r.table_name)).size}</strong><span>Tablas FREEMIUM auditadas</span></article>
+      <article><small>Detalle sensible</small><strong className={styles.kpiCompactValue}>OCULTO</strong><span>Solo metadatos resumidos</span></article>
+      <article><small>Auditoría</small><strong className={styles.kpiCompactValue}>ACTIVA</strong><span>Trazabilidad administrativa</span></article>
+    </section>
+
+    <section className={styles.sectionHead}>
       <div><span>HISTORIAL</span><h2>Actividad reciente</h2></div>
       <p>Se muestran los datos básicos de cada cambio; el detalle sensible permanece fuera de esta vista resumida.</p>
     </section>
