@@ -7,6 +7,7 @@ export function AdminMfaGate(){
   const router=useRouter();
   const[code,setCode]=useState("");
   const[status,setStatus]=useState("");
+  const[statusType,setStatusType]=useState<"info"|"success"|"error">("info");
   const[loading,setLoading]=useState(false);
   const[factorId,setFactorId]=useState("");
 
@@ -14,9 +15,9 @@ export function AdminMfaGate(){
     (async()=>{
       const supabase=createSupabaseBrowserClient();
       const{data,error}=await supabase.auth.mfa.listFactors();
-      if(error){setStatus("No fue posible comprobar la verificación en dos pasos.");return}
+      if(error){setStatusType("error");setStatus("No fue posible comprobar la verificación en dos pasos.");return}
       const factor=data.totp.find(f=>f.status==="verified")||data.totp[0];
-      if(!factor){setStatus("No se encontró un autenticador registrado.");return}
+      if(!factor){setStatusType("error");setStatus("No se encontró un autenticador registrado.");return}
       setFactorId(factor.id);
     })();
   },[]);
@@ -24,14 +25,20 @@ export function AdminMfaGate(){
   async function verify(e:FormEvent){
     e.preventDefault();
     if(!factorId||code.length<6)return;
-    setLoading(true);setStatus("Verificando código…");
-    const supabase=createSupabaseBrowserClient();
-    const challenge=await supabase.auth.mfa.challenge({factorId});
-    if(challenge.error){setLoading(false);setStatus("No fue posible iniciar la verificación.");return}
-    const verified=await supabase.auth.mfa.verify({factorId,challengeId:challenge.data.id,code:code.trim()});
-    if(verified.error){setLoading(false);setStatus("Código incorrecto o vencido.");return}
-    setStatus("Verificación correcta. Abriendo el panel…");
-    router.refresh();
+    setLoading(true);setStatusType("info");setStatus("Verificando código…");
+    try{
+      const supabase=createSupabaseBrowserClient();
+      const challenge=await supabase.auth.mfa.challenge({factorId});
+      if(challenge.error){setStatusType("error");setStatus("No fue posible iniciar la verificación.");return}
+      const verified=await supabase.auth.mfa.verify({factorId,challengeId:challenge.data.id,code:code.trim()});
+      if(verified.error){setStatusType("error");setStatus("Código incorrecto o vencido.");return}
+      setStatusType("success");setStatus("Verificación correcta. Abriendo el panel…");
+      router.refresh();
+    }catch{
+      setStatusType("error");setStatus("No fue posible conectar con el servicio de verificación.");
+    }finally{
+      setLoading(false);
+    }
   }
 
   return <main className="authShell authShellFragmentun">
@@ -54,7 +61,7 @@ export function AdminMfaGate(){
           <label><span>Código temporal</span><input inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]*" maxLength={8} required value={code} onChange={e=>setCode(e.target.value.replace(/\D/g,""))}/></label>
           <button className="btn btnPrimary authSubmit" type="submit" disabled={loading||!factorId}>{loading?"Verificando…":"Verificar y entrar"}</button>
         </form>
-        {status&&<p className="note authStatus" role="status">{status}</p>}
+        {status&&<p className={`note authStatus ${statusType}`} role="status" aria-live="polite">{status}</p>}
       </section>
     </section>
   </main>;
