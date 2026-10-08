@@ -213,7 +213,7 @@ export default async function MasterCapitalPage(){
 
     <section className={styles.sectionHead}><div><span>INVERSIONISTAS</span><h2>Inversionistas</h2></div><p>Registro privado visible solo para administradores.</p></section>
     <section className={styles.grid}>
-      {investorRows.map((i:any)=><article key={i.id} className={styles.card}>
+      {investorRows.map((i:any)=><article key={i.id} className={`${styles.card} ${i.priority==="critical"?styles.cardAttention:i.priority==="high"?styles.cardPriority:["passed","inactive"].includes(i.status)?styles.cardMuted:""}`}>
         <div className={styles.cardTop}><span className={["engaged","diligence","committed"].includes(i.status)?styles.badgeActive:styles.badgePlanned}>{investorStatusLabel(i.status)}</span><em>{priorityLabel(i.priority)}</em></div>
         <h3>{i.name}</h3>
         <p>{i.organization||"Sin organización"} · {investorTypeLabel(i.investor_type)}<br/>Responsable: {ownerName(i.owner_user_id)}<br/>{i.email||"Correo no registrado"}<br/>Etapa: {investorStageLabel(i.stage)}</p>
@@ -223,7 +223,7 @@ export default async function MasterCapitalPage(){
 
     <section className={styles.sectionHead}><div><span>CAPITAL</span><h2>Oportunidades</h2></div><p>Seguimiento por monto, probabilidad, etapa, fecha y próxima acción.</p></section>
     <section className={styles.grid}>
-      {opportunityRows.map((o:any)=><article key={o.id} className={styles.card}>
+      {opportunityRows.map((o:any)=><article key={o.id} className={`${styles.card} ${o.status==="on_hold"?styles.cardWarning:["lost","canceled"].includes(o.status)?styles.cardMuted:o.status==="won"?styles.cardPriority:""}`}>
         <div className={styles.cardTop}><span className={o.status==="won"?styles.badgeActive:styles.badgePlanned}>{opportunityStageLabel(o.stage)}</span><em>{o.probability}%</em></div>
         <h3>{o.name}</h3>
         <p>{money(o.target_amount_cents,o.currency)} objetivo · {money(o.committed_amount_cents,o.currency)} comprometido<br/>Responsable: {ownerName(o.owner_user_id)}<br/>{o.expected_close_date||"Sin fecha"} · {o.next_action||"Próxima acción pendiente"}</p>
