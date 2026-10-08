@@ -92,6 +92,8 @@ export function AdminCommerceManager(){
 
   async function createProduct(){
     if(!draft.name_es.trim()){setMsg("El nombre ES es obligatorio.");return}
+    if(draft.mode==="external"&&!String(draft.external_url||"").trim()){setMsg("La venta externa necesita la URL del proveedor.");return}
+    if(draft.mode==="internal"&&draft.active&&!(Number(draft.price_cents)>=0)){setMsg("La venta interna activa necesita un precio válido.");return}
     setBusy(true);setMsg("Creando producto…");
     try{
       const r=await fetch("/api/admin/commerce/manage",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"product",...draft})});
@@ -107,9 +109,13 @@ export function AdminCommerceManager(){
   }
 
   async function saveProduct(p:Product,patch:Partial<Product>={}){
-    setBusy(true);
+    const next={...p,...patch};
+    if(!String(next.name_es||"").trim()){setMsg("El nombre ES es obligatorio.");return}
+    if(next.mode==="external"&&!String(next.external_url||"").trim()){setMsg("La venta externa necesita la URL del proveedor.");return}
+    if(next.mode==="internal"&&next.active&&next.price_cents===null){setMsg("La venta interna activa necesita un precio.");return}
+    setBusy(true);setMsg("Guardando producto…");
     try{
-      const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"product",...p,...patch})});
+      const r=await fetch("/api/admin/commerce/manage",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({entity:"product",...next})});
       const j=await r.json().catch(()=>({}));
       if(!r.ok){setMsg(commerceErrorMessage(j.error)||"No fue posible actualizar el producto.");return}
       setMsg("GUARDADO SATISFACTORIAMENTE");await load();
@@ -173,7 +179,7 @@ export function AdminCommerceManager(){
         {products.map(p=><div className="adminShopProductEditor" key={p.id}>
           <div className="wide">
             <strong>{p.name_es||"Producto sin nombre"}</strong>
-            <div className="note">{p.sku||"Sin SKU"} · {p.mode} · {p.payment_provider}</div>
+            <div className="note">{p.sku||"Sin SKU"} · {p.mode==="internal"?"Cobrar aquí":p.mode==="external"?"Proveedor externo":"Próximamente"} · {p.payment_provider==="auto"?"Procesador automático":p.payment_provider==="both"?"Stripe + PayPal":p.payment_provider}</div>
           </div>
 
           <div className="adminSaleMode wide">
@@ -201,6 +207,8 @@ export function AdminCommerceManager(){
           <label><span>Precio (centavos)</span><input type="number" min="0" value={p.price_cents??""} onChange={e=>patchProduct(p.id,{price_cents:e.target.value===""?null:Number(e.target.value)})}/></label>
           <label><span>Moneda</span><input maxLength={3} value={p.currency||"USD"} onChange={e=>patchProduct(p.id,{currency:e.target.value.toUpperCase()})}/></label>
           <label className="wide"><span>URL externa</span><input type="url" value={p.external_url||""} disabled={p.mode!=="external"} onChange={e=>patchProduct(p.id,{external_url:e.target.value})} placeholder={p.mode==="external"?"https://proveedor…":"Disponible cuando la modalidad es ENVIAR AL PROVEEDOR"}/></label>
+          {p.mode==="external"&&!p.external_url&&<p className="adminSaveFeedback error wide">Añade la URL del proveedor antes de guardar esta modalidad.</p>}
+          {p.mode==="internal"&&p.active&&p.price_cents===null&&<p className="adminSaveFeedback error wide">Añade un precio antes de activar la venta interna.</p>}
           <label><span>Stock</span><select value={p.stock_status} onChange={e=>patchProduct(p.id,{stock_status:e.target.value})}><option value="unknown">Sin definir</option><option value="in_stock">Disponible</option><option value="out_of_stock">Agotado</option><option value="preorder">Preorden</option><option value="unlimited">Ilimitado</option></select></label>
           <label><span>Activo</span><select value={p.active?"yes":"no"} onChange={e=>patchProduct(p.id,{active:e.target.value==="yes"})}><option value="no">No</option><option value="yes">Sí</option></select></label>
           <label><span>Destacado</span><select value={p.featured?"yes":"no"} onChange={e=>patchProduct(p.id,{featured:e.target.value==="yes"})}><option value="no">No</option><option value="yes">Sí</option></select></label>
