@@ -398,7 +398,7 @@ export default async function MasterLegalPage(){
       <article><small>Libros</small><strong>{(books||0).toLocaleString()}</strong><span>Catálogo editorial</span></article>
       <article><small>Multimedia</small><strong>{(media||0).toLocaleString()}</strong><span>Activos operativos</span></article>
       <article><small>Personajes</small><strong>{(characters||0).toLocaleString()}</strong><span>Universo creativo</span></article>
-      <article><small>Acceso</small><strong>ADMINISTRADOR</strong><span>Acceso a datos restringido</span></article>
+      <article><small>Acceso</small><strong className={styles.kpiLongValue}>ADMINISTRADOR</strong><span>Acceso a datos restringido</span></article>
     </section>
   </main>;
 }
