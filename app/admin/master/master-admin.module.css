@@ -1039,3 +1039,24 @@
 .moduleData .cardMuted{
   opacity:.66;
 }
+
+
+/* Automatización, Riesgos y Seguridad */
+.moduleAutomation .cardPriority .cardTop em{
+  color:#8ce9ff!important;
+}
+.moduleAutomation .cardAttention .cardTop em,
+.moduleRisk .cardAttention .cardTop em,
+.moduleSecurity .cardAttention .cardTop em{
+  color:#ff91aa!important;
+}
+.moduleAutomation .cardWarning .cardTop em,
+.moduleRisk .cardWarning .cardTop em,
+.moduleSecurity .cardWarning .cardTop em{
+  color:#ffc85e!important;
+}
+.moduleAutomation .cardMuted,
+.moduleRisk .cardMuted,
+.moduleSecurity .cardMuted{
+  opacity:.66;
+}
