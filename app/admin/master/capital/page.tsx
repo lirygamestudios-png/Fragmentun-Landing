@@ -5,6 +5,13 @@ import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
+function validPercent(value:number){
+  return Number.isInteger(value)&&value>=0&&value<=100;
+}
+function validCurrency(value:string){
+  return /^[A-Z]{3}$/.test(value);
+}
+
 function money(cents:number|null|undefined,currency="USD"){
   return new Intl.NumberFormat("en-US",{style:"currency",currency}).format((cents||0)/100);
 }
@@ -70,14 +77,14 @@ async function createOpportunity(formData:FormData){
   const target=Number(formData.get("target_amount")||0);
   const committed=Number(formData.get("committed_amount")||0);
   const currency=(String(formData.get("currency")||"USD").trim()||"USD").toUpperCase();
-  const probability=Math.max(0,Math.min(100,Number(formData.get("probability")||0)));
+  const probability=Number(formData.get("probability")||0);
   const expectedClose=String(formData.get("expected_close_date")||"").trim()||null;
   const nextAction=String(formData.get("next_action")||"").trim()||null;
   const allowedType=new Set(["equity","strategic","publishing","grant","debt","licensing","other"]);
-  if(!name||!allowedType.has(type)||!Number.isFinite(target)||!Number.isFinite(committed)||!Number.isFinite(probability)) throw new Error("invalid_opportunity");
+  if(!name||!allowedType.has(type)||!Number.isFinite(target)||target<0||!Number.isFinite(committed)||committed<0||!validPercent(probability)||!validCurrency(currency)) throw new Error("invalid_opportunity");
   const{error}=await supabase.from("fundraising_opportunities").insert({
-    investor_id:investorId,name,opportunity_type:type,target_amount_cents:Math.max(0,Math.round(target*100)),
-    committed_amount_cents:Math.max(0,Math.round(committed*100)),currency,probability,
+    investor_id:investorId,name,opportunity_type:type,target_amount_cents:Math.round(target*100),
+    committed_amount_cents:Math.round(committed*100),currency,probability,
     expected_close_date:expectedClose,next_action:nextAction,created_by:user.id
   });
   if(error) throw new Error(error.message);
@@ -127,8 +134,14 @@ async function updateOpportunity(formData:FormData){
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedStage=new Set(["prospect","qualified","meeting","materials","diligence","term_sheet","negotiation","committed","closed_won","closed_lost"]);
   const allowedStatus=new Set(["open","on_hold","won","lost","canceled"]);
-  if(!id||!allowedStage.has(stage)||!allowedStatus.has(status)||!Number.isFinite(probability)) throw new Error("invalid_opportunity_update");
+  if(!id||!allowedStage.has(stage)||!allowedStatus.has(status)||!validPercent(probability)) throw new Error("invalid_opportunity_update");
   if([target,committed].some(v=>v!==null&&(!Number.isFinite(v)||v<0))) throw new Error("invalid_amount");
+  const{data:existingOpportunity,error:existingOpportunityError}=await supabase.from("fundraising_opportunities").select("target_amount_cents,committed_amount_cents,currency").eq("id",id).maybeSingle();
+  if(existingOpportunityError) throw new Error(existingOpportunityError.message);
+  if(!existingOpportunity) throw new Error("opportunity_not_found");
+  const effectiveCommitted=committed??Number(existingOpportunity.committed_amount_cents||0);
+  if(status==="won"&&(stage!=="closed_won"||effectiveCommitted<=0)) throw new Error("won_opportunity_incomplete");
+  if(status==="lost"&&stage!=="closed_lost") throw new Error("lost_opportunity_stage_mismatch");
   const patch:any={
     stage,status,owner_user_id:ownerUserId,probability,expected_close_date:expectedClose,
     next_action:nextAction,next_action_at:nextActionAt,notes,updated_at:new Date().toISOString()
