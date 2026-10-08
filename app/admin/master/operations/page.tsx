@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 async function requireOpsEditor(){
   "use server";
@@ -214,7 +215,7 @@ export default async function MasterOperationsPage(){
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o editar trabajo y decisiones manualmente.</p>
       <section className={styles.adminForms}>
-      <form action={createWorkItem} className={styles.adminForm}>
+      <MasterActionForm action={createWorkItem} className={styles.adminForm} successText="Trabajo registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO TRABAJO</span><h2>Registrar trabajo</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="ops-001"/></label>
@@ -227,9 +228,9 @@ export default async function MasterOperationsPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar trabajo</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={createDecision} className={styles.adminForm}>
+      <MasterActionForm action={createDecision} className={styles.adminForm} successText="Decisión registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA DECISIÓN</span><h2>Registrar decisión</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="decision_code" required placeholder="dec-001"/></label>
@@ -240,11 +241,11 @@ export default async function MasterOperationsPage(){
           <label className={styles.span2}>Motivo<textarea name="rationale" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar decisión</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
 
       <section className={styles.adminForms}>
-      <form action={updateWorkItem} className={styles.adminForm}>
+      <MasterActionForm action={updateWorkItem} className={styles.adminForm} successText="Trabajo actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR TRABAJO</span><h2>Actualizar trabajo</h2></div>
         <div className={styles.formGrid}>
           <label>Trabajo<select name="work_id" required defaultValue=""><option value="" disabled>Seleccionar</option>{workRows.map((w:any)=><option key={w.id} value={w.id}>{w.code} · {w.title}</option>)}</select></label>
@@ -256,9 +257,9 @@ export default async function MasterOperationsPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit" disabled={!workRows.length} disabledReason="No hay trabajos registrados para actualizar.">Actualizar trabajo</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={updateDecision} className={styles.adminForm}>
+      <MasterActionForm action={updateDecision} className={styles.adminForm} successText="Decisión actualizada correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR DECISIÓN</span><h2>Actualizar decisión</h2></div>
         <div className={styles.formGrid}>
           <label>Decisión<select name="decision_id" required defaultValue=""><option value="" disabled>Seleccionar</option>{decisionRows.map((d:any)=><option key={d.id} value={d.id}>{d.decision_code} · {d.title}</option>)}</select></label>
@@ -269,7 +270,7 @@ export default async function MasterOperationsPage(){
           <label className={styles.span2}>Motivo<textarea name="rationale" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit" disabled={!decisionRows.length} disabledReason="No hay decisiones registradas para actualizar.">Actualizar decisión</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
     </details>}
 
