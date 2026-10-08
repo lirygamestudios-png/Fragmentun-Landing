@@ -295,8 +295,8 @@ export default async function MasterPeoplePage(){
     <section className={styles.kpis}>
       <article><small>Actividad administrativa</small><strong>{(activity||0).toLocaleString()}</strong><span>Historial de auditoría</span></article>
       <article><small>Equipo inferido</small><strong>NO</strong><span>Solo datos explícitos</span></article>
-      <article><small>Compensación</small><strong>NO CARGADA</strong><span>Se gestionará en una capa separada</span></article>
-      <article><small>Control de acceso</small><strong>ACTIVO</strong><span>Edición solo para administradores</span></article>
+      <article><small>Compensación</small><strong className={styles.kpiCompactValue}>NO CARGADA</strong><span>Se gestionará en una capa separada</span></article>
+      <article><small>Control de acceso</small><strong className={styles.kpiCompactValue}>ACTIVO</strong><span>Edición solo para administradores</span></article>
     </section>
   </main>;
 }
