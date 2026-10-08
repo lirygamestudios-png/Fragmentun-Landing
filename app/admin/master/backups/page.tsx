@@ -86,22 +86,22 @@ export default async function MasterBackupPage(){
     </section>
 
     <section className={styles.grid}>
-      <article className={styles.card}>
+      <article className={`${styles.card} ${styles.cardPriority}`}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>INCLUIDO</span><em>CONTENIDO</em></div>
         <h3>Contenido editorial</h3>
         <p>Libros, ediciones, personajes, mapas, pruebas, reseñas, campañas y contenido localizado.</p>
       </article>
-      <article className={styles.card}>
+      <article className={`${styles.card} ${styles.cardPriority}`}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>INCLUIDO</span><em>ARCHIVOS</em></div>
         <h3>Registro de archivos</h3>
         <p>Conserva rutas y metadatos de recursos multimedia para validar y reconstruir referencias.</p>
       </article>
-      <article className={styles.card}>
+      <article className={`${styles.card} ${styles.cardMuted}`}>
         <div className={styles.cardTop}><span className={styles.badgePlanned}>EXCLUIDO</span><em>PRIVACIDAD</em></div>
         <h3>Datos personales</h3>
         <p>No incluye contactos captados, usuarios de autenticación, perfiles administrativos ni registros sensibles.</p>
       </article>
-      <article className={styles.card}>
+      <article className={`${styles.card} ${styles.cardMuted}`}>
         <div className={styles.cardTop}><span className={styles.badgePlanned}>EXCLUIDO</span><em>SEGURIDAD</em></div>
         <h3>Credenciales</h3>
         <p>No incluye credenciales, claves privadas ni archivos binarios almacenados.</p>
