@@ -968,3 +968,93 @@
     transform:scale(.975);
   }
 }
+
+
+/* LIRYGAMES Commander Center · acceso contextual */
+.authShellLiry{
+  position:relative;
+  overflow:hidden;
+  padding:clamp(18px,4vw,48px);
+  background:
+    radial-gradient(circle at 18% 18%,rgba(124,77,255,.20),transparent 32%),
+    radial-gradient(circle at 84% 14%,rgba(79,216,255,.16),transparent 32%),
+    linear-gradient(145deg,#050611,#080a18 52%,#050713);
+}
+.authShellLiry .authExperience{
+  border-color:rgba(79,216,255,.22);
+  background:rgba(6,7,19,.92);
+  box-shadow:0 50px 120px rgba(0,0,0,.52),0 0 52px rgba(124,77,255,.09);
+}
+.authShellLiry .authStoryPanel{
+  background:
+    radial-gradient(circle at 75% 15%,rgba(79,216,255,.13),transparent 29%),
+    radial-gradient(circle at 20% 78%,rgba(124,77,255,.16),transparent 34%),
+    linear-gradient(155deg,rgba(11,12,30,.97),rgba(5,7,18,.99));
+  border-right-color:rgba(79,216,255,.14);
+}
+.authShellLiry .authBrandLockup strong{
+  color:#f5f7ff;
+  background:linear-gradient(90deg,#fff 0%,#a8ebff 30%,#9f72ff 68%,#ed7dff 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  letter-spacing:.22em;
+}
+.authShellLiry .authBrandLockup span{color:#71809f}
+.authShellLiry .authStoryCopy h1{
+  color:#f5f7ff;
+  font-family:"Orbitron","Rajdhani",Inter,system-ui,sans-serif;
+  font-size:clamp(2.55rem,4.8vw,4.8rem);
+  line-height:.98;
+  letter-spacing:.025em;
+}
+.authShellLiry .authStoryCopy p{color:#a8b4cb}
+.authShellLiry .authStoryStats span{
+  border-color:rgba(79,216,255,.15);
+  background:linear-gradient(90deg,rgba(124,77,255,.08),rgba(79,216,255,.045));
+  color:#aab6cf;
+}
+.authShellLiry .authStoryStats b{color:#4fd8ff}
+.authShellLiry .authStoryFooter{color:#687494}
+.authShellLiry .authCardPremium,
+.authShellLiry.authRecoveryShell .authRecoveryCard{
+  background:linear-gradient(180deg,rgba(13,16,39,.98),rgba(8,10,24,.99));
+  border-color:rgba(79,216,255,.22);
+  box-shadow:0 28px 80px rgba(0,0,0,.38),0 0 28px rgba(124,77,255,.08);
+}
+.authShellLiry .kicker{color:#4fd8ff}
+.authShellLiry .authForm input,
+.authShellLiry .authRecoveryForm input{
+  background:#070918;
+  border-color:rgba(91,181,232,.18);
+}
+.authShellLiry .authForm input:focus,
+.authShellLiry .authRecoveryForm input:focus{
+  border-color:rgba(79,216,255,.72);
+  background:#090c1f;
+  box-shadow:0 0 0 3px rgba(124,77,255,.12),0 0 18px rgba(79,216,255,.07);
+}
+.authShellLiry .btn.btnPrimary{
+  border-color:rgba(105,221,255,.46);
+  background:linear-gradient(100deg,rgba(124,77,255,.88),rgba(80,108,255,.82) 48%,rgba(54,202,238,.74));
+  box-shadow:0 8px 24px rgba(85,59,206,.22),inset 0 1px rgba(255,255,255,.12);
+}
+.authShellLiry .btn.btnPrimary:not(:disabled):hover{
+  border-color:rgba(133,231,255,.82);
+  background:linear-gradient(100deg,rgba(137,91,255,.96),rgba(86,119,255,.92) 48%,rgba(63,216,246,.84));
+  box-shadow:0 11px 30px rgba(111,72,230,.30),0 0 22px rgba(79,216,255,.14);
+}
+.authLirySigil{
+  position:relative;display:inline-block;width:54px;height:54px;flex:0 0 54px;border-radius:14px;
+  background:linear-gradient(145deg,rgba(124,77,255,.24),rgba(79,216,255,.10));
+  border:1px solid rgba(101,206,255,.42);
+  box-shadow:0 0 27px rgba(124,77,255,.20),inset 0 0 20px rgba(79,216,255,.06);
+}
+.authBrandLockup .authLirySigil{width:74px;height:74px;flex-basis:74px;border-radius:18px}
+.authLirySigil:before,.authLirySigil:after,.authLirySigil i{content:"";position:absolute;display:block}
+.authLirySigil:before{left:13px;top:11px;width:11px;height:31px;border:2px solid #4fd8ff;border-right:0;border-radius:3px 0 0 3px;box-shadow:0 0 11px rgba(79,216,255,.58)}
+.authLirySigil:after{right:10px;top:11px;width:16px;height:2px;background:linear-gradient(90deg,#7c4dff,#e04cff);box-shadow:0 11px 0 #4fd8ff,0 22px 0 #7c4dff}
+.authLirySigil i{left:24px;top:11px;width:2px;height:31px;background:linear-gradient(#e04cff,#4fd8ff);transform:skew(-13deg);box-shadow:0 0 10px rgba(224,76,255,.5)}
+.authBrandLockup .authLirySigil:before{left:18px;top:15px;width:14px;height:42px}
+.authBrandLockup .authLirySigil:after{right:14px;top:15px;width:20px;box-shadow:0 15px 0 #4fd8ff,0 30px 0 #7c4dff}
+.authBrandLockup .authLirySigil i{left:32px;top:15px;height:42px}
+.authShellLiry.authRecoveryShell .authRecoveryMark{display:flex;justify-content:center;margin-bottom:16px}
+@media(max-width:560px){.authShellLiry{padding:12px}}
