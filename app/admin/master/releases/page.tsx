@@ -245,37 +245,8 @@ async function updateGate(formData:FormData){
     patch.approved_by=user.id;
     patch.approved_at=now;
 
-    const{data:humanCheck,error:humanCheckLookupError}=await supabase
-      .from("release_gate_checks")
-      .select("id")
-      .eq("release_gate_id",id)
-      .eq("check_code","human-release-approval")
-      .maybeSingle();
-    if(humanCheckLookupError) throw new Error(humanCheckLookupError.message);
-
-    if(humanCheck?.id){
-      const{error:humanCheckError}=await supabase.from("release_gate_checks").update({
-        status:"passed",
-        evidence:"Aprobación humana registrada explícitamente desde LIRYGAMES Commander Center.",
-        checked_by:user.id,
-        checked_at:now,
-        updated_at:now
-      }).eq("id",humanCheck.id);
-      if(humanCheckError) throw new Error(humanCheckError.message);
-    }else{
-      const{error:humanCheckError}=await supabase.from("release_gate_checks").insert({
-        release_gate_id:id,
-        check_code:"human-release-approval",
-        label:"Human release approval",
-        check_type:"manual",
-        blocking:true,
-        status:"passed",
-        evidence:"Aprobación humana registrada explícitamente desde LIRYGAMES Commander Center.",
-        checked_by:user.id,
-        checked_at:now
-      });
-      if(humanCheckError) throw new Error(humanCheckError.message);
-    }
+    // El estado aprobado, approved_by y approved_at son la evidencia humana.
+    // No escribir un segundo registro: evita aprobaciones parcialmente guardadas.
   }
 
   const{data:updatedGate,error}=await supabase.from("release_gates").update(patch).eq("id",id).eq("status",existingGate.status).select("id").maybeSingle();
