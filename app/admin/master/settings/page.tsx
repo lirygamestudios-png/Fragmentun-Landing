@@ -143,8 +143,8 @@ export default async function SettingsPage(){
     <section className={styles.kpis}>
       <article><small>Parámetros</small><strong>{settingRows.length}</strong><span>{prodScoped} de producción</span></article>
       <article><small>Controles de activación</small><strong>{flagRows.length}</strong><span>{enabledFlags.length} activos</span></article>
-      <article><small>Credenciales</small><strong>PROHIBIDO</strong><span>Solo parámetros no sensibles</span></article>
-      <article><small>Acceso</small><strong className={styles.kpiLongValue}>ADMINISTRADOR</strong><span>Acceso restringido</span></article>
+      <article><small>Credenciales</small><strong className={styles.kpiCompactValue}>PROHIBIDO</strong><span>Solo parámetros no sensibles</span></article>
+      <article><small>Acceso</small><strong className={styles.kpiCompactValue}>ADMINISTRADOR</strong><span>Acceso restringido</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>PARÁMETROS</span><h2>Parámetros operativos</h2></div></section>
