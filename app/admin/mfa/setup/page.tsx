@@ -20,7 +20,7 @@ export default function AdminMfaSetupPage(){
       if(!r.ok){setMessageType("error");setMessage("No fue posible comprobar la verificación en dos pasos.");return;}
       if(j.state==="satisfied"){window.location.assign("/admin");return;}
       const totp=j.factors?.totp||[];
-      const verified=totp.find((f:any)=>f.status==="verified");
+      const verified=totp.find((f:any)=>f.status==="verified"&&String(f.friendly_name||"").trim().toLowerCase()==="fragmentun admin");
       if(verified){window.location.assign("/admin/mfa");return;}
     })();
   },[]);
