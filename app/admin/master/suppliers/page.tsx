@@ -104,11 +104,20 @@ export default async function MasterSuppliersPage(){
   const preferred=vendorRows.filter(v=>v.preferred).length;
   const legacySupplierNames=[...new Set([...productRows.map(p=>p.supplier),...fulfillmentRows.map(f=>f.supplier)].filter(Boolean))];
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleSuppliers}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · PROVEEDORES</span><h1>Proveedores</h1><p>Registro formal de proveedores separado de las referencias existentes en productos y entregas.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">PV</span>
+      <div className={styles.moduleStripCopy}><small>PROVEEDORES Y COMPRAS</small><strong>Suplidores, contratos y riesgo operativo</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Cadena de suministro conectada</span>
+        <span>Cambios protegidos · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Proveedores</small><strong>{vendorRows.length}</strong><span>Registrados</span></article>
