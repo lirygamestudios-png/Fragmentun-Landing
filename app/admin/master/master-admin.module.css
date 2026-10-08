@@ -1816,3 +1816,122 @@
     align-items:flex-start;
   }
 }
+
+
+/* Ronda visual: Seguridad · Legal · Integraciones */
+.moduleSecurity .sectionHead,
+.moduleLegal .sectionHead,
+.moduleIntegrations .sectionHead{
+  margin:32px 0 14px;
+  padding-bottom:10px;
+}
+
+.moduleSecurity .kpis article,
+.moduleLegal .kpis article,
+.moduleIntegrations .kpis article{
+  padding:16px;
+  border-radius:11px;
+}
+
+.moduleSecurity .card,
+.moduleLegal .card,
+.moduleIntegrations .card{
+  min-height:148px;
+  padding:16px;
+  border-radius:11px;
+}
+
+.moduleSecurity .adminForms,
+.moduleLegal .adminForms,
+.moduleIntegrations .adminForms{
+  margin:30px 0;
+  gap:14px;
+}
+
+.moduleSecurity .adminForm,
+.moduleLegal .adminForm,
+.moduleIntegrations .adminForm{
+  padding:18px;
+  border-radius:11px;
+}
+
+.adminFormWide{
+  grid-column:1/-1;
+}
+
+.moduleSecurity .moduleStrip,
+.moduleLegal .moduleStrip,
+.moduleIntegrations .moduleStrip{
+  margin:-6px 0 16px;
+  border-radius:11px;
+}
+
+.moduleSecurity .cardTop em,
+.moduleLegal .cardTop em,
+.moduleIntegrations .cardTop em{
+  max-width:48%;
+  text-align:right;
+  overflow-wrap:anywhere;
+}
+
+.moduleSecurity .card p,
+.moduleLegal .card p,
+.moduleIntegrations .card p,
+.moduleSecurity .card h3,
+.moduleLegal .card h3,
+.moduleIntegrations .card h3{
+  overflow-wrap:anywhere;
+}
+
+.moduleSecurity .kpis small,
+.moduleLegal .kpis small,
+.moduleIntegrations .kpis small,
+.moduleSecurity .kpis span,
+.moduleLegal .kpis span,
+.moduleIntegrations .kpis span{
+  overflow-wrap:anywhere;
+}
+
+@media(min-width:1050px){
+  .moduleSecurity .moduleStrip,
+  .moduleLegal .moduleStrip,
+  .moduleIntegrations .moduleStrip{
+    grid-template-columns:auto minmax(180px,1fr) auto;
+    gap:14px;
+  }
+  .moduleSecurity .moduleStripMeta,
+  .moduleLegal .moduleStripMeta,
+  .moduleIntegrations .moduleStripMeta{
+    grid-column:auto;
+    justify-content:flex-end;
+    padding-top:0;
+  }
+}
+
+@media(max-width:900px){
+  .moduleSecurity .moduleStrip,
+  .moduleLegal .moduleStrip,
+  .moduleIntegrations .moduleStrip{
+    grid-template-columns:auto 1fr;
+  }
+  .moduleSecurity .moduleStripMeta,
+  .moduleLegal .moduleStripMeta,
+  .moduleIntegrations .moduleStripMeta{
+    grid-column:1/-1;
+    justify-content:flex-start;
+    padding-top:2px;
+  }
+}
+
+@media(max-width:600px){
+  .moduleSecurity .sectionHead,
+  .moduleLegal .sectionHead,
+  .moduleIntegrations .sectionHead{
+    margin:28px 0 12px;
+  }
+  .moduleSecurity .cardTop,
+  .moduleLegal .cardTop,
+  .moduleIntegrations .cardTop{
+    align-items:flex-start;
+  }
+}
