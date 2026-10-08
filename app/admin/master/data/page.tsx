@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function dataEstadoLabel(value:string){
   const map:Record<string,string>={active:"ACTIVO",degraded:"DEGRADADO",paused:"PAUSADO",deprecated:"OBSOLETO",retired:"RETIRADO",draft:"BORRADOR"};
@@ -177,7 +178,7 @@ export default async function MasterDataPage(){
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar fuentes y métricas manualmente.</p>
       <section className={styles.adminForms}>
-      <form action={createDataSource} className={styles.adminForm}>
+      <MasterActionForm action={createDataSource} className={styles.adminForm} successText="Fuente de datos registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA FUENTE</span><h2>Registrar fuente</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="supabase-main"/></label>
@@ -188,9 +189,9 @@ export default async function MasterDataPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar fuente</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={createMetric} className={styles.adminForm}>
+      <MasterActionForm action={createMetric} className={styles.adminForm} successText="Métrica registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA MÉTRICA</span><h2>Registrar métrica</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="lead-conversion"/></label>
@@ -202,11 +203,11 @@ export default async function MasterDataPage(){
           <label className={styles.span2}>Definición<textarea name="definition" required rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar métrica</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
 
       <section className={styles.adminForms}>
-      <form action={updateDataSource} className={styles.adminForm}>
+      <MasterActionForm action={updateDataSource} className={styles.adminForm} successText="Fuente de datos actualizada correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR FUENTE</span><h2>Actualizar fuente</h2></div>
         <div className={styles.formGrid}>
           <label>Fuente<select name="source_id" required defaultValue=""><option value="" disabled>Seleccionar fuente</option>{sourceRows.map((s:any)=><option key={s.id} value={s.id}>{s.code} · {s.name}</option>)}</select></label>
@@ -217,9 +218,9 @@ export default async function MasterDataPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!sourceRows.length} disabledReason="No hay fuentes de datos registradas para actualizar.">Actualizar fuente</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={updateMetric} className={styles.adminForm}>
+      <MasterActionForm action={updateMetric} className={styles.adminForm} successText="Métrica actualizada correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR MÉTRICA</span><h2>Actualizar definición</h2></div>
         <div className={styles.formGrid}>
           <label>Métrica<select name="metric_id" required defaultValue=""><option value="" disabled>Seleccionar métrica</option>{metricRows.map((m:any)=><option key={m.id} value={m.id}>{m.code} · {m.name}</option>)}</select></label>
@@ -232,7 +233,7 @@ export default async function MasterDataPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!metricRows.length} disabledReason="No hay métricas registradas para actualizar.">Actualizar métrica</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
     </details>}
 
