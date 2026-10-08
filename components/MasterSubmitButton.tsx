@@ -1,7 +1,8 @@
 "use client";
 
 import type {ButtonHTMLAttributes,MouseEvent} from "react";
-import {useEffect,useRef,useState} from "react";
+import {useContext,useEffect,useRef,useState} from "react";
+import {MasterActionFormContext} from "./MasterActionForm";
 import {useFormStatus} from "react-dom";
 
 type Props=ButtonHTMLAttributes<HTMLButtonElement>&{
@@ -23,6 +24,7 @@ export function MasterSubmitButton({
   ...props
 }:Props){
   const{pending}=useFormStatus();
+  const managedFeedback=useContext(MasterActionFormContext);
   const wasPending=useRef(false);
   const[success,setSuccess]=useState(false);
 
@@ -64,7 +66,7 @@ export function MasterSubmitButton({
       color:"#8e9bad",
       fontSize:".72rem"
     }}>{disabledReason}</span>}
-    {success&&<span role="status" aria-live="polite" style={{
+    {success&&!managedFeedback&&<span role="status" aria-live="polite" style={{
       display:"block",
       marginTop:"8px",
       color:"#8fd3a7",
