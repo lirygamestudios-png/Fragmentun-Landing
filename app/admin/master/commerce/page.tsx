@@ -21,6 +21,12 @@ function simpleModeLabel(value:string){
   return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
 }
 
+function providerLabel(value:string|undefined){
+  const map:Record<string,string>={stripe:"Stripe",paypal:"PayPal",manual:"Manual",auto:"Automático",automatic:"Automático"};
+  if(!value)return "Automático";
+  return map[value]||String(value).replaceAll("_"," ").replace(/\b\w/g,m=>m.toUpperCase());
+}
+
 export default async function MasterCommercePage(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
@@ -50,13 +56,13 @@ export default async function MasterCommercePage(){
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · COMERCIO</span><h1>Comercio</h1><p>Pedidos, pagos, entregas y devoluciones sobre la tienda real.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
       <article><small>Pedidos</small><strong>{rows.length.toLocaleString()}</strong><span>{(products||0).toLocaleString()} productos registrados</span></article>
       <article><small>Pagado</small><strong>{money(totalPaid,currency)}</strong><span>{paid.length} pedidos pagados</span></article>
-      <article><small>Pendientes</small><strong>{open.length}</strong><span>Entregas pendientes</span></article>
+      <article><small>Pendientes</small><strong>{open.length}</strong><span>Pedidos por completar</span></article>
       <article><small>Reembolsos</small><strong>{refunds.length}</strong><span>Con devolución/reembolso</span></article>
     </section>
 
@@ -66,7 +72,7 @@ export default async function MasterCommercePage(){
       <section className={styles.adminForms}>
         <article className={styles.adminForm}>
           <div className={styles.formTitle}><span>TIENDA</span><h2>Productos, pedidos y devoluciones</h2></div>
-          <p>Gestiona el catálogo, las operaciones de pedidos, devoluciones y reportes de la tienda.</p>
+          <p>Gestiona el catálogo, pedidos, devoluciones y reportes de la tienda.</p>
           <a className={styles.formButton} href="/admin/tienda">Gestionar tienda y productos</a>
         </article>
         <article className={styles.adminForm}>
@@ -92,7 +98,7 @@ export default async function MasterCommercePage(){
       {[
         ["Stripe",settings?.stripe_enabled?"Habilitado":"Deshabilitado"],
         ["PayPal",settings?.paypal_enabled?"Habilitado":"Deshabilitado"],
-        ["Proveedor por defecto",settings?.default_payment_provider||"Automático"],
+        ["Proveedor por defecto",providerLabel(settings?.default_payment_provider)],
         ["Impuestos",simpleModeLabel(settings?.tax_mode||"manual")],
         ["Etiquetas de envío",simpleModeLabel(settings?.shipping_label_mode||"manual")],
         ["Entregas registradas",String(fulfillments||0)]
