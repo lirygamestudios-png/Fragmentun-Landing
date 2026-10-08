@@ -11,50 +11,60 @@ export function AdminSecurityMfa(){
   const[pendingId,setPendingId]=useState("");
   const[code,setCode]=useState("");
   const[status,setStatus]=useState("");
+  const[statusType,setStatusType]=useState<"info"|"success"|"error">("info");
   const[busy,setBusy]=useState(false);
+  const[loadError,setLoadError]=useState(false);
   const[aal,setAal]=useState("");
 
   async function load(){
-    const supabase=createSupabaseBrowserClient();
-    const[{data:f},{data:a}]=await Promise.all([
-      supabase.auth.mfa.listFactors(),
-      supabase.auth.mfa.getAuthenticatorAssuranceLevel()
-    ]);
-    setFactors((f?.totp||[]) as Factor[]);
-    setAal(a?.currentLevel||"aal1");
+    try{
+      const supabase=createSupabaseBrowserClient();
+      const[{data:f,error:factorError},{data:a,error:levelError}]=await Promise.all([
+        supabase.auth.mfa.listFactors(),
+        supabase.auth.mfa.getAuthenticatorAssuranceLevel()
+      ]);
+      if(factorError||levelError)throw new Error("load_failed");
+      setFactors((f?.totp||[]) as Factor[]);
+      setAal(a?.currentLevel||"aal1");
+      setLoadError(false);
+    }catch{
+      setLoadError(true);
+    }
   }
   useEffect(()=>{load()},[]);
 
   async function start(){
-    setBusy(true);setStatus("Preparando verificación…");
+    setBusy(true);setStatusType("info");setStatus("Preparando verificación…");
     const supabase=createSupabaseBrowserClient();
     for(const factor of factors.filter(x=>x.status!=="verified")){
       await supabase.auth.mfa.unenroll({factorId:factor.id}).catch(()=>{});
     }
     const{data,error}=await supabase.auth.mfa.enroll({factorType:"totp",friendlyName:"FRAGMENTUN Admin"});
-    if(error){setBusy(false);setStatus("No fue posible iniciar la configuración.");return}
-    setPendingId(data.id);setQr(data.totp.qr_code);setSecret(data.totp.secret);setStatus("Escanea el código QR y confirma con el código temporal.");setBusy(false);
+    if(error){setBusy(false);setStatusType("error");setStatus("No fue posible iniciar la configuración.");return}
+    setPendingId(data.id);setQr(data.totp.qr_code);setSecret(data.totp.secret);setStatusType("success");setStatus("Autenticador preparado. Escanea el código QR y confirma con el código temporal.");setBusy(false);
   }
 
   async function confirm(e:FormEvent){
     e.preventDefault();if(!pendingId)return;
-    setBusy(true);setStatus("Verificando…");
+    setBusy(true);setStatusType("info");setStatus("Verificando…");
     const supabase=createSupabaseBrowserClient();
     const challenge=await supabase.auth.mfa.challenge({factorId:pendingId});
-    if(challenge.error){setBusy(false);setStatus("No fue posible crear el desafío.");return}
+    if(challenge.error){setBusy(false);setStatusType("error");setStatus("No fue posible iniciar la verificación.");return}
     const verify=await supabase.auth.mfa.verify({factorId:pendingId,challengeId:challenge.data.id,code:code.trim()});
-    if(verify.error){setBusy(false);setStatus("Código incorrecto o vencido.");return}
-    setQr("");setSecret("");setPendingId("");setCode("");setStatus("Verificación en dos pasos activada correctamente.");setBusy(false);await load();
+    if(verify.error){setBusy(false);setStatusType("error");setStatus("Código incorrecto o vencido.");return}
+    setQr("");setSecret("");setPendingId("");setCode("");setStatusType("success");setStatus("Verificación en dos pasos activada correctamente.");setBusy(false);await load();
   }
 
   const verified=factors.filter(x=>x.status==="verified");
+
+  if(loadError)return <section className="card"><p className="adminSaveFeedback error">No fue posible cargar la configuración de seguridad.</p><button type="button" className="btn btnGhost" onClick={()=>window.location.reload()}>Reintentar</button></section>;
 
   return <div className="card adminSecondaryPanel">
     <div className="adminPanelHeader"><div><div className="kicker">Seguridad</div><h2>Verificación en dos pasos</h2></div><span className="adminPanelBadge">{verified.length?"ACTIVA":"OPCIONAL"}</span></div>
     <p className="note">Añade una segunda comprobación al acceso del Panel de administración mediante una aplicación autenticadora. Solo se vuelve obligatoria para tu cuenta después de completar y verificar el registro.</p>
     <div className="organicTrackingSummary">
-      <div><span>Estado</span><strong>{verified.length?"Protegido con MFA":"Sin segundo factor"}</strong></div>
-      <div><span>Nivel de sesión</span><strong>{aal==="aal2"?"AAL2 · reforzado":"AAL1 · contraseña"}</strong></div>
+      <div><span>Estado</span><strong>{verified.length?"Protegido con segundo factor":"Solo contraseña"}</strong></div>
+      <div><span>Nivel de sesión</span><strong>{aal==="aal2"?"Acceso reforzado":"Acceso con contraseña"}</strong></div>
       <div><span>Factores verificados</span><strong>{verified.length}</strong></div>
     </div>
     {!verified.length&&!pendingId&&<div className="heroActions"><button className="btn btnPrimary" type="button" disabled={busy} onClick={start}>{busy?"Preparando…":"Configurar autenticador"}</button></div>}
@@ -69,6 +79,6 @@ export function AdminSecurityMfa(){
       </form>
     </div>}
     {verified.length>0&&<p className="note" style={{marginTop:16}}>Tu cuenta ya tiene un autenticador verificado. En los próximos accesos, FRAGMENTUN exigirá el código temporal después de la contraseña.</p>}
-    {status&&<p className="adminSaveFeedback" role="status">{status}</p>}
+    {status&&<p className={`adminSaveFeedback ${statusType==="success"?"success":statusType==="error"?"error":""}`} role="status" aria-live="polite">{status}</p>}
   </div>;
 }
