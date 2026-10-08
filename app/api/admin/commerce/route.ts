@@ -36,8 +36,13 @@ export async function GET(){
   ]);
 
   if(settingsError)return NextResponse.json({error:settingsError.message},{status:500});
+  const processorStatus={
+    stripe_configured:!!(process.env.STRIPE_SECRET_KEY||process.env.STRIPE_API_KEY),
+    paypal_configured:!!(process.env.PAYPAL_CLIENT_ID&&process.env.PAYPAL_CLIENT_SECRET)
+  };
   return NextResponse.json({
     settings,
+    processor_status:processorStatus,
     stats:{
       products:productCount||0,
       active_products:activeProductCount||0,
