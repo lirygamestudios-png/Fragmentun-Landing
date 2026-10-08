@@ -8,39 +8,52 @@ export default function ResetPasswordPage(){
   const[password,setPassword]=useState("");
   const[confirm,setConfirm]=useState("");
   const[status,setStatus]=useState("");
+  const[statusType,setStatusType]=useState<"info"|"success"|"error">("info");
   const[loading,setLoading]=useState(false);
 
   async function submit(event:FormEvent){
     event.preventDefault();
 
     if(password!==confirm){
+      setStatusType("error");
       setStatus("Las contraseñas no coinciden.");
       return;
     }
 
     if(password.length<12){
+      setStatusType("error");
       setStatus("La contraseña debe tener al menos 12 caracteres.");
       return;
     }
 
     setLoading(true);
-    const r=await fetch("/api/auth/update-password",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({password})
-    });
-    const j=await r.json().catch(()=>({}));
+    setStatusType("info");
+    setStatus("Actualizando contraseña…");
+    try{
+      const r=await fetch("/api/auth/update-password",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({password})
+      });
+      const j=await r.json().catch(()=>({}));
 
-    if(r.ok){
-      setStatus("Contraseña actualizada correctamente.");
-      setTimeout(()=>router.replace("/admin"),700);
-      return;
+      if(r.ok){
+        setStatusType("success");
+        setStatus("Contraseña actualizada correctamente.");
+        setTimeout(()=>router.replace("/admin"),700);
+        return;
+      }
+
+      setStatusType("error");
+      setStatus(j.error==="unauthorized"
+        ?"El enlace de recuperación expiró o la sesión ya no es válida."
+        :"No fue posible actualizar la contraseña.");
+    }catch{
+      setStatusType("error");
+      setStatus("No fue posible conectar con el servicio. Revisa tu conexión e inténtalo nuevamente.");
+    }finally{
+      setLoading(false);
     }
-
-    setLoading(false);
-    setStatus(j.error==="unauthorized"
-      ?"El enlace de recuperación expiró o la sesión ya no es válida."
-      :"No fue posible actualizar la contraseña.");
   }
 
   return <main className="authShell authRecoveryShell">
@@ -68,7 +81,7 @@ export default function ResetPasswordPage(){
         <Link href="/admin/login">Volver al acceso</Link>
       </div>
 
-      {status&&<p className="note" role="status">{status}</p>}
+      {status&&<p className={`authStatus ${statusType}`} role="status" aria-live="polite">{status}</p>}
     </section>
   </main>;
 }
