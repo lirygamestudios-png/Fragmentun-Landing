@@ -181,14 +181,14 @@ export default async function MasterStrategyPage(){
 
     <section className={styles.kpis}>
       <article><small>Objetivos activos</small><strong>{activeObjectives.length}</strong><span>{objectiveRows.length} totales</span></article>
-      <article><small>En riesgo</small><strong>{atRiskObjectives.length}</strong><span>Objetivos en riesgo</span></article>
+      <article className={atRiskObjectives.length?styles.kpiAttention:undefined}><small>En riesgo</small><strong>{atRiskObjectives.length}</strong><span>{atRiskObjectives.length?"Objetivos en riesgo":"Sin objetivos en riesgo"}</span></article>
       <article><small>Resultados medibles</small><strong>{krRows.length}</strong><span>Medidas registradas</span></article>
       <article><small>Conversión de contactos 30 días</small><strong>{leadConversion.toFixed(1)}%</strong><span>Señal operativa</span></article>
     </section>
 
     <section className={styles.sectionHead}><div><span>OBJETIVOS</span><h2>Objetivos estratégicos</h2></div><p>Cada objetivo debe registrarse de forma explícita y medible.</p></section>
     <section className={styles.grid}>
-      {objectiveRows.map((o:any)=><article key={o.id} className={styles.card}>
+      {objectiveRows.map((o:any)=><article key={o.id} className={`${styles.card} ${o.status==="at_risk"||o.priority==="critical"?styles.cardAttention:o.priority==="high"?styles.cardPriority:["completed","canceled"].includes(o.status)?styles.cardMuted:""}`}>
         <div className={styles.cardTop}><span className={o.status==="active"?styles.badgeActive:styles.badgePlanned}>{strategyStatusLabel(o.status)}</span><em>{priorityLabel(o.priority)}</em></div>
         <h3>{o.title}</h3><p>{horizonLabel(o.horizon)} · {o.progress_percent}%<br/>Responsable: {ownerName(o.owner_user_id)}<br/>{o.start_date||"sin inicio"} → {o.target_date||"sin fecha objetivo"}<br/>{o.description||"Sin descripción"}</p>
       </article>)}
@@ -197,7 +197,7 @@ export default async function MasterStrategyPage(){
 
     <section className={styles.sectionHead}><div><span>RESULTADOS</span><h2>Resultados medibles</h2></div></section>
     <section className={styles.grid}>
-      {krRows.map((kr:any)=><article key={kr.id} className={styles.card}>
+      {krRows.map((kr:any)=><article key={kr.id} className={`${styles.card} ${kr.status==="at_risk"?styles.cardAttention:["completed","canceled"].includes(kr.status)?styles.cardMuted:""}`}>
         <div className={styles.cardTop}><span className={kr.status==="completed"?styles.badgeActive:styles.badgePlanned}>{strategyStatusLabel(kr.status)}</span><em>{kr.metric_name||"Indicador"}</em></div>
         <h3>{kr.title}</h3><p>Responsable: {ownerName(kr.owner_user_id)}<br/>Base: {kr.baseline??"—"} {kr.unit||""}<br/>Actual: {kr.current_value??"—"} · Objetivo: {kr.target_value??"—"} {kr.unit||""}<br/>{kr.target_date||"Sin fecha"}</p>
       </article>)}
