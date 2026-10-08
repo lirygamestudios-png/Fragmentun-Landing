@@ -68,7 +68,7 @@ async function updateWorkItem(formData:FormData){
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedStatus=new Set(["open","in_progress","blocked","waiting","completed","canceled"]);
   const allowedPriority=new Set(["low","medium","high","critical"]);
-  if(!id||!allowedStatus.has(status)||!allowedPriority.has(priority)) throw new Error("invalid_work_update");
+  if(!id||!allowedStatus.has(status)||!allowedPriority.has(priority)||(status==="completed"&&!ownerUserId)) throw new Error("invalid_work_update");
   const{error}=await supabase.from("ops_work_items").update({
     status,priority,owner_user_id:ownerUserId,due_date:dueDate,next_action:nextAction,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
@@ -87,7 +87,7 @@ async function updateDecision(formData:FormData){
   const rationale=String(formData.get("rationale")||"").trim()||null;
   const reviewDate=String(formData.get("review_date")||"").trim()||null;
   const allowedStatus=new Set(["proposed","approved","rejected","superseded","implemented"]);
-  if(!id||!allowedStatus.has(status)) throw new Error("invalid_decision_update");
+  if(!id||!allowedStatus.has(status)||(["approved","rejected","implemented"].includes(status)&&(!decision||!rationale))||(status==="implemented"&&!ownerUserId)) throw new Error("invalid_decision_update");
   const patch:any={
     status,owner_user_id:ownerUserId,decision,rationale,review_date:reviewDate,updated_at:new Date().toISOString()
   };
