@@ -157,12 +157,18 @@ export default async function MasterPeoplePage(){
     {data:members},
     {data:assignments},
     {count:adminProfiles},
-    {count:activity}
+    {count:activity},
+    {data:gameMetrics},
+    {data:gamePurchases},
+    {data:gameEntitlements}
   ]=await Promise.all([
     supabase.from("people_members").select("id,display_name,email,employment_type,status,title,department,manager_id,location,start_date,end_date,allocation_percent,skills,notes,created_at").order("display_name",{ascending:true}),
     supabase.from("people_assignments").select("id,member_id,domain,workstream,allocation_percent,priority,status,start_date,end_date,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("admin_profiles").select("*",{count:"exact",head:true}),
-    supabase.from("admin_audit_log").select("*",{count:"exact",head:true})
+    supabase.from("admin_audit_log").select("*",{count:"exact",head:true}),
+    supabase.from("game_engagement_daily").select("metric_date,active_players").order("metric_date",{ascending:false}).limit(1000),
+    supabase.from("game_purchase_events").select("status,purchased_at").order("purchased_at",{ascending:false}).limit(5000),
+    supabase.from("game_entitlements").select("status").limit(5000)
   ]);
 
   const memberRows=(members||[]) as any[];
@@ -171,6 +177,13 @@ export default async function MasterPeoplePage(){
   const activeAssignments=assignmentRows.filter(a=>a.status==="active");
   const committed=activeAssignments.reduce((a,x)=>a+Number(x.allocation_percent||0),0);
   const departments=new Set(activeMembers.map(m=>m.department).filter(Boolean));
+  const metricRows=(gameMetrics||[]) as any[];
+  const latestGameDate=metricRows[0]?.metric_date||null;
+  const activePlayers=latestGameDate?metricRows.filter(m=>m.metric_date===latestGameDate).reduce((a,m)=>a+Number(m.active_players||0),0):0;
+  const purchaseRows=(gamePurchases||[]) as any[];
+  const failedPayments=purchaseRows.filter(p=>["failed","chargeback"].includes(p.status)).length;
+  const entitlementIssues=((gameEntitlements||[]) as any[]).filter(e=>["pending","failed"].includes(e.status)).length;
+  const availableCapacity=Math.max(0,activeMembers.reduce((a,m)=>a+Number(m.allocation_percent??100),0)-committed);
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.modulePeople}`}>
     <header className={styles.topbar}>
@@ -192,6 +205,14 @@ export default async function MasterPeoplePage(){
       <article><small>Departamentos</small><strong>{departments.size}</strong><span>Estructura registrada</span></article>
       <article><small>Asignaciones activas</small><strong>{activeAssignments.length}</strong><span>{committed}% disponibilidad asignada</span></article>
       <article><small>Usuarios administrativos</small><strong>{(adminProfiles||0).toLocaleString()}</strong><span>Acceso al sistema, no personas del equipo</span></article>
+    </section>
+
+    <section className={styles.sectionHead}><div><span>FREEMIUM · CAPACIDAD</span><h2>Presión operativa del primer juego</h2></div><p>Señales para orientar la capacidad humana. No crean vacantes, contrataciones ni equivalencias de personal automáticamente.</p></section>
+    <section className={styles.kpis}>
+      <article><small>Jugadores activos</small><strong>{activePlayers.toLocaleString()}</strong><span>{latestGameDate||"Sin telemetría diaria"}</span></article>
+      <article><small>Capacidad disponible</small><strong>{availableCapacity}%</strong><span>Suma de disponibilidad explícita no asignada</span></article>
+      <article className={failedPayments?styles.kpiAttention:undefined}><small>Incidencias de pago</small><strong>{failedPayments}</strong><span>{failedPayments?"Fallos o chargebacks":"Sin incidencias"}</span></article>
+      <article className={entitlementIssues?styles.kpiAttention:undefined}><small>Entregas por revisar</small><strong>{entitlementIssues}</strong><span>{entitlementIssues?"Pendientes o fallidas":"Sin incidencias"}</span></article>
     </section>
 
     <section className={styles.sectionHead}>
