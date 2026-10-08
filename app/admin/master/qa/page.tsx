@@ -24,7 +24,12 @@ export default async function QaFinalPage(){
   ]);
 
   const validationOk=latestValidation?.status==="passed";
-  const validationLabel=!latestValidation?"SIN PRUEBA":validationOk?"CORRECTA":"REVISAR";
+  const currentDeployment=process.env.VERCEL_DEPLOYMENT_ID||null;
+  const currentCommit=process.env.VERCEL_GIT_COMMIT_SHA||null;
+  const validationMatchesCurrentDeployment=!currentDeployment||!latestValidation?.deployment_id||latestValidation.deployment_id===currentDeployment;
+  const validationMatchesCurrentCommit=!currentCommit||!latestValidation?.commit_sha||latestValidation.commit_sha===currentCommit;
+  const validationIsCurrent=validationMatchesCurrentDeployment&&validationMatchesCurrentCommit;
+  const validationLabel=!latestValidation?"SIN PRUEBA":!validationOk?"REVISAR":validationIsCurrent?"CORRECTA":"DESACTUALIZADA";
   const gateApproved=latestGate?.status==="approved";
   const validationDeployment=latestValidation?.deployment_id||null;
   const gateDeployment=latestGate?.target_deployment_id||null;
@@ -37,12 +42,12 @@ export default async function QaFinalPage(){
     ?validationCommit===gateCommit
     :true;
   const gateMatchesValidation=sameDeployment&&sameCommit;
-  const gateReady=gateApproved&&gateMatchesValidation;
-  const gateLabel=!latestGate?"SIN REVISIÓN":!gateApproved?"REVISAR":gateMatchesValidation?"APROBADA":"VERSIÓN DISTINTA";
+  const gateReady=gateApproved&&gateMatchesValidation&&validationIsCurrent;
+  const gateLabel=!latestGate?"SIN REVISIÓN":!gateApproved?"REVISAR":!validationIsCurrent?"NUEVA PRUEBA":gateMatchesValidation?"APROBADA":"VERSIÓN DISTINTA";
   const incidentsOk=(openIncidents||0)===0;
   const approvalsOk=(pendingApprovals||0)===0;
   const checksOk=(failedChecks||0)===0;
-  const ready=validationOk&&gateReady&&incidentsOk&&approvalsOk&&checksOk;
+  const ready=validationOk&&validationIsCurrent&&gateReady&&incidentsOk&&approvalsOk&&checksOk;
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleQa}`}>
     <header className={styles.topbar}>
