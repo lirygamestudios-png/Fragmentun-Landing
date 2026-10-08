@@ -976,3 +976,22 @@
 .moduleCommunity .cardWarning .cardTop em{
   color:#ffc85e!important;
 }
+
+
+/* Negocio — Finanzas, Capital y Alianzas */
+.moduleFinance .cardWarning .cardTop em,
+.modulePartners .cardWarning .cardTop em{
+  color:#ffc85e!important;
+}
+.moduleCapital .cardPriority .cardTop em,
+.modulePartners .cardPriority .cardTop em{
+  color:#8ce9ff!important;
+}
+.moduleFinance .cardMuted,
+.moduleCapital .cardMuted,
+.modulePartners .cardMuted{
+  opacity:.66;
+}
+.moduleCapital .cardAttention .cardTop em{
+  color:#ff91aa!important;
+}
