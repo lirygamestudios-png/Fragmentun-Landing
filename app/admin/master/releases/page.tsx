@@ -239,11 +239,20 @@ export default async function ReleaseGatePage(){
     :true;
   const evidenceIntegrated=runtimeEvidence?.status==="passed"&&validationPassed&&deploymentMatches&&commitMatches;
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleReleases}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · CONTROL DE PUBLICACIÓN</span><h1>Revisión antes de publicar</h1><p>Comprueba que una versión esté lista antes de cualquier publicación. Esta pantalla no publica por sí sola.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">RL</span>
+      <div className={styles.moduleStripCopy}><small>REVISIÓN PARA PUBLICAR</small><strong>Evidencia, bloqueos y aprobación</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Validación de versión conectada</span>
+        <span>Aprobación humana obligatoria</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Revisiones</small><strong>{gateRows.length}</strong><span>{approved} aprobados</span></article>
