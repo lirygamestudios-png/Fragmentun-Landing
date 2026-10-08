@@ -313,8 +313,8 @@ export default async function MasterTechnologyPage(){
     <section className={styles.kpis}>
       <article><small>Controles antiabuso</small><strong>{(rateRows||0).toLocaleString()}</strong><span>Antiabuso</span></article>
       <article><small>Media</small><strong>{(media||0).toLocaleString()}</strong><span>Recursos registrados</span></article>
-      <article><small>Acceso a datos</small><strong>PROTEGIDO</strong><span>Administración y edición</span></article>
-      <article><small>Producción</small><strong>PROTEGIDA</strong><span>Versión pública intacta</span></article>
+      <article><small>Acceso a datos</small><strong className={styles.kpiCompactValue}>PROTEGIDO</strong><span>Administración y edición</span></article>
+      <article><small>Producción</small><strong className={styles.kpiCompactValue}>PROTEGIDA</strong><span>Versión pública intacta</span></article>
     </section>
   </main>;
 }
