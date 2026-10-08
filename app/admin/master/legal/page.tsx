@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
+import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
@@ -24,6 +25,7 @@ async function requireLegalAdmin(){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user) redirect("/admin/login");
+  if(!(await hasSatisfiedMfa(supabase))) throw new Error("mfa_required");
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile||profile.role!=="admin") throw new Error("admin_required");
   return {supabase,user};
@@ -43,7 +45,7 @@ async function createIpAsset(formData:FormData){
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowed=new Set(["book","game","character","world","art","trademark","script","music","video","software","other"]);
   if(!code||!name||!ipName||!allowed.has(type)) throw new Error("invalid_ip_asset");
-  const{error}=await supabase.from("Registrados").insert({
+  const{error}=await supabase.from("ip_assets").insert({
     code,name,ip_name:ipName,asset_type:type,owner_entity:ownerEntity,jurisdiction,
     registration_number:registrationNumber,registration_date:registrationDate,notes,created_by:user.id
   });
@@ -67,7 +69,7 @@ async function createRight(formData:FormData){
   const allowedExclusivity=new Set(["exclusive","non_exclusive","shared","unknown"]);
   const allowedEstado=new Set(["owned","licensed_out","licensed_in","expired","terminated","disputed","pending"]);
   if(!assetId||!allowedRight.has(rightType)||!allowedExclusivity.has(exclusivity)||!allowedEstado.has(status)) throw new Error("invalid_right");
-  const{error}=await supabase.from("Registrados").insert({
+  const{error}=await supabase.from("ip_rights").insert({
     asset_id:assetId,right_type:rightType,territory,exclusivity,holder_name:holderName,licensee_name:licenseeName,
     start_date:startDate,end_date:endDate,status,created_by:user.id
   });
@@ -111,7 +113,7 @@ async function updateIpAsset(formData:FormData){
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedEstado=new Set(["draft","active","licensed","archived","disputed","retired"]);
   if(!id||!allowedEstado.has(status)) throw new Error("invalid_asset_update");
-  const{error}=await supabase.from("Registrados").update({
+  const{error}=await supabase.from("ip_assets").update({
     status,owner_entity:ownerEntity,jurisdiction,registration_number:registrationNumber,
     registration_date:registrationDate,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
@@ -134,7 +136,7 @@ async function updateRight(formData:FormData){
   const allowedEstado=new Set(["owned","licensed_out","licensed_in","expired","terminated","disputed","pending"]);
   const allowedEx=new Set(["exclusive","non_exclusive","shared","unknown"]);
   if(!id||!allowedEstado.has(status)||!allowedEx.has(exclusivity)) throw new Error("invalid_right_update");
-  const{error}=await supabase.from("Registrados").update({
+  const{error}=await supabase.from("ip_rights").update({
     status,exclusivity,territory,holder_name:holderName,licensee_name:licenseeName,
     start_date:startDate,end_date:endDate,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
@@ -185,8 +187,8 @@ export default async function MasterLegalPage(){
     {count:characters},
     {data:owners}
   ]=await Promise.all([
-    supabase.from("Registrados").select("id,code,name,ip_name,asset_type,status,jurisdiction,registration_number,registration_date,owner_entity,notes,created_at").order("created_at",{ascending:false}),
-    supabase.from("Registrados").select("id,asset_id,right_type,territory,exclusivity,holder_name,licensee_name,start_date,end_date,status,notes,created_at").order("created_at",{ascending:false}),
+    supabase.from("ip_assets").select("id,code,name,ip_name,asset_type,status,jurisdiction,registration_number,registration_date,owner_entity,notes,created_at").order("created_at",{ascending:false}),
+    supabase.from("ip_rights").select("id,asset_id,right_type,territory,exclusivity,holder_name,licensee_name,start_date,end_date,status,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("legal_contracts").select("id,contract_code,title,contract_type,counterparty,status,effective_date,expiration_date,auto_renew,renewal_notice_days,value_cents,currency,owner_user_id,notes,created_at").order("created_at",{ascending:false}),
     supabase.from("books").select("*",{count:"exact",head:true}),
     supabase.from("media_assets").select("*",{count:"exact",head:true}),
