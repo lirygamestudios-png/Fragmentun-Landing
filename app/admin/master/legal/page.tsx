@@ -216,6 +216,10 @@ export default async function MasterLegalPage(){
     return days>=0&&days<=90;
   });
   const disputed=assetRows.filter(a=>a.status==="disputed").length+rightRows.filter(r=>r.status==="disputed").length;
+  const gameAssets=assetRows.filter(a=>a.asset_type==="game"&&["active","licensed"].includes(a.status)).length;
+  const distributionRights=rightRows.filter(r=>["distribution","game"].includes(r.right_type)&&!["expired","terminated","disputed"].includes(r.status)).length;
+  const distributionContracts=contractRows.filter(c=>["distribution","publishing","license"].includes(c.contract_type)&&["active","signature","review"].includes(c.status)).length;
+  const vendorContracts=contractRows.filter(c=>c.contract_type==="vendor"&&["active","signature","review"].includes(c.status)).length;
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleLegal}`}>
     <header className={styles.topbar}>
@@ -237,6 +241,26 @@ export default async function MasterLegalPage(){
       <article><small>Derechos</small><strong>{rightRows.length}</strong><span>Registrados</span></article>
       <article className={expiringSoon.length?styles.kpiAttention:undefined}><small>Contratos activos</small><strong>{activeContracts.length}</strong><span>{expiringSoon.length?expiringSoon.length+" vencen ≤90 días":"Sin vencimientos próximos"}</span></article>
       <article className={disputed?styles.kpiAttention:undefined}><small>Disputas</small><strong>{disputed}</strong><span>{disputed?"Activos + derechos en disputa":"Sin disputas registradas"}</span></article>
+    </section>
+
+    <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · PREPARACIÓN LEGAL</span><h2>Cobertura para el primer juego online</h2></div>
+      <p>Indicadores de documentación existente. No sustituyen revisión jurídica ni crean derechos o contratos automáticamente.</p>
+    </section>
+
+    <section className={styles.kpis}>
+      <article><small>Activos de videojuego</small><strong>{gameAssets}</strong><span>Activos IP activos o licenciados</span></article>
+      <article><small>Derechos de juego/distribución</small><strong>{distributionRights}</strong><span>Derechos vigentes registrados</span></article>
+      <article><small>Contratos de distribución</small><strong>{distributionContracts}</strong><span>Licencia, publicación o distribución</span></article>
+      <article><small>Contratos con proveedores</small><strong>{vendorContracts}</strong><span>Proveedores formalizados</span></article>
+    </section>
+
+    <section className={styles.notice}>
+      <div>
+        <strong>Bienes virtuales y plataformas</strong>
+        <span>Antes del primer juego online deberán quedar documentados los términos aplicables a distribución, proveedores/plataformas, propiedad de activos digitales y condiciones comerciales correspondientes.</span>
+      </div>
+      <code>Revisión humana</code>
     </section>
 
     <section className={styles.sectionHead}><div><span>PROPIEDAD INTELECTUAL</span><h2>Activos intelectuales</h2></div><p>Inventario legal separado del catálogo editorial y multimedia.</p></section>
