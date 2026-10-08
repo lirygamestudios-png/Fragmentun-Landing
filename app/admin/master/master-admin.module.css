@@ -956,3 +956,23 @@
 .moduleCommerce .cardWarning .cardTop span{
   color:#ffc85e!important;
 }
+
+
+/* Negocio — prioridad comercial y comunidad */
+.cardPriority{
+  border-color:rgba(79,216,255,.30)!important;
+  background:
+    radial-gradient(circle at 92% 6%,rgba(79,216,255,.08),transparent 34%),
+    linear-gradient(180deg,rgba(13,18,42,.985),rgba(8,10,24,.99))!important;
+  box-shadow:inset 2px 0 rgba(79,216,255,.72),0 14px 34px rgba(0,0,0,.17)!important;
+}
+.cardPriority .cardTop em{color:#8ce9ff!important}
+.moduleGrowth .cardMuted,
+.moduleMonetization .cardMuted,
+.moduleCommunity .cardMuted{
+  opacity:.68;
+}
+.moduleMonetization .cardWarning .cardTop em,
+.moduleCommunity .cardWarning .cardTop em{
+  color:#ffc85e!important;
+}
