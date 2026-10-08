@@ -104,6 +104,48 @@ export default async function MasterMonetizationPage(){
     </section>
 
     <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · VIDEOJUEGOS</span><h2>Economía in-game</h2></div>
+      <p>Ingresos, compradores y entrega digital provenientes del backend de los juegos. Las ventas no se crean manualmente desde el Admin.</p>
+    </section>
+
+    <section className={styles.kpis}>
+      <article><small>Artículos virtuales activos</small><strong>{virtualItemRows.filter(i=>i.active).length}</strong><span>{virtualOfferRows.filter(o=>o.active).length} ofertas activas</span></article>
+      <article><small>Ingresos in-game brutos</small><strong className={styles.kpiLongValue}>{money(inGameGross,inGameCurrency)}</strong><span>{paidGamePurchases.length} compras pagadas</span></article>
+      <article><small>Ingresos in-game netos</small><strong className={styles.kpiLongValue}>{money(inGameNet,inGameCurrency)}</strong><span>Después de comisiones e impuestos registrados</span></article>
+      <article><small>Jugadores pagadores</small><strong>{payingPlayers.size}</strong><span>ARPPU {money(arppu,inGameCurrency)}</span></article>
+      <article><small>Conversión diaria</small><strong>{payerConversion.toFixed(2)}%</strong><span>{latestMetricDate?latestPayers+" de "+latestActivePlayers+" jugadores activos":"Sin telemetría diaria"}</span></article>
+      <article className={pendingEntitlements.length?styles.kpiAttention:undefined}><small>Entregas digitales pendientes</small><strong>{pendingEntitlements.length}</strong><span>{pendingEntitlements.length?"Requieren revisión":"Sin incidencias de entrega"}</span></article>
+    </section>
+
+    <section className={styles.sectionHead}>
+      <div><span>CATÁLOGO VIRTUAL</span><h2>Artículos y ofertas in-game</h2></div>
+      <p>Skins, cosméticos, consumibles, pases y otros bienes digitales por videojuego.</p>
+    </section>
+
+    <section className={styles.grid}>
+      {virtualItemRows.slice(0,12).map((i:any)=><article key={i.id} className={`${styles.card} ${!i.active?styles.cardMuted:""}`}>
+        <div className={styles.cardTop}><span className={i.active?styles.badgeActive:styles.badgePlanned}>{i.active?"ACTIVO":"INACTIVO"}</span><em>{String(i.item_type||"virtual").replaceAll("_"," ").toUpperCase()}</em></div>
+        <h3>{i.name}</h3>
+        <p>{gameName(i.game_id)} · {i.sku}<br/>{String(i.grant_type||"durable").replaceAll("_"," ").toUpperCase()} · {String(i.rarity||"standard").toUpperCase()}<br/>{virtualOfferRows.filter(o=>o.item_id===i.id&&o.active).length} ofertas activas</p>
+      </article>)}
+      {!virtualItemRows.length&&<article className={styles.card}><h3>Catálogo FREEMIUM preparado</h3><p>Cuando se registren los videojuegos reales, aquí aparecerán sus artículos virtuales y ofertas por plataforma.</p></article>}
+    </section>
+
+    <section className={styles.sectionHead}>
+      <div><span>COMPRAS IN-GAME</span><h2>Transacciones y entrega digital</h2></div>
+      <p>Vista operativa de compras recibidas desde juegos/plataformas y del entitlement entregado al jugador.</p>
+    </section>
+
+    <section className={styles.grid}>
+      {purchaseRows.slice(0,12).map((p:any)=><article key={p.id} className={`${styles.card} ${["failed","chargeback"].includes(p.status)?styles.cardAttention:p.status==="pending"?styles.cardWarning:""}`}>
+        <div className={styles.cardTop}><span className={p.status==="paid"?styles.badgeActive:styles.badgePlanned}>{String(p.status).replaceAll("_"," ").toUpperCase()}</span><em>{String(p.platform||"").toUpperCase()}</em></div>
+        <h3>{itemName(p.item_id)}</h3>
+        <p>{gameName(p.game_id)} · {money(p.gross_cents,p.currency||"USD")} bruto · {money(p.net_cents??0,p.currency||"USD")} neto<br/>Jugador: {String(p.player_ref||"").slice(0,10)}… · {p.provider}</p>
+      </article>)}
+      {!purchaseRows.length&&<article className={styles.card}><h3>Sin compras in-game todavía</h3><p>Esta sección se alimentará automáticamente cuando los videojuegos comiencen a procesar compras reales.</p></article>}
+    </section>
+
+    <section className={styles.sectionHead}>
       <div><span>CATÁLOGO</span><h2>Ofertas y productos</h2></div>
       <p>Soporta redirección a proveedores, venta directa y captación de interés según el modelo comercial de LIRYGAMES.</p>
     </section>
