@@ -166,7 +166,7 @@ export default async function MasterGrowthPage(){
     </section>
 
     <section className={styles.grid}>
-      {contactRows.map((contact:any)=><article key={contact.id} className={styles.card}>
+      {contactRows.map((contact:any)=><article key={contact.id} className={`${styles.card} ${["lost","suppressed"].includes(contact.status)||contact.lifecycle_stage==="inactive"?styles.cardMuted:contact.score>=80?styles.cardPriority:""}`}>
         <div className={styles.cardTop}>
           <span className={["customer","advocate"].includes(contact.lifecycle_stage)?styles.badgeActive:styles.badgePlanned}>{lifecycleLabel(contact.lifecycle_stage)}</span>
           <em>Prioridad {contact.score}</em>
