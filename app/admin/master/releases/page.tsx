@@ -166,9 +166,12 @@ async function updateGate(formData:FormData){
   const notes=String(formData.get("notes")||"").trim()||null;
   if(!id||!["draft","in_review","blocked","approved","canceled"].includes(status)) throw new Error("invalid_gate_status");
   if(status==="approved"){
-    const{data:checks}=await supabase.from("release_gate_checks").select("status,blocking").eq("release_gate_id",id);
+    const{data:checks}=await supabase.from("release_gate_checks").select("status,blocking,check_code").eq("release_gate_id",id);
+    if(!(checks||[]).length) throw new Error("release_checks_required");
     const blockers=(checks||[]).filter((c:any)=>c.blocking&&!["passed","waived"].includes(c.status));
     if(blockers.length) throw new Error("blocking_checks_incomplete");
+    const runtimeCheck=(checks||[]).find((c:any)=>c.check_code==="runtime-smoke");
+    if(!runtimeCheck||runtimeCheck.status!=="passed") throw new Error("runtime_validation_required");
   }
   const patch:any={status,notes,updated_at:new Date().toISOString()};
   if(status==="approved"){patch.approved_by=user.id;patch.approved_at=new Date().toISOString();}
