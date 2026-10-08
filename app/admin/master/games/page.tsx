@@ -205,7 +205,7 @@ export default async function MasterGamesPage(){
       <article className={redGames.length?styles.kpiAttention:undefined}><small>Salud crítica</small><strong>{redGames.length}</strong><span>{redGames.length?"Críticos o pausados":"Sin títulos críticos"}</span></article>
     </section>
 
-    <section className={styles.kpis}>
+    <section className={`${styles.kpis} ${styles.kpisPair}`}>
       <article><small>Responsable</small><strong>{primaryGame?ownerName(primaryGame.owner_user_id):"Sin asignar"}</strong><span>{primaryGame?primaryGame.name:"Primer juego pendiente"}</span></article>
       <article><small>Fecha objetivo</small><strong>{primaryGame?.target_release_date||"Sin definir"}</strong><span>{primaryGame?"Lanzamiento previsto":"Primer juego pendiente"}</span></article>
     </section>
