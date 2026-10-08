@@ -5,6 +5,19 @@ import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 
+function environmentLabel(value:string){
+  const map:Record<string,string>={preview:"VERSIÓN DE PRUEBA",staging:"PREPARACIÓN",production:"PRODUCCIÓN"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+function checkTypeLabel(value:string){
+  const map:Record<string,string>={build:"COMPILACIÓN",runtime:"FUNCIONAMIENTO",security:"SEGURIDAD",data:"DATOS",business:"NEGOCIO",manual:"MANUAL"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+function relationLabel(value:string){
+  const map:Record<string,string>={depends_on:"DEPENDE DE",blocks:"BLOQUEA",supports:"APOYA",related_to:"RELACIONADO",derived_from:"DERIVADO DE",governs:"GOBIERNA"};
+  return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
+}
+
 async function requireLinkEditor(){
   "use server";
   const supabase=await createSupabaseServerClient();
@@ -200,7 +213,7 @@ export default async function ReleaseGatePage(){
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · CONTROL DE PUBLICACIÓN</span><h1>Revisión antes de publicar</h1><p>Comprueba que una versión esté lista antes de cualquier publicación. Esta pantalla no publica por sí sola.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
@@ -216,9 +229,9 @@ export default async function ReleaseGatePage(){
         const gateChecks=checkRows.filter(c=>c.release_gate_id===g.id);
         const bad=gateChecks.filter(c=>c.blocking&&["failed","pending"].includes(c.status)).length;
         return <article key={g.id} className={styles.card}>
-          <div className={styles.cardTop}><span className={g.status==="approved"?styles.badgeActive:styles.badgePlanned}>{g.status==="approved"?"APROBADA":g.status==="blocked"?"REVISAR":g.status==="in_review"?"EN REVISIÓN":g.status==="canceled"?"CANCELADA":"BORRADOR"}</span><em>{g.environment}</em></div>
-          <h3>{g.gate_code} · {g.title}</h3>
-          <p>{g.target_ref||"Sin referencia"} · {g.target_commit||"Sin código"}<br/>{g.target_deployment_id||"Sin versión asociada"}<br/>{gateChecks.length} comprobaciones · {bad} bloqueos · solicitado por {actorName(g.requested_by)}</p>
+          <div className={styles.cardTop}><span className={g.status==="approved"?styles.badgeActive:styles.badgePlanned}>{g.status==="approved"?"APROBADA":g.status==="blocked"?"REVISAR":g.status==="in_review"?"EN REVISIÓN":g.status==="canceled"?"CANCELADA":"BORRADOR"}</span><em>{environmentLabel(g.environment)}</em></div>
+          <h3>{g.title}</h3>
+          <p>{gateChecks.length} comprobaciones · {bad} bloqueos<br/>Solicitado por {actorName(g.requested_by)}<br/>{g.target_deployment_id?"Versión asociada registrada":"Sin versión asociada"}</p>
         </article>
       })}
       {!gateRows.length&&<article className={styles.card}><h3>Sin revisiones</h3><p>Aquí aparecerán las revisiones antes de publicar.</p></article>}
@@ -238,8 +251,8 @@ export default async function ReleaseGatePage(){
     <section className={styles.sectionHead}><div><span>COMPROBACIONES</span><h2>Evidencia de la revisión</h2></div></section>
     <section className={styles.grid}>
       {checkRows.map((c:any)=><article key={c.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={c.status==="passed"||c.status==="waived"?styles.badgeActive:styles.badgePlanned}>{c.status==="passed"?"CORRECTO":c.status==="failed"?"REVISAR":c.status==="waived"?"ACEPTADO":"PENDIENTE"}</span><em>{c.check_type}{c.blocking?" · IMPORTANTE":""}</em></div>
-        <h3>{c.label}</h3><p>{c.check_code}<br/>{c.evidence||"Evidencia pendiente"}<br/>{c.checked_at?new Date(c.checked_at).toLocaleString("es-US"):"Sin verificación"}</p>
+        <div className={styles.cardTop}><span className={c.status==="passed"||c.status==="waived"?styles.badgeActive:styles.badgePlanned}>{c.status==="passed"?"CORRECTO":c.status==="failed"?"REVISAR":c.status==="waived"?"ACEPTADO":"PENDIENTE"}</span><em>{checkTypeLabel(c.check_type)}{c.blocking?" · IMPORTANTE":""}</em></div>
+        <h3>{c.label}</h3><p>{c.evidence||"Evidencia pendiente"}<br/>{c.checked_at?new Date(c.checked_at).toLocaleString("es-US"):"Sin verificación"}</p>
       </article>)}
       {!checkRows.length&&<article className={styles.card}><h3>Sin comprobaciones</h3><p>La revisión necesita comprobaciones antes de aprobarse.</p></article>}
     </section>
@@ -247,8 +260,8 @@ export default async function ReleaseGatePage(){
     <section className={styles.sectionHead}><div><span>RELACIONES</span><h2>Vínculos transversales</h2></div><p>Relaciona información de distintas áreas sin duplicarla.</p></section>
     <section className={styles.grid}>
       {linkRows.map((l:any)=><article key={l.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={styles.badgeActive}>{String(l.relation_type).toUpperCase()}</span><em>{l.source_domain} → {l.target_domain}</em></div>
-        <h3>{l.source_entity}:{l.source_id}</h3><p>{l.target_entity}:{l.target_id}<br/>{l.notes||"Sin notas"}</p>
+        <div className={styles.cardTop}><span className={styles.badgeActive}>{relationLabel(l.relation_type)}</span><em>{l.source_domain} → {l.target_domain}</em></div>
+        <h3>{l.source_domain} → {l.target_domain}</h3><p>{l.notes||"Relación registrada entre áreas."}</p>
       </article>)}
       {!linkRows.length&&<article className={styles.card}><h3>Sin relaciones manuales</h3><p>Las relaciones naturales entre registros siguen activas; aquí aparecerán dependencias entre áreas.</p></article>}
     </section>
@@ -260,13 +273,13 @@ export default async function ReleaseGatePage(){
       <form action={createLink} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVA RELACIÓN</span><h2>Vincular dominios</h2></div>
         <div className={styles.formGrid}>
-          <label>Dominio origen<input name="source_domain" required placeholder="Technology"/></label>
-          <label>Entidad origen<input name="source_entity" required placeholder="tech_changes"/></label>
-          <label>ID origen<input name="source_id" required/></label>
+          <label>Dominio origen<input name="source_domain" required placeholder="Tecnología"/></label>
+          <label>Entidad origen<input name="source_entity" required placeholder="Cambios técnicos"/></label>
+          <label>Identificador origen<input name="source_id" required/></label>
           <label>Relación<select name="relation_type" defaultValue="related_to"><option value="depends_on">Depende de</option><option value="blocks">Bloquea</option><option value="supports">Apoya</option><option value="related_to">Relacionado con</option><option value="derived_from">Derivado de</option><option value="governs">Gobierna</option></select></label>
-          <label>Dominio destino<input name="target_domain" required placeholder="Publishing"/></label>
-          <label>Entidad destino<input name="target_entity" required placeholder="publishing_releases"/></label>
-          <label>ID destino<input name="target_id" required/></label>
+          <label>Dominio destino<input name="target_domain" required placeholder="Publicación"/></label>
+          <label>Entidad destino<input name="target_entity" required placeholder="Lanzamientos"/></label>
+          <label>Identificador destino<input name="target_id" required/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton}>Crear relación</MasterSubmitButton>
@@ -279,9 +292,9 @@ export default async function ReleaseGatePage(){
             <label>Código<input name="gate_code" required placeholder="RG-2026-001"/></label>
             <label>Título<input name="title" required/></label>
             <label>Entorno<select name="environment" defaultValue="preview"><option value="preview">Versión de prueba</option><option value="staging">Preparación</option><option value="production">Producción</option></select></label>
-            <label>Rama o referencia<input name="target_ref"/></label>
+            <label>Referencia de versión<input name="target_ref"/></label>
             <label>Código de versión<input name="target_commit"/></label>
-            <label>ID de versión desplegada<input name="target_deployment_id"/></label>
+            <label>Identificador de versión<input name="target_deployment_id"/></label>
             <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
           </div>
           <MasterSubmitButton className={styles.formButton}>Registrar revisión</MasterSubmitButton>
@@ -291,7 +304,7 @@ export default async function ReleaseGatePage(){
           <div className={styles.formTitle}><span>NUEVA COMPROBACIÓN</span><h2>Añadir evidencia requerida</h2></div>
           <div className={styles.formGrid}>
             <label>Revisión<select name="release_gate_id" required defaultValue=""><option value="" disabled>Seleccionar revisión</option>{gateRows.map((g:any)=><option key={g.id} value={g.id}>{g.gate_code} · {g.title}</option>)}</select></label>
-            <label>Código<input name="check_code" required placeholder="runtime-smoke"/></label>
+            <label>Código<input name="check_code" required placeholder="comprobacion-funcional"/></label>
             <label>Nombre visible<input name="label" required placeholder="Comprobación funcional"/></label>
             <label>Tipo<select name="check_type" defaultValue="manual"><option value="build">Compilación</option><option value="runtime">Funcionamiento</option><option value="security">Seguridad</option><option value="data">Datos</option><option value="business">Negocio</option><option value="manual">Manual</option></select></label>
             <label>Bloqueante<select name="blocking" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
