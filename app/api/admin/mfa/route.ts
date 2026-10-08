@@ -35,7 +35,7 @@ export async function POST(request:NextRequest){
   const action=String(body?.action||"");
 
   if(action==="enroll"){
-    const name=String(body?.friendlyName||"LIRYGAMES Admin").trim().slice(0,64)||"LIRYGAMES Admin";
+    const name=String(body?.friendlyName||"LIRYGAMES Commander").trim().slice(0,64)||"LIRYGAMES Commander";
     const result=await x.supabase.auth.mfa.enroll({factorType:"totp",friendlyName:name});
     if(result.error)return NextResponse.json({ok:false,error:"mfa_enroll_failed",detail:result.error.message},{status:400});
     return NextResponse.json({
