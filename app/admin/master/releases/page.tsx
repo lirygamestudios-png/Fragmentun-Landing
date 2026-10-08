@@ -227,6 +227,7 @@ async function updateGate(formData:FormData){
     if(blockers.length) throw new Error("blocking_checks_incomplete");
     if((checks||[]).some((c:any)=>c.check_code==="human-release-approval"&&c.status==="waived")) throw new Error("human_approval_cannot_be_waived");
     const runtimeCheck=(checks||[]).find((c:any)=>c.check_code==="runtime-smoke");
+    if((checks||[]).some((c:any)=>c.blocking&&c.check_code!=="human-release-approval"&&c.status==="waived")) throw new Error("blocking_checks_cannot_be_waived_for_approval");
     if(!runtimeCheck||runtimeCheck.status!=="passed") throw new Error("runtime_validation_required");
     if(!latestValidation||latestValidation.status!=="passed") throw new Error("latest_validation_not_passed");
     const currentDeployment=process.env.VERCEL_DEPLOYMENT_ID||null;
