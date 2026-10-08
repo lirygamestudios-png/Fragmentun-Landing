@@ -12,6 +12,38 @@ async function requireAdmin(){
 }
 export const dynamic="force-dynamic";
 
+const PRODUCT_MODES=new Set(["external","internal","interest"]);
+const PAYMENT_PROVIDERS=new Set(["stripe","paypal","both","auto"]);
+const STOCK_STATUSES=new Set(["unknown","in_stock","out_of_stock","preorder","unlimited"]);
+const PAYMENT_STATUSES=new Set(["pending","authorized","paid","failed","refunded","partially_refunded","canceled"]);
+const FULFILLMENT_STATUSES=new Set(["unfulfilled","processing","partially_fulfilled","fulfilled","delivered","returned","canceled"]);
+const REFUND_STATUSES=new Set(["none","requested","partial","full"]);
+const SHIPMENT_STATUSES=new Set(["pending","label_created","shipped","in_transit","delivered","exception","returned","canceled"]);
+
+function text(value:any,max=1000){return String(value??"").trim().slice(0,max)}
+function cents(value:any){
+  if(value===null||value===undefined||value==="")return null;
+  const n=Number(value);
+  return Number.isFinite(n)?Math.max(0,Math.round(n)):null;
+}
+function validCurrency(value:any){
+  const currency=text(value||"USD",3).toUpperCase();
+  return /^[A-Z]{3}$/.test(currency)?currency:"USD";
+}
+async function getCommerceSettings(supabase:any){
+  const{data}=await supabase.from("commerce_settings")
+    .select("stripe_enabled,paypal_enabled,default_payment_provider")
+    .eq("id","default").maybeSingle();
+  return data||{stripe_enabled:false,paypal_enabled:false,default_payment_provider:"auto"};
+}
+function providerReady(provider:string,settings:any){
+  if(provider==="stripe")return settings.stripe_enabled===true;
+  if(provider==="paypal")return settings.paypal_enabled===true;
+  if(provider==="both")return settings.stripe_enabled===true&&settings.paypal_enabled===true;
+  return settings.stripe_enabled===true||settings.paypal_enabled===true;
+}
+
+
 export async function GET(){
   const x=await requireAdmin();
   if(!x.ok)return NextResponse.json({error:"forbidden"},{status:403});
@@ -36,29 +68,40 @@ export async function POST(request:NextRequest){
   if(!body?.entity)return NextResponse.json({error:"invalid_request"},{status:400});
 
   if(body.entity==="product"){
-    if(!String(body.name_es||"").trim())return NextResponse.json({error:"name_required"},{status:400});
+    const nameEs=text(body.name_es,240);
+    const mode=PRODUCT_MODES.has(body.mode)?body.mode:"interest";
+    const paymentProvider=PAYMENT_PROVIDERS.has(body.payment_provider)?body.payment_provider:"auto";
+    const externalUrl=text(body.external_url,1000)||null;
+    const priceCents=cents(body.price_cents);
+    if(!nameEs)return NextResponse.json({error:"name_required"},{status:400});
+    if(mode==="external"&&!externalUrl)return NextResponse.json({error:"external_url_required"},{status:400});
+    if(mode==="internal"&&body.active===true){
+      const settings=await getCommerceSettings(x.supabase);
+      if(priceCents===null)return NextResponse.json({error:"price_required_for_internal_sale"},{status:400});
+      if(!providerReady(paymentProvider,settings))return NextResponse.json({error:"payment_provider_not_enabled"},{status:400});
+    }
     const payload={
       sku:String(body.sku||"").trim()||null,
       slug:String(body.slug||"").trim()||null,
-      name_es:String(body.name_es||"").trim(),
+      name_es:nameEs,
       name_en:String(body.name_en||"").trim()||null,
       description_es:String(body.description_es||"").trim()||null,
       description_en:String(body.description_en||"").trim()||null,
       image_url:String(body.image_url||"").trim()||null,
       price_label_es:String(body.price_label_es||"").trim()||null,
       price_label_en:String(body.price_label_en||"").trim()||null,
-      mode:["external","internal","interest"].includes(body.mode)?body.mode:"interest",
-      payment_provider:["stripe","paypal","both","auto"].includes(body.payment_provider)?body.payment_provider:"auto",
-      external_url:String(body.external_url||"").trim()||null,
+      mode,
+      payment_provider:paymentProvider,
+      external_url:externalUrl,
       supplier:String(body.supplier||"").trim()||null,
       supplier_product_id:String(body.supplier_product_id||"").trim()||null,
-      price_cents:Number.isFinite(Number(body.price_cents))?Math.max(0,Number(body.price_cents)):null,
-      currency:String(body.currency||"USD").trim().toUpperCase().slice(0,3)||"USD",
+      price_cents:priceCents,
+      currency:validCurrency(body.currency),
       taxable:body.taxable!==false,
       tax_code:String(body.tax_code||"").trim()||null,
       active:body.active===true,
       featured:body.featured===true,
-      stock_status:["unknown","in_stock","out_of_stock","preorder","unlimited"].includes(body.stock_status)?body.stock_status:"unknown",
+      stock_status:STOCK_STATUSES.has(body.stock_status)?body.stock_status:"unknown",
       sort_order:Number.isFinite(Number(body.sort_order))?Number(body.sort_order):0,
       updated_at:new Date().toISOString()
     };
@@ -94,18 +137,30 @@ export async function PUT(request:NextRequest){
   if(!body?.entity||!body?.id)return NextResponse.json({error:"invalid_request"},{status:400});
 
   if(body.entity==="product"){
+    const nameEs=text(body.name_es,240);
+    const mode=PRODUCT_MODES.has(body.mode)?body.mode:"interest";
+    const paymentProvider=PAYMENT_PROVIDERS.has(body.payment_provider)?body.payment_provider:"auto";
+    const externalUrl=text(body.external_url,1000)||null;
+    const priceCents=cents(body.price_cents);
+    if(!nameEs)return NextResponse.json({error:"name_required"},{status:400});
+    if(mode==="external"&&!externalUrl)return NextResponse.json({error:"external_url_required"},{status:400});
+    if(mode==="internal"&&body.active===true){
+      const settings=await getCommerceSettings(x.supabase);
+      if(priceCents===null)return NextResponse.json({error:"price_required_for_internal_sale"},{status:400});
+      if(!providerReady(paymentProvider,settings))return NextResponse.json({error:"payment_provider_not_enabled"},{status:400});
+    }
     const payload={
-      name_es:String(body.name_es||"").trim(),
-      name_en:String(body.name_en||"").trim()||null,
-      sku:String(body.sku||"").trim()||null,
-      mode:["external","internal","interest"].includes(body.mode)?body.mode:"interest",
-      payment_provider:["stripe","paypal","both","auto"].includes(body.payment_provider)?body.payment_provider:"auto",
-      external_url:String(body.external_url||"").trim()||null,
-      price_cents:Number.isFinite(Number(body.price_cents))?Math.max(0,Number(body.price_cents)):null,
-      currency:String(body.currency||"USD").trim().toUpperCase().slice(0,3)||"USD",
+      name_es:nameEs,
+      name_en:text(body.name_en,240)||null,
+      sku:text(body.sku,120)||null,
+      mode,
+      payment_provider:paymentProvider,
+      external_url:externalUrl,
+      price_cents:priceCents,
+      currency:validCurrency(body.currency),
       active:body.active===true,
       featured:body.featured===true,
-      stock_status:["unknown","in_stock","out_of_stock","preorder","unlimited"].includes(body.stock_status)?body.stock_status:"unknown",
+      stock_status:STOCK_STATUSES.has(body.stock_status)?body.stock_status:"unknown",
       updated_at:new Date().toISOString()
     };
     const{data,error}=await x.supabase.from("shop_products").update(payload).eq("id",body.id).select().single();
