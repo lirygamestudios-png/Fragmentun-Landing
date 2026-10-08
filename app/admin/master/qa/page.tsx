@@ -24,7 +24,9 @@ export default async function QaFinalPage(){
   ]);
 
   const validationOk=latestValidation?.status==="passed";
+  const validationLabel=!latestValidation?"SIN PRUEBA":validationOk?"CORRECTA":"REVISAR";
   const gateReady=latestGate?.status==="approved";
+  const gateLabel=!latestGate?"SIN REVISIÓN":gateReady?"APROBADA":"REVISAR";
   const incidentsOk=(openIncidents||0)===0;
   const approvalsOk=(pendingApprovals||0)===0;
   const checksOk=(failedChecks||0)===0;
@@ -49,8 +51,8 @@ export default async function QaFinalPage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Última prueba</small><strong>{validationOk?"CORRECTA":"PENDIENTE"}</strong><span>{latestValidation?.executed_at?new Date(latestValidation.executed_at).toLocaleString("es-US"):"Sin prueba registrada"}</span></article>
-      <article><small>Revisión de publicación</small><strong>{gateReady?"APROBADA":"PENDIENTE"}</strong><span>{latestGate?.created_at?new Date(latestGate.created_at).toLocaleString("es-US"):"Sin revisión registrada"}</span></article>
+      <article><small>Última prueba</small><strong>{validationLabel}</strong><span>{latestValidation?.executed_at?new Date(latestValidation.executed_at).toLocaleString("es-US"):"Sin prueba registrada"}</span></article>
+      <article><small>Revisión de publicación</small><strong>{gateLabel}</strong><span>{latestGate?.created_at?new Date(latestGate.created_at).toLocaleString("es-US"):"Sin revisión registrada"}</span></article>
       <article><small>Incidentes abiertos</small><strong>{openIncidents||0}</strong><span>{incidentsOk?"Sin bloqueos":"Requiere revisión"}</span></article>
       <article><small>Comprobaciones bloqueantes fallidas</small><strong>{failedChecks||0}</strong><span>{checksOk?"Sin fallos":"Requiere corrección"}</span></article>
     </section>
