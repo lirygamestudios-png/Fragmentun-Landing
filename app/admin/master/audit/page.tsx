@@ -58,6 +58,9 @@ export default async function MasterAuditPage(){
 
   const rows=(events||[]) as any[];
   const approvedGateRows=(approvedGates||[]) as any[];
+  const currentCommit=process.env.VERCEL_GIT_COMMIT_SHA||null;
+  const currentDeployment=process.env.VERCEL_DEPLOYMENT_ID||null;
+  const approvalIsCurrent=(g:any)=>Boolean(currentCommit&&currentDeployment&&g.target_commit===currentCommit&&g.target_deployment_id===currentDeployment);
   const actorRows=(actors||[]) as any[];
   const actorName=(id:string|null|undefined)=>{
     const actor=actorRows.find(a=>a.user_id===id);
@@ -119,9 +122,9 @@ export default async function MasterAuditPage(){
     </section>
     <section className={styles.grid}>
       {approvedGateRows.map((g:any)=><article key={g.id} className={styles.card}>
-        <div className={styles.cardTop}><span className={styles.badgeActive}>APROBADA</span><em>{g.approved_at?new Date(g.approved_at).toLocaleString("es-US"):"Fecha no disponible"}</em></div>
+        <div className={styles.cardTop}><span className={approvalIsCurrent(g)?styles.badgeActive:styles.badgePlanned}>{approvalIsCurrent(g)?"APROBACIÓN VIGENTE":"APROBACIÓN HISTÓRICA"}</span><em>{g.approved_at?new Date(g.approved_at).toLocaleString("es-US"):"Fecha no disponible"}</em></div>
         <h3>{g.gate_code||g.title}</h3>
-        <p>Responsable: {g.approved_by?actorName(g.approved_by):"Sin responsable verificado"}<br/>Commit: {g.target_commit||"No registrado"}<br/>Deployment: {g.target_deployment_id||"No registrado"}</p>
+        <p>Responsable: {g.approved_by?actorName(g.approved_by):"Sin responsable verificado"}<br/>Versión: {approvalIsCurrent(g)?"Coincide con el Preview actual":"No corresponde al Preview actual o no se puede verificar"}<br/>Commit: {g.target_commit||"No registrado"}<br/>Deployment: {g.target_deployment_id||"No registrado"}</p>
       </article>)}
       {!approvedGateRows.length&&<article className={styles.card}><h3>Sin aprobaciones registradas</h3><p>Las futuras aprobaciones humanas aparecerán aquí cuando se registren.</p></article>}
     </section>
