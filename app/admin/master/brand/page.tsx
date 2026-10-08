@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function invalidDateRange(start:string|null,end:string|null){
   return Boolean(start&&end&&end<start);
@@ -186,7 +187,7 @@ export default async function MasterBrandPage(){
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar narrativas y campañas de comunicación manualmente.</p>
       <section className={styles.adminForms}>
-      <form action={createNarrative} className={styles.adminForm}>
+      <MasterActionForm action={createNarrative} className={styles.adminForm} successText="Narrativa registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA NARRATIVA</span><h2>Registrar narrativa</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="lirygames-core"/></label>
@@ -197,9 +198,9 @@ export default async function MasterBrandPage(){
           <label className={styles.span2}>Evidencias de respaldo<input name="proof_points" placeholder="Dato 1, dato 2, dato 3"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar narrativa</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={createCommunicationCampaign} className={styles.adminForm}>
+      <MasterActionForm action={createCommunicationCampaign} className={styles.adminForm} successText="Campaña de comunicación registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA CAMPAÑA</span><h2>Registrar comunicación</h2></div>
         <div className={styles.formGrid}>
           <label>Nombre<input name="name" required/></label>
@@ -214,11 +215,11 @@ export default async function MasterBrandPage(){
           <label>Fin<input type="date" name="end_date"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar campaña</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
 
       <section className={styles.adminForms}>
-      <form action={updateNarrative} className={styles.adminForm}>
+      <MasterActionForm action={updateNarrative} className={styles.adminForm} successText="Narrativa actualizada correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR NARRATIVA</span><h2>Actualizar narrativa</h2></div>
         <div className={styles.formGrid}>
           <label>Narrativa<select name="narrative_id" required defaultValue=""><option value="" disabled>Seleccionar narrativa</option>{narrativeRows.map((n:any)=><option key={n.id} value={n.id}>{n.code} · {n.name}</option>)}</select></label>
@@ -231,9 +232,9 @@ export default async function MasterBrandPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!narrativeRows.length} disabledReason="No hay narrativas registradas para actualizar.">Actualizar narrativa</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={updateCommunicationCampaign} className={styles.adminForm}>
+      <MasterActionForm action={updateCommunicationCampaign} className={styles.adminForm} successText="Campaña de comunicación actualizada correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR COMUNICACIÓN</span><h2>Actualizar campaña</h2></div>
         <div className={styles.formGrid}>
           <label>Campaña<select name="campaign_id" required defaultValue=""><option value="" disabled>Seleccionar campaña</option>{commRows.map((x:any)=><option key={x.id} value={x.id}>{x.name}</option>)}</select></label>
@@ -247,7 +248,7 @@ export default async function MasterBrandPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!commRows.length} disabledReason="No hay campañas de comunicación registradas para actualizar.">Actualizar campaña</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
     </details>}
 
