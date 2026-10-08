@@ -132,7 +132,7 @@ export default async function MasterMonetizationPage(){
   const inGameGross=paidPurchasesInCurrency.reduce((a,p)=>a+Number(p.gross_cents||0),0);
   const inGameNet=paidPurchasesInCurrency.reduce((a,p)=>a+Number(p.net_cents??(Number(p.gross_cents||0)-Number(p.fee_cents||0)-Number(p.tax_cents||0))),0);
   const payingPlayers=new Set(paidPurchasesInCurrency.map(p=>p.player_ref).filter(Boolean));
-  const arppu=payingPlayers.size?Math.round(inGameGross/payingPlayers.size):0;
+  const arppu=payingPlayers.size?Math.round(inGameGross/payingPlayers.size):null;
   const latestMetricDate=engagementRows[0]?.metric_date||null;
   // Solo comparar compras y jugadores activos de un mismo juego, plataforma y día.
   // Con datos truncados se indica que la conversión es una muestra, no una tasa global.
@@ -143,6 +143,7 @@ export default async function MasterMonetizationPage(){
   ).map(p=>[p.game_id,p.platform,p.player_ref].join("|")));
   const latestActivePlayers=currentMetrics.reduce((a,r)=>a+Number(r.active_players||0),0);
   const payerConversion=latestActivePlayers&&currentMetrics.length?100*currentPayers.size/latestActivePlayers:null;
+  const conversionExceedsPopulation=payerConversion!==null&&payerConversion>100;
   const purchaseSampleLimited=purchaseRows.length>=2000;
   const metricSampleLimited=engagementRows.length>=500;
   const pendingEntitlements=entitlementRows.filter(e=>["pending","failed"].includes(e.status));
@@ -180,8 +181,8 @@ export default async function MasterMonetizationPage(){
       <article><small>Artículos virtuales activos</small><strong>{virtualItemRows.filter(i=>i.active).length}</strong><span>{virtualOfferRows.filter(o=>o.active).length} ofertas activas</span></article>
       <article><small>Ingresos in-game brutos</small><strong className={styles.kpiLongValue}>{money(inGameGross,inGameCurrency)}</strong><span>{paidPurchasesInCurrency.length} compras pagadas · {inGameCurrency}{multipleGameCurrencies?" · Existen otras monedas":""} · Últimas 2,000 compras consultadas</span></article>
       <article><small>Ingresos in-game netos</small><strong className={styles.kpiLongValue}>{money(inGameNet,inGameCurrency)}</strong><span>Después de comisiones e impuestos registrados · {inGameCurrency}{multipleGameCurrencies?" · Otras monedas excluidas":""}</span></article>
-      <article><small>Jugadores pagadores</small><strong>{payingPlayers.size}</strong><span>ARPPU {money(arppu,inGameCurrency)}</span></article>
-      <article><small>Conversión diaria (muestra)</small><strong>{payerConversion===null?"SIN DATOS":payerConversion.toFixed(2)+"%"}</strong><span>{payerConversion===null?"Sin datos comparables por juego y plataforma":currentPayers.size+" compradores de "+latestActivePlayers+" jugadores activos · "+latestMetricDate}{purchaseSampleLimited||metricSampleLimited?" · Lectura parcial por límite de consulta":""}</span></article>
+      <article><small>Jugadores pagadores (muestra)</small><strong>{payingPlayers.size}</strong><span>{arppu===null?"ARPPU sin compradores":"ARPPU de muestra "+money(arppu,inGameCurrency)} · {inGameCurrency} · Máximo 2,000 compras recientes</span></article>
+      <article><small>Conversión diaria (muestra)</small><strong>{payerConversion===null?"SIN DATOS":conversionExceedsPopulation?"REVISAR":payerConversion.toFixed(2)+"%"}</strong><span>{payerConversion===null?"Sin datos comparables por juego y plataforma":currentPayers.size+" combinaciones de jugador/juego/plataforma frente a "+latestActivePlayers+" jugadores activos · "+latestMetricDate+(conversionExceedsPopulation?" · Muestras incompatibles: revisar fuentes":"")}{purchaseSampleLimited||metricSampleLimited?" · Lectura parcial por límite de consulta":""}</span></article>
       <article className={pendingEntitlements.length?styles.kpiAttention:undefined}><small>Entregas digitales pendientes</small><strong>{pendingEntitlements.length}</strong><span>{pendingEntitlements.length?"Requieren revisión":"Sin incidencias de entrega"}</span></article>
     </section>
 
