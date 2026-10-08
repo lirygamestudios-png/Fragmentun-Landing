@@ -18,7 +18,7 @@ export function MasterBackupDownload(){
         const body=await response.json().catch(()=>({}));
         throw new Error(body?.error||"backup_failed");
       }
-      const status=response.headers.get("x-fragmentun-backup-status")||"complete";
+      const status=(response.headers.get("x-fragmentun-backup-status")||"complete").toLowerCase();
       const blob=await response.blob();
       const disposition=response.headers.get("content-disposition")||"";
       const match=disposition.match(/filename="([^"]+)"/);
@@ -38,14 +38,14 @@ export function MasterBackupDownload(){
     }catch(error:any){
       const reason=String(error?.message||error);
       setState("error");
-      setMessage(reason==="mfa_required"?"Debes completar la verificación en dos pasos antes de descargar la copia.":"No fue posible preparar la copia.");
+      setMessage(reason==="mfa_required"?"Debes completar la verificación en dos pasos antes de descargar la copia.":reason==="forbidden"?"Tu usuario no tiene permiso para descargar copias.":"No fue posible preparar la copia.");
     }finally{
       setLoading(false);
     }
   }
 
   return <div>
-    <button type="button" className="masterQaButton" onClick={download} disabled={loading}>
+    <button type="button" className="masterQaButton" onClick={download} disabled={loading} aria-busy={loading}>
       {loading?"Preparando…":"Descargar copia externa"}
     </button>
     {message&&<p role={state==="error"?"alert":"status"} aria-live="polite" style={{margin:"8px 0 0",fontSize:".76rem",color:state==="error"?"#ffaaaa":state==="success"?"#8aebbd":state==="warning"?"#e7c878":"#9fb0c6"}}>{message}</p>}
