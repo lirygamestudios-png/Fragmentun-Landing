@@ -31,7 +31,13 @@ const errorMessages:Record<string,string>={
   won_opportunity_incomplete:"Una oportunidad ganada debe estar cerrada como ganada y tener capital comprometido.",
   lost_opportunity_stage_mismatch:"Una oportunidad perdida debe quedar en la etapa Cerrada perdida.",
   waiver_evidence_required:"Una excepción bloqueante necesita una justificación escrita.",
-  incomplete_checks_present:"No puedes cerrar la prueba como correcta mientras existan comprobaciones fallidas u omitidas."
+  incomplete_checks_present:"No puedes cerrar la prueba como correcta mientras existan comprobaciones fallidas u omitidas.",
+  blocking_checks_incomplete:"Todavía existen comprobaciones importantes pendientes o fallidas. Revísalas antes de aprobar.",
+  runtime_validation_required:"Primero integra una prueba funcional correcta en esta revisión.",
+  latest_validation_not_passed:"La última prueba de esta versión no terminó correctamente. Repítela antes de aprobar.",
+  no_validation_available:"Todavía no existe una prueba registrada para esta versión.",
+  release_deployment_mismatch:"La prueba corresponde a una versión distinta. Ejecuta nuevamente la comprobación de versión en el Preview actual.",
+  release_commit_mismatch:"La prueba corresponde a un código de versión anterior. Ejecuta nuevamente la comprobación de versión en el Preview actual."
 };
 
 function readableError(error:unknown){
