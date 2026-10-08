@@ -59,7 +59,7 @@ export default async function MasterReportsPage(){
     {label:"Capital comprometido",value:money(committed,capitalCurrency)}
   ];
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleReports}`}>
     <header className={styles.topbar}>
       <div>
         <span className={styles.eyebrow}>LIRYGAMES · REPORTES</span>
@@ -68,6 +68,15 @@ export default async function MasterReportsPage(){
       </div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">RP</span>
+      <div className={styles.moduleStripCopy}><small>REPORTES EJECUTIVOS</small><strong>Indicadores, exportación y resumen</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Datos corporativos conectados</span>
+        <span>Consulta protegida</span>
+      </div>
+    </section>
 
     <section className={styles.reportActions}>
       <div>
