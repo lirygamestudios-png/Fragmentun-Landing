@@ -4,7 +4,8 @@ import {FormEvent,useState} from "react";
 const ERROR_MESSAGES:Record<string,string>={
   invalid_mfa_input:"El código debe tener entre 6 y 8 dígitos.",
   mfa_challenge_failed:"No fue posible iniciar la verificación. Inténtalo nuevamente.",
-  mfa_verify_failed:"El código es incorrecto o ya venció."
+  mfa_verify_failed:"El código es incorrecto o ya venció.",
+  wrong_factor:"Este código pertenece a otro autenticador. Usa LIRYGAMES Commander."
 };
 
 export function LiryGamesMfaVerifyForm({factorId}:{factorId:string}){
