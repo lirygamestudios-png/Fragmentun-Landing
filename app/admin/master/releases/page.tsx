@@ -221,11 +221,15 @@ export default async function ReleaseGatePage(){
   const activeGateChecks=activeGate?checkRows.filter(c=>c.release_gate_id===activeGate.id):[];
   const runtimeEvidence=activeGateChecks.find(c=>c.check_code==="runtime-smoke");
   const validationPassed=latestValidation?.status==="passed";
-  const deploymentMatches=Boolean(latestValidation?.deployment_id&&activeGate?.target_deployment_id)
-    ?latestValidation.deployment_id===activeGate.target_deployment_id
+  const latestDeployment=latestValidation?.deployment_id||null;
+  const gateDeployment=activeGate?.target_deployment_id||null;
+  const latestCommit=latestValidation?.commit_sha||null;
+  const gateCommit=activeGate?.target_commit||null;
+  const deploymentMatches=latestDeployment&&gateDeployment
+    ?latestDeployment===gateDeployment
     :true;
-  const commitMatches=Boolean(latestValidation?.commit_sha&&activeGate?.target_commit)
-    ?latestValidation.commit_sha===activeGate.target_commit
+  const commitMatches=latestCommit&&gateCommit
+    ?latestCommit===gateCommit
     :true;
   const evidenceIntegrated=runtimeEvidence?.status==="passed"&&validationPassed&&deploymentMatches&&commitMatches;
 
