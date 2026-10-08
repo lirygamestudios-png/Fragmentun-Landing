@@ -57,8 +57,6 @@ export default async function MasterAdminPage(){
 
   if(!profile) redirect("/admin/login?unauthorized=1");
 
-  const displayName=profile.display_name||"José Liranzo";
-
   const [
     {count:leadCount},
     {count:eventCount},
@@ -147,33 +145,7 @@ export default async function MasterAdminPage(){
   const overdueTotal=overdueWork+overdueRisks+overdueReviews+fundraisingDue;
   const criticalExceptions=gamesAtRisk+milestonesAtRisk+releaseRisks+highRiskAprobaciones+blockedWork+highRisks+criticalSecurity+riskyTechChanges;
 
-  return <main className={styles.shell}>
-    <aside className={styles.sidebar}>
-      <div className={styles.brand}>
-        <span className={styles.sigil}>✦</span>
-        <div><strong>LIRYGAMES</strong><small>MASTER ADMIN</small></div>
-      </div>
-      <nav className={styles.nav}>
-        <a className={styles.active} href="/admin/master">⌂ <span>Inicio</span></a>
-        <a href="/admin">◈ <span>FRAGMENTUN Admin</span></a>
-        <a href="/admin/analytics">▥ <span>Analítica</span></a>
-        <a href="/admin/status">⚙ <span>Estado del Sistema</span></a>
-        <a href="/admin/master/reports">▦ <span>Reportes</span></a>
-        <a href="/admin/master/audit">▤ <span>Auditoría</span></a>
-        <a href="/admin/master/integrations">↗ <span>Integraciones</span></a>
-        <a href="/admin/master/backups">⤓ <span>Copias</span></a>
-        <a href="/admin/master/maintenance">◆ <span>Mantenimiento</span></a>
-        <a href="/admin/master/checklist">☑ <span>Revisión visual</span></a>
-        <a href="/admin/master/qa">✓ <span>Pruebas finales</span></a>
-      </nav>
-      <div className={styles.identity}>
-        <span>JL</span>
-        <div><strong>{displayName}</strong><small>{profile.role||"admin"}</small></div>
-      </div>
-      <a className={styles.publicSite} href="/es" target="_blank" rel="noreferrer">Ver FRAGMENTUN ↗</a>
-    </aside>
-
-    <section className={styles.workspace}>
+  return <main className={styles.workspace}>
       <header className={styles.topbar}>
         <div>
           <span className={styles.eyebrow}>LIRYGAMES · PANEL GENERAL</span>
@@ -282,6 +254,6 @@ export default async function MasterAdminPage(){
           <span className={styles.cardLink}>{domain.status==="active"?"Abrir":"Ver base actual"} →</span>
         </a>)}
       </section>
-    </section>
+
   </main>;
 }
