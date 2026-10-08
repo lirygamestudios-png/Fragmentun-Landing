@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function environmentLabel(value:string){
   const map:Record<string,string>={preview:"VERSIÓN DE PRUEBA",staging:"PREPARACIÓN",production:"PRODUCCIÓN"};
@@ -269,10 +270,10 @@ export default async function ReleaseGatePage(){
       {evidenceIntegrated
         ?<div><strong>Evidencia integrada</strong><span>La última prueba correcta quedó registrada como evidencia. Falta únicamente la aprobación humana antes de cualquier publicación.</span></div>
         :<><div><strong>Integrar última prueba</strong><span>Solo puede usarse la prueba más reciente si terminó correctamente. Si la última prueba falló, primero debe corregirse y repetirse.</span></div>
-          <form action={useLatestPassedValidation}>
+          <MasterActionForm action={useLatestPassedValidation} successText="Última prueba integrada correctamente.">
             <input type="hidden" name="gate_id" value={gateRows[0].id}/>
             <MasterSubmitButton className={styles.formButton}>Usar última prueba</MasterSubmitButton>
-          </form></>}
+          </MasterActionForm></>}
       {evidenceIntegrated&&<code>APROBACIÓN HUMANA PENDIENTE</code>}
     </section>}
 
@@ -298,7 +299,7 @@ export default async function ReleaseGatePage(){
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Solo necesarias para gestión técnica o soporte.</p>
       <section className={styles.adminForms}>
-      <form action={createLink} className={styles.adminForm}>
+      <MasterActionForm action={createLink} className={styles.adminForm} successText="Relación entre áreas registrada correctamente.">
         <div className={styles.formTitle}><span>NUEVA RELACIÓN</span><h2>Vincular dominios</h2></div>
         <div className={styles.formGrid}>
           <label>Dominio origen<input name="source_domain" required placeholder="Tecnología"/></label>
@@ -311,10 +312,10 @@ export default async function ReleaseGatePage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton}>Crear relación</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
       {profile.role==="admin"&&<>
-        <form action={createGate} className={styles.adminForm}>
+        <MasterActionForm action={createGate} className={styles.adminForm} successText="Revisión previa a publicación registrada correctamente.">
           <div className={styles.formTitle}><span>NUEVA REVISIÓN</span><h2>Registrar revisión previa a publicación</h2></div>
           <div className={styles.formGrid}>
             <label>Código<input name="gate_code" required placeholder="RG-2026-001"/></label>
@@ -326,9 +327,9 @@ export default async function ReleaseGatePage(){
             <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
           </div>
           <MasterSubmitButton className={styles.formButton}>Registrar revisión</MasterSubmitButton>
-        </form>
+        </MasterActionForm>
 
-        <form action={addCheck} className={styles.adminForm}>
+        <MasterActionForm action={addCheck} className={styles.adminForm} successText="Comprobación añadida correctamente.">
           <div className={styles.formTitle}><span>NUEVA COMPROBACIÓN</span><h2>Añadir evidencia requerida</h2></div>
           <div className={styles.formGrid}>
             <label>Revisión<select name="release_gate_id" required defaultValue=""><option value="" disabled>Seleccionar revisión</option>{gateRows.map((g:any)=><option key={g.id} value={g.id}>{g.gate_code} · {g.title}</option>)}</select></label>
@@ -338,9 +339,9 @@ export default async function ReleaseGatePage(){
             <label>Bloqueante<select name="blocking" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
           </div>
           <MasterSubmitButton className={styles.formButton} disabled={!gateRows.length} disabledReason="Primero registra una revisión antes de añadir comprobaciones.">Añadir comprobación</MasterSubmitButton>
-        </form>
+        </MasterActionForm>
 
-        <form action={updateCheck} className={styles.adminForm}>
+        <MasterActionForm action={updateCheck} className={styles.adminForm} successText="Comprobación actualizada correctamente.">
           <div className={styles.formTitle}><span>GESTIONAR COMPROBACIÓN</span><h2>Registrar resultado</h2></div>
           <div className={styles.formGrid}>
             <label>Comprobación<select name="check_id" required defaultValue=""><option value="" disabled>Seleccionar comprobación</option>{checkRows.map((c:any)=><option key={c.id} value={c.id}>{c.check_code} · {c.label}</option>)}</select></label>
@@ -348,9 +349,9 @@ export default async function ReleaseGatePage(){
             <label className={styles.span2}>Evidencia<textarea name="evidence" rows={3}/></label>
           </div>
           <MasterSubmitButton className={styles.formButton} disabled={!checkRows.length} disabledReason="No hay comprobaciones registradas para actualizar.">Actualizar comprobación</MasterSubmitButton>
-        </form>
+        </MasterActionForm>
 
-        <form action={updateGate} className={styles.adminForm}>
+        <MasterActionForm action={updateGate} className={styles.adminForm} successText="Revisión de publicación actualizada correctamente.">
           <div className={styles.formTitle}><span>DECISIÓN DE REVISIÓN</span><h2>Actualizar estado final</h2></div>
           <div className={styles.formGrid}>
             <label>Revisión<select name="gate_id" required defaultValue=""><option value="" disabled>Seleccionar revisión</option>{gateRows.map((g:any)=><option key={g.id} value={g.id}>{g.gate_code} · {g.title}</option>)}</select></label>
@@ -358,7 +359,7 @@ export default async function ReleaseGatePage(){
             <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
           </div>
           <MasterSubmitButton className={styles.formButton} disabled={!gateRows.length} disabledReason="No hay revisiones registradas para actualizar.">Actualizar revisión</MasterSubmitButton>
-        </form>
+        </MasterActionForm>
       </>}
       </section>
     </details>}
