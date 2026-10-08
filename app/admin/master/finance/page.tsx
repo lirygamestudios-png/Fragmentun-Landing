@@ -265,8 +265,8 @@ export default async function MasterFinancePage(){
           <label>Estado<select name="status" defaultValue="pending"><option value="draft">Borrador</option><option value="pending">Pendiente</option><option value="posted">Registrada</option><option value="reconciled">Reconciliada</option><option value="void">Anulada</option></select></label>
           <label>Cuenta<select name="account_id" defaultValue=""><option value="">Sin cuenta</option>{accountRows.map((a:any)=><option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
           <label>Categoría<input name="category"/></label>
-          <label>Contraparte<input name="counterparty"/></label>
-          <label>Referencia externa<input name="external_reference"/></label>
+          <label>Persona o empresa relacionada<input name="counterparty"/></label>
+          <label>Referencia externa opcional<input name="external_reference"/></label>
           <label className={styles.span2}>Descripción<input name="description"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!txRows.length}>Actualizar movimiento</MasterSubmitButton>
@@ -281,7 +281,7 @@ export default async function MasterFinancePage(){
     <section className={styles.kpis}>
       <article><small>Proveedor</small><strong>{money(supplier,currency)}</strong><span>Costes de proveedor</span></article>
       <article><small>Envíos</small><strong>{money(shipping,currency)}</strong><span>Costes de envío</span></article>
-      <article><small>Procesamiento</small><strong>{money(fees,currency)}</strong><span>Comisiones de pago</span></article>
+      <article><small>Comisiones</small><strong>{money(fees,currency)}</strong><span>Costes de procesamiento de pago</span></article>
       <article><small>Margen</small><strong>{money(margin,currency)}</strong><span>Margen registrado</span></article>
     </section>
   </main>;
