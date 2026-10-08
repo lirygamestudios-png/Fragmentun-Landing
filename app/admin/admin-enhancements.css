@@ -841,3 +841,130 @@
     transform:none!important;
   }
 }
+
+
+/* UX LIRYGAMES · Auth FRAGMENTUN: Login y Recuperación */
+.authShellFragmentun .btn,
+.authRecoveryShell .btn,
+.authShellFragmentun input,
+.authRecoveryShell input,
+.authShellFragmentun .authLinks a,
+.authRecoveryShell .authLinks a{
+  transition:transform .16s ease,border-color .18s ease,background .18s ease,color .18s ease,box-shadow .18s ease,filter .18s ease;
+}
+.authShellFragmentun .btn:not(:disabled):hover,
+.authRecoveryShell .btn:not(:disabled):hover{
+  transform:translateY(-2px);
+  border-color:rgba(74,144,217,.72);
+  background:linear-gradient(135deg,#5aa2ec,#3b7fc7);
+  color:#f7fbff;
+  box-shadow:0 10px 28px rgba(0,0,0,.28),0 0 0 1px rgba(74,144,217,.10),0 0 22px rgba(74,144,217,.13);
+  filter:brightness(1.05);
+}
+.authShellFragmentun .btn:not(:disabled):active,
+.authRecoveryShell .btn:not(:disabled):active{
+  transform:translateY(0) scale(.985);
+  background:linear-gradient(135deg,#3f86cf,#2f6daf);
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.28),0 0 0 2px rgba(74,144,217,.12);
+}
+.authShellFragmentun input:hover,
+.authRecoveryShell input:hover{
+  border-color:rgba(74,144,217,.34);
+  background:#071522;
+}
+.authShellFragmentun input:focus,
+.authRecoveryShell input:focus{
+  border-color:rgba(74,144,217,.72);
+  background:#071522;
+  box-shadow:0 0 0 3px rgba(74,144,217,.10),0 8px 22px rgba(0,0,0,.14);
+  outline:none;
+}
+.authShellFragmentun .authLinks a:hover,
+.authRecoveryShell .authLinks a:hover{
+  color:#9ecbfa;
+  text-decoration:none;
+  transform:translateY(-1px);
+}
+.authShellFragmentun .authLinks a:active,
+.authRecoveryShell .authLinks a:active{
+  transform:translateY(0) scale(.985);
+}
+.authStatus{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:16px;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(74,144,217,.24);
+  background:rgba(74,144,217,.07);
+  color:#b8d9f8;
+  box-shadow:0 8px 24px rgba(0,0,0,.10);
+  animation:adminFeedbackIn .18s ease both;
+}
+.authStatus.success{
+  border-color:rgba(64,211,155,.42);
+  background:linear-gradient(180deg,rgba(64,211,155,.115),rgba(19,92,68,.08));
+  color:#8aebbd;
+  box-shadow:0 8px 24px rgba(0,0,0,.16),0 0 22px rgba(64,211,155,.08);
+}
+.authStatus.success:before{
+  content:"✓";
+  display:inline-grid;
+  place-items:center;
+  width:18px;height:18px;
+  border-radius:50%;
+  background:rgba(64,211,155,.14);
+  color:#96f0c8;
+  font-size:.68rem;
+  font-weight:900;
+}
+.authStatus.error{
+  border-color:rgba(255,92,92,.40);
+  background:linear-gradient(180deg,rgba(255,92,92,.10),rgba(100,24,30,.08));
+  color:#ffaaaa;
+  box-shadow:0 8px 24px rgba(0,0,0,.16),0 0 18px rgba(255,92,92,.06);
+}
+.authStatus.error:before{
+  content:"!";
+  display:inline-grid;
+  place-items:center;
+  width:18px;height:18px;
+  border-radius:50%;
+  background:rgba(255,92,92,.12);
+  color:#ffb0b0;
+  font-size:.68rem;
+  font-weight:900;
+}
+.authStatus.info:before{
+  content:"…";
+  display:inline-grid;
+  place-items:center;
+  width:18px;height:18px;
+  border-radius:50%;
+  background:rgba(74,144,217,.12);
+  color:#a8d1f7;
+  font-size:.68rem;
+  font-weight:900;
+}
+.authShellFragmentun button:disabled,
+.authRecoveryShell button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+  transform:none!important;
+  box-shadow:none!important;
+}
+@media(max-width:760px){
+  .authShellFragmentun .btn,
+  .authRecoveryShell .btn,
+  .authShellFragmentun .authLinks a,
+  .authRecoveryShell .authLinks a{
+    min-height:44px;
+  }
+}
+@media(hover:none) and (pointer:coarse){
+  .authShellFragmentun .btn:active,
+  .authRecoveryShell .btn:active{
+    transform:scale(.975);
+  }
+}
