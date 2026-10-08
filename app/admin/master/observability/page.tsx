@@ -25,10 +25,10 @@ async function validateCurrentPreview(){
   const deploymentId=process.env.VERCEL_DEPLOYMENT_ID||null;
   if(!host) throw new Error("preview_url_unavailable");
   const baseUrl="https://"+host;
-  const runCode="SMOKE-PREVIEW-"+new Date().toISOString().replace(/[-:T.Z]/g,"").slice(0,14);
+  const runCode="PRUEBA-"+new Date().toISOString().replace(/[-:T.Z]/g,"").slice(0,14);
   const{data:run,error:runError}=await supabase.from("runtime_validation_runs").insert({
     run_code:runCode,environment:"preview",deployment_id:deploymentId,commit_sha:commitSha,base_url:baseUrl,
-    status:"running",executed_by:user.id,notes:"Prueba automática del Preview actual desde Master Admin."
+    status:"running",executed_by:user.id,notes:"Prueba automática de la versión actual desde Master Admin."
   }).select("id").single();
   if(runError||!run) throw new Error(runError?.message||"validation_run_create_failed");
 
@@ -76,8 +76,8 @@ async function validateCurrentPreview(){
   const finalStatus=failed===0?"passed":"failed";
   const{error:closeError}=await supabase.from("runtime_validation_runs").update({
     status:finalStatus,notes:failed===0
-      ?"Smoke automático completo: todas las comprobaciones superadas."
-      :`Smoke automático con ${failed} comprobación(es) fallida(s).`,
+      ?"Prueba automática completa: todas las comprobaciones superadas."
+      :`Prueba automática con ${failed} comprobación(es) fallida(s).`,
     updated_at:new Date().toISOString()
   }).eq("id",run.id);
   if(closeError) throw new Error(closeError.message);
@@ -186,7 +186,7 @@ export default async function ObservabilityPage(){
   return <main className={styles.workspace}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · CONTROL</span><h1>Estado y Pruebas</h1><p>Comprueba que la versión de prueba funciona correctamente antes de avanzar.</p></div>
-      <a className={styles.publicSite} href="/admin/master">← Inicio LIRYGAMES</a>
+      <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
     <section className={styles.kpis}>
@@ -208,7 +208,7 @@ export default async function ObservabilityPage(){
         return <article key={r.id} className={styles.card}>
           <div className={styles.cardTop}><span className={r.status==="passed"?styles.badgeActive:styles.badgePlanned}>{statusText(r.status)}</span><em>{r.environment==="preview"?"VERSIÓN DE PRUEBA":"PREPARACIÓN"}</em></div>
           <h3>{r.run_code}</h3>
-          <p>{r.deployment_id||"Sin deployment"}<br/>{r.commit_sha||"Sin commit"}<br/>{passed}/{checks.length} checks passed<br/>{new Date(r.executed_at).toLocaleString("es-US")}</p>
+          <p>{r.deployment_id||"Sin identificador de versión"}<br/>{r.commit_sha||"Sin código de versión"}<br/>{passed}/{checks.length} comprobaciones correctas<br/>{new Date(r.executed_at).toLocaleString("es-US")}</p>
         </article>
       })}
       {!runRows.length&&<article className={styles.card}><h3>Aún no hay pruebas</h3><p>Cuando ejecutes una comprobación, aparecerá aquí.</p></article>}
@@ -244,11 +244,11 @@ export default async function ObservabilityPage(){
       <form action={createValidationRun} className={styles.adminForm}>
         <div className={styles.formTitle}><span>NUEVA PRUEBA MANUAL</span><h2>Registrar prueba manual</h2></div>
         <div className={styles.formGrid}>
-          <label>Código<input name="run_code" required placeholder="SMOKE-PREVIEW-2026-10-07-02"/></label>
+          <label>Código<input name="run_code" required placeholder="PRUEBA-2026-10-07-02"/></label>
           <label>Tipo de versión<select name="environment" defaultValue="preview"><option value="preview">Versión de prueba</option><option value="staging">Preparación</option></select></label>
-          <label>ID técnico de versión<input name="deployment_id"/></label>
-          <label>Código técnico<input name="commit_sha"/></label>
-          <label className={styles.span2}>URL base<input name="base_url" placeholder="https://...vercel.app"/></label>
+          <label>Identificador de versión<input name="deployment_id"/></label>
+          <label>Código de versión<input name="commit_sha"/></label>
+          <label className={styles.span2}>Dirección base<input name="base_url" placeholder="https://...vercel.app"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton}>Crear prueba</MasterSubmitButton>
@@ -260,7 +260,7 @@ export default async function ObservabilityPage(){
           <label>Prueba<select name="run_id" required defaultValue=""><option value="" disabled>Seleccionar prueba</option>{runRows.map((r:any)=><option key={r.id} value={r.id}>{r.run_code} · {r.status}</option>)}</select></label>
           <label>Nombre<input name="check_name" required placeholder="Admin login"/></label>
           <label>Dirección interna<input name="request_path" required placeholder="/admin/login"/></label>
-          <label>Tipo de consulta<select name="method" defaultValue="GET"><option value="GET">GET</option><option value="POST">POST</option><option value="HEAD">HEAD</option></select></label>
+          <label>Tipo de consulta<select name="method" defaultValue="GET"><option value="GET">Lectura</option><option value="POST">Envío</option><option value="HEAD">Cabecera</option></select></label>
           <label>Estado esperado<input type="number" min="100" max="599" name="expected_status"/></label>
           <label>Estado obtenido<input type="number" min="100" max="599" name="actual_status"/></label>
           <label>Estado<select name="status" defaultValue="passed"><option value="passed">Correcto</option><option value="failed">Revisar</option><option value="skipped">Omitido</option></select></label>
@@ -283,8 +283,8 @@ export default async function ObservabilityPage(){
     </details>}
 
     <section className={styles.notice}>
-      <div><strong>Fuente de verdad</strong><span>Los resultados históricos provienen de runtime_validation_runs + runtime_validation_results. Las escrituras desde esta pantalla requieren MFA.</span></div>
-      <code>observability ≠ release</code>
+      <div><strong>Fuente de referencia</strong><span>Los resultados históricos provienen del registro interno de pruebas. Las modificaciones desde esta pantalla requieren verificación en dos pasos.</span></div>
+      <code>Pruebas ≠ Publicación</code>
     </section>
   </main>;
 }
