@@ -231,7 +231,7 @@ export default async function MasterGamesPage(){
           <label>Fecha objetivo<input type="date" name="target_date"/></label>
           <label className={styles.span2}>Condiciones para completar<textarea name="exit_criteria" rows={3} placeholder="Condiciones para considerar la etapa completada"/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!gameRows.length}>Registrar etapa</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} type="submit" disabled={!gameRows.length} disabledReason="Primero registra un juego para poder añadir una etapa.">Registrar etapa</MasterSubmitButton>
       </form>
       </section>
 
@@ -248,7 +248,7 @@ export default async function MasterGamesPage(){
           <label>Moneda<input name="currency" defaultValue="USD"/></label>
           <label className={styles.span2}>Resumen<textarea name="summary" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!gameRows.length}>Actualizar juego</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!gameRows.length} disabledReason="No hay juegos registrados para actualizar.">Actualizar juego</MasterSubmitButton>
       </form>
 
       <form action={updateMilestone} className={styles.adminForm}>
@@ -262,7 +262,7 @@ export default async function MasterGamesPage(){
           <label className={styles.span2}>Condiciones para completar<textarea name="exit_criteria" rows={3}/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!milestoneRows.length}>Actualizar etapa</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!milestoneRows.length} disabledReason="No hay etapas registradas para actualizar.">Actualizar etapa</MasterSubmitButton>
       </form>
       </section>
     </details>}
