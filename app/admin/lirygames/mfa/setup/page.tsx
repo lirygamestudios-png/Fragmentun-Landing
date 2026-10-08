@@ -1,5 +1,5 @@
 "use client";
-import {useEffect,useState} from "react";
+import {useEffect,useRef,useState} from "react";
 import {useRouter} from "next/navigation";
 
 export default function LiryGamesMfaSetupPage(){
@@ -11,6 +11,7 @@ export default function LiryGamesMfaSetupPage(){
   const[message,setMessage]=useState("");
   const[messageType,setMessageType]=useState<"info"|"success"|"error">("info");
   const[busy,setBusy]=useState(false);
+  const autoEnrollStarted=useRef(false);
 
   useEffect(()=>{
     (async()=>{
@@ -21,11 +22,15 @@ export default function LiryGamesMfaSetupPage(){
       const totp=j.factors?.totp||[];
       const verified=totp.find((f:any)=>f.status==="verified"&&String(f.friendly_name||"").trim().toLowerCase()==="lirygames commander");
       if(verified){window.location.assign("/admin/lirygames/mfa");return;}
+      if(!autoEnrollStarted.current){
+        autoEnrollStarted.current=true;
+        await enroll();
+      }
     })();
   },[router]);
 
   async function enroll(){
-    setBusy(true);setMessageType("info");setMessage("Preparando autenticador…");
+    setBusy(true);setMessageType("info");setMessage("Generando QR exclusivo de LIRYGAMES…");
     try{
       const r=await fetch("/api/admin/mfa",{
         method:"POST",
@@ -49,7 +54,7 @@ export default function LiryGamesMfaSetupPage(){
     event.preventDefault();
     setBusy(true);setMessageType("info");setMessage("Verificando código…");
     try{
-      const r=await fetch("/api/admin/mfa",{
+      const r=await fetch("/api/admin/lirygames/mfa/verify",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({factorId,code})
@@ -86,9 +91,9 @@ export default function LiryGamesMfaSetupPage(){
         <h2>Configurar autenticador</h2>
 
         {!factorId&&<>
-          <p className="lead">Pulsa el botón para preparar el autenticador y generar el código QR.</p>
+          <p className="lead">Estamos generando el autenticador exclusivo de LIRYGAMES. El código QR aparecerá automáticamente.</p>
           <button className="btn btnPrimary authSubmit" type="button" onClick={enroll} disabled={busy}>
-            {busy?"Preparando…":"Configurar segundo factor"}
+            {busy?"Generando QR…":"Generar QR nuevamente"}
           </button>
         </>}
 
