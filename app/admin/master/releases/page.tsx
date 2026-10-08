@@ -182,7 +182,11 @@ async function updateGate(formData:FormData){
       supabase.from("runtime_validation_runs").select("status,deployment_id,commit_sha").eq("environment","preview").order("executed_at",{ascending:false}).limit(1).maybeSingle()
     ]);
     if(!(checks||[]).length) throw new Error("release_checks_required");
-    const blockers=(checks||[]).filter((c:any)=>c.blocking&&!["passed","waived"].includes(c.status));
+    const blockers=(checks||[]).filter((c:any)=>
+      c.blocking&&
+      c.check_code!=="human-release-approval"&&
+      !["passed","waived"].includes(c.status)
+    );
     if(blockers.length) throw new Error("blocking_checks_incomplete");
     const runtimeCheck=(checks||[]).find((c:any)=>c.check_code==="runtime-smoke");
     if(!runtimeCheck||runtimeCheck.status!=="passed") throw new Error("runtime_validation_required");
@@ -194,8 +198,46 @@ async function updateGate(formData:FormData){
     if(latestValidation.deployment_id&&gate?.target_deployment_id&&latestValidation.deployment_id!==gate.target_deployment_id) throw new Error("release_deployment_mismatch");
     if(latestValidation.commit_sha&&gate?.target_commit&&latestValidation.commit_sha!==gate.target_commit) throw new Error("release_commit_mismatch");
   }
-  const patch:any={status,notes,updated_at:new Date().toISOString()};
-  if(status==="approved"){patch.approved_by=user.id;patch.approved_at=new Date().toISOString();}
+  const now=new Date().toISOString();
+  const patch:any={status,notes,updated_at:now};
+
+  if(status==="approved"){
+    patch.approved_by=user.id;
+    patch.approved_at=now;
+
+    const{data:humanCheck,error:humanCheckLookupError}=await supabase
+      .from("release_gate_checks")
+      .select("id")
+      .eq("release_gate_id",id)
+      .eq("check_code","human-release-approval")
+      .maybeSingle();
+    if(humanCheckLookupError) throw new Error(humanCheckLookupError.message);
+
+    if(humanCheck?.id){
+      const{error:humanCheckError}=await supabase.from("release_gate_checks").update({
+        status:"passed",
+        evidence:"Aprobación humana registrada explícitamente desde LIRYGAMES Commander Center.",
+        checked_by:user.id,
+        checked_at:now,
+        updated_at:now
+      }).eq("id",humanCheck.id);
+      if(humanCheckError) throw new Error(humanCheckError.message);
+    }else{
+      const{error:humanCheckError}=await supabase.from("release_gate_checks").insert({
+        release_gate_id:id,
+        check_code:"human-release-approval",
+        label:"Human release approval",
+        check_type:"manual",
+        blocking:true,
+        status:"passed",
+        evidence:"Aprobación humana registrada explícitamente desde LIRYGAMES Commander Center.",
+        checked_by:user.id,
+        checked_at:now
+      });
+      if(humanCheckError) throw new Error(humanCheckError.message);
+    }
+  }
+
   const{error}=await supabase.from("release_gates").update(patch).eq("id",id);
   if(error) throw new Error(error.message);
   revalidatePath("/admin/master/releases");
@@ -291,7 +333,7 @@ export default async function ReleaseGatePage(){
             <input type="hidden" name="gate_id" value={gateRows[0].id}/>
             <MasterSubmitButton className={styles.formButton}>Usar última prueba</MasterSubmitButton>
           </MasterActionForm></>}
-      {evidenceIntegrated&&<code>APROBACIÓN HUMANA PENDIENTE</code>}
+      {evidenceIntegrated&&<code>{activeGate?.status==="approved"?"APROBACIÓN HUMANA REGISTRADA":"APROBACIÓN HUMANA PENDIENTE"}</code>}
     </section>}
 
     <section className={styles.sectionHead}><div><span>COMPROBACIONES</span><h2>Evidencia de la revisión</h2></div></section>
