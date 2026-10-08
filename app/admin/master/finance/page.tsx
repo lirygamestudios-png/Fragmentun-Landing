@@ -130,14 +130,16 @@ export default async function MasterFinancePage(){
     {count:products},
     {count:fulfilled},
     {data:accounts},
-    {data:transactions}
+    {data:transactions},
+    {data:gamePurchases}
   ]=await Promise.all([
     supabase.from("shop_orders").select("total_cents,payment_fee_cents,supplier_cost_cents,shipping_cost_cents,margin_cents,currency,payment_status,fulfillment_status,created_at").order("created_at",{ascending:false}).limit(500),
     supabase.from("commerce_settings").select("stripe_enabled,paypal_enabled,default_payment_provider,tax_mode,tax_registration_status").eq("id","default").maybeSingle(),
     supabase.from("shop_products").select("*",{count:"exact",head:true}).eq("active",true),
     supabase.from("shop_orders").select("*",{count:"exact",head:true}).eq("fulfillment_status","fulfilled"),
     supabase.from("finance_accounts").select("id,code,name,account_type,currency,active").order("name",{ascending:true}),
-    supabase.from("finance_transactions").select("id,transaction_date,transaction_type,status,account_id,counterparty,category,description,amount_cents,currency,source_type,source_id,external_reference,reconciled_at,created_at").order("transaction_date",{ascending:false}).limit(250)
+    supabase.from("finance_transactions").select("id,transaction_date,transaction_type,status,account_id,counterparty,category,description,amount_cents,currency,source_type,source_id,external_reference,reconciled_at,created_at").order("transaction_date",{ascending:false}).limit(250),
+    supabase.from("game_purchase_events").select("id,game_id,gross_cents,fee_cents,tax_cents,net_cents,currency,status,purchased_at").order("purchased_at",{ascending:false}).limit(2000)
   ]);
 
   const rows=(orders||[]) as any[];
@@ -153,6 +155,15 @@ export default async function MasterFinancePage(){
   const posted=txRows.filter(t=>t.status==="posted"||t.status==="reconciled");
   const ledgerNet=posted.reduce((a,t)=>a+Number(t.amount_cents||0),0);
   const reconciled=txRows.filter(t=>t.status==="reconciled").length;
+  const gamePurchaseRows=(gamePurchases||[]) as any[];
+  const paidGamePurchases=gamePurchaseRows.filter(p=>p.status==="paid");
+  const inGameGross=paidGamePurchases.reduce((a,p)=>a+Number(p.gross_cents||0),0);
+  const inGameFees=paidGamePurchases.reduce((a,p)=>a+Number(p.fee_cents||0),0);
+  const inGameTax=paidGamePurchases.reduce((a,p)=>a+Number(p.tax_cents||0),0);
+  const inGameNet=paidGamePurchases.reduce((a,p)=>a+Number(p.net_cents??(Number(p.gross_cents||0)-Number(p.fee_cents||0)-Number(p.tax_cents||0))),0);
+  const inGameCurrency=paidGamePurchases[0]?.currency||"USD";
+  const combinedRevenue=revenue+inGameGross;
+  const combinedFees=fees+inGameFees;
 
   const readiness=[
     {name:"Pedidos",value:rows.length>0?"Operativo":"Sin ventas aún",detail:"Ventas registradas"},
@@ -179,9 +190,9 @@ export default async function MasterFinancePage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Ingresos pagados</small><strong className={styles.kpiLongValue}>{money(revenue,currency)}</strong><span>{paid.length} órdenes pagadas</span></article>
-      <article><small>Margen registrado</small><strong className={styles.kpiLongValue}>{money(margin,currency)}</strong><span>Después de costes modelados</span></article>
-      <article><small>Comisiones de pago</small><strong className={styles.kpiLongValue}>{money(fees,currency)}</strong><span>Coste de procesamiento</span></article>
+      <article><small>Ingresos pagados</small><strong className={styles.kpiLongValue}>{money(combinedRevenue,paidGamePurchases.length?inGameCurrency:currency)}</strong><span>{paid.length} órdenes web · {paidGamePurchases.length} compras in-game</span></article>
+      <article><small>Margen web registrado</small><strong className={styles.kpiLongValue}>{money(margin,currency)}</strong><span>Después de costes modelados de tienda</span></article>
+      <article><small>Comisiones de pago</small><strong className={styles.kpiLongValue}>{money(combinedFees,paidGamePurchases.length?inGameCurrency:currency)}</strong><span>Web + plataformas de videojuegos</span></article>
       <article><small>Órdenes completadas</small><strong>{(fulfilled||0).toLocaleString()}</strong><span>Órdenes completadas</span></article>
     </section>
 
@@ -198,6 +209,18 @@ export default async function MasterFinancePage(){
       </article>)}
     </section>
 
+
+    <section className={styles.sectionHead}>
+      <div><span>FREEMIUM · VIDEOJUEGOS</span><h2>Ingresos in-game</h2></div>
+      <p>Lectura financiera de compras recibidas desde los juegos. No crea asientos automáticos: la conciliación contable permanece separada.</p>
+    </section>
+
+    <section className={styles.kpis}>
+      <article><small>Bruto in-game</small><strong className={styles.kpiLongValue}>{money(inGameGross,inGameCurrency)}</strong><span>{paidGamePurchases.length} compras pagadas</span></article>
+      <article><small>Neto in-game</small><strong className={styles.kpiLongValue}>{money(inGameNet,inGameCurrency)}</strong><span>Después de comisiones e impuestos registrados</span></article>
+      <article><small>Comisiones plataformas</small><strong className={styles.kpiLongValue}>{money(inGameFees,inGameCurrency)}</strong><span>Costes de procesamiento/plataforma</span></article>
+      <article><small>Impuestos registrados</small><strong className={styles.kpiLongValue}>{money(inGameTax,inGameCurrency)}</strong><span>Según eventos recibidos</span></article>
+    </section>
 
     <section className={styles.sectionHead}>
       <div><span>REGISTRO FINANCIERO</span><h2>Cuentas y movimientos</h2></div>
