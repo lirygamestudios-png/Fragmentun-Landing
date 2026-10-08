@@ -80,8 +80,9 @@ export default async function MasterReportsPage(){
 
     <section className={styles.reportActions}>
       <div>
+        <small className={styles.reportKicker}>REPORTE CONSOLIDADO</small>
         <strong>Reporte ejecutivo de LIRYGAMES</strong>
-        <span>Vista actual de los principales indicadores corporativos.</span>
+        <span>Vista actual de los principales indicadores corporativos, preparada para compartir o archivar.</span>
       </div>
       <MasterReportsActions rows={rows}/>
     </section>
@@ -90,7 +91,7 @@ export default async function MasterReportsPage(){
       <article><small>Contactos captados</small><strong>{(leads||0).toLocaleString()}</strong><span>Base comercial</span></article>
       <article><small>Comunidad activa</small><strong>{(community||0).toLocaleString()}</strong><span>Miembros activos</span></article>
       <article><small>Trabajo abierto</small><strong>{(openWork||0).toLocaleString()}</strong><span>Operación pendiente</span></article>
-      <article><small>Riesgos altos</small><strong>{highRisks}</strong><span>Requieren atención</span></article>
+      <article className={highRisks?styles.kpiAttention:undefined}><small>Riesgos altos</small><strong>{highRisks}</strong><span>{highRisks?"Requieren atención":"Sin alertas altas registradas"}</span></article>
     </section>
 
     <section className={styles.sectionHead}>
