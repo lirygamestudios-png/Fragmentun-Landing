@@ -42,7 +42,7 @@ export default async function MasterChecklistPage(){
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile)redirect("/admin/login?unauthorized=1");
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleChecklist}`}>
     <header className={styles.topbar}>
       <div>
         <span className={styles.eyebrow}>LIRYGAMES · REVISIÓN VISUAL</span>
@@ -51,6 +51,15 @@ export default async function MasterChecklistPage(){
       </div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">RV</span>
+      <div className={styles.moduleStripCopy}><small>REVISIÓN VISUAL</small><strong>Pantallas, adaptación y coherencia</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Recorrido visual preparado</span>
+        <span>Revisión manual</span>
+      </div>
+    </section>
 
     <section className={styles.notice}>
       <div>
