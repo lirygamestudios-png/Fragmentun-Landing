@@ -180,11 +180,20 @@ export default async function MasterOperationsPage(){
     {name:"Contactos",status:latestLead?"Activo":"Pendiente",detail:latestLead?"Último registro disponible":"Sin contactos"}
   ];
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleOperations}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · OPERACIONES</span><h1>Operaciones</h1><p>Trabajo pendiente, decisiones y continuidad operativa del estudio.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">OP</span>
+      <div className={styles.moduleStripCopy}><small>OPERACIÓN CENTRAL</small><strong>Continuidad del estudio</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Datos operativos conectados</span>
+        <span>Acciones sensibles · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Trabajos abiertos</small><strong>{open.length}</strong><span>{blocked.length} bloqueados o críticos</span></article>
