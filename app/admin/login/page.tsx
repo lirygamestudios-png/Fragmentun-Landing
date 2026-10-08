@@ -39,9 +39,15 @@ export default function AdminLoginPage(){
         return;
       }
       setStatusType("error");
-      setStatus(j.error==="unauthorized"
-        ?"La cuenta existe, pero no tiene permisos para entrar al Panel de administración."
-        :"Correo o contraseña incorrectos.");
+      setStatus(
+        j.error==="unauthorized"
+          ?"La cuenta existe, pero no tiene permisos para entrar al Panel de administración."
+          :j.error==="too_many_attempts"
+            ?"Se alcanzó el límite temporal de intentos. Inténtalo nuevamente más tarde."
+            :j.error==="payload_too_large"
+              ?"La solicitud no pudo procesarse. Revisa los datos e inténtalo nuevamente."
+              :"Correo o contraseña incorrectos."
+      );
     }catch{
       setStatusType("error");
       setStatus("No fue posible conectar con el servicio de acceso. Revisa tu conexión e inténtalo nuevamente.");
@@ -75,8 +81,8 @@ export default function AdminLoginPage(){
         <div className="kicker">ACCESO SEGURO</div>
         <h2>Bienvenido de nuevo</h2>
         <p className="lead">Ingresa con tus credenciales autorizadas para abrir el panel.</p>
-        {unauthorized&&<div className="formNotice">Tu sesión no tiene permisos administrativos.</div>}
-        {authError&&<div className="formNotice">El enlace de acceso o recuperación no es válido o expiró.</div>}
+        {unauthorized&&<div className="authStatus error" role="alert">Tu sesión no tiene permisos administrativos.</div>}
+        {authError&&<div className="authStatus error" role="alert">El enlace de acceso o recuperación no es válido o expiró.</div>}
         <form onSubmit={signIn} className="authForm">
           <label><span>Correo electrónico</span><input type="email" required value={email} onChange={e=>setEmail(e.target.value)} autoComplete="email"/></label>
           <label><span>Contraseña</span><input type="password" required value={password} onChange={e=>setPassword(e.target.value)} autoComplete="current-password"/></label>
