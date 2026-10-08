@@ -234,7 +234,7 @@ export default async function MasterOrganizacionesPage(){
           <label>Web<input name="website"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!partnerRows.length}>Actualizar organización</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!partnerRows.length} disabledReason="No hay organizaciones registradas para actualizar.">Actualizar organización</MasterSubmitButton>
       </form>
 
       <form action={updateAcuerdo} className={styles.adminForm}>
@@ -253,7 +253,7 @@ export default async function MasterOrganizacionesPage(){
           <label className={styles.span2}>Próxima acción<input name="next_action"/></label>
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!dealRows.length}>Actualizar acuerdo</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} disabled={!dealRows.length} disabledReason="No hay acuerdos o licencias registrados para actualizar.">Actualizar acuerdo</MasterSubmitButton>
       </form>
       </section>
     </details>
