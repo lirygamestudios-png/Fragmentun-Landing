@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
+import {MasterActionForm} from "../../../../components/MasterActionForm";
 
 function invalidDateRange(start:string|null,end:string|null){
   return Boolean(start&&end&&end<start);
@@ -263,7 +264,7 @@ export default async function MasterLegalPage(){
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar activos, derechos, licencias y contratos manualmente.</p>
         <section className={styles.adminForms}>
-      <form action={createIpAsset} className={styles.adminForm}>
+      <MasterActionForm action={createIpAsset} className={styles.adminForm} successText="Activo de propiedad intelectual registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO ACTIVO</span><h2>Registrar IP</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="code" required placeholder="fragmentun-book-1"/></label>
@@ -281,9 +282,9 @@ export default async function MasterLegalPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar activo</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={createRight} className={styles.adminForm}>
+      <MasterActionForm action={createRight} className={styles.adminForm} successText="Derecho o licencia registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO DERECHO</span><h2>Registrar derecho/licencia</h2></div>
         <div className={styles.formGrid}>
           <label>Activo<select name="asset_id" required defaultValue="">
@@ -309,9 +310,9 @@ export default async function MasterLegalPage(){
           <label>Fin<input type="date" name="end_date"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit" disabled={!assetRows.length} disabledReason="Primero registra un activo de propiedad intelectual para poder añadir un derecho o licencia.">Registrar derecho</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={createContract} className={styles.adminForm}>
+      <MasterActionForm action={createContract} className={styles.adminForm} successText="Contrato registrado correctamente.">
         <div className={styles.formTitle}><span>NUEVO CONTRATO</span><h2>Registrar contrato</h2></div>
         <div className={styles.formGrid}>
           <label>Código<input name="contract_code" required placeholder="nda-001"/></label>
@@ -329,12 +330,12 @@ export default async function MasterLegalPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} type="submit">Registrar contrato</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
     </section>
 
 
     <section className={styles.adminForms}>
-      <form action={updateIpAsset} className={styles.adminForm}>
+      <MasterActionForm action={updateIpAsset} className={styles.adminForm} successText="Activo de propiedad intelectual actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR ACTIVO</span><h2>Actualizar IP</h2></div>
         <div className={styles.formGrid}>
           <label>Activo<select name="asset_id" required defaultValue=""><option value="" disabled>Seleccionar activo</option>{assetRows.map((a:any)=><option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
@@ -346,9 +347,9 @@ export default async function MasterLegalPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!assetRows.length} disabledReason="No hay activos de propiedad intelectual registrados para actualizar.">Actualizar activo</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={updateRight} className={styles.adminForm}>
+      <MasterActionForm action={updateRight} className={styles.adminForm} successText="Derecho o licencia actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR DERECHO</span><h2>Actualizar vigencia/licencia</h2></div>
         <div className={styles.formGrid}>
           <label>Derecho<select name="right_id" required defaultValue=""><option value="" disabled>Seleccionar derecho</option>{rightRows.map((r:any)=><option key={r.id} value={r.id}>{r.right_type} · {assetRows.find(a=>a.id===r.asset_id)?.name||"Activo"}</option>)}</select></label>
@@ -362,9 +363,9 @@ export default async function MasterLegalPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!rightRows.length} disabledReason="No hay derechos o licencias registrados para actualizar.">Actualizar derecho</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
 
-      <form action={updateContract} className={styles.adminForm}>
+      <MasterActionForm action={updateContract} className={styles.adminForm} successText="Contrato actualizado correctamente.">
         <div className={styles.formTitle}><span>GESTIONAR CONTRATO</span><h2>Actualizar contrato</h2></div>
         <div className={styles.formGrid}>
           <label>Contrato<select name="contract_id" required defaultValue=""><option value="" disabled>Seleccionar contrato</option>{contractRows.map((c:any)=><option key={c.id} value={c.id}>{c.contract_code} · {c.title}</option>)}</select></label>
@@ -379,7 +380,7 @@ export default async function MasterLegalPage(){
           <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!contractRows.length} disabledReason="No hay contratos registrados para actualizar.">Actualizar contrato</MasterSubmitButton>
-      </form>
+      </MasterActionForm>
       </section>
     </details>
 
