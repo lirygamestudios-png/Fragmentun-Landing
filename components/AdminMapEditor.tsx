@@ -2,14 +2,21 @@
 import { useEffect,useState } from "react";
 
 export function AdminMapEditor(){
-  const[regions,setRegions]=useState<any[]>([]);const[points,setPoints]=useState<any[]>([]);const[msg,setMsg]=useState("");
-  useEffect(()=>{fetch("/api/admin/map").then(r=>r.json()).then(j=>{setRegions(j.regions||[]);setPoints(j.points||[])})},[]);
+  const[regions,setRegions]=useState<any[]>([]);const[points,setPoints]=useState<any[]>([]);const[msg,setMsg]=useState("");const[loadError,setLoadError]=useState(false);
+  useEffect(()=>{fetch("/api/admin/map").then(async r=>{const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error("load_failed");setRegions(j.regions||[]);setPoints(j.points||[]);setLoadError(false)}).catch(()=>setLoadError(true))},[]);
   const update=(kind:"region"|"point",i:number,k:string,v:any)=>kind==="region"?setRegions(a=>a.map((x,n)=>n===i?{...x,[k]:v}:x)):setPoints(a=>a.map((x,n)=>n===i?{...x,[k]:v}:x));
   async function save(kind:"region"|"point",item:any){
     setMsg("Guardando…");
-    const r=await fetch("/api/admin/map",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({...item,kind})});
-    setMsg(r.ok?"GUARDADO SATISFACTORIAMENTE":"ERROR: NO FUE POSIBLE GUARDAR");
+    try{
+      const r=await fetch("/api/admin/map",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({...item,kind})});
+      const j=await r.json().catch(()=>({}));
+      setMsg(r.ok?"GUARDADO SATISFACTORIAMENTE":(j.error||"No fue posible guardar el mapa."));
+    }catch{
+      setMsg("No fue posible guardar el mapa. Revisa la conexión e inténtalo nuevamente.");
+    }
   }
+  if(loadError)return <section className="card"><p className="adminSaveFeedback error">No fue posible cargar el mapa de Lumen.</p><button type="button" className="btn btnGhost" onClick={()=>window.location.reload()}>Reintentar</button></section>;
+
   return <div className="adminMapModule">
     <div className="adminModuleSectionHead"><div><div className="kicker">Cartografía emocional</div><h2>Territorios</h2></div><span>{regions.length} regiones</span></div>
     <div className="adminBookGrid">{regions.map((r,i)=><article className="card adminMapRegionCard" key={r.id}>
