@@ -122,7 +122,9 @@ export default async function MasterDataPage(){
     {count:leads},
     {count:amazonClicks},
     {data:recentEvents},
-    {data:owners}
+    {data:owners},
+    {data:gameMetrics},
+    {data:gamePurchases}
   ]=await Promise.all([
     supabase.from("data_sources").select("id,code,name,source_type,system_name,status,freshness_target_minutes,owner_user_id,notes,created_at").order("name",{ascending:true}),
     supabase.from("metric_definitions").select("id,code,name,domain,definition,formula,unit,source_table,status,owner_user_id,notes,created_at").order("domain",{ascending:true}),
@@ -131,7 +133,9 @@ export default async function MasterDataPage(){
     supabase.from("leads").select("*",{count:"exact",head:true}).gte("created_at",since),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","amazon_click").gte("created_at",since),
     supabase.from("analytics_events").select("event_name,source,medium,created_at").order("created_at",{ascending:false}).limit(20),
-    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true})
+    supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true}),
+    supabase.from("game_engagement_daily").select("metric_date,game_id,platform,active_players,new_players,sessions,session_minutes").order("metric_date",{ascending:false}).limit(1000),
+    supabase.from("game_purchase_events").select("game_id,player_ref,platform,gross_cents,currency,status,purchased_at").gte("purchased_at",since).order("purchased_at",{ascending:false}).limit(5000)
   ]);
 
   const sourceRows=(sources||[]) as any[];
@@ -142,6 +146,23 @@ export default async function MasterDataPage(){
   const amazonCtr=(pageViews||0)>0?((amazonClicks||0)/(pageViews||1))*100:0;
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
+  const gameMetricRows=(gameMetrics||[]) as any[];
+  const gamePurchaseRows=(gamePurchases||[]) as any[];
+  const latestGameDate=gameMetricRows[0]?.metric_date||null;
+  const latestGameMetrics=latestGameDate?gameMetricRows.filter(m=>m.metric_date===latestGameDate):[];
+  const activePlayersToday=latestGameMetrics.reduce((a,m)=>a+Number(m.active_players||0),0);
+  const newPlayersToday=latestGameMetrics.reduce((a,m)=>a+Number(m.new_players||0),0);
+  const sessionsToday=latestGameMetrics.reduce((a,m)=>a+Number(m.sessions||0),0);
+  const paidGameRows=gamePurchaseRows.filter(p=>p.status==="paid");
+  const gameRevenue30d=paidGameRows.reduce((a,p)=>a+Number(p.gross_cents||0),0);
+  const gameCurrency30d=paidGameRows[0]?.currency||"USD";
+  const gamePayers30d=new Set(paidGameRows.map(p=>p.player_ref).filter(Boolean)).size;
+  const latestPayers=latestGameDate?new Set(paidGameRows.filter(p=>String(p.purchased_at||"").slice(0,10)===latestGameDate).map(p=>p.player_ref)).size:0;
+  const payerConversion=activePlayersToday?latestPayers/activePlayersToday*100:0;
+  const platformCounts=latestGameMetrics.reduce((acc:Record<string,number>,m:any)=>{
+    acc[m.platform||"all"]=(acc[m.platform||"all"]||0)+Number(m.active_players||0);
+    return acc;
+  },{});
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleData}`}>
     <header className={styles.topbar}>
@@ -163,6 +184,22 @@ export default async function MasterDataPage(){
       <article><small>Métricas definidas</small><strong>{metricRows.length}</strong><span>Métricas registradas</span></article>
       <article><small>Eventos 30 días</small><strong>{(events||0).toLocaleString()}</strong><span>Actividad registrada</span></article>
       <article><small>Conversión de contactos</small><strong>{conversion.toFixed(1)}%</strong><span>Contactos / visitas</span></article>
+    </section>
+
+    <section className={styles.sectionHead}><div><span>FREEMIUM · TELEMETRÍA</span><h2>Economía y comportamiento de juego</h2></div><p>Métricas recibidas desde los videojuegos y sus plataformas, separadas de la analítica web.</p></section>
+    <section className={styles.kpis}>
+      <article><small>Jugadores activos hoy</small><strong>{activePlayersToday.toLocaleString()}</strong><span>{latestGameDate||"Sin telemetría diaria"}</span></article>
+      <article><small>Nuevos jugadores</small><strong>{newPlayersToday.toLocaleString()}</strong><span>{sessionsToday.toLocaleString()} sesiones registradas</span></article>
+      <article><small>Pagadores 30 días</small><strong>{gamePayers30d.toLocaleString()}</strong><span>{new Intl.NumberFormat("en-US",{style:"currency",currency:gameCurrency30d}).format(gameRevenue30d/100)} bruto</span></article>
+      <article><small>Conversión a pagador</small><strong>{payerConversion.toFixed(2)}%</strong><span>Pagadores del día / jugadores activos</span></article>
+    </section>
+    <section className={styles.grid}>
+      {Object.entries(platformCounts).map(([platform,count])=><article key={platform} className={styles.card}>
+        <div className={styles.cardTop}><span className={styles.badgeActive}>JUEGO</span><em>PLATAFORMA</em></div>
+        <h3>{String(platform).toUpperCase()}</h3>
+        <p>{Number(count).toLocaleString()} jugadores activos en la última lectura diaria.</p>
+      </article>)}
+      {!Object.keys(platformCounts).length&&<article className={styles.card}><h3>Telemetría FREEMIUM preparada</h3><p>Las métricas aparecerán cuando los videojuegos comiencen a enviar actividad real.</p></article>}
     </section>
 
     <section className={styles.sectionHead}><div><span>FUENTES</span><h2>Fuentes</h2></div><p>Inventario de bases, APIs, plataformas y otras fuentes de datos.</p></section>
