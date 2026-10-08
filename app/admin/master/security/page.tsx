@@ -162,11 +162,20 @@ export default async function MasterSecurityPage(){
     ["Claves sensibles","Servidor","Claves sensibles fuera del cliente"]
   ];
 
-  return <main className={styles.workspace}>
+  return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleSecurity}`}>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · SEGURIDAD</span><h1>Seguridad</h1><p>Incidentes, revisiones de acceso y controles técnicos existentes.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
+
+    <section className={styles.moduleStrip} aria-label="Estado del módulo">
+      <span className={styles.moduleGlyph} aria-hidden="true">SG</span>
+      <div className={styles.moduleStripCopy}><small>SEGURIDAD Y ACCESO</small><strong>Incidentes, revisiones y controles</strong></div>
+      <div className={styles.moduleStripMeta}>
+        <span><i className={styles.signalLive} aria-hidden="true"></i>Controles de seguridad conectados</span>
+        <span>Acceso exclusivo · MFA</span>
+      </div>
+    </section>
 
     <section className={styles.kpis}>
       <article><small>Incidentes abiertos</small><strong>{openIncidents.length}</strong><span>{criticalIncidents.length} altos o críticos</span></article>
