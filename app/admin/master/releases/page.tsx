@@ -166,12 +166,19 @@ async function updateGate(formData:FormData){
   const notes=String(formData.get("notes")||"").trim()||null;
   if(!id||!["draft","in_review","blocked","approved","canceled"].includes(status)) throw new Error("invalid_gate_status");
   if(status==="approved"){
-    const{data:checks}=await supabase.from("release_gate_checks").select("status,blocking,check_code").eq("release_gate_id",id);
+    const[{data:checks},{data:gate},{data:latestValidation}]=await Promise.all([
+      supabase.from("release_gate_checks").select("status,blocking,check_code").eq("release_gate_id",id),
+      supabase.from("release_gates").select("target_deployment_id,target_commit").eq("id",id).maybeSingle(),
+      supabase.from("runtime_validation_runs").select("status,deployment_id,commit_sha").eq("environment","preview").order("executed_at",{ascending:false}).limit(1).maybeSingle()
+    ]);
     if(!(checks||[]).length) throw new Error("release_checks_required");
     const blockers=(checks||[]).filter((c:any)=>c.blocking&&!["passed","waived"].includes(c.status));
     if(blockers.length) throw new Error("blocking_checks_incomplete");
     const runtimeCheck=(checks||[]).find((c:any)=>c.check_code==="runtime-smoke");
     if(!runtimeCheck||runtimeCheck.status!=="passed") throw new Error("runtime_validation_required");
+    if(!latestValidation||latestValidation.status!=="passed") throw new Error("latest_validation_not_passed");
+    if(latestValidation.deployment_id&&gate?.target_deployment_id&&latestValidation.deployment_id!==gate.target_deployment_id) throw new Error("release_deployment_mismatch");
+    if(latestValidation.commit_sha&&gate?.target_commit&&latestValidation.commit_sha!==gate.target_commit) throw new Error("release_commit_mismatch");
   }
   const patch:any={status,notes,updated_at:new Date().toISOString()};
   if(status==="approved"){patch.approved_by=user.id;patch.approved_at=new Date().toISOString();}
