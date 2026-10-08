@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "../../../lib/supabase/server";
 import styles from "./master-admin.module.css";
+import {getMasterLiveSnapshot} from "../../../lib/master-live";
+import {MasterCommanderLive} from "../../../components/MasterCommanderLive";
 
 type Domain={
   title:string;
@@ -57,6 +59,8 @@ export default async function MasterAdminPage(){
 
   if(!profile) redirect("/admin/login?unauthorized=1");
 
+  const liveSnapshotPromise=getMasterLiveSnapshot(supabase);
+
   const [
     {count:leadCount},
     {count:eventCount},
@@ -96,6 +100,8 @@ export default async function MasterAdminPage(){
     supabase.from("tech_changes").select("id,status,risk_level,planned_at,target_environment"),
     supabase.from("fundraising_opportunities").select("id,status,stage,probability,expected_close_date,next_action_at")
   ]);
+
+  const liveSnapshot=await liveSnapshotPromise;
 
   const gameRows=(games||[]) as any[];
   const milestoneRows=(milestones||[]) as any[];
@@ -145,114 +151,77 @@ export default async function MasterAdminPage(){
   const overdueTotal=overdueWork+overdueRisks+overdueReviews+fundraisingDue;
   const criticalExceptions=gamesAtRisk+milestonesAtRisk+releaseRisks+highRiskAprobaciones+blockedWork+highRisks+criticalSecurity+riskyTechChanges;
 
-  return <main className={styles.workspace}>
-      <header className={styles.topbar}>
-        <div>
-          <span className={styles.eyebrow}>LIRYGAMES · PANEL GENERAL</span>
-          <h1>LIRYGAMES STUDIOS</h1>
-          <p>Vista general del estudio, sus áreas y decisiones pendientes · Fases 1–60</p>
+  return <main className={`${styles.workspace} ${styles.commanderWorkspace}`}>
+      <header className={styles.commandHero}>
+        <div className={styles.commandHeroCopy}>
+          <div className={styles.commandHeroKicker}><i className={styles.signalLive}></i>LIRYGAMES STUDIOS · COMMAND CENTER</div>
+          <h1>Centro de mando</h1>
+          <p>Lectura ejecutiva del ecosistema completo: jugadores, ingresos, producto, operación, seguridad y decisiones que requieren atención.</p>
         </div>
-        <div className={styles.protection}>
-          <b>FRAGMENTUN</b>
-          <span>Producción protegida</span>
+        <div className={styles.commandHeroSide}>
+          <span>ESTADO DEL ECOSISTEMA</span>
+          <strong>{criticalExceptions>0?"ATENCIÓN REQUERIDA":"OPERACIÓN ESTABLE"}</strong>
+          <small>{criticalExceptions} excepciones críticas · {overdueTotal} seguimientos vencidos</small>
         </div>
       </header>
 
-      <section className={styles.notice}>
-        <div><strong>Baseline protegido</strong><span>La landing pública no se modifica desde este módulo.</span></div>
-        <code>main · 8eb878e</code>
+      <MasterCommanderLive initial={liveSnapshot}/>
+
+      <section className={styles.commandSectionHead}>
+        <div><span>ALERTAS EJECUTIVAS</span><h2>Lo que requiere atención</h2></div>
+        <p>Las señales se alimentan de los módulos ya construidos. Un clic abre el área responsable para actuar.</p>
       </section>
 
-      <section className={styles.kpis}>
-        <article><small>Excepciones críticas</small><strong>{criticalExceptions}</strong><span>Operación + riesgo + seguridad + producto</span></article>
-        <article><small>Trabajo abierto</small><strong>{openWork}</strong><span>{blockedWork} bloqueados/críticos</span></article>
-        <article><small>Vencidos</small><strong>{overdueTotal}</strong><span>Operaciones + Riesgos + Accesos + Capital</span></article>
-        <article><small>Balance registrado</small><strong>{financeNetLabel}</strong><span>Movimientos contabilizados</span></article>
-      </section>
-
-      <section className={styles.sectionHead}>
-        <div><span>PRIORIDADES</span><h2>Señales que requieren atención</h2></div>
-        <p>Esta vista resume problemas, vencimientos y decisiones; cada área conserva el detalle.</p>
-      </section>
-
-      <section className={styles.grid}>
-        <a href="/admin/master/games" className={styles.card}>
-          <div className={styles.cardTop}><span className={gamesAtRisk||milestonesAtRisk?styles.badgePlanned:styles.badgeActive}>{gamesAtRisk||milestonesAtRisk?"ATENCIÓN":"ESTABLE"}</span><em>JUEGOS</em></div>
-          <h3>Producción</h3>
-          <p>{gameRows.length} juegos · {milestoneRows.length} hitos · {gamesAtRisk+milestonesAtRisk} excepciones</p>
+      <section className={styles.commandAlertGrid}>
+        <a href="/admin/master/games" className={gamesAtRisk+milestonesAtRisk?styles.commandAlertCritical:styles.commandAlertStable}>
+          <div><span>PRODUCTO</span><strong>{gamesAtRisk+milestonesAtRisk}</strong></div>
+          <h3>Juegos e hitos</h3>
+          <p>{gameRows.length} juegos registrados · {milestoneRows.length} hitos · {gamesAtRisk+milestonesAtRisk} excepciones.</p>
         </a>
-        <a href="/admin/master/publishing" className={styles.card}>
-          <div className={styles.cardTop}><span className={releaseRisks?styles.badgePlanned:styles.badgeActive}>{releaseRisks?"ATENCIÓN":"ESTABLE"}</span><em>PUBLICACIÓN</em></div>
+        <a href="/admin/master/publishing" className={releaseRisks?styles.commandAlertCritical:styles.commandAlertStable}>
+          <div><span>PUBLICACIÓN</span><strong>{releaseRisks}</strong></div>
           <h3>Lanzamientos</h3>
-          <p>{releaseRows.length} lanzamientos · {releaseRisks} con riesgo o certificación pendiente</p>
+          <p>{releaseRows.length} lanzamientos · {releaseRisks} con riesgo, retraso o certificación fallida.</p>
         </a>
-        <a href="/admin/master/growth" className={styles.card}>
-          <div className={styles.cardTop}><span className={styles.badgeActive}>EMBUDO</span><em>CONTACTOS</em></div>
-          <h3>Crecimiento</h3>
-          <p>{crmRows.length} contactos · {qualifiedContacts} cualificados · {(leadCount||0)} contactos captados</p>
+        <a href="/admin/master/operations" className={blockedWork||overdueWork?styles.commandAlertCritical:styles.commandAlertStable}>
+          <div><span>OPERACIONES</span><strong>{blockedWork+overdueWork}</strong></div>
+          <h3>Trabajo operativo</h3>
+          <p>{openWork} abiertos · {blockedWork} bloqueados/críticos · {overdueWork} vencidos.</p>
         </a>
-        <a href="/admin/master/automation" className={styles.card}>
-          <div className={styles.cardTop}><span className={approvalRows.length?styles.badgePlanned:styles.badgeActive}>{approvalRows.length?"DECISIÓN":"LIMPIO"}</span><em>IA Y OPERACIONES</em></div>
-          <h3>Aprobaciones</h3>
-          <p>{approvalRows.length} pendientes · {highRiskAprobaciones} de riesgo alto o crítico</p>
+        <a href="/admin/master/security" className={criticalSecurity||overdueReviews?styles.commandAlertCritical:styles.commandAlertStable}>
+          <div><span>SEGURIDAD</span><strong>{criticalSecurity+overdueReviews}</strong></div>
+          <h3>Incidentes y accesos</h3>
+          <p>{securityIncidents} incidentes abiertos · {criticalSecurity} críticos · {overdueReviews} revisiones vencidas.</p>
         </a>
-        <a href="/admin/master/operations" className={styles.card}>
-          <div className={styles.cardTop}><span className={blockedWork?styles.badgePlanned:styles.badgeActive}>{blockedWork?"ATENCIÓN":"ESTABLE"}</span><em>OPERACIONES</em></div>
-          <h3>Trabajo pendiente</h3>
-          <p>{openWork} abiertos · {blockedWork} bloqueados/críticos</p>
+        <a href="/admin/master/risk" className={highRisks||overdueRisks?styles.commandAlertCritical:styles.commandAlertStable}>
+          <div><span>RIESGOS</span><strong>{highRisks+overdueRisks}</strong></div>
+          <h3>Riesgos y controles</h3>
+          <p>{highRisks} riesgos altos/críticos · {overdueRisks} seguimientos vencidos.</p>
         </a>
-        <a href="/admin/master/risk" className={styles.card}>
-          <div className={styles.cardTop}><span className={highRisks?styles.badgePlanned:styles.badgeActive}>{highRisks?"ATENCIÓN":"CONTROLADO"}</span><em>RIESGOS</em></div>
-          <h3>Riesgos</h3>
-          <p>{riskRows.length} registrados · {highRisks} de nivel alto o crítico</p>
-        </a>
-        <a href="/admin/master/security" className={styles.card}>
-          <div className={styles.cardTop}><span className={criticalSecurity?styles.badgePlanned:styles.badgeActive}>{securityIncidents?"INCIDENTES":"LIMPIO"}</span><em>SEGURIDAD</em></div>
-          <h3>Seguridad</h3>
-          <p>{securityIncidents} incidentes abiertos · {criticalSecurity} de nivel alto o crítico</p>
-        </a>
-        <a href="/admin/master/community" className={styles.card}>
-          <div className={styles.cardTop}><span className={styles.badgeActive}>COMUNIDAD</span><em>PARTICIPACIÓN</em></div>
-          <h3>Betas y Comunidad</h3>
-          <p>{communityRows.length} miembros · {betaPriority} con prioridad beta · {advocates} promotores</p>
-        </a>
-        <a href="/admin/master/security" className={styles.card}>
-          <div className={styles.cardTop}><span className={overdueReviews?styles.badgePlanned:styles.badgeActive}>{overdueReviews?"VENCIDOS":"AL DÍA"}</span><em>ACCESOS</em></div>
-          <h3>Revisión de Accesos</h3>
-          <p>{reviewRows.length} revisiones · {overdueReviews} vencidas</p>
-        </a>
-        <a href="/admin/master/legal" className={styles.card}>
-          <div className={styles.cardTop}><span className={expiringContracts?styles.badgePlanned:styles.badgeActive}>{expiringContracts?"ATENCIÓN":"ESTABLE"}</span><em>LEGAL</em></div>
-          <h3>Contratos</h3>
-          <p>{contractRows.length} registrados · {expiringContracts} vencen en ≤60 días</p>
-        </a>
-        <a href="/admin/master/technology" className={styles.card}>
-          <div className={styles.cardTop}><span className={riskyTechChanges?styles.badgePlanned:styles.badgeActive}>{riskyTechChanges?"ATENCIÓN":"ESTABLE"}</span><em>CAMBIOS</em></div>
-          <h3>Cambios técnicos</h3>
-          <p>{techChangeRows.length} registrados · {riskyTechChanges} de riesgo alto o crítico</p>
-        </a>
-        <a href="/admin/master/capital" className={styles.card}>
-          <div className={styles.cardTop}><span className={fundraisingDue?styles.badgePlanned:styles.badgeActive}>{fundraisingDue?"SEGUIMIENTO":"AL DÍA"}</span><em>CAPITAL</em></div>
-          <h3>Inversión</h3>
-          <p>{fundraisingRows.length} oportunidades · {fundraisingDue} seguimientos vencidos</p>
+        <a href="/admin/master/automation" className={approvalRows.length?styles.commandAlertCritical:styles.commandAlertStable}>
+          <div><span>DECISIONES</span><strong>{approvalRows.length}</strong></div>
+          <h3>Aprobaciones pendientes</h3>
+          <p>{approvalRows.length} pendientes · {highRiskAprobaciones} de riesgo alto o crítico.</p>
         </a>
       </section>
 
-      <section className={styles.sectionHead}>
-        <div><span>ÁREAS</span><h2>Módulos de LIRYGAMES</h2></div>
-        <p>Cada módulo concentra la información de un área y comparte seguridad, historial y estado con el resto del sistema.</p>
+      <section className={styles.commandSectionHead}>
+        <div><span>PULSO DEL ESTUDIO</span><h2>Situación ejecutiva</h2></div>
+        <p>Indicadores complementarios de crecimiento, comunidad, finanzas, legal, tecnología y capital.</p>
       </section>
 
-      <section className={styles.grid}>
-        {domains.map(domain=><a key={domain.title} href={domain.href} className={styles.card}>
-          <div className={styles.cardTop}>
-            <span className={domain.status==="active"?styles.badgeActive:styles.badgePlanned}>{domain.status==="active"?"ACTIVO":"MAPEADO"}</span>
-            <em>Fase {domain.phase}</em>
-          </div>
-          <h3>{domain.title}</h3>
-          <p>{domain.subtitle}</p>
-          <span className={styles.cardLink}>{domain.status==="active"?"Abrir":"Ver base actual"} →</span>
-        </a>)}
+      <section className={styles.commandPulseGrid}>
+        <a href="/admin/master/growth"><span>CRECIMIENTO</span><strong>{qualifiedContacts}</strong><small>contactos cualificados</small></a>
+        <a href="/admin/master/community"><span>COMUNIDAD</span><strong>{communityRows.length}</strong><small>{betaPriority} prioridad beta · {advocates} promotores</small></a>
+        <a href="/admin/master/finance"><span>FINANZAS</span><strong>{financeNetLabel}</strong><small>balance registrado</small></a>
+        <a href="/admin/master/legal"><span>LEGAL</span><strong>{expiringContracts}</strong><small>contratos vencen en ≤60 días</small></a>
+        <a href="/admin/master/technology"><span>TECNOLOGÍA</span><strong>{riskyTechChanges}</strong><small>cambios de riesgo alto/crítico</small></a>
+        <a href="/admin/master/capital"><span>CAPITAL</span><strong>{fundraisingDue}</strong><small>seguimientos vencidos</small></a>
+      </section>
+
+      <section className={styles.commandFooterNote}>
+        <div><strong>Áreas de gestión</strong><span>Operaciones, Juegos, Publicación, Negocio, Estudio y Control permanecen disponibles en el menú lateral como subáreas del Commander Center.</span></div>
+        <a href="/admin/master/reports">Abrir reportes ejecutivos →</a>
       </section>
 
   </main>;
