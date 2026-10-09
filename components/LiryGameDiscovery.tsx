@@ -1,52 +1,37 @@
 "use client";
-import {useMemo,useState} from "react";
 import {type PublicGameCard} from "../lib/games/public-catalog";
 import styles from "../app/lirygames/lirygames.module.css";
 
+const themes=["COMPETITIVO · ACCIÓN · MULTIJUGADOR","ESTRATEGIA · ACCIÓN · MULTIJUGADOR","EKONIA · ESTRATEGIA · SIMULACIÓN","SUPERVIVENCIA · RPG · MUNDO ABIERTO","SOCIAL · SIMULACIÓN · MULTIJUGADOR","FANTASÍA · RPG · MUNDO ABIERTO","PUZZLE · AVENTURA · EXPLORACIÓN","ESTRATEGIA · NFT · MULTIJUGADOR","PLATAFORMAS · AVENTURA · PUZZLES"];
+const traits=["Explorador","Estratega","Competidor","Social","Acción","Creativo"];
+
 export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
-  const [search,setSearch]=useState("");
-  const [filter,setFilter]=useState("all");
-  const list=useMemo(()=>{
-    const q=search.trim().toLocaleLowerCase("es");
-    return games.filter(game=>
-      (!q||(game.title+" "+game.tagline).toLocaleLowerCase("es").includes(q))&&
-      (filter==="all"||game.state===filter)
-    );
-  },[search,filter,games]);
-  return <div>
-    <div className={styles.discoverControls}>
-      <label htmlFor="liry-game-search">Buscar videojuego
-        <input id="liry-game-search" type="search" autoComplete="off"
-          placeholder="Nombre o estilo de juego" value={search} onChange={event=>setSearch(event.target.value)} />
-      </label>
-      <label htmlFor="liry-game-filter">Disponibilidad
-        <select id="liry-game-filter" value={filter} onChange={event=>setFilter(event.target.value)}>
-          <option value="all">Los 9 videojuegos</option>
-          <option value="available">Disponibles</option>
-          <option value="beta">En beta</option>
-          <option value="coming_soon">Próximamente</option>
-        </select>
-      </label>
-      <span className={styles.discoveryCount} role="status" aria-live="polite">{list.length} de {games.length} videojuegos</span>
-      {(search||filter!=="all")&&<button className={styles.discoveryReset} type="button" onClick={()=>{setSearch("");setFilter("all");}}>Mostrar los 9 videojuegos ↺</button>}
-    </div>
-    <div className={styles.grid}>
-      {list.map(game=>{
-        const index=games.findIndex(g=>g.slug===game.slug);
-        return <article className={styles.gameCard} key={game.slug} style={{["--world-index" as string]:index+1}}>
-          <span className={styles.number}>{String(index+1).padStart(2,"0")}</span>
-          <div className={styles.cardContent}>
-            <span className={styles.status}>{game.state==="available"?"DISPONIBLE":game.state==="beta"?"EN BETA":"PRÓXIMAMENTE"}</span>
-            <h3>{game.title}</h3><p>{game.tagline}</p>
-            <small>{game.internalWorldCount} mundos internos gratuitos previstos</small>
-            <details className={styles.gameDetails}><summary>CONOCER ESTE MUNDO ↗</summary>
-              <p>Videojuego {String(index+1).padStart(2,"0")} del ecosistema LIRYGAMES. El lanzamiento inicial contempla tres mundos internos gratuitos y artículos opcionales.</p>
-              <p>{game.state==="coming_soon"?"Acceso jugable pendiente del lanzamiento oficial.":"El acceso se habilitará tras las verificaciones correspondientes."}</p>
-            </details>
+  return <div className={styles.worldShowcase}>
+    <div className={styles.worldsGrid}>
+      {games.map((game,index)=><article className={styles.gameCard} key={game.slug} style={{["--world-index" as string]:index+1}}>
+        <div className={styles.cardContent}>
+          <div className={styles.worldCardText}>
+            <h3>{game.title}</h3>
+            <p>{themes[index]??game.tagline}</p>
+            <span className={styles.worldAvailability}>{game.state==="available"?"DISPONIBLE":game.state==="beta"?"EN BETA":"PRÓXIMAMENTE"}</span>
           </div>
-        </article>;
-      })}
+          <a className={styles.worldArrow} href={`#detalle-${game.slug}`} aria-label={`Conocer el estado de ${game.title}`}>→</a>
+        </div>
+      </article>)}
     </div>
-    {!list.length&&<div className={styles.discoveryEmpty} role="status"><p>No encontramos videojuegos con esos criterios. Los próximos lanzamientos aún no figuran como disponibles.</p><button type="button" className={styles.discoveryReset} onClick={()=>{setSearch("");setFilter("all");}}>Ver los 9 videojuegos ↺</button></div>}
+    <aside className={styles.dnaSide} id="liry-dna" aria-labelledby="dna-side-title">
+      <p className={styles.kicker}>EXPERIENCIA INTERACTIVA</p>
+      <h3 id="dna-side-title">DESCUBRE TU <span>LIRY DNA</span></h3>
+      <p>Conoce los seis estilos que formarán parte de tu identidad gamer.</p>
+      <a className={styles.dnaSideButton} href="#dna-perfiles">EXPLORAR ESTILOS →</a>
+      <div className={styles.dnaArt} aria-hidden="true">⟡</div>
+      <ul className={styles.dnaTraitList}>
+        {traits.map((trait,i)=><li key={trait}><span className={styles.dnaTraitIndex}>{i+1}</span><span>{trait}</span><span className={styles.dnaTraitPending}>Por evaluar</span></li>)}
+      </ul>
+      <small>Tu evaluación estará disponible al activar Liry DNA. No mostramos resultados ficticios.</small>
+    </aside>
+    <div className={styles.worldsNotes}>
+      {games.map((game)=><div id={`detalle-${game.slug}`} key={game.slug} className={styles.worldNote}><strong>{game.title}</strong><span>{game.state==="coming_soon"?"Lanzamiento pendiente. Tres mundos gratuitos previstos y cosméticos opcionales.":game.state==="beta"?"Beta sujeta a acceso verificado.":"Consulta el acceso oficial publicado."}</span></div>)}
+    </div>
   </div>;
 }
