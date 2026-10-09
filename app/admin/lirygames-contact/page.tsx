@@ -59,6 +59,7 @@ export default async function LiryContactAdmin({
        {item.game_slug&&<span>Producto: {item.game_slug}</span>}
       </div>
       <p style={{fontSize:13,lineHeight:1.55,whiteSpace:"pre-wrap",overflowWrap:"anywhere",margin:0}}>{item.message}</p>
+      {["admin","editor"].includes(profile.role)&&<LiryContactFollowup id={item.id} status={item.status} note={item.internal_note} assignedTo={item.assigned_to} owners={owners||[]} />}
     </article>)}
    </div>}
   <p style={{fontSize:11,color:"#7393aa",marginTop:24}}>Últimos 100 mensajes por filtro. Las notas son internas; las respuestas por correo se gestionarán en una fase posterior.</p>
