@@ -4,7 +4,26 @@ import {LiryGameDiscovery} from "../../components/LiryGameDiscovery";
 import {getLiryPublicCatalog} from "../../lib/games/public-catalog-server";
 import styles from "./lirygames.module.css";
 
-export const metadata={title:"LIRYGAMES STUDIOS | 9 Worlds"};
+export const metadata={
+  title:"LIRYGAMES STUDIOS — 9 mundos, infinitas formas de jugar",
+  description:"Descubre los nueve videojuegos de LIRYGAMES STUDIOS, un ecosistema de experiencias y comunidades gamer. Próximamente.",
+  applicationName:"LIRYGAMES STUDIOS",
+  category:"Games",
+  openGraph:{
+    type:"website" as const,
+    siteName:"LIRYGAMES STUDIOS",
+    title:"LIRYGAMES STUDIOS — 9 mundos, infinitas formas de jugar",
+    description:"Nueve universos de juego. Explora los próximos lanzamientos y únete a la comunidad LIRYGAMES.",
+    images:[]
+  },
+  twitter:{
+    card:"summary" as const,
+    title:"LIRYGAMES STUDIOS — 9 mundos, infinitas formas de jugar",
+    description:"Descubre los videojuegos y la comunidad de LIRYGAMES STUDIOS.",
+    images:[]
+  },
+  robots:{index:false,follow:false}
+};
 
 export default async function LiryGamesFrontDesk(){
   const games=await getLiryPublicCatalog();
