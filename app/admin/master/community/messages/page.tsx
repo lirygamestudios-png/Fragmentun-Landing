@@ -38,6 +38,9 @@ export default async function LiryContactAdmin({
   :{data:[] as HistoryItem[],error:null};
  const historyRows=(history||[]) as HistoryItem[];
  const ownerNames=new Map((owners||[]).map(o=>[o.user_id,o.display_name||"Administrador"]));
+ const {data:allStates,error:countError}=await db.from("lirygames_contact_messages").select("status,assigned_to").limit(1000);
+ const totals={all:0,new:0,reviewing:0,resolved:0,archived:0,unassigned:0};
+ if(!countError){for(const row of allStates||[]){totals.all++;if(row.status in totals)totals[row.status as "new"|"reviewing"|"resolved"|"archived"]++;if(!row.assigned_to&&["new","reviewing"].includes(row.status))totals.unassigned++;}}
  const layout={minHeight:"100vh",padding:"38px clamp(20px,5vw,85px)",background:"#050b19",color:"#e9f6ff",fontFamily:"Arial,sans-serif"};
  return <main style={layout}>
   <a href="/admin/master/community" style={{color:"#76daff",fontSize:12,textDecoration:"none"}}>← VOLVER A CLIENTES Y COMUNIDAD</a>
@@ -46,6 +49,9 @@ export default async function LiryContactAdmin({
    <h1 style={{fontSize:27,margin:"8px 0"}}>Bandeja de mensajes</h1>
    <p style={{color:"#a3c1d9",fontSize:12}}>Mensajes reales de visitantes. Solo accesible a usuarios administrativos autorizados.</p>
   </header>
+  {!countError&&<div aria-label="Resumen de atención" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))",gap:10,marginBottom:18}}>
+   {([["Recibidos",totals.all],["Nuevos",totals.new],["En revisión",totals.reviewing],["Resueltos",totals.resolved],["Sin responsable",totals.unassigned]] as const).map(([label,total])=><div key={label} style={{border:"1px solid #285571",borderRadius:8,background:"#0a2137",padding:"13px 15px"}}><div style={{fontSize:11,color:"#b4d0e3"}}>{label}</div><strong style={{fontSize:23,color:"#89e5ff",display:"block",marginTop:5}}>{total}</strong></div>)}
+  </div>}
   <nav aria-label="Filtrar mensajes" style={{display:"flex",flexWrap:"wrap",gap:9,marginBottom:20}}>
    {[["","TODOS"],["new","NUEVOS"],["reviewing","EN REVISIÓN"],["resolved","RESUELTOS"],["archived","ARCHIVADOS"]].map(([value,label])=>
     <a key={value} href={value?"?status="+value:"?"} style={{padding:"9px 13px",border:"1px solid "+(value===selected?"#4ddaff":"#295571"),background:value===selected?"#0e3e62":"#07182c",borderRadius:5,color:"#e4f6ff",fontSize:11,textDecoration:"none"}}>{label}</a>
