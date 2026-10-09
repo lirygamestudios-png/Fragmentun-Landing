@@ -167,17 +167,27 @@
 @media(max-width:800px){.heroUniverse::before{background-position:center,57% center}}
 @media(max-width:520px){.heroUniverse::before{background-position:center,58% center}.heroUniverse::after{background:linear-gradient(90deg,rgba(2,9,24,.84),rgba(2,9,24,.26)),linear-gradient(0deg,rgba(2,9,24,.68),transparent 55%)}}
 
-/* Escenario panorámico seleccionado: usa el WebP limpio cuando exista en public.
-   Mientras se transfiere, conserva el fondo anterior sin dejar la portada vacía.
-   El logotipo oficial y los textos siguen siendo elementos HTML. */
+/* Portada definitiva en Preview: imagen panorámica local y respaldo local.
+   Logotipo, título y botones permanecen independientes en HTML. */
 .heroUniverse::before{
   background-image:
     url("/lirygames-mundos-fondo-sin-logo.webp"),
-    linear-gradient(90deg,rgba(2,10,25,.20),rgba(2,10,25,0) 70%),
     url("/lirygames-hero-cinematic.webp");
-  background-size:cover,cover,cover;
-  background-position:center 49%,center,center 46%;
+  background-size:cover,cover;
+  background-position:center 49%,center 46%;
   background-repeat:no-repeat;
+  filter:none;
 }
-@media(max-width:800px){.heroUniverse::before{background-position:53% center,center,57% center}}
-@media(max-width:520px){.heroUniverse::before{background-position:53% center,center,58% center}}
+.heroUniverse::after{
+  background:
+    linear-gradient(90deg,rgba(2,9,24,.82) 0%,rgba(2,12,29,.52) 34%,rgba(2,11,30,.08) 74%),
+    linear-gradient(0deg,rgba(2,9,24,.59),transparent 41%);
+}
+.heroUniverse .heroStardust{opacity:.07}
+@media(max-width:800px){
+ .heroUniverse::before{background-position:53% center,57% center}
+}
+@media(max-width:520px){
+ .heroUniverse::before{background-position:53% center,58% center}
+ .heroUniverse::after{background:linear-gradient(90deg,rgba(2,9,24,.81),rgba(2,9,24,.24)),linear-gradient(0deg,rgba(2,9,24,.70),transparent 58%)}
+}
