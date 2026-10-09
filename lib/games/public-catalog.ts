@@ -37,7 +37,7 @@ export function applyApprovedReleases(releases:readonly ApprovedGameRelease[]):r
   return plannedLiryGames.map(game=>{
     const entry=releases.find(item=>item.slug===game.slug&&item.approved===true);
     if(!entry)return game;
-    if(entry.state==="available"&&entry.playUrl&&/^https:\\/\\//.test(entry.playUrl))return {...game,state:"available",playUrl:entry.playUrl};
+    if(entry.state==="available"&&entry.playUrl&&entry.playUrl.startsWith("https://"))return {...game,state:"available",playUrl:entry.playUrl};
     if(entry.state==="beta")return {...game,state:"beta",playUrl:null};
     return game;
   });
