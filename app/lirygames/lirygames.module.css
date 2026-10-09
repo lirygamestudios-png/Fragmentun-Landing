@@ -530,3 +530,52 @@
 .gamerSection .avatarPlaceholder{width:41px;height:41px}
 .gamerSection .emptyProgress{font-size:20px;margin:10px 0 7px}
 @media(max-width:800px){.gamerSection .gamerGrid{grid-template-columns:1fr}.gamerSection .gamerCard{min-height:170px}}
+
+/* Tres pasarelas gamer: composición fiel a la referencia aprobada. */
+.gamerSection{padding-top:12px;padding-bottom:25px;background:#030b17}
+.gamerSection .gamerGrid{gap:14px;grid-template-columns:repeat(3,minmax(0,1fr))}
+.gamerSection .gamerCard{display:flex;flex-direction:column;min-height:345px;padding:13px 14px;border-radius:9px;background:linear-gradient(155deg,#041323,#020914 90%);border:1px solid #19507799;box-shadow:inset 0 0 24px #0c295322}
+.gamerCardHeader{display:flex;gap:8px;align-items:center;min-height:20px}
+.gamerSection .gamerCardHeader h3{font-size:12px;letter-spacing:.045em;margin:0;color:#e9f5ff}
+.gamerSection .gamerCardHeader p{margin:2px 0 0;font-size:9px;color:#8caec7}
+.gamerHeaderIcon{color:#00d4ff;font-weight:900;font-size:17px}
+.gamerIdentity{display:flex;align-items:center;gap:13px;margin:10px 0 8px}
+.gamerPortrait{width:74px;height:74px;border:2px solid #2495d8;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 50% 35%,#315c9b,#111530 55%,#050c1c 80%);box-shadow:0 0 17px #148bf044;flex:none}
+.gamerPortrait span{font-size:30px;color:#a0cde8}
+.gamerIdentityText{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;color:#f0f7ff}
+.gamerIdentityText strong{font-size:14px}.gamerIdentityText>span{font-size:10px}
+.gamerXpTrack{height:8px;border-radius:30px;background:#12253e;overflow:hidden;border:1px solid #2a5175}
+.gamerXpTrack span{display:block;width:0;height:100%;background:#2fe9ff}
+.gamerIdentityText small{font-size:9px;color:#79b5d0;text-align:right}
+.gamerMicroLabel{font-size:10px!important;margin:5px 0 7px!important}
+.gamerStyles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.gamerStyles>span{display:flex;align-items:center;justify-content:center;gap:5px;min-width:0;padding:8px 3px;background:#051a2b;border:1px solid #14334d;border-radius:7px;color:#78e1ff;font-size:13px}
+.gamerStyles b{font-weight:600;color:#dbeaff;font-size:9px}
+.gamerMetrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin-top:11px}
+.gamerMetrics>div{border-right:1px solid #18334e;padding-right:3px}
+.gamerMetrics>div:last-child{border-right:0}
+.gamerMetrics small{display:block;font-size:9px!important;color:#86b2d0}
+.gamerMetrics strong{display:block;color:#ecf8ff;font-size:16px;margin-top:4px}
+.gamerCardAction{display:flex;align-items:center;justify-content:space-between;width:max-content;max-width:100%;gap:13px;border:1px solid #00cfff;border-radius:50px;padding:8px 14px;color:#f6fbff;font-size:9px;font-weight:800;text-decoration:none;letter-spacing:.05em;margin-top:auto}
+.gamerCardAction:hover,.gamerCardAction:focus-visible{background:#063451}
+.gamerDataNote{display:block;margin-top:7px;color:#7f9fba!important;font-size:9px!important}
+.journeyContent{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:10px;flex:1;margin:10px 0}
+.journeyRing{aspect-ratio:1;border-radius:50%;padding:7px;background:conic-gradient(#1abcf1 0deg,#5b36bb 170deg,#142943 170deg 360deg);box-shadow:0 0 20px #098ed552;max-width:180px;width:100%;display:grid;place-items:center}
+.journeyRingCenter{background:radial-gradient(circle at 50% 50%,#102a4b,#04111d 70%);border:1px solid #1c89bc;border-radius:50%;height:100%;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px}
+.journeyRingCenter strong{font-size:24px;color:#fff}
+.journeyRingCenter span{font-size:9px;color:#c3e6fb;text-align:center}
+.journeyWorlds{margin:0;padding:0;list-style:none;display:grid;gap:4px;min-width:0}
+.journeyWorlds li{display:flex;align-items:center;gap:5px;min-width:0;color:#b8d6ea;font-size:9px}
+.journeyNumber{flex:0 0 16px;width:16px;height:16px;display:grid;place-items:center;border:1px solid #298dba;border-radius:50%;color:#7ce4ff;font-size:9px}
+.journeyName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.journeyPending{color:#478cba}
+.gamerTopRight{margin-left:auto;font-size:9px;color:#45d7fe;white-space:nowrap}
+.achievementList{display:grid;gap:5px;margin:11px 0;flex:1}
+.achievementRow{display:flex;align-items:center;gap:10px;padding:7px;background:#051324;border:1px solid #183954;border-radius:7px}
+.achievementMedal{width:40px;height:40px;flex:none;display:grid;place-items:center;border:1px solid #de8d39;background:radial-gradient(circle,#7b361e66,#170d23 70%);clip-path:polygon(50% 0,87% 16%,100% 50%,85% 85%,50% 100%,15% 85%,0 50%,13% 15%);font-size:21px;color:#ffa348}
+.achievementRow>div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.achievementRow strong{font-size:10px;color:#e3f3ff}
+.achievementRow span:not(.achievementMedal){font-size:9px;color:#92b5cc}
+.achievementRow small{font-size:9px!important;color:#59cfef!important}
+@media(max-width:950px){.gamerSection .gamerGrid{grid-template-columns:1fr}.gamerSection .gamerCard{min-height:300px}.journeyRing{max-width:175px}}
+@media(max-width:420px){.gamerSection .gamerCard{padding:13px}.gamerPortrait{width:58px;height:58px}.gamerStyles{gap:3px}.gamerStyles b{font-size:8px}.journeyContent{gap:5px}}
