@@ -121,16 +121,29 @@ export default async function LiryGamesFrontDesk(){
         <a className={styles.recommendAll} href="#mundos">VER TODOS LOS MUNDOS <span aria-hidden="true">→</span></a>
       </section>
     </div>
-    <section className={styles.feature} id="modelo">
-      <p className={styles.kicker}>TU VIAJE, TUS REGLAS</p>
-      <h2>ENTRA GRATIS. <span>EXPLORA SIN LÍMITES DE PAGO.</span></h2>
-      <p>El primer lanzamiento de cada videojuego está concebido con tres mundos internos jugables sin costo. Los artículos, skins y personalizaciones serán compras voluntarias.</p>
-      <p className={styles.honesty}>El perfil gamer, Liry DNA y Liry Journey estarán disponibles cuando se complete su integración. No mostramos progreso ficticio.</p>
-    </section>
-    <section className={styles.feature} id="secretos">
-      <p className={styles.kicker}>MÁS ALLÁ DE LO VISIBLE</p><h2>SECRETOS DE <span>LIRY</span></h2>
-      <p>Los secretos, coleccionables y desafíos ocultos cobrarán vida conforme se publiquen los videojuegos. Ningún logro se considerará obtenido sin actividad verificada.</p>
-    </section>
+    <div className={styles.finalDiscover} aria-label="Tu viaje y secretos de Liry">
+      <section className={styles.journeyBanner} id="modelo">
+        <div className={styles.journeyBannerArt} aria-hidden="true"><span className={styles.bannerOrbit}></span><span className={styles.bannerTraveler}>✧</span></div>
+        <div className={styles.journeyBannerContent}>
+          <h2>TU VIAJE, TUS REGLAS</h2>
+          <p>Explora. Juega. Conecta. Vive la experiencia Liry.</p>
+          <a href="#mundos" className={styles.bannerCta}>CONOCE MÁS SOBRE LIRY <span aria-hidden="true">→</span></a>
+          <small>Tres mundos internos gratuitos previstos en cada primer lanzamiento; cosméticos opcionales.</small>
+        </div>
+      </section>
+      <section className={styles.secretsBanner} id="secretos">
+        <div className={styles.secretsEmblem} aria-hidden="true">♙</div>
+        <div className={styles.secretsCopy}>
+          <h2>SECRETOS DE LIRY</h2>
+          <p>Hay más de lo que ves...</p>
+          <p>Encuentra los fragmentos ocultos y desbloquea desafíos cuando estén disponibles.</p>
+          <div className={styles.secretsTrack} aria-label="Secretos aún no disponibles"><span /></div>
+          <small>PRÓXIMAMENTE · SIN PROGRESO SIMULADO</small>
+        </div>
+        <div className={styles.secretsArt} aria-hidden="true">✦</div>
+      </section>
+      <div className={styles.finalSignature} aria-label="Liry: más que videojuegos"><span aria-hidden="true">▽</span><strong>MORE<br/>THAN<br/>GAMES.<br/>IT'S A<br/>UNIVERSE.</strong></div>
+    </div>
     <section className={styles.section} id="tienda"><p className={styles.kicker}>ECONOMÍA FREEMIUM</p><h2>TIENDA LIRY</h2><p className={styles.sectionIntro}>Skins, efectos y personalizaciones opcionales llegarán junto con los videojuegos. Los tres mundos internos iniciales de cada juego serán gratuitos. Por ahora no hay artículos disponibles para comprar.</p><p className={styles.honesty}><strong>PAGOS EN DEFINICIÓN:</strong> Se evalúan cuatro opciones: Stripe (principal), PayPal, 2Checkout / Verifone y criptomonedas (cuarta opción, sujeta a proveedor, cumplimiento legal, confirmaciones y conversión de moneda). Ninguna está contratada ni activa. Todavía no se procesan cobros ni se ofrecen artículos a la venta.</p></section>
     <footer className={styles.footer}><strong>LIRYGAMES STUDIOS</strong><p>Nueve videojuegos. Un universo en expansión.</p><Link href="/es">FRAGMENTUN ↗</Link></footer>
   </main>;
