@@ -17,10 +17,11 @@ export default async function LiryGamesFrontDesk(){
       <div className={styles.heroUniverse} aria-hidden="true"><span className={styles.heroOrbitOne}></span><span className={styles.heroOrbitTwo}></span><span className={styles.heroPlanet}></span><span className={styles.heroSatellite}></span><span className={styles.heroStardust}></span></div>
       <div className={styles.heroContent}>
         <p className={styles.kicker}>UN ECOSISTEMA · NUEVE VIDEOJUEGOS</p>
-        <h1>9 WORLDS.<br/><span>INFINITE WAYS TO PLAY.</span></h1>
-        <p>Descubre el universo LIRYGAMES. Los videojuegos llegarán progresivamente, cada uno con tres mundos internos gratuitos y compras opcionales.</p>
-        <a className={styles.button} href="#mundos">EXPLORA LOS MUNDOS ↗</a>
+        <h1>9 MUNDOS.<br/><span>INFINITAS FORMAS<br/> DE JUGAR.</span></h1>
+        <p>No solo creamos juegos, creamos universos. En LIRYGAMES STUDIOS, cada mundo es una experiencia única. ¿Cuál será el tuyo?</p>
+        <a className={styles.button} href="#mundos">EXPLORA LOS MUNDOS →</a>
       </div>
+      <div className={styles.heroJourney} aria-label="Etapas de la experiencia"><a href="#mundos">EXPLORA</a><a href="#comunidad">CONECTA</a><a href="#modelo">JUEGA</a><a href="#perfil-gamer">EVOLUCIONA</a></div>
     </section>
     <section className={styles.section} id="mundos">
       <p className={styles.kicker}>TU UNIVERSO DE JUEGO</p>
