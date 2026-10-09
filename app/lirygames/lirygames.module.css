@@ -497,9 +497,10 @@
   }
   .worldShowcase .dnaSide .kicker{font-size:8px}
   .worldShowcase .dnaSide h3{font-size:clamp(17px,1.5vw,21px);margin:5px 0 4px}
+  /* ADN superior compacto: no crece ocupando el espacio de los indicadores. */
   .worldShowcase .dnaSide .dnaArt{
-    order:1;flex:1 1 0;min-height:68px;height:auto;max-height:none;
-    margin:3px 0 5px;overflow:hidden
+    order:1;flex:0 0 78px;min-height:78px;height:78px;max-height:78px;
+    width:100%;margin:3px 0 5px;overflow:hidden
   }
   .worldShowcase .dnaSide .dnaMap{width:100%;height:100%;filter:drop-shadow(0 0 12px rgba(54,192,255,.35))}
   .worldShowcase .dnaSide>p:not(.kicker){font-size:9px;line-height:1.3;margin:3px 0}
