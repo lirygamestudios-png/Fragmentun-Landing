@@ -2421,3 +2421,17 @@
 @media(max-width:950px){.moduleCommerce .commerceJumpNav{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:540px){.moduleCommerce .commerceJumpNav{grid-template-columns:1fr 1fr;gap:8px}.moduleCommerce .commerceJumpLink{font-size:11px;padding:10px 8px}}
 @media(prefers-reduced-motion:reduce){.moduleCommerce .commerceJumpLink{transition:none}}
+
+/* Comercio: indicadores legibles y paneles técnicos claramente diferenciados. */
+.moduleCommerce .kpis article{min-width:0;position:relative;overflow:hidden}
+.moduleCommerce .kpis article>strong{font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1.2}
+.moduleCommerce .kpis article>small{letter-spacing:.045em}
+.moduleCommerce .kpis article>span{overflow-wrap:anywhere}
+.moduleCommerce .advancedPanel{margin:16px 0;border-color:rgba(91,169,217,.3);border-radius:14px;background:linear-gradient(145deg,rgba(15,33,63,.85),rgba(10,23,45,.91))}
+.moduleCommerce .advancedPanel>summary{cursor:pointer;padding:16px 18px;font-weight:750;color:#def4ff;list-style-position:inside}
+.moduleCommerce .advancedPanel>summary:hover{color:#80e7ff}
+.moduleCommerce .advancedPanel>summary:focus-visible{outline:2px solid #76d9ff;outline-offset:2px;border-radius:8px}
+.moduleCommerce .advancedPanel[open]{border-color:rgba(106,217,255,.5)}
+.moduleCommerce .advancedPanel[open]>summary{border-bottom:1px solid rgba(91,169,217,.22);margin-bottom:14px}
+.moduleCommerce .advancedPanel>.sectionHead,.moduleCommerce .advancedPanel>.grid,.moduleCommerce .advancedPanel>.adminForms{margin-left:14px;margin-right:14px}
+@media(max-width:560px){.moduleCommerce .advancedPanel>summary{padding:14px 12px}.moduleCommerce .advancedPanel>.sectionHead,.moduleCommerce .advancedPanel>.grid,.moduleCommerce .advancedPanel>.adminForms{margin-left:8px;margin-right:8px}}
