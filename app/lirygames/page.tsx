@@ -8,7 +8,7 @@ export default function LiryGamesFrontDesk(){
   return <main className={styles.page}>
     <header className={styles.nav}>
       <a className={styles.brand} href="#inicio" aria-label="LiryGames Studios"><span className={styles.sigil} aria-hidden="true"><i></i><b></b></span><span className={styles.wordmark}><strong>LIRY</strong><span>GAMES STUDIOS</span><small>COMMAND CENTER UNIVERSE</small></span></a>
-      <nav aria-label="Navegación LIRYGAMES"><a href="#mundos">Mundos</a><a href="#modelo">Tu viaje</a><a href="#comunidad">Comunidad</a></nav>
+      <nav aria-label="Navegación LIRYGAMES"><a href="#inicio">Inicio</a><a href="#mundos">Mundos</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">Tu viaje</a><a href="#comunidad">Comunidad</a><a href="#tienda">Tienda</a></nav>
     </header>
     <section className={styles.hero} id="inicio">
       <div className={styles.orb} aria-hidden="true" />
@@ -27,7 +27,7 @@ export default function LiryGamesFrontDesk(){
         <article className={styles.gameCard} key={game.slug}>
           <span className={styles.number}>{String(index+1).padStart(2,"0")}</span>
           <div className={styles.cardContent}><span className={styles.status}>PRÓXIMAMENTE</span><h3>{game.title}</h3><p>{game.tagline}</p>
-          <small>3 mundos internos gratuitos previstos</small></div>
+          <small>3 mundos internos gratuitos previstos</small><details className={styles.gameDetails}><summary>CONOCER ESTE MUNDO ↗</summary><p>Videojuego {String(index+1).padStart(2,"0")} del ecosistema LIRYGAMES. En su lanzamiento inicial se prevén tres mundos internos gratuitos y compras opcionales de personalización.</p><p>Acceso jugable: pendiente del lanzamiento oficial.</p></details></div>
         </article>)}</div>
     </section>
     <section className={styles.section} id="liry-dna">
@@ -51,6 +51,6 @@ export default function LiryGamesFrontDesk(){
       <p className={styles.honesty}>El perfil gamer, Liry DNA y Liry Journey estarán disponibles cuando se complete su integración. No mostramos progreso ficticio.</p>
     </section>
     <section className={styles.section} id="comunidad"><p className={styles.kicker}>COMUNIDAD LIRY</p><h2>COMPARTE TU UNIVERSO</h2><p className={styles.sectionIntro}>Un punto de encuentro para los futuros jugadores. Los enlaces sociales oficiales, las opciones para compartir y LiryBoost se activarán cuando estén configurados y verificados en el Admin.</p><p className={styles.honesty}>Sin contadores de participación ficticios ni enlaces sociales inventados.</p></section>
-    <footer className={styles.footer}><strong>LIRYGAMES STUDIOS</strong><p>Nueve videojuegos. Un universo en expansión.</p><Link href="/es">FRAGMENTUN ↗</Link></footer>
+    <section className={styles.section} id="tienda"><p className={styles.kicker}>ECONOMÍA FREEMIUM</p><h2>TIENDA LIRY</h2><p className={styles.sectionIntro}>Skins, efectos y personalizaciones opcionales llegarán junto con los videojuegos. Los tres mundos internos iniciales de cada juego serán gratuitos. Por ahora no hay artículos disponibles para comprar.</p></section>\n    <footer className={styles.footer}><strong>LIRYGAMES STUDIOS</strong><p>Nueve videojuegos. Un universo en expansión.</p><Link href="/es">FRAGMENTUN ↗</Link></footer>
   </main>;
 }
