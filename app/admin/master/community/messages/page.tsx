@@ -49,9 +49,20 @@ export default async function LiryContactAdmin({
    <h1 style={{fontSize:27,margin:"8px 0"}}>Bandeja de mensajes</h1>
    <p style={{color:"#a3c1d9",fontSize:12}}>Mensajes reales de visitantes. Solo accesible a usuarios administrativos autorizados.</p>
   </header>
-  {!countError&&<div aria-label="Resumen de atención" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(120px,1fr))",gap:10,marginBottom:18}}>
-   {([["Recibidos",totals.all],["Nuevos",totals.new],["En revisión",totals.reviewing],["Resueltos",totals.resolved],["Sin responsable",totals.unassigned]] as const).map(([label,total])=><div key={label} style={{border:"1px solid #285571",borderRadius:8,background:"#0a2137",padding:"13px 15px"}}><div style={{fontSize:11,color:"#b4d0e3"}}>{label}</div><strong style={{fontSize:23,color:"#89e5ff",display:"block",marginTop:5}}>{total}</strong></div>)}
-  </div>}
+  {!countError&&<section aria-label="Resumen de atención" style={{margin:"0 0 24px"}}>
+   <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap",marginBottom:11}}>
+    <h2 style={{fontSize:12,letterSpacing:".14em",color:"#7ddfff",fontWeight:800,margin:0}}>PANORAMA DE CONTACTO</h2>
+    <span style={{fontSize:11,color:"#8faec8"}}>Información real · Últimos 1,000 registros</span>
+   </div>
+   <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(175px,1fr))",gap:12}}>
+    {([["Recibidos",totals.all,"Total registrado"],["Nuevos",totals.new,"Por revisar"],["En revisión",totals.reviewing,"En seguimiento"],["Resueltos",totals.resolved,"Atendidos"],["Sin responsable",totals.unassigned,"Requieren asignación"]] as const).map(([label,total,description],index)=>
+    <div key={label} style={{minWidth:0,minHeight:116,display:"flex",flexDirection:"column",justifyContent:"space-between",padding:"16px 17px",border:"1px solid "+(index===4?"rgba(235,177,93,.45)":"rgba(87,192,251,.28)"),borderRadius:12,background:"linear-gradient(145deg,#0d2038,#09172b)",boxShadow:"inset 0 1px rgba(149,224,255,.06)"}}>
+     <span style={{fontSize:11,color:"#c1d7eb",letterSpacing:".035em",fontWeight:650}}>{label}</span>
+     <strong style={{fontVariantNumeric:"tabular-nums",fontSize:30,lineHeight:1.15,color:index===4?"#ffd08e":"#8be7ff",fontWeight:800}}>{total}</strong>
+     <span style={{fontSize:10,color:"#85a1bc"}}>{description}</span>
+    </div>)}
+   </div>
+  </section>}
   <nav aria-label="Filtrar mensajes" style={{display:"flex",flexWrap:"wrap",gap:9,marginBottom:20}}>
    {[["","TODOS"],["new","NUEVOS"],["reviewing","EN REVISIÓN"],["resolved","RESUELTOS"],["archived","ARCHIVADOS"]].map(([value,label])=>
     <a key={value} href={value?"?status="+value:"?"} style={{padding:"9px 13px",border:"1px solid "+(value===selected?"#4ddaff":"#295571"),background:value===selected?"#0e3e62":"#07182c",borderRadius:5,color:"#e4f6ff",fontSize:11,textDecoration:"none"}}>{label}</a>
