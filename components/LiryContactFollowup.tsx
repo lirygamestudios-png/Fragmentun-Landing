@@ -1,13 +1,14 @@
 "use client";
 import {useState,type FormEvent} from "react";
 type Owner={user_id:string;display_name:string|null};
-export function LiryContactFollowup({id,status,note,assignedTo,owners}:{id:string;status:string;note:string|null;assignedTo:string|null;owners:Owner[]}){
+export function LiryContactFollowup({id,status,note,assignedTo,responseDraft,owners}:{id:string;status:string;note:string|null;assignedTo:string|null;responseDraft:string|null;owners:Owner[]}){
  const[state,setState]=useState(status),[memo,setMemo]=useState(note||""),[owner,setOwner]=useState(assignedTo||"");
+ const[draft,setDraft]=useState(responseDraft||"");
  const[busy,setBusy]=useState(false),[feedback,setFeedback]=useState("");
  async function save(e:FormEvent<HTMLFormElement>){
   e.preventDefault();setBusy(true);setFeedback("");
   try{
-   const r=await fetch("/api/admin/lirygames-contact",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,status:state,internalNote:memo,assignedTo:owner||null})});
+   const r=await fetch("/api/admin/lirygames-contact",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,status:state,internalNote:memo,assignedTo:owner||null,responseDraft:draft})});
    const result=await r.json();
    if(!r.ok||!result.ok)throw Error(result.message||"No se pudo guardar.");
    setFeedback("Cambios guardados correctamente.");
@@ -29,6 +30,9 @@ export function LiryContactFollowup({id,status,note,assignedTo,owners}:{id:strin
   </div>
   <label style={{display:"grid",gap:4,fontSize:11,color:"#aac7dd"}}>Nota de seguimiento (solo interna)
    <textarea maxLength={3000} rows={2} value={memo} onChange={e=>setMemo(e.target.value)} style={{background:"#071728",color:"#fff",padding:9,border:"1px solid #35688b",borderRadius:4,resize:"vertical"}}/>
+  </label>
+  <label style={{display:"grid",gap:4,fontSize:11,color:"#aac7dd"}}>Borrador de respuesta (no se envía automáticamente)
+   <textarea maxLength={5000} rows={4} value={draft} onChange={e=>setDraft(e.target.value)} placeholder="Redacta aquí la respuesta para el usuario..." style={{background:"#071728",color:"#fff",padding:9,border:"1px solid #35688b",borderRadius:4,resize:"vertical"}}/>
   </label>
   <div style={{display:"flex",alignItems:"center",gap:12}}>
    <button disabled={busy} type="submit" style={{background:"#086fa9",border:"1px solid #24cafa",borderRadius:5,padding:"9px 13px",color:"#fff",fontWeight:700,cursor:"pointer"}}>{busy?"GUARDANDO...":"GUARDAR SEGUIMIENTO"}</button>
