@@ -72,7 +72,7 @@ async function createVirtualOffer(formData:FormData){
   const externalSku=String(formData.get("external_sku")||"").trim()||null;
   const currency=(String(formData.get("currency")||"USD").trim()||"USD").toUpperCase();
   const priceRaw=String(formData.get("price")??"").trim();
-  if(!/^(?:0|[1-9]\\d{0,7})(?:\\.\\d{1,2})?$/.test(priceRaw)) throw new Error("invalid_virtual_offer_price");
+  if(!/^(?:0|[1-9]\d{0,7})(?:\.\d{1,2})?$/.test(priceRaw)) throw new Error("invalid_virtual_offer_price");
   const price=Number(priceRaw);
   const regions=String(formData.get("region_scope")||"").split(",").map(v=>v.trim().toUpperCase()).filter(Boolean);
   if(platform.length>80||externalSku&&externalSku.length>120||regions.length>50||regions.some(r=>!/^[A-Z]{2}$/.test(r))||new Set(regions).size!==regions.length) throw new Error("invalid_virtual_offer_regions");
