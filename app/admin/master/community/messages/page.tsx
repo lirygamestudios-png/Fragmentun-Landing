@@ -103,7 +103,7 @@ export default async function LiryContactAdmin({
    <a href={selected?"?status="+selected:"?"} style={{padding:"11px 9px",color:"#9cdaf4",fontSize:11,textDecoration:"none"}}>Limpiar</a>
   </form>
   <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap",marginBottom:14}}>
-   <a href={pending?queryString(selected).replace(/([?&])pending=1(&|$)/,"$1").replace(/[?&]$/,"")||"?":queryString(selected)+(queryString(selected)==="?"?"":"&")+"pending=1"} style={{padding:"10px 15px",border:"1px solid "+(pending?"#ffbf79":"#39769b"),borderRadius:8,background:pending?"#49301c":"#0a263e",color:pending?"#ffd5a7":"#bce9ff",textDecoration:"none",fontSize:11,fontWeight:800}}>{pending?"✓ MOSTRANDO PENDIENTES · QUITAR FILTRO":"VER SOLO PENDIENTES →"}</a>
+   <a href={pending?queryString(selected).replace(/([?&])pending=1(&|$)/,"$1").replace(/[?&]$/,"")||"?":queryString(selected)+(queryString(selected)==="?"?"":"&")+"pending=1"} className={`${visual.pendingButton} ${pending?visual.pendingButtonActive:""}`}>{pending?"✓ MOSTRANDO PENDIENTES · QUITAR FILTRO":"VER SOLO PENDIENTES →"}</a>
    <span style={{color:"#92b1ca",fontSize:11}}>Los pendientes se ordenan por antigüedad y necesidad de asignación.</span>
   </div>
   <div className={visual.drafts} style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:14}}>
