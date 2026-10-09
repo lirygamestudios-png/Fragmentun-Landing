@@ -101,12 +101,22 @@ export default async function InternalGameWorldsPage(){
     <section className={styles.grid}>
       {error&&<article className={styles.card}><h3>Videojuegos no disponibles</h3><p>No se pudo consultar el portafolio. No se muestran juegos ficticios.</p></article>}
       {!error&&!rows.length&&<article className={styles.card}><h3>Primer videojuego pendiente</h3><p>Registra el primer videojuego en el módulo Videojuegos antes de conectar sus mundos internos.</p></article>}
-      {!error&&rows.flatMap(game=>Array.from({length:INITIAL_WORLDS_PER_GAME},(_,index)=>
-        <article key={game.id+"-"+index} className={styles.card}>
-          <div className={styles.cardTop}><span className={styles.badgePlanned}>PLANIFICADO</span><em>ACCESO GRATIS</em></div>
-          <h3>{worldRows.find(w=>w.game_id===game.id&&w.world_number===index+1)?.title||game.name+" · Mundo "+(index+1)}</h3>
-          <p>{worldRows.find(w=>w.game_id===game.id&&w.world_number===index+1)?.summary||"Mundo pendiente de configuración."} Etapa del videojuego: {game.lifecycle_stage}. Acceso gratuito y compras opcionales; el juego no se anuncia como disponible.</p>
-        </article>))}
+      {!error&&rows.flatMap(game=>Array.from({length:INITIAL_WORLDS_PER_GAME},(_,index)=>{
+        const world=worldRows.find(w=>w.game_id===game.id&&w.world_number===index+1);
+        const status=world?.publication_status||"planned";
+        const statusName:Record<string,string>={planned:"PLANIFICADO",beta:"EN BETA",available:"PUBLICADO",retired:"RETIRADO"};
+        // La disponibilidad administrativa no sustituye el Release Gate ni certifica el ejecutable.
+        const statusText=statusName[status]||"ESTADO POR VERIFICAR";
+        return <article key={game.id+"-"+index} className={styles.card}>
+          <div className={styles.cardTop}><span className={styles.badgePlanned}>{statusText}</span><em>ACCESO GRATIS</em></div>
+          <h3>{world?.title||game.name+" · Mundo "+(index+1)}</h3>
+          <p>{world?.summary||"Mundo pendiente de configuración."}</p>
+          <p>Videojuego: {game.name} · Etapa: {game.lifecycle_stage}. Mundo interno {index+1} de {INITIAL_WORLDS_PER_GAME}.</p>
+          {world?.artwork_url&&<p>Imagen configurada: <a href={world.artwork_url} target="_blank" rel="noopener noreferrer">Ver imagen ↗</a></p>}
+          {world?.play_url&&<p>Enlace configurado (no implica publicación): <a href={world.play_url} target="_blank" rel="noopener noreferrer">Revisar destino ↗</a></p>}
+          <p>Monetización: compras virtuales opcionales. El acceso base es gratuito.</p>
+        </article>;
+      }))}
     </section>
   </main>;
 }
