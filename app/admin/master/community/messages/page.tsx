@@ -14,7 +14,7 @@ const category:Record<string,string>={
 export const dynamic="force-dynamic";
 export default async function LiryContactAdmin({
  searchParams
-}:{searchParams:Promise<{status?:string}>}){
+}:{searchParams:Promise<{status?:string;q?:string;subject?:string}>}){
  const supabase=await createSupabaseServerClient();
  const {data:{user}}=await supabase.auth.getUser();
  if(!user)redirect("/admin/lirygames/login");
@@ -24,12 +24,17 @@ export default async function LiryContactAdmin({
  const params=await searchParams;
  const selected=["new","reviewing","resolved","archived"].includes(params.status||"")
   ?params.status||"":"";
+ const search=(params.q||"").trim().slice(0,80).replace(/[%_,()]/g,"");
+ const subject=["opinion","suggestion","problem","business","other"].includes(params.subject||"")?params.subject||"":"";
+ const queryString=(status:string)=>{const p=new URLSearchParams();if(status)p.set("status",status);if(search)p.set("q",search);if(subject)p.set("subject",subject);return "?"+p.toString();};
  const db=supabase;
  const {data:owners}=await db.from("admin_profiles").select("user_id,display_name").order("display_name");
  let query=db.from("lirygames_contact_messages")
   .select("id,name,email,subject,game_slug,message,status,created_at,internal_note,assigned_to,response_draft")
   .order("created_at",{ascending:false}).limit(100);
  if(selected)query=query.eq("status",selected);
+ if(subject)query=query.eq("subject",subject);
+ if(search)query=query.or(`name.ilike.%${search}%,email.ilike.%${search}%`);
  const {data,error}=await query;
  const messages=(data||[]) as ContactMessage[];
  const ids=messages.map(item=>item.id);
@@ -63,13 +68,26 @@ export default async function LiryContactAdmin({
     </div>)}
    </div>
   </section>}
+  <form method="GET" aria-label="Buscar y clasificar mensajes" style={{display:"flex",flexWrap:"wrap",alignItems:"end",gap:10,padding:"14px 16px",border:"1px solid #285571",borderRadius:10,background:"#091a2e",marginBottom:16}}>
+   {selected&&<input type="hidden" name="status" value={selected}/>}
+   <label style={{display:"grid",gap:6,flex:"2 1 230px",color:"#b9d8ed",fontSize:11}}>Buscar por nombre o correo
+    <input name="q" defaultValue={search} maxLength={80} placeholder="Nombre o correo electrónico..." style={{width:"100%",padding:"11px 12px",background:"#061429",color:"#f2fbff",border:"1px solid #3179a1",borderRadius:7}}/>
+   </label>
+   <label style={{display:"grid",gap:6,flex:"1 1 190px",color:"#b9d8ed",fontSize:11}}>Tipo de consulta
+    <select name="subject" defaultValue={subject} style={{width:"100%",padding:"11px 12px",background:"#061429",color:"#f2fbff",border:"1px solid #3179a1",borderRadius:7}}>
+     <option value="">Todos los tipos</option>{Object.entries(category).map(([value,label])=><option key={value} value={value}>{label}</option>)}
+    </select>
+   </label>
+   <button type="submit" style={{padding:"11px 17px",border:"1px solid #4ddaff",borderRadius:8,background:"#07517b",color:"#f4fcff",fontSize:11,fontWeight:800,cursor:"pointer"}}>BUSCAR →</button>
+   <a href={selected?"?status="+selected:"?"} style={{padding:"11px 9px",color:"#9cdaf4",fontSize:11,textDecoration:"none"}}>Limpiar</a>
+  </form>
   <nav aria-label="Filtrar mensajes" style={{display:"flex",flexWrap:"wrap",gap:9,marginBottom:20}}>
    {[["","TODOS"],["new","NUEVOS"],["reviewing","EN REVISIÓN"],["resolved","RESUELTOS"],["archived","ARCHIVADOS"]].map(([value,label])=>
-    <a key={value} href={value?"?status="+value:"?"} style={{padding:"9px 13px",border:"1px solid "+(value===selected?"#4ddaff":"#295571"),background:value===selected?"#0e3e62":"#07182c",borderRadius:5,color:"#e4f6ff",fontSize:11,textDecoration:"none"}}>{label}</a>
+    <a key={value} href={queryString(value)} style={{padding:"9px 13px",border:"1px solid "+(value===selected?"#4ddaff":"#295571"),background:value===selected?"#0e3e62":"#07182c",borderRadius:5,color:"#e4f6ff",fontSize:11,textDecoration:"none"}}>{label}</a>
    )}
   </nav>
   {error?<p role="alert">No se pudo recuperar la bandeja. Intenta nuevamente.</p>:
-   messages.length===0?<p style={{padding:25,border:"1px solid #28536f",borderRadius:8,color:"#aec9dd"}}>No hay mensajes para este filtro.</p>:
+   messages.length===0?<p style={{padding:25,border:"1px solid #28536f",borderRadius:8,color:"#aec9dd"}}>No hay mensajes que coincidan con los filtros seleccionados.</p>:
    <div style={{display:"grid",gap:12}}>
     {messages.map(item=><article key={item.id} style={{background:"#081b30",border:"1px solid #24516f",borderRadius:7,padding:18}}>
       <div style={{display:"flex",justifyContent:"space-between",gap:12,flexWrap:"wrap",marginBottom:12}}>
