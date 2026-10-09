@@ -49,12 +49,41 @@ export default async function LiryGamesFrontDesk(){
       <p className={styles.sectionIntro}>Cada tarjeta representa un videojuego diferente. Su lanzamiento se anunciará cuando esté realmente disponible.</p>
       <LiryGameDiscovery games={games} />
     </section>
-    <section className={`${styles.section} ${styles.gamerSection}`} id="perfil-gamer">
-      <p className={styles.kicker}>TU EXPERIENCIA LIRYGAMES</p>
+    <section className={`${styles.section} ${styles.gamerSection}`} id="perfil-gamer" aria-label="Perfil gamer, recorrido y logros">
       <div className={styles.gamerGrid}>
-        <article className={styles.gamerCard}><div className={styles.avatarPlaceholder} aria-hidden="true">?</div><h3>MI PERFIL GAMER</h3><strong className={styles.gamerSubtitle}>Perfil de visitante</strong><p>Las cuentas gamer guardarán identidad, nivel, experiencia y artículos cuando esté activa su integración.</p><span className={styles.status}>PRÓXIMAMENTE</span></article>
-        <article className={styles.gamerCard}><h3>TU LIRY JOURNEY</h3><p>Mundos explorados y videojuegos disponibles se calcularán con actividad real, nunca con estadísticas inventadas.</p><strong className={styles.emptyProgress}>— / 9</strong><small>No hay sesión gamer conectada</small></article>
-        <article className={styles.gamerCard}><h3>LOGROS RECIENTES</h3><p>Tus recompensas aparecerán después de completar objetivos reales.</p><span className={styles.emptyProgress}>SIN DATOS</span><small>No se muestran logros ficticios</small></article>
+        <article className={styles.gamerCard}>
+          <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">♙</span><h3>MI PERFIL GAMER</h3></header>
+          <div className={styles.gamerIdentity}>
+            <div className={styles.gamerPortrait} aria-hidden="true"><span>?</span></div>
+            <div className={styles.gamerIdentityText}><strong>Visitante</strong><span>Nivel —</span><div className={styles.gamerXpTrack} aria-label="Experiencia aún no disponible"><span /></div><small>XP pendiente de conexión</small></div>
+          </div>
+          <p className={styles.gamerMicroLabel}>Tu estilo de juego</p>
+          <div className={styles.gamerStyles}><span>⚔ <b>Explorador</b></span><span>♜ <b>Estratega</b></span><span>✧ <b>Social</b></span></div>
+          <div className={styles.gamerMetrics}><div><small>Juegos jugados</small><strong>—</strong></div><div><small>Logros</small><strong>—</strong></div><div><small>Horas de juego</small><strong>—</strong></div></div>
+          <a className={styles.gamerCardAction} href="#perfil-gamer" aria-label="Perfil gamer próximamente">VER MI PERFIL <span aria-hidden="true">→</span></a>
+          <small className={styles.gamerDataNote}>Vista preliminar · sin sesión gamer</small>
+        </article>
+        <article className={styles.gamerCard}>
+          <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">⬡</span><div><h3>TU LIRY JOURNEY</h3><p>Esta es tu historia en Liry. Sigue explorando.</p></div></header>
+          <div className={styles.journeyContent}>
+            <div className={styles.journeyRing}><div className={styles.journeyRingCenter}><strong>— / 9</strong><span>Mundos descubiertos</span></div></div>
+            <ol className={styles.journeyWorlds}>{games.map((game,index)=><li key={game.slug}><span className={styles.journeyNumber}>{index+1}</span><span className={styles.journeyName}>{game.title}</span><span className={styles.journeyPending} aria-label="Sin avance registrado">○</span></li>)}</ol>
+          </div>
+          <a className={styles.gamerCardAction} href="#mundos">VER TODOS LOS MUNDOS <span aria-hidden="true">→</span></a>
+          <small className={styles.gamerDataNote}>El progreso aparecerá con actividad verificada.</small>
+        </article>
+        <article className={styles.gamerCard}>
+          <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">✣</span><h3>LOGROS RECIENTES</h3><span className={styles.gamerTopRight}>Ver todos →</span></header>
+          <div className={styles.achievementList}>
+            {[
+              {icon:"✧",title:"Primeros pasos",detail:"Completa tu primer juego"},
+              {icon:"⬡",title:"Explorador de mundos",detail:"Descubre cinco mundos"},
+              {icon:"✦",title:"La comunidad te necesita",detail:"Juega con tres amigos"},
+              {icon:"♜",title:"Maestro de estrategias",detail:"Gana diez partidas estratégicas"}
+            ].map(item=><div className={styles.achievementRow} key={item.title}><span className={styles.achievementMedal} aria-hidden="true">{item.icon}</span><div><strong>{item.title}</strong><span>{item.detail}</span><small>Pendiente de obtener</small></div></div>)}
+          </div>
+          <small className={styles.gamerDataNote}>Los logros y recompensas reales aparecerán aquí.</small>
+        </article>
       </div>
     </section>
     <section className={styles.feature} id="modelo">
