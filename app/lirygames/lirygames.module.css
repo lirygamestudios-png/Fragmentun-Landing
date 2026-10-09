@@ -107,3 +107,26 @@
 .heroContent .kicker{letter-spacing:.32em;color:#b8e5ff;text-shadow:0 2px 12px #020916}
 .hero .button{position:relative;z-index:4}
 @media(max-width:750px){.heroUniverse::before{background-position:var(--hero-scene-position)}.heroUniverse::after{background:linear-gradient(90deg,#030914ec,#04142e73),linear-gradient(0deg,#030914d7,transparent 46%)}.heroContent{max-width:100%}}
+
+/* Punto de integración del arte cinematográfico aprobado.
+   Archivo requerido: public/lirygames-hero-cinematic.webp (todavía no incluido).
+   Dejarlo como capa independiente: la marca, el texto y los CTA son HTML real. */
+.heroUniverse::before{
+  background-image:url("/lirygames-hero-cinematic.webp"),
+    radial-gradient(ellipse at 78% 33%,#f5dfb9d9,transparent 16%),
+    radial-gradient(ellipse at 77% 32%,#ffbb8d77,transparent 28%),
+    linear-gradient(165deg,#011029 4%,#113d7a 45%,#5775ba 67%,#04162d);
+  background-position:center center,center,center,center;
+  background-repeat:no-repeat;
+  background-size:cover,cover,cover,cover;
+}
+.heroUniverse .heroPlanet,.heroUniverse .heroOrbitOne,
+.heroUniverse .heroOrbitTwo,.heroUniverse .heroSatellite{display:none}
+.heroUniverse .heroStardust{opacity:.09}
+@media(max-width:800px){
+  .heroUniverse::before{background-position:61% center,center,center,center}
+}
+@media(max-width:520px){
+  .heroUniverse::before{background-position:60% center,center,center,center}
+  .heroUniverse::after{background:linear-gradient(90deg,#030914e8 0%,#061224a6 58%,#06122460 100%),linear-gradient(0deg,#030914d9,transparent 53%)}
+}
