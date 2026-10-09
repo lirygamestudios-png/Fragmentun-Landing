@@ -514,7 +514,7 @@
   .worldShowcase .dnaSide .dnaContinuation{
     /* Segundo tramo: ocupa exactamente el espacio libre después de textos y barras. */
     order:6;flex:0 0 auto;min-height:0;
-    height:clamp(65px,calc(var(--liry-catalog-height, 480px) / 5),110px);
-    max-height:110px;margin:auto 0 12px;overflow:hidden
+    height:clamp(73px,calc(var(--liry-catalog-height, 480px) / 5 + 8px),118px);
+    max-height:118px;margin:auto 0 5px;overflow:hidden
   }
 }
