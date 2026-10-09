@@ -27,7 +27,8 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
           <option value="coming_soon">Próximamente</option>
         </select>
       </label>
-      <span className={styles.discoveryCount} role="status" aria-live="polite">{list.length} de 9 videojuegos</span>
+      <span className={styles.discoveryCount} role="status" aria-live="polite">{list.length} de {games.length} videojuegos</span>
+      {(search||filter!=="all")&&<button className={styles.discoveryReset} type="button" onClick={()=>{setSearch("");setFilter("all");}}>Mostrar los 9 videojuegos ↺</button>}
     </div>
     <div className={styles.grid}>
       {list.map(game=>{
@@ -46,6 +47,6 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
         </article>;
       })}
     </div>
-    {!list.length&&<p className={styles.discoveryEmpty} role="status">No hay videojuegos que coincidan con los filtros. Puedes mostrar todos los títulos o buscar otro nombre.</p>}
+    {!list.length&&<div className={styles.discoveryEmpty} role="status"><p>No encontramos videojuegos con esos criterios. Los próximos lanzamientos aún no figuran como disponibles.</p><button type="button" className={styles.discoveryReset} onClick={()=>{setSearch("");setFilter("all");}}>Ver los 9 videojuegos ↺</button></div>}
   </div>;
 }
