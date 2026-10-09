@@ -253,3 +253,16 @@
 #mundos .status{border-radius:3px}
 @media(max-width:800px){#mundos .gameCard{min-height:215px}}
 @media(max-width:520px){#mundos .gameCard{min-height:208px}#mundos .cardContent{padding:19px}}
+
+/* Continuidad del catálogo: tarjetas rectangulares y estados accesibles. */
+#mundos .grid{align-items:stretch}
+#mundos .gameCard{min-width:0;align-items:flex-end}
+#mundos .cardContent{min-width:0;width:100%;overflow-wrap:anywhere}
+#mundos .gameDetails{margin-top:12px;border-top:1px solid rgba(114,184,220,.24);padding-top:11px}
+#mundos .gameDetails summary{display:list-item;cursor:pointer;color:#a6e6ff;font-size:10px;line-height:1.6;letter-spacing:.045em}
+#mundos .gameDetails summary:hover{color:#fff}
+#mundos .gameDetails summary:focus-visible{outline:2px solid #80ddff;outline-offset:4px;border-radius:2px}
+#mundos .gameDetails[open]{background:rgba(4,18,40,.4)}
+#mundos .gameDetails p{margin:9px 0 0;font-size:12px;line-height:1.55}
+#mundos .discoverControls input:focus-visible,#mundos .discoverControls select:focus-visible,#mundos .discoveryReset:focus-visible{outline:2px solid #8de4ff;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){#mundos .gameCard{transition:none;transform:none}}
