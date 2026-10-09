@@ -338,3 +338,19 @@
 @media(max-width:750px){.worldShowcase{grid-template-columns:1fr}.dnaSide{min-height:0}.dnaTraitList{grid-template-columns:repeat(2,minmax(0,1fr))}.worldsNotes{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.worldsGrid{grid-template-columns:repeat(2,minmax(0,1fr))}#mundos .worldsGrid .gameCard{aspect-ratio:1.45/1}#mundos .worldCardText h3{font-size:12px}#mundos .worldCardText p{font-size:8px}.worldsNotes{grid-template-columns:1fr}}
 @media(max-width:350px){.worldsGrid{grid-template-columns:1fr}#mundos .worldsGrid .gameCard{aspect-ratio:1.9/1}}
+
+/* Miniaturas de la referencia aprobada: integración progresiva.
+   Cada tarjeta conserva un degradado local si su archivo todavía no existe.
+   No cambiar estas rutas por imágenes externas o aleatorias. */
+#mundos .worldsGrid .gameCard:nth-child(1)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/skill-arena.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+#mundos .worldsGrid .gameCard:nth-child(2)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/inflabots-arena.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+#mundos .worldsGrid .gameCard:nth-child(3)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/la-batalla-del-dinero.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+#mundos .worldsGrid .gameCard:nth-child(4)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/gaias-last-stand.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+#mundos .worldsGrid .gameCard:nth-child(5)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/nexo-social.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+#mundos .worldsGrid .gameCard:nth-child(6)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/eternun.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+#mundos .worldsGrid .gameCard:nth-child(7)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/fragmentun.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+#mundos .worldsGrid .gameCard:nth-child(8)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/cripto-titans.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+#mundos .worldsGrid .gameCard:nth-child(9)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/codeverse.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+#mundos .worldsGrid .gameCard::after{background:linear-gradient(0deg,rgba(3,7,18,.96) 0%,rgba(3,9,23,.74) 23%,rgba(3,9,23,.04) 66%)}
+#mundos .worldsGrid .gameCard .cardContent{position:relative}
+#mundos .worldsGrid .gameCard .worldAvailability{font-size:8px;letter-spacing:.055em}
