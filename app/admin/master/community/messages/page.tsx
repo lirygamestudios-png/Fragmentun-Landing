@@ -1,3 +1,4 @@
+import visual from "./messages.module.css";
 import {redirect} from "next/navigation";
 import {createSupabaseServerClient} from "../../../../../lib/supabase/server";
 import {LiryContactFollowup} from "../../../../../components/LiryContactFollowup";
@@ -63,28 +64,28 @@ export default async function LiryContactAdmin({
  const totals={all:0,new:0,reviewing:0,resolved:0,archived:0,unassigned:0};
  if(!countError){for(const row of allStates||[]){totals.all++;if(row.status in totals)totals[row.status as "new"|"reviewing"|"resolved"|"archived"]++;if(!row.assigned_to&&["new","reviewing"].includes(row.status))totals.unassigned++;}}
  const layout={minHeight:"100vh",padding:"38px clamp(20px,5vw,85px)",background:"#050b19",color:"#e9f6ff",fontFamily:"Arial,sans-serif"};
- return <main style={layout}>
-  <a href="/admin/master/community" style={{color:"#76daff",fontSize:12,textDecoration:"none"}}>← VOLVER A CLIENTES Y COMUNIDAD</a>
-  <header style={{borderBottom:"1px solid #235477",paddingBottom:18,marginBottom:20}}>
+ return <main className={visual.page} style={layout}>
+  <a className={visual.back} href="/admin/master/community" style={{color:"#76daff",fontSize:12,textDecoration:"none"}}>← VOLVER A CLIENTES Y COMUNIDAD</a>
+  <header className={visual.heading} style={{borderBottom:"1px solid #235477",paddingBottom:18,marginBottom:20}}>
    <p style={{fontSize:11,letterSpacing:".2em",color:"#5fddff"}}>LIRYGAMES STUDIOS · CONTACTO</p>
    <h1 style={{fontSize:27,margin:"8px 0"}}>Bandeja de mensajes</h1>
    <p style={{color:"#a3c1d9",fontSize:12}}>Mensajes reales de visitantes. Solo accesible a usuarios administrativos autorizados.</p>
   </header>
-  {!countError&&<section aria-label="Resumen de atención" style={{margin:"0 0 24px"}}>
+  {!countError&&<section className={visual.metrics} aria-label="Resumen de atención" style={{margin:"0 0 24px"}}>
    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap",marginBottom:11}}>
     <h2 style={{fontSize:12,letterSpacing:".14em",color:"#7ddfff",fontWeight:800,margin:0}}>PANORAMA DE CONTACTO</h2>
     <span style={{fontSize:11,color:"#8faec8"}}>Información real · Últimos 1,000 registros</span>
    </div>
-   <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(175px,1fr))",gap:12}}>
+   <div className={visual.metricGrid} style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(175px,1fr))",gap:12}}>
     {([["Recibidos",totals.all,"Total registrado"],["Nuevos",totals.new,"Por revisar"],["En revisión",totals.reviewing,"En seguimiento"],["Resueltos",totals.resolved,"Atendidos"],["Sin responsable",totals.unassigned,"Requieren asignación"]] as const).map(([label,total,description],index)=>
-    <div key={label} style={{minWidth:0,minHeight:116,display:"flex",flexDirection:"column",justifyContent:"space-between",padding:"16px 17px",border:"1px solid "+(index===4?"rgba(235,177,93,.45)":"rgba(87,192,251,.28)"),borderRadius:12,background:"linear-gradient(145deg,#0d2038,#09172b)",boxShadow:"inset 0 1px rgba(149,224,255,.06)"}}>
+    <div key={label} className={visual.metric} style={{minWidth:0,minHeight:116,display:"flex",flexDirection:"column",justifyContent:"space-between",padding:"16px 17px",border:"1px solid "+(index===4?"rgba(235,177,93,.45)":"rgba(87,192,251,.28)"),borderRadius:12,background:"linear-gradient(145deg,#0d2038,#09172b)",boxShadow:"inset 0 1px rgba(149,224,255,.06)"}}>
      <span style={{fontSize:11,color:"#c1d7eb",letterSpacing:".035em",fontWeight:650}}>{label}</span>
      <strong style={{fontVariantNumeric:"tabular-nums",fontSize:30,lineHeight:1.15,color:index===4?"#ffd08e":"#8be7ff",fontWeight:800}}>{total}</strong>
      <span style={{fontSize:10,color:"#85a1bc"}}>{description}</span>
     </div>)}
    </div>
   </section>}
-  <form method="GET" aria-label="Buscar y clasificar mensajes" style={{display:"flex",flexWrap:"wrap",alignItems:"end",gap:10,padding:"14px 16px",border:"1px solid #285571",borderRadius:10,background:"#091a2e",marginBottom:16}}>
+  <form className={visual.filterPanel} method="GET" aria-label="Buscar y clasificar mensajes" style={{display:"flex",flexWrap:"wrap",alignItems:"end",gap:10,padding:"14px 16px",border:"1px solid #285571",borderRadius:10,background:"#091a2e",marginBottom:16}}>
    {selected&&<input type="hidden" name="status" value={selected}/>}
    {pending&&<input type="hidden" name="pending" value="1"/>}
    {draftFilter&&<input type="hidden" name="draft" value={draftFilter}/>}
@@ -105,14 +106,14 @@ export default async function LiryContactAdmin({
    <a href={pending?queryString(selected).replace(/([?&])pending=1(&|$)/,"$1").replace(/[?&]$/,"")||"?":queryString(selected)+(queryString(selected)==="?"?"":"&")+"pending=1"} style={{padding:"10px 15px",border:"1px solid "+(pending?"#ffbf79":"#39769b"),borderRadius:8,background:pending?"#49301c":"#0a263e",color:pending?"#ffd5a7":"#bce9ff",textDecoration:"none",fontSize:11,fontWeight:800}}>{pending?"✓ MOSTRANDO PENDIENTES · QUITAR FILTRO":"VER SOLO PENDIENTES →"}</a>
    <span style={{color:"#92b1ca",fontSize:11}}>Los pendientes se ordenan por antigüedad y necesidad de asignación.</span>
   </div>
-  <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:14}}>
+  <div className={visual.drafts} style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:14}}>
    <span style={{color:"#94b6cc",fontSize:11,marginRight:3}}>PREPARACIÓN DE RESPUESTAS</span>
    {([["","Todos"],["ready","Con borrador"],["missing","Sin borrador"]] as const).map(([value,label])=>{
     const p=new URLSearchParams();if(selected)p.set("status",selected);if(search)p.set("q",search);if(subject)p.set("subject",subject);if(pending)p.set("pending","1");if(ownerFilter)p.set("owner",ownerFilter);if(ageFilter)p.set("age",ageFilter);if(value)p.set("draft",value);
     return <a key={value} href={"?"+p.toString()} style={{padding:"8px 12px",border:"1px solid "+(value===draftFilter?"#5be0f8":"#315571"),borderRadius:7,background:value===draftFilter?"#123f54":"#0a2134",color:value===draftFilter?"#e4fbff":"#add1e6",fontSize:11,textDecoration:"none"}}>{label}</a>;
    })}
   </div>
-  <form method="GET" aria-label="Seguimiento de mensajes por responsable y antigüedad" style={{display:"flex",alignItems:"end",flexWrap:"wrap",gap:10,padding:"13px 15px",marginBottom:15,border:"1px solid #285571",borderRadius:10,background:"#091b2f"}}>
+  <form className={visual.trackingPanel} method="GET" aria-label="Seguimiento de mensajes por responsable y antigüedad" style={{display:"flex",alignItems:"end",flexWrap:"wrap",gap:10,padding:"13px 15px",marginBottom:15,border:"1px solid #285571",borderRadius:10,background:"#091b2f"}}>
    {selected&&<input type="hidden" name="status" value={selected}/>}
    {search&&<input type="hidden" name="q" value={search}/>}
    {subject&&<input type="hidden" name="subject" value={subject}/>}
@@ -131,7 +132,7 @@ export default async function LiryContactAdmin({
    </label>
    <button type="submit" style={{padding:"10px 15px",borderRadius:8,background:"#07517b",border:"1px solid #4ddaff",color:"#f4fcff",fontWeight:800,fontSize:11,cursor:"pointer"}}>APLICAR →</button>
   </form>
-  <section aria-label="Accesos rápidos de seguimiento" style={{display:"flex",flexWrap:"wrap",gap:9,alignItems:"center",marginBottom:16}}>
+  <section className={visual.quick} aria-label="Accesos rápidos de seguimiento" style={{display:"flex",flexWrap:"wrap",gap:9,alignItems:"center",marginBottom:16}}>
    <span style={{color:"#91b4cf",fontSize:11,fontWeight:700}}>ACCESOS RÁPIDOS</span>
    {([["Mis pendientes",{owner:user.id,pending:"1",status:"",age:""}],["Sin asignar",{owner:"unassigned",pending:"1",status:"",age:""}],["Pendientes antiguos",{owner:"",pending:"1",status:"",age:"7"}]] as const).map(([label,filter])=>{
     const p=new URLSearchParams();if(search)p.set("q",search);if(subject)p.set("subject",subject);if(draftFilter)p.set("draft",draftFilter);
@@ -139,15 +140,15 @@ export default async function LiryContactAdmin({
     return <a key={label} href={"?"+p.toString()} style={{display:"inline-flex",alignItems:"center",padding:"9px 13px",border:"1px solid rgba(88,194,250,.38)",borderRadius:8,background:"linear-gradient(120deg,#0b2b46,#0a1b34)",color:"#c0eeff",fontSize:11,fontWeight:700,textDecoration:"none"}}>{label} →</a>;
    })}
   </section>
-  <nav aria-label="Filtrar mensajes" style={{display:"flex",flexWrap:"wrap",gap:9,marginBottom:20}}>
+  <nav className={visual.statusFilters} aria-label="Filtrar mensajes" style={{display:"flex",flexWrap:"wrap",gap:9,marginBottom:20}}>
    {[["","TODOS"],["new","NUEVOS"],["reviewing","EN REVISIÓN"],["resolved","RESUELTOS"],["archived","ARCHIVADOS"]].map(([value,label])=>
     <a key={value} href={queryString(value)} style={{padding:"9px 13px",border:"1px solid "+(value===selected?"#4ddaff":"#295571"),background:value===selected?"#0e3e62":"#07182c",borderRadius:5,color:"#e4f6ff",fontSize:11,textDecoration:"none"}}>{label}</a>
    )}
   </nav>
   {error?<p role="alert">No se pudo recuperar la bandeja. Intenta nuevamente.</p>:
    messages.length===0?<p style={{padding:25,border:"1px solid #28536f",borderRadius:8,color:"#aec9dd"}}>No hay mensajes que coincidan con los filtros seleccionados.</p>:
-   <div style={{display:"grid",gap:12}}>
-    {messages.map(item=><article key={item.id} style={{background:"#081b30",border:"1px solid #24516f",borderRadius:7,padding:18}}>
+   <div className={visual.messageList} style={{display:"grid",gap:12}}>
+    {messages.map(item=><article key={item.id} className={visual.messageCard} style={{background:"#081b30",border:"1px solid #24516f",borderRadius:7,padding:18}}>
       <div style={{display:"flex",justifyContent:"space-between",gap:12,flexWrap:"wrap",marginBottom:12}}>
        <div><strong>{item.name}</strong><div style={{fontSize:12,marginTop:4}}><a href={"mailto:"+item.email} style={{color:"#6bd9ff"}}>{item.email}</a></div></div>
        <div style={{fontSize:11,color:"#abc7df"}}>{new Date(item.created_at).toLocaleString("es",{dateStyle:"medium",timeStyle:"short"})}</div>
@@ -162,7 +163,7 @@ export default async function LiryContactAdmin({
       </div>
       <p style={{fontSize:13,lineHeight:1.55,whiteSpace:"pre-wrap",overflowWrap:"anywhere",margin:0}}>{item.message}</p>
       {["admin","editor"].includes(profile.role)&&<LiryContactFollowup id={item.id} status={item.status} note={item.internal_note} assignedTo={item.assigned_to} responseDraft={item.response_draft} owners={owners||[]} />}
-      <details style={{marginTop:13,borderTop:"1px solid #27415e",paddingTop:12}}>
+      <details className={visual.history} style={{marginTop:13,borderTop:"1px solid #27415e",paddingTop:12}}>
        <summary style={{cursor:"pointer",color:"#7cdbff",fontSize:12,fontWeight:700}}>HISTORIAL DE ATENCIÓN ({historyRows.filter(h=>h.contact_id===item.id).length})</summary>
        {historyError?<p style={{fontSize:11,color:"#ffacac"}}>No se pudo cargar el historial.</p>:
        historyRows.filter(h=>h.contact_id===item.id).length===0?<p style={{fontSize:11,color:"#9ab4c9"}}>Aún no existen movimientos registrados para este mensaje.</p>:
