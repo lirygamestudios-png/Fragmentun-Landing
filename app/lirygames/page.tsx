@@ -121,6 +121,7 @@ export default async function LiryGamesFrontDesk(){
         <a className={styles.recommendAll} href="#mundos">VER TODOS LOS MUNDOS <span aria-hidden="true">→</span></a>
       </section>
     </div>
+    <section className={styles.section} id="tienda"><p className={styles.kicker}>ECONOMÍA FREEMIUM</p><h2>TIENDA LIRY</h2><p className={styles.sectionIntro}>Skins, efectos y personalizaciones opcionales llegarán junto con los videojuegos. Los tres mundos internos iniciales de cada juego serán gratuitos. Por ahora no hay artículos disponibles para comprar.</p><p className={styles.honesty}><strong>PAGOS EN DEFINICIÓN:</strong> Se evalúan cuatro opciones: Stripe (principal), PayPal, 2Checkout / Verifone y criptomonedas (cuarta opción, sujeta a proveedor, cumplimiento legal, confirmaciones y conversión de moneda). Ninguna está contratada ni activa. Todavía no se procesan cobros ni se ofrecen artículos a la venta.</p></section>
     <div className={styles.finalDiscover} aria-label="Tu viaje y secretos de Liry">
       <section className={styles.journeyBanner} id="modelo">
         <div className={styles.journeyBannerArt} aria-hidden="true"><span className={styles.bannerOrbit}></span><span className={styles.bannerTraveler}>✧</span></div>
@@ -132,7 +133,31 @@ export default async function LiryGamesFrontDesk(){
         </div>
       </section>
       <section className={styles.secretsBanner} id="secretos">
-        <div className={styles.secretsEmblem} aria-hidden="true">♙</div>
+        <div className={styles.secretsHdArt} role="img" aria-label="Ilustración vectorial de alta definición de un portal de cristal violeta en el universo Liry">
+          <svg viewBox="0 0 1200 520" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="secretsSky" x1="0" x2="1" y1="0" y2="1"><stop stopColor="#090e28"/><stop offset=".48" stopColor="#38136e"/><stop offset="1" stopColor="#07071c"/></linearGradient>
+              <radialGradient id="secretsAura"><stop stopColor="#f39dff" stopOpacity=".92"/><stop offset=".42" stopColor="#9637e8" stopOpacity=".5"/><stop offset="1" stopColor="#32146b" stopOpacity="0"/></radialGradient>
+              <linearGradient id="secretsCrystal" x1=".1" x2=".9" y1="0" y2="1"><stop stopColor="#eff1ff"/><stop offset=".25" stopColor="#e071ff"/><stop offset=".6" stopColor="#7433d4"/><stop offset="1" stopColor="#180b52"/></linearGradient>
+              <filter id="secretsGlow"><feGaussianBlur stdDeviation="12"/></filter>
+            </defs>
+            <rect width="1200" height="520" fill="url(#secretsSky)"/>
+            <ellipse cx="610" cy="215" rx="405" ry="320" fill="url(#secretsAura)"/>
+            <path d="M0 388 104 250 182 330 285 162 400 340 475 230 570 398 680 195 785 346 928 148 1023 305 1120 180 1200 330V520H0Z" fill="#160e3c"/>
+            <path d="m0 465 154-210 133 220 129-138 116 162 174-235 137 203 128-130 129 100v83H0Z" fill="#090b2d"/>
+            <g fill="none" stroke="#b97cff" strokeWidth="3" opacity=".64"><path d="m285 162 23 114-23 70M680 195l-12 140 24 70M928 148l-33 159 30 81"/><path d="M55 420 500 444 780 385 1165 454" opacity=".35"/></g>
+            <g transform="translate(504 30)">
+              <ellipse cx="110" cy="220" rx="185" ry="195" fill="url(#secretsAura)"/>
+              <path d="M110 5 238 135 194 336 110 443 26 336-18 135Z" fill="#a650ff" opacity=".3" filter="url(#secretsGlow)"/>
+              <path d="M110 7 234 132 189 330 110 438 32 330-12 132Z" fill="url(#secretsCrystal)" stroke="#e29cff" strokeWidth="7"/>
+              <path d="M110 7 91 160 110 438 190 331 234 132 110 7 32 330 91 160-12 132 234 132" fill="none" stroke="#f5bfff" strokeWidth="4" opacity=".78"/>
+              <path d="M91 160 190 331 32 330Z" fill="#2b145e" opacity=".45"/>
+              <path d="M71 195 110 164 153 195 110 249Z" fill="#eff5ff" opacity=".9"/>
+            </g>
+            <g fill="#eeb4ff"><circle cx="145" cy="105" r="3"/><circle cx="358" cy="63" r="2"/><circle cx="929" cy="69" r="4"/><circle cx="1060" cy="202" r="2"/><circle cx="829" cy="284" r="3"/><circle cx="250" cy="244" r="3"/></g>
+            <path d="M0 490 170 465 320 495 585 460 820 495 1000 454 1200 489v31H0Z" fill="#040817"/>
+          </svg>
+        </div>
         <div className={styles.secretsCopy}>
           <h2>SECRETOS DE LIRY</h2>
           <p>Hay más de lo que ves...</p>
@@ -140,11 +165,10 @@ export default async function LiryGamesFrontDesk(){
           <div className={styles.secretsTrack} aria-label="Secretos aún no disponibles"><span /></div>
           <small>PRÓXIMAMENTE · SIN PROGRESO SIMULADO</small>
         </div>
-        <div className={styles.secretsArt} aria-hidden="true">✦</div>
+        
       </section>
       <div className={styles.finalSignature} aria-label="Liry: más que videojuegos"><span aria-hidden="true">▽</span><strong>MORE<br/>THAN<br/>GAMES.<br/>IT'S A<br/>UNIVERSE.</strong></div>
     </div>
-    <section className={styles.section} id="tienda"><p className={styles.kicker}>ECONOMÍA FREEMIUM</p><h2>TIENDA LIRY</h2><p className={styles.sectionIntro}>Skins, efectos y personalizaciones opcionales llegarán junto con los videojuegos. Los tres mundos internos iniciales de cada juego serán gratuitos. Por ahora no hay artículos disponibles para comprar.</p><p className={styles.honesty}><strong>PAGOS EN DEFINICIÓN:</strong> Se evalúan cuatro opciones: Stripe (principal), PayPal, 2Checkout / Verifone y criptomonedas (cuarta opción, sujeta a proveedor, cumplimiento legal, confirmaciones y conversión de moneda). Ninguna está contratada ni activa. Todavía no se procesan cobros ni se ofrecen artículos a la venta.</p></section>
     <footer className={styles.footer}><strong>LIRYGAMES STUDIOS</strong><p>Nueve videojuegos. Un universo en expansión.</p><Link href="/es">FRAGMENTUN ↗</Link></footer>
   </main>;
 }
