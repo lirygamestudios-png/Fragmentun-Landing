@@ -36,9 +36,9 @@ export function LiryContactForm(){
    </select>
    <input style={field} type="text" value={gameSlug} onChange={e=>setGameSlug(e.target.value)} placeholder="Videojuego o producto (opcional)" aria-label="Videojuego o producto (opcional)" maxLength={80}/>
    <textarea style={{...field,minHeight:112,resize:"vertical"}} aria-label="Tu mensaje" placeholder="Escribe tu mensaje aquí..." value={message} onChange={e=>setMessage(e.target.value)} minLength={10} maxLength={3000} required/>
-   <label style={{display:"flex",gap:9,alignItems:"flex-start",fontSize:11,color:"#b7d0e3"}}><input type="checkbox" checked={ack} onChange={e=>setAck(e.target.checked)} required/><span>Autorizo el tratamiento de mis datos para responder a este mensaje. No implica suscripción a publicidad.</span></label>
+   <label className="liryContactConsent"><input className="liryContactCheck" type="checkbox" checked={ack} onChange={e=>setAck(e.target.checked)} required/><span>Autorizo el tratamiento de mis datos para responder a este mensaje. No implica suscripción a publicidad.</span></label>
    <input name="website" aria-hidden="true" autoComplete="off" tabIndex={-1} style={{position:"absolute",left:-9999}}/>
-   <button disabled={busy} type="submit" style={{width:"fit-content",padding:"11px 21px",borderRadius:6,border:"1px solid #25c9f8",background:"#086fa9",color:"#fff",fontSize:11,fontWeight:800,cursor:busy?"wait":"pointer"}}>{busy?"ENVIANDO...":"ENVIAR MENSAJE →"}</button>
+   <button className="liryContactSubmit" disabled={busy} type="submit">{busy?"ENVIANDO...":"ENVIAR MENSAJE →"}</button>
   </>}
   {result&&<p role="status" style={{fontSize:12,color:done?"#89ebd0":"#ffb2b2",margin:0}}>{result}</p>}
  </form>;
