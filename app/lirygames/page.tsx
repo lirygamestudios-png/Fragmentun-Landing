@@ -1,4 +1,5 @@
 import Link from "next/link";
+import {LiryShare} from "../../components/LiryShare";
 import {plannedLiryGames} from "../../lib/games/public-catalog";
 import styles from "./lirygames.module.css";
 
@@ -50,7 +51,7 @@ export default function LiryGamesFrontDesk(){
       <p>El primer lanzamiento de cada videojuego está concebido con tres mundos internos jugables sin costo. Los artículos, skins y personalizaciones serán compras voluntarias.</p>
       <p className={styles.honesty}>El perfil gamer, Liry DNA y Liry Journey estarán disponibles cuando se complete su integración. No mostramos progreso ficticio.</p>
     </section>
-    <section className={styles.section} id="comunidad"><p className={styles.kicker}>COMUNIDAD LIRY</p><h2>COMPARTE TU UNIVERSO</h2><p className={styles.sectionIntro}>Un punto de encuentro para los futuros jugadores. Los enlaces sociales oficiales, las opciones para compartir y LiryBoost se activarán cuando estén configurados y verificados en el Admin.</p><p className={styles.honesty}>Sin contadores de participación ficticios ni enlaces sociales inventados.</p></section>
+    <section className={styles.section} id="comunidad"><p className={styles.kicker}>COMUNIDAD LIRY</p><h2>COMPARTE TU UNIVERSO</h2><p className={styles.sectionIntro}>Un punto de encuentro para los futuros jugadores. Los enlaces sociales oficiales, las opciones para compartir y LiryBoost se activarán cuando estén configurados y verificados en el Admin.</p><p className={styles.honesty}>Comparte el enlace de la página que estás visitando. Sin contadores de participación ficticios.</p><LiryShare /></section>
     <section className={styles.section} id="eventos">
       <p className={styles.kicker}>ACTUALIDAD DEL ECOSISTEMA</p><h2>EVENTOS EN VIVO</h2>
       <div className={styles.lowerGrid}>
