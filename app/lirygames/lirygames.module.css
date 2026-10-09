@@ -371,3 +371,10 @@
 @media(max-width:1100px){.navUtilities{gap:4px}}
 @media(max-width:750px){.nav{padding-right:108px}.navUtilities{position:absolute;top:14px;right:18px;gap:5px}.nav .profileAccess{position:static}.nav .navNotice{width:33px;height:38px}}
 @media(prefers-reduced-motion:reduce){.nav .navNotice{transition:none}}
+
+/* Acceso de exploración en el encabezado, coherente con la referencia aprobada. */
+.nav .navSearch{display:inline-grid;place-items:center;width:36px;height:36px;flex:0 0 36px;border:1px solid transparent;border-radius:5px;color:#d8efff;text-decoration:none;transition:background .2s,border-color .2s}
+.nav .navSearch svg{width:19px;height:19px}
+.nav .navSearch:hover,.nav .navSearch:focus-visible{border-color:#67cde9;background:rgba(21,69,110,.5);outline-offset:2px}
+@media(max-width:750px){.nav{padding-right:145px}.nav .navSearch{height:38px;width:33px;flex-basis:33px}.navUtilities{gap:3px;right:16px}}
+@media(prefers-reduced-motion:reduce){.nav .navSearch{transition:none}}
