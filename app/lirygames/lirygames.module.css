@@ -13,3 +13,5 @@
 .wordmark strong{display:block;font-size:1.06rem;line-height:1;letter-spacing:.22em;font-weight:900;background:linear-gradient(90deg,#fff 0%,#a8ebff 30%,#9f72ff 68%,#ed7dff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .wordmark span{display:block;margin-top:4px;color:#a7b6d7;font-size:.53rem;letter-spacing:.20em;font-weight:700}
 .wordmark small{display:block;margin-top:5px;color:#596784;font-size:.49rem;letter-spacing:.18em}
+
+.gameDetails{margin-top:14px;border-top:1px solid #5ba9e733;padding-top:12px}.gameDetails summary{cursor:pointer;color:#7ddafc;font-size:11px;font-weight:800;letter-spacing:.08em;list-style-position:inside}.gameDetails p{color:#c2d5ea;font-size:12px;line-height:1.65}.nav nav{flex-wrap:wrap;justify-content:flex-end}.nav nav a{transition:color .2s}.nav nav a:hover,.nav nav a:focus-visible{color:#69dcff}@media(max-width:650px){.nav{height:auto;min-height:82px;padding-top:13px;padding-bottom:13px;gap:13px;align-items:flex-start;flex-direction:column}.nav nav{justify-content:flex-start;gap:14px}}
