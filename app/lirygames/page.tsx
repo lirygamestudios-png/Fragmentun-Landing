@@ -140,7 +140,7 @@ export default async function LiryGamesFrontDesk(){
           {name:"ACCESORIOS",symbol:"◆",tone:"accessories"},
           {name:"COLECCIONABLES",symbol:"✧",tone:"collectibles"},
           {name:"ARTE DIGITAL",symbol:"▧",tone:"art"},
-          {name:"GAMING GEAR",symbol:"⌘",tone:"gear"}
+          {name:"EQUIPO GAMER",symbol:"⌘",tone:"gear"}
         ].map(item=><div className={styles.storeCategory} key={item.name}><div className={`${styles.storeCategoryVisual} ${styles[`storeTone_${item.tone}`]} `} aria-hidden="true">{item.symbol}</div><strong>{item.name}</strong><span className={styles.storeCategoryLine}/></div>)}
       </div>
       <p className={styles.storeLegal}>Modelo freemium: los tres mundos internos iniciales previstos para cada videojuego serán gratuitos; las compras cosméticas serán opcionales. No hay pagos activos ni artículos disponibles actualmente.</p>
@@ -190,11 +190,11 @@ export default async function LiryGamesFrontDesk(){
         </div>
         
       </section>
-      <div className={styles.finalSignature} aria-label="Liry: más que videojuegos"><span aria-hidden="true">▽</span><strong>MORE<br/>THAN<br/>GAMES.<br/>IT'S A<br/>UNIVERSE.</strong></div>
+      <div className={styles.finalSignature} aria-label="Liry: más que videojuegos"><span aria-hidden="true">▽</span><strong>MÁS QUE<br/>VIDEOJUEGOS.<br/>ES TODO<br/>UN UNIVERSO.</strong></div>
     </div>
     <footer className={styles.footer}>
       <div className={styles.footerIdentity}><strong>LIRY<span>GAMES</span></strong><small>STUDIOS</small></div>
-      <div className={styles.footerTagline}>MORE THAN GAMES.<br/>IT’S A UNIVERSE.</div>
+      <div className={styles.footerTagline}>MÁS QUE VIDEOJUEGOS.<br/>ES TODO UN UNIVERSO.</div>
       <nav className={styles.footerNav} aria-label="Enlaces del pie de página"><a href="#inicio">INICIO</a><a href="#mundos">MUNDOS</a><a href="#liry-dna">LIRY DNA</a><a href="#perfil-gamer">TU VIAJE</a><a href="#comunidad">COMUNIDAD</a><a href="#tienda">TIENDA</a></nav>
       <div className={styles.footerCopyright}>© {new Date().getFullYear()} LIRYGAMES STUDIOS. Todos los derechos reservados.</div>
     </footer>
