@@ -48,6 +48,12 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
               <circle cx={x} cy={y} r="3" fill="#ebfbff"/>
             </g>)}
           </g>
+          <g className={styles.dnaEnergyColumn}>
+            <path d="M116 615 Q134 646 160 669" fill="none" stroke="#58e4ff" strokeWidth="2" strokeOpacity=".48"/>
+            <path d="M204 615 Q186 646 160 669" fill="none" stroke="#bd81ff" strokeWidth="2" strokeOpacity=".48"/>
+            <path d="M160 614 L160 670" fill="none" stroke="#8cf6ff" strokeWidth="3" strokeOpacity=".5" strokeDasharray="5 10"/>
+            {Array.from({length:9},(_,i)=><circle key={i} cx={160+Math.sin(i*1.7)*((i%3)+1)*11} cy={618+i*6} r={i%2?1.5:2.3} fill={i%2?"#c49cff":"#79efff"} opacity=".8"/>)}
+          </g>
           <g className={styles.dnaPlatform}>
             <ellipse cx="160" cy="669" rx="137" ry="43" fill="url(#liryDnaBase)"/>
             <ellipse cx="160" cy="669" rx="120" ry="31" fill="none" stroke="#60d5ff" strokeOpacity=".8" strokeWidth="2"/>
