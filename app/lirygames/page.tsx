@@ -49,7 +49,7 @@ export default async function LiryGamesFrontDesk(){
       <p className={styles.sectionIntro}>Cada tarjeta representa un videojuego diferente. Su lanzamiento se anunciará cuando esté realmente disponible.</p>
       <LiryGameDiscovery games={games} />
     </section>
-    <section className={styles.section} id="liry-dna">
+    <section className={styles.section} id="dna-perfiles">
       <p className={styles.kicker}>TU IDENTIDAD GAMER</p><h2>DESCUBRE TU LIRY DNA</h2>
       <p className={styles.sectionIntro}>Estas seis categorías formarán parte del cuestionario cuando se conecten la cuenta gamer y las reglas administrables.</p>
       <div className={styles.dnaGrid}>{["Explorador","Estratega","Competidor","Social","Acción","Creativo"].map(name=>
