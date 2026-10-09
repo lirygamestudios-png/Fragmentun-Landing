@@ -140,6 +140,13 @@ export default async function LiryContactAdmin({
     return <a key={label} href={"?"+p.toString()} style={{display:"inline-flex",alignItems:"center",padding:"9px 13px",border:"1px solid rgba(88,194,250,.38)",borderRadius:8,background:"linear-gradient(120deg,#0b2b46,#0a1b34)",color:"#c0eeff",fontSize:11,fontWeight:700,textDecoration:"none"}}>{label} →</a>;
    })}
   </section>
+  <section aria-label="Seguimiento de casos cerrados" className={visual.closedCases}>
+   <div><strong>SEGUIMIENTO DE CIERRES</strong><p>Consulta los mensajes finalizados y archivados sin alterar sus registros ni el historial.</p></div>
+   <div className={visual.closedActions}>
+    <a href="?status=resolved">RESUELTOS · {totals.resolved} →</a>
+    <a href="?status=archived">ARCHIVADOS · {totals.archived} →</a>
+   </div>
+  </section>
   <nav className={visual.statusFilters} aria-label="Filtrar mensajes" style={{display:"flex",flexWrap:"wrap",gap:9,marginBottom:20}}>
    {[["","TODOS"],["new","NUEVOS"],["reviewing","EN REVISIÓN"],["resolved","RESUELTOS"],["archived","ARCHIVADOS"]].map(([value,label])=>
     <a key={value} href={queryString(value)} style={{padding:"9px 13px",border:"1px solid "+(value===selected?"#4ddaff":"#295571"),background:value===selected?"#0e3e62":"#07182c",borderRadius:5,color:"#e4f6ff",fontSize:11,textDecoration:"none"}}>{label}</a>
