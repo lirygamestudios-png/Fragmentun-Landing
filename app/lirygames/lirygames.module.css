@@ -362,3 +362,12 @@
 @media(max-width:1060px){.nav .profileAccess{padding:7px 9px}.nav .profileAccess span{display:none}}
 @media(max-width:750px){.nav{position:relative;padding-right:70px}.nav .profileAccess{position:absolute;top:14px;right:20px;min-width:38px;height:38px;padding:7px}.nav .profileAccess span{display:none}}
 @media(prefers-reduced-motion:reduce){.nav .profileAccess{transition:none}}
+
+/* Cabecera aprobada: avisos + perfil de visitante sin inventar actividad. */
+.navUtilities{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.nav .navNotice{display:inline-grid;place-items:center;width:36px;height:36px;color:#cbefff;text-decoration:none;border-radius:5px;border:1px solid transparent;transition:background .2s,border-color .2s}
+.nav .navNotice svg{width:18px;height:18px}
+.nav .navNotice:hover,.nav .navNotice:focus-visible{background:rgba(20,71,110,.54);border-color:#69bddd;outline-offset:2px}
+@media(max-width:1100px){.navUtilities{gap:4px}}
+@media(max-width:750px){.nav{padding-right:108px}.navUtilities{position:absolute;top:14px;right:18px;gap:5px}.nav .profileAccess{position:static}.nav .navNotice{width:33px;height:38px}}
+@media(prefers-reduced-motion:reduce){.nav .navNotice{transition:none}}
