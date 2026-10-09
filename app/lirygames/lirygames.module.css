@@ -518,3 +518,15 @@
     max-height:118px;margin:auto 0 5px;overflow:hidden
   }
 }
+
+/* Tres pasarelas gamer — franja inmediata posterior a 9 mundos + LIRY DNA. */
+.gamerSection{padding-top:34px;padding-bottom:42px;background:linear-gradient(180deg,#071123,#08152b)}
+.gamerSection>.kicker{display:none}
+.gamerSection .gamerGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:stretch}
+.gamerSection .gamerCard{position:relative;min-width:0;min-height:198px;padding:19px 21px;border-radius:6px;border:1px solid rgba(87,157,207,.38);background:linear-gradient(145deg,#112943,#08152a 85%);box-shadow:inset 0 1px 0 rgba(124,194,233,.09)}
+.gamerSection .gamerCard h3{font-size:17px;font-weight:800;letter-spacing:.035em;color:#f0f8ff;margin:8px 0 10px}
+.gamerSection .gamerCard p{font-size:12px;line-height:1.55;margin:7px 0 11px}
+.gamerSection .gamerSubtitle{display:block;color:#a9e3ff;font-size:12px;font-weight:700}
+.gamerSection .avatarPlaceholder{width:41px;height:41px}
+.gamerSection .emptyProgress{font-size:20px;margin:10px 0 7px}
+@media(max-width:800px){.gamerSection .gamerGrid{grid-template-columns:1fr}.gamerSection .gamerCard{min-height:170px}}
