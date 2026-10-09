@@ -88,7 +88,7 @@ export default async function LiryGamesFrontDesk(){
     </section>
     <div className={styles.socialTrio} aria-label="Comunidad, eventos y recomendaciones">
       <section className={styles.section} id="comunidad">
-        <h2>COMUNIDAD LIRY</h2><p className={styles.socialIntro}>Conecta, comparte, juega.</p>
+        <div className={styles.socialPanelHeader}><h2>COMUNIDAD LIRY</h2><p className={styles.socialIntro}>Conecta, comparte, juega.</p></div>
         <div className={styles.communityTabs} aria-label="Categorías de comunidad"><span className={styles.communityTabActive}>TODOS</span><span>AMIGOS</span><span>LOGROS</span><span>EVENTOS</span></div>
         <div className={styles.communityFeed}>
           <div className={styles.communityEmpty}><span className={styles.communityEmptyIcon} aria-hidden="true">◉</span><strong>La comunidad está por despertar</strong><p>Las publicaciones, mensajes y actividades aparecerán cuando el servicio comunitario esté disponible. Sin conversaciones ficticias.</p></div>
@@ -97,8 +97,8 @@ export default async function LiryGamesFrontDesk(){
         <div className={styles.communityCompose}><span>Publicaciones disponibles próximamente</span><span aria-hidden="true">➤</span></div>
       </section>
       <section className={styles.section} id="social">
-        <h2>SECCIÓN SOCIAL</h2>
-        <p className={styles.socialIntro}>Conecta con LIRYGAMES y comparte nuestro universo.</p>
+        <div className={styles.socialPanelHeader}><h2>SECCIÓN SOCIAL</h2>
+        <p className={styles.socialIntro}>Conecta con LIRYGAMES y comparte nuestro universo.</p></div>
         <div className={styles.socialFeature}>
           <span className={styles.socialFeatureIcon} aria-hidden="true">✦</span>
           <strong>COMPARTE LIRYGAMES</strong>
@@ -119,7 +119,7 @@ export default async function LiryGamesFrontDesk(){
         <small className={styles.socialPending}>Solo se habilitan enlaces oficiales confirmados; compartir la página ya está disponible.</small>
       </section>
             <section className={styles.section} id="recomendaciones">
-        <h2>RECOMENDACIONES PARA TI</h2><p className={styles.socialIntro}>Basado en tu Liry DNA.</p>
+        <div className={styles.socialPanelHeader}><h2>RECOMENDACIONES PARA TI</h2><p className={styles.socialIntro}>Basado en tu Liry DNA.</p></div>
         <div className={styles.recommendList}>
           {[{title:"Nexo Social",reason:"Conecta con otros jugadores",index:4},{title:"Gaias Last Stand",reason:"Explora un mundo de supervivencia",index:3},{title:"Eternun",reason:"Descubre un universo de fantasía",index:5}].map(game=><article className={styles.recommendItem} key={game.title}><div className={`${styles.recommendThumb} ${styles[`recommendThumb${game.index}`]} `} aria-hidden="true"><span>✧</span></div><div className={styles.recommendText}><strong>{game.title}</strong><p>{game.reason}</p><small>Selección editorial · personalización pendiente</small></div><a href="#mundos">Ver juego →</a></article>)}
         </div>
