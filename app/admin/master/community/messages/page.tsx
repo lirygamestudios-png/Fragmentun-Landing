@@ -1,6 +1,5 @@
 import {redirect} from "next/navigation";
 import {createSupabaseServerClient} from "../../../../../lib/supabase/server";
-import {createSupabaseServiceClient} from "../../../../../lib/supabase/service";
 import {LiryContactFollowup} from "../../../../../components/LiryContactFollowup";
 
 type ContactMessage={
@@ -24,7 +23,7 @@ export default async function LiryContactAdmin({
  const params=await searchParams;
  const selected=["new","reviewing","resolved","archived"].includes(params.status||"")
   ?params.status||"":"";
- const db=createSupabaseServiceClient();
+ const db=supabase;
  const {data:owners}=await db.from("admin_profiles").select("user_id,display_name").order("display_name");
  let query=db.from("lirygames_contact_messages")
   .select("id,name,email,subject,game_slug,message,status,created_at,internal_note,assigned_to,response_draft")
