@@ -45,3 +45,13 @@
 .page .pendingButtonActive:hover{border-color:#ffe0a4!important;background:linear-gradient(115deg,#805128,#5b3e6e)!important;box-shadow:0 0 25px rgba(255,187,101,.28)}
 .page .pendingButton:focus-visible{outline:2px solid #8ceaff;outline-offset:3px}
 @media(max-width:560px){.page .pendingButton{width:100%;text-align:center}}
+
+/* Seguimiento de cierres: consultas de casos resueltos y archivados. */
+.closedCases{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:17px 20px;margin:5px 0 19px;background:linear-gradient(115deg,#111b35,#0c213b);border:1px solid rgba(107,199,255,.27);border-radius:14px}
+.closedCases strong{display:block;color:#84e6ff;letter-spacing:.1em;font-size:12px}
+.closedCases p{font-size:12px;color:#a8c6e0;margin:6px 0 0;line-height:1.5}
+.closedActions{display:flex;flex-wrap:wrap;gap:9px}
+.closedActions a{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:10px 14px;border:1px solid rgba(98,207,255,.56);border-radius:9px;background:linear-gradient(120deg,#104879,#132c58);color:#e5faff;text-decoration:none;font-size:11px;font-weight:750;transition:transform .18s,box-shadow .18s,background .18s}
+.closedActions a:hover{transform:translateY(-2px);background:linear-gradient(120deg,#1764a3,#193d79);box-shadow:0 0 21px rgba(79,204,255,.27)}
+.closedActions a:focus-visible{outline:2px solid #8ceaff;outline-offset:3px}
+@media(max-width:600px){.closedCases{padding:15px}.closedActions{width:100%}.closedActions a{flex:1}}
