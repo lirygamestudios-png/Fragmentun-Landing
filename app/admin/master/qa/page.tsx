@@ -10,16 +10,16 @@ export default async function QaFinalPage(){
   if(!profile)redirect("/admin/lirygames/login?unauthorized=1");
 
   const[
-    {data:latestValidation},
-    {data:latestGate},
-    {count:openIncidents},
-    {count:pendingApprovals},
-    {count:failedChecks},
-    {count:virtualItems},
-    {count:virtualOffers},
-    {data:latestGamePurchase},
-    {data:latestGameMetric},
-    {data:gameEntitlements}
+    {data:latestValidation,error:validationError},
+    {data:latestGate,error:gateError},
+    {count:openIncidents,error:incidentsError},
+    {count:pendingApprovals,error:approvalsError},
+    {count:failedChecks,error:failedChecksError},
+    {count:virtualItems,error:itemsError},
+    {count:virtualOffers,error:offersError},
+    {data:latestGamePurchase,error:purchasesError},
+    {data:latestGameMetric,error:metricsError},
+    {data:gameEntitlements,error:entitlementsError}
   ]=await Promise.all([
     supabase.from("runtime_validation_runs").select("status,executed_at,run_code,deployment_id,commit_sha").eq("environment","preview").order("executed_at",{ascending:false}).limit(1).maybeSingle(),
     supabase.from("release_gates").select("id,status,gate_code,created_at,target_deployment_id,target_commit").eq("environment","preview").order("created_at",{ascending:false}).limit(1).maybeSingle(),
@@ -57,12 +57,15 @@ export default async function QaFinalPage(){
   const blockingDetails=gateChecksError?"No se pudo consultar las comprobaciones":!latestGate?"No existe revisión Preview":!blockingChecks.length?"No hay controles obligatorios definidos":gateBlockingPending?`${gateBlockingPending} controles obligatorios sin completar`:"Todos los controles obligatorios están completos";
   const gateLabel=!latestGate?"SIN REVISIÓN":!gateApproved?"REVISAR":!validationIsCurrent?"NUEVA PRUEBA":!gateMatchesValidation?"VERSIÓN DISTINTA":gateBlockingChecksOk?"APROBADA":"COMPROBACIONES PENDIENTES";
   const gateExplanation=!latestGate?"Sin revisión Preview registrada":!gateApproved?"La revisión todavía requiere aprobación humana":!validationIsCurrent?"La última prueba no corresponde al Preview actual":!gateMatchesValidation?"La aprobación corresponde a otro commit o despliegue":!gateBlockingChecksOk?blockingDetails:"La aprobación corresponde a esta versión";
-  const incidentsOk=(openIncidents||0)===0;
-  const approvalsOk=(pendingApprovals||0)===0;
-  const checksOk=(failedChecks||0)===0&&gateBlockingChecksOk;
+  const coreQueriesOk=!validationError&&!gateError&&!incidentsError&&!approvalsError&&!failedChecksError;
+  const freemiumQueriesOk=!itemsError&&!offersError&&!purchasesError&&!metricsError&&!entitlementsError;
+  const entitlementSampleLimited=(gameEntitlements||[]).length>=5000;
+  const incidentsOk=!incidentsError&&openIncidents===0;
+  const approvalsOk=!approvalsError&&pendingApprovals===0;
+  const checksOk=!failedChecksError&&failedChecks===0&&gateBlockingChecksOk;
   const entitlementIssues=((gameEntitlements||[]) as any[]).filter(e=>["pending","failed"].includes(e.status)).length;
-  const freemiumPrepared=(virtualItems||0)>0&&(virtualOffers||0)>0&&entitlementIssues===0;
-  const ready=validationOk&&validationIsCurrent&&gateReady&&incidentsOk&&approvalsOk&&checksOk;
+  const freemiumPrepared=freemiumQueriesOk&&!entitlementSampleLimited&&(virtualItems||0)>0&&(virtualOffers||0)>0&&entitlementIssues===0;
+  const ready=coreQueriesOk&&validationOk&&validationIsCurrent&&gateReady&&incidentsOk&&approvalsOk&&checksOk;
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleQa}`}>
     <header className={styles.topbar}>
@@ -94,7 +97,7 @@ export default async function QaFinalPage(){
     <section className={styles.kpis}>
       <article><small>Última prueba</small><strong className={styles.kpiCompactValue}>{validationLabel}</strong><span>{latestValidation?.executed_at?new Date(latestValidation.executed_at).toLocaleString("es-US"):"Sin prueba registrada"}</span></article>
       <article><small>Revisión de publicación</small><strong className={styles.kpiCompactValue}>{gateLabel}</strong><span>{gateExplanation}</span></article>
-      <article><small>Incidentes abiertos</small><strong>{openIncidents||0}</strong><span>{incidentsOk?"Sin bloqueos":"Requiere revisión"}</span></article>
+      <article><small>Incidentes abiertos</small><strong>{incidentsError?"NO DISPONIBLE":openIncidents??0}</strong><span>{incidentsError?"Consulta de incidentes fallida":incidentsOk?"Sin bloqueos":"Requiere revisión"}</span></article>
       <article className={!gateBlockingChecksOk?styles.kpiAttention:undefined}><small>Comprobaciones obligatorias</small><strong className={styles.kpiCompactValue}>{gateBlockingLabel}</strong><span>{blockingDetails}</span></article>
     </section>
 
@@ -104,10 +107,10 @@ export default async function QaFinalPage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Catálogo virtual activo</small><strong>{virtualItems||0}</strong><span>{(virtualItems||0)>0?"Artículos disponibles":"Pendiente de catálogo real"}</span></article>
-      <article><small>Ofertas activas</small><strong>{virtualOffers||0}</strong><span>{(virtualOffers||0)>0?"Precios/plataformas configurados":"Pendiente de ofertas reales"}</span></article>
-      <article className={entitlementIssues?styles.kpiAttention:undefined}><small>Entregas por revisar</small><strong>{entitlementIssues}</strong><span>{entitlementIssues?"Pendientes o fallidas":"Sin incidencias"}</span></article>
-      <article><small>Estado FREEMIUM</small><strong className={styles.kpiCompactValue}>{freemiumPrepared?"PREPARADO":"EN PREPARACIÓN"}</strong><span>{latestGamePurchase||latestGameMetric?"Hay actividad de juego registrada":"Sin tráfico real todavía"}</span></article>
+      <article><small>Catálogo virtual activo</small><strong>{itemsError?"NO DISPONIBLE":virtualItems??0}</strong><span>{itemsError?"Consulta fallida":(virtualItems||0)>0?"Artículos disponibles":"Pendiente de catálogo real"}</span></article>
+      <article><small>Ofertas activas</small><strong>{offersError?"NO DISPONIBLE":virtualOffers??0}</strong><span>{offersError?"Consulta fallida":(virtualOffers||0)>0?"Precios/plataformas configurados":"Pendiente de ofertas reales"}</span></article>
+      <article className={entitlementIssues?styles.kpiAttention:undefined}><small>Entregas por revisar</small><strong>{entitlementsError?"NO DISPONIBLE":entitlementIssues}</strong><span>{entitlementsError?"Consulta fallida":entitlementSampleLimited?"Muestra limitada a 5,000 registros":entitlementIssues?"Pendientes o fallidas":"Sin incidencias en la muestra consultada"}</span></article>
+      <article><small>Estado FREEMIUM</small><strong className={styles.kpiCompactValue}>{!freemiumQueriesOk?"NO DISPONIBLE":freemiumPrepared?"PREPARADO":"EN PREPARACIÓN"}</strong><span>{latestGamePurchase||latestGameMetric?"Hay actividad de juego registrada":"Sin tráfico real todavía"}</span></article>
     </section>
 
     <section className={styles.sectionHead}>
