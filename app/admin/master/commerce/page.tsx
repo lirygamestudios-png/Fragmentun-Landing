@@ -96,6 +96,20 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
     revenueGroups.set(key,group);
   }
   const revenueSummary=[...revenueGroups.values()].sort((a,b)=>b.gross-a.gross);
+  // Cierre informativo de la muestra consultada, no cierre contable certificado.
+  // La fuente carece de campos separados para comisiones y reembolsos.
+  const periodSummary=new Map<string,{currency:string;gross:number;net:number;paid:number;refundEvents:number;difference:number}>();
+  for(const event of confirmedGameEvents){
+    const currency=String(event.currency||"USD");
+    const row=periodSummary.get(currency)||{currency,gross:0,net:0,paid:0,refundEvents:0,difference:0};
+    const gross=Number(event.gross_cents||0),net=Number(event.net_cents||0);
+    if(!Number.isSafeInteger(gross)||!Number.isSafeInteger(net))continue;
+    row.gross+=gross;row.net+=net;
+    if(event.status==="paid")row.paid++;else row.refundEvents++;
+    row.difference=row.gross-row.net;
+    periodSummary.set(currency,row);
+  }
+  const periodRows=[...periodSummary.values()].sort((a,b)=>a.currency.localeCompare(b.currency));
 
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleCommerce}`}>
@@ -212,6 +226,21 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
         <p>Una página posterior puede estar vacía si no existen más transacciones. Las simulaciones nunca se incluyen como ventas.</p>
       </article>
     </div>
+    <section className={styles.sectionHead}>
+      <div><span>CIERRE INFORMATIVO · PERÍODO SELECCIONADO</span><h2>Resumen de ventas y ajustes registrados</h2></div>
+      <p>Información parcial de la muestra consultada: no es un cierre contable certificado. La fuente no separa comisiones de reembolsos en importes específicos.</p>
+    </section>
+    <section className={styles.grid}>
+      {periodRows.map(period=><article key={period.currency} className={styles.card}>
+        <div className={styles.cardTop}><span className={styles.badgePlanned}>{period.currency}</span><em>{String(params.period||"30d").toUpperCase()}</em></div>
+        <h3>Resumen por moneda</h3>
+        <p>Ventas registradas: {period.paid} · Eventos de devolución: {period.refundEvents}</p>
+        <p>Bruto registrado: <strong>{money(period.gross,period.currency)}</strong></p>
+        <p>Neto registrado: <strong>{money(period.net,period.currency)}</strong></p>
+        <p>Diferencia bruto-neto: {money(period.difference,period.currency)} · <strong>Sin desglose confirmado entre comisiones, devoluciones e impuestos.</strong></p>
+      </article>)}
+      {!periodRows.length&&<article className={styles.card}><h3>Sin movimientos para el período</h3><p>Los cierres no incluyen transacciones de demostración. No se muestran valores inventados.</p></article>}
+    </section>
     <section className={styles.sectionHead}>
       <div><span>RESUMEN FINANCIERO</span><h2>Ingresos por videojuego y procesador</h2></div>
       <p>Resumen de los últimos 500 eventos consultados; importes agrupados por moneda sin mezclar divisas. No incluye simulaciones.</p>
