@@ -687,3 +687,33 @@
   .finalDiscover .secretsBanner{grid-column:1;grid-row:2}
   .finalDiscover .finalSignature{grid-column:2;grid-row:2;align-self:end}
 }
+
+/* Afinación visual de cierre: tienda cinco categorías, franjas horizontales y footer. */
+.storeShowcase{position:relative;display:grid;grid-template-columns:minmax(240px,1.75fr) minmax(0,5fr);gap:20px;padding:23px clamp(20px,4.5vw,76px) 30px;background:linear-gradient(180deg,#061626,#030d19);border-top:1px solid #17548155}
+.storeIntro{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.storeEyebrow{margin:0;color:#75c5e7;letter-spacing:.2em;font-size:9px}
+.storeIntro h2{font-size:clamp(20px,2.4vw,31px);line-height:1.1;color:#f4fbff;letter-spacing:.035em;margin:0;font-weight:900}
+.storeIntro h2>span{color:#38d7fa;margin-right:4px}.storeIntro h2 em{color:#03c7fb;font-style:normal}
+.storeIntro>p:not(.storeEyebrow){font-size:14px;color:#53dafa;margin:6px 0 0}
+.storeIntro small{font-size:11px;line-height:1.45;color:#c6d9eb;max-width:360px}
+.storeComingSoon{margin-top:8px;display:inline-flex;border:1px solid #1facdb;padding:10px 14px;border-radius:20px;color:#c7f3ff;font-size:10px;font-weight:800;letter-spacing:.06em}
+.storeCategories{min-width:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.storeCategory{border:1px solid #205273;border-radius:9px;overflow:hidden;min-width:0;min-height:155px;display:flex;flex-direction:column;align-items:center;background:linear-gradient(#051728,#010713);padding-bottom:8px}
+.storeCategoryVisual{width:100%;flex:1;min-height:108px;display:grid;place-items:center;color:#a9eaff;font-size:53px;text-shadow:0 0 20px #26aafb;background:radial-gradient(circle at 50% 40%,#183e6c,#050c1a 75%)}
+.storeTone_wear{background:radial-gradient(circle at 50% 43%,#5876b6,#151f39 65%,#030816)}
+.storeTone_accessories{background:radial-gradient(circle at 50% 48%,#705b8d,#11192e 69%,#030816)}
+.storeTone_collectibles{background:radial-gradient(circle at 50% 45%,#0e7593,#122140 69%,#030816)}
+.storeTone_art{background:radial-gradient(circle at 50% 42%,#6d4e95,#11284a 68%,#030816)}
+.storeTone_gear{background:radial-gradient(circle at 50% 45%,#263f75,#0a1125 69%,#030816)}
+.storeCategory strong{font-size:9px;color:#ecf6ff;text-align:center;margin:8px 2px 5px}
+.storeCategoryLine{width:31px;height:2px;background:linear-gradient(90deg,#27d9ff,#ae58f9);box-shadow:0 0 8px #3abefe}
+.storeLegal{grid-column:1/-1;font-size:9px;color:#819bb2;line-height:1.4;margin:0}
+.finalDiscover{grid-template-rows:215px 185px;padding-top:0;padding-bottom:19px;gap:9px}
+.finalDiscover .journeyBanner{border-radius:5px}
+.journeyBanner h2{font-size:clamp(22px,2.9vw,36px)}
+.journeyBanner p{font-size:13px}
+.bannerCta{border-radius:22px}
+.secretsBanner{min-height:185px}
+.finalSignature strong{font-size:12px}
+@media(max-width:850px){.storeShowcase{grid-template-columns:1fr}.storeCategories{grid-template-columns:repeat(5,minmax(0,1fr))}.storeCategory{min-height:130px}}
+@media(max-width:600px){.storeCategories{grid-template-columns:repeat(2,minmax(0,1fr))}.storeCategoryVisual{min-height:95px}.storeCategory:last-child{grid-column:1/-1}.finalDiscover{grid-template-rows:auto}.storeShowcase{padding:20px}.journeyBannerContent{padding:16px}}
