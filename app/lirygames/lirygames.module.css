@@ -152,3 +152,17 @@
 @media(max-width:1030px){.nav{padding-inline:30px;gap:17px}.nav nav{gap:14px}.nav nav a{font-size:11px}.heroStart{top:auto;bottom:104px;right:4%}.heroJourney{bottom:26px;right:4%;flex-direction:row;gap:15px;padding:0;border:0}.heroJourney a::before{display:none}}
 @media(max-width:750px){.nav{padding:14px 22px;gap:15px;height:auto;flex-direction:column;align-items:flex-start}.nav nav{width:100%;justify-content:flex-start;gap:18px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:7px;scrollbar-width:thin}.nav nav a{flex:0 0 auto}.hero{min-height:690px;padding-top:58px;padding-bottom:190px;align-items:flex-start}.heroContent{padding-top:12px}.heroStart{left:22px;right:auto;bottom:72px}.heroJourney{left:22px;right:22px;bottom:22px;justify-content:space-between;gap:9px}}
 @media(max-width:450px){.hero{min-height:730px}.hero h1{font-size:clamp(37px,10.5vw,51px)}.heroStart{bottom:91px}.heroJourney{flex-wrap:wrap;justify-content:flex-start;column-gap:15px;row-gap:9px}.heroJourney a{font-size:9px}.heroActions{max-width:305px}}
+
+
+/* Arte aprobado: archivo WebP existente en la rama de trabajo.
+   Su URL externa conserva el nombre original; no se modifica ni se duplica el archivo. */
+.heroUniverse::before{
+  background-image:linear-gradient(90deg,rgba(2,10,25,.20),rgba(2,10,25,0) 70%),url("https://raw.githubusercontent.com/lirygamestudios-png/Fragmentun-Landing/work/master-admin-implementation/lirygames-hero-cinematic.webp..webp");
+  background-size:cover,cover;
+  background-position:center,center 46%;
+  background-repeat:no-repeat;
+  filter:none;
+}
+.heroUniverse::after{background:linear-gradient(90deg,rgba(2,9,24,.88) 0%,rgba(2,12,29,.54) 32%,rgba(2,11,30,.06) 72%),linear-gradient(0deg,rgba(2,9,24,.55),transparent 39%)}
+@media(max-width:800px){.heroUniverse::before{background-position:center,57% center}}
+@media(max-width:520px){.heroUniverse::before{background-position:center,58% center}.heroUniverse::after{background:linear-gradient(90deg,rgba(2,9,24,.84),rgba(2,9,24,.26)),linear-gradient(0deg,rgba(2,9,24,.68),transparent 55%)}}
