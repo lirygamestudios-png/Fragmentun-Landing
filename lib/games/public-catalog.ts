@@ -31,18 +31,36 @@ export const plannedLiryGames:readonly PublicGameCard[] = plannedTitles.map(([sl
   slug,title,tagline,state:"coming_soon",playUrl:null,internalWorldCount:INITIAL_WORLDS_PER_GAME
 }));
 
-/** Only explicitly release-approved records may alter the editorial state. */
-export interface ApprovedGameRelease {slug:string; state:"beta"|"available"; playUrl:string|null; approved:boolean;}
-export function applyApprovedReleases(releases:readonly ApprovedGameRelease[]):readonly PublicGameCard[]{
-  return plannedLiryGames.map(game=>{
-    const entry=releases.find(item=>item.slug===game.slug&&item.approved===true);
-    if(!entry)return game;
-    if(entry.state==="available"&&entry.playUrl&&entry.playUrl.startsWith("https://"))return {...game,state:"available",playUrl:entry.playUrl};
-    if(entry.state==="beta")return {...game,state:"beta",playUrl:null};
-    return game;
-  });
+/**
+ * Contract for future release publication. No current game is authorized.
+ * Approval must be linked to THIS game, environment, deployment and all 3 free worlds.
+ */
+export interface PerGameReleaseAuthorization {
+  gameSlug:string;
+  environment:"preview"|"staging"|"production";
+  gameState:"beta"|"available";
+  gateStatus:"approved";
+  gateGameSlug:string;
+  gateDeploymentId:string;
+  deploymentId:string;
+  humanApproved:boolean;
+  worlds:{number:number;access:"free";playUrl:string|null;ready:boolean}[];
+  betaAccessVerified:boolean;
 }
-
-export function canLaunchPublicGame(game:Pick<PublicGameCard,"state"|"playUrl">):boolean{
-  return game.state==="available"&&!!game.playUrl&&/^https:\/\//.test(game.playUrl);
+export function isAuthorizedGameRelease(a:PerGameReleaseAuthorization):boolean{
+  if(!plannedLiryGames.some(g=>g.slug===a.gameSlug))return false;
+  if(a.gateStatus!=="approved"||!a.humanApproved||a.gateGameSlug!==a.gameSlug)return false;
+  if(!a.deploymentId||a.gateDeploymentId!==a.deploymentId)return false;
+  if(a.environment!=="production")return false;
+  if(a.worlds.length!==INITIAL_WORLDS_PER_GAME)return false;
+  if(a.worlds.some((w,i)=>w.number!==i+1||w.access!=="free"||!w.ready))return false;
+  if(a.gameState==="beta")return a.betaAccessVerified;
+  return a.gameState==="available"&&a.worlds.every(w=>w.playUrl?.startsWith("https://"));
+}
+export function publishAuthorizedGames(authorizations:readonly PerGameReleaseAuthorization[]):readonly PublicGameCard[]{
+  return plannedLiryGames.map(game=>{
+    const a=authorizations.find(item=>item.gameSlug===game.slug&&isAuthorizedGameRelease(item));
+    if(!a)return game;
+    return {...game,state:a.gameState,playUrl:a.gameState==="available"?a.worlds[0]?.playUrl||null:null};
+  });
 }
