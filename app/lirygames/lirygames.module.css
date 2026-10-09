@@ -166,3 +166,18 @@
 .heroUniverse::after{background:linear-gradient(90deg,rgba(2,9,24,.88) 0%,rgba(2,12,29,.54) 32%,rgba(2,11,30,.06) 72%),linear-gradient(0deg,rgba(2,9,24,.55),transparent 39%)}
 @media(max-width:800px){.heroUniverse::before{background-position:center,57% center}}
 @media(max-width:520px){.heroUniverse::before{background-position:center,58% center}.heroUniverse::after{background:linear-gradient(90deg,rgba(2,9,24,.84),rgba(2,9,24,.26)),linear-gradient(0deg,rgba(2,9,24,.68),transparent 55%)}}
+
+/* Escenario panorámico seleccionado: usa el WebP limpio cuando exista en public.
+   Mientras se transfiere, conserva el fondo anterior sin dejar la portada vacía.
+   El logotipo oficial y los textos siguen siendo elementos HTML. */
+.heroUniverse::before{
+  background-image:
+    url("/lirygames-mundos-fondo-sin-logo.webp"),
+    linear-gradient(90deg,rgba(2,10,25,.20),rgba(2,10,25,0) 70%),
+    url("https://raw.githubusercontent.com/lirygamestudios-png/Fragmentun-Landing/work/master-admin-implementation/lirygames-hero-cinematic.webp..webp");
+  background-size:cover,cover,cover;
+  background-position:center 49%,center,center 46%;
+  background-repeat:no-repeat;
+}
+@media(max-width:800px){.heroUniverse::before{background-position:53% center,center,57% center}}
+@media(max-width:520px){.heroUniverse::before{background-position:53% center,center,58% center}}
