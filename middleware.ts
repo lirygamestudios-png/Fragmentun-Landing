@@ -28,6 +28,7 @@ export function middleware(request: NextRequest) {
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
     pathname.startsWith("/admin") ||
+    (pathname === "/lirygames" || pathname.startsWith("/lirygames/")) ||
     pathname.startsWith("/go") ||
     PUBLIC_FILE.test(pathname)
   ) {
