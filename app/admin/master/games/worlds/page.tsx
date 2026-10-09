@@ -28,6 +28,10 @@ async function saveInternalWorld(formData:FormData){
   if(status!=="planned"&&status!=="retired")throw new Error("publication_requires_release_gate");
   const{data:game,error:gameError}=await supabase.from("game_titles").select("id").eq("id",gameId).maybeSingle();
   if(gameError||!game)throw new Error("game_not_found");
+  const{data:existingWorld,error:existingError}=await supabase.from("game_internal_worlds")
+    .select("publication_status").eq("game_id",gameId).eq("world_number",number).maybeSingle();
+  if(existingError)throw new Error("world_state_unavailable");
+  if(existingWorld&&["beta","available"].includes(existingWorld.publication_status))throw new Error("published_world_requires_release_gate");
   const{error}=await supabase.from("game_internal_worlds").upsert({
     game_id:gameId,world_number:number,title,summary,artwork_url:artworkUrl,play_url:playUrl,
     publication_status:status,access_type:"free",beta_enabled:false,updated_at:new Date().toISOString()
