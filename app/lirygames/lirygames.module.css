@@ -803,7 +803,7 @@
 .page :global(#mundos) .worldsGrid{
  display:grid;
  grid-template-columns:repeat(3,minmax(0,1fr));
- --liry-card-height:clamp(190px,15.4vw,235px);
+ --liry-card-height:clamp(220px,18vw,275px);
  grid-auto-rows:var(--liry-card-height);
  gap:10px;
  min-width:0;
