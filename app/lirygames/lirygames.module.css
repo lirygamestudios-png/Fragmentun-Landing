@@ -378,3 +378,14 @@
 .nav .navSearch:hover,.nav .navSearch:focus-visible{border-color:#67cde9;background:rgba(21,69,110,.5);outline-offset:2px}
 @media(max-width:750px){.nav{padding-right:145px}.nav .navSearch{height:38px;width:33px;flex-basis:33px}.navUtilities{gap:3px;right:16px}}
 @media(prefers-reduced-motion:reduce){.nav .navSearch{transition:none}}
+
+/* Menú compacto inspirado en la referencia aprobada. */
+.navMenu{position:relative;flex:0 0 auto}
+.navMenu>summary{list-style:none;cursor:pointer;display:grid;place-items:center;width:35px;height:36px;color:#e0f2ff;border:1px solid transparent;border-radius:5px}
+.navMenu>summary::-webkit-details-marker{display:none}
+.navMenu>summary svg{width:20px;height:20px}
+.navMenu>summary:hover,.navMenu>summary:focus-visible{border-color:#65c7e7;background:rgba(14,62,98,.65);outline-offset:2px}
+.navMenuPanel{position:absolute;right:0;top:calc(100% + 10px);z-index:50;width:195px;display:flex;flex-direction:column;padding:7px;border:1px solid rgba(94,181,218,.65);border-radius:7px;background:#06142af5;box-shadow:0 18px 45px #000b}
+.navMenuPanel a{display:block;padding:11px 10px;border-radius:4px;text-decoration:none;color:#deefff;font-size:12px}
+.navMenuPanel a:hover,.navMenuPanel a:focus-visible{background:#143a5e;color:#fff}
+@media(max-width:750px){.nav{padding-right:186px}.navUtilities{right:14px}.navMenu>summary{width:35px;height:38px}}
