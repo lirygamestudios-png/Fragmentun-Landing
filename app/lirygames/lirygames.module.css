@@ -644,3 +644,24 @@
   #social .socialNetworkLabels span{padding:5px}
   #social .socialPending{padding-top:5px}
 }
+
+/* Dos franjas finales de la plantilla aprobada */
+.finalDiscover{display:grid;grid-template-columns:minmax(0,1fr) 145px;grid-template-rows:190px 150px;gap:12px;padding:8px clamp(20px,5vw,85px) 28px;background:#030b17}
+.journeyBanner,.secretsBanner{grid-column:1;position:relative;isolation:isolate;overflow:hidden;border-radius:8px;border:1px solid #174166;background:#07162c}
+.journeyBanner{display:flex;align-items:center;background:radial-gradient(ellipse at 30% 60%,#115c7b70,transparent 65%),linear-gradient(90deg,#041023,#061b35 55%,#010815)}
+.journeyBannerArt{position:relative;width:35%;height:100%;flex:none;display:grid;place-items:center;background:radial-gradient(ellipse at center,#0ca7d340,transparent 65%)}
+.bannerOrbit{position:absolute;width:125px;height:125px;border:3px solid #35cafd88;border-radius:50%;box-shadow:0 0 30px #27b1ff45,inset 0 0 19px #23b4e450;transform:rotate(-25deg) scaleX(.65)}
+.bannerTraveler{font-size:82px;line-height:1;color:#a1e9ff;text-shadow:0 0 15px #1abfff,0 0 45px #147aff}
+.journeyBannerContent{position:relative;z-index:1;padding:10px 30px 10px 0}
+.journeyBanner h2{font-size:clamp(17px,2.2vw,27px);letter-spacing:.025em;margin:0 0 8px;color:#fff}
+.journeyBanner p{font-size:12px;color:#c6e6f6;line-height:1.45;margin:0 0 13px}
+.bannerCta{display:inline-flex;gap:16px;align-items:center;text-decoration:none;color:white;font-size:10px;font-weight:800;background:#086fa9;border:1px solid #25c9f8;border-radius:4px;padding:10px 17px;box-shadow:0 0 12px #058ae955}
+.journeyBannerContent small{display:block;margin-top:7px;font-size:9px;color:#8fbed7}
+.secretsBanner{display:flex;align-items:center;gap:18px;padding:15px 32px;background:radial-gradient(ellipse at 30% 50%,#4e218866,transparent 62%),linear-gradient(110deg,#090e23,#171038 55%,#040919)}
+.secretsEmblem{width:84px;height:84px;display:grid;place-items:center;flex:none;color:#ddd0ff;font-size:59px;text-shadow:0 0 30px #9859ff;border:2px solid #60439e77;border-radius:50%;background:#291e5155}
+.secretsCopy{position:relative;z-index:1;min-width:0;flex:1}.secretsCopy h2{font-size:clamp(17px,2vw,25px);margin:0 0 5px;color:#f1e4ff}.secretsCopy p{margin:3px 0;color:#d1c6e6;font-size:11px;line-height:1.4}
+.secretsTrack{height:7px;margin:12px 0 5px;background:#2d2550;border-radius:8px;overflow:hidden;max-width:350px}.secretsTrack span{display:block;width:0;height:100%;background:#ab6eff}.secretsCopy small{font-size:9px;color:#b1a3cb}
+.secretsArt{position:absolute;right:30px;top:10px;font-size:115px;color:#7c39c2;opacity:.35;text-shadow:0 0 28px #8751ff}
+.finalSignature{grid-column:2;grid-row:1/3;align-self:end;display:flex;align-items:center;justify-content:center;gap:9px;color:#36d7fb;padding-bottom:13px}
+.finalSignature>span{font-size:36px;color:#31d5fa;align-self:flex-start}.finalSignature strong{font-size:13px;line-height:1.13;letter-spacing:.12em;color:#e5faff}
+@media(max-width:750px){.finalDiscover{grid-template-columns:1fr;grid-template-rows:auto auto auto}.journeyBanner,.secretsBanner{grid-column:1;min-height:180px}.finalSignature{grid-column:1;grid-row:auto;align-self:center;justify-content:center}.journeyBannerArt{width:27%}.journeyBannerContent{padding:18px 12px}.secretsBanner{padding:17px;gap:10px}.secretsEmblem{width:58px;height:58px;font-size:37px}.secretsArt{font-size:70px}}
