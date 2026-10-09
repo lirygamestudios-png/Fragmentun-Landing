@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import {paymentProviders,REAL_PAYMENTS_ENABLED} from "../../../../lib/payments/provider-contract";
+import {LiryPaymentSimulation} from "../../../../components/LiryPaymentSimulation";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
@@ -135,6 +136,7 @@ export default async function MasterCommercePage(){
         <p>Documentación empresarial y aprobación del proveedor pendientes.</p>
       </article>)}
     </section>
+    <LiryPaymentSimulation />
     <section className={styles.sectionHead}>
       <div><span>PREPARACIÓN COMERCIAL</span><h2>Configuración</h2></div>
       <p>Pagos y envíos permanecen bajo control hasta su activación comercial.</p>
