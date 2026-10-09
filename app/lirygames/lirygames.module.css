@@ -47,3 +47,12 @@
 @media(max-width:800px){.heroPlanet{right:-12%;top:24%;width:370px;opacity:.65}.heroSatellite{right:-10%;bottom:3%;opacity:.6}.heroUniverse{opacity:.75}}
 @media(max-width:520px){.heroPlanet{right:-45%;top:29%;width:350px}.heroSatellite{right:-20%;bottom:5%}.heroContent{max-width:100%}}
 @media(prefers-reduced-motion:reduce){.heroPlanet,.heroSatellite{animation:none}}
+
+/* Descubrimiento de videojuegos: controles claros y accesibles. */
+.discoverControls{display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px;margin:22px 0 28px}
+.discoverControls label{display:flex;flex-direction:column;gap:8px;min-width:min(100%,220px);font-size:12px;font-weight:700;color:#a5d7f9}
+.discoverControls input,.discoverControls select{height:44px;width:100%;border-radius:8px;border:1px solid #4c8db38c;background:#101f3a;color:#f0f8ff;padding:0 13px;font:inherit;font-size:13px}
+.discoverControls input:focus-visible,.discoverControls select:focus-visible{outline:2px solid #67dfff;outline-offset:2px}
+.discoveryCount{margin-left:auto;color:#9dc3df;font-size:12px;padding-bottom:14px}
+.discoveryEmpty{padding:26px;border:1px solid #44799c66;background:#111f3b;border-radius:9px;color:#c5d8ed}
+@media(max-width:580px){.discoverControls label{flex:1 1 100%}.discoveryCount{margin-left:0;padding:0}}
