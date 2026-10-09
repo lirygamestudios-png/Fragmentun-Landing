@@ -1,6 +1,5 @@
 import {NextRequest,NextResponse} from "next/server";
 import {createSupabaseServerClient} from "../../../../lib/supabase/server";
-import {createSupabaseServiceClient} from "../../../../lib/supabase/service";
 import {consumePublicRateLimit} from "../../../../lib/rate-limit";
 export const runtime="nodejs";
 export async function PATCH(req:NextRequest){
@@ -23,7 +22,7 @@ export async function PATCH(req:NextRequest){
  !["new","reviewing","resolved","archived"].includes(status)||internalNote.length>3000||responseDraft.length>5000||
  (assignedTo!==null&&!/^[0-9a-f-]{36}$/i.test(assignedTo)))
  return NextResponse.json({ok:false,message:"Datos inválidos."},{status:400});
- const db=createSupabaseServiceClient();
+ const db=supabase;
  if(assignedTo){
   const {data:owner}=await db.from("admin_profiles").select("user_id").eq("user_id",assignedTo).maybeSingle();
   if(!owner)return NextResponse.json({ok:false,message:"Responsable no autorizado."},{status:400});
