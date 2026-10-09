@@ -469,12 +469,12 @@
 @media(max-width:750px){#liry-dna .dnaContinuation{height:390px}}
 @media(prefers-reduced-motion:reduce){#liry-dna .dnaContinuationHelix,#liry-dna .dnaContinuationBase{animation:none}}
 
-/* ADN LIRY: seis indicadores animados EN ESPERA, sin resultados simulados. */
-#liry-dna .dnaTraitList li{display:grid;grid-template-columns:19px minmax(0,1fr) auto;column-gap:8px;row-gap:6px;align-items:center}
-#liry-dna .dnaTraitTrack{grid-column:2/-1;position:relative;display:block;width:100%;height:7px;overflow:hidden;border:1px solid rgba(80,185,240,.46);border-radius:999px;background:rgba(3,16,35,.85);box-shadow:inset 0 0 7px rgba(15,93,150,.45)}
-#liry-dna .dnaTraitShimmer{position:absolute;inset:0 auto 0 0;width:28%;border-radius:999px;background:linear-gradient(90deg,transparent,rgba(73,221,255,.45),rgba(178,125,255,.75),transparent);filter:blur(.5px);animation:liryTraitWaiting 3.3s ease-in-out infinite alternate}
-#liry-dna .dnaTraitList li:nth-child(2n) .dnaTraitShimmer{animation-delay:-1.1s}
-#liry-dna .dnaTraitList li:nth-child(3n) .dnaTraitShimmer{animation-delay:-2.1s}
-@keyframes liryTraitWaiting{0%{transform:translateX(-100%);opacity:.4}100%{transform:translateX(390%);opacity:.95}}
-@media(max-width:750px){#liry-dna .dnaTraitList{grid-template-columns:1fr}}
-@media(prefers-reduced-motion:reduce){#liry-dna .dnaTraitShimmer{animation:none;transform:translateX(140%);opacity:.6}}
+/* Indicadores ADN: selectores por clase (CSS Modules), nunca por ID literal. */
+.dnaSide .dnaTraitList{display:grid;grid-template-columns:1fr;gap:14px}
+.dnaSide .dnaTraitList li{display:grid;grid-template-columns:20px minmax(0,1fr) auto;align-items:center;column-gap:9px;row-gap:7px;min-width:0}
+.dnaSide .dnaTraitTrack{grid-column:2 / 4;display:block;position:relative;width:100%;min-width:75px;height:10px;border:1px solid #45a9db;border-radius:999px;background:linear-gradient(90deg,#122a48,#071326);box-shadow:inset 0 0 5px #2a6a9b88,0 0 7px #43b7ed55;overflow:hidden}
+.dnaSide .dnaTraitShimmer{display:block;position:absolute;left:0;top:0;height:100%;width:38%;background:linear-gradient(90deg,#1c4f84,#33b8e0,#ae8bfa,#287cbb);box-shadow:0 0 8px #48d5ff;animation:liryTraitWaiting 3.3s ease-in-out infinite alternate}
+.dnaSide .dnaTraitList li:nth-child(even) .dnaTraitShimmer{animation-delay:-1s}
+.dnaSide .dnaTraitList li:nth-child(3n) .dnaTraitShimmer{animation-delay:-2s}
+@keyframes liryTraitWaiting{from{transform:translateX(-5%);opacity:.58}to{transform:translateX(160%);opacity:.95}}
+@media(prefers-reduced-motion:reduce){.dnaSide .dnaTraitShimmer{animation:none;transform:translateX(70%);opacity:.7}}
