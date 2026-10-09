@@ -7,7 +7,7 @@ export const metadata={title:"LIRYGAMES STUDIOS | 9 Worlds"};
 export default function LiryGamesFrontDesk(){
   return <main className={styles.page}>
     <header className={styles.nav}>
-      <a className={styles.brand} href="#inicio" aria-label="LiryGames Studios">LIRY<span>GAMES</span><small>STUDIOS</small></a>
+      <a className={styles.brand} href="#inicio" aria-label="LiryGames Studios"><span className={styles.sigil} aria-hidden="true"><i></i><b></b></span><span className={styles.wordmark}><strong>LIRY</strong><span>GAMES STUDIOS</span><small>COMMAND CENTER UNIVERSE</small></span></a>
       <nav aria-label="Navegación LIRYGAMES"><a href="#mundos">Mundos</a><a href="#modelo">Tu viaje</a><a href="#comunidad">Comunidad</a></nav>
     </header>
     <section className={styles.hero} id="inicio">
