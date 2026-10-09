@@ -615,3 +615,32 @@
 .socialChannels{border-top:1px solid #164669;margin-top:12px;padding-top:12px}.socialChannels>strong{font-size:10px;color:#f1fbff}.socialChannels p{font-size:9px!important;line-height:1.4;color:#93b3ce;margin:6px 0 9px}
 .socialNetworkLabels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.socialNetworkLabels span{font-size:9px;color:#7fcdea;background:#081c30;border:1px solid #1e435c;border-radius:4px;padding:7px;text-align:center}
 .socialPending{color:#769fb8;font-size:9px;line-height:1.4;margin-top:auto;padding-top:10px}
+
+/* Altura igualada con pasarelas gamer de la fila anterior; contenido interno compacto. */
+@media(min-width:951px){
+  .socialTrio{align-items:stretch}
+  .socialTrio>.section{height:345px;min-height:345px;max-height:345px;box-sizing:border-box;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#205479 transparent}
+  .socialTrio .socialIntro{margin-bottom:7px}
+  .socialTrio .communityTabs{margin-bottom:6px}
+  .socialTrio .communityEmpty{min-height:93px;padding:8px}
+  .socialTrio .communityEmptyIcon{margin-bottom:2px}
+  .socialTrio .communityEmpty p{margin-top:4px}
+  .socialTrio .communityFeed{gap:5px}
+  .socialTrio .communityPost{padding:6px}
+  .socialTrio .communityCompose{margin-top:6px;padding:6px 9px}
+  .socialTrio .recommendList{gap:5px}
+  .socialTrio .recommendItem{min-height:62px;padding:5px}
+  .socialTrio .recommendThumb{min-height:44px;width:54px}
+  .socialTrio .recommendAll{margin-top:8px}
+  #social .socialFeature{min-height:72px;padding:6px;gap:2px}
+  #social .socialFeatureIcon{font-size:18px}
+  #social .socialFeature p{line-height:1.25;font-size:9px}
+  #social .socialChannelsTitle{margin-top:6px!important}
+  #social>div:has(>button){gap:4px!important;margin-top:5px!important}
+  #social>div:has(>button)>button{padding:6px 4px!important;font-size:8px!important}
+  #social .socialChannels{margin-top:7px;padding-top:6px}
+  #social .socialChannels p{margin:3px 0 5px}
+  #social .socialNetworkLabels{gap:4px}
+  #social .socialNetworkLabels span{padding:5px}
+  #social .socialPending{padding-top:5px}
+}
