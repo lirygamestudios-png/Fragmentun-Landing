@@ -2,6 +2,9 @@
 
 Actualizado: 2026-10-08. Documento de planificación; **no implica contratación, elegibilidad confirmada ni cobros activos**.
 
+## País de facturación confirmado por el promotor
+**Estados Unidos**. La entidad jurídica específica (LLC/corporation), su constitución, EIN, cuenta bancaria y dirección real operativa todavía deben verificarse. No asumir que ya existe o que ha sido aprobada por ningún proveedor.
+
 ## Cuatro canales previstos
 
 1. Stripe — primera preferencia para tarjetas y wallets en juegos web, sujeto a elegibilidad de la entidad que factura.
@@ -36,4 +39,4 @@ Fuentes oficiales de referencia:
 **Fase D:** activación real solo tras validación de seguridad, fiscalidad, TOS y aprobación humana.
 
 ## Decisión todavía imprescindible
-¿Cuál será la entidad legal que emite la factura y cobra: República Dominicana, Estados Unidos o ambas? Sin respuesta no designar como contratado ni definitivo ningún proveedor.
+**Resuelto:** país de facturación previsto = Estados Unidos. **Pendiente:** confirmar la entidad estadounidense específica y documentación para apertura de cuentas, KYC/KYB, aceptación de microtransacciones de artículos virtuales, moneda de liquidación, impuestos, tarifas y cobertura por región. Stripe y PayPal son candidatos prioritarios; 2Checkout requiere evaluación comercial; Coinbase Business es candidato cripto preferente sujeto a aprobación. No designar ningún proveedor como contratado hasta superar verificación.
