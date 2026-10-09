@@ -585,6 +585,17 @@
 .socialTrio>.section{min-width:0;min-height:350px;padding:14px 13px!important;border:1px solid #23547788;border-radius:8px;background:linear-gradient(160deg,#06182c,#030c19 90%)}
 .socialTrio .section h2{font-size:13px!important;letter-spacing:.06em;margin:0 0 4px!important;color:#f0f9ff}
 .socialIntro{font-size:10px!important;color:#8fb5d1;line-height:1.4;margin:0 0 13px}
+/* Encabezados visibles durante el desplazamiento interno de los tres paneles. */
+.socialTrio>.section .socialPanelHeader{
+  position:sticky;top:-14px;z-index:6;
+  background:#06182c;
+  margin:-14px -13px 10px;
+  padding:14px 13px 8px;
+  border-bottom:1px solid #23547788;
+  box-shadow:0 8px 12px #030b1799;
+}
+.socialTrio>.section .socialPanelHeader .socialIntro{margin-bottom:0}
+
 .communityTabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;margin-bottom:10px}
 .communityTabs>span{font-size:8px;text-align:center;color:#9ab4ca;padding:8px 1px;border-radius:4px;background:#081e32}
 .communityTabs .communityTabActive{background:#0b4b70;color:#4fe1ff;font-weight:800;border-bottom:2px solid #4de6fe}
