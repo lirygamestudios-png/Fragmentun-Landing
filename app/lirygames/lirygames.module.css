@@ -479,22 +479,31 @@
 @keyframes liryTraitWaiting{from{transform:translateX(-5%);opacity:.58}to{transform:translateX(160%);opacity:.95}}
 @media(prefers-reduced-motion:reduce){.dnaSide .dnaTraitShimmer{animation:none;transform:translateX(70%);opacity:.7}}
 
-/* Catálogo y ADN: igualar altura de ambas columnas en escritorio.
-   El alto lo determinan las nueve tarjetas, no los gráficos decorativos del ADN. */
-@media(min-width:1001px){
- #mundos .worldShowcase{align-items:stretch}
- #mundos .dnaSide{height:0;min-height:100%;overflow:hidden;padding:11px 12px;gap:0}
- #mundos .dnaSide h3{font-size:clamp(15px,1.35vw,20px);line-height:1.05;margin:5px 0 3px}
- #mundos .dnaSide .kicker{font-size:8px}
- #mundos #liry-dna .dnaArt{height:78px;min-height:78px;max-height:78px;flex:0 0 78px;margin:2px 0 5px}
- #mundos #liry-dna .dnaMap{height:100%;width:100%;filter:drop-shadow(0 0 10px rgba(54,192,255,.3))}
- #mundos #liry-dna>p:not(.kicker){font-size:9px;line-height:1.3;margin:2px 0 4px}
- #mundos #liry-dna>.dnaSideButton{font-size:9px;padding:5px 10px;margin:3px 0 7px}
- #mundos #liry-dna>.dnaTraitList{gap:5px;margin:0 0 5px}
- #mundos #liry-dna .dnaTraitList li{column-gap:6px;row-gap:3px;font-size:9px}
- #mundos #liry-dna .dnaTraitIndex{width:16px;height:16px;flex-basis:16px;font-size:9px}
- #mundos #liry-dna .dnaTraitPending{font-size:8px}
- #mundos #liry-dna .dnaTraitTrack{height:6px}
- #mundos #liry-dna>small{font-size:8px;line-height:1.25;margin-top:3px}
- #mundos #liry-dna .dnaContinuation{height:66px;min-height:66px;flex:0 0 66px;margin:3px 0 0}
+/* Equilibrio real del catálogo y ADN LIRY (desktop).
+   La altura la proporciona una cuadrícula de miniaturas legibles; el ADN conserva
+   su contenido completo y las dos animaciones SIN clipping ni height:0. */
+@media(min-width:1200px){
+  #mundos .worldShowcase{grid-template-columns:minmax(0,2.7fr) minmax(280px,1fr);align-items:stretch;gap:20px}
+  #mundos .worldsGrid{align-content:stretch;grid-template-rows:repeat(3,minmax(0,1fr))}
+  #mundos .worldsGrid .gameCard{aspect-ratio:1.22/1;height:100%}
+  #mundos #liry-dna.dnaSide{height:auto;min-height:0;overflow:visible;padding:14px 15px;gap:0}
+  #mundos #liry-dna .kicker{font-size:9px}
+  #mundos #liry-dna h3{font-size:clamp(18px,1.5vw,22px);margin:6px 0 4px}
+  #mundos #liry-dna .dnaArt{height:auto;min-height:100px;max-height:none;flex:1 1 105px;margin:5px 0 7px}
+  #mundos #liry-dna .dnaMap{height:100%;width:100%;filter:drop-shadow(0 0 14px rgba(54,192,255,.34))}
+  #mundos #liry-dna>p:not(.kicker){font-size:10px;line-height:1.4;margin:3px 0 7px}
+  #mundos #liry-dna>.dnaSideButton{font-size:9px;padding:7px 12px;margin:3px 0 10px}
+  #mundos #liry-dna>.dnaTraitList{gap:8px;margin:0 0 10px}
+  #mundos #liry-dna .dnaTraitList li{column-gap:7px;row-gap:4px;font-size:10px}
+  #mundos #liry-dna .dnaTraitTrack{height:8px}
+  #mundos #liry-dna>small{font-size:9px;line-height:1.45;margin-top:3px}
+  #mundos #liry-dna .dnaContinuation{height:auto;min-height:95px;flex:1 1 95px;margin:7px 0 0}
+}
+/* En pantallas medianas, columnas apiladas: evita sacrificar legibilidad
+   para forzar una altura que no admite todo el contenido del ADN. */
+@media(min-width:751px) and (max-width:1199px){
+  #mundos .worldShowcase{grid-template-columns:minmax(0,1fr);align-items:start}
+  #mundos #liry-dna.dnaSide{height:auto;min-height:0;overflow:visible}
+  #mundos #liry-dna .dnaArt{height:270px;min-height:270px}
+  #mundos #liry-dna .dnaContinuation{height:190px;min-height:190px}
 }
