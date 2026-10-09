@@ -49,8 +49,8 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
     {count:products},
     {count:fulfillments},
     {data:settings},
-    {data:gameEvents},
-    {data:entitlements}
+    {data:gameEvents,error:gameEventsError},
+    {data:entitlements,error:entitlementsError}
   ]=await Promise.all([
     supabase.from("shop_orders").select("order_number,total_cents,currency,payment_status,fulfillment_status,refund_status,customer_email,created_at").order("created_at",{ascending:false}).limit(100),
     supabase.from("shop_products").select("*",{count:"exact",head:true}),
@@ -66,6 +66,8 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
   const refunds=rows.filter(o=>o.refund_status&&o.refund_status!=="none");
   const totalPaid=paid.reduce((a,o)=>a+Number(o.total_cents||0),0);
   const currency=paid[0]?.currency||"USD";
+  const financeDataAvailable=!gameEventsError;
+  const deliveryDataAvailable=!entitlementsError;
   const gameEventRows=(gameEvents||[]) as any[];
   const entitlementRows=(entitlements||[]) as any[];
   const gamePaid=gameEventRows.filter(e=>e.status==="paid");
@@ -145,6 +147,10 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
       <p>Operación de bienes virtuales separada del fulfillment físico. Las compras llegan desde los juegos y plataformas.</p>
     </section>
 
+    <section className={styles.notice}>
+      <div><strong>Calidad de los datos financieros</strong><span>{!financeDataAvailable?"No se pudo consultar el historial de compras; los indicadores no deben interpretarse como cero ventas.":gameEventRows.length===500?"Muestra limitada a 500 eventos. Los totales pueden excluir movimientos históricos.":"Resumen basado en los eventos recuperados; no equivale a depósitos bancarios conciliados."} {!deliveryDataAvailable?"No se pudo consultar el historial de entregas.":entitlementRows.length===500?"También se consultaron solamente los últimos 500 registros de entregas.":""} Las simulaciones del laboratorio no son ingresos reales.</span></div>
+      <code>{!financeDataAvailable||!deliveryDataAvailable?"CONSULTA INCOMPLETA":"DATOS OPERATIVOS"}</code>
+    </section>
     <section className={styles.kpis}>
       <article><small>Compras in-game</small><strong>{gamePaid.length}</strong><span>{money(gameRevenue,gameCurrency)} bruto registrado</span></article>
       <article className={gamePaymentIssues.length?styles.kpiAttention:undefined}><small>Pagos con incidencia</small><strong>{gamePaymentIssues.length}</strong><span>{gamePaymentIssues.length?"Fallidos o chargeback":"Sin incidencias"}</span></article>
