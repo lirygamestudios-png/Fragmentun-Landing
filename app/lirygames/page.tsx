@@ -30,13 +30,27 @@ export default function LiryGamesFrontDesk(){
           <small>3 mundos internos gratuitos previstos</small></div>
         </article>)}</div>
     </section>
+    <section className={styles.section} id="liry-dna">
+      <p className={styles.kicker}>TU IDENTIDAD GAMER</p><h2>DESCUBRE TU LIRY DNA</h2>
+      <p className={styles.sectionIntro}>Estas seis categorías formarán parte del cuestionario cuando se conecten la cuenta gamer y las reglas administrables.</p>
+      <div className={styles.dnaGrid}>{["Explorador","Estratega","Competidor","Social","Acción","Creativo"].map(name=>
+        <article key={name} className={styles.dnaCard}><span className={styles.dnaDot} aria-hidden="true" /><h3>{name}</h3><p>Evaluación pendiente</p></article>)}</div>
+    </section>
+    <section className={styles.section} id="perfil-gamer">
+      <p className={styles.kicker}>TU EXPERIENCIA LIRYGAMES</p><h2>MI PERFIL GAMER</h2>
+      <div className={styles.gamerGrid}>
+        <article className={styles.gamerCard}><div className={styles.avatarPlaceholder} aria-hidden="true">?</div><h3>Perfil de visitante</h3><p>Las cuentas gamer guardarán identidad, nivel, experiencia y artículos cuando esté activa su integración.</p><span className={styles.status}>PRÓXIMAMENTE</span></article>
+        <article className={styles.gamerCard}><h3>TU LIRY JOURNEY</h3><p>Mundos explorados y videojuegos disponibles se calcularán con actividad real, nunca con estadísticas inventadas.</p><strong className={styles.emptyProgress}>— / 9</strong><small>No hay sesión gamer conectada</small></article>
+        <article className={styles.gamerCard}><h3>LOGROS RECIENTES</h3><p>Tus recompensas aparecerán después de completar objetivos reales.</p><span className={styles.emptyProgress}>SIN DATOS</span><small>No se muestran logros ficticios</small></article>
+      </div>
+    </section>
     <section className={styles.feature} id="modelo">
       <p className={styles.kicker}>TU VIAJE, TUS REGLAS</p>
       <h2>ENTRA GRATIS. <span>EXPLORA SIN LÍMITES DE PAGO.</span></h2>
       <p>El primer lanzamiento de cada videojuego está concebido con tres mundos internos jugables sin costo. Los artículos, skins y personalizaciones serán compras voluntarias.</p>
       <p className={styles.honesty}>El perfil gamer, Liry DNA y Liry Journey estarán disponibles cuando se complete su integración. No mostramos progreso ficticio.</p>
     </section>
-    <section className={styles.section} id="comunidad"><p className={styles.kicker}>COMUNIDAD LIRY</p><h2>EL UNIVERSO CRECE CONTIGO</h2><p className={styles.sectionIntro}>Próximamente: canales oficiales, novedades, contenido compartible y LiryBoost.</p></section>
+    <section className={styles.section} id="comunidad"><p className={styles.kicker}>COMUNIDAD LIRY</p><h2>COMPARTE TU UNIVERSO</h2><p className={styles.sectionIntro}>Un punto de encuentro para los futuros jugadores. Los enlaces sociales oficiales, las opciones para compartir y LiryBoost se activarán cuando estén configurados y verificados en el Admin.</p><p className={styles.honesty}>Sin contadores de participación ficticios ni enlaces sociales inventados.</p></section>
     <footer className={styles.footer}><strong>LIRYGAMES STUDIOS</strong><p>Nueve videojuegos. Un universo en expansión.</p><Link href="/es">FRAGMENTUN ↗</Link></footer>
   </main>;
 }
