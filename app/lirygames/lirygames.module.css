@@ -281,3 +281,21 @@
 #liry-dna .dnaCard p{margin:0;color:#a9bed7;font-size:12px}
 #liry-dna .dnaDot{width:11px;height:11px;background:#69d6ff;box-shadow:0 0 15px rgba(74,199,253,.55)}
 @media(max-width:520px){#liry-dna .dnaCard{min-height:120px;padding:19px 21px}}
+
+/* Perfil Gamer y Liry Journey — continuidad con los marcos aprobados. */
+#perfil-gamer{background:linear-gradient(180deg,#071123,#08152b)}
+#perfil-gamer .gamerGrid{gap:16px;align-items:stretch}
+#perfil-gamer .gamerCard{
+  min-width:0;min-height:240px;padding:23px 24px;
+  border-radius:5px;border:1px solid rgba(87,157,207,.38);
+  background:linear-gradient(150deg,rgba(21,43,77,.91),rgba(8,19,39,.99));
+  box-shadow:inset 0 1px 0 rgba(124,194,233,.08),0 12px 29px rgba(0,6,18,.16);
+}
+#perfil-gamer .gamerCard h3{font-size:18px;margin:12px 0 10px;letter-spacing:.018em}
+#perfil-gamer .gamerCard p{color:#afc4dc;font-size:13px;line-height:1.55}
+#perfil-gamer .gamerCard small{display:block;line-height:1.5;font-size:11px}
+#perfil-gamer .avatarPlaceholder{width:45px;height:45px;border-radius:5px;font-size:22px;background:rgba(22,67,108,.7)}
+#perfil-gamer .emptyProgress{font-size:22px;margin:14px 0 8px;letter-spacing:.025em}
+#perfil-gamer .status{display:inline-flex;margin-top:5px;padding:6px 9px;border-radius:3px;font-size:9px}
+@media(max-width:800px){#perfil-gamer .gamerGrid{grid-template-columns:1fr}#perfil-gamer .gamerCard{min-height:185px}}
+@media(max-width:520px){#perfil-gamer .gamerCard{min-height:170px;padding:20px}}
