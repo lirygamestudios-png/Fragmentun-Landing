@@ -803,14 +803,15 @@
 .page :global(#mundos) .worldsGrid{
  display:grid;
  grid-template-columns:repeat(3,minmax(0,1fr));
- grid-auto-rows:190px;
+ --liry-card-height:clamp(190px,15.4vw,235px);
+ grid-auto-rows:var(--liry-card-height);
  gap:10px;
  min-width:0;
  align-content:start;
 }
 .page :global(#mundos) .worldsGrid>.gameCard{
  display:block;position:relative;isolation:isolate;
- width:100%;height:190px;min-height:0;max-height:190px;
+ width:100%;height:var(--liry-card-height);min-height:0;max-height:var(--liry-card-height);
  aspect-ratio:auto;box-sizing:border-box;
  overflow:hidden;border-radius:7px;padding:0;
 }
@@ -835,19 +836,19 @@
 .page :global(#mundos) .worldsGrid>.gameCard .worldCardText{min-width:0;max-width:100%;overflow:hidden}
 .page :global(#mundos) .worldsGrid>.gameCard:hover .gameCardArt{transform:scale(1.025)}
 @media(max-width:1000px){
- .page :global(#mundos) .worldsGrid{grid-auto-rows:170px;gap:8px}
- .page :global(#mundos) .worldsGrid>.gameCard{height:170px;max-height:170px}
+ .page :global(#mundos) .worldsGrid{--liry-card-height:190px;gap:8px}
+ .page :global(#mundos) .worldsGrid>.gameCard{height:var(--liry-card-height);max-height:var(--liry-card-height)}
 }
 @media(max-width:750px){
- .page :global(#mundos) .worldsGrid{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:170px}
+ .page :global(#mundos) .worldsGrid{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:var(--liry-card-height)}
 }
 @media(max-width:520px){
- .page :global(#mundos) .worldsGrid{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:155px}
- .page :global(#mundos) .worldsGrid>.gameCard{height:155px;max-height:155px}
+ .page :global(#mundos) .worldsGrid{grid-template-columns:repeat(2,minmax(0,1fr));--liry-card-height:155px}
+ .page :global(#mundos) .worldsGrid>.gameCard{height:var(--liry-card-height);max-height:var(--liry-card-height)}
 }
 @media(max-width:350px){
- .page :global(#mundos) .worldsGrid{grid-template-columns:minmax(0,1fr);grid-auto-rows:165px}
- .page :global(#mundos) .worldsGrid>.gameCard{height:165px;max-height:165px}
+ .page :global(#mundos) .worldsGrid{grid-template-columns:minmax(0,1fr);--liry-card-height:165px}
+ .page :global(#mundos) .worldsGrid>.gameCard{height:var(--liry-card-height);max-height:var(--liry-card-height)}
 }
 @media(prefers-reduced-motion:reduce){
  .page :global(#mundos) .worldsGrid>.gameCard>.gameCardArt{transition:none}
