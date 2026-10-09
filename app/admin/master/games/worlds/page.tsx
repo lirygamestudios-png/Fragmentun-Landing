@@ -32,10 +32,20 @@ async function saveInternalWorld(formData:FormData){
     .select("publication_status").eq("game_id",gameId).eq("world_number",number).maybeSingle();
   if(existingError)throw new Error("world_state_unavailable");
   if(existingWorld&&["beta","available"].includes(existingWorld.publication_status))throw new Error("published_world_requires_release_gate");
-  const{error}=await supabase.from("game_internal_worlds").upsert({
+  // La condición de conflicto se valida en base de datos; el chequeo previo no evita escrituras concurrentes.
+  if(existingWorld){
+    const{data:updated,error:updateError}=await supabase.from("game_internal_worlds")
+      .update({title,summary,artwork_url:artworkUrl,play_url:playUrl,publication_status:status,updated_at:new Date().toISOString()})
+      .eq("game_id",gameId).eq("world_number",number)
+      .eq("publication_status",existingWorld.publication_status).select("id").maybeSingle();
+    if(updateError||!updated)throw new Error("world_changed_retry");
+    revalidatePath("/admin/master/games/worlds");
+    return;
+  }
+  const{error}=await supabase.from("game_internal_worlds").insert({
     game_id:gameId,world_number:number,title,summary,artwork_url:artworkUrl,play_url:playUrl,
     publication_status:status,access_type:"free",beta_enabled:false,updated_at:new Date().toISOString()
-  },{onConflict:"game_id,world_number"});
+  });
   if(error)throw new Error(error.message);
   revalidatePath("/admin/master/games/worlds");
 }
