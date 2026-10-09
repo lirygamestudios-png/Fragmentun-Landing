@@ -5,7 +5,7 @@ import {LiryContactFollowup} from "../../../components/LiryContactFollowup";
 
 type ContactMessage={
  id:string;name:string;email:string;subject:string;game_slug:string|null;
- message:string;status:string;created_at:string;internal_note:string|null;assigned_to:string|null;
+ message:string;status:string;created_at:string;internal_note:string|null;assigned_to:string|null;response_draft:string|null;
 };
 const category:Record<string,string>={
  opinion:"Opinión",suggestion:"Sugerencia",problem:"Problema",
@@ -27,7 +27,7 @@ export default async function LiryContactAdmin({
  const db=createSupabaseServiceClient();
  const {data:owners}=await db.from("admin_profiles").select("user_id,display_name").order("display_name");
  let query=db.from("lirygames_contact_messages")
-  .select("id,name,email,subject,game_slug,message,status,created_at,internal_note,assigned_to")
+  .select("id,name,email,subject,game_slug,message,status,created_at,internal_note,assigned_to,response_draft")
   .order("created_at",{ascending:false}).limit(100);
  if(selected)query=query.eq("status",selected);
  const {data,error}=await query;
@@ -59,7 +59,7 @@ export default async function LiryContactAdmin({
        {item.game_slug&&<span>Producto: {item.game_slug}</span>}
       </div>
       <p style={{fontSize:13,lineHeight:1.55,whiteSpace:"pre-wrap",overflowWrap:"anywhere",margin:0}}>{item.message}</p>
-      {["admin","editor"].includes(profile.role)&&<LiryContactFollowup id={item.id} status={item.status} note={item.internal_note} assignedTo={item.assigned_to} owners={owners||[]} />}
+      {["admin","editor"].includes(profile.role)&&<LiryContactFollowup id={item.id} status={item.status} note={item.internal_note} assignedTo={item.assigned_to} responseDraft={item.response_draft} owners={owners||[]} />}
     </article>)}
    </div>}
   <p style={{fontSize:11,color:"#7393aa",marginTop:24}}>Últimos 100 mensajes por filtro. Las notas son internas; las respuestas por correo se gestionarán en una fase posterior.</p>
