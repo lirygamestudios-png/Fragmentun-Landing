@@ -248,6 +248,18 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
       })}
     </section>
     <section className={styles.sectionHead}>
+      <div><span>INCIDENCIAS BANCARIAS</span><h2>Control de diferencias y depósitos</h2></div>
+      <p>Clasificación preparada: depósito insuficiente, depósito superior, comprobantes pendientes o referencias ausentes. Los resultados se calcularán únicamente cuando existan lotes verificados.</p>
+    </section>
+    <section className={styles.grid}>
+      <article className={styles.card}>
+        <div className={styles.cardTop}><span className={styles.badgePlanned}>SIN DATOS VERIFICADOS</span><em>NO CONCILIADO</em></div>
+        <h3>Incidencias de conciliación</h3>
+        <p>Sin liquidaciones bancarias registradas en este módulo. No existe evidencia para declarar diferencias ni depósitos confirmados.</p>
+        <p>Al conectar el registro bancario podrán detectarse importes distintos, comprobantes faltantes y casos para revisión humana.</p>
+      </article>
+    </section>
+    <section className={styles.sectionHead}>
       <div><span>REGISTRO DE LIQUIDACIONES</span><h2>Seguimiento bancario</h2></div>
       <p>El registro bancario persistente está diseñado, pero todavía no se ha instalado la tabla ni conectado a los extractos. Ningún depósito se considera verificado.</p>
     </section>
