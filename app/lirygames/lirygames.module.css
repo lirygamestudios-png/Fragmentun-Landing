@@ -488,8 +488,11 @@
   .worldShowcase .worldsGrid{grid-column:1;grid-row:1}
   .worldShowcase .worldsNotes{grid-row:2}
   .worldShowcase .dnaSide{
-    position:relative;grid-column:2;grid-row:1;
-    align-self:start;height:var(--liry-catalog-height,auto);min-height:0;box-sizing:border-box;overflow:hidden;
+    /* Fuera del flujo: el ADN no puede aumentar la altura de la primera fila. */
+    position:absolute;top:0;right:0;left:auto;bottom:auto;
+    width:calc((100% - 20px) / 4.5);
+    align-self:auto;height:var(--liry-catalog-height, 460px);
+    min-height:0;box-sizing:border-box;overflow:hidden;
     padding:13px 14px 12px;gap:0
   }
   .worldShowcase .dnaSide .kicker{font-size:8px}
