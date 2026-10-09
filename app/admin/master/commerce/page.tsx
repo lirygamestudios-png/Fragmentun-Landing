@@ -29,7 +29,11 @@ function providerLabel(value:string|undefined){
   return map[value]||String(value).replaceAll("_"," ").replace(/\b\w/g,m=>m.toUpperCase());
 }
 
-export default async function MasterCommercePage(){
+export default async function MasterCommercePage({searchParams}:{searchParams:Promise<{period?:string;game?:string;provider?:string}>}){
+  const params=await searchParams;
+  const period=["all","7d","30d","90d"].includes(params.period||"")?params.period:"30d";
+  const gameFilter=String(params.game||"all").slice(0,120);
+  const providerFilter=String(params.provider||"all").slice(0,60);
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user) redirect("/admin/lirygames/login");
@@ -65,7 +69,15 @@ export default async function MasterCommercePage(){
   const gameCurrency=gamePaid[0]?.currency||"USD";
   const gamePaymentIssues=gameEventRows.filter(e=>["failed","chargeback"].includes(e.status));
   const entitlementIssues=entitlementRows.filter(e=>["pending","failed"].includes(e.status));
-  const confirmedGameEvents=gameEventRows.filter(e=>e.status==="paid"||e.status==="refunded"||e.status==="partially_refunded");
+  const periodStart=period==="all"?0:Date.now()-Number.parseInt(period||"30",10)*86400000;
+  const filteredGameEvents=gameEventRows.filter(e=>
+    (period==="all"||(e.purchased_at&&new Date(e.purchased_at).getTime()>=periodStart))&&
+    (gameFilter==="all"||String(e.game_id)===gameFilter)&&
+    (providerFilter==="all"||String(e.provider)===providerFilter)
+  );
+  const gameOptions=[...new Set(gameEventRows.map(e=>String(e.game_id||"")).filter(Boolean))];
+  const providerOptions=[...new Set(gameEventRows.map(e=>String(e.provider||"")).filter(Boolean))];
+  const confirmedGameEvents=filteredGameEvents.filter(e=>e.status==="paid"||e.status==="refunded"||e.status==="partially_refunded");
   const revenueGroups=new Map<string,{label:string;currency:string;provider:string;game:string;count:number;gross:number;net:number;refunds:number}>();
   for(const e of confirmedGameEvents){
     const curr=String(e.currency||"USD");
@@ -171,6 +183,18 @@ export default async function MasterCommercePage(){
       </article>)}
     </section>
 
+    <section className={styles.sectionHead}>
+      <div><span>CONSULTAR INGRESOS</span><h2>Filtros financieros</h2></div>
+      <p>Los filtros operan sobre los últimos 500 eventos recuperados; no equivalen a una consulta histórica completa.</p>
+    </section>
+    <form method="get" action="/admin/master/commerce" className={styles.adminForms}>
+      <article className={styles.adminForm}>
+        <label>Período<select name="period" defaultValue={period}><option value="7d">Últimos 7 días</option><option value="30d">Últimos 30 días</option><option value="90d">Últimos 90 días</option><option value="all">Todos los eventos consultados</option></select></label>
+        <label>Videojuego<select name="game" defaultValue={gameFilter}><option value="all">Todos</option>{gameOptions.map(v=><option value={v} key={v}>{v}</option>)}</select></label>
+        <label>Procesador<select name="provider" defaultValue={providerFilter}><option value="all">Todos</option>{providerOptions.map(v=><option key={v} value={v}>{providerLabel(v)}</option>)}</select></label>
+        <button className={styles.formButton} type="submit">Aplicar filtros</button>
+      </article>
+    </form>
     <section className={styles.sectionHead}>
       <div><span>RESUMEN FINANCIERO</span><h2>Ingresos por videojuego y procesador</h2></div>
       <p>Resumen de los últimos 500 eventos consultados; importes agrupados por moneda sin mezclar divisas. No incluye simulaciones.</p>
