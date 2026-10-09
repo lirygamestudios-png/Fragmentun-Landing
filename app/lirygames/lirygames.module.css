@@ -479,31 +479,29 @@
 @keyframes liryTraitWaiting{from{transform:translateX(-5%);opacity:.58}to{transform:translateX(160%);opacity:.95}}
 @media(prefers-reduced-motion:reduce){.dnaSide .dnaTraitShimmer{animation:none;transform:translateX(70%);opacity:.7}}
 
-/* Equilibrio real del catálogo y ADN LIRY (desktop).
-   La altura la proporciona una cuadrícula de miniaturas legibles; el ADN conserva
-   su contenido completo y las dos animaciones SIN clipping ni height:0. */
-@media(min-width:1200px){
-  #mundos .worldShowcase{grid-template-columns:minmax(0,2.7fr) minmax(280px,1fr);align-items:stretch;gap:20px}
-  #mundos .worldsGrid{align-content:stretch;grid-template-rows:repeat(3,minmax(0,1fr))}
-  #mundos .worldsGrid .gameCard{aspect-ratio:1.22/1;height:100%}
-  #mundos #liry-dna.dnaSide{height:auto;min-height:0;overflow:visible;padding:14px 15px;gap:0}
-  #mundos #liry-dna .kicker{font-size:9px}
-  #mundos #liry-dna h3{font-size:clamp(18px,1.5vw,22px);margin:6px 0 4px}
-  #mundos #liry-dna .dnaArt{height:auto;min-height:100px;max-height:none;flex:1 1 105px;margin:5px 0 7px}
-  #mundos #liry-dna .dnaMap{height:100%;width:100%;filter:drop-shadow(0 0 14px rgba(54,192,255,.34))}
-  #mundos #liry-dna>p:not(.kicker){font-size:10px;line-height:1.4;margin:3px 0 7px}
-  #mundos #liry-dna>.dnaSideButton{font-size:9px;padding:7px 12px;margin:3px 0 10px}
-  #mundos #liry-dna>.dnaTraitList{gap:8px;margin:0 0 10px}
-  #mundos #liry-dna .dnaTraitList li{column-gap:7px;row-gap:4px;font-size:10px}
-  #mundos #liry-dna .dnaTraitTrack{height:8px}
-  #mundos #liry-dna>small{font-size:9px;line-height:1.45;margin-top:3px}
-  #mundos #liry-dna .dnaContinuation{height:auto;min-height:95px;flex:1 1 95px;margin:7px 0 0}
+/* Balance catálogo / LIRY DNA: selectores de clase compatibles con CSS Modules.
+   Ambas columnas se estiran sobre la misma fila y nunca se recorta el ADN. */
+@media (min-width:1200px){
+  .worldShowcase{grid-template-columns:minmax(0,2.7fr) minmax(280px,1fr);align-items:stretch;gap:20px}
+  .worldsGrid{grid-template-rows:repeat(3,minmax(220px,1fr));align-content:stretch}
+  .worldsGrid .gameCard{aspect-ratio:auto;height:100%;min-height:220px}
+  .worldShowcase .dnaSide{height:auto;min-height:0;overflow:visible;padding:14px 15px;gap:0}
+  .worldShowcase .dnaSide .kicker{font-size:9px}
+  .worldShowcase .dnaSide h3{font-size:clamp(18px,1.5vw,22px);margin:6px 0 4px}
+  .worldShowcase .dnaSide .dnaArt{height:140px;min-height:140px;max-height:none;flex:1 1 140px;margin:5px 0 7px}
+  .worldShowcase .dnaSide .dnaMap{height:100%;width:100%;filter:drop-shadow(0 0 14px rgba(54,192,255,.34))}
+  .worldShowcase .dnaSide>p:not(.kicker){font-size:10px;line-height:1.4;margin:3px 0 7px}
+  .worldShowcase .dnaSide>.dnaSideButton{font-size:9px;padding:7px 12px;margin:3px 0 10px}
+  .worldShowcase .dnaSide>.dnaTraitList{gap:8px;margin:0 0 10px}
+  .worldShowcase .dnaSide .dnaTraitList li{column-gap:7px;row-gap:4px;font-size:10px}
+  .worldShowcase .dnaSide .dnaTraitTrack{height:8px}
+  .worldShowcase .dnaSide>small{font-size:9px;line-height:1.45;margin-top:3px}
+  .worldShowcase .dnaSide .dnaContinuation{height:110px;min-height:110px;flex:1 1 110px;margin:7px 0 0}
 }
-/* En pantallas medianas, columnas apiladas: evita sacrificar legibilidad
-   para forzar una altura que no admite todo el contenido del ADN. */
-@media(min-width:751px) and (max-width:1199px){
-  #mundos .worldShowcase{grid-template-columns:minmax(0,1fr);align-items:start}
-  #mundos #liry-dna.dnaSide{height:auto;min-height:0;overflow:visible}
-  #mundos #liry-dna .dnaArt{height:270px;min-height:270px}
-  #mundos #liry-dna .dnaContinuation{height:190px;min-height:190px}
+/* Al apilar columnas en tablet no se limita artificialmente la altura del ADN. */
+@media (min-width:751px) and (max-width:1199px){
+  .worldShowcase{grid-template-columns:minmax(0,1fr);align-items:start}
+  .worldShowcase .dnaSide{height:auto;min-height:0;overflow:visible}
+  .worldShowcase .dnaSide .dnaArt{height:270px;min-height:270px}
+  .worldShowcase .dnaSide .dnaContinuation{height:190px;min-height:190px}
 }
