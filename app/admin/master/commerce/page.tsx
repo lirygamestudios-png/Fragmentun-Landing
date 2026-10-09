@@ -236,6 +236,7 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
         <p>Una página posterior puede estar vacía si no existen más transacciones. Las simulaciones nunca se incluyen como ventas.</p>
       </article>
     </div>
+    <details className={styles.advancedPanel}><summary>Conciliación, liquidaciones e incidencias bancarias</summary>
     <section className={styles.sectionHead}>
       <div id="comercio-conciliacion"><span>CONCILIACIÓN POR PROCESADOR</span><h2>Movimientos pendientes de verificar</h2></div>
       <p>Vista preparatoria basada en eventos existentes; no acredita que el proveedor haya transferido fondos al banco. Todavía faltan referencias de liquidación y estados bancarios.</p>
@@ -310,6 +311,7 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
       </article>)}
       {!revenueSummary.length&&<article className={styles.card}><h3>Sin ingresos registrados</h3><p>El reporte se alimentará de eventos reales registrados. No contabiliza el laboratorio de pagos.</p></article>}
     </section>
+    </details>
     <section className={styles.sectionHead}>
       <div id="comercio-operaciones"><span>AUDITORÍA DE VIDEOJUEGOS</span><h2>Historial de compras virtuales</h2></div>
       <p>Eventos registrados en el backend. Las simulaciones no se contabilizan como ingresos ni compras reales.</p>
