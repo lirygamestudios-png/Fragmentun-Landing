@@ -56,3 +56,9 @@
 .discoveryCount{margin-left:auto;color:#9dc3df;font-size:12px;padding-bottom:14px}
 .discoveryEmpty{padding:26px;border:1px solid #44799c66;background:#111f3b;border-radius:9px;color:#c5d8ed}
 @media(max-width:580px){.discoverControls label{flex:1 1 100%}.discoveryCount{margin-left:0;padding:0}}
+
+/* FrontDesk: restauración de búsqueda, fiel a los controles gaming aprobados. */
+.discoveryReset{appearance:none;min-height:40px;padding:10px 15px;border:1px solid rgba(99,206,255,.5);border-radius:10px;background:linear-gradient(125deg,rgba(26,54,103,.94),rgba(43,31,90,.9));color:#c9f2ff;font:inherit;font-size:12px;font-weight:800;letter-spacing:.025em;cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.discoveryReset:hover{border-color:#8de8ff;box-shadow:0 0 17px rgba(76,184,255,.18)}
+.discoveryReset:focus-visible{outline:2px solid #85e5ff;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.discoveryReset{transition:none}}
