@@ -31,6 +31,18 @@ export const plannedLiryGames:readonly PublicGameCard[] = plannedTitles.map(([sl
   slug,title,tagline,state:"coming_soon",playUrl:null,internalWorldCount:INITIAL_WORLDS_PER_GAME
 }));
 
+/** Only explicitly release-approved records may alter the editorial state. */
+export interface ApprovedGameRelease {slug:string; state:"beta"|"available"; playUrl:string|null; approved:boolean;}
+export function applyApprovedReleases(releases:readonly ApprovedGameRelease[]):readonly PublicGameCard[]{
+  return plannedLiryGames.map(game=>{
+    const entry=releases.find(item=>item.slug===game.slug&&item.approved===true);
+    if(!entry)return game;
+    if(entry.state==="available"&&entry.playUrl&&/^https:\\/\\//.test(entry.playUrl))return {...game,state:"available",playUrl:entry.playUrl};
+    if(entry.state==="beta")return {...game,state:"beta",playUrl:null};
+    return game;
+  });
+}
+
 export function canLaunchPublicGame(game:Pick<PublicGameCard,"state"|"playUrl">):boolean{
   return game.state==="available"&&!!game.playUrl&&/^https:\/\//.test(game.playUrl);
 }
