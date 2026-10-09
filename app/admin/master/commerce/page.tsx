@@ -188,7 +188,10 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
         <p>Documentación empresarial y aprobación del proveedor pendientes.</p>
       </article>)}
     </section>
+    <details className={styles.advancedPanel}><summary>Laboratorio de pagos (solo pruebas)</summary>
     <LiryPaymentSimulation />
+    </details>
+    <details className={styles.advancedPanel}><summary>Configuración comercial y controles técnicos</summary>
     <section className={styles.sectionHead}>
       <div><span>PREPARACIÓN COMERCIAL</span><h2>Configuración</h2></div>
       <p>Pagos y envíos permanecen bajo control hasta su activación comercial.</p>
@@ -207,6 +210,7 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
       </article>)}
     </section>
 
+    </details>
     <section className={styles.sectionHead}>
       <div id="comercio-reportes"><span>CONSULTAR INGRESOS</span><h2>Filtros financieros</h2></div>
       <p>Los filtros operan sobre los últimos 500 eventos recuperados; no equivalen a una consulta histórica completa.</p>
