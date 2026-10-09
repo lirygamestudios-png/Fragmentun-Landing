@@ -139,6 +139,7 @@ export default async function CommunityPage(){
   const payingPlayers=new Set(gamePurchaseRows.filter(p=>p.status==="paid").map(p=>p.player_ref).filter(Boolean)).size;
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleCommunity}`}>
+    <div style={{marginBottom:14}}><a href="/admin/lirygames-contact" style={{display:"inline-flex",padding:"11px 17px",color:"#e8fbff",background:"#07517b",border:"1px solid #4dd8ff",borderRadius:7,textDecoration:"none",fontSize:12,fontWeight:800}}>✉ MENSAJES DE CONTACTO →</a></div>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · CLIENTES Y COMUNIDAD</span><h1>Clientes y Comunidad</h1><p>Miembros, participación y acceso beta sin duplicar la información comercial.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
