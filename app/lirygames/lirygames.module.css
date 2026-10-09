@@ -62,3 +62,28 @@
 .discoveryReset:hover{border-color:#8de8ff;box-shadow:0 0 17px rgba(76,184,255,.18)}
 .discoveryReset:focus-visible{outline:2px solid #85e5ff;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.discoveryReset{transition:none}}
+
+/* Portada cinematográfica: dirección visual aprobada. Los textos y logotipo permanecen editables. */
+.page{background:#030914;color:#edf8ff}
+.nav{position:relative;z-index:5;background:linear-gradient(90deg,#020915f5,#071528ed);border-bottom:1px solid rgba(78,174,228,.28);box-shadow:0 8px 26px #020812a8}
+.hero{isolation:isolate;min-height:min(850px,90vh);padding-top:110px;padding-bottom:110px;background:radial-gradient(ellipse at 73% 42%,#f4b56c48 0%,#5267ab36 16%,transparent 47%),radial-gradient(ellipse at 49% 18%,#6895fa5e,transparent 35%),radial-gradient(ellipse at 70% 78%,#37bfff2b,transparent 40%),linear-gradient(130deg,#030811 0%,#051c42 48%,#21356a 76%,#040e22 100%)}
+.hero::before{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:radial-gradient(ellipse at 76% 43%,transparent 18%,#050c1a4d 52%,#020613ed 105%),linear-gradient(0deg,#030914df,transparent 29%,transparent 70%,#050b1b40)}
+.heroUniverse{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:-2}
+.heroPlanet{position:absolute;right:16%;top:7%;width:min(45vw,640px);aspect-ratio:1;border-radius:50%;border:2px solid #eaa1ff80;box-shadow:0 0 55px #bc74ff77,inset 0 0 65px #7399ff30;transform:rotate(-23deg)}
+.heroOrbitOne,.heroOrbitTwo{position:absolute;right:18%;top:7%;width:min(45vw,640px);aspect-ratio:1;border-radius:50%;border:2px solid #88cfff70;box-shadow:0 0 40px #9d7bff44}
+.heroOrbitTwo{right:7%;top:-2%;width:min(59vw,850px);border-color:#d099ed50;transform:rotate(28deg)}
+.heroSatellite{position:absolute;right:21%;bottom:5%;width:min(18vw,260px);aspect-ratio:1;border-radius:48%;background:radial-gradient(circle at 36% 27%,#d9e4fd88,#4b72c08c 33%,#0b1c3e 68%);filter:blur(2px);box-shadow:0 0 70px #6dbefa77}
+.heroStardust{position:absolute;inset:0;background-image:radial-gradient(#ffffffb8 .8px,transparent 1.2px),radial-gradient(#80baff88 .8px,transparent 1px);background-size:89px 91px,147px 151px;background-position:30px 12px,72px 75px;opacity:.43}
+.heroContent{max-width:720px}
+.hero h1{font-size:clamp(46px,5.4vw,86px);line-height:.99;letter-spacing:-.055em;text-shadow:0 10px 45px #000d}
+.hero h1 span{background:linear-gradient(100deg,#2d6fff,#15c6fb 61%,#b0cfff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.heroContent>p:not(.kicker){max-width:490px;color:#f2f6ff;font-size:clamp(15px,1.3vw,19px);line-height:1.5;text-shadow:0 2px 12px #000e}
+.hero .button{border:2px solid #4fe9ff;border-radius:999px;padding:18px 33px;background:#041323bb;color:#7defff;box-shadow:0 0 17px #19bfff9d,inset 0 0 22px #1197ef37;letter-spacing:.06em}
+.hero .button:hover{border-color:white;box-shadow:0 0 32px #42dbffde;background:#063254d9}
+.heroJourney{position:absolute;z-index:2;right:4.5%;bottom:15%;display:flex;flex-direction:column;gap:18px;padding-left:24px;border-left:1px solid #badbff77}
+.heroJourney a{position:relative;color:#e2f4ff;text-decoration:none;font-size:13px;letter-spacing:.09em;text-shadow:0 1px 12px #000e}
+.heroJourney a::before{content:"";position:absolute;left:-29px;top:5px;width:8px;height:8px;border:1px solid #b2eaff;border-radius:50%;background:#0b1a36}
+.heroJourney a:first-child,.heroJourney a:hover{color:#5cdcff}
+@media(max-width:800px){.hero{min-height:690px;padding-top:90px}.heroJourney{right:5%;bottom:32px;flex-direction:row;gap:14px;padding-left:0;border:0}.heroJourney a{font-size:10px}.heroJourney a::before{display:none}}
+@media(max-width:520px){.hero{min-height:650px;padding:76px 22px 90px}.hero h1{font-size:clamp(40px,10vw,58px)}.heroPlanet,.heroOrbitOne{right:-50%;top:25%;width:115vw;opacity:.48}.heroJourney{left:22px;right:auto;gap:12px;flex-wrap:wrap}.heroContent>p:not(.kicker){max-width:335px}}
+@media(prefers-reduced-motion:reduce){.hero .button{transition:none}}
