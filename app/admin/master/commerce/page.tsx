@@ -312,6 +312,7 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
       {!revenueSummary.length&&<article className={styles.card}><h3>Sin ingresos registrados</h3><p>El reporte se alimentará de eventos reales registrados. No contabiliza el laboratorio de pagos.</p></article>}
     </section>
     </details>
+    <details className={styles.advancedPanel}><summary>Historial de compras virtuales e incidencias de entrega</summary>
     <section className={styles.sectionHead}>
       <div id="comercio-operaciones"><span>AUDITORÍA DE VIDEOJUEGOS</span><h2>Historial de compras virtuales</h2></div>
       <p>Eventos registrados en el backend. Las simulaciones no se contabilizan como ingresos ni compras reales.</p>
@@ -340,6 +341,7 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
       </article>)}
       {!entitlementIssues.length&&<article className={styles.card}><h3>Sin incidencias registradas</h3><p>No hay entregas pendientes o fallidas entre los registros consultados.</p></article>}
     </section>
+    </details>
     <section className={styles.sectionHead}><div><span>ÓRDENES</span><h2>Actividad reciente</h2></div></section>
     <section className={styles.grid}>
       {rows.slice(0,12).map((o:any)=><article key={o.order_number} className={`${styles.card} ${o.payment_status==="failed"?styles.cardAttention:o.payment_status==="pending"||["unfulfilled","processing"].includes(o.fulfillment_status)?styles.cardWarning:""}`}>
