@@ -1,5 +1,5 @@
-import visual from "../app/admin/master/community/messages/messages.module.css";
 "use client";
+import visual from "../app/admin/master/community/messages/messages.module.css";
 import {useState,type FormEvent} from "react";
 type Owner={user_id:string;display_name:string|null};
 export function LiryContactFollowup({id,status,note,assignedTo,responseDraft,owners}:{id:string;status:string;note:string|null;assignedTo:string|null;responseDraft:string|null;owners:Owner[]}){
