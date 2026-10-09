@@ -220,7 +220,7 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
         <label>Período<select name="period" defaultValue={period}><option value="7d">Últimos 7 días</option><option value="30d">Últimos 30 días</option><option value="90d">Últimos 90 días</option><option value="all">Todos los eventos consultados</option></select></label>
         <label>Videojuego<select name="game" defaultValue={gameFilter}><option value="all">Todos</option>{gameOptions.map(v=><option value={v} key={v}>{v}</option>)}</select></label>
         <label>Procesador<select name="provider" defaultValue={providerFilter}><option value="all">Todos</option>{providerOptions.map(v=><option key={v} value={v}>{providerLabel(v)}</option>)}</select></label>
-        <button className={styles.formButton} type="submit">Aplicar filtros</button>
+        <div className={styles.commerceFilterActions}><button className={styles.formButton} type="submit">Aplicar filtros</button><a className={styles.commerceClearFilter} href="/admin/master/commerce#comercio-reportes">Restablecer filtros</a></div>
       </article>
     </form>
     <section className={styles.sectionHead}><div><span>EXPORTACIÓN DE DATOS</span><h2>Descargar reportes por páginas</h2></div><p>Hasta 200 registros por archivo CSV; los filtros seleccionados se mantienen.</p></section>
