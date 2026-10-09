@@ -5,6 +5,7 @@ import styles from "../app/lirygames/lirygames.module.css";
 
 const themes=["COMPETITIVO · ACCIÓN · MULTIJUGADOR","ESTRATEGIA · ACCIÓN · MULTIJUGADOR","EKONIA · ESTRATEGIA · SIMULACIÓN","SUPERVIVENCIA · RPG · MUNDO ABIERTO","SOCIAL · SIMULACIÓN · MULTIJUGADOR","FANTASÍA · RPG · MUNDO ABIERTO","PUZZLE · AVENTURA · EXPLORACIÓN","ESTRATEGIA · NFT · MULTIJUGADOR","PLATAFORMAS · AVENTURA · PUZZLES"];
 const publicCodenames=["LIRY // ARENA-01","LIRY // BOT-02","LIRY // ECON-03","LIRY // EARTH-04","LIRY // LINK-05","LIRY // REALM-06","LIRY // EMOTION-07","LIRY // TITAN-08","LIRY // CODE-09"];
+const catalogArt=["/lirygames-games/skill-arena.webp","/lirygames-games/inflabots-arena.webp","/lirygames-games/la-batalla-del-dinero.webp","/lirygames-games/gaias-last-stand.webp","/lirygames-games/nexo-social.webp","/lirygames-games/eternun.webp","/lirygames-games/fragmentun.webp","/lirygames-games/cripto-titans.webp","/lirygames-games/codeverse.webp"];
 const traits=["Explorador","Estratega","Competidor","Social","Acción","Creativo"];
 
 export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
@@ -23,6 +24,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
   return <div className={styles.worldShowcase}>
     <div className={styles.worldsGrid} ref={catalogRef}>
       {games.map((game,index)=><article className={styles.gameCard} key={game.slug} style={{["--world-index" as string]:index+1}}>
+        <img className={styles.gameCardArt} src={catalogArt[index]} alt="" loading="lazy" decoding="async" />
         <div className={styles.cardContent}>
           <div className={styles.worldCardText}>
             <h3>{publicCodenames[index]??`LIRY // PROJECT-${String(index+1).padStart(2,"0")}`}</h3>
