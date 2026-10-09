@@ -717,3 +717,23 @@
 .finalSignature strong{font-size:12px}
 @media(max-width:850px){.storeShowcase{grid-template-columns:1fr}.storeCategories{grid-template-columns:repeat(5,minmax(0,1fr))}.storeCategory{min-height:130px}}
 @media(max-width:600px){.storeCategories{grid-template-columns:repeat(2,minmax(0,1fr))}.storeCategoryVisual{min-height:95px}.storeCategory:last-child{grid-column:1/-1}.finalDiscover{grid-template-rows:auto}.storeShowcase{padding:20px}.journeyBannerContent{padding:16px}}
+
+/* Red social: iconos oficiales reconocibles sin enlazar perfiles no verificados. */
+#social .socialNetworkLabels{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+#social .socialNetworkLabels>span{display:grid;place-items:center;min-width:0;min-height:42px;padding:8px;color:#e6f8ff;background:linear-gradient(145deg,#092743,#061528);border:1px solid #276084;border-radius:7px}
+#social .socialNetworkLabels>span svg{width:22px;height:22px;display:block}
+#social .socialNetworkLabels>span:nth-child(1){color:#f48dc7}
+#social .socialNetworkLabels>span:nth-child(2){color:#efffff}
+#social .socialNetworkLabels>span:nth-child(3){color:#ff6174}
+#social .socialNetworkLabels>span:nth-child(4){color:#67b9ff}
+/* Seis estilos de Liry DNA: colores independientes, animación sin puntuaciones ficticias. */
+.dnaSide .dnaTraitList li{--dna-accent:#23d7fb}
+.dnaSide .dnaTraitList li:nth-child(1){--dna-accent:#19d7ff}
+.dnaSide .dnaTraitList li:nth-child(2){--dna-accent:#ad58f4}
+.dnaSide .dnaTraitList li:nth-child(3){--dna-accent:#f5685f}
+.dnaSide .dnaTraitList li:nth-child(4){--dna-accent:#ffd34c}
+.dnaSide .dnaTraitList li:nth-child(5){--dna-accent:#d65ef7}
+.dnaSide .dnaTraitList li:nth-child(6){--dna-accent:#7665ff}
+.dnaSide .dnaTraitList li .dnaTraitTrack{border-color:color-mix(in srgb,var(--dna-accent) 65%,#12294c);box-shadow:inset 0 0 5px #102b44,0 0 6px color-mix(in srgb,var(--dna-accent) 35%,transparent)}
+.dnaSide .dnaTraitList li .dnaTraitShimmer{background:linear-gradient(90deg,transparent,var(--dna-accent),color-mix(in srgb,var(--dna-accent) 65%,white));box-shadow:0 0 8px var(--dna-accent)}
+.dnaSide .dnaTraitList li .dnaTraitIndex{border-color:var(--dna-accent);color:var(--dna-accent)}
