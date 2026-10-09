@@ -407,3 +407,17 @@
  .navUtilities{right:6px}
  .nav .navSearch,.nav .navNotice{width:30px;min-width:30px}
 }
+
+/* Tres columnas inferiores de la referencia aprobada. */
+.socialTrio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start;padding:32px clamp(20px,5vw,85px) 45px;background:#050d1b;border-top:1px solid rgba(45,103,151,.28)}
+.socialTrio>.section{min-width:0;padding:0;background:transparent}
+.socialTrio .section h2{font-size:clamp(16px,1.4vw,20px);margin:8px 0 10px;letter-spacing:.045em}
+.socialTrio .section .kicker{font-size:10px}
+.socialTrio .sectionIntro,.socialTrio .honesty{font-size:11px!important;line-height:1.55;margin-bottom:12px}
+.socialTrio .lowerGrid{display:grid;grid-template-columns:1fr;gap:10px}
+.socialTrio .lowerCard{min-height:0;border-radius:5px;padding:17px;background:linear-gradient(145deg,#0a1b32,#050f21);border:1px solid #2554778a}
+.socialTrio .lowerCard h3{font-size:14px}
+.socialTrio .lowerCard p{font-size:11px;line-height:1.55}
+.socialTrio .status{border-radius:3px}
+@media(max-width:950px){.socialTrio{grid-template-columns:repeat(2,minmax(0,1fr))}#recomendaciones{grid-column:1/-1}}
+@media(max-width:600px){.socialTrio{grid-template-columns:1fr;padding:34px 20px}.socialTrio>.section,#recomendaciones{grid-column:auto}}
