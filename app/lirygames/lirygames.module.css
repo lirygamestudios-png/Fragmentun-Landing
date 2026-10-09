@@ -674,3 +674,16 @@
 .secretsCopy{flex:0 1 48%;max-width:48%;padding-left:12px;text-shadow:0 2px 9px #050316}
 .secretsCopy h2{color:#f4edff;font-size:clamp(18px,2.15vw,27px)}
 @media(max-width:750px){.secretsBanner{min-height:220px;justify-content:flex-end;padding:14px}.secretsCopy{flex:0 1 62%;max-width:62%;padding-left:0}.secretsBanner::after{background:linear-gradient(90deg,transparent,#060718e8 68%)}}
+
+/* TU VIAJE, TUS REGLAS: franja cinematográfica a ancho completo de viewport. */
+@media(min-width:751px){
+  .finalDiscover{grid-template-columns:minmax(0,1fr) 145px}
+  .finalDiscover .journeyBanner{
+    grid-column:1 / -1;
+    width:calc(100vw - 2 * clamp(20px,5vw,85px));
+    max-width:100%;
+    justify-self:stretch;
+  }
+  .finalDiscover .secretsBanner{grid-column:1;grid-row:2}
+  .finalDiscover .finalSignature{grid-column:2;grid-row:2;align-self:end}
+}
