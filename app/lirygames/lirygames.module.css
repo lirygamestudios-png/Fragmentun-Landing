@@ -811,3 +811,54 @@
 #mundos .worldsGrid .gameCard .cardContent{z-index:2}
 #mundos .worldsGrid .gameCard:hover .gameCardArt{transform:scale(1.055);filter:saturate(1.16) contrast(1.06)}
 @media(prefers-reduced-motion:reduce){#mundos .worldsGrid .gameCard .gameCardArt{transition:none}#mundos .worldsGrid .gameCard:hover .gameCardArt{transform:none}}
+
+/* Catalogo premium: encuadre armonizado sin alterar la estructura aprobada.
+   La ilustracion llena la tarjeta y nunca determina sus dimensiones. */
+#mundos .worldsGrid{min-width:0;align-items:stretch}
+#mundos .worldsGrid .gameCard{
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  min-height:0;
+  height:auto;
+  aspect-ratio:1.88 / 1;
+  overflow:hidden;
+  contain:layout paint;
+}
+#mundos .worldsGrid .gameCard .gameCardArt{
+  display:block;
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  object-fit:cover;
+  object-position:50% 43%;
+  opacity:.78;
+  z-index:0;
+  transform:none;
+  filter:brightness(.84) saturate(.82) contrast(1.03);
+}
+#mundos .worldsGrid .gameCard::after{
+  z-index:1;
+  background:linear-gradient(180deg,rgba(3,9,22,.28) 0%,rgba(3,9,22,.05) 32%,rgba(3,9,22,.61) 68%,rgba(3,7,18,.96) 100%);
+}
+#mundos .worldsGrid .gameCard .cardContent{
+  position:relative;
+  z-index:2;
+  box-sizing:border-box;
+  width:100%;
+  height:100%;
+  min-height:0;
+}
+#mundos .worldsGrid .gameCard:hover .gameCardArt{
+  transform:scale(1.025);
+  filter:brightness(.92) saturate(.9) contrast(1.03);
+}
+@media(max-width:520px){
+  #mundos .worldsGrid .gameCard{aspect-ratio:1.45 / 1}
+}
+@media(max-width:350px){
+  #mundos .worldsGrid .gameCard{aspect-ratio:1.9 / 1}
+}
