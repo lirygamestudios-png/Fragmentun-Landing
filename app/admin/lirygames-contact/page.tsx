@@ -17,10 +17,10 @@ export default async function LiryContactAdmin({
 }:{searchParams:Promise<{status?:string}>}){
  const supabase=await createSupabaseServerClient();
  const {data:{user}}=await supabase.auth.getUser();
- if(!user)redirect("/admin/login");
+ if(!user)redirect("/admin/lirygames/login");
  const {data:profile}=await supabase.from("admin_profiles")
    .select("role").eq("user_id",user.id).maybeSingle();
- if(!profile)redirect("/admin/login?unauthorized=1");
+ if(!profile)redirect("/admin/lirygames/login?unauthorized=1");
  const params=await searchParams;
  const selected=["new","reviewing","resolved","archived"].includes(params.status||"")
   ?params.status||"":"";
@@ -34,7 +34,7 @@ export default async function LiryContactAdmin({
  const messages=(data||[]) as ContactMessage[];
  const layout={minHeight:"100vh",padding:"38px clamp(20px,5vw,85px)",background:"#050b19",color:"#e9f6ff",fontFamily:"Arial,sans-serif"};
  return <main style={layout}>
-  <a href="/admin" style={{color:"#76daff",fontSize:12,textDecoration:"none"}}>← VOLVER AL ADMIN</a>
+  <a href="/admin/master/community" style={{color:"#76daff",fontSize:12,textDecoration:"none"}}>← VOLVER A CLIENTES Y COMUNIDAD</a>
   <header style={{borderBottom:"1px solid #235477",paddingBottom:18,marginBottom:20}}>
    <p style={{fontSize:11,letterSpacing:".2em",color:"#5fddff"}}>LIRYGAMES STUDIOS · CONTACTO</p>
    <h1 style={{fontSize:27,margin:"8px 0"}}>Bandeja de mensajes</h1>
