@@ -488,8 +488,8 @@
   .worldShowcase .worldsGrid{grid-column:1;grid-row:1}
   .worldShowcase .worldsNotes{grid-row:2}
   .worldShowcase .dnaSide{
-    position:absolute;grid-column:2;grid-row:1;inset:0;
-    align-self:stretch;height:auto;min-height:0;box-sizing:border-box;overflow:hidden;
+    position:relative;grid-column:2;grid-row:1;
+    align-self:start;height:var(--liry-catalog-height,auto);min-height:0;box-sizing:border-box;overflow:hidden;
     padding:13px 14px 12px;gap:0
   }
   .worldShowcase .dnaSide .kicker{font-size:8px}
