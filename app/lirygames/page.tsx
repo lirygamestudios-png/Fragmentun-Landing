@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {LiryShare} from "../../components/LiryShare";
-import {plannedLiryGames} from "../../lib/games/public-catalog";
+import {LiryGameDiscovery} from "../../components/LiryGameDiscovery";
 import styles from "./lirygames.module.css";
 
 export const metadata={title:"LIRYGAMES STUDIOS | 9 Worlds"};
@@ -24,12 +24,7 @@ export default function LiryGamesFrontDesk(){
       <p className={styles.kicker}>TU UNIVERSO DE JUEGO</p>
       <h2>LOS 9 MUNDOS</h2>
       <p className={styles.sectionIntro}>Cada tarjeta representa un videojuego diferente. Su lanzamiento se anunciará cuando esté realmente disponible.</p>
-      <div className={styles.grid}>{plannedLiryGames.map((game,index)=>
-        <article className={styles.gameCard} key={game.slug}>
-          <span className={styles.number}>{String(index+1).padStart(2,"0")}</span>
-          <div className={styles.cardContent}><span className={styles.status}>PRÓXIMAMENTE</span><h3>{game.title}</h3><p>{game.tagline}</p>
-          <small>3 mundos internos gratuitos previstos</small><details className={styles.gameDetails}><summary>CONOCER ESTE MUNDO ↗</summary><p>Videojuego {String(index+1).padStart(2,"0")} del ecosistema LIRYGAMES. En su lanzamiento inicial se prevén tres mundos internos gratuitos y compras opcionales de personalización.</p><p>Acceso jugable: pendiente del lanzamiento oficial.</p></details></div>
-        </article>)}</div>
+      <LiryGameDiscovery />
     </section>
     <section className={styles.section} id="liry-dna">
       <p className={styles.kicker}>TU IDENTIDAD GAMER</p><h2>DESCUBRE TU LIRY DNA</h2>
