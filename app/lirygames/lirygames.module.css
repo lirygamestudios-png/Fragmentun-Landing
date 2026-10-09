@@ -459,3 +459,12 @@
 @media(max-width:950px){#liry-dna .dnaArt{min-height:455px}#liry-dna .dnaMap{width:min(100%,315px)}}
 @media(max-width:600px){#liry-dna .dnaArt{min-height:425px}#liry-dna .dnaMap{width:min(100%,300px)}}
 @media(prefers-reduced-motion:reduce){.dnaConnections,.dnaPlatform{animation:none!important}}
+
+/* Corrección de medidas del SVG vertical (viewBox 320×490).
+   Evita que la altura heredada de 135px recorte o desplace el ADN. */
+#liry-dna .dnaArt{height:auto;min-height:0;aspect-ratio:320/490;max-width:100%;margin:8px -8px 18px;overflow:hidden}
+#liry-dna .dnaMap{display:block;flex:0 1 auto;width:min(100%,335px);height:auto;max-height:none;aspect-ratio:320/490}
+#liry-dna .dnaOrbit,#liry-dna .dnaHelix{transform-origin:160px 220px}
+#liry-dna .dnaPulse{transform-origin:160px 220px}
+@media(max-width:950px){#liry-dna .dnaArt{min-height:0}#liry-dna .dnaMap{width:min(100%,315px)}}
+@media(max-width:600px){#liry-dna .dnaArt{min-height:0;width:100%;margin:8px auto 18px}#liry-dna .dnaMap{width:min(100%,300px)}}
