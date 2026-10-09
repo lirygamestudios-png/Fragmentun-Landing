@@ -1,4 +1,5 @@
 "use client";
+import {useEffect,useRef,useState,type CSSProperties} from "react";
 import {type PublicGameCard} from "../lib/games/public-catalog";
 import styles from "../app/lirygames/lirygames.module.css";
 
@@ -6,8 +7,20 @@ const themes=["COMPETITIVO · ACCIÓN · MULTIJUGADOR","ESTRATEGIA · ACCIÓN ·
 const traits=["Explorador","Estratega","Competidor","Social","Acción","Creativo"];
 
 export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
+  const catalogRef=useRef<HTMLDivElement>(null);
+  const [catalogHeight,setCatalogHeight]=useState<number|null>(null);
+  useEffect(()=>{
+    const catalog=catalogRef.current;
+    if(!catalog)return;
+    const measure=()=>setCatalogHeight(Math.ceil(catalog.getBoundingClientRect().height));
+    measure();
+    const observer=new ResizeObserver(measure);
+    observer.observe(catalog);
+    return ()=>observer.disconnect();
+  },[]);
+  const dnaHeightStyle={"--liry-catalog-height":catalogHeight===null?undefined:`${catalogHeight}px`} as CSSProperties;
   return <div className={styles.worldShowcase}>
-    <div className={styles.worldsGrid}>
+    <div className={styles.worldsGrid} ref={catalogRef}>
       {games.map((game,index)=><article className={styles.gameCard} key={game.slug} style={{["--world-index" as string]:index+1}}>
         <div className={styles.cardContent}>
           <div className={styles.worldCardText}>
@@ -19,7 +32,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
         </div>
       </article>)}
     </div>
-    <aside className={styles.dnaSide} id="liry-dna" aria-labelledby="dna-side-title">
+    <aside className={styles.dnaSide} style={dnaHeightStyle} id="liry-dna" aria-labelledby="dna-side-title">
       <p className={styles.kicker}>EXPERIENCIA INTERACTIVA</p>
       <h3 id="dna-side-title">DESCUBRE TU <span>LIRY DNA</span></h3>
       <div className={styles.dnaArt} aria-hidden="true">
