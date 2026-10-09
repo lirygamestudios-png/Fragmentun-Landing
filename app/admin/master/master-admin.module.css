@@ -2453,3 +2453,19 @@
 .moduleCommerce .notice{border-radius:13px;overflow-wrap:anywhere}
 .moduleCommerce .sectionHead h2{overflow-wrap:anywhere}
 @media(max-width:600px){.moduleCommerce .adminForm label{width:100%}.moduleCommerce .adminForm input,.moduleCommerce .adminForm select{max-width:100%}}
+
+/* Laboratorio Comercio: mismas superficies y campos del Admin aprobado. */
+.commerceSimulation{margin:18px 12px;padding:20px;border:1px solid rgba(99,177,222,.32);border-radius:14px;background:linear-gradient(145deg,rgba(18,40,72,.95),rgba(11,25,48,.95));color:#dceaff}
+.commerceSimulationTitle{color:#79dff8;font-weight:800;letter-spacing:.055em;font-size:12px}
+.commerceSimulationGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.commerceSimulationField,.commerceSimulationResult{min-width:0;padding:16px;border:1px solid rgba(89,146,188,.42);border-radius:12px;background:#0f203b}
+.commerceSimulationField label{display:flex;flex-direction:column;gap:9px;color:#c1e1f2;font-size:13px;font-weight:700}
+.commerceSimulationSelect,.commerceSimulationButton{width:100%;min-height:44px;padding:11px 12px;border:1px solid #577ca3;border-radius:10px;background:linear-gradient(145deg,#142b4a,#1b3b61);color:#effaff;font:inherit;font-size:13px}
+.commerceSimulationSelect:focus-visible,.commerceSimulationButton:focus-visible{outline:2px solid #76dfff;outline-offset:3px}
+.commerceSimulationButton{cursor:pointer;font-weight:750}
+.commerceSimulationButton:hover:not(:disabled){border-color:#80dfff;background:#22486d}
+.commerceSimulationButton:disabled{opacity:.55;cursor:not-allowed}
+.commerceSimulationResult{margin-top:14px}
+.commerceSimulationActions{display:flex;flex-wrap:wrap;gap:9px}
+.commerceSimulationActions .commerceSimulationButton{width:auto}
+@media(max-width:600px){.commerceSimulation{margin:12px 6px;padding:12px}.commerceSimulationActions .commerceSimulationButton{width:100%}}
