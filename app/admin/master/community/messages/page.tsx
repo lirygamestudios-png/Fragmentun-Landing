@@ -14,7 +14,7 @@ const category:Record<string,string>={
 export const dynamic="force-dynamic";
 export default async function LiryContactAdmin({
  searchParams
-}:{searchParams:Promise<{status?:string;q?:string;subject?:string;pending?:string}>}){
+}:{searchParams:Promise<{status?:string;q?:string;subject?:string;pending?:string;draft?:string}>}){
  const supabase=await createSupabaseServerClient();
  const {data:{user}}=await supabase.auth.getUser();
  if(!user)redirect("/admin/lirygames/login");
@@ -27,7 +27,8 @@ export default async function LiryContactAdmin({
  const search=(params.q||"").trim().slice(0,80).replace(/[%_,()]/g,"");
  const subject=["opinion","suggestion","problem","business","other"].includes(params.subject||"")?params.subject||"":"";
  const pending=params.pending==="1";
- const queryString=(status:string)=>{const p=new URLSearchParams();if(status)p.set("status",status);if(search)p.set("q",search);if(subject)p.set("subject",subject);if(pending)p.set("pending","1");return "?"+p.toString();};
+ const draftFilter=["ready","missing"].includes(params.draft||"")?params.draft||"":"";
+ const queryString=(status:string)=>{const p=new URLSearchParams();if(status)p.set("status",status);if(search)p.set("q",search);if(subject)p.set("subject",subject);if(pending)p.set("pending","1");if(draftFilter)p.set("draft",draftFilter);return "?"+p.toString();};
  const db=supabase;
  const {data:owners}=await db.from("admin_profiles").select("user_id,display_name").order("display_name");
  let query=db.from("lirygames_contact_messages")
@@ -37,6 +38,8 @@ export default async function LiryContactAdmin({
  if(subject)query=query.eq("subject",subject);
  if(search)query=query.or(`name.ilike.%${search}%,email.ilike.%${search}%`);
  if(pending)query=query.in("status",["new","reviewing"]);
+ if(draftFilter==="ready")query.not("response_draft","is",null).neq("response_draft","");
+ if(draftFilter==="missing")query.or("response_draft.is.null,response_draft.eq.");
  const {data,error}=await query;
  const now=Date.now();
  const ageDays=(date:string)=>Math.max(0,Math.floor((now-new Date(date).getTime())/86400000));
@@ -79,6 +82,7 @@ export default async function LiryContactAdmin({
   <form method="GET" aria-label="Buscar y clasificar mensajes" style={{display:"flex",flexWrap:"wrap",alignItems:"end",gap:10,padding:"14px 16px",border:"1px solid #285571",borderRadius:10,background:"#091a2e",marginBottom:16}}>
    {selected&&<input type="hidden" name="status" value={selected}/>}
    {pending&&<input type="hidden" name="pending" value="1"/>}
+   {draftFilter&&<input type="hidden" name="draft" value={draftFilter}/>}
    <label style={{display:"grid",gap:6,flex:"2 1 230px",color:"#b9d8ed",fontSize:11}}>Buscar por nombre o correo
     <input name="q" defaultValue={search} maxLength={80} placeholder="Nombre o correo electrónico..." style={{width:"100%",padding:"11px 12px",background:"#061429",color:"#f2fbff",border:"1px solid #3179a1",borderRadius:7}}/>
    </label>
@@ -93,6 +97,13 @@ export default async function LiryContactAdmin({
   <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap",marginBottom:14}}>
    <a href={pending?queryString(selected).replace(/([?&])pending=1(&|$)/,"$1").replace(/[?&]$/,"")||"?":queryString(selected)+(queryString(selected)==="?"?"":"&")+"pending=1"} style={{padding:"10px 15px",border:"1px solid "+(pending?"#ffbf79":"#39769b"),borderRadius:8,background:pending?"#49301c":"#0a263e",color:pending?"#ffd5a7":"#bce9ff",textDecoration:"none",fontSize:11,fontWeight:800}}>{pending?"✓ MOSTRANDO PENDIENTES · QUITAR FILTRO":"VER SOLO PENDIENTES →"}</a>
    <span style={{color:"#92b1ca",fontSize:11}}>Los pendientes se ordenan por antigüedad y necesidad de asignación.</span>
+  </div>
+  <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:14}}>
+   <span style={{color:"#94b6cc",fontSize:11,marginRight:3}}>PREPARACIÓN DE RESPUESTAS</span>
+   {([["","Todos"],["ready","Con borrador"],["missing","Sin borrador"]] as const).map(([value,label])=>{
+    const p=new URLSearchParams();if(selected)p.set("status",selected);if(search)p.set("q",search);if(subject)p.set("subject",subject);if(pending)p.set("pending","1");if(value)p.set("draft",value);
+    return <a key={value} href={"?"+p.toString()} style={{padding:"8px 12px",border:"1px solid "+(value===draftFilter?"#5be0f8":"#315571"),borderRadius:7,background:value===draftFilter?"#123f54":"#0a2134",color:value===draftFilter?"#e4fbff":"#add1e6",fontSize:11,textDecoration:"none"}}>{label}</a>;
+   })}
   </div>
   <nav aria-label="Filtrar mensajes" style={{display:"flex",flexWrap:"wrap",gap:9,marginBottom:20}}>
    {[["","TODOS"],["new","NUEVOS"],["reviewing","EN REVISIÓN"],["resolved","RESUELTOS"],["archived","ARCHIVADOS"]].map(([value,label])=>
@@ -113,6 +124,7 @@ export default async function LiryContactAdmin({
        <span style={{color:"#79dffe"}}>{category[item.subject]||"Consulta"}</span>
        <span>{item.status==="new"?"NUEVO":item.status==="reviewing"?"EN REVISIÓN":item.status==="resolved"?"RESUELTO":"ARCHIVADO"}</span>
        {item.game_slug&&<span>Producto: {item.game_slug}</span>}
+       {isPending(item)&&<span style={{padding:"3px 7px",borderRadius:5,border:"1px solid "+(item.response_draft?.trim()?"#3b9c91":"#926a37"),color:item.response_draft?.trim()?"#a1f4dc":"#ffdda8"}}>{item.response_draft?.trim()?"BORRADOR PREPARADO · NO ENVIADO":"RESPUESTA POR PREPARAR"}</span>}
       </div>
       <p style={{fontSize:13,lineHeight:1.55,whiteSpace:"pre-wrap",overflowWrap:"anywhere",margin:0}}>{item.message}</p>
       {["admin","editor"].includes(profile.role)&&<LiryContactFollowup id={item.id} status={item.status} note={item.internal_note} assignedTo={item.assigned_to} responseDraft={item.response_draft} owners={owners||[]} />}
