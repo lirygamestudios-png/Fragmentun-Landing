@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {LiryShare} from "../../components/LiryShare";
+import {LiryContactForm} from "../../components/LiryContactForm";
 import {LiryGameDiscovery} from "../../components/LiryGameDiscovery";
 import {getLiryPublicCatalog} from "../../lib/games/public-catalog-server";
 import styles from "./lirygames.module.css";
@@ -192,6 +193,7 @@ export default async function LiryGamesFrontDesk(){
       </section>
       <div className={styles.finalSignature} aria-label="Liry: más que videojuegos"><span aria-hidden="true">▽</span><strong>MÁS QUE<br/>VIDEOJUEGOS.<br/>ES TODO<br/>UN UNIVERSO.</strong></div>
     </div>
+    <section className={`${styles.section} ${styles.contactSection}`} id="contacto" aria-labelledby="liry-contact-title"><p className={styles.kicker}>TU OPINIÓN NOS IMPORTA</p><h2 id="liry-contact-title">CONTACTA CON LIRYGAMES</h2><p>Comparte sugerencias, opiniones sobre nuestros videojuegos o propuestas de colaboración. Queremos escucharte.</p><LiryContactForm /></section>
     <footer className={styles.footer}>
       <div className={styles.footerIdentity}><strong>LIRY<span>GAMES</span></strong><small>STUDIOS</small></div>
       <div className={styles.footerTagline}>MÁS QUE VIDEOJUEGOS.<br/>ES TODO UN UNIVERSO.</div>
