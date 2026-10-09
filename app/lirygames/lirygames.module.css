@@ -737,3 +737,12 @@
 .dnaSide .dnaTraitList li .dnaTraitTrack{border-color:color-mix(in srgb,var(--dna-accent) 65%,#12294c);box-shadow:inset 0 0 5px #102b44,0 0 6px color-mix(in srgb,var(--dna-accent) 35%,transparent)}
 .dnaSide .dnaTraitList li .dnaTraitShimmer{background:linear-gradient(90deg,transparent,var(--dna-accent),color-mix(in srgb,var(--dna-accent) 65%,white));box-shadow:0 0 8px var(--dna-accent)}
 .dnaSide .dnaTraitList li .dnaTraitIndex{border-color:var(--dna-accent);color:var(--dna-accent)}
+
+/* Afinación final: pie de página conforme a la identidad aprobada. */
+.page .footer{display:grid;grid-template-columns:minmax(155px,1fr) minmax(170px,1.2fr) minmax(0,2fr);align-items:center;gap:12px 28px;text-align:left;padding:24px clamp(20px,4.5vw,76px);background:#020914;border-top:1px solid #184468;color:#aec9dc}
+.footerIdentity{display:flex;flex-direction:column;gap:3px;min-width:0}.footerIdentity strong{font-size:23px;letter-spacing:.13em;color:#fff}.footerIdentity strong span{font-weight:300;letter-spacing:.09em}.footerIdentity small{font-size:9px;letter-spacing:.44em;color:#bed9ee}
+.footerTagline{font-size:13px;line-height:1.65;font-weight:800;color:#61d3f7;letter-spacing:.19em}
+.footerNav{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:9px 14px}.footerNav a{font-size:9px;color:#c4d8e8;text-decoration:none}.footerNav a:hover{color:#4ddafb}
+.footerCopyright{grid-column:1/-1;border-top:1px solid #18334b;padding-top:11px;text-align:right;color:#829db4;font-size:9px}
+@media(max-width:800px){.page .footer{grid-template-columns:1fr 1fr}.footerNav{grid-column:1/-1;justify-content:flex-start}.footerCopyright{text-align:left}}
+@media(max-width:520px){.page .footer{grid-template-columns:1fr;gap:15px}.footerNav{grid-column:1}.footerCopyright{grid-column:1}}
