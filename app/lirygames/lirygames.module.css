@@ -746,3 +746,10 @@
 .footerCopyright{grid-column:1/-1;border-top:1px solid #18334b;padding-top:11px;text-align:right;color:#829db4;font-size:9px}
 @media(max-width:800px){.page .footer{grid-template-columns:1fr 1fr}.footerNav{grid-column:1/-1;justify-content:flex-start}.footerCopyright{text-align:left}}
 @media(max-width:520px){.page .footer{grid-template-columns:1fr;gap:15px}.footerNav{grid-column:1}.footerCopyright{grid-column:1}}
+
+/* Arte existente de la biblioteca LiryGames integrado en Tu viaje, tus reglas. */
+.journeyBanner{position:relative;isolation:isolate;min-height:215px;display:flex;align-items:center;background:#061329}
+.journeyCinematicImage{position:absolute;inset:0;z-index:-2;background-image:url("/lirygames-mundos-fondo-sin-logo.webp");background-size:cover;background-position:center 51%;background-repeat:no-repeat;filter:saturate(1.13) contrast(1.06)}
+.journeyBanner::before{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,rgba(2,9,24,.88),rgba(3,16,33,.61) 43%,rgba(3,10,26,.08) 80%);pointer-events:none}
+.journeyBannerContent{padding:22px 28px;max-width:540px;text-shadow:0 2px 15px rgba(0,3,15,.78)}
+@media(max-width:750px){.journeyCinematicImage{background-position:55% center}.journeyBannerContent{padding:24px 18px}.journeyBanner::before{background:linear-gradient(90deg,rgba(2,9,24,.9),rgba(2,9,24,.56))}}
