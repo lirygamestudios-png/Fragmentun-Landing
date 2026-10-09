@@ -30,7 +30,7 @@ export default async function LiryGamesFrontDesk(){
   return <main className={styles.page}>
     <header className={styles.nav}>
       <a className={styles.brand} href="#inicio" aria-label="LiryGames Studios"><span className={styles.sigil} aria-hidden="true"><i></i><b></b></span><span className={styles.wordmark}><strong>LIRY</strong><span>GAMES STUDIOS</span><small>UNIVERSO DE VIDEOJUEGOS</small></span></a>
-      <nav aria-label="Navegación LIRYGAMES"><a href="#inicio">Inicio</a><a href="#mundos">Mundos</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">Tu viaje</a><a href="#comunidad">Comunidad</a><a href="#tienda">Tienda</a></nav><div className={styles.navUtilities}><a className={styles.navSearch} href="#mundos" aria-label="Explorar los nueve videojuegos" title="Explorar videojuegos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m16 16 5 5"/></svg></a><a className={styles.navNotice} href="#eventos" aria-label="Ver eventos y anuncios" title="Eventos y anuncios"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></a><a className={styles.profileAccess} href="#perfil-gamer" aria-label="Acceder al perfil gamer; inicio de sesión próximamente" title="Perfil gamer · acceso próximamente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 3-6 7-6s6.5 2 7 6"/></svg><span>VISITANTE</span></a><details className={styles.navMenu}><summary aria-label="Abrir menú de navegación"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary><div className={styles.navMenuPanel}><a href="#inicio">Inicio</a><a href="#mundos">Los 9 Mundos</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">Tu viaje</a><a href="#comunidad">Comunidad</a><a href="#tienda">Tienda</a></div></details></div>
+      <nav aria-label="Navegación LIRYGAMES"><a href="#inicio">Inicio</a><a href="#mundos">Mundos</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">Tu viaje</a><a href="#comunidad">Comunidad</a><a href="#tienda">Tienda</a></nav><div className={styles.navUtilities}><a className={styles.navSearch} href="#mundos" aria-label="Explorar los nueve videojuegos" title="Explorar videojuegos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m16 16 5 5"/></svg></a><a className={styles.navNotice} href="#social" aria-label="Ver la sección social" title="Redes sociales y compartir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></a><a className={styles.profileAccess} href="#perfil-gamer" aria-label="Acceder al perfil gamer; inicio de sesión próximamente" title="Perfil gamer · acceso próximamente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 3-6 7-6s6.5 2 7 6"/></svg><span>VISITANTE</span></a><details className={styles.navMenu}><summary aria-label="Abrir menú de navegación"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary><div className={styles.navMenuPanel}><a href="#inicio">Inicio</a><a href="#mundos">Los 9 Mundos</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">Tu viaje</a><a href="#comunidad">Comunidad</a><a href="#tienda">Tienda</a></div></details></div>
     </header>
     <section className={styles.hero} id="inicio">
       <div className={styles.heroUniverse} aria-hidden="true"><span className={styles.heroOrbitOne}></span><span className={styles.heroOrbitTwo}></span><span className={styles.heroPlanet}></span><span className={styles.heroSatellite}></span><span className={styles.heroStardust}></span></div>
@@ -95,17 +95,25 @@ export default async function LiryGamesFrontDesk(){
           <div className={styles.communityPost}><span className={styles.communityAvatar} aria-hidden="true">L</span><div><strong>Tu comunidad Liry</strong><p>Comparte la página e invita a otros jugadores a descubrir los nueve mundos.</p><small>Comunidad en preparación</small></div></div>
         </div>
         <div className={styles.communityCompose}><span>Publicaciones disponibles próximamente</span><span aria-hidden="true">➤</span></div>
-        <LiryShare />
       </section>
-      <section className={styles.section} id="eventos">
-        <h2>EVENTOS EN VIVO</h2><p className={styles.socialIntro}>No te lo pierdas.</p>
-        <div className={styles.eventMain}><div className={styles.eventLight} aria-hidden="true">⚡</div><div className={styles.eventMainContent}><span>PRÓXIMO EVENTO · POR ANUNCIAR</span><h3>SKILL ARENA</h3><strong>TORNEO GLOBAL</strong><p>Fecha, horario e inscripciones pendientes de confirmación oficial.</p><span className={styles.eventOutline}>INSCRIPCIONES PRÓXIMAMENTE</span></div></div>
-        <div className={styles.eventMiniGrid}>
-          <article className={styles.eventMini}><span className={styles.eventMiniIcon} aria-hidden="true">✦</span><div><strong>Evento especial</strong><p>Gaias Last Stand</p><small>Fecha por anunciar</small></div><span className={styles.eventMiniLink}>Próximamente</span></article>
-          <article className={styles.eventMini}><span className={styles.eventMiniIcon} aria-hidden="true">♜</span><div><strong>Recompensas exclusivas</strong><p>Nexo Social</p><small>Detalles pendientes</small></div><span className={styles.eventMiniLink}>Próximamente</span></article>
+      <section className={styles.section} id="social">
+        <h2>SECCIÓN SOCIAL</h2>
+        <p className={styles.socialIntro}>Conecta con LIRYGAMES y comparte nuestro universo.</p>
+        <div className={styles.socialFeature}>
+          <span className={styles.socialFeatureIcon} aria-hidden="true">✦</span>
+          <strong>COMPARTE LIRYGAMES</strong>
+          <p>Invita a tus amigos a conocer los nueve mundos y forma parte de nuestra comunidad desde el inicio.</p>
         </div>
+        <p className={styles.socialChannelsTitle}>COMPARTE EN TUS REDES</p>
+        <LiryShare />
+        <div className={styles.socialChannels}>
+          <strong>SÍGUENOS EN REDES SOCIALES</strong>
+          <p>Los perfiles oficiales aparecerán aquí cuando sus enlaces estén verificados en el Admin.</p>
+          <div className={styles.socialNetworkLabels}><span>INSTAGRAM</span><span>TIKTOK</span><span>YOUTUBE</span><span>FACEBOOK</span></div>
+        </div>
+        <small className={styles.socialPending}>Solo se habilitan enlaces oficiales confirmados; compartir la página ya está disponible.</small>
       </section>
-      <section className={styles.section} id="recomendaciones">
+            <section className={styles.section} id="recomendaciones">
         <h2>RECOMENDACIONES PARA TI</h2><p className={styles.socialIntro}>Basado en tu Liry DNA.</p>
         <div className={styles.recommendList}>
           {[{title:"Nexo Social",reason:"Conecta con otros jugadores",index:4},{title:"Gaias Last Stand",reason:"Explora un mundo de supervivencia",index:3},{title:"Eternun",reason:"Descubre un universo de fantasía",index:5}].map(game=><article className={styles.recommendItem} key={game.title}><div className={`${styles.recommendThumb} ${styles[`recommendThumb${game.index}`]} `} aria-hidden="true"><span>✧</span></div><div className={styles.recommendText}><strong>{game.title}</strong><p>{game.reason}</p><small>Selección editorial · personalización pendiente</small></div><a href="#mundos">Ver juego →</a></article>)}
