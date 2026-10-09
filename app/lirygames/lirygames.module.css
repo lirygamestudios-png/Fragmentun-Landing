@@ -17,3 +17,21 @@
 .gameDetails{margin-top:14px;border-top:1px solid #5ba9e733;padding-top:12px}.gameDetails summary{cursor:pointer;color:#7ddafc;font-size:11px;font-weight:800;letter-spacing:.08em;list-style-position:inside}.gameDetails p{color:#c2d5ea;font-size:12px;line-height:1.65}.nav nav{flex-wrap:wrap;justify-content:flex-end}.nav nav a{transition:color .2s}.nav nav a:hover,.nav nav a:focus-visible{color:#69dcff}@media(max-width:650px){.nav{height:auto;min-height:82px;padding-top:13px;padding-bottom:13px;gap:13px;align-items:flex-start;flex-direction:column}.nav nav{justify-content:flex-start;gap:14px}}
 
 .lowerGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.lowerCard{padding:30px;min-height:195px;border:1px solid #3871ac77;border-radius:13px;background:radial-gradient(circle at 100% 0%,#5239a040,transparent 65%),linear-gradient(135deg,#182c54,#0b1429)}.lowerCard h3{font-size:19px;margin:19px 0 8px}.lowerCard p{color:#b8cbe2;line-height:1.7;font-size:13px}.miniLink{display:inline-block;margin-top:15px;color:#75ddff;font-size:12px;font-weight:800;text-decoration:none;letter-spacing:.08em}.miniLink:hover{text-decoration:underline}@media(max-width:700px){.lowerGrid{grid-template-columns:1fr}}
+
+/* Composición individual por videojuego; arte provisional generado con CSS, sin fingir assets aprobados. */
+.gameCard{isolation:isolate;min-height:282px;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.gameCard::before{content:"";position:absolute;z-index:-1;width:170px;height:170px;right:14%;top:2%;border-radius:50%;background:radial-gradient(circle at 34% 29%,var(--world-light,#80e8ff),var(--world-mid,#1c5a9b) 28%,var(--world-dark,#0a142c) 67%,transparent 72%);box-shadow:0 0 55px var(--world-glow,#409dff55),inset -26px -18px 38px #030a20cc;opacity:.78}
+.gameCard::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,#050a1cee 0%,#08132999 43%,transparent 95%),radial-gradient(circle at 70% 5%,var(--world-glow,#408aff22),transparent 63%)}
+.gameCard:nth-child(1){--world-light:#bde9ff;--world-mid:#2686d7;--world-dark:#0b2656;--world-glow:#4a9dff66}
+.gameCard:nth-child(2){--world-light:#f6bbff;--world-mid:#9732ad;--world-dark:#401451;--world-glow:#d12fea88}
+.gameCard:nth-child(3){--world-light:#ffe6a2;--world-mid:#cb8d36;--world-dark:#4d260e;--world-glow:#ffc15a77}
+.gameCard:nth-child(4){--world-light:#b8ffe3;--world-mid:#398e73;--world-dark:#113a30;--world-glow:#30c6a16b}
+.gameCard:nth-child(5){--world-light:#d2ceff;--world-mid:#695cdb;--world-dark:#20185d;--world-glow:#a088ff66}
+.gameCard:nth-child(6){--world-light:#ffe6ef;--world-mid:#a44c84;--world-dark:#461946;--world-glow:#ee75bc77}
+.gameCard:nth-child(7){--world-light:#f5ddff;--world-mid:#7547b8;--world-dark:#241450;--world-glow:#ab6dff77}
+.gameCard:nth-child(8){--world-light:#bbf6e8;--world-mid:#2985aa;--world-dark:#123453;--world-glow:#2dcbde66}
+.gameCard:nth-child(9){--world-light:#d5fbff;--world-mid:#4876d8;--world-dark:#102154;--world-glow:#4eaaff77}
+.gameCard:hover{box-shadow:0 10px 42px var(--world-glow,#3d8dff33);transform:translateY(-5px)}
+.gameCard .cardContent{position:relative;z-index:1;width:100%}
+.gameCard .number{z-index:1}
+@media(prefers-reduced-motion:reduce){.gameCard{transition:none}.gameCard:hover{transform:none}}
