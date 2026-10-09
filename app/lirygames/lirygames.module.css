@@ -803,14 +803,14 @@
 .page :global(#mundos) .worldsGrid{
  display:grid;
  grid-template-columns:repeat(3,minmax(0,1fr));
- grid-auto-rows:140px;
+ grid-auto-rows:190px;
  gap:10px;
  min-width:0;
  align-content:start;
 }
 .page :global(#mundos) .worldsGrid>.gameCard{
  display:block;position:relative;isolation:isolate;
- width:100%;height:140px;min-height:0;max-height:140px;
+ width:100%;height:190px;min-height:0;max-height:190px;
  aspect-ratio:auto;box-sizing:border-box;
  overflow:hidden;border-radius:7px;padding:0;
 }
@@ -835,19 +835,19 @@
 .page :global(#mundos) .worldsGrid>.gameCard .worldCardText{min-width:0;max-width:100%;overflow:hidden}
 .page :global(#mundos) .worldsGrid>.gameCard:hover .gameCardArt{transform:scale(1.025)}
 @media(max-width:1000px){
- .page :global(#mundos) .worldsGrid{grid-auto-rows:125px;gap:8px}
- .page :global(#mundos) .worldsGrid>.gameCard{height:125px;max-height:125px}
+ .page :global(#mundos) .worldsGrid{grid-auto-rows:170px;gap:8px}
+ .page :global(#mundos) .worldsGrid>.gameCard{height:170px;max-height:170px}
 }
 @media(max-width:750px){
- .page :global(#mundos) .worldsGrid{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:125px}
+ .page :global(#mundos) .worldsGrid{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:170px}
 }
 @media(max-width:520px){
- .page :global(#mundos) .worldsGrid{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:130px}
- .page :global(#mundos) .worldsGrid>.gameCard{height:130px;max-height:130px}
+ .page :global(#mundos) .worldsGrid{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:155px}
+ .page :global(#mundos) .worldsGrid>.gameCard{height:155px;max-height:155px}
 }
 @media(max-width:350px){
- .page :global(#mundos) .worldsGrid{grid-template-columns:minmax(0,1fr);grid-auto-rows:145px}
- .page :global(#mundos) .worldsGrid>.gameCard{height:145px;max-height:145px}
+ .page :global(#mundos) .worldsGrid{grid-template-columns:minmax(0,1fr);grid-auto-rows:165px}
+ .page :global(#mundos) .worldsGrid>.gameCard{height:165px;max-height:165px}
 }
 @media(prefers-reduced-motion:reduce){
  .page :global(#mundos) .worldsGrid>.gameCard>.gameCardArt{transition:none}
