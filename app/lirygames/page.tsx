@@ -5,7 +5,7 @@ import {getLiryPublicCatalog} from "../../lib/games/public-catalog-server";
 import styles from "./lirygames.module.css";
 
 export const metadata={
-  title:"LIRYGAMES STUDIOS — 9 mundos, infinitas formas de jugar",
+  title:{absolute:"LIRYGAMES STUDIOS — 9 mundos, infinitas formas de jugar"},
   description:"Descubre los nueve videojuegos de LIRYGAMES STUDIOS, un ecosistema de experiencias y comunidades gamer. Próximamente.",
   applicationName:"LIRYGAMES STUDIOS",
   category:"Games",
