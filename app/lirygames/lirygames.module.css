@@ -266,3 +266,18 @@
 #mundos .gameDetails p{margin:9px 0 0;font-size:12px;line-height:1.55}
 #mundos .discoverControls input:focus-visible,#mundos .discoverControls select:focus-visible,#mundos .discoveryReset:focus-visible{outline:2px solid #8de4ff;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){#mundos .gameCard{transition:none;transform:none}}
+
+/* Liry DNA · mismo lenguaje visual de marcos rectangulares aprobado. */
+#liry-dna{background:linear-gradient(180deg,#071024,#09172d 55%,#071123)}
+#liry-dna .sectionIntro{max-width:630px;font-size:14px;line-height:1.6}
+#liry-dna .dnaGrid{gap:15px}
+#liry-dna .dnaCard{
+  position:relative;min-height:145px;padding:23px 24px;
+  border-radius:5px;border:1px solid rgba(87,157,207,.39);
+  background:linear-gradient(135deg,rgba(24,46,80,.87),rgba(8,20,41,.98));
+  box-shadow:inset 0 1px 0 rgba(124,194,233,.09),0 10px 26px rgba(0,6,18,.14);
+}
+#liry-dna .dnaCard h3{margin:13px 0 7px;font-size:18px;letter-spacing:.015em}
+#liry-dna .dnaCard p{margin:0;color:#a9bed7;font-size:12px}
+#liry-dna .dnaDot{width:11px;height:11px;background:#69d6ff;box-shadow:0 0 15px rgba(74,199,253,.55)}
+@media(max-width:520px){#liry-dna .dnaCard{min-height:120px;padding:19px 21px}}
