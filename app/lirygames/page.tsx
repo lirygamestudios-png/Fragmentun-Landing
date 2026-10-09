@@ -1,11 +1,13 @@
 import Link from "next/link";
 import {LiryShare} from "../../components/LiryShare";
 import {LiryGameDiscovery} from "../../components/LiryGameDiscovery";
+import {getLiryPublicCatalog} from "../../lib/games/public-catalog-server";
 import styles from "./lirygames.module.css";
 
 export const metadata={title:"LIRYGAMES STUDIOS | 9 Worlds"};
 
-export default function LiryGamesFrontDesk(){
+export default async function LiryGamesFrontDesk(){
+  const games=await getLiryPublicCatalog();
   return <main className={styles.page}>
     <header className={styles.nav}>
       <a className={styles.brand} href="#inicio" aria-label="LiryGames Studios"><span className={styles.sigil} aria-hidden="true"><i></i><b></b></span><span className={styles.wordmark}><strong>LIRY</strong><span>GAMES STUDIOS</span><small>COMMAND CENTER UNIVERSE</small></span></a>
@@ -24,7 +26,7 @@ export default function LiryGamesFrontDesk(){
       <p className={styles.kicker}>TU UNIVERSO DE JUEGO</p>
       <h2>LOS 9 MUNDOS</h2>
       <p className={styles.sectionIntro}>Cada tarjeta representa un videojuego diferente. Su lanzamiento se anunciará cuando esté realmente disponible.</p>
-      <LiryGameDiscovery />
+      <LiryGameDiscovery games={games} />
     </section>
     <section className={styles.section} id="liry-dna">
       <p className={styles.kicker}>TU IDENTIDAD GAMER</p><h2>DESCUBRE TU LIRY DNA</h2>
