@@ -77,7 +77,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
         </svg>
       </div>
       <p>Conoce los seis estilos que formarán parte de tu identidad gamer.</p>
-      <a className={styles.dnaSideButton} href="#dna-perfiles">EXPLORAR ESTILOS →</a>
+      <a className={styles.dnaSideButton} href="#liry-dna">EXPLORAR ESTILOS →</a>
       <ul className={styles.dnaTraitList}>
         {traits.map((trait,i)=><li key={trait}><span className={styles.dnaTraitIndex}>{i+1}</span><span>{trait}</span><span className={styles.dnaTraitPending}>Por evaluar</span><span className={styles.dnaTraitTrack} aria-hidden="true"><span className={styles.dnaTraitShimmer}/></span></li>)}
       </ul>
