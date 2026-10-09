@@ -871,3 +871,25 @@
 .nav .languageActive{color:#63dcff}
 .nav .languageDivider,.nav .languageInactive{color:#839eb7}
 @media(max-width:750px){.nav .languagePreview{padding:4px 5px;min-height:36px;font-size:9px;gap:3px}}
+
+/* Interacciones coherentes con el boton principal del banner.
+   Efecto solo al hover o foco de controles autenticamente interactivos. */
+.page :is(a[href],button:not(:disabled),summary):hover,
+.page :is(a[href],button:not(:disabled),summary):focus-visible{
+  border-color:#78e9ff;
+  background-color:rgba(8,65,105,.8);
+  box-shadow:0 0 15px rgba(66,219,255,.55),inset 0 0 8px rgba(50,183,255,.19);
+  color:#fff;
+  transition:border-color .2s ease,background-color .2s ease,box-shadow .2s ease,color .2s ease;
+}
+/* La tienda presenta categorias informativas: reaccion visual sin prometer navegacion. */
+.page .storeCategory{transition:border-color .22s ease,box-shadow .22s ease,background-color .22s ease}
+.page .storeCategory:hover{
+  border-color:#78e9ff;
+  background-color:rgba(8,65,105,.8);
+  box-shadow:0 0 22px rgba(66,219,255,.5),inset 0 0 12px rgba(50,183,255,.18);
+}
+.page .storeCategory:hover .storeCategoryLine{box-shadow:0 0 16px #42dbff}
+@media(prefers-reduced-motion:reduce){
+ .page :is(a[href],button:not(:disabled),summary),.page .storeCategory{transition:none}
+}
