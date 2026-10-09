@@ -11,7 +11,7 @@ export default function LiryGamesFrontDesk(){
       <nav aria-label="Navegación LIRYGAMES"><a href="#inicio">Inicio</a><a href="#mundos">Mundos</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">Tu viaje</a><a href="#comunidad">Comunidad</a><a href="#tienda">Tienda</a></nav>
     </header>
     <section className={styles.hero} id="inicio">
-      <div className={styles.orb} aria-hidden="true" />
+      <div className={styles.heroUniverse} aria-hidden="true"><span className={styles.heroOrbitOne}></span><span className={styles.heroOrbitTwo}></span><span className={styles.heroPlanet}></span><span className={styles.heroSatellite}></span><span className={styles.heroStardust}></span></div>
       <div className={styles.heroContent}>
         <p className={styles.kicker}>UN ECOSISTEMA · NUEVE VIDEOJUEGOS</p>
         <h1>9 WORLDS.<br/><span>INFINITE WAYS TO PLAY.</span></h1>
