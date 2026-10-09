@@ -130,3 +130,11 @@
   .heroUniverse::before{background-position:60% center,center,center,center}
   .heroUniverse::after{background:linear-gradient(90deg,#030914e8 0%,#061224a6 58%,#06122460 100%),linear-gradient(0deg,#030914d9,transparent 53%)}
 }
+
+/* CTA duales de portada — imagen y contenido independientes. */
+.heroActions{display:flex;align-items:center;flex-wrap:wrap;gap:15px;margin-top:18px}
+.heroActions .button{margin-top:0}
+.heroSecondary{display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:16px 26px;border-radius:999px;border:1px solid rgba(112,211,255,.68);background:rgba(2,13,31,.76);color:#e1f6ff;text-decoration:none;font-size:12px;font-weight:800;letter-spacing:.055em;box-shadow:0 0 21px rgba(30,130,244,.13);transition:border-color .2s,box-shadow .2s}
+.heroSecondary:hover,.heroSecondary:focus-visible{border-color:#78e9ff;box-shadow:0 0 24px rgba(57,204,255,.42)}
+@media(max-width:680px){.heroActions{align-items:stretch;flex-direction:column;max-width:330px;gap:10px}.heroActions .button,.heroSecondary{justify-content:center;text-align:center}}
+@media(prefers-reduced-motion:reduce){.heroSecondary{transition:none}}
