@@ -188,11 +188,18 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
     </section>
     <section className={styles.grid}>
       {paymentProviders.map(provider=><article className={styles.card} key={provider.id}>
-        <div className={styles.cardTop}><span className={styles.badgePlanned}>OPCIÓN {provider.priority}</span><em>{REAL_PAYMENTS_ENABLED?"REVISAR":"NO ACTIVA"}</em></div>
+        <div className={styles.cardTop}><span className={styles.badgePlanned}>OPCIÓN {provider.priority}</span><em>NO CONTRATADA</em></div>
         <h3>{provider.displayName}</h3>
         <p>{provider.proposedGateway}</p>
-        <p>Documentación empresarial y aprobación del proveedor pendientes.</p>
+        <p>Documentación empresarial y aprobación del proveedor pendientes.</p><p><strong>Cobros reales: BLOQUEADOS</strong> · Integración técnica: pendiente</p>
       </article>)}
+    </section>
+    <section className={styles.notice}>
+      <div>
+        <strong>Estado global de activación comercial</strong>
+        <span>Empresa estadounidense en constitución · Documentación y cuentas comerciales pendientes · Integraciones con proveedores no contratadas · Ninguna pasarela habilitada para cobrar. Las compras del laboratorio son exclusivamente simulaciones.</span>
+      </div>
+      <code>{REAL_PAYMENTS_ENABLED?"REVISAR BLOQUEO":"COBROS BLOQUEADOS"}</code>
     </section>
     <details className={styles.advancedPanel}><summary>Laboratorio de pagos (solo pruebas)</summary>
     <LiryPaymentSimulation />
