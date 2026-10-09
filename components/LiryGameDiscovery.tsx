@@ -4,6 +4,7 @@ import {type PublicGameCard} from "../lib/games/public-catalog";
 import styles from "../app/lirygames/lirygames.module.css";
 
 const themes=["COMPETITIVO · ACCIÓN · MULTIJUGADOR","ESTRATEGIA · ACCIÓN · MULTIJUGADOR","EKONIA · ESTRATEGIA · SIMULACIÓN","SUPERVIVENCIA · RPG · MUNDO ABIERTO","SOCIAL · SIMULACIÓN · MULTIJUGADOR","FANTASÍA · RPG · MUNDO ABIERTO","PUZZLE · AVENTURA · EXPLORACIÓN","ESTRATEGIA · NFT · MULTIJUGADOR","PLATAFORMAS · AVENTURA · PUZZLES"];
+const publicCodenames=["LIRY // ARENA-01","LIRY // BOT-02","LIRY // ECON-03","LIRY // EARTH-04","LIRY // LINK-05","LIRY // REALM-06","LIRY // EMOTION-07","LIRY // TITAN-08","LIRY // CODE-09"];
 const traits=["Explorador","Estratega","Competidor","Social","Acción","Creativo"];
 
 export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
@@ -24,7 +25,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
       {games.map((game,index)=><article className={styles.gameCard} key={game.slug} style={{["--world-index" as string]:index+1}}>
         <div className={styles.cardContent}>
           <div className={styles.worldCardText}>
-            <h3>{game.title}</h3>
+            <h3>{publicCodenames[index]??`LIRY // PROJECT-${String(index+1).padStart(2,"0")}`}</h3>
             <p>{themes[index]??game.tagline}</p>
             <span className={styles.worldAvailability}>{game.state==="available"?"DISPONIBLE":game.state==="beta"?"EN BETA":"PRÓXIMAMENTE"}</span>
           </div>
