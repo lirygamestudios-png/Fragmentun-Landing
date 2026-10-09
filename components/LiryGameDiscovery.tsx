@@ -22,7 +22,41 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
     <aside className={styles.dnaSide} id="liry-dna" aria-labelledby="dna-side-title">
       <p className={styles.kicker}>EXPERIENCIA INTERACTIVA</p>
       <h3 id="dna-side-title">DESCUBRE TU <span>LIRY DNA</span></h3>
-      <div className={styles.dnaArt} aria-hidden="true"><svg className={styles.dnaMap} viewBox="0 0 300 300" role="presentation"><defs><radialGradient id="liryDnaGlow"><stop offset="0%" stopColor="#57e6ff" stopOpacity=".23"/><stop offset="75%" stopColor="#7452e8" stopOpacity=".06"/><stop offset="100%" stopColor="#050e23" stopOpacity="0"/></radialGradient><linearGradient id="liryDnaStrand" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#4fe0ff"/><stop offset=".5" stopColor="#8c8cff"/><stop offset="1" stopColor="#bc67fb"/></linearGradient></defs><circle cx="150" cy="150" r="144" fill="url(#liryDnaGlow)"/><g className={styles.dnaRings}><circle cx="150" cy="150" r="106"/><circle cx="150" cy="150" r="80"/><circle cx="150" cy="150" r="54"/></g><g className={styles.dnaOrbit}><ellipse cx="150" cy="150" rx="132" ry="50" transform="rotate(-36 150 150)"/><ellipse cx="150" cy="150" rx="132" ry="50" transform="rotate(36 150 150)"/></g><g className={styles.dnaHelix}><path d="M116 49 C220 84 79 113 185 149 S78 218 180 253" fill="none" stroke="url(#liryDnaStrand)" strokeWidth="5" strokeLinecap="round"/><path d="M184 49 C80 84 221 113 115 149 S222 218 120 253" fill="none" stroke="#65c9ff" strokeOpacity=".75" strokeWidth="5" strokeLinecap="round"/>{Array.from({length:9},(_,i)=>{const y=58+i*23;const x=150+Math.sin(i*1.42)*43;return <line key={i} x1={x} y1={y} x2={300-x} y2={y} stroke={i%2?"#d37bff":"#5be1ff"} strokeWidth="2.4" opacity=".67"/>})}</g><g className={styles.dnaNodes}>{[[150,18],[264,85],[264,215],[150,282],[36,215],[36,85]].map(([x,y],i)=><g key={i}><circle cx={x} cy={y} r="9" fill="#07172c" stroke={i%2?"#c27cff":"#52dfff"} strokeWidth="2"/><circle cx={x} cy={y} r="3" fill="#e4f9ff"/></g>)}</g><circle className={styles.dnaPulse} cx="150" cy="150" r="16" fill="none" stroke="#8bdfff" strokeWidth="1.5"/></svg></div>
+      <div className={styles.dnaArt} aria-hidden="true">
+        <svg className={styles.dnaMap} viewBox="0 0 320 490" role="presentation">
+          <defs>
+            <linearGradient id="liryDnaStrand" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#43e8ff"/><stop offset=".55" stopColor="#9388ff"/><stop offset="1" stopColor="#ce67f9"/></linearGradient>
+            <radialGradient id="liryDnaBase"><stop stopColor="#3bdfff" stopOpacity=".45"/><stop offset="1" stopColor="#3bdfff" stopOpacity="0"/></radialGradient>
+          </defs>
+          <g className={styles.dnaRings}>
+            <ellipse cx="160" cy="224" rx="126" ry="182"/>
+            <ellipse cx="160" cy="224" rx="104" ry="166"/>
+          </g>
+          <g className={styles.dnaOrbit}>
+            <ellipse cx="160" cy="220" rx="123" ry="65" transform="rotate(-29 160 220)"/>
+            <ellipse cx="160" cy="220" rx="123" ry="65" transform="rotate(29 160 220)"/>
+          </g>
+          <g className={styles.dnaHelix}>
+            <path d="M116 62 C245 115 78 161 204 218 S76 324 204 380" fill="none" stroke="url(#liryDnaStrand)" strokeWidth="5" strokeLinecap="round"/>
+            <path d="M204 62 C75 115 242 161 116 218 S244 324 116 380" fill="none" stroke="#58ccff" strokeOpacity=".83" strokeWidth="5" strokeLinecap="round"/>
+            {Array.from({length:15},(_,i)=>{const y=70+i*22;const x=160+45*Math.sin(i*1.28);return <line key={i} x1={x} x2={320-x} y1={y} y2={y} stroke={i%2?"#a879ff":"#65e4ff"} strokeOpacity=".7" strokeWidth="2.2"/>})}
+          </g>
+          <g className={styles.dnaConnections}>
+            {[[52,120],[269,156],[50,235],[270,278],[65,345],[257,375]].map(([x,y],i)=><g key={i}>
+              <path d={`M ${x} ${y} L 160 ${y}`} stroke={i%2?"#b28bff":"#59d8ff"} strokeOpacity=".37" strokeDasharray="4 5" fill="none"/>
+              <circle cx={x} cy={y} r="9" fill="#07172c" stroke={i%2?"#c27cff":"#52dfff"} strokeWidth="2"/>
+              <circle cx={x} cy={y} r="3" fill="#ebfbff"/>
+            </g>)}
+          </g>
+          <g className={styles.dnaPlatform}>
+            <ellipse cx="160" cy="443" rx="137" ry="43" fill="url(#liryDnaBase)"/>
+            <ellipse cx="160" cy="443" rx="120" ry="31" fill="none" stroke="#60d5ff" strokeOpacity=".8" strokeWidth="2"/>
+            <ellipse cx="160" cy="443" rx="89" ry="22" fill="none" stroke="#a588ff" strokeOpacity=".7" strokeWidth="1.5"/>
+            <ellipse cx="160" cy="443" rx="54" ry="12" fill="none" stroke="#74eeff" strokeOpacity=".9" strokeWidth="2"/>
+          </g>
+          <circle className={styles.dnaPulse} cx="160" cy="220" r="15" fill="none" stroke="#8bdfff" strokeWidth="1.5"/>
+        </svg>
+      </div>
       <p>Conoce los seis estilos que formarán parte de tu identidad gamer.</p>
       <a className={styles.dnaSideButton} href="#dna-perfiles">EXPLORAR ESTILOS →</a>
       <ul className={styles.dnaTraitList}>
