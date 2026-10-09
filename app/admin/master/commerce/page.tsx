@@ -195,7 +195,8 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
         <button className={styles.formButton} type="submit">Aplicar filtros</button>
       </article>
     </form>
-    <p><a className={styles.formButton} href={"/api/lirygames/reports/payments?period="+encodeURIComponent(period||"30d")+"&game="+encodeURIComponent(gameFilter)+"&provider="+encodeURIComponent(providerFilter)}>Descargar CSV de transacciones filtradas ↓</a></p>
+    <p><a className={styles.formButton} href={"/api/lirygames/reports/payments?period="+encodeURIComponent(period||"30d")+"&game="+encodeURIComponent(gameFilter)+"&provider="+encodeURIComponent(providerFilter)}>Descargar CSV (página 1 · hasta 200 registros) ↓</a></p>
+    <p>Para descargar más registros históricos, utiliza el parámetro <code>page=2</code>, <code>page=3</code>, etc., en la ruta CSV. Cada archivo contiene hasta 200 movimientos y exige autenticación administrativa.</p>
     <section className={styles.sectionHead}>
       <div><span>RESUMEN FINANCIERO</span><h2>Ingresos por videojuego y procesador</h2></div>
       <p>Resumen de los últimos 500 eventos consultados; importes agrupados por moneda sin mezclar divisas. No incluye simulaciones.</p>
