@@ -29,7 +29,7 @@ const hiddenPrefixes=[
 
 export function AdminInteriorChrome({children}:{children:React.ReactNode}){
   const pathname=usePathname();
-  const hidden=pathname==="/admin"||hiddenPrefixes.some(x=>pathname.startsWith(x));
+  const hidden=pathname==="/admin"||pathname.startsWith("/admin/master")||pathname.startsWith("/admin/lirygames-contact")||hiddenPrefixes.some(x=>pathname.startsWith(x));
   if(hidden)return <>{children}</>;
 
   return <div className="adminInteriorShell">
