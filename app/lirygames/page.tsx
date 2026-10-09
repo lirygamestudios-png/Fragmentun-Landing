@@ -51,6 +51,25 @@ export default function LiryGamesFrontDesk(){
       <p className={styles.honesty}>El perfil gamer, Liry DNA y Liry Journey estarán disponibles cuando se complete su integración. No mostramos progreso ficticio.</p>
     </section>
     <section className={styles.section} id="comunidad"><p className={styles.kicker}>COMUNIDAD LIRY</p><h2>COMPARTE TU UNIVERSO</h2><p className={styles.sectionIntro}>Un punto de encuentro para los futuros jugadores. Los enlaces sociales oficiales, las opciones para compartir y LiryBoost se activarán cuando estén configurados y verificados en el Admin.</p><p className={styles.honesty}>Sin contadores de participación ficticios ni enlaces sociales inventados.</p></section>
+    <section className={styles.section} id="eventos">
+      <p className={styles.kicker}>ACTUALIDAD DEL ECOSISTEMA</p><h2>EVENTOS EN VIVO</h2>
+      <div className={styles.lowerGrid}>
+        <article className={styles.lowerCard}><span className={styles.status}>SIN EVENTOS PROGRAMADOS</span><h3>El escenario se está preparando</h3><p>Los eventos oficiales y sus horarios se anunciarán desde el Admin. No mostramos emisiones ni torneos inexistentes.</p></article>
+        <article className={styles.lowerCard}><span className={styles.status}>PRÓXIMAMENTE</span><h3>LIRYBOOST</h3><p>Un programa de comunidad y difusión que reconocerá participaciones verificadas y podrá ofrecer acceso anticipado a futuras betas.</p></article>
+      </div>
+    </section>
+    <section className={styles.section} id="recomendaciones">
+      <p className={styles.kicker}>EXPLORA SEGÚN TU ESTILO</p><h2>RECOMENDACIONES PARA TI</h2>
+      <p className={styles.sectionIntro}>Cuando completes Liry DNA y exista una cuenta gamer, esta sección podrá recomendarte videojuegos del catálogo según tus preferencias reales.</p>
+      <div className={styles.lowerGrid}>
+        <article className={styles.lowerCard}><h3>Descubre los nueve videojuegos</h3><p>Explora las propuestas de LIRYGAMES antes de escoger dónde comenzar.</p><a className={styles.miniLink} href="#mundos">VER LOS 9 MUNDOS ↗</a></article>
+        <article className={styles.lowerCard}><h3>Conoce tu estilo</h3><p>El cuestionario Liry DNA aparecerá aquí cuando se habilite su evaluación real.</p><a className={styles.miniLink} href="#liry-dna">EXPLORAR LIRY DNA ↗</a></article>
+      </div>
+    </section>
+    <section className={styles.feature} id="secretos">
+      <p className={styles.kicker}>MÁS ALLÁ DE LO VISIBLE</p><h2>SECRETOS DE <span>LIRY</span></h2>
+      <p>Los secretos, coleccionables y desafíos ocultos cobrarán vida conforme se publiquen los videojuegos. Ningún logro se considerará obtenido sin actividad verificada.</p>
+    </section>
     <section className={styles.section} id="tienda"><p className={styles.kicker}>ECONOMÍA FREEMIUM</p><h2>TIENDA LIRY</h2><p className={styles.sectionIntro}>Skins, efectos y personalizaciones opcionales llegarán junto con los videojuegos. Los tres mundos internos iniciales de cada juego serán gratuitos. Por ahora no hay artículos disponibles para comprar.</p></section>
     <footer className={styles.footer}><strong>LIRYGAMES STUDIOS</strong><p>Nueve videojuegos. Un universo en expansión.</p><Link href="/es">FRAGMENTUN ↗</Link></footer>
   </main>;
