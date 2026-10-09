@@ -481,3 +481,10 @@
 .dnaEnergyColumn{transform-origin:160px 640px;animation:liryDnaEnergy 3.6s ease-in-out infinite}
 @keyframes liryDnaEnergy{0%,100%{opacity:.42;transform:translateY(0)}50%{opacity:1;transform:translateY(5px)}}
 @media(prefers-reduced-motion:reduce){.dnaEnergyColumn{animation:none!important;opacity:1}}
+
+/* ADN LIRY: altura VISIBLE obligatoria. La anchura estrecha del sidebar
+   ya no puede reducir la hélice de 720 unidades a una miniatura. */
+#mundos #liry-dna .dnaArt{height:660px!important;min-height:660px!important;max-height:none!important;aspect-ratio:auto!important;width:100%!important;display:block!important;overflow:visible!important;flex:0 0 660px!important;margin:12px auto 20px!important}
+#mundos #liry-dna .dnaMap{height:660px!important;min-height:660px!important;max-height:none!important;width:100%!important;aspect-ratio:auto!important;display:block!important;overflow:visible!important;filter:drop-shadow(0 0 20px rgba(54,192,255,.44))}
+@media(max-width:950px){#mundos #liry-dna .dnaArt{height:580px!important;min-height:580px!important;flex-basis:580px!important}#mundos #liry-dna .dnaMap{height:580px!important;min-height:580px!important}}
+@media(max-width:750px){#mundos #liry-dna .dnaArt{height:570px!important;min-height:570px!important;flex-basis:570px!important}#mundos #liry-dna .dnaMap{height:570px!important;min-height:570px!important}}
