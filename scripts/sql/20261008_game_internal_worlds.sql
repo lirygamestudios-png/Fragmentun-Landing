@@ -3,7 +3,7 @@
 -- Requiere game_titles(id UUID) existente y politicas administrativas revisadas.
 create table if not exists public.game_internal_worlds (
   id uuid primary key default gen_random_uuid(),
-  game_id uuid not null references public.game_titles(id) on delete cascade,
+  game_id uuid not null references public.game_titles(id) on delete restrict,
   world_number integer not null check (world_number between 1 and 3),
   title text not null check (char_length(trim(title)) between 1 and 160),
   summary text,
@@ -28,9 +28,8 @@ create index if not exists game_internal_worlds_game_idx
 
 alter table public.game_internal_worlds enable row level security;
 
--- Lectura anonima limitada a mundos publicados, sin acceso anticipado.
-create policy "public_available_worlds" on public.game_internal_worlds
-  for select to anon using (publication_status = 'available');
+-- Sin politica anonima por ahora: la lectura publica se habilitara en una fase
+-- posterior con control de publicacion del juego y acceso beta por usuario.
 
 -- Administracion: restringir acceso a perfiles admin/editor autenticados.
 create policy "admin_read_worlds" on public.game_internal_worlds
@@ -50,6 +49,7 @@ create policy "admin_update_worlds" on public.game_internal_worlds
   with check (exists(select 1 from public.admin_profiles p
     where p.user_id = auth.uid() and p.role in ('admin','editor')));
 
--- No incluir politica DELETE: preservar historial y desactivar con 'retired'.
+-- No incluir politica DELETE y evitar ON DELETE CASCADE: preservar historial.
+-- Desactivar mundos mediante el estado 'retired'.
 -- IMPORTANTE: antes de ejecutar verificar tipos, politicas RLS y dependencia
 -- de permisos para usuarios gamer autenticados en FrontDesk.
