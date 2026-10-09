@@ -15,12 +15,16 @@ export function LiryPaymentSimulation(){
  const [loading,setLoading]=useState(false);
  const reset=()=>{setStep("select");setEvent("paid");setReceipt("");setError("");};
  async function simulate(outcome:"paid"|"failed"|"refunded"){
+   if(loading)return;
    setLoading(true);setError("");
    try{
      const idempotencyKey=crypto.randomUUID().replaceAll("-","");
      const response=await fetch("/api/lirygames/payment-simulation",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({itemId:item,provider,outcome,idempotencyKey})});
      const data=await response.json();
-     if(!response.ok||!data.simulation||data.realCharge||data.entitlementGranted)throw new Error(data.error||"simulation_failed");
+     if(!response.ok||!data.simulation||data.realCharge||data.entitlementGranted){
+       const errors:Record<string,string>={authentication_required:"La sesión expiró. Vuelve a iniciar sesión en el Admin.",mfa_required:"Debes completar la verificación de dos pasos del Admin antes de realizar esta prueba.",forbidden:"Tu usuario no dispone de permisos para este laboratorio.",invalid_simulation_request:"Los datos de prueba no son válidos. Reinicia la demostración.",simulation_disabled:"El laboratorio está deshabilitado por seguridad."};
+       throw new Error(errors[String(data.error)]||"No se pudo completar la prueba. Inténtalo nuevamente.");
+     }
      setReceipt(data.reference);setEvent(outcome);setStep("confirmed");
    }catch(e){setError(e instanceof Error?e.message:"simulation_failed");}
    finally{setLoading(false);}
