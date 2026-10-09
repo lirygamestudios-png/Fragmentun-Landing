@@ -65,6 +65,22 @@ export default async function MasterCommercePage(){
   const gameCurrency=gamePaid[0]?.currency||"USD";
   const gamePaymentIssues=gameEventRows.filter(e=>["failed","chargeback"].includes(e.status));
   const entitlementIssues=entitlementRows.filter(e=>["pending","failed"].includes(e.status));
+  const confirmedGameEvents=gameEventRows.filter(e=>e.status==="paid"||e.status==="refunded"||e.status==="partially_refunded");
+  const revenueGroups=new Map<string,{label:string;currency:string;provider:string;game:string;count:number;gross:number;net:number;refunds:number}>();
+  for(const e of confirmedGameEvents){
+    const curr=String(e.currency||"USD");
+    const prov=String(e.provider||"Sin proveedor");
+    const game=String(e.game_id||"Sin videojuego");
+    const key=JSON.stringify([game,prov,curr]);
+    const group=revenueGroups.get(key)||{label:game+" · "+providerLabel(prov),currency:curr,provider:prov,game,count:0,gross:0,net:0,refunds:0};
+    group.count+=1;
+    group.gross+=Number(e.gross_cents||0);
+    group.net+=Number(e.net_cents||0);
+    if(e.status!=="paid")group.refunds+=1;
+    revenueGroups.set(key,group);
+  }
+  const revenueSummary=[...revenueGroups.values()].sort((a,b)=>b.gross-a.gross);
+
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleCommerce}`}>
     <header className={styles.topbar}>
@@ -155,6 +171,20 @@ export default async function MasterCommercePage(){
       </article>)}
     </section>
 
+    <section className={styles.sectionHead}>
+      <div><span>RESUMEN FINANCIERO</span><h2>Ingresos por videojuego y procesador</h2></div>
+      <p>Resumen de los últimos 500 eventos consultados; importes agrupados por moneda sin mezclar divisas. No incluye simulaciones.</p>
+    </section>
+    <section className={styles.grid}>
+      {revenueSummary.map(group=><article className={styles.card} key={JSON.stringify([group.game,group.provider,group.currency])}>
+        <div className={styles.cardTop}><span className={styles.badgePlanned}>{providerLabel(group.provider)}</span><em>{group.currency}</em></div>
+        <h3>{group.game}</h3>
+        <p>Registros: {group.count} · Eventos de devolución: {group.refunds}</p>
+        <p>Bruto registrado: <strong>{money(group.gross,group.currency)}</strong></p>
+        <p>Neto registrado: <strong>{money(group.net,group.currency)}</strong></p>
+      </article>)}
+      {!revenueSummary.length&&<article className={styles.card}><h3>Sin ingresos registrados</h3><p>El reporte se alimentará de eventos reales registrados. No contabiliza el laboratorio de pagos.</p></article>}
+    </section>
     <section className={styles.sectionHead}>
       <div><span>AUDITORÍA DE VIDEOJUEGOS</span><h2>Historial de compras virtuales</h2></div>
       <p>Eventos registrados en el backend. Las simulaciones no se contabilizan como ingresos ni compras reales.</p>
