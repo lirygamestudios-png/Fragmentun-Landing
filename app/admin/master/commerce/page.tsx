@@ -29,11 +29,15 @@ function providerLabel(value:string|undefined){
   return map[value]||String(value).replaceAll("_"," ").replace(/\b\w/g,m=>m.toUpperCase());
 }
 
-export default async function MasterCommercePage({searchParams}:{searchParams:Promise<{period?:string;game?:string;provider?:string}>}){
+export default async function MasterCommercePage({searchParams}:{searchParams:Promise<{period?:string;game?:string;provider?:string;exportPage?:string}>}){
   const params=await searchParams;
   const period=["all","7d","30d","90d"].includes(params.period||"")?params.period:"30d";
   const gameFilter=String(params.game||"all").slice(0,120);
   const providerFilter=String(params.provider||"all").slice(0,60);
+  const exportPageRaw=Number(params.exportPage||"1");
+  const exportPage=Number.isSafeInteger(exportPageRaw)&&exportPageRaw>=1&&exportPageRaw<=10000?exportPageRaw:1;
+  const exportQuery="period="+encodeURIComponent(period||"30d")+"&game="+encodeURIComponent(gameFilter)+"&provider="+encodeURIComponent(providerFilter);
+  const commerceQuery="/admin/master/commerce?"+exportQuery;
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user) redirect("/admin/lirygames/login");
@@ -195,8 +199,19 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
         <button className={styles.formButton} type="submit">Aplicar filtros</button>
       </article>
     </form>
-    <p><a className={styles.formButton} href={"/api/lirygames/reports/payments?period="+encodeURIComponent(period||"30d")+"&game="+encodeURIComponent(gameFilter)+"&provider="+encodeURIComponent(providerFilter)}>Descargar CSV (página 1 · hasta 200 registros) ↓</a></p>
-    <p>Para descargar más registros históricos, utiliza el parámetro <code>page=2</code>, <code>page=3</code>, etc., en la ruta CSV. Cada archivo contiene hasta 200 movimientos y exige autenticación administrativa.</p>
+    <section className={styles.sectionHead}><div><span>EXPORTACIÓN DE DATOS</span><h2>Descargar reportes por páginas</h2></div><p>Hasta 200 registros por archivo CSV; los filtros seleccionados se mantienen.</p></section>
+    <div className={styles.adminForms}>
+      <article className={styles.adminForm}>
+        <p>Archivo seleccionado: página {exportPage} · hasta 200 movimientos.</p>
+        <a className={styles.formButton} href={"/api/lirygames/reports/payments?"+exportQuery+"&page="+exportPage}>Descargar página {exportPage} (CSV) ↓</a>
+        <p>
+          {exportPage>1&&<a href={commerceQuery+"&exportPage="+(exportPage-1)}>← Página anterior</a>}
+          {" · "}
+          {exportPage<10000&&<a href={commerceQuery+"&exportPage="+(exportPage+1)}>Página siguiente →</a>}
+        </p>
+        <p>Una página posterior puede estar vacía si no existen más transacciones. Las simulaciones nunca se incluyen como ventas.</p>
+      </article>
+    </div>
     <section className={styles.sectionHead}>
       <div><span>RESUMEN FINANCIERO</span><h2>Ingresos por videojuego y procesador</h2></div>
       <p>Resumen de los últimos 500 eventos consultados; importes agrupados por moneda sin mezclar divisas. No incluye simulaciones.</p>
