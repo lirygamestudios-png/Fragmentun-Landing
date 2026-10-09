@@ -1,18 +1,18 @@
 "use client";
 import {useMemo,useState} from "react";
-import {plannedLiryGames} from "../lib/games/public-catalog";
+import {type PublicGameCard} from "../lib/games/public-catalog";
 import styles from "../app/lirygames/lirygames.module.css";
 
-export function LiryGameDiscovery(){
+export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
   const [search,setSearch]=useState("");
   const [filter,setFilter]=useState("all");
   const list=useMemo(()=>{
     const q=search.trim().toLocaleLowerCase("es");
-    return plannedLiryGames.filter(game=>
+    return games.filter(game=>
       (!q||(game.title+" "+game.tagline).toLocaleLowerCase("es").includes(q))&&
       (filter==="all"||game.state===filter)
     );
-  },[search,filter]);
+  },[search,filter,games]);
   return <div>
     <div className={styles.discoverControls}>
       <label htmlFor="liry-game-search">Buscar videojuego
@@ -31,7 +31,7 @@ export function LiryGameDiscovery(){
     </div>
     <div className={styles.grid}>
       {list.map(game=>{
-        const index=plannedLiryGames.findIndex(g=>g.slug===game.slug);
+        const index=games.findIndex(g=>g.slug===game.slug);
         return <article className={styles.gameCard} key={game.slug} style={{["--world-index" as string]:index+1}}>
           <span className={styles.number}>{String(index+1).padStart(2,"0")}</span>
           <div className={styles.cardContent}>
