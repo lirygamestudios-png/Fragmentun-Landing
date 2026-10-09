@@ -142,10 +142,13 @@ export function AdvertisingConsent(){
   const[choice,setChoice]=useState<Choice>(null);
   const[ready,setReady]=useState(false);
   const isAdmin=pathname?.startsWith("/admin");
+  // No compartir consentimiento, marca ni pixeles publicitarios de FRAGMENTUN con LIRYGAMES.
+  const isLiryGames=pathname==="/lirygames"||pathname?.startsWith("/lirygames/");
+  const isExcluded=isAdmin||isLiryGames;
   const en=pathname?.startsWith("/en");
 
   useEffect(()=>{
-    if(isAdmin){setReady(true);return;}
+    if(isExcluded){setReady(true);return;}
     const saved=readChoice();
     setChoice(saved);
     setReady(true);
@@ -160,9 +163,9 @@ export function AdvertisingConsent(){
       window.removeEventListener("fragmentun:ad-consent-open",reopen);
       window.removeEventListener("fragmentun:ad-event",onAdEvent as EventListener);
     };
-  },[isAdmin]);
+  },[isExcluded]);
 
-  if(!ready||isAdmin||choice)return null;
+  if(!ready||isExcluded||choice)return null;
 
   const choose=(value:Exclude<Choice,null>)=>{
     const previous=readChoice();
