@@ -94,3 +94,16 @@
 .heroPlay{width:62px;height:62px;display:grid;place-items:center;border:1px solid #44e3ff;border-radius:50%;background:#061a37;color:#39eaff;font-size:20px;box-shadow:0 0 18px #2dd3ff65}
 @media(max-width:900px){.heroStart{top:auto;bottom:83px;right:5%;font-size:10px;padding-right:15px}.heroPlay{width:44px;height:44px}.heroJourney{bottom:22px}}
 @media(max-width:650px){.heroStart{bottom:105px;right:18px}.heroJourney{bottom:24px}.hero h1{max-width:100%}}
+
+/* Capa de fondo cinematográfico independiente para sustituir por la imagen final.
+   Los controles, el logo y los textos nunca forman parte del bitmap. */
+.hero{--hero-scene-position:65% center}
+.heroUniverse{z-index:-2;inset:0;overflow:hidden}
+.heroUniverse::before{content:"";position:absolute;inset:-4%;background:radial-gradient(ellipse at 78% 33%,#f5dfb9d9,transparent 16%),radial-gradient(ellipse at 77% 32%,#ffbb8d77,transparent 28%),radial-gradient(ellipse at 54% 38%,#5d72ce8c,transparent 43%),linear-gradient(165deg,#011029 4%,#113d7a 45%,#5775ba 67%,#04162d);filter:saturate(1.25);transform:scale(1.02)}
+.heroUniverse::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#030914e8 0%,#06132696 33%,transparent 68%),linear-gradient(0deg,#030914d9,transparent 35%);pointer-events:none}
+.heroContent{z-index:2}
+.heroJourney,.heroStart{z-index:3}
+.hero h1{max-width:690px}
+.heroContent .kicker{letter-spacing:.32em;color:#b8e5ff;text-shadow:0 2px 12px #020916}
+.hero .button{position:relative;z-index:4}
+@media(max-width:750px){.heroUniverse::before{background-position:var(--hero-scene-position)}.heroUniverse::after{background:linear-gradient(90deg,#030914ec,#04142e73),linear-gradient(0deg,#030914d7,transparent 46%)}.heroContent{max-width:100%}}
