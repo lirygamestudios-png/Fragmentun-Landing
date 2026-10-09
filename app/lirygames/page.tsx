@@ -86,12 +86,6 @@ export default async function LiryGamesFrontDesk(){
         </article>
       </div>
     </section>
-    <section className={styles.feature} id="modelo">
-      <p className={styles.kicker}>TU VIAJE, TUS REGLAS</p>
-      <h2>ENTRA GRATIS. <span>EXPLORA SIN LÍMITES DE PAGO.</span></h2>
-      <p>El primer lanzamiento de cada videojuego está concebido con tres mundos internos jugables sin costo. Los artículos, skins y personalizaciones serán compras voluntarias.</p>
-      <p className={styles.honesty}>El perfil gamer, Liry DNA y Liry Journey estarán disponibles cuando se complete su integración. No mostramos progreso ficticio.</p>
-    </section>
     <div className={styles.socialTrio} aria-label="Comunidad, eventos y recomendaciones">
       <section className={styles.section} id="comunidad">
         <h2>COMUNIDAD LIRY</h2><p className={styles.socialIntro}>Conecta, comparte, juega.</p>
@@ -119,6 +113,12 @@ export default async function LiryGamesFrontDesk(){
         <a className={styles.recommendAll} href="#mundos">VER TODOS LOS MUNDOS <span aria-hidden="true">→</span></a>
       </section>
     </div>
+    <section className={styles.feature} id="modelo">
+      <p className={styles.kicker}>TU VIAJE, TUS REGLAS</p>
+      <h2>ENTRA GRATIS. <span>EXPLORA SIN LÍMITES DE PAGO.</span></h2>
+      <p>El primer lanzamiento de cada videojuego está concebido con tres mundos internos jugables sin costo. Los artículos, skins y personalizaciones serán compras voluntarias.</p>
+      <p className={styles.honesty}>El perfil gamer, Liry DNA y Liry Journey estarán disponibles cuando se complete su integración. No mostramos progreso ficticio.</p>
+    </section>
     <section className={styles.feature} id="secretos">
       <p className={styles.kicker}>MÁS ALLÁ DE LO VISIBLE</p><h2>SECRETOS DE <span>LIRY</span></h2>
       <p>Los secretos, coleccionables y desafíos ocultos cobrarán vida conforme se publiquen los videojuegos. Ningún logro se considerará obtenido sin actividad verificada.</p>
