@@ -155,6 +155,34 @@ export default async function MasterCommercePage(){
       </article>)}
     </section>
 
+    <section className={styles.sectionHead}>
+      <div><span>AUDITORÍA DE VIDEOJUEGOS</span><h2>Historial de compras virtuales</h2></div>
+      <p>Eventos registrados en el backend. Las simulaciones no se contabilizan como ingresos ni compras reales.</p>
+    </section>
+    <section className={styles.grid}>
+      {gameEventRows.slice(0,18).map((event:any)=><article key={event.id} className={styles.card}>
+        <div className={styles.cardTop}><span className={styles.badgePlanned}>{paymentLabel(event.status)}</span><em>{providerLabel(event.provider)}</em></div>
+        <h3>Transacción {String(event.id).slice(0,8)}</h3>
+        <p>Videojuego: {event.game_id||"No registrado"} · Artículo: {event.item_id||"No registrado"}</p>
+        <p>Bruto: {money(Number(event.gross_cents||0),event.currency||"USD")} · Neto registrado: {money(Number(event.net_cents||0),event.currency||"USD")}</p>
+        <p>Canal: {event.platform||"No registrado"} · Jugador: {event.player_ref?"Identificador registrado":"No registrado"}</p>
+        <p>Fecha: {event.purchased_at?new Date(event.purchased_at).toLocaleString("es-US"):"No registrada"}</p>
+      </article>)}
+      {!gameEventRows.length&&<article className={styles.card}><h3>Sin transacciones virtuales registradas</h3><p>Los movimientos aparecerán cuando se reciban datos válidos de videojuegos y pasarelas. Las pruebas permanecen separadas.</p></article>}
+    </section>
+    <section className={styles.sectionHead}>
+      <div><span>INCIDENCIAS DIGITALES</span><h2>Entregas que requieren revisión</h2></div>
+      <p>Identifica artículos pendientes o con errores sin modificar automáticamente el inventario de los jugadores.</p>
+    </section>
+    <section className={styles.grid}>
+      {entitlementRows.filter((ent:any)=>["pending","failed"].includes(ent.status)).slice(0,12).map((ent:any)=><article key={ent.id} className={styles.card}>
+        <div className={styles.cardTop}><span className={styles.badgePlanned}>{ent.status==="failed"?"FALLIDA":"PENDIENTE"}</span><em>REVISIÓN</em></div>
+        <h3>Entrega {String(ent.id).slice(0,8)}</h3>
+        <p>Videojuego: {ent.game_id} · Artículo: {ent.item_id}</p>
+        <p>Compra: {ent.purchase_id||"No asociada"} · Fecha: {ent.created_at?new Date(ent.created_at).toLocaleString("es-US"):"No registrada"}</p>
+      </article>)}
+      {!entitlementIssues.length&&<article className={styles.card}><h3>Sin incidencias registradas</h3><p>No hay entregas pendientes o fallidas entre los registros consultados.</p></article>}
+    </section>
     <section className={styles.sectionHead}><div><span>ÓRDENES</span><h2>Actividad reciente</h2></div></section>
     <section className={styles.grid}>
       {rows.slice(0,12).map((o:any)=><article key={o.order_number} className={`${styles.card} ${o.payment_status==="failed"?styles.cardAttention:o.payment_status==="pending"||["unfulfilled","processing"].includes(o.fulfillment_status)?styles.cardWarning:""}`}>
