@@ -458,3 +458,13 @@
 @media(max-width:750px){#liry-dna .dnaArt{height:680px;min-height:680px}}
 @media(max-width:420px){#liry-dna .dnaArt{height:590px;min-height:590px}}
 @media(prefers-reduced-motion:reduce){#liry-dna .dnaPlatform,#liry-dna .dnaConnections,#liry-dna .dnaEnergyColumn{animation:none}}
+
+/* Segundo tramo ADN: continúa DESPUÉS de los textos y perfiles, no sustituye al mapa superior. */
+#liry-dna .dnaContinuation{order:6;display:block;flex:0 0 auto;width:100%;height:430px;margin:14px 0 0;overflow:visible;position:relative}
+#liry-dna .dnaContinuation svg{display:block;width:100%;height:100%;filter:drop-shadow(0 0 16px rgba(68,195,255,.34))}
+#liry-dna .dnaContinuationHelix{transform-origin:160px 220px;animation:liryDnaContinuationDrift 5s ease-in-out infinite}
+#liry-dna .dnaContinuationBase{transform-origin:160px 422px;animation:liryDnaContinuationBase 3.5s ease-in-out infinite}
+@keyframes liryDnaContinuationDrift{0%,100%{transform:translateY(-3px);opacity:.8}50%{transform:translateY(5px);opacity:1}}
+@keyframes liryDnaContinuationBase{0%,100%{transform:scale(.97);opacity:.75}50%{transform:scale(1.03);opacity:1}}
+@media(max-width:750px){#liry-dna .dnaContinuation{height:390px}}
+@media(prefers-reduced-motion:reduce){#liry-dna .dnaContinuationHelix,#liry-dna .dnaContinuationBase{animation:none}}
