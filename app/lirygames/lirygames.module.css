@@ -35,3 +35,15 @@
 .gameCard .cardContent{position:relative;z-index:1;width:100%}
 .gameCard .number{z-index:1}
 @media(prefers-reduced-motion:reduce){.gameCard{transition:none}.gameCard:hover{transform:none}}
+
+/* Hero de exploración espacial: ilustración CSS liviana, sustituible por arte aprobado. */
+.heroUniverse{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.heroPlanet{position:absolute;right:12%;top:15%;width:min(35vw,410px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 27% 23%,#d7d7ff 0%,#7697ed 13%,#4050a2 32%,#1c1b58 59%,#090d2a 78%);box-shadow:inset -38px -20px 70px #03091df0,0 0 90px #697fff66,0 0 150px #435eb533;transform:rotate(-20deg)}
+.heroPlanet::after{content:"";position:absolute;inset:-20% -25%;border:2px solid #8b8aff66;border-radius:50%;transform:rotate(-27deg) scaleY(.45);box-shadow:0 0 24px #6479dd66}
+.heroSatellite{position:absolute;right:5%;bottom:12%;width:115px;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 27% 23%,#a5fcf3,#3189bb 34%,#143b74 70%,#070e24);box-shadow:0 0 45px #3fc8e788}
+.heroOrbitOne,.heroOrbitTwo{position:absolute;right:-18%;top:-30%;width:70vw;height:70vw;border-radius:50%;border:1px solid #6d9cff23;transform:rotate(-15deg) scaleY(.7)}
+.heroOrbitTwo{right:-2%;top:4%;width:49vw;height:49vw;border-color:#bd7dff33}
+.heroStardust{position:absolute;inset:0;background-image:radial-gradient(#b2dfff88 1px,transparent 1px),radial-gradient(#fff6 1px,transparent 1px);background-size:97px 113px,163px 177px;background-position:25px 16px,78px 67px;opacity:.48}
+@media(max-width:800px){.heroPlanet{right:-12%;top:24%;width:370px;opacity:.65}.heroSatellite{right:-10%;bottom:3%;opacity:.6}.heroUniverse{opacity:.75}}
+@media(max-width:520px){.heroPlanet{right:-45%;top:29%;width:350px}.heroSatellite{right:-20%;bottom:5%}.heroContent{max-width:100%}}
+@media(prefers-reduced-motion:reduce){.heroPlanet,.heroSatellite{animation:none}}
