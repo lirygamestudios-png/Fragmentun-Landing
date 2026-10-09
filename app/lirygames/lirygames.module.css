@@ -797,3 +797,17 @@
   opacity:1;
   visibility:visible;
 }
+
+/* Imagenes cinematograficas reales del catalogo: no depender de pseudo-elementos
+   con z-index negativo; conservar tarjetas, titulos y etiqueta de estado. */
+#mundos .worldsGrid .gameCard{position:relative;isolation:isolate}
+#mundos .worldsGrid .gameCard .gameCardArt{
+  position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;
+  object-position:center;z-index:0;filter:saturate(1.09) contrast(1.04);
+  transition:transform .55s ease,filter .55s ease;pointer-events:none;
+}
+#mundos .worldsGrid .gameCard::before{display:none}
+#mundos .worldsGrid .gameCard::after{z-index:1;pointer-events:none}
+#mundos .worldsGrid .gameCard .cardContent{z-index:2}
+#mundos .worldsGrid .gameCard:hover .gameCardArt{transform:scale(1.055);filter:saturate(1.16) contrast(1.06)}
+@media(prefers-reduced-motion:reduce){#mundos .worldsGrid .gameCard .gameCardArt{transition:none}#mundos .worldsGrid .gameCard:hover .gameCardArt{transform:none}}
