@@ -476,3 +476,8 @@
 #liry-dna .dnaPlatform{transform-origin:160px 669px}
 @media(max-width:950px){#liry-dna .dnaMap{width:100%}}
 @media(max-width:600px){#liry-dna .dnaArt{width:100%;margin:8px auto 15px}#liry-dna .dnaMap{width:100%}}
+
+/* Flujo luminoso entre ADN y plataforma holográfica. */
+.dnaEnergyColumn{transform-origin:160px 640px;animation:liryDnaEnergy 3.6s ease-in-out infinite}
+@keyframes liryDnaEnergy{0%,100%{opacity:.42;transform:translateY(0)}50%{opacity:1;transform:translateY(5px)}}
+@media(prefers-reduced-motion:reduce){.dnaEnergyColumn{animation:none!important;opacity:1}}
