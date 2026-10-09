@@ -2412,3 +2412,12 @@
     padding:14px;
   }
 }
+
+/* Comercio: accesos rápidos coherentes con la estética administrativa aprobada. */
+.moduleCommerce .commerceJumpNav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0 22px}
+.moduleCommerce .commerceJumpLink{display:flex;align-items:center;justify-content:center;min-height:48px;padding:12px 14px;border:1px solid rgba(91,169,217,.36);border-radius:12px;background:linear-gradient(135deg,rgba(28,60,101,.58),rgba(14,28,55,.85));color:#dbf1ff;font-size:12px;font-weight:750;text-align:center;text-decoration:none;transition:border-color .2s,background .2s}
+.moduleCommerce .commerceJumpLink:hover,.moduleCommerce .commerceJumpLink:focus-visible{border-color:#6ad9ff;background:rgba(38,96,149,.45);outline-offset:3px}
+.moduleCommerce #comercio-pagos,.moduleCommerce #comercio-reportes,.moduleCommerce #comercio-conciliacion,.moduleCommerce #comercio-operaciones{scroll-margin-top:96px}
+@media(max-width:950px){.moduleCommerce .commerceJumpNav{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:540px){.moduleCommerce .commerceJumpNav{grid-template-columns:1fr 1fr;gap:8px}.moduleCommerce .commerceJumpLink{font-size:11px;padding:10px 8px}}
+@media(prefers-reduced-motion:reduce){.moduleCommerce .commerceJumpLink{transition:none}}
