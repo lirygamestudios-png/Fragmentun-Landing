@@ -448,3 +448,14 @@
 #liry-dna>small{order:5;margin-top:14px}
 @media(max-width:950px){#liry-dna .dnaArt{min-height:320px}#liry-dna .dnaMap{width:min(100%,310px)}}
 @media(max-width:600px){#liry-dna .dnaArt{min-height:285px;margin:10px auto 15px;width:100%}#liry-dna .dnaMap{width:min(100%,285px)}}
+
+/* ADN LIRY holográfico vertical: ocupa el panel y proyecta la base energética. */
+#liry-dna .dnaArt{min-height:515px;margin:8px -8px 24px;overflow:visible}
+#liry-dna .dnaMap{width:min(100%,335px);max-height:none;height:auto;filter:drop-shadow(0 0 18px rgba(54,192,255,.35))}
+.dnaConnections{animation:liryDnaConnections 4.8s ease-in-out infinite}
+.dnaPlatform{transform-origin:160px 443px;animation:liryDnaBase 4s ease-in-out infinite}
+@keyframes liryDnaConnections{0%,100%{opacity:.65}50%{opacity:1}}
+@keyframes liryDnaBase{0%,100%{opacity:.78;transform:scale(.97)}50%{opacity:1;transform:scale(1.03)}}
+@media(max-width:950px){#liry-dna .dnaArt{min-height:455px}#liry-dna .dnaMap{width:min(100%,315px)}}
+@media(max-width:600px){#liry-dna .dnaArt{min-height:425px}#liry-dna .dnaMap{width:min(100%,300px)}}
+@media(prefers-reduced-motion:reduce){.dnaConnections,.dnaPlatform{animation:none!important}}
