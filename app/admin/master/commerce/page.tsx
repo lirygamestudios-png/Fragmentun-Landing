@@ -227,6 +227,27 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
       </article>
     </div>
     <section className={styles.sectionHead}>
+      <div><span>CONCILIACIÓN POR PROCESADOR</span><h2>Movimientos pendientes de verificar</h2></div>
+      <p>Vista preparatoria basada en eventos existentes; no acredita que el proveedor haya transferido fondos al banco. Todavía faltan referencias de liquidación y estados bancarios.</p>
+    </section>
+    <section className={styles.grid}>
+      {paymentProviders.map(provider=>{
+        const records=filteredGameEvents.filter((e:any)=>e.provider===provider.id);
+        const paidRecords=records.filter((e:any)=>e.status==="paid");
+        const currencies=[...new Set(records.map((e:any)=>String(e.currency||"USD")))];
+        return <article key={provider.id} className={styles.card}>
+          <div className={styles.cardTop}><span className={styles.badgePlanned}>{provider.displayName}</span><em>NO CONCILIADO</em></div>
+          <h3>{records.length} registros consultados</h3>
+          <p>{paidRecords.length} eventos con estado pagado · {records.length-paidRecords.length} de otros estados.</p>
+          {currencies.map(currency=>{
+            const matches=paidRecords.filter((e:any)=>String(e.currency||"USD")===currency);
+            return <p key={currency}>Bruto registrado ({currency}): {money(matches.reduce((sum:number,e:any)=>sum+Number(e.gross_cents||0),0),currency)}</p>;
+          })}
+          <p>Liquidación bancaria: no verificada · Comisiones efectivas: sin confirmar.</p>
+        </article>;
+      })}
+    </section>
+    <section className={styles.sectionHead}>
       <div><span>CIERRE INFORMATIVO · PERÍODO SELECCIONADO</span><h2>Resumen de ventas y ajustes registrados</h2></div>
       <p>Información parcial de la muestra consultada: no es un cierre contable certificado. La fuente no separa comisiones de reembolsos en importes específicos.</p>
     </section>
