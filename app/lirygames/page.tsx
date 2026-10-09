@@ -49,16 +49,10 @@ export default async function LiryGamesFrontDesk(){
       <p className={styles.sectionIntro}>Cada tarjeta representa un videojuego diferente. Su lanzamiento se anunciará cuando esté realmente disponible.</p>
       <LiryGameDiscovery games={games} />
     </section>
-    <section className={styles.section} id="dna-perfiles">
-      <p className={styles.kicker}>TU IDENTIDAD GAMER</p><h2>DESCUBRE TU LIRY DNA</h2>
-      <p className={styles.sectionIntro}>Estas seis categorías formarán parte del cuestionario cuando se conecten la cuenta gamer y las reglas administrables.</p>
-      <div className={styles.dnaGrid}>{["Explorador","Estratega","Competidor","Social","Acción","Creativo"].map(name=>
-        <article key={name} className={styles.dnaCard}><span className={styles.dnaDot} aria-hidden="true" /><h3>{name}</h3><p>Evaluación pendiente</p></article>)}</div>
-    </section>
-    <section className={styles.section} id="perfil-gamer">
-      <p className={styles.kicker}>TU EXPERIENCIA LIRYGAMES</p><h2>MI PERFIL GAMER</h2>
+    <section className={`${styles.section} ${styles.gamerSection}`} id="perfil-gamer">
+      <p className={styles.kicker}>TU EXPERIENCIA LIRYGAMES</p>
       <div className={styles.gamerGrid}>
-        <article className={styles.gamerCard}><div className={styles.avatarPlaceholder} aria-hidden="true">?</div><h3>Perfil de visitante</h3><p>Las cuentas gamer guardarán identidad, nivel, experiencia y artículos cuando esté activa su integración.</p><span className={styles.status}>PRÓXIMAMENTE</span></article>
+        <article className={styles.gamerCard}><div className={styles.avatarPlaceholder} aria-hidden="true">?</div><h3>MI PERFIL GAMER</h3><strong className={styles.gamerSubtitle}>Perfil de visitante</strong><p>Las cuentas gamer guardarán identidad, nivel, experiencia y artículos cuando esté activa su integración.</p><span className={styles.status}>PRÓXIMAMENTE</span></article>
         <article className={styles.gamerCard}><h3>TU LIRY JOURNEY</h3><p>Mundos explorados y videojuegos disponibles se calcularán con actividad real, nunca con estadísticas inventadas.</p><strong className={styles.emptyProgress}>— / 9</strong><small>No hay sesión gamer conectada</small></article>
         <article className={styles.gamerCard}><h3>LOGROS RECIENTES</h3><p>Tus recompensas aparecerán después de completar objetivos reales.</p><span className={styles.emptyProgress}>SIN DATOS</span><small>No se muestran logros ficticios</small></article>
       </div>
