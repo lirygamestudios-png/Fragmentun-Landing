@@ -437,54 +437,24 @@
 @keyframes liryDnaPulse{0%{opacity:.9;transform:scale(.7)}85%,100%{opacity:0;transform:scale(3.6)}}
 @media(prefers-reduced-motion:reduce){.dnaOrbit,.dnaHelix,.dnaNodes circle:last-child,.dnaPulse{animation:none!important}}
 
-/* ADN protagonista: mapa alto y despejado, contenidos de apoyo debajo. */
-#liry-dna.dnaSide{display:flex;flex-direction:column;align-items:stretch}
-#liry-dna .dnaArt{order:1;min-height:370px;margin:12px -7px 18px;overflow:visible;display:flex;align-items:center;justify-content:center}
-#liry-dna .dnaMap{width:min(100%,350px);max-height:355px}
-#liry-dna>.kicker,#liry-dna>h3{order:0}
-#liry-dna>p:not(.kicker){order:2;margin-top:5px}
-#liry-dna>.dnaSideButton{order:3;margin-top:13px}
-#liry-dna>.dnaTraitList{order:4;margin-top:22px}
-#liry-dna>small{order:5;margin-top:14px}
-@media(max-width:950px){#liry-dna .dnaArt{min-height:320px}#liry-dna .dnaMap{width:min(100%,310px)}}
-@media(max-width:600px){#liry-dna .dnaArt{min-height:285px;margin:10px auto 15px;width:100%}#liry-dna .dnaMap{width:min(100%,285px)}}
 
-/* ADN LIRY holográfico vertical: ocupa el panel y proyecta la base energética. */
-#liry-dna .dnaArt{min-height:515px;margin:8px -8px 24px;overflow:visible}
-#liry-dna .dnaMap{width:min(100%,335px);max-height:none;height:auto;filter:drop-shadow(0 0 18px rgba(54,192,255,.35))}
-.dnaConnections{animation:liryDnaConnections 4.8s ease-in-out infinite}
-.dnaPlatform{transform-origin:160px 443px;animation:liryDnaBase 4s ease-in-out infinite}
+/* ADN LIRY — geometría consolidada. Se eliminan las reglas contradictorias anteriores. */
+#liry-dna.dnaSide{display:flex;flex-direction:column;align-items:stretch;min-height:0;overflow:visible}
+#liry-dna>.kicker,#liry-dna>h3{order:0}
+#liry-dna .dnaArt{order:1;display:block;position:relative;overflow:visible;width:100%;height:700px;min-height:700px;flex:none;margin:12px 0 18px;aspect-ratio:auto}
+#liry-dna .dnaMap{display:block;width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:auto;filter:drop-shadow(0 0 20px rgba(54,192,255,.42))}
+#liry-dna>p:not(.kicker){order:2;margin:6px 0 9px}
+#liry-dna>.dnaSideButton{order:3;align-self:flex-start;margin:8px 0 16px}
+#liry-dna>.dnaTraitList{order:4;margin:0 0 15px}
+#liry-dna>small{order:5;margin-top:4px}
+#liry-dna .dnaOrbit,#liry-dna .dnaHelix,#liry-dna .dnaPulse{transform-origin:160px 340px}
+#liry-dna .dnaPlatform{transform-origin:160px 669px;animation:liryDnaBase 4s ease-in-out infinite}
+#liry-dna .dnaConnections{animation:liryDnaConnections 4.8s ease-in-out infinite}
+#liry-dna .dnaEnergyColumn{transform-origin:160px 640px;animation:liryDnaEnergy 3.6s ease-in-out infinite}
 @keyframes liryDnaConnections{0%,100%{opacity:.65}50%{opacity:1}}
 @keyframes liryDnaBase{0%,100%{opacity:.78;transform:scale(.97)}50%{opacity:1;transform:scale(1.03)}}
-@media(max-width:950px){#liry-dna .dnaArt{min-height:455px}#liry-dna .dnaMap{width:min(100%,315px)}}
-@media(max-width:600px){#liry-dna .dnaArt{min-height:425px}#liry-dna .dnaMap{width:min(100%,300px)}}
-@media(prefers-reduced-motion:reduce){.dnaConnections,.dnaPlatform{animation:none!important}}
-
-/* Corrección de medidas del SVG vertical (viewBox 320×490).
-   Evita que la altura heredada de 135px recorte o desplace el ADN. */
-#liry-dna .dnaArt{height:auto;min-height:0;aspect-ratio:320/490;max-width:100%;margin:8px -8px 18px;overflow:hidden}
-#liry-dna .dnaMap{display:block;flex:0 1 auto;width:min(100%,335px);height:auto;max-height:none;aspect-ratio:320/490}
-#liry-dna .dnaOrbit,#liry-dna .dnaHelix{transform-origin:160px 220px}
-#liry-dna .dnaPulse{transform-origin:160px 220px}
-@media(max-width:950px){#liry-dna .dnaArt{min-height:0}#liry-dna .dnaMap{width:min(100%,315px)}}
-@media(max-width:600px){#liry-dna .dnaArt{min-height:0;width:100%;margin:8px auto 18px}#liry-dna .dnaMap{width:min(100%,300px)}}
-
-/* La extensión es gráfica, no espacio vacío: nuevo SVG real de 720 unidades de alto. */
-#liry-dna .dnaArt{height:auto!important;min-height:0!important;aspect-ratio:auto!important;overflow:visible!important;display:block;margin:8px -7px 15px}
-#liry-dna .dnaMap{display:block;width:100%;height:auto;max-height:none!important;aspect-ratio:320/720!important;object-fit:fill}
-#liry-dna .dnaOrbit,#liry-dna .dnaHelix,#liry-dna .dnaPulse{transform-origin:160px 340px}
-#liry-dna .dnaPlatform{transform-origin:160px 669px}
-@media(max-width:950px){#liry-dna .dnaMap{width:100%}}
-@media(max-width:600px){#liry-dna .dnaArt{width:100%;margin:8px auto 15px}#liry-dna .dnaMap{width:100%}}
-
-/* Flujo luminoso entre ADN y plataforma holográfica. */
-.dnaEnergyColumn{transform-origin:160px 640px;animation:liryDnaEnergy 3.6s ease-in-out infinite}
 @keyframes liryDnaEnergy{0%,100%{opacity:.42;transform:translateY(0)}50%{opacity:1;transform:translateY(5px)}}
-@media(prefers-reduced-motion:reduce){.dnaEnergyColumn{animation:none!important;opacity:1}}
-
-/* ADN LIRY: altura VISIBLE obligatoria. La anchura estrecha del sidebar
-   ya no puede reducir la hélice de 720 unidades a una miniatura. */
-#mundos #liry-dna .dnaArt{height:660px!important;min-height:660px!important;max-height:none!important;aspect-ratio:auto!important;width:100%!important;display:block!important;overflow:visible!important;flex:0 0 660px!important;margin:12px auto 20px!important}
-#mundos #liry-dna .dnaMap{height:660px!important;min-height:660px!important;max-height:none!important;width:100%!important;aspect-ratio:auto!important;display:block!important;overflow:visible!important;filter:drop-shadow(0 0 20px rgba(54,192,255,.44))}
-@media(max-width:950px){#mundos #liry-dna .dnaArt{height:580px!important;min-height:580px!important;flex-basis:580px!important}#mundos #liry-dna .dnaMap{height:580px!important;min-height:580px!important}}
-@media(max-width:750px){#mundos #liry-dna .dnaArt{height:570px!important;min-height:570px!important;flex-basis:570px!important}#mundos #liry-dna .dnaMap{height:570px!important;min-height:570px!important}}
+@media(max-width:950px){#liry-dna .dnaArt{height:610px;min-height:610px}}
+@media(max-width:750px){#liry-dna .dnaArt{height:680px;min-height:680px}}
+@media(max-width:420px){#liry-dna .dnaArt{height:590px;min-height:590px}}
+@media(prefers-reduced-motion:reduce){#liry-dna .dnaPlatform,#liry-dna .dnaConnections,#liry-dna .dnaEnergyColumn{animation:none}}
