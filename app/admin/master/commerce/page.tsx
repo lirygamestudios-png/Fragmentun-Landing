@@ -66,6 +66,7 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
   const refunds=rows.filter(o=>o.refund_status&&o.refund_status!=="none");
   const totalPaid=paid.reduce((a,o)=>a+Number(o.total_cents||0),0);
   const currency=paid[0]?.currency||"USD";
+  const orderCurrencies=new Set(paid.map(o=>String(o.currency||"USD").toUpperCase()));
   const financeDataAvailable=!gameEventsError;
   const deliveryDataAvailable=!entitlementsError;
   const gameEventRows=(gameEvents||[]) as any[];
@@ -73,6 +74,7 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
   const gamePaid=gameEventRows.filter(e=>e.status==="paid");
   const gameRevenue=gamePaid.reduce((a,e)=>a+Number(e.gross_cents||0),0);
   const gameCurrency=gamePaid[0]?.currency||"USD";
+  const gameCurrencies=new Set(gamePaid.map(e=>String(e.currency||"USD").toUpperCase()));
   const gamePaymentIssues=gameEventRows.filter(e=>["failed","chargeback"].includes(e.status));
   const entitlementIssues=entitlementRows.filter(e=>["pending","failed"].includes(e.status));
   const periodStart=period==="all"?0:Date.now()-Number.parseInt(period||"30",10)*86400000;
@@ -137,7 +139,7 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
 
     <section className={styles.kpis}>
       <article><small>Pedidos</small><strong>{rows.length.toLocaleString()}</strong><span>{(products||0).toLocaleString()} productos registrados</span></article>
-      <article><small>Pagado</small><strong className={styles.kpiLongValue}>{money(totalPaid,currency)}</strong><span>{paid.length} pedidos pagados</span></article>
+      <article><small>Pagado</small><strong className={styles.kpiLongValue}>{orderCurrencies.size>1?"Varias monedas":money(totalPaid,currency)}</strong><span>{paid.length} pedidos pagados</span></article>
       <article className={open.length?styles.kpiAttention:undefined}><small>Pendientes</small><strong>{open.length}</strong><span>{open.length?"Pedidos por completar":"Sin pedidos pendientes"}</span></article>
       <article className={refunds.length?styles.kpiAttention:undefined}><small>Reembolsos</small><strong>{refunds.length}</strong><span>{refunds.length?"Con devolución/reembolso":"Sin reembolsos registrados"}</span></article>
     </section>
@@ -152,7 +154,7 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
       <code>{!financeDataAvailable||!deliveryDataAvailable?"CONSULTA INCOMPLETA":"DATOS OPERATIVOS"}</code>
     </section>
     <section className={styles.kpis}>
-      <article><small>Compras in-game</small><strong>{gamePaid.length}</strong><span>{money(gameRevenue,gameCurrency)} bruto registrado</span></article>
+      <article><small>Compras in-game</small><strong>{gamePaid.length}</strong><span>{gameCurrencies.size>1?"Importes en varias monedas; consultar desglose por divisa":money(gameRevenue,gameCurrency)+" bruto registrado"}</span></article>
       <article className={gamePaymentIssues.length?styles.kpiAttention:undefined}><small>Pagos con incidencia</small><strong>{gamePaymentIssues.length}</strong><span>{gamePaymentIssues.length?"Fallidos o chargeback":"Sin incidencias"}</span></article>
       <article className={entitlementIssues.length?styles.kpiAttention:undefined}><small>Entregas digitales</small><strong>{entitlementIssues.length}</strong><span>{entitlementIssues.length?"Pendientes o fallidas":"Sin incidencias"}</span></article>
       <article><small>Canal</small><strong className={styles.kpiCompactValue}>AUTOMÁTICO</strong><span>Backend firmado</span></article>
