@@ -898,3 +898,11 @@
 .contactSection{background:#030b17;padding:24px clamp(20px,5vw,85px) 36px;border-top:1px solid #174166}
 .contactSection>h2{color:#ecf7ff;letter-spacing:.07em;margin:6px 0 8px}
 .contactSection>p:not(.kicker){color:#9fbdd2;font-size:12px;line-height:1.5;max-width:700px;margin:0 0 14px}
+
+/* Formulario de contacto LIRYGAMES: consentimiento y CTA coherentes. */
+.page :global(.liryContactConsent){display:grid;grid-template-columns:18px minmax(0,1fr);align-items:start;gap:11px;padding:13px 15px;border:1px solid rgba(72,172,225,.36);border-radius:8px;background:rgba(6,27,52,.76);color:#c5e4f5;font-size:12px;line-height:1.6;cursor:pointer}
+.page :global(.liryContactCheck){width:17px;height:17px;margin:2px 0 0;accent-color:#22c7ff;cursor:pointer}
+.page :global(.liryContactConsent:focus-within){border-color:#8deaff;box-shadow:0 0 15px rgba(47,201,255,.3)}
+.page :global(.liryContactSubmit){display:inline-flex;align-items:center;justify-content:center;width:fit-content;min-height:42px;padding:11px 23px;border-radius:22px;border:1px solid #32ccff;background:linear-gradient(120deg,#075b91,#0a78b3);color:#fff;font-size:11px;font-weight:800;letter-spacing:.06em;cursor:pointer;transition:background .2s,border-color .2s,box-shadow .2s,transform .2s}
+.page :global(.liryContactSubmit:hover),.page :global(.liryContactSubmit:focus-visible){background:linear-gradient(120deg,#0b84c4,#0a426d);border-color:#a3efff;box-shadow:0 0 28px rgba(66,219,255,.65),inset 0 0 10px rgba(80,210,255,.2);transform:translateY(-1px)}
+.page :global(.liryContactSubmit:disabled){opacity:.65;cursor:wait;transform:none}
