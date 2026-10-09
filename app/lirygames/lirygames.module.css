@@ -389,3 +389,21 @@
 .navMenuPanel a{display:block;padding:11px 10px;border-radius:4px;text-decoration:none;color:#deefff;font-size:12px}
 .navMenuPanel a:hover,.navMenuPanel a:focus-visible{background:#143a5e;color:#fff}
 @media(max-width:750px){.nav{padding-right:186px}.navUtilities{right:14px}.navMenu>summary{width:35px;height:38px}}
+
+/* Navegación móvil: una sola fuente visible (menú desplegable). */
+@media(max-width:750px){
+ .nav{min-height:67px;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;padding:12px 181px 12px 17px}
+ .nav>nav{display:none}
+ .nav .brand{max-width:100%;gap:8px}
+ .nav .sigil{flex-shrink:0}
+ .navUtilities{top:50%;transform:translateY(-50%);right:12px;gap:2px}
+ .nav .navSearch,.nav .navNotice{width:32px;min-width:32px}
+ .nav .profileAccess{min-width:36px;width:36px;height:38px}
+ .navMenuPanel{right:0;top:calc(100% + 11px)}
+}
+@media(max-width:420px){
+ .nav{padding-left:11px;padding-right:165px}
+ .nav .wordmark{min-width:0}
+ .navUtilities{right:6px}
+ .nav .navSearch,.nav .navNotice{width:30px;min-width:30px}
+}
