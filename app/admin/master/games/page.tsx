@@ -245,7 +245,7 @@ export default async function MasterGamesPage(){
 
     <section className={styles.portfolioCapacity}>
       <div className={styles.capacityHeader}>
-        <div><span>CAPACIDAD DEL PORTAFOLIO</span><h2>9 videojuegos · incorporación progresiva</h2></div>
+        <div><span>CAPACIDAD DEL PORTAFOLIO</span><h2>9 videojuegos · incorporación progresiva</h2><p>Modelo A aprobado: cada videojuego se planifica con 3 mundos internos jugables gratis. Las compras de artículos son opcionales. Los mundos internos no ocupan nuevas plazas del portafolio.</p></div>
         <div className={styles.capacityProgress} aria-label={`${portfolioUsage}% del portafolio ocupado`}>
           <b>{gameRows.length}/9</b>
           <span><i style={{width:`${portfolioUsage}%`}}></i></span>
@@ -258,6 +258,7 @@ export default async function MasterGamesPage(){
             <span className={styles.capacityIndex}>{String(index+1).padStart(2,"0")}</span>
             <strong className={styles.capacityName}>{game?.name||"Disponible"}</strong>
             <small className={styles.capacityMeta}>{game?stageLabel(game.lifecycle_stage):"Preparado para futuro título"}</small>
+            {game&&<small className={styles.capacityMeta}>Modelo previsto: 3 mundos internos gratis · compras opcionales</small>}
           </article>;
         })}
       </div>
