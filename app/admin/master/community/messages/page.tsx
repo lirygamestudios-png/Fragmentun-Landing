@@ -14,7 +14,7 @@ const category:Record<string,string>={
 export const dynamic="force-dynamic";
 export default async function LiryContactAdmin({
  searchParams
-}:{searchParams:Promise<{status?:string;q?:string;subject?:string}>}){
+}:{searchParams:Promise<{status?:string;q?:string;subject?:string;pending?:string}>}){
  const supabase=await createSupabaseServerClient();
  const {data:{user}}=await supabase.auth.getUser();
  if(!user)redirect("/admin/lirygames/login");
@@ -26,7 +26,8 @@ export default async function LiryContactAdmin({
   ?params.status||"":"";
  const search=(params.q||"").trim().slice(0,80).replace(/[%_,()]/g,"");
  const subject=["opinion","suggestion","problem","business","other"].includes(params.subject||"")?params.subject||"":"";
- const queryString=(status:string)=>{const p=new URLSearchParams();if(status)p.set("status",status);if(search)p.set("q",search);if(subject)p.set("subject",subject);return "?"+p.toString();};
+ const pending=params.pending==="1";
+ const queryString=(status:string)=>{const p=new URLSearchParams();if(status)p.set("status",status);if(search)p.set("q",search);if(subject)p.set("subject",subject);if(pending)p.set("pending","1");return "?"+p.toString();};
  const db=supabase;
  const {data:owners}=await db.from("admin_profiles").select("user_id,display_name").order("display_name");
  let query=db.from("lirygames_contact_messages")
@@ -35,8 +36,15 @@ export default async function LiryContactAdmin({
  if(selected)query=query.eq("status",selected);
  if(subject)query=query.eq("subject",subject);
  if(search)query=query.or(`name.ilike.%${search}%,email.ilike.%${search}%`);
+ if(pending)query=query.in("status",["new","reviewing"]);
  const {data,error}=await query;
- const messages=(data||[]) as ContactMessage[];
+ const now=Date.now();
+ const ageDays=(date:string)=>Math.max(0,Math.floor((now-new Date(date).getTime())/86400000));
+ const isPending=(item:ContactMessage)=>item.status==="new"||item.status==="reviewing";
+ const messages=((data||[]) as ContactMessage[]).sort((a,b)=>{
+  if(pending){const aPriority=ageDays(a.created_at)+(a.status==="new"?2:0)+(a.assigned_to?0:4);const bPriority=ageDays(b.created_at)+(b.status==="new"?2:0)+(b.assigned_to?0:4);return bPriority-aPriority;}
+  return new Date(b.created_at).getTime()-new Date(a.created_at).getTime();
+ });
  const ids=messages.map(item=>item.id);
  const {data:history,error:historyError}=ids.length
   ?await db.from("lirygames_contact_history").select("id,contact_id,actor_user_id,action,details,created_at").in("contact_id",ids).order("created_at",{ascending:false}).limit(500)
@@ -70,6 +78,7 @@ export default async function LiryContactAdmin({
   </section>}
   <form method="GET" aria-label="Buscar y clasificar mensajes" style={{display:"flex",flexWrap:"wrap",alignItems:"end",gap:10,padding:"14px 16px",border:"1px solid #285571",borderRadius:10,background:"#091a2e",marginBottom:16}}>
    {selected&&<input type="hidden" name="status" value={selected}/>}
+   {pending&&<input type="hidden" name="pending" value="1"/>}
    <label style={{display:"grid",gap:6,flex:"2 1 230px",color:"#b9d8ed",fontSize:11}}>Buscar por nombre o correo
     <input name="q" defaultValue={search} maxLength={80} placeholder="Nombre o correo electrónico..." style={{width:"100%",padding:"11px 12px",background:"#061429",color:"#f2fbff",border:"1px solid #3179a1",borderRadius:7}}/>
    </label>
@@ -81,6 +90,10 @@ export default async function LiryContactAdmin({
    <button type="submit" style={{padding:"11px 17px",border:"1px solid #4ddaff",borderRadius:8,background:"#07517b",color:"#f4fcff",fontSize:11,fontWeight:800,cursor:"pointer"}}>BUSCAR →</button>
    <a href={selected?"?status="+selected:"?"} style={{padding:"11px 9px",color:"#9cdaf4",fontSize:11,textDecoration:"none"}}>Limpiar</a>
   </form>
+  <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap",marginBottom:14}}>
+   <a href={pending?queryString(selected).replace(/([?&])pending=1(&|$)/,"$1").replace(/[?&]$/,"")||"?":queryString(selected)+(queryString(selected)==="?"?"":"&")+"pending=1"} style={{padding:"10px 15px",border:"1px solid "+(pending?"#ffbf79":"#39769b"),borderRadius:8,background:pending?"#49301c":"#0a263e",color:pending?"#ffd5a7":"#bce9ff",textDecoration:"none",fontSize:11,fontWeight:800}}>{pending?"✓ MOSTRANDO PENDIENTES · QUITAR FILTRO":"VER SOLO PENDIENTES →"}</a>
+   <span style={{color:"#92b1ca",fontSize:11}}>Los pendientes se ordenan por antigüedad y necesidad de asignación.</span>
+  </div>
   <nav aria-label="Filtrar mensajes" style={{display:"flex",flexWrap:"wrap",gap:9,marginBottom:20}}>
    {[["","TODOS"],["new","NUEVOS"],["reviewing","EN REVISIÓN"],["resolved","RESUELTOS"],["archived","ARCHIVADOS"]].map(([value,label])=>
     <a key={value} href={queryString(value)} style={{padding:"9px 13px",border:"1px solid "+(value===selected?"#4ddaff":"#295571"),background:value===selected?"#0e3e62":"#07182c",borderRadius:5,color:"#e4f6ff",fontSize:11,textDecoration:"none"}}>{label}</a>
@@ -95,6 +108,8 @@ export default async function LiryContactAdmin({
        <div style={{fontSize:11,color:"#abc7df"}}>{new Date(item.created_at).toLocaleString("es",{dateStyle:"medium",timeStyle:"short"})}</div>
       </div>
       <div style={{display:"flex",gap:10,flexWrap:"wrap",marginBottom:12,fontSize:11}}>
+       {isPending(item)&&<span style={{border:"1px solid "+(ageDays(item.created_at)>=3?"#ffb06d":"#3986a7"),borderRadius:5,padding:"3px 7px",color:ageDays(item.created_at)>=3?"#ffd0a8":"#b5ebff"}}>{ageDays(item.created_at)>=3?"ATENCIÓN PRIORITARIA · ":"PENDIENTE · "}{ageDays(item.created_at)===0?"Hoy":ageDays(item.created_at)===1?"1 día":ageDays(item.created_at)+" días"}</span>}
+       {isPending(item)&&!item.assigned_to&&<span style={{color:"#ffd494"}}>SIN RESPONSABLE</span>}
        <span style={{color:"#79dffe"}}>{category[item.subject]||"Consulta"}</span>
        <span>{item.status==="new"?"NUEVO":item.status==="reviewing"?"EN REVISIÓN":item.status==="resolved"?"RESUELTO":"ARCHIVADO"}</span>
        {item.game_slug&&<span>Producto: {item.game_slug}</span>}
