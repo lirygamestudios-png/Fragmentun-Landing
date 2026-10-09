@@ -248,6 +248,18 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
       })}
     </section>
     <section className={styles.sectionHead}>
+      <div><span>REGISTRO DE LIQUIDACIONES</span><h2>Seguimiento bancario</h2></div>
+      <p>El registro bancario persistente está diseñado, pero todavía no se ha instalado la tabla ni conectado a los extractos. Ningún depósito se considera verificado.</p>
+    </section>
+    <section className={styles.grid}>
+      <article className={styles.card}>
+        <div className={styles.cardTop}><span className={styles.badgePlanned}>PENDIENTE DE ACTIVACIÓN</span><em>SIN DEPÓSITOS CONCILIADOS</em></div>
+        <h3>Liquidaciones bancarias</h3>
+        <p>Faltan cuenta bancaria de la empresa estadounidense, credenciales de procesadores, pruebas en ambiente aislado y comprobantes de depósito.</p>
+        <p>Las cifras anteriores son movimientos registrados; no representan efectivo confirmado en el banco.</p>
+      </article>
+    </section>
+    <section className={styles.sectionHead}>
       <div><span>CIERRE INFORMATIVO · PERÍODO SELECCIONADO</span><h2>Resumen de ventas y ajustes registrados</h2></div>
       <p>Información parcial de la muestra consultada: no es un cierre contable certificado. La fuente no separa comisiones de reembolsos en importes específicos.</p>
     </section>
