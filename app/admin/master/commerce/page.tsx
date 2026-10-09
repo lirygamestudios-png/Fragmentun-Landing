@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import {paymentProviders,REAL_PAYMENTS_ENABLED} from "../../../../lib/payments/provider-contract";
 import {LiryPaymentSimulation} from "../../../../components/LiryPaymentSimulation";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
+import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 
 function money(cents:number|null|undefined,currency="USD"){
@@ -43,6 +44,8 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
   if(!user) redirect("/admin/lirygames/login");
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile) redirect("/admin/lirygames/login?unauthorized=1");
+  if(!["admin","editor"].includes(profile.role)) redirect("/admin/lirygames/login?unauthorized=1");
+  if(!(await hasSatisfiedMfa(supabase))) redirect("/admin/lirygames/login?mfa_required=1");
 
   const[
     {data:orders},
