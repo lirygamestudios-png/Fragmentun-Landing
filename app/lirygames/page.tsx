@@ -69,6 +69,7 @@ export default async function LiryGamesFrontDesk(){
       <p>El primer lanzamiento de cada videojuego está concebido con tres mundos internos jugables sin costo. Los artículos, skins y personalizaciones serán compras voluntarias.</p>
       <p className={styles.honesty}>El perfil gamer, Liry DNA y Liry Journey estarán disponibles cuando se complete su integración. No mostramos progreso ficticio.</p>
     </section>
+    <div className={styles.socialTrio} aria-label="Comunidad, eventos y recomendaciones">
     <section className={styles.section} id="comunidad"><p className={styles.kicker}>COMUNIDAD LIRY</p><h2>COMPARTE TU UNIVERSO</h2><p className={styles.sectionIntro}>Un punto de encuentro para los futuros jugadores. Los enlaces sociales oficiales, las opciones para compartir y LiryBoost se activarán cuando estén configurados y verificados en el Admin.</p><p className={styles.honesty}>Comparte el enlace de la página que estás visitando. Sin contadores de participación ficticios.</p><LiryShare /></section>
     <section className={styles.section} id="eventos">
       <p className={styles.kicker}>ACTUALIDAD DEL ECOSISTEMA</p><h2>EVENTOS EN VIVO</h2>
@@ -85,6 +86,7 @@ export default async function LiryGamesFrontDesk(){
         <article className={styles.lowerCard}><h3>Conoce tu estilo</h3><p>El cuestionario Liry DNA aparecerá aquí cuando se habilite su evaluación real.</p><a className={styles.miniLink} href="#liry-dna">EXPLORAR LIRY DNA ↗</a></article>
       </div>
     </section>
+    </div>
     <section className={styles.feature} id="secretos">
       <p className={styles.kicker}>MÁS ALLÁ DE LO VISIBLE</p><h2>SECRETOS DE <span>LIRY</span></h2>
       <p>Los secretos, coleccionables y desafíos ocultos cobrarán vida conforme se publiquen los videojuegos. Ningún logro se considerará obtenido sin actividad verificada.</p>
