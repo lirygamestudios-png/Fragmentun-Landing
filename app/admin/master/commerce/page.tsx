@@ -118,6 +118,12 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
+    <nav aria-label="Accesos rápidos de Comercio" className={styles.adminForms}>
+      <a className={styles.formButton} href="#comercio-pagos">Pasarelas y pruebas ↓</a>
+      <a className={styles.formButton} href="#comercio-reportes">Reportes y descargas ↓</a>
+      <a className={styles.formButton} href="#comercio-conciliacion">Conciliación bancaria ↓</a>
+      <a className={styles.formButton} href="#comercio-operaciones">Historial e incidencias ↓</a>
+    </nav>
     <section className={styles.moduleStrip} aria-label="Estado del módulo">
       <span className={styles.moduleGlyph} aria-hidden="true">CM</span>
       <div className={styles.moduleStripCopy}><small>COMERCIO Y OPERACIÓN</small><strong>Pedidos, pagos y entregas</strong></div>
@@ -171,7 +177,7 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
     </details>
 
     <section className={styles.sectionHead}>
-      <div><span>ARQUITECTURA MULTIPASARELA</span><h2>Cuatro opciones de pago</h2></div>
+      <div id="comercio-pagos"><span>ARQUITECTURA MULTIPASARELA</span><h2>Cuatro opciones de pago</h2></div>
       <p>Empresa estadounidense en constitución. Ninguna cuenta ni cobro real activado. Proveedores sujetos a contratación y verificación.</p>
     </section>
     <section className={styles.grid}>
@@ -202,7 +208,7 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
     </section>
 
     <section className={styles.sectionHead}>
-      <div><span>CONSULTAR INGRESOS</span><h2>Filtros financieros</h2></div>
+      <div id="comercio-reportes"><span>CONSULTAR INGRESOS</span><h2>Filtros financieros</h2></div>
       <p>Los filtros operan sobre los últimos 500 eventos recuperados; no equivalen a una consulta histórica completa.</p>
     </section>
     <form method="get" action="/admin/master/commerce" className={styles.adminForms}>
@@ -227,7 +233,7 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
       </article>
     </div>
     <section className={styles.sectionHead}>
-      <div><span>CONCILIACIÓN POR PROCESADOR</span><h2>Movimientos pendientes de verificar</h2></div>
+      <div id="comercio-conciliacion"><span>CONCILIACIÓN POR PROCESADOR</span><h2>Movimientos pendientes de verificar</h2></div>
       <p>Vista preparatoria basada en eventos existentes; no acredita que el proveedor haya transferido fondos al banco. Todavía faltan referencias de liquidación y estados bancarios.</p>
     </section>
     <section className={styles.grid}>
@@ -301,7 +307,7 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
       {!revenueSummary.length&&<article className={styles.card}><h3>Sin ingresos registrados</h3><p>El reporte se alimentará de eventos reales registrados. No contabiliza el laboratorio de pagos.</p></article>}
     </section>
     <section className={styles.sectionHead}>
-      <div><span>AUDITORÍA DE VIDEOJUEGOS</span><h2>Historial de compras virtuales</h2></div>
+      <div id="comercio-operaciones"><span>AUDITORÍA DE VIDEOJUEGOS</span><h2>Historial de compras virtuales</h2></div>
       <p>Eventos registrados en el backend. Las simulaciones no se contabilizan como ingresos ni compras reales.</p>
     </section>
     <section className={styles.grid}>
