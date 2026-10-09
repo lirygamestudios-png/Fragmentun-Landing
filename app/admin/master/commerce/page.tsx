@@ -200,12 +200,12 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
     <details className={styles.advancedPanel}><summary>Configuración comercial y controles técnicos</summary>
     <section className={styles.sectionHead}>
       <div><span>PREPARACIÓN COMERCIAL</span><h2>Configuración</h2></div>
-      <p>Pagos y envíos permanecen bajo control hasta su activación comercial.</p>
+      <p>Una configuración habilitada no autoriza cobros reales. El bloqueo general de pagos continúa activo hasta la aprobación comercial y técnica.</p>
     </section>
     <section className={styles.grid}>
       {[
-        ["Stripe",settings?.stripe_enabled?"Habilitado":"Deshabilitado"],
-        ["PayPal",settings?.paypal_enabled?"Habilitado":"Deshabilitado"],
+        ["Stripe",settings?.stripe_enabled?"Configurado · cobros bloqueados":"No configurado"],
+        ["PayPal",settings?.paypal_enabled?"Configurado · cobros bloqueados":"No configurado"],
         ["Proveedor por defecto",providerLabel(settings?.default_payment_provider)],
         ["Impuestos",simpleModeLabel(settings?.tax_mode||"manual")],
         ["Etiquetas de envío",simpleModeLabel(settings?.shipping_label_mode||"manual")],
