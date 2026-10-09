@@ -93,22 +93,31 @@ export default async function LiryGamesFrontDesk(){
       <p className={styles.honesty}>El perfil gamer, Liry DNA y Liry Journey estarán disponibles cuando se complete su integración. No mostramos progreso ficticio.</p>
     </section>
     <div className={styles.socialTrio} aria-label="Comunidad, eventos y recomendaciones">
-    <section className={styles.section} id="comunidad"><p className={styles.kicker}>COMUNIDAD LIRY</p><h2>COMPARTE TU UNIVERSO</h2><p className={styles.sectionIntro}>Un punto de encuentro para los futuros jugadores. Los enlaces sociales oficiales, las opciones para compartir y LiryBoost se activarán cuando estén configurados y verificados en el Admin.</p><p className={styles.honesty}>Comparte el enlace de la página que estás visitando. Sin contadores de participación ficticios.</p><LiryShare /></section>
-    <section className={styles.section} id="eventos">
-      <p className={styles.kicker}>ACTUALIDAD DEL ECOSISTEMA</p><h2>EVENTOS EN VIVO</h2>
-      <div className={styles.lowerGrid}>
-        <article className={styles.lowerCard}><span className={styles.status}>SIN EVENTOS PROGRAMADOS</span><h3>El escenario se está preparando</h3><p>Los eventos oficiales y sus horarios se anunciarán desde el Admin. No mostramos emisiones ni torneos inexistentes.</p></article>
-        <article className={styles.lowerCard}><span className={styles.status}>PRÓXIMAMENTE</span><h3>LIRYBOOST</h3><p>Un programa de comunidad y difusión que reconocerá participaciones verificadas y podrá ofrecer acceso anticipado a futuras betas.</p></article>
-      </div>
-    </section>
-    <section className={styles.section} id="recomendaciones">
-      <p className={styles.kicker}>EXPLORA SEGÚN TU ESTILO</p><h2>RECOMENDACIONES PARA TI</h2>
-      <p className={styles.sectionIntro}>Cuando completes Liry DNA y exista una cuenta gamer, esta sección podrá recomendarte videojuegos del catálogo según tus preferencias reales.</p>
-      <div className={styles.lowerGrid}>
-        <article className={styles.lowerCard}><h3>Descubre los nueve videojuegos</h3><p>Explora las propuestas de LIRYGAMES antes de escoger dónde comenzar.</p><a className={styles.miniLink} href="#mundos">VER LOS 9 MUNDOS ↗</a></article>
-        <article className={styles.lowerCard}><h3>Conoce tu estilo</h3><p>El cuestionario Liry DNA aparecerá aquí cuando se habilite su evaluación real.</p><a className={styles.miniLink} href="#liry-dna">EXPLORAR LIRY DNA ↗</a></article>
-      </div>
-    </section>
+      <section className={styles.section} id="comunidad">
+        <h2>COMUNIDAD LIRY</h2><p className={styles.socialIntro}>Conecta, comparte, juega.</p>
+        <div className={styles.communityTabs} aria-label="Categorías de comunidad"><span className={styles.communityTabActive}>TODOS</span><span>AMIGOS</span><span>LOGROS</span><span>EVENTOS</span></div>
+        <div className={styles.communityFeed}>
+          <div className={styles.communityEmpty}><span className={styles.communityEmptyIcon} aria-hidden="true">◉</span><strong>La comunidad está por despertar</strong><p>Las publicaciones, mensajes y actividades aparecerán cuando el servicio comunitario esté disponible. Sin conversaciones ficticias.</p></div>
+          <div className={styles.communityPost}><span className={styles.communityAvatar} aria-hidden="true">L</span><div><strong>Tu comunidad Liry</strong><p>Comparte la página e invita a otros jugadores a descubrir los nueve mundos.</p><small>Comunidad en preparación</small></div></div>
+        </div>
+        <div className={styles.communityCompose}><span>Publicaciones disponibles próximamente</span><span aria-hidden="true">➤</span></div>
+        <LiryShare />
+      </section>
+      <section className={styles.section} id="eventos">
+        <h2>EVENTOS EN VIVO</h2><p className={styles.socialIntro}>No te lo pierdas.</p>
+        <div className={styles.eventMain}><div className={styles.eventLight} aria-hidden="true">⚡</div><div className={styles.eventMainContent}><span>PRÓXIMO EVENTO · POR ANUNCIAR</span><h3>SKILL ARENA</h3><strong>TORNEO GLOBAL</strong><p>Fecha, horario e inscripciones pendientes de confirmación oficial.</p><span className={styles.eventOutline}>INSCRIPCIONES PRÓXIMAMENTE</span></div></div>
+        <div className={styles.eventMiniGrid}>
+          <article className={styles.eventMini}><span className={styles.eventMiniIcon} aria-hidden="true">✦</span><div><strong>Evento especial</strong><p>Gaias Last Stand</p><small>Fecha por anunciar</small></div><span className={styles.eventMiniLink}>Próximamente</span></article>
+          <article className={styles.eventMini}><span className={styles.eventMiniIcon} aria-hidden="true">♜</span><div><strong>Recompensas exclusivas</strong><p>Nexo Social</p><small>Detalles pendientes</small></div><span className={styles.eventMiniLink}>Próximamente</span></article>
+        </div>
+      </section>
+      <section className={styles.section} id="recomendaciones">
+        <h2>RECOMENDACIONES PARA TI</h2><p className={styles.socialIntro}>Basado en tu Liry DNA.</p>
+        <div className={styles.recommendList}>
+          {[{title:"Nexo Social",reason:"Conecta con otros jugadores",index:4},{title:"Gaias Last Stand",reason:"Explora un mundo de supervivencia",index:3},{title:"Eternun",reason:"Descubre un universo de fantasía",index:5}].map(game=><article className={styles.recommendItem} key={game.title}><div className={`${styles.recommendThumb} ${styles[`recommendThumb${game.index}`]} `} aria-hidden="true"><span>✧</span></div><div className={styles.recommendText}><strong>{game.title}</strong><p>{game.reason}</p><small>Selección editorial · personalización pendiente</small></div><a href="#mundos">Ver juego →</a></article>)}
+        </div>
+        <a className={styles.recommendAll} href="#mundos">VER TODOS LOS MUNDOS <span aria-hidden="true">→</span></a>
+      </section>
     </div>
     <section className={styles.feature} id="secretos">
       <p className={styles.kicker}>MÁS ALLÁ DE LO VISIBLE</p><h2>SECRETOS DE <span>LIRY</span></h2>
