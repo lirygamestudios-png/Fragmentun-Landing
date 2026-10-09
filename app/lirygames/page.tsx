@@ -109,7 +109,12 @@ export default async function LiryGamesFrontDesk(){
         <div className={styles.socialChannels}>
           <strong>SÍGUENOS EN REDES SOCIALES</strong>
           <p>Los perfiles oficiales aparecerán aquí cuando sus enlaces estén verificados en el Admin.</p>
-          <div className={styles.socialNetworkLabels}><span>INSTAGRAM</span><span>TIKTOK</span><span>YOUTUBE</span><span>FACEBOOK</span></div>
+          <div className={styles.socialNetworkLabels} aria-label="Redes sociales oficiales pendientes de conexión">
+            <span title="Instagram · perfil pendiente" aria-label="Instagram, próximamente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg></span>
+            <span title="TikTok · perfil pendiente" aria-label="TikTok, próximamente"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 2c.3 2.5 1.7 4.1 4.5 4.3v3.5a10 10 0 0 1-4.5-1.3v7.2c0 4.2-3 6.7-6.6 6.3-3.8-.4-5.8-4.1-4.4-7.5 1.1-2.7 3.5-4 6.7-3.7v3.6c-2-.4-3.3.8-3.3 2.3 0 1.5 1.3 2.4 2.7 2.1 1.1-.2 1.5-1.1 1.5-2.5V2h4.4Z"/></svg></span>
+            <span title="YouTube · canal pendiente" aria-label="YouTube, próximamente"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 7.3c-.25-1.1-.95-1.8-2.1-2C18.1 5 12 5 12 5s-6.1 0-7.9.3C2.95 5.5 2.25 6.2 2 7.3 1.7 9 1.7 12s0 3 .3 4.7c.25 1.1.95 1.8 2.1 2C5.9 19 12 19 12 19s6.1 0 7.9-.3c1.15-.2 1.85-.9 2.1-2 .3-1.7.3-4.7.3-4.7s0-3-.3-4.7ZM10 15.7V8.3l6.2 3.7Z"/></svg></span>
+            <span title="Facebook · perfil pendiente" aria-label="Facebook, próximamente"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.2 22v-8.8h3L17.7 9h-3.5V6.3c0-1.2.4-2 2-2H18V.5C17.7.2 16.4 0 15 0c-3.4 0-5.7 2.1-5.7 5.9V9H6v4.2h3.3V22h4.9Z"/></svg></span>
+          </div>
         </div>
         <small className={styles.socialPending}>Solo se habilitan enlaces oficiales confirmados; compartir la página ya está disponible.</small>
       </section>
