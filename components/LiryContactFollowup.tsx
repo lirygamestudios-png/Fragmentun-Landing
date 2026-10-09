@@ -1,3 +1,4 @@
+import visual from "../app/admin/master/community/messages/messages.module.css";
 "use client";
 import {useState,type FormEvent} from "react";
 type Owner={user_id:string;display_name:string|null};
@@ -15,7 +16,7 @@ export function LiryContactFollowup({id,status,note,assignedTo,responseDraft,own
   }catch(err){setFeedback(err instanceof Error?err.message:"No se pudo guardar.")}
   finally{setBusy(false)}
  }
- return <form onSubmit={save} style={{display:"grid",gap:9,marginTop:13,borderTop:"1px solid #254960",paddingTop:11}}>
+ return <form className={visual.followup} onSubmit={save} style={{display:"grid",gap:9,marginTop:13,borderTop:"1px solid #254960",paddingTop:11}}>
   <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
    <label style={{display:"grid",gap:4,fontSize:11,color:"#aac7dd"}}>Estado
     <select value={state} onChange={e=>setState(e.target.value)} style={{background:"#0b2843",color:"#fff",padding:8,border:"1px solid #35688b",borderRadius:4}}>
