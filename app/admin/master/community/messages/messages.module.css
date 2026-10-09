@@ -37,3 +37,11 @@
 .followup textarea{width:100%;resize:vertical}
 .followup :global(button){padding:11px 18px!important;border-radius:10px!important}
 @media(max-width:650px){.page{padding:16px!important}.heading{padding:19px!important}.filterPanel,.trackingPanel{padding:14px!important}.metricGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.metric{min-height:104px}.messageCard{padding:16px!important}}
+
+/* Acceso contextual a la cola de mensajes pendientes */
+.page .pendingButton{display:inline-flex;align-items:center;justify-content:center;min-height:43px;padding:11px 19px!important;border-radius:10px!important;border:1px solid #62d5ff!important;background:linear-gradient(125deg,#0d4c80,#123b70)!important;color:#ebfaff!important;text-decoration:none!important;font-size:11px;font-weight:800;letter-spacing:.035em;box-shadow:inset 0 1px rgba(188,236,255,.1),0 6px 18px rgba(0,0,0,.16);transition:transform .18s,box-shadow .18s,border-color .18s,background .18s}
+.page .pendingButton:hover{transform:translateY(-2px);border-color:#a5edff!important;background:linear-gradient(120deg,#156da9,#17468b)!important;box-shadow:0 0 24px rgba(78,208,255,.35)}
+.page .pendingButtonActive{border-color:#ffc47d!important;background:linear-gradient(115deg,#614123,#403357)!important;color:#ffe2b4!important}
+.page .pendingButtonActive:hover{border-color:#ffe0a4!important;background:linear-gradient(115deg,#805128,#5b3e6e)!important;box-shadow:0 0 25px rgba(255,187,101,.28)}
+.page .pendingButton:focus-visible{outline:2px solid #8ceaff;outline-offset:3px}
+@media(max-width:560px){.page .pendingButton{width:100%;text-align:center}}
