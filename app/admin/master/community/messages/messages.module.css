@@ -1,0 +1,39 @@
+/* LIRYGAMES · Mensajes — superficies del Command Center aprobado */
+.page{--cyan:#60dfff;--muted:#a5bedb;--line:rgba(107,199,255,.27);color:#f1f7ff!important;font-family:Inter,system-ui,sans-serif!important;background:radial-gradient(ellipse at 74% 0,rgba(111,63,231,.13),transparent 43%),#060916!important;padding:clamp(18px,3vw,43px)!important;min-height:100vh}
+.page a,.page button,.page input,.page select,.page textarea{transition:border-color .18s,box-shadow .18s,background .18s,transform .18s}
+.page a:focus-visible,.page button:focus-visible,.page summary:focus-visible,.page :is(input,select,textarea):focus-visible{outline:2px solid #84e8ff;outline-offset:3px}
+.back{display:inline-flex;align-items:center;min-height:37px;padding:8px 13px!important;border:1px solid var(--line);border-radius:9px;text-decoration:none!important;background:rgba(18,45,77,.64);margin-bottom:18px;font-weight:750}
+.back:hover{background:#153d65;box-shadow:0 0 18px rgba(87,196,255,.2)}
+.heading{padding:24px 27px!important;margin-bottom:24px!important;border:1px solid var(--line)!important;border-radius:14px;background:linear-gradient(120deg,#121831,#08182e);box-shadow:0 12px 35px rgba(0,0,0,.22),inset 0 1px rgba(164,211,255,.07)}
+.heading h1{font-family:Orbitron,Rajdhani,Inter,system-ui,sans-serif;letter-spacing:.02em;font-size:clamp(21px,2.5vw,32px)!important}
+.metrics{margin-bottom:22px}
+.metricGrid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px!important}
+.metric{border-radius:13px!important;background:linear-gradient(135deg,#13223d,#0c1730)!important;border:1px solid var(--line)!important;min-height:120px;box-shadow:0 10px 22px rgba(0,0,0,.16),inset 0 1px rgba(121,208,255,.06)}
+.metric:last-child{border-color:rgba(255,190,105,.43)!important}
+.metric strong{color:#85eaff!important;font-variant-numeric:tabular-nums}
+.metric:last-child strong{color:#ffd297!important}
+.filterPanel,.trackingPanel{background:linear-gradient(130deg,#111b35,#0a142c)!important;border:1px solid var(--line)!important;border-radius:14px!important;padding:18px!important;box-shadow:inset 0 1px rgba(140,217,255,.05);gap:12px!important}
+.filterPanel label,.trackingPanel label{font-size:12px!important;font-weight:680;color:#bce1f5!important}
+.page :is(input:not([type=hidden]),select,textarea){min-height:43px;padding:10px 12px!important;border-radius:9px!important;border:1px solid rgba(110,179,229,.42)!important;background:linear-gradient(140deg,#0e1b34,#13284a)!important;color:#effaff!important;font:inherit;max-width:100%;min-width:0}
+.page :is(input,textarea)::placeholder{color:#8fa9c5}
+.page :is(input:not([type=hidden]),select,textarea):focus{border-color:#73e1ff!important;box-shadow:0 0 0 3px rgba(72,190,255,.15)!important;outline:none}
+.page button,.page a[href*="status="],.page a[href*="pending="],.quick a,.drafts a{border-radius:9px!important}
+.page button{background:linear-gradient(120deg,#0c4b83,#0b6796)!important;border:1px solid #4ebff0!important;color:#f4fcff!important;min-height:41px;cursor:pointer;letter-spacing:.03em}
+.page button:hover:not(:disabled){background:linear-gradient(120deg,#166ab3,#134f84)!important;box-shadow:0 0 20px rgba(88,211,255,.33);transform:translateY(-1px)}
+.page button:disabled{opacity:.6;cursor:wait}
+.quick,.drafts,.statusFilters{gap:10px!important}
+.quick a,.drafts a,.statusFilters a{display:inline-flex;align-items:center;min-height:37px;padding:9px 14px!important;border:1px solid rgba(102,178,224,.36)!important;border-radius:9px!important;background:linear-gradient(140deg,#10233f,#0c1932)!important;color:#d5eeff!important;text-decoration:none!important;font-weight:700}
+.quick a:hover,.drafts a:hover,.statusFilters a:hover{border-color:#72ddff!important;background:#163c64!important;box-shadow:0 0 18px rgba(72,200,255,.22);transform:translateY(-1px)}
+.messageList{display:grid;gap:16px!important}
+.messageCard{background:linear-gradient(140deg,rgba(17,30,55,.99),rgba(9,20,40,.99))!important;border:1px solid rgba(107,190,235,.34)!important;border-radius:14px!important;padding:clamp(17px,2.3vw,27px)!important;box-shadow:0 14px 36px rgba(0,0,0,.17);overflow-wrap:anywhere}
+.messageCard:hover{border-color:rgba(90,216,255,.55)!important;box-shadow:0 15px 37px rgba(0,0,0,.24),0 0 22px rgba(85,170,255,.1)}
+.messageCard>div:first-child strong{font-size:16px;color:#f1faff}
+.messageCard>p{padding:14px 16px;background:rgba(7,18,37,.63);border:1px solid rgba(114,178,229,.18);border-radius:9px}
+.history{border-top:1px solid var(--line)!important;margin-top:18px!important;padding-top:17px!important}
+.history summary{color:#83e5ff!important;font-size:12px!important;font-weight:800;letter-spacing:.04em;cursor:pointer}
+.history[open]{background:rgba(7,23,45,.36);padding:16px;border-radius:10px;border:1px solid rgba(109,185,233,.18);margin-top:17px}
+.followup{display:grid;gap:15px!important;border-top:1px solid var(--line)!important;padding-top:18px!important;margin-top:18px!important}
+.followup label{color:#c4e5f6!important;font-size:12px!important;font-weight:700;min-width:0}
+.followup textarea{width:100%;resize:vertical}
+.followup :global(button){padding:11px 18px!important;border-radius:10px!important}
+@media(max-width:650px){.page{padding:16px!important}.heading{padding:19px!important}.filterPanel,.trackingPanel{padding:14px!important}.metricGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.metric{min-height:104px}.messageCard{padding:16px!important}}
