@@ -920,3 +920,27 @@
   #mundos .worldsGrid{grid-template-columns:minmax(0,1fr)}
   #mundos .worldsGrid>.gameCard{aspect-ratio:1.9 / 1}
 }
+
+/* Altura explícita por fila: evita que aspect-ratio, imágenes o texto expandan
+   verticalmente las nueve tarjetas sobre el alto de diseño. */
+@media(min-width:751px){
+  #mundos .worldsGrid{
+    grid-template-rows:repeat(3,minmax(0,clamp(112px,10.4vw,150px)));
+    grid-auto-rows:minmax(0,clamp(112px,10.4vw,150px));
+    align-content:start;
+  }
+  #mundos .worldsGrid>.gameCard{
+    aspect-ratio:auto !important;
+    height:100% !important;
+    max-height:100%;
+    min-height:0 !important;
+    align-self:stretch;
+  }
+}
+@media(max-width:750px){
+  #mundos .worldsGrid{grid-auto-rows:minmax(0,clamp(120px,24vw,165px))}
+  #mundos .worldsGrid>.gameCard{aspect-ratio:auto !important;height:100% !important;min-height:0 !important}
+}
+@media(max-width:350px){
+  #mundos .worldsGrid{grid-auto-rows:155px}
+}
