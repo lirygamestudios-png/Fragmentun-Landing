@@ -791,3 +791,9 @@
 .dnaSide .dnaPhotoUpper,.dnaSide .dnaPhotoLower{animation:liryDnaPhotoFloat 7s ease-in-out infinite}
 @keyframes liryDnaPhotoFloat{0%,100%{transform:translateY(1px) scale(1.055)}50%{transform:translateY(-3px) scale(1.075)}}
 @media(prefers-reduced-motion:reduce){.dnaSide .dnaPhotoUpper,.dnaSide .dnaPhotoLower{animation:none}}
+
+/* Corrección: mostrar siempre la imagen real sin depender de hidratación JS/onLoad. */
+.dnaSide .dnaPhotoUpper,.dnaSide .dnaPhotoLower{
+  opacity:1;
+  visibility:visible;
+}
