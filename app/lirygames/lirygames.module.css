@@ -781,3 +781,13 @@
 @media(prefers-reduced-motion:reduce){
   .dnaSide .dnaArt .dnaMap,.dnaSide .dnaContinuation svg{animation:none;transform:none;will-change:auto}
 }
+
+/* JPG aprobado: imagen continua en ambos tramos, mientras carga se conserva SVG. */
+.dnaSide .dnaArt,.dnaSide .dnaContinuation{position:relative;isolation:isolate}
+.dnaSide .dnaPhotoUpper,.dnaSide .dnaPhotoLower{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;z-index:2;pointer-events:none;transition:opacity .5s ease}
+.dnaSide .dnaPhotoUpper{object-position:center 15%}
+.dnaSide .dnaPhotoLower{object-position:center 82%}
+.dnaSide .dnaPhotoLoaded{opacity:1}
+.dnaSide .dnaPhotoUpper,.dnaSide .dnaPhotoLower{animation:liryDnaPhotoFloat 7s ease-in-out infinite}
+@keyframes liryDnaPhotoFloat{0%,100%{transform:translateY(1px) scale(1.055)}50%{transform:translateY(-3px) scale(1.075)}}
+@media(prefers-reduced-motion:reduce){.dnaSide .dnaPhotoUpper,.dnaSide .dnaPhotoLower{animation:none}}
