@@ -147,7 +147,7 @@ export default async function LiryGamesFrontDesk(){
     </section>
     <div className={styles.finalDiscover} aria-label="Tu viaje y secretos de Liry">
       <section className={styles.journeyBanner} id="modelo">
-        <div className={styles.journeyBannerArt} aria-hidden="true"><span className={styles.bannerOrbit}></span><span className={styles.bannerTraveler}>✧</span></div>
+        <div className={styles.journeyCinematicImage} role="img" aria-label="Paisaje cinematográfico del universo LIRYGAMES con mundos fantásticos" />
         <div className={styles.journeyBannerContent}>
           <h2>TU VIAJE, TUS REGLAS</h2>
           <p>Explora. Juega. Conecta. Vive la experiencia Liry.</p>
