@@ -665,3 +665,12 @@
 .finalSignature{grid-column:2;grid-row:1/3;align-self:end;display:flex;align-items:center;justify-content:center;gap:9px;color:#36d7fb;padding-bottom:13px}
 .finalSignature>span{font-size:36px;color:#31d5fa;align-self:flex-start}.finalSignature strong{font-size:13px;line-height:1.13;letter-spacing:.12em;color:#e5faff}
 @media(max-width:750px){.finalDiscover{grid-template-columns:1fr;grid-template-rows:auto auto auto}.journeyBanner,.secretsBanner{grid-column:1;min-height:180px}.finalSignature{grid-column:1;grid-row:auto;align-self:center;justify-content:center}.journeyBannerArt{width:27%}.journeyBannerContent{padding:18px 12px}.secretsBanner{padding:17px;gap:10px}.secretsEmblem{width:58px;height:58px;font-size:37px}.secretsArt{font-size:70px}}
+
+/* Ilustración UHD vectorial de secretos: se escala sin pixelación. */
+.secretsBanner{position:relative;isolation:isolate;min-height:190px;padding:16px 28px;justify-content:flex-end;background:#0a0b24}
+.secretsHdArt{position:absolute;inset:0;z-index:-1;overflow:hidden}
+.secretsHdArt svg{display:block;width:100%;height:100%}
+.secretsBanner::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(5,5,20,.16) 38%,rgba(5,5,22,.88) 75%,#06081b 100%);pointer-events:none}
+.secretsCopy{flex:0 1 48%;max-width:48%;padding-left:12px;text-shadow:0 2px 9px #050316}
+.secretsCopy h2{color:#f4edff;font-size:clamp(18px,2.15vw,27px)}
+@media(max-width:750px){.secretsBanner{min-height:220px;justify-content:flex-end;padding:14px}.secretsCopy{flex:0 1 62%;max-width:62%;padding-left:0}.secretsBanner::after{background:linear-gradient(90deg,transparent,#060718e8 68%)}}
