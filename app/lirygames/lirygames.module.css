@@ -482,9 +482,14 @@
 /* Panel LIRY DNA exclusivamente. No modificar tarjetas, hero ni bloques anteriores.
    El sidebar se adapta al alto del catálogo sin desplazarlo. */
 @media(min-width:1001px){
-  .worldShowcase{align-items:stretch}
+  /* La fila del grid se calcula únicamente por las nueve tarjetas.
+     El ADN ocupa el área de la columna derecha sin incrementar esa fila. */
+  .worldShowcase{position:relative;align-items:start;grid-template-rows:auto auto}
+  .worldShowcase .worldsGrid{grid-column:1;grid-row:1}
+  .worldShowcase .worldsNotes{grid-row:2}
   .worldShowcase .dnaSide{
-    align-self:stretch;height:0;min-height:100%;box-sizing:border-box;overflow:hidden;
+    position:absolute;grid-column:2;grid-row:1;inset:0;
+    align-self:stretch;height:auto;min-height:0;box-sizing:border-box;overflow:hidden;
     padding:13px 14px 12px;gap:0
   }
   .worldShowcase .dnaSide .kicker{font-size:8px}
