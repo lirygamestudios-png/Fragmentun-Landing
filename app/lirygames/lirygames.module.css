@@ -238,34 +238,34 @@
 }
 
 /* Catálogo: marcos rectangulares conforme a la muestra visual aprobada. */
-:global(#mundos) .grid{gap:17px}
-:global(#mundos) .gameCard{
+.page :global(#mundos) .grid{gap:17px}
+.page :global(#mundos) .gameCard{
   min-height:224px;
   border-radius:5px;
   border:1px solid rgba(90,156,203,.42);
   box-shadow:inset 0 0 28px rgba(27,92,171,.1),0 12px 28px rgba(1,8,22,.18);
 }
-:global(#mundos) .gameCard:hover{border-color:#67d5ff}
-:global(#mundos) .cardContent{padding:21px 22px}
-:global(#mundos) .cardContent h3{margin:13px 0 7px;font-size:20px}
-:global(#mundos) .cardContent p{line-height:1.45}
-:global(#mundos) .number{font-size:32px;right:17px;top:15px}
-:global(#mundos) .status{border-radius:3px}
-@media(max-width:800px){:global(#mundos) .gameCard{min-height:215px}}
-@media(max-width:520px){:global(#mundos) .gameCard{min-height:208px}:global(#mundos) .cardContent{padding:19px}}
+.page :global(#mundos) .gameCard:hover{border-color:#67d5ff}
+.page :global(#mundos) .cardContent{padding:21px 22px}
+.page :global(#mundos) .cardContent h3{margin:13px 0 7px;font-size:20px}
+.page :global(#mundos) .cardContent p{line-height:1.45}
+.page :global(#mundos) .number{font-size:32px;right:17px;top:15px}
+.page :global(#mundos) .status{border-radius:3px}
+@media(max-width:800px){.page :global(#mundos) .gameCard{min-height:215px}}
+@media(max-width:520px){.page :global(#mundos) .gameCard{min-height:208px}.page :global(#mundos) .cardContent{padding:19px}}
 
 /* Continuidad del catálogo: tarjetas rectangulares y estados accesibles. */
-:global(#mundos) .grid{align-items:stretch}
-:global(#mundos) .gameCard{min-width:0;align-items:flex-end}
-:global(#mundos) .cardContent{min-width:0;width:100%;overflow-wrap:anywhere}
-:global(#mundos) .gameDetails{margin-top:12px;border-top:1px solid rgba(114,184,220,.24);padding-top:11px}
-:global(#mundos) .gameDetails summary{display:list-item;cursor:pointer;color:#a6e6ff;font-size:10px;line-height:1.6;letter-spacing:.045em}
-:global(#mundos) .gameDetails summary:hover{color:#fff}
-:global(#mundos) .gameDetails summary:focus-visible{outline:2px solid #80ddff;outline-offset:4px;border-radius:2px}
-:global(#mundos) .gameDetails[open]{background:rgba(4,18,40,.4)}
-:global(#mundos) .gameDetails p{margin:9px 0 0;font-size:12px;line-height:1.55}
-:global(#mundos) .discoverControls input:focus-visible,:global(#mundos) .discoverControls select:focus-visible,:global(#mundos) .discoveryReset:focus-visible{outline:2px solid #8de4ff;outline-offset:3px}
-@media(prefers-reduced-motion:reduce){:global(#mundos) .gameCard{transition:none;transform:none}}
+.page :global(#mundos) .grid{align-items:stretch}
+.page :global(#mundos) .gameCard{min-width:0;align-items:flex-end}
+.page :global(#mundos) .cardContent{min-width:0;width:100%;overflow-wrap:anywhere}
+.page :global(#mundos) .gameDetails{margin-top:12px;border-top:1px solid rgba(114,184,220,.24);padding-top:11px}
+.page :global(#mundos) .gameDetails summary{display:list-item;cursor:pointer;color:#a6e6ff;font-size:10px;line-height:1.6;letter-spacing:.045em}
+.page :global(#mundos) .gameDetails summary:hover{color:#fff}
+.page :global(#mundos) .gameDetails summary:focus-visible{outline:2px solid #80ddff;outline-offset:4px;border-radius:2px}
+.page :global(#mundos) .gameDetails[open]{background:rgba(4,18,40,.4)}
+.page :global(#mundos) .gameDetails p{margin:9px 0 0;font-size:12px;line-height:1.55}
+.page :global(#mundos) .discoverControls input:focus-visible,.page :global(#mundos) .discoverControls select:focus-visible,.page :global(#mundos) .discoveryReset:focus-visible{outline:2px solid #8de4ff;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.page :global(#mundos) .gameCard{transition:none;transform:none}}
 
 /* Liry DNA · mismo lenguaje visual de marcos rectangulares aprobado. */
 #liry-dna{background:linear-gradient(180deg,#071024,#09172d 55%,#071123)}
@@ -301,20 +301,20 @@
 @media(max-width:520px){#perfil-gamer .gamerCard{min-height:170px;padding:20px}}
 
 /* Catálogo editorial aprobado: 3 x 3 miniaturas + panel lateral Liry DNA. */
-:global(#mundos){padding-top:34px;padding-bottom:46px}
-:global(#mundos)>.kicker{display:none}
-:global(#mundos) h2{font-size:clamp(19px,2vw,25px);letter-spacing:.09em;margin:0 0 6px}
-:global(#mundos) .sectionIntro{font-size:12px;line-height:1.4;margin:0 0 15px}
+.page :global(#mundos){padding-top:34px;padding-bottom:46px}
+.page :global(#mundos)>.kicker{display:none}
+.page :global(#mundos) h2{font-size:clamp(19px,2vw,25px);letter-spacing:.09em;margin:0 0 6px}
+.page :global(#mundos) .sectionIntro{font-size:12px;line-height:1.4;margin:0 0 15px}
 .worldShowcase{display:grid;grid-template-columns:minmax(0,3.5fr) minmax(235px,1fr);gap:20px;align-items:start}
 .worldsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-:global(#mundos) .worldsGrid .gameCard{position:relative;isolation:isolate;min-width:0;min-height:0;aspect-ratio:1.88/1;border-radius:7px;border:1px solid #367da8b0;background:linear-gradient(140deg,#0d2550,#081020);overflow:hidden}
-:global(#mundos) .worldsGrid .gameCard::before{content:"";position:absolute;z-index:-1;inset:-12%;width:auto;height:auto;border-radius:0;box-shadow:none;opacity:.88;background:radial-gradient(ellipse at 68% 31%,var(--world-light,#75b9ff) 0%,transparent 35%),radial-gradient(ellipse at 33% 26%,var(--world-mid,#2d4e85),transparent 56%),linear-gradient(145deg,var(--world-dark,#101a39),#080f23 80%)}
-:global(#mundos) .worldsGrid .gameCard::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,#030914f5 0%,#030b19bc 26%,transparent 72%)}
-:global(#mundos) .worldsGrid .cardContent{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding:14px 13px 11px;min-height:100%;width:100%}
-:global(#mundos) .worldCardText{min-width:0}
-:global(#mundos) .worldCardText h3{font-size:clamp(12px,1.15vw,16px);line-height:1.1;margin:0 0 4px;color:#f3f8ff}
-:global(#mundos) .worldCardText p{font-size:clamp(8px,.72vw,10px);line-height:1.3;letter-spacing:.045em;color:#d7eaff;text-transform:uppercase;margin:0}
-:global(#mundos) .worldAvailability{display:block;font-size:8px;font-weight:700;letter-spacing:.095em;color:#8fcee9;margin-top:5px}
+.page :global(#mundos) .worldsGrid .gameCard{position:relative;isolation:isolate;min-width:0;min-height:0;aspect-ratio:1.88/1;border-radius:7px;border:1px solid #367da8b0;background:linear-gradient(140deg,#0d2550,#081020);overflow:hidden}
+.page :global(#mundos) .worldsGrid .gameCard::before{content:"";position:absolute;z-index:-1;inset:-12%;width:auto;height:auto;border-radius:0;box-shadow:none;opacity:.88;background:radial-gradient(ellipse at 68% 31%,var(--world-light,#75b9ff) 0%,transparent 35%),radial-gradient(ellipse at 33% 26%,var(--world-mid,#2d4e85),transparent 56%),linear-gradient(145deg,var(--world-dark,#101a39),#080f23 80%)}
+.page :global(#mundos) .worldsGrid .gameCard::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,#030914f5 0%,#030b19bc 26%,transparent 72%)}
+.page :global(#mundos) .worldsGrid .cardContent{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;padding:14px 13px 11px;min-height:100%;width:100%}
+.page :global(#mundos) .worldCardText{min-width:0}
+.page :global(#mundos) .worldCardText h3{font-size:clamp(12px,1.15vw,16px);line-height:1.1;margin:0 0 4px;color:#f3f8ff}
+.page :global(#mundos) .worldCardText p{font-size:clamp(8px,.72vw,10px);line-height:1.3;letter-spacing:.045em;color:#d7eaff;text-transform:uppercase;margin:0}
+.page :global(#mundos) .worldAvailability{display:block;font-size:8px;font-weight:700;letter-spacing:.095em;color:#8fcee9;margin-top:5px}
 .worldArrow{flex:0 0 auto;display:grid;place-items:center;border-radius:50%;height:27px;width:27px;border:1px solid #65d7ff;color:white;background:#031024ba;text-decoration:none;font-size:17px}
 .worldArrow:hover,.worldArrow:focus-visible{background:#08659a;outline:2px solid #6fe1ff;outline-offset:2px}
 .dnaSide{min-width:0;min-height:100%;border-radius:8px;border:1px solid rgba(71,147,193,.3);background:linear-gradient(145deg,#06152c,#040b19);padding:19px 17px;box-shadow:inset 0 0 32px #10295145}
@@ -336,24 +336,24 @@
 .worldNote:target{outline:2px solid #4ed5ff;outline-offset:2px}
 @media(max-width:1000px){.worldShowcase{grid-template-columns:minmax(0,1fr) 220px;gap:13px}.worldsGrid{gap:8px}.dnaSide{padding:14px}.dnaArt{height:100px;font-size:70px}}
 @media(max-width:750px){.worldShowcase{grid-template-columns:1fr}.dnaSide{min-height:0}.dnaTraitList{grid-template-columns:repeat(2,minmax(0,1fr))}.worldsNotes{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:520px){.worldsGrid{grid-template-columns:repeat(2,minmax(0,1fr))}:global(#mundos) .worldsGrid .gameCard{aspect-ratio:1.45/1}:global(#mundos) .worldCardText h3{font-size:12px}:global(#mundos) .worldCardText p{font-size:8px}.worldsNotes{grid-template-columns:1fr}}
-@media(max-width:350px){.worldsGrid{grid-template-columns:1fr}:global(#mundos) .worldsGrid .gameCard{aspect-ratio:1.9/1}}
+@media(max-width:520px){.worldsGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.page :global(#mundos) .worldsGrid .gameCard{aspect-ratio:1.45/1}.page :global(#mundos) .worldCardText h3{font-size:12px}.page :global(#mundos) .worldCardText p{font-size:8px}.worldsNotes{grid-template-columns:1fr}}
+@media(max-width:350px){.worldsGrid{grid-template-columns:1fr}.page :global(#mundos) .worldsGrid .gameCard{aspect-ratio:1.9/1}}
 
 /* Miniaturas de la referencia aprobada: integración progresiva.
    Cada tarjeta conserva un degradado local si su archivo todavía no existe.
    No cambiar estas rutas por imágenes externas o aleatorias. */
-:global(#mundos) .worldsGrid .gameCard:nth-child(1)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/skill-arena.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
-:global(#mundos) .worldsGrid .gameCard:nth-child(2)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/inflabots-arena.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
-:global(#mundos) .worldsGrid .gameCard:nth-child(3)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/la-batalla-del-dinero.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
-:global(#mundos) .worldsGrid .gameCard:nth-child(4)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/gaias-last-stand.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
-:global(#mundos) .worldsGrid .gameCard:nth-child(5)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/nexo-social.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
-:global(#mundos) .worldsGrid .gameCard:nth-child(6)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/eternun.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
-:global(#mundos) .worldsGrid .gameCard:nth-child(7)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/fragmentun.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
-:global(#mundos) .worldsGrid .gameCard:nth-child(8)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/cripto-titans.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
-:global(#mundos) .worldsGrid .gameCard:nth-child(9)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/codeverse.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
-:global(#mundos) .worldsGrid .gameCard::after{background:linear-gradient(0deg,rgba(3,7,18,.96) 0%,rgba(3,9,23,.74) 23%,rgba(3,9,23,.04) 66%)}
-:global(#mundos) .worldsGrid .gameCard .cardContent{position:relative}
-:global(#mundos) .worldsGrid .gameCard .worldAvailability{font-size:8px;letter-spacing:.055em}
+.page :global(#mundos) .worldsGrid .gameCard:nth-child(1)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/skill-arena.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+.page :global(#mundos) .worldsGrid .gameCard:nth-child(2)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/inflabots-arena.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+.page :global(#mundos) .worldsGrid .gameCard:nth-child(3)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/la-batalla-del-dinero.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+.page :global(#mundos) .worldsGrid .gameCard:nth-child(4)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/gaias-last-stand.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+.page :global(#mundos) .worldsGrid .gameCard:nth-child(5)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/nexo-social.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+.page :global(#mundos) .worldsGrid .gameCard:nth-child(6)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/eternun.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+.page :global(#mundos) .worldsGrid .gameCard:nth-child(7)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/fragmentun.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+.page :global(#mundos) .worldsGrid .gameCard:nth-child(8)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/cripto-titans.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+.page :global(#mundos) .worldsGrid .gameCard:nth-child(9)::before{background-image:linear-gradient(180deg,rgba(2,9,23,.04),rgba(3,9,23,.12)),url("/lirygames-games/codeverse.webp"),radial-gradient(ellipse at 65% 30%,var(--world-mid,#245d97),#081224 76%);background-size:cover,cover,cover;background-position:center,center,center;}
+.page :global(#mundos) .worldsGrid .gameCard::after{background:linear-gradient(0deg,rgba(3,7,18,.96) 0%,rgba(3,9,23,.74) 23%,rgba(3,9,23,.04) 66%)}
+.page :global(#mundos) .worldsGrid .gameCard .cardContent{position:relative}
+.page :global(#mundos) .worldsGrid .gameCard .worldAvailability{font-size:8px;letter-spacing:.055em}
 
 /* Acceso al perfil en header, fiel a la referencia; no simula login activo. */
 .nav .profileAccess{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:7px 12px;border:1px solid rgba(88,197,242,.65);border-radius:5px;background:rgba(5,26,52,.8);color:#d5f3ff;text-decoration:none;font-size:10px;font-weight:800;letter-spacing:.065em;white-space:nowrap;transition:background .18s,border-color .18s}
@@ -800,7 +800,7 @@
 
 /* Catalogo cinematografico: una sola fuente de verdad para alto y capas.
    Evita reglas de aspect-ratio/height contrapuestas y expansiones intrinsecas. */
-:global(#mundos) .worldsGrid{
+.page :global(#mundos) .worldsGrid{
  display:grid;
  grid-template-columns:repeat(3,minmax(0,1fr));
  grid-auto-rows:140px;
@@ -808,48 +808,48 @@
  min-width:0;
  align-content:start;
 }
-:global(#mundos) .worldsGrid>.gameCard{
+.page :global(#mundos) .worldsGrid>.gameCard{
  display:block;position:relative;isolation:isolate;
  width:100%;height:140px;min-height:0;max-height:140px;
  aspect-ratio:auto;box-sizing:border-box;
  overflow:hidden;border-radius:7px;padding:0;
 }
-:global(#mundos) .worldsGrid>.gameCard::before{display:none}
-:global(#mundos) .worldsGrid>.gameCard::after{
+.page :global(#mundos) .worldsGrid>.gameCard::before{display:none}
+.page :global(#mundos) .worldsGrid>.gameCard::after{
  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
  background:linear-gradient(to bottom,rgba(4,10,23,.12),rgba(4,10,23,.07) 33%,rgba(4,10,23,.7) 76%,rgba(3,8,19,.96));
 }
-:global(#mundos) .worldsGrid>.gameCard>.gameCardArt{
+.page :global(#mundos) .worldsGrid>.gameCard>.gameCardArt{
  display:block;position:absolute;top:0;left:0;right:0;bottom:0;
  width:100%;height:100%;max-width:100%;max-height:100%;
  object-fit:cover;object-position:center 43%;
  z-index:0;opacity:.88;filter:brightness(.88) saturate(.9);
  pointer-events:none;transition:transform .4s ease;
 }
-:global(#mundos) .worldsGrid>.gameCard>.cardContent{
+.page :global(#mundos) .worldsGrid>.gameCard>.cardContent{
  position:absolute;inset:0;z-index:2;
  display:flex;align-items:flex-end;justify-content:space-between;
  box-sizing:border-box;width:100%;height:100%;min-height:0;
  padding:12px 13px 10px;margin:0;
 }
-:global(#mundos) .worldsGrid>.gameCard .worldCardText{min-width:0;max-width:100%;overflow:hidden}
-:global(#mundos) .worldsGrid>.gameCard:hover .gameCardArt{transform:scale(1.025)}
+.page :global(#mundos) .worldsGrid>.gameCard .worldCardText{min-width:0;max-width:100%;overflow:hidden}
+.page :global(#mundos) .worldsGrid>.gameCard:hover .gameCardArt{transform:scale(1.025)}
 @media(max-width:1000px){
- :global(#mundos) .worldsGrid{grid-auto-rows:125px;gap:8px}
- :global(#mundos) .worldsGrid>.gameCard{height:125px;max-height:125px}
+ .page :global(#mundos) .worldsGrid{grid-auto-rows:125px;gap:8px}
+ .page :global(#mundos) .worldsGrid>.gameCard{height:125px;max-height:125px}
 }
 @media(max-width:750px){
- :global(#mundos) .worldsGrid{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:125px}
+ .page :global(#mundos) .worldsGrid{grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:125px}
 }
 @media(max-width:520px){
- :global(#mundos) .worldsGrid{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:130px}
- :global(#mundos) .worldsGrid>.gameCard{height:130px;max-height:130px}
+ .page :global(#mundos) .worldsGrid{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:130px}
+ .page :global(#mundos) .worldsGrid>.gameCard{height:130px;max-height:130px}
 }
 @media(max-width:350px){
- :global(#mundos) .worldsGrid{grid-template-columns:minmax(0,1fr);grid-auto-rows:145px}
- :global(#mundos) .worldsGrid>.gameCard{height:145px;max-height:145px}
+ .page :global(#mundos) .worldsGrid{grid-template-columns:minmax(0,1fr);grid-auto-rows:145px}
+ .page :global(#mundos) .worldsGrid>.gameCard{height:145px;max-height:145px}
 }
 @media(prefers-reduced-motion:reduce){
- :global(#mundos) .worldsGrid>.gameCard>.gameCardArt{transition:none}
- :global(#mundos) .worldsGrid>.gameCard:hover .gameCardArt{transform:none}
+ .page :global(#mundos) .worldsGrid>.gameCard>.gameCardArt{transition:none}
+ .page :global(#mundos) .worldsGrid>.gameCard:hover .gameCardArt{transform:none}
 }
