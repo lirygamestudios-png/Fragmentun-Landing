@@ -14,7 +14,7 @@ const category:Record<string,string>={
 export const dynamic="force-dynamic";
 export default async function LiryContactAdmin({
  searchParams
-}:{searchParams:Promise<{status?:string;q?:string;subject?:string;pending?:string;draft?:string}>}){
+}:{searchParams:Promise<{status?:string;q?:string;subject?:string;pending?:string;draft?:string;owner?:string;age?:string}>}){
  const supabase=await createSupabaseServerClient();
  const {data:{user}}=await supabase.auth.getUser();
  if(!user)redirect("/admin/lirygames/login");
@@ -28,7 +28,9 @@ export default async function LiryContactAdmin({
  const subject=["opinion","suggestion","problem","business","other"].includes(params.subject||"")?params.subject||"":"";
  const pending=params.pending==="1";
  const draftFilter=["ready","missing"].includes(params.draft||"")?params.draft||"":"";
- const queryString=(status:string)=>{const p=new URLSearchParams();if(status)p.set("status",status);if(search)p.set("q",search);if(subject)p.set("subject",subject);if(pending)p.set("pending","1");if(draftFilter)p.set("draft",draftFilter);return "?"+p.toString();};
+ const ownerFilter=params.owner==="unassigned"?"unassigned":/^[0-9a-f-]{36}$/i.test(params.owner||"")?params.owner||"":"";
+ const ageFilter=["3","7"].includes(params.age||"")?params.age||"":"";
+ const queryString=(status:string)=>{const p=new URLSearchParams();if(status)p.set("status",status);if(search)p.set("q",search);if(subject)p.set("subject",subject);if(pending)p.set("pending","1");if(draftFilter)p.set("draft",draftFilter);if(ownerFilter)p.set("owner",ownerFilter);if(ageFilter)p.set("age",ageFilter);return "?"+p.toString();};
  const db=supabase;
  const {data:owners}=await db.from("admin_profiles").select("user_id,display_name").order("display_name");
  let query=db.from("lirygames_contact_messages")
@@ -38,6 +40,9 @@ export default async function LiryContactAdmin({
  if(subject)query=query.eq("subject",subject);
  if(search)query=query.or(`name.ilike.%${search}%,email.ilike.%${search}%`);
  if(pending)query=query.in("status",["new","reviewing"]);
+ if(ownerFilter==="unassigned")query=query.is("assigned_to",null);
+ else if(ownerFilter)query=query.eq("assigned_to",ownerFilter);
+ if(ageFilter){query=query.in("status",["new","reviewing"]).lte("created_at",new Date(Date.now()-Number(ageFilter)*86400000).toISOString());}
  if(draftFilter==="ready")query.not("response_draft","is",null).neq("response_draft","");
  if(draftFilter==="missing")query.or("response_draft.is.null,response_draft.eq.");
  const {data,error}=await query;
@@ -83,6 +88,8 @@ export default async function LiryContactAdmin({
    {selected&&<input type="hidden" name="status" value={selected}/>}
    {pending&&<input type="hidden" name="pending" value="1"/>}
    {draftFilter&&<input type="hidden" name="draft" value={draftFilter}/>}
+   {ownerFilter&&<input type="hidden" name="owner" value={ownerFilter}/>}
+   {ageFilter&&<input type="hidden" name="age" value={ageFilter}/>}
    <label style={{display:"grid",gap:6,flex:"2 1 230px",color:"#b9d8ed",fontSize:11}}>Buscar por nombre o correo
     <input name="q" defaultValue={search} maxLength={80} placeholder="Nombre o correo electrónico..." style={{width:"100%",padding:"11px 12px",background:"#061429",color:"#f2fbff",border:"1px solid #3179a1",borderRadius:7}}/>
    </label>
@@ -101,10 +108,29 @@ export default async function LiryContactAdmin({
   <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:14}}>
    <span style={{color:"#94b6cc",fontSize:11,marginRight:3}}>PREPARACIÓN DE RESPUESTAS</span>
    {([["","Todos"],["ready","Con borrador"],["missing","Sin borrador"]] as const).map(([value,label])=>{
-    const p=new URLSearchParams();if(selected)p.set("status",selected);if(search)p.set("q",search);if(subject)p.set("subject",subject);if(pending)p.set("pending","1");if(value)p.set("draft",value);
+    const p=new URLSearchParams();if(selected)p.set("status",selected);if(search)p.set("q",search);if(subject)p.set("subject",subject);if(pending)p.set("pending","1");if(ownerFilter)p.set("owner",ownerFilter);if(ageFilter)p.set("age",ageFilter);if(value)p.set("draft",value);
     return <a key={value} href={"?"+p.toString()} style={{padding:"8px 12px",border:"1px solid "+(value===draftFilter?"#5be0f8":"#315571"),borderRadius:7,background:value===draftFilter?"#123f54":"#0a2134",color:value===draftFilter?"#e4fbff":"#add1e6",fontSize:11,textDecoration:"none"}}>{label}</a>;
    })}
   </div>
+  <form method="GET" aria-label="Seguimiento de mensajes por responsable y antigüedad" style={{display:"flex",alignItems:"end",flexWrap:"wrap",gap:10,padding:"13px 15px",marginBottom:15,border:"1px solid #285571",borderRadius:10,background:"#091b2f"}}>
+   {selected&&<input type="hidden" name="status" value={selected}/>}
+   {search&&<input type="hidden" name="q" value={search}/>}
+   {subject&&<input type="hidden" name="subject" value={subject}/>}
+   {pending&&<input type="hidden" name="pending" value="1"/>}
+   {draftFilter&&<input type="hidden" name="draft" value={draftFilter}/>}
+   <label style={{display:"grid",gap:5,flex:"1 1 200px",fontSize:11,color:"#b5d7ed"}}>Responsable
+    <select name="owner" defaultValue={ownerFilter} style={{background:"#061429",color:"#e8faff",border:"1px solid #31789b",padding:"10px",borderRadius:7}}>
+     <option value="">Todos</option><option value="unassigned">Sin asignar</option>
+     {(owners||[]).map(o=><option key={o.user_id} value={o.user_id}>{o.display_name||"Administrador"}</option>)}
+    </select>
+   </label>
+   <label style={{display:"grid",gap:5,flex:"1 1 180px",fontSize:11,color:"#b5d7ed"}}>Pendientes desde
+    <select name="age" defaultValue={ageFilter} style={{background:"#061429",color:"#e8faff",border:"1px solid #31789b",padding:"10px",borderRadius:7}}>
+     <option value="">Cualquier fecha</option><option value="3">Hace 3 días o más</option><option value="7">Hace 7 días o más</option>
+    </select>
+   </label>
+   <button type="submit" style={{padding:"10px 15px",borderRadius:8,background:"#07517b",border:"1px solid #4ddaff",color:"#f4fcff",fontWeight:800,fontSize:11,cursor:"pointer"}}>APLICAR →</button>
+  </form>
   <nav aria-label="Filtrar mensajes" style={{display:"flex",flexWrap:"wrap",gap:9,marginBottom:20}}>
    {[["","TODOS"],["new","NUEVOS"],["reviewing","EN REVISIÓN"],["resolved","RESUELTOS"],["archived","ARCHIVADOS"]].map(([value,label])=>
     <a key={value} href={queryString(value)} style={{padding:"9px 13px",border:"1px solid "+(value===selected?"#4ddaff":"#295571"),background:value===selected?"#0e3e62":"#07182c",borderRadius:5,color:"#e4f6ff",fontSize:11,textDecoration:"none"}}>{label}</a>
