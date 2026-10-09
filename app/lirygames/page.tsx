@@ -121,7 +121,25 @@ export default async function LiryGamesFrontDesk(){
         <a className={styles.recommendAll} href="#mundos">VER TODOS LOS MUNDOS <span aria-hidden="true">→</span></a>
       </section>
     </div>
-    <section className={styles.section} id="tienda"><p className={styles.kicker}>ECONOMÍA FREEMIUM</p><h2>TIENDA LIRY</h2><p className={styles.sectionIntro}>Skins, efectos y personalizaciones opcionales llegarán junto con los videojuegos. Los tres mundos internos iniciales de cada juego serán gratuitos. Por ahora no hay artículos disponibles para comprar.</p><p className={styles.honesty}><strong>PAGOS EN DEFINICIÓN:</strong> Se evalúan cuatro opciones: Stripe (principal), PayPal, 2Checkout / Verifone y criptomonedas (cuarta opción, sujeta a proveedor, cumplimiento legal, confirmaciones y conversión de moneda). Ninguna está contratada ni activa. Todavía no se procesan cobros ni se ofrecen artículos a la venta.</p></section>
+    <section className={styles.storeShowcase} id="tienda" aria-labelledby="liry-store-title">
+      <div className={styles.storeIntro}>
+        <p className={styles.storeEyebrow}>ECOSISTEMA LIRYGAMES</p>
+        <h2 id="liry-store-title"><span aria-hidden="true">▢</span> TIENDA <em>LIRY</em></h2>
+        <p>Lleva el universo LIRY contigo.</p>
+        <small>Explora nuestras futuras colecciones. Los productos y los pagos se habilitarán únicamente cuando existan artículos y proveedores confirmados.</small>
+        <span className={styles.storeComingSoon}>CATÁLOGO PRÓXIMAMENTE</span>
+      </div>
+      <div className={styles.storeCategories} aria-label="Categorías previstas para Tienda Liry">
+        {[
+          {name:"ROPA",symbol:"♧",tone:"wear"},
+          {name:"ACCESORIOS",symbol:"◆",tone:"accessories"},
+          {name:"COLECCIONABLES",symbol:"✧",tone:"collectibles"},
+          {name:"ARTE DIGITAL",symbol:"▧",tone:"art"},
+          {name:"GAMING GEAR",symbol:"⌘",tone:"gear"}
+        ].map(item=><div className={styles.storeCategory} key={item.name}><div className={`${styles.storeCategoryVisual} ${styles[`storeTone_${item.tone}`]} `} aria-hidden="true">{item.symbol}</div><strong>{item.name}</strong><span className={styles.storeCategoryLine}/></div>)}
+      </div>
+      <p className={styles.storeLegal}>Modelo freemium: los tres mundos internos iniciales previstos para cada videojuego serán gratuitos; las compras cosméticas serán opcionales. No hay pagos activos ni artículos disponibles actualmente.</p>
+    </section>
     <div className={styles.finalDiscover} aria-label="Tu viaje y secretos de Liry">
       <section className={styles.journeyBanner} id="modelo">
         <div className={styles.journeyBannerArt} aria-hidden="true"><span className={styles.bannerOrbit}></span><span className={styles.bannerTraveler}>✧</span></div>
