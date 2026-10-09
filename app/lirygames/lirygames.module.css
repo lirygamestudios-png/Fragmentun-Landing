@@ -236,3 +236,20 @@
  .heroContent>p:not(.kicker){font-size:13px;max-width:315px}
  .heroActions{max-width:280px}
 }
+
+/* Catálogo: marcos rectangulares conforme a la muestra visual aprobada. */
+#mundos .grid{gap:17px}
+#mundos .gameCard{
+  min-height:224px;
+  border-radius:5px;
+  border:1px solid rgba(90,156,203,.42);
+  box-shadow:inset 0 0 28px rgba(27,92,171,.1),0 12px 28px rgba(1,8,22,.18);
+}
+#mundos .gameCard:hover{border-color:#67d5ff}
+#mundos .cardContent{padding:21px 22px}
+#mundos .cardContent h3{margin:13px 0 7px;font-size:20px}
+#mundos .cardContent p{line-height:1.45}
+#mundos .number{font-size:32px;right:17px;top:15px}
+#mundos .status{border-radius:3px}
+@media(max-width:800px){#mundos .gameCard{min-height:215px}}
+@media(max-width:520px){#mundos .gameCard{min-height:208px}#mundos .cardContent{padding:19px}}
