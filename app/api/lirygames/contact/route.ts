@@ -1,6 +1,6 @@
 import {NextRequest,NextResponse} from "next/server";
 import {consumePublicRateLimit} from "../../../../lib/rate-limit";
-import {createSupabaseServiceClient} from "../../../../lib/supabase/service";
+import {createSupabaseServerClient} from "../../../../lib/supabase/server";
 export const runtime="nodejs";
 const categories=["opinion","suggestion","problem","business","other"];
 export async function POST(req:NextRequest){
@@ -19,11 +19,14 @@ export async function POST(req:NextRequest){
   return NextResponse.json({ok:false,message:"Revisa los campos y acepta el aviso de privacidad."},{status:400});
  }
  try{
-  const db=createSupabaseServiceClient();
-  const {error}=await db.from("lirygames_contact_messages").insert({
-   name,email,subject,message,game_slug:gameSlug||null,privacy_acknowledged:true
+  const db=await createSupabaseServerClient();
+  const {data:accepted,error}=await db.rpc("lirygames_submit_contact",{
+    p_name:name,p_email:email,p_subject:subject,p_message:message,p_game_slug:gameSlug||null
   });
-  if(error){console.error("LIRYGAMES contact storage failed",error.code);throw Error("storage_failed");}
+  if(error||accepted!==true){
+    if(error)console.error("LIRYGAMES contact rpc failed",error.code);
+    return NextResponse.json({ok:false,message:"No se pudo registrar el mensaje. Revisa los datos o inténtalo más tarde."},{status:503});
+  }
   return NextResponse.json({ok:true,message:"Mensaje recibido. Gracias por ayudarnos a mejorar LIRYGAMES."});
  }catch{return NextResponse.json({ok:false,message:"No pudimos enviar el mensaje. Inténtalo de nuevo."},{status:503})}
 }
