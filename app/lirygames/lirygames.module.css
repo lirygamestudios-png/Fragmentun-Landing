@@ -865,3 +865,9 @@
  .page :global(#mundos) .worldsGrid>.gameCard>.gameCardArt{transition:none}
  .page :global(#mundos) .worldsGrid>.gameCard:hover .gameCardArt{transform:none}
 }
+
+/* Selector de idioma visual. La internacionalizacion funcional se activara en fase posterior. */
+.nav .languagePreview{display:inline-flex;align-items:center;justify-content:center;gap:4px;flex:none;min-height:35px;padding:5px 8px;border:1px solid #367da880;border-radius:5px;background:#071a32;color:#d8f3ff;font-size:10px;font-weight:800;letter-spacing:.04em;white-space:nowrap;cursor:default;user-select:none}
+.nav .languageActive{color:#63dcff}
+.nav .languageDivider,.nav .languageInactive{color:#839eb7}
+@media(max-width:750px){.nav .languagePreview{padding:4px 5px;min-height:36px;font-size:9px;gap:3px}}
