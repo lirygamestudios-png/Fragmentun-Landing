@@ -53,7 +53,7 @@ async function createVirtualItem(formData:FormData){
   const allowedRarity=new Set(["standard","common","uncommon","rare","epic","legendary","exclusive"]);
   const allowedGrant=new Set(["durable","consumable","timed"]);
   if(!gameId||!sku||!name||sku.length>120||name.length>160||(description&&description.length>2000)||!allowedItemTypes.has(itemType)||!allowedRarity.has(rarity)||!allowedGrant.has(grantType)) throw new Error("invalid_virtual_item");
-  if(grantType==="timed"&&(!durationSeconds||!Number.isSafeInteger(durationSeconds)||durationSeconds<=0)) throw new Error("timed_duration_required");
+  if(grantType==="timed"&&(!durationSeconds||!Number.isSafeInteger(durationSeconds)||durationSeconds<=0||durationSeconds>315360000)) throw new Error("timed_duration_required");
   const{data:targetGame,error:targetGameError}=await supabase.from("game_titles").select("id").eq("id",gameId).maybeSingle();
   if(targetGameError||!targetGame) throw new Error("game_not_found");
   const{error}=await supabase.from("game_virtual_items").insert({
@@ -71,7 +71,9 @@ async function createVirtualOffer(formData:FormData){
   const platform=String(formData.get("platform")||"").trim();
   const externalSku=String(formData.get("external_sku")||"").trim()||null;
   const currency=(String(formData.get("currency")||"USD").trim()||"USD").toUpperCase();
-  const price=Number(formData.get("price")||0);
+  const priceRaw=String(formData.get("price")??"").trim();
+  if(!/^(?:0|[1-9]\\d{0,7})(?:\\.\\d{1,2})?$/.test(priceRaw)) throw new Error("invalid_virtual_offer_price");
+  const price=Number(priceRaw);
   const regions=String(formData.get("region_scope")||"").split(",").map(v=>v.trim().toUpperCase()).filter(Boolean);
   if(platform.length>80||externalSku&&externalSku.length>120||regions.length>50||regions.some(r=>!/^[A-Z]{2}$/.test(r))||new Set(regions).size!==regions.length) throw new Error("invalid_virtual_offer_regions");
   if(!itemId||!platform||!Number.isFinite(price)||price<0||price>99999999||Math.round(price*100)/100!==price||!/^[A-Z]{3}$/.test(currency)) throw new Error("invalid_virtual_offer");
