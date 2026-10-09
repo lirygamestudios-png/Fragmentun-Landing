@@ -441,7 +441,7 @@
 /* ADN LIRY — geometría consolidada. Se eliminan las reglas contradictorias anteriores. */
 .dnaSide{display:flex;flex-direction:column;align-items:stretch;min-height:0;overflow:visible}
 .dnaSide>.kicker,.dnaSide>h3{order:0}
-.dnaSide .dnaArt{order:1;display:block;position:relative;overflow:visible;width:100%;height:700px;min-height:700px;flex:none;margin:12px 0 18px;aspect-ratio:auto}
+.dnaSide .dnaArt{order:1;display:block;position:relative;overflow:visible;width:100%;height:110px;min-height:0;max-height:110px;flex:none;margin:8px 0 12px;aspect-ratio:auto}
 .dnaSide .dnaMap{display:block;width:100%;height:100%;max-width:none;max-height:none;aspect-ratio:auto;filter:drop-shadow(0 0 20px rgba(54,192,255,.42))}
 .dnaSide>p:not(.kicker){order:2;margin:6px 0 9px}
 .dnaSide>.dnaSideButton{order:3;align-self:flex-start;margin:8px 0 16px}
@@ -454,19 +454,19 @@
 @keyframes liryDnaConnections{0%,100%{opacity:.65}50%{opacity:1}}
 @keyframes liryDnaBase{0%,100%{opacity:.78;transform:scale(.97)}50%{opacity:1;transform:scale(1.03)}}
 @keyframes liryDnaEnergy{0%,100%{opacity:.42;transform:translateY(0)}50%{opacity:1;transform:translateY(5px)}}
-@media(max-width:950px){.dnaSide .dnaArt{height:610px;min-height:610px}}
-@media(max-width:750px){.dnaSide .dnaArt{height:680px;min-height:680px}}
-@media(max-width:420px){.dnaSide .dnaArt{height:590px;min-height:590px}}
+@media(max-width:950px){.dnaSide .dnaArt{height:110px;min-height:0;max-height:110px}}
+@media(max-width:750px){.dnaSide .dnaArt{height:110px;min-height:0;max-height:110px}}
+@media(max-width:420px){.dnaSide .dnaArt{height:95px;min-height:0;max-height:95px}}
 @media(prefers-reduced-motion:reduce){.dnaSide .dnaPlatform,.dnaSide .dnaConnections,.dnaSide .dnaEnergyColumn{animation:none}}
 
 /* Segundo tramo ADN: continúa DESPUÉS de los textos y perfiles, no sustituye al mapa superior. */
-.dnaSide .dnaContinuation{order:6;display:block;flex:0 0 auto;width:100%;height:430px;margin:14px 0 0;overflow:visible;position:relative}
+.dnaSide .dnaContinuation{order:6;display:block;flex:0 0 auto;width:100%;height:110px;min-height:0;max-height:110px;margin:12px 0 12px;overflow:hidden;position:relative}
 .dnaSide .dnaContinuation svg{display:block;width:100%;height:100%;filter:drop-shadow(0 0 16px rgba(68,195,255,.34))}
 .dnaSide .dnaContinuationHelix{transform-origin:160px 220px;animation:liryDnaContinuationDrift 5s ease-in-out infinite}
 .dnaSide .dnaContinuationBase{transform-origin:160px 422px;animation:liryDnaContinuationBase 3.5s ease-in-out infinite}
 @keyframes liryDnaContinuationDrift{0%,100%{transform:translateY(-3px);opacity:.8}50%{transform:translateY(5px);opacity:1}}
 @keyframes liryDnaContinuationBase{0%,100%{transform:scale(.97);opacity:.75}50%{transform:scale(1.03);opacity:1}}
-@media(max-width:750px){.dnaSide .dnaContinuation{height:390px}}
+@media(max-width:750px){.dnaSide .dnaContinuation{height:110px;max-height:110px}}
 @media(prefers-reduced-motion:reduce){.dnaSide .dnaContinuationHelix,.dnaSide .dnaContinuationBase{animation:none}}
 
 /* Indicadores ADN: selectores por clase (CSS Modules), nunca por ID literal. */
