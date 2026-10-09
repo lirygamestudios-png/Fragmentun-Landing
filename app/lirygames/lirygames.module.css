@@ -803,7 +803,7 @@
 .page :global(#mundos) .worldsGrid{
  display:grid;
  grid-template-columns:repeat(3,minmax(0,1fr));
- --liry-card-height:clamp(255px,20vw,310px);
+ --liry-card-height:clamp(270px,21vw,330px);
  grid-auto-rows:var(--liry-card-height);
  gap:10px;
  min-width:0;
@@ -836,7 +836,7 @@
 .page :global(#mundos) .worldsGrid>.gameCard .worldCardText{min-width:0;max-width:100%;overflow:hidden}
 .page :global(#mundos) .worldsGrid>.gameCard:hover .gameCardArt{transform:scale(1.025)}
 @media(max-width:1000px){
- .page :global(#mundos) .worldsGrid{--liry-card-height:245px;gap:8px}
+ .page :global(#mundos) .worldsGrid{--liry-card-height:260px;gap:8px}
  .page :global(#mundos) .worldsGrid>.gameCard{height:var(--liry-card-height);max-height:var(--liry-card-height)}
 }
 @media(max-width:750px){
