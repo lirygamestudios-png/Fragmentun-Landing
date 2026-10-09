@@ -2435,3 +2435,7 @@
 .moduleCommerce .advancedPanel[open]>summary{border-bottom:1px solid rgba(91,169,217,.22);margin-bottom:14px}
 .moduleCommerce .advancedPanel>.sectionHead,.moduleCommerce .advancedPanel>.grid,.moduleCommerce .advancedPanel>.adminForms{margin-left:14px;margin-right:14px}
 @media(max-width:560px){.moduleCommerce .advancedPanel>summary{padding:14px 12px}.moduleCommerce .advancedPanel>.sectionHead,.moduleCommerce .advancedPanel>.grid,.moduleCommerce .advancedPanel>.adminForms{margin-left:8px;margin-right:8px}}
+
+.moduleCommerce .commerceFilterActions{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:10px}
+.moduleCommerce .commerceClearFilter{color:#9bdbff;text-decoration:underline;text-underline-offset:3px;font-size:13px;font-weight:650}
+.moduleCommerce .commerceClearFilter:focus-visible{outline:2px solid #70d9ff;outline-offset:3px}
