@@ -87,3 +87,10 @@
 @media(max-width:800px){.hero{min-height:690px;padding-top:90px}.heroJourney{right:5%;bottom:32px;flex-direction:row;gap:14px;padding-left:0;border:0}.heroJourney a{font-size:10px}.heroJourney a::before{display:none}}
 @media(max-width:520px){.hero{min-height:650px;padding:76px 22px 90px}.hero h1{font-size:clamp(40px,10vw,58px)}.heroPlanet,.heroOrbitOne{right:-50%;top:25%;width:115vw;opacity:.48}.heroJourney{left:22px;right:auto;gap:12px;flex-wrap:wrap}.heroContent>p:not(.kicker){max-width:335px}}
 @media(prefers-reduced-motion:reduce){.hero .button{transition:none}}
+
+/* Controles cinematográficos reales, independientes del arte del fondo. */
+.heroStart{position:absolute;z-index:3;right:4%;top:11%;display:flex;align-items:center;gap:15px;padding:10px 25px 10px 10px;border:1px solid #57bdf355;border-radius:999px;background:#031125d9;color:#d7eeff;text-decoration:none;font-size:12px;font-weight:750;letter-spacing:.045em;line-height:1.4;box-shadow:0 10px 30px #010917aa;transition:border-color .2s,box-shadow .2s}
+.heroStart:hover,.heroStart:focus-visible{border-color:#60e4ff;box-shadow:0 0 27px #28c6ff77}
+.heroPlay{width:62px;height:62px;display:grid;place-items:center;border:1px solid #44e3ff;border-radius:50%;background:#061a37;color:#39eaff;font-size:20px;box-shadow:0 0 18px #2dd3ff65}
+@media(max-width:900px){.heroStart{top:auto;bottom:83px;right:5%;font-size:10px;padding-right:15px}.heroPlay{width:44px;height:44px}.heroJourney{bottom:22px}}
+@media(max-width:650px){.heroStart{bottom:105px;right:18px}.heroJourney{bottom:24px}.hero h1{max-width:100%}}
