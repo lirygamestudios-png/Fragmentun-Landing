@@ -421,3 +421,18 @@
 .socialTrio .status{border-radius:3px}
 @media(max-width:950px){.socialTrio{grid-template-columns:repeat(2,minmax(0,1fr))}#recomendaciones{grid-column:1/-1}}
 @media(max-width:600px){.socialTrio{grid-template-columns:1fr;padding:34px 20px}.socialTrio>.section,#recomendaciones{grid-column:auto}}
+
+/* Mapa ADN LIRY: órbitas, doble hélice, energía y movimiento accesible. */
+.dnaArt{overflow:hidden;isolation:isolate;display:grid;place-items:center}
+.dnaMap{display:block;width:min(100%,310px);height:auto;filter:drop-shadow(0 0 17px rgba(46,161,248,.24))}
+.dnaRings circle{fill:none;stroke:#74baff;stroke-opacity:.24;stroke-width:1;stroke-dasharray:3 8}
+.dnaOrbit{transform-origin:150px 150px;animation:liryDnaOrbit 24s linear infinite}
+.dnaOrbit ellipse{fill:none;stroke:#89a4ff;stroke-width:1.3;stroke-opacity:.36}
+.dnaHelix{transform-origin:150px 150px;animation:liryDnaFloat 5s ease-in-out infinite}
+.dnaNodes circle:last-child{animation:liryDnaNode 2.7s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.dnaPulse{transform-origin:150px 150px;animation:liryDnaPulse 3.2s ease-out infinite}
+@keyframes liryDnaOrbit{to{transform:rotate(360deg)}}
+@keyframes liryDnaFloat{0%,100%{transform:translateY(-3px)}50%{transform:translateY(4px)}}
+@keyframes liryDnaNode{0%,100%{opacity:.6;transform:scale(.75)}50%{opacity:1;transform:scale(1.3)}}
+@keyframes liryDnaPulse{0%{opacity:.9;transform:scale(.7)}85%,100%{opacity:0;transform:scale(3.6)}}
+@media(prefers-reduced-motion:reduce){.dnaOrbit,.dnaHelix,.dnaNodes circle:last-child,.dnaPulse{animation:none!important}}
