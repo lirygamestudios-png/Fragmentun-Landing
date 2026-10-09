@@ -214,3 +214,25 @@
   .heroUniverse::after{background:linear-gradient(90deg,rgba(3,12,28,.89),rgba(3,12,28,.57) 70%),linear-gradient(0deg,rgba(2,9,23,.74),transparent 60%)}
   .hero h1{text-wrap:initial}
 }
+
+/* Ajuste solicitado: interfaz más discreta para priorizar el paisaje. */
+.heroContent{max-width:625px}
+.hero h1{font-size:clamp(40px,4.65vw,73px);line-height:1.035;margin:13px 0 16px;max-width:620px}
+.heroContent .kicker{font-size:10px;letter-spacing:.22em}
+.heroContent>p:not(.kicker){font-size:clamp(13px,1.1vw,16px);line-height:1.48;max-width:420px}
+.heroActions{gap:11px;margin-top:15px}
+.heroActions .button,.heroActions .heroSecondary{min-height:44px;padding:12px 19px;font-size:11px;letter-spacing:.035em}
+.heroStart{transform:scale(.88);transform-origin:top right}
+.heroJourney a{font-size:10px}
+@media(max-width:750px){
+ .heroContent{max-width:100%}
+ .hero h1{font-size:clamp(36px,7.6vw,57px)}
+ .heroActions{max-width:300px}
+ .heroActions .button,.heroActions .heroSecondary{min-height:43px;padding:11px 17px}
+ .heroStart{transform-origin:bottom left}
+}
+@media(max-width:450px){
+ .hero h1{font-size:clamp(34px,9vw,43px)}
+ .heroContent>p:not(.kicker){font-size:13px;max-width:315px}
+ .heroActions{max-width:280px}
+}
