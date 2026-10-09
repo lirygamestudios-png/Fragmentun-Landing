@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import {paymentProviders,REAL_PAYMENTS_ENABLED} from "../../../../lib/payments/provider-contract";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
 import styles from "../master-admin.module.css";
 
@@ -122,6 +123,18 @@ export default async function MasterCommercePage(){
       </section>
     </details>
 
+    <section className={styles.sectionHead}>
+      <div><span>ARQUITECTURA MULTIPASARELA</span><h2>Cuatro opciones de pago</h2></div>
+      <p>Empresa estadounidense en constitución. Ninguna cuenta ni cobro real activado. Proveedores sujetos a contratación y verificación.</p>
+    </section>
+    <section className={styles.grid}>
+      {paymentProviders.map(provider=><article className={styles.card} key={provider.id}>
+        <div className={styles.cardTop}><span className={styles.badgePlanned}>OPCIÓN {provider.priority}</span><em>{REAL_PAYMENTS_ENABLED?"REVISAR":"NO ACTIVA"}</em></div>
+        <h3>{provider.displayName}</h3>
+        <p>{provider.proposedGateway}</p>
+        <p>Documentación empresarial y aprobación del proveedor pendientes.</p>
+      </article>)}
+    </section>
     <section className={styles.sectionHead}>
       <div><span>PREPARACIÓN COMERCIAL</span><h2>Configuración</h2></div>
       <p>Pagos y envíos permanecen bajo control hasta su activación comercial.</p>
