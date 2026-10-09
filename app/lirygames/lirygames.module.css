@@ -468,3 +468,11 @@
 #liry-dna .dnaPulse{transform-origin:160px 220px}
 @media(max-width:950px){#liry-dna .dnaArt{min-height:0}#liry-dna .dnaMap{width:min(100%,315px)}}
 @media(max-width:600px){#liry-dna .dnaArt{min-height:0;width:100%;margin:8px auto 18px}#liry-dna .dnaMap{width:min(100%,300px)}}
+
+/* La extensión es gráfica, no espacio vacío: nuevo SVG real de 720 unidades de alto. */
+#liry-dna .dnaArt{height:auto!important;min-height:0!important;aspect-ratio:auto!important;overflow:visible!important;display:block;margin:8px -7px 15px}
+#liry-dna .dnaMap{display:block;width:100%;height:auto;max-height:none!important;aspect-ratio:320/720!important;object-fit:fill}
+#liry-dna .dnaOrbit,#liry-dna .dnaHelix,#liry-dna .dnaPulse{transform-origin:160px 340px}
+#liry-dna .dnaPlatform{transform-origin:160px 669px}
+@media(max-width:950px){#liry-dna .dnaMap{width:100%}}
+@media(max-width:600px){#liry-dna .dnaArt{width:100%;margin:8px auto 15px}#liry-dna .dnaMap{width:100%}}
