@@ -6,6 +6,7 @@ type ContactMessage={
  id:string;name:string;email:string;subject:string;game_slug:string|null;
  message:string;status:string;created_at:string;internal_note:string|null;assigned_to:string|null;response_draft:string|null;
 };
+type HistoryItem={id:string;contact_id:string;actor_user_id:string;action:string;details:Record<string,unknown>|null;created_at:string};
 const category:Record<string,string>={
  opinion:"Opinión",suggestion:"Sugerencia",problem:"Problema",
  business:"Propuesta comercial",other:"Consulta"
@@ -31,6 +32,12 @@ export default async function LiryContactAdmin({
  if(selected)query=query.eq("status",selected);
  const {data,error}=await query;
  const messages=(data||[]) as ContactMessage[];
+ const ids=messages.map(item=>item.id);
+ const {data:history,error:historyError}=ids.length
+  ?await db.from("lirygames_contact_history").select("id,contact_id,actor_user_id,action,details,created_at").in("contact_id",ids).order("created_at",{ascending:false}).limit(500)
+  :{data:[] as HistoryItem[],error:null};
+ const historyRows=(history||[]) as HistoryItem[];
+ const ownerNames=new Map((owners||[]).map(o=>[o.user_id,o.display_name||"Administrador"]));
  const layout={minHeight:"100vh",padding:"38px clamp(20px,5vw,85px)",background:"#050b19",color:"#e9f6ff",fontFamily:"Arial,sans-serif"};
  return <main style={layout}>
   <a href="/admin/master/community" style={{color:"#76daff",fontSize:12,textDecoration:"none"}}>← VOLVER A CLIENTES Y COMUNIDAD</a>
@@ -59,8 +66,21 @@ export default async function LiryContactAdmin({
       </div>
       <p style={{fontSize:13,lineHeight:1.55,whiteSpace:"pre-wrap",overflowWrap:"anywhere",margin:0}}>{item.message}</p>
       {["admin","editor"].includes(profile.role)&&<LiryContactFollowup id={item.id} status={item.status} note={item.internal_note} assignedTo={item.assigned_to} responseDraft={item.response_draft} owners={owners||[]} />}
+      <details style={{marginTop:13,borderTop:"1px solid #27415e",paddingTop:12}}>
+       <summary style={{cursor:"pointer",color:"#7cdbff",fontSize:12,fontWeight:700}}>HISTORIAL DE ATENCIÓN ({historyRows.filter(h=>h.contact_id===item.id).length})</summary>
+       {historyError?<p style={{fontSize:11,color:"#ffacac"}}>No se pudo cargar el historial.</p>:
+       historyRows.filter(h=>h.contact_id===item.id).length===0?<p style={{fontSize:11,color:"#9ab4c9"}}>Aún no existen movimientos registrados para este mensaje.</p>:
+       <ol style={{paddingLeft:20,display:"grid",gap:10,fontSize:11,color:"#b6d2e9"}}>
+        {historyRows.filter(h=>h.contact_id===item.id).map(h=><li key={h.id}>
+         <strong>{h.action==="response_drafted"?"Borrador actualizado":h.action==="response_recorded"?"Respuesta registrada":"Seguimiento actualizado"}</strong>
+         {" · "}{ownerNames.get(h.actor_user_id)||"Usuario autorizado"}
+         {" · "}{new Date(h.created_at).toLocaleString("es",{dateStyle:"medium",timeStyle:"short"})}
+         {h.details&&typeof h.details.status==="string"&&<span> · Estado: {h.details.status==="new"?"Nuevo":h.details.status==="reviewing"?"En revisión":h.details.status==="resolved"?"Resuelto":h.details.status==="archived"?"Archivado":h.details.status}</span>}
+        </li>)}
+       </ol>}
+      </details>
     </article>)}
    </div>}
-  <p style={{fontSize:11,color:"#7393aa",marginTop:24}}>Últimos 100 mensajes por filtro. Las notas son internas; las respuestas por correo se gestionarán en una fase posterior.</p>
+  <p style={{fontSize:11,color:"#7393aa",marginTop:24}}>Últimos 100 mensajes por filtro. El historial registra cambios administrativos. Las notas y borradores son internos; todavía no se envían correos desde esta bandeja.</p>
  </main>;
 }
