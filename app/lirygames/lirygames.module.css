@@ -757,3 +757,27 @@
 /* Imagen Liry DNA HD: recorte controlado, sin cambiar alturas de tarjetas ni barras. */
 .dnaSide .dnaArt{background:#030c1d}
 .dnaSide .dnaArt .dnaMap{display:block;width:100%;height:100%;object-fit:cover;object-position:center 46%;filter:drop-shadow(0 0 9px #2489ff77)}
+
+/* Movimiento sincronizado y sutil de ambos tramos de Liry DNA.
+   Se anima el contenido, nunca la altura de las cajas ni las barras. */
+.dnaSide .dnaArt .dnaMap{
+  transform-origin:center center;
+  will-change:transform,filter;
+  animation:liryDnaUpperBreath 7s ease-in-out infinite;
+}
+.dnaSide .dnaContinuation svg{
+  transform-origin:center center;
+  will-change:transform,filter;
+  animation:liryDnaLowerBreath 7s ease-in-out infinite;
+}
+@keyframes liryDnaUpperBreath{
+  0%,100%{transform:translate3d(0,2px,0) scale(1.055);filter:brightness(1) drop-shadow(0 0 8px #2489ff66)}
+  50%{transform:translate3d(0,-3px,0) scale(1.085);filter:brightness(1.12) drop-shadow(0 0 12px #875cff88)}
+}
+@keyframes liryDnaLowerBreath{
+  0%,100%{transform:translate3d(0,2px,0) scale(1.055);filter:brightness(1) drop-shadow(0 0 8px #2489ff66)}
+  50%{transform:translate3d(0,-3px,0) scale(1.085);filter:brightness(1.12) drop-shadow(0 0 12px #875cff88)}
+}
+@media(prefers-reduced-motion:reduce){
+  .dnaSide .dnaArt .dnaMap,.dnaSide .dnaContinuation svg{animation:none;transform:none;will-change:auto}
+}
