@@ -191,3 +191,26 @@
  .heroUniverse::before{background-position:53% center,58% center}
  .heroUniverse::after{background:linear-gradient(90deg,rgba(2,9,24,.81),rgba(2,9,24,.24)),linear-gradient(0deg,rgba(2,9,24,.70),transparent 58%)}
 }
+
+/* Refinamiento del diseño aprobado: escena protagonista, lectura clara y sin
+   elementos gráficos falsos superpuestos. */
+.heroUniverse{opacity:1}
+.heroUniverse::before{inset:0;transform:none;background-position:center 52%,center 46%}
+.heroUniverse::after{
+  background:
+    linear-gradient(90deg,rgba(3,12,28,.92) 0%,rgba(4,15,35,.73) 26%,rgba(4,15,35,.25) 51%,transparent 77%),
+    linear-gradient(0deg,rgba(2,9,23,.63),transparent 25%,transparent 84%,rgba(2,9,23,.27));
+}
+.heroContent{position:relative;z-index:2}
+.heroContent>p:not(.kicker){max-width:510px}
+.hero h1{max-width:680px;letter-spacing:-.043em;text-wrap:balance}
+.heroStart,.heroJourney{z-index:3}
+@media(max-width:900px){
+  .heroUniverse::before{background-position:52% center,57% center}
+  .heroUniverse::after{background:linear-gradient(90deg,rgba(3,12,28,.91),rgba(3,12,28,.52) 58%,rgba(3,12,28,.11)),linear-gradient(0deg,rgba(2,9,23,.68),transparent 40%)}
+}
+@media(max-width:520px){
+  .heroUniverse::before{background-position:53% center,58% center}
+  .heroUniverse::after{background:linear-gradient(90deg,rgba(3,12,28,.89),rgba(3,12,28,.57) 70%),linear-gradient(0deg,rgba(2,9,23,.74),transparent 60%)}
+  .hero h1{text-wrap:initial}
+}
