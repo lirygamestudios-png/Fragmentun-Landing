@@ -239,14 +239,14 @@ export default async function MasterCommercePage({searchParams}:{searchParams:Pr
     <section className={styles.sectionHead}><div><span>EXPORTACIÓN DE DATOS</span><h2>Descargar reportes por páginas</h2></div><p>Hasta 200 registros por archivo CSV; los filtros seleccionados se mantienen.</p></section>
     <div className={styles.adminForms}>
       <article className={styles.adminForm}>
-        <p>Archivo seleccionado: página {exportPage} · hasta 200 movimientos.</p>
+        <p>Archivo seleccionado: página {exportPage} · hasta 200 movimientos reales registrados.</p>
         <a className={styles.formButton} href={"/api/lirygames/reports/payments?"+exportQuery+"&page="+exportPage}>Descargar página {exportPage} (CSV) ↓</a>
         <p>
-          {exportPage>1&&<a href={commerceQuery+"&exportPage="+(exportPage-1)}>← Página anterior</a>}
+          {exportPage>1&&<a href={commerceQuery+"&exportPage="+(exportPage-1)+"#comercio-reportes"}>← Página anterior</a>}
           {" · "}
-          {exportPage<10000&&<a href={commerceQuery+"&exportPage="+(exportPage+1)}>Página siguiente →</a>}
+          {exportPage<10000&&<a href={commerceQuery+"&exportPage="+(exportPage+1)+"#comercio-reportes"}>Página siguiente →</a>}
         </p>
-        <p>Una página posterior puede estar vacía si no existen más transacciones. Las simulaciones nunca se incluyen como ventas.</p>
+        <p>Los enlaces anterior/siguiente conservan los filtros y regresan a esta sección. La última página puede contener menos de 200 registros y la siguiente estar vacía. Las simulaciones nunca se incluyen como ventas.</p>
       </article>
     </div>
     <details id="comercio-conciliacion" className={styles.advancedPanel}><summary>Conciliación, liquidaciones e incidencias bancarias</summary>
