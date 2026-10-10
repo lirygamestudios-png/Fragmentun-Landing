@@ -163,6 +163,8 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
     supabase.from("lirygames_contact_messages").select("*",{count:"exact",head:true}).in("status",["new","reviewing"]).is("assigned_to",null)
   ]);
 
+  const {data:pointDifferences,error:pointReconciliationError}=await supabase.rpc("liry_community_points_reconciliation");
+  const pointDifferenceRows=(pointDifferences||[]) as {member_id:string;member_name:string;stored_points:number;history_points:number;difference:number}[];
   const contactOverviewAvailable=!pendingContactError&&!overdueContactError&&!unassignedContactError;
   const memberStatus=["active","inactive","blocked","left"].includes(filters.memberStatus||"")?filters.memberStatus||"":"";
   const memberTier=["member","engaged","advocate","beta_priority","moderator"].includes(filters.memberTier||"")?filters.memberTier||"":"";
@@ -240,6 +242,15 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
       <article><small>Identidad unificada</small><strong className={styles.kpiCompactValue}>PENDIENTE</strong><span>Sin cruce automático web/juego</span></article>
     </section>
 
+    <section className={styles.moduleStrip} aria-label="Conciliación de puntos de Comunidad">
+      <span className={styles.moduleGlyph} aria-hidden="true">✓</span>
+      <div className={styles.moduleStripCopy}>
+        <small>CONTROL DE INTEGRIDAD · SOLO LECTURA</small>
+        <strong>{pointReconciliationError?"CONCILIACIÓN NO DISPONIBLE":pointDifferenceRows.length?"REVISIÓN NECESARIA":"SIN DIFERENCIAS DETECTADAS"}</strong>
+        <p>{pointReconciliationError?"No fue posible consultar la conciliación.":"Comparación de puntos acumulados con actividades registradas; no modifica datos."}</p>
+        {!pointReconciliationError&&pointDifferenceRows.length>0&&<p role="alert">{pointDifferenceRows.length} miembro(s) presentan diferencias. Revisar: {pointDifferenceRows.slice(0,5).map(row=>row.member_name).join(", ")}.</p>}
+      </div>
+    </section>
     <section id="comunidad-miembros" className={styles.sectionHead}><div><span>MIEMBROS</span><h2>Miembros</h2></div><p>La información comercial se mantiene separada; aquí se gestiona la relación con la comunidad y su participación.</p></section>
     {memberFiltersActive&&<p className={styles.communityFilterNotice}>FILTROS DE MIEMBROS ACTIVOS · {filteredMemberRows.length} coincidencias. <a href={clearMembersLink()}>Ver todos los miembros →</a></p>}
     <form method="GET" className={styles.communityMemberFilters} aria-label="Filtrar miembros de comunidad">
