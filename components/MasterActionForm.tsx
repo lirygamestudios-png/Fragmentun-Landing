@@ -9,6 +9,12 @@ type ServerAction=(formData:FormData)=>Promise<unknown>;
 export const MasterActionFormContext=createContext(false);
 
 const errorMessages:Record<string,string>={
+  member_identity_required:"Indica al menos el nombre o el correo del nuevo miembro.",
+  member_not_found:"El miembro seleccionado ya no existe. Actualiza la página y vuelve a seleccionarlo.",
+  invalid_tier:"Selecciona un nivel de miembro válido.",
+  invalid_action:"Revisa el miembro, el tipo de actividad y los puntos que quieres registrar.",
+  invalid_member_update:"Revisa los campos del miembro: estado, nivel, puntos, etiquetas y notas.",
+  community_action_create_failed:"No se pudo registrar la actividad. Inténtalo nuevamente.",
   mfa_required:"Completa la verificación en dos pasos antes de realizar esta acción.",
   forbidden:"Tu usuario no tiene permiso para realizar esta acción.",
   admin_required:"Esta acción requiere permisos de administrador.",
@@ -50,7 +56,7 @@ function readableError(error:unknown){
   }
   if(raw.includes("invalid_")) return "Revisa los datos ingresados. Hay uno o más valores inválidos.";
   if(raw.includes("required")) return "Falta completar uno o más datos obligatorios.";
-  if(raw&&raw.length<180&&!/digest|server components|unexpected/i.test(raw)) return raw;
+  // No mostrar mensajes internos del motor de datos, tokens, consultas o trazas al usuario.\n  if(raw&&raw.length<180&&!/digest|server components|unexpected|postgres|supabase|permission denied|duplicate key|violates|relation |column |schema |constraint|sqlstate|pgrst|42p|23[0-9]{3}/i.test(raw)) return raw;
   return "No fue posible completar la acción. Revisa los datos e inténtalo nuevamente.";
 }
 
