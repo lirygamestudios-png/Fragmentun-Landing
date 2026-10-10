@@ -1,8 +1,10 @@
 "use client";
 import visual from "../app/admin/master/community/messages/messages.module.css";
 import {useState,type FormEvent} from "react";
+import {useRouter} from "next/navigation";
 type Owner={user_id:string;display_name:string|null};
 export function LiryContactFollowup({id,status,note,assignedTo,responseDraft,owners}:{id:string;status:string;note:string|null;assignedTo:string|null;responseDraft:string|null;owners:Owner[]}){
+ const router=useRouter();
  const[state,setState]=useState(status),[memo,setMemo]=useState(note||""),[owner,setOwner]=useState(assignedTo||"");
  const[draft,setDraft]=useState(responseDraft||"");
  const[busy,setBusy]=useState(false),[feedback,setFeedback]=useState("");
@@ -12,7 +14,8 @@ export function LiryContactFollowup({id,status,note,assignedTo,responseDraft,own
    const r=await fetch("/api/admin/lirygames-contact",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,status:state,internalNote:memo,assignedTo:owner||null,responseDraft:draft})});
    const result=await r.json();
    if(!r.ok||!result.ok)throw Error(result.message||"No se pudo guardar.");
-   setFeedback("Cambios guardados correctamente.");
+   setFeedback("Cambios guardados correctamente. Vista actualizada.");
+   router.refresh();
   }catch(err){setFeedback(err instanceof Error?err.message:"No se pudo guardar.")}
   finally{setBusy(false)}
  }
