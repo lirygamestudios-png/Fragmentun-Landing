@@ -41,3 +41,27 @@ create index liryboost_referrals_verified_rank_idx
 - Probar localmente dos solicitudes simultáneas con el mismo invitado: una debe ganar, la otra recibir respuesta de duplicado.
 - Probar autorreferencias, invalidación de consentimiento, reversión de verificación y acceso no autorizado.
 - Verificar que el contador no suba con compartir enlaces sino con invitaciones **verificadas**.
+
+## Contrato de permisos y publicación — revisión 2026-10-10
+
+**Diseño exclusivamente. No ejecutar SQL ni modificar Supabase.**
+
+| Operación | Responsable | Visibilidad |
+|---|---|---|
+| Registrar invitación | Usuario autenticado, sujeto a antifraude | Su propia invitación |
+| Verificar o revocar | Servicio o administrador autorizado con auditoría | Datos privados del sistema |
+| Consultar resumen | Titular autenticado | Sus propios totales |
+| Mostrar Top 10 | Servicio de lectura tras activación oficial | Alias consentido y cantidad verificada |
+
+**Controles obligatorios antes de producir datos reales:**
+
+1. Exigir UNIQUE(invited_user_id) y UNIQUE(event_id) en la base transaccional; las comprobaciones JavaScript no sustituyen estas restricciones.
+2. Guardar atribución y verificación en una transacción; incluir actor autorizado, sello de tiempo del servidor y motivo de revocación.
+3. Implementar permisos mínimos y RLS: visitantes anónimos nunca leen invitaciones privadas, correos, IP, tokens ni evidencias de fraude.
+4. Obtener consentimiento público expreso, vigente y revocable; una revocación debe retirar la identidad del siguiente ranking.
+5. Abrir el ranking solo si concurso, reglas publicadas y verificación están activos bajo administración del servidor.
+6. Controlar carreras, duplicados y disputas mediante pruebas con base de datos aislada antes de producción.
+7. Establecer políticas de retención, privacidad, antifraude y condiciones de las versiones beta.
+8. Mantener desactivada la ruta actual hasta que el proveedor real y sus controles de autorización estén listos.
+
+**Estado:** Documento de arquitectura, no integración con Supabase ni autorización de despliegue del concurso.
