@@ -1027,3 +1027,9 @@
  .dnaExplorerChoices{grid-template-columns:repeat(2,minmax(0,1fr))}
  .dnaExplorerDescription{font-size:12px!important}
 }
+
+/* Restaurar el botón Liry ADN a la paleta oscura/cian aprobada, sin fondo nativo de botón. */
+.dnaSide button.dnaSideButton{appearance:none;-webkit-appearance:none;background:linear-gradient(135deg,#071b31,#0a2948);color:#f1faff;border:1px solid #48d0ff;box-shadow:0 0 10px rgba(0,163,255,.27);text-decoration:none}
+.dnaSide button.dnaSideButton:hover{background:linear-gradient(135deg,#0a2a49,#103b5d);border-color:#81e8ff;box-shadow:0 0 17px rgba(40,196,255,.35)}
+.dnaSide button.dnaSideButton:active{background:#082740}
+.dnaSide button.dnaSideButton:focus-visible{outline:2px solid #8ceaff;outline-offset:3px}
