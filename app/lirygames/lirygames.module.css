@@ -950,3 +950,5 @@
 .liryBoostEnrollmentForm .liryBoostConsent{grid-column:1/-1;display:flex;align-items:center;gap:9px}
 .liryBoostEnrollmentForm button{grid-column:1/-1;border:1px solid rgba(99,178,217,.35);border-radius:10px;padding:12px;background:rgba(41,101,136,.24);color:#c4d9e9;cursor:not-allowed;font-weight:700;letter-spacing:.06em}
 @media(max-width:600px){.liryBoostEnrollment{padding:15px}.liryBoostEnrollmentForm{grid-template-columns:1fr}}
+
+.liryBoostPreviewNotice{margin:0;padding:9px 12px;border-left:3px solid rgba(126,200,238,.65);background:rgba(27,77,108,.18);color:#cfdeea;font-size:.82rem;line-height:1.5}
