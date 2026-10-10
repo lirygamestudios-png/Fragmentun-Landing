@@ -36,7 +36,7 @@ test("rechaza posibles correos y enlaces en nombres públicos",()=>{
   {publicName:"https://example.com",verifiedInvitations:8,publicListingConsented:true},
   {publicName:"Ana",verifiedInvitations:4,publicListingConsented:true}
  ],true);
- assert.deepEqual(rows,[{publicName:"Ana",verifiedInvitations:4,publicListingConsented:true}]);
+ assert.deepEqual(rows,[{publicName:"Ana",verifiedInvitations:4}]);
 });
 
 test("sin consentimiento público no aparece en el Top 10",()=>{
