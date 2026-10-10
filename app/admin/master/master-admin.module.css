@@ -2491,3 +2491,6 @@
 .moduleCommunity .communityUnassignedShortcut:hover{transform:translateY(-2px);background:linear-gradient(120deg,#1c6978,#20446e);box-shadow:0 0 21px rgba(117,211,233,.25)}
 .moduleCommunity .communityUnassignedShortcut:focus-visible{outline:2px solid #8ceaff;outline-offset:3px}
 @media(max-width:600px){.moduleCommunity .communityUnassignedShortcut{width:100%;margin:9px 0 0;text-align:center}}
+
+.moduleCommunity .communityContactLegend{padding:12px 17px;margin:0 0 18px;border-radius:11px;border:1px solid rgba(107,199,255,.26);background:linear-gradient(110deg,#101d38,#0b1730);color:#b9d5ec;font-size:12px;line-height:1.7}
+.moduleCommunity .communityContactLegend strong{color:#8de9ff;font-variant-numeric:tabular-nums}
