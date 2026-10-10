@@ -1,0 +1,10 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {canFinalizeLiryBoostEnrollment} from "../lib/liryboost/enrollment-email-gates.ts";
+const base={emailVerified:true,verifiedEmail:"user@example.com",submittedEmail:"user@example.com",existingAccountUserId:null,currentUserId:"u1"};
+test("correo verificado permite continuar",()=>assert.equal(canFinalizeLiryBoostEnrollment(base),true));
+test("correo no verificado bloquea",()=>assert.equal(canFinalizeLiryBoostEnrollment({...base,emailVerified:false}),false));
+test("correo distinto bloquea",()=>assert.equal(canFinalizeLiryBoostEnrollment({...base,submittedEmail:"otro@example.com"}),false));
+test("cuenta perteneciente a otro usuario bloquea",()=>assert.equal(canFinalizeLiryBoostEnrollment({...base,existingAccountUserId:"u2"}),false));
+test("misma cuenta no se considera conflicto",()=>assert.equal(canFinalizeLiryBoostEnrollment({...base,existingAccountUserId:"u1"}),true));
+test("diferencias de mayúsculas no cambian coincidencia",()=>assert.equal(canFinalizeLiryBoostEnrollment({...base,verifiedEmail:"USER@example.com"}),true));
