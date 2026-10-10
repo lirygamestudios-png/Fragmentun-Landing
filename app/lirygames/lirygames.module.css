@@ -964,3 +964,16 @@
 .liryBoostEnrollmentForm .liryBoostConsent{display:flex;justify-content:flex-start;align-items:flex-start;text-align:left;width:100%;gap:10px;margin:0}
 .liryBoostEnrollmentForm .liryBoostConsent input{width:17px;height:17px;flex:0 0 17px;margin:2px 0 0}
 .liryBoostEnrollmentForm .liryBoostConsent span{flex:1;text-align:left}
+
+
+/* LiryBoost: pulso de clasificación aprobado. Sin saltos de diseño ni cifras ficticias. */
+.liryLeaderboard{position:relative;isolation:isolate;overflow:hidden}
+.liryLeaderboard::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;border:1px solid transparent;box-shadow:inset 0 0 0 transparent,0 0 0 transparent;animation:liryLeaderboardPulse 10s ease-in-out infinite}
+.liryLeaderboard>*{position:relative;z-index:1}
+.liryPodiumPlinth{animation:liryPodiumGlimmer 10s ease-in-out infinite}
+.liryPodiumPlinth[data-rank="1"]{animation-name:liryGoldGlimmer}
+@keyframes liryLeaderboardPulse{0%,7%,28%,100%{border-color:transparent;box-shadow:inset 0 0 0 transparent,0 0 0 transparent}12%,20%{border-color:rgba(91,215,255,.54);box-shadow:inset 0 0 12px rgba(63,184,237,.17),0 0 11px rgba(67,195,255,.12)}}
+@keyframes liryPodiumGlimmer{0%,10%,22%,100%{box-shadow:inset 0 0 25px #3d9aff14}15%{box-shadow:inset 0 0 25px rgba(97,218,255,.24),0 0 8px rgba(97,218,255,.13)}}
+@keyframes liryGoldGlimmer{0%,10%,22%,100%{box-shadow:inset 0 0 25px #3d9aff14}15%{box-shadow:inset 0 0 22px rgba(201,168,76,.24),0 0 9px rgba(201,168,76,.15)}}
+@media(max-width:600px){.liryLeaderboard::before,.liryPodiumPlinth{animation-duration:14s}}
+@media(prefers-reduced-motion:reduce){.liryLeaderboard::before,.liryPodiumPlinth{animation:none!important}}
