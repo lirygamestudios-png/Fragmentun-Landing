@@ -9,6 +9,11 @@ function safeCell(value:unknown):string{
  return '"'+escaped.replaceAll('"','""').replace(/[\r\n]+/g," ")+'"';
 }
 export async function GET(request:Request){
+ // Separación pendiente: impedir exportar pagos del backend compartido.
+ const backend=process.env.NEXT_PUBLIC_SUPABASE_URL||"";
+ if(process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED!=="true"||!backend||backend.includes("pasoapugmsazziflaomp")){
+   return NextResponse.json({error:"lirygames_data_isolation_pending"},{status:503,headers:{"Cache-Control":"no-store"}});
+ }
  const supabase=await createSupabaseServerClient();
  const {data:{user}}=await supabase.auth.getUser();
  if(!user)return NextResponse.json({error:"unauthorized"},{status:401});
