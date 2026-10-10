@@ -6,6 +6,7 @@ export type EnrollmentReadiness="ready_for_transaction"|"invalid_fields"|"identi
 export function evaluateEnrollmentReadiness(input:{draft:LiryBoostEnrollmentDraft;identity:EnrollmentIdentityState;consent:ConsentRecord|null;rulesVersion:string;privacyVersion:string;now:number}):EnrollmentReadiness{
  if(!validateLiryBoostEnrollment(input.draft).valid)return "invalid_fields";
  if(!input.identity.currentUserId?.trim()||!canFinalizeLiryBoostEnrollment(input.identity))return "identity_unverified";
+ if(input.draft.email.trim().toLowerCase()!==input.identity.submittedEmail.trim().toLowerCase())return "identity_unverified";
  if(!input.consent||input.consent.userId!==input.identity.currentUserId)return "consent_missing";
  if(!evaluateLiryBoostConsent(input.consent,{rulesVersion:input.rulesVersion,privacyVersion:input.privacyVersion},input.now).registrationAllowed)return "consent_missing";
  return "ready_for_transaction";
