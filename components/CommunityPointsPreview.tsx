@@ -10,13 +10,13 @@ export function CommunityPointsPreview({members}:{members:Member[]}){
  const outOfBounds=raw.trim()!==""&&!valid;
  const effective=member&&valid?Math.max(-member.points,n):0;
  const projected=member&&valid?member.points+effective:null;
- return <div style={{display:"grid",gap:10}}>
-  <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:12}}>
-   <label>Miembro<select name="member_id" required value={memberId} onChange={e=>setMemberId(e.target.value)}><option value="">Seleccionar miembro</option>{members.map(m=><option key={m.id} value={m.id}>{m.name}</option>)}</select></label>
-   <label>Puntos<input name="points_delta" type="number" min={-100000} max={100000} step={1} value={raw} onChange={e=>setRaw(e.target.value)} required/></label>
+ return <div style={{display:"grid",gap:10,minWidth:0,maxWidth:"100%"}}>
+  <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,180px),1fr))",gap:12,minWidth:0}}>
+   <label style={{minWidth:0,display:"grid",gap:5}}>Miembro<select style={{minWidth:0,width:"100%"}} name="member_id" required value={memberId} onChange={e=>setMemberId(e.target.value)}><option value="">Seleccionar miembro</option>{members.map(m=><option key={m.id} value={m.id}>{m.name}</option>)}</select></label>
+   <label style={{minWidth:0,display:"grid",gap:5}}>Puntos<input style={{minWidth:0,width:"100%"}} name="points_delta" type="number" min={-100000} max={100000} step={1} value={raw} onChange={e=>setRaw(e.target.value)} required/></label>
   </div>
   {outOfBounds&&<p role="alert">Introduce un número entero entre -100.000 y 100.000 puntos.</p>}
-  {member&&valid?<div role="status" aria-live="polite" style={{padding:"12px 14px",border:"1px solid rgba(201,168,76,.38)",borderRadius:10}}>
+  {member&&valid?<div role="status" aria-live="polite" style={{padding:"12px 14px",border:"1px solid rgba(201,168,76,.38)",borderRadius:10,minWidth:0,overflowWrap:"anywhere"}}>
     <strong>VISTA PREVIA · NO GUARDA CAMBIOS</strong>
     <p>Saldo actual: {member.points.toLocaleString("es-US")} puntos · Movimiento solicitado: {n>0?"+":""}{n.toLocaleString("es-US")} · Aplicación estimada: {effective>0?"+":""}{effective.toLocaleString("es-US")}</p>
     <p><strong>Saldo estimado después: {projected?.toLocaleString("es-US")} puntos</strong></p>
