@@ -100,6 +100,8 @@ async function addAction(formData:FormData){
   const allowed=new Set(["share","referral","comment","event","survey","beta_signup","beta_feedback","purchase","community_join","other"]);
   if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(memberId)||!allowed.has(type)||!Number.isFinite(delta)||!Number.isInteger(delta)||Math.abs(delta)>100000||(source?.length||0)>200||(description?.length||0)>3000) throw new Error("La actividad contiene valores no permitidos.");
 
+  if(delta<0&&(!description||description.length<10))throw new Error("community_adjustment_reason_required");
+
   // Una transacción de Supabase registra actividad y actualiza saldo conjuntamente.
   const contextToken=(await cookies()).get("liry_mfa_context")?.value;
   if(!contextToken)throw new Error("mfa_required");
@@ -347,7 +349,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
           <label>Tipo<select name="action_type" defaultValue="share"><option value="share">Compartido</option><option value="referral">Referido</option><option value="comment">Comentario</option><option value="event">Evento</option><option value="survey">Encuesta</option><option value="beta_signup">Registro beta</option><option value="beta_feedback">Opinión beta</option><option value="purchase">Compra</option><option value="community_join">Ingreso a comunidad</option><option value="other">Otro</option></select></label>
           <label>Puntos<input type="number" name="points_delta" min={-100000} max={100000} step={1} defaultValue="0"/></label>
           <label>Fuente<input name="source" maxLength={200}/></label>
-          <label className={styles.span2}>Descripción<textarea name="description" rows={3} maxLength={3000}/></label>
+          <label className={styles.span2}>Descripción y motivo del ajuste<textarea name="description" rows={3} maxLength={3000} placeholder="Para descontar puntos, explica el motivo con al menos 10 caracteres."/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} pendingText="Registrando actividad…" confirmText="¿Confirmas que deseas registrar esta actividad y modificar los puntos del miembro?" disabled={!memberRows.length} disabledReason="Primero registra un miembro para poder añadir participación.">Registrar actividad</MasterSubmitButton>
       </MasterActionForm>
