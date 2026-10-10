@@ -15,7 +15,7 @@ const category:Record<string,string>={
 export const dynamic="force-dynamic";
 export default async function LiryContactAdmin({
  searchParams
-}:{searchParams:Promise<{status?:string;q?:string;subject?:string;pending?:string;draft?:string;owner?:string;age?:string}>}){
+}:{searchParams:Promise<{status?:string;q?:string;subject?:string;pending?:string;draft?:string;owner?:string;age?:string;page?:string}>}){
  const supabase=await createSupabaseServerClient();
  const {data:{user}}=await supabase.auth.getUser();
  if(!user)redirect("/admin/lirygames/login");
@@ -31,12 +31,14 @@ export default async function LiryContactAdmin({
  const draftFilter=["ready","missing"].includes(params.draft||"")?params.draft||"":"";
  const ownerFilter=params.owner==="unassigned"?"unassigned":/^[0-9a-f-]{36}$/i.test(params.owner||"")?params.owner||"":"";
  const ageFilter=["3","7"].includes(params.age||"")?params.age||"":"";
+ const pageNumber=/^[1-9]\d{0,4}$/.test(params.page||"")?Number(params.page):1;
+ const pageSize=50;
  const queryString=(status:string)=>{const p=new URLSearchParams();if(status)p.set("status",status);if(search)p.set("q",search);if(subject)p.set("subject",subject);if(pending)p.set("pending","1");if(draftFilter)p.set("draft",draftFilter);if(ownerFilter)p.set("owner",ownerFilter);if(ageFilter)p.set("age",ageFilter);return "?"+p.toString();};
  const db=supabase;
  const {data:owners}=await db.from("admin_profiles").select("user_id,display_name").order("display_name");
  let query=db.from("lirygames_contact_messages")
-  .select("id,name,email,subject,game_slug,message,status,created_at,updated_at,internal_note,assigned_to,response_draft")
-  .order("created_at",{ascending:false}).limit(100);
+  .select("id,name,email,subject,game_slug,message,status,created_at,updated_at,internal_note,assigned_to,response_draft",{count:"exact"})
+  .order("created_at",{ascending:false}).range((pageNumber-1)*pageSize,pageNumber*pageSize-1);
  if(selected)query=query.eq("status",selected);
  if(subject)query=query.eq("subject",subject);
  if(search)query=query.or(`name.ilike.%${search}%,email.ilike.%${search}%`);
@@ -46,7 +48,9 @@ export default async function LiryContactAdmin({
  if(ageFilter){query=query.in("status",["new","reviewing"]).lte("created_at",new Date(Date.now()-Number(ageFilter)*86400000).toISOString());}
  if(draftFilter==="ready")query.not("response_draft","is",null).neq("response_draft","");
  if(draftFilter==="missing")query.or("response_draft.is.null,response_draft.eq.");
- const {data,error}=await query;
+ const {data,error,count:filteredCount}=await query;
+ const totalPages=Math.max(1,Math.ceil((filteredCount??0)/pageSize));
+ const pageLink=(n:number)=>{const base=queryString(selected);return base+(base==="?"?"":"&")+"page="+n;};
  const now=Date.now();
  const ageDays=(date:string)=>Math.max(0,Math.floor((now-new Date(date).getTime())/86400000));
  const isPending=(item:ContactMessage)=>item.status==="new"||item.status==="reviewing";
@@ -160,7 +164,7 @@ export default async function LiryContactAdmin({
   <section className={visual.viewSummary} aria-label="Resumen de la vista seleccionada">
    <div>
     <strong>{error?"No se pudo cargar la vista":messages.length+" mensaje"+(messages.length===1?"":"s")+" en esta vista"}</strong>
-    <span>Máximo 100 registros por consulta · {selected?({"new":"Nuevos","reviewing":"En revisión","resolved":"Resueltos","archived":"Archivados"}[selected]||"Estado"):"Todos los estados"}{pending?" · Solo pendientes":""}{ageFilter?" · "+ageFilter+"+ días":""}{ownerFilter==="unassigned"?" · Sin responsable":ownerFilter?" · Responsable seleccionado":""}{draftFilter==="ready"?" · Con borrador":draftFilter==="missing"?" · Sin borrador":""}{subject?" · "+(category[subject]||subject):""}{search?" · Búsqueda activa":""}</span>
+    <span>Página {pageNumber} de {totalPages} · {filteredCount??0} coincidencias · {selected?({"new":"Nuevos","reviewing":"En revisión","resolved":"Resueltos","archived":"Archivados"}[selected]||"Estado"):"Todos los estados"}{pending?" · Solo pendientes":""}{ageFilter?" · "+ageFilter+"+ días":""}{ownerFilter==="unassigned"?" · Sin responsable":ownerFilter?" · Responsable seleccionado":""}{draftFilter==="ready"?" · Con borrador":draftFilter==="missing"?" · Sin borrador":""}{subject?" · "+(category[subject]||subject):""}{search?" · Búsqueda activa":""}</span>
    </div>
    {(selected||pending||ageFilter||ownerFilter||draftFilter||subject||search)&&<a href="/admin/master/community/messages">LIMPIAR TODOS LOS FILTROS ↻</a>}
   </section>
@@ -197,6 +201,11 @@ export default async function LiryContactAdmin({
       </details>
     </article>)}
    </div>}
-  <p style={{fontSize:11,color:"#7393aa",marginTop:24}}>Últimos 100 mensajes por filtro. El historial registra cambios administrativos. Las notas y borradores son internos; todavía no se envían correos desde esta bandeja.</p>
+  {!error&&totalPages>1&&<nav className={visual.pagination} aria-label="Paginación de mensajes">
+   {pageNumber>1?<a href={pageLink(pageNumber-1)}>← ANTERIOR</a>:<span>← ANTERIOR</span>}
+   <strong>Página {pageNumber} de {totalPages}</strong>
+   {pageNumber<totalPages?<a href={pageLink(pageNumber+1)}>SIGUIENTE →</a>:<span>SIGUIENTE →</span>}
+  </nav>}
+  <p style={{fontSize:11,color:"#7393aa",marginTop:24}}>50 mensajes por página, con navegación entre páginas. El historial registra cambios administrativos. Las notas y borradores son internos; todavía no se envían correos desde esta bandeja.</p>
  </main>;
 }
