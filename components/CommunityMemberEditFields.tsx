@@ -5,10 +5,11 @@ export function CommunityMemberEditFields({members}:{members:Member[]}){
  const [selected,setSelected]=useState("");
  const [resetKey,setResetKey]=useState(0);
  const member=members.find(m=>m.id===selected);
+ const [confirmed,setConfirmed]=useState(false);
  return <div className="community-member-edit-fields">
   <div className="community-member-edit-picker">
    <label>Miembro
-    <select name="member_id" required value={selected} onChange={e=>{setSelected(e.target.value);setResetKey(v=>v+1);}}>
+    <select name="member_id" required value={selected} onChange={e=>{setSelected(e.target.value);setResetKey(v=>v+1);setConfirmed(false);}}>
      <option value="" disabled>Seleccionar miembro</option>
      {members.map(m=><option key={m.id} value={m.id}>{m.display_name||m.handle||m.email||"Miembro"}</option>)}
     </select>
@@ -18,9 +19,11 @@ export function CommunityMemberEditFields({members}:{members:Member[]}){
     <strong>{member.display_name||member.handle||"Miembro registrado"}</strong>
     <span>{member.email||"Sin correo registrado"}</span>
     <span>{member.handle||"Sin usuario registrado"}</span>
-    <button type="button" onClick={()=>setResetKey(v=>v+1)}>RESTAURAR DATOS CARGADOS ↻</button>
+    <button type="button" onClick={()=>{setResetKey(v=>v+1);setConfirmed(false);}}>RESTAURAR DATOS CARGADOS ↻</button>
    </div>}
   </div>
+  {member&&<label className="community-member-edit-confirm"><input type="checkbox" checked={confirmed} onChange={e=>setConfirmed(e.target.checked)}/>Confirmo que revisé los datos de este miembro antes de actualizarlos.</label>}
+  <input type="hidden" name="member_update_confirmed" value={confirmed?"yes":"no"}/>
   {member&&<div key={member.id+"-"+resetKey} className="community-member-edit-grid">
    <label>Estado<select name="status" defaultValue={member.status}><option value="active">Activo</option><option value="inactive">Inactivo</option><option value="blocked">Bloqueado</option><option value="left">Salida</option></select></label>
    <label>Nivel<select name="tier" defaultValue={member.tier}><option value="member">Miembro</option><option value="engaged">Participativo</option><option value="advocate">Promotor</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderador</option></select></label>
