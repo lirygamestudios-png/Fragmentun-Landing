@@ -123,6 +123,16 @@ export default async function MasterFinancePage(){
   if(!user) redirect("/admin/lirygames/login");
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile) redirect("/admin/lirygames/login?unauthorized=1");
+  // Bloqueo preventivo: los datos comerciales y financieros no están separados de FRAGMENTUN.
+  if(process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED!=="true" ||
+     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+     process.env.NEXT_PUBLIC_SUPABASE_URL.includes("pasoapugmsazziflaomp")){
+    return <main className={styles.workspace}>
+      <header className={styles.topbar}><div><span className={styles.eyebrow}>LIRYGAMES · FINANZAS</span><h1>Finanzas</h1><p>Consulta y gestión suspendidas mientras no exista aislamiento de datos verificado.</p></div></header>
+      <section className={styles.moduleStrip}><span className={styles.moduleGlyph} aria-hidden="true">LG</span><div className={styles.moduleStripCopy}><small>SEGURIDAD ENTRE ESTUDIOS</small><strong>Datos exclusivos pendientes de verificación</strong><p>Este módulo no lee ni modifica registros compartidos con FRAGMENTUN. La navegación del Commander Center permanece disponible.</p></div></section>
+    </main>;
+  }
+
 
   const[
     {data:orders},
