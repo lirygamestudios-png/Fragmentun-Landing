@@ -109,16 +109,25 @@ async function updateMember(formData:FormData){
   revalidatePath("/admin/master/community");
 }
 
-export default async function CommunityPage({searchParams}:{searchParams:Promise<{memberStatus?:string;memberTier?:string;memberSearch?:string;activityType?:string;activitySearch?:string}>}){
+export default async function CommunityPage({searchParams}:{searchParams:Promise<{memberStatus?:string;memberTier?:string;memberSearch?:string;activityType?:string;activitySearch?:string;activityPage?:string}>}){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user) redirect("/admin/lirygames/login");
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile) redirect("/admin/lirygames/login?unauthorized=1");
+  const filters=await searchParams;
+  const activityPage=/^[1-9]\\d{0,3}$/.test(filters.activityPage||"")?Number(filters.activityPage):1;
+  const activityPageSize=30;
+  const activityType=["share","referral","comment","event","survey","beta_signup","beta_feedback","purchase","community_join","other"].includes(filters.activityType||"")?filters.activityType||"":"";
+  const activitySearch=(filters.activitySearch||"").trim().slice(0,80).toLocaleLowerCase("es");
+  let activityQuery=supabase.from("community_actions").select("id,member_id,action_type,source,points_delta,description,occurred_at",{count:"exact"}).order("occurred_at",{ascending:false});
+  if(activityType)activityQuery=activityQuery.eq("action_type",activityType);
+  if(activitySearch)activityQuery=activityQuery.or(`description.ilike.%${activitySearch.replace(/[%_,()]/g,"")}%,source.ilike.%${activitySearch.replace(/[%_,()]/g,"")}%`);
+  activityQuery=activityQuery.range((activityPage-1)*activityPageSize,activityPage*activityPageSize-1);
 
-  const[{data:members},{data:actions},{count:crmContacts},{count:shareClicks},{data:gameMetrics},{data:gamePurchases},{count:pendingContactCount,error:pendingContactError},{count:overdueContactCount,error:overdueContactError},{count:unassignedContactCount,error:unassignedContactError}]=await Promise.all([
+  const[{data:members},{data:actions,count:actionCount,error:activityError},{count:crmContacts},{count:shareClicks},{data:gameMetrics},{data:gamePurchases},{count:pendingContactCount,error:pendingContactError},{count:overdueContactCount,error:overdueContactError},{count:unassignedContactCount,error:unassignedContactError}]=await Promise.all([
     supabase.from("community_members").select("id,display_name,handle,email,status,tier,points,beta_priority,source,joined_at,last_activity_at,tags,notes").order("points",{ascending:false}),
-    supabase.from("community_actions").select("id,member_id,action_type,source,points_delta,description,occurred_at").order("occurred_at",{ascending:false}).limit(50),
+    activityQuery,
     supabase.from("crm_contacts").select("*",{count:"exact",head:true}),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","share_click"),
     supabase.from("game_engagement_daily").select("metric_date,game_id,platform,active_players,new_players,sessions").order("metric_date",{ascending:false}).limit(1000),
@@ -129,7 +138,6 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
   ]);
 
   const contactOverviewAvailable=!pendingContactError&&!overdueContactError&&!unassignedContactError;
-  const filters=await searchParams;
   const memberStatus=["active","inactive","blocked","left"].includes(filters.memberStatus||"")?filters.memberStatus||"":"";
   const memberTier=["member","engaged","advocate","beta_priority","moderator"].includes(filters.memberTier||"")?filters.memberTier||"":"";
   const memberSearch=(filters.memberSearch||"").trim().slice(0,80).toLocaleLowerCase("es");
@@ -140,12 +148,8 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
     (!memberSearch||[m.display_name,m.handle,m.email].some(v=>String(v||"").toLocaleLowerCase("es").includes(memberSearch)))
   );
   const actionRows=(actions||[]) as any[];
-  const activityType=["share","referral","comment","event","survey","beta_signup","beta_feedback","purchase","community_join","other"].includes(filters.activityType||"")?filters.activityType||"":"";
-  const activitySearch=(filters.activitySearch||"").trim().slice(0,80).toLocaleLowerCase("es");
-  const filteredActions=actionRows.filter(a=>
-    (!activityType||a.action_type===activityType)&&
-    (!activitySearch||[a.description,a.source,memberRows.find(m=>m.id===a.member_id)?.display_name].some(v=>String(v||"").toLocaleLowerCase("es").includes(activitySearch)))
-  );
+  const actionPages=Math.max(1,Math.ceil((actionCount||0)/activityPageSize));
+  const activityLink=(page:number)=>{const p=new URLSearchParams();if(activityType)p.set("activityType",activityType);if(activitySearch)p.set("activitySearch",activitySearch);p.set("activityPage",String(page));return "?"+p.toString()+"#comunidad-participacion";};
   const active=memberRows.filter(m=>m.status==="active");
   const beta=memberRows.filter(m=>m.beta_priority||m.tier==="beta_priority");
   const advocates=memberRows.filter(m=>m.tier==="advocate");
@@ -230,16 +234,21 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
       </select></label>
       <button type="submit">FILTRAR →</button>
       <a href="/admin/master/community#comunidad-participacion">LIMPIAR</a>
-      <span className={styles.communityMemberFilterCount}>{filteredActions.length} de {actionRows.length} actividades recientes</span>
+      <span className={styles.communityMemberFilterCount}>{actionCount??0} actividades coincidentes</span>
     </form>
     <section className={styles.grid}>
-      {filteredActions.map((a:any)=><article key={a.id} className={`${styles.card} ${a.points_delta<0?styles.cardWarning:""}`}>
+      {actionRows.map((a:any)=><article key={a.id} className={`${styles.card} ${a.points_delta<0?styles.cardWarning:""}`}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>{actionLabel(a.action_type)}</span><em>{a.points_delta>=0?"+":""}{a.points_delta}</em></div>
         <h3>{memberRows.find(m=>m.id===a.member_id)?.display_name||"Miembro"}</h3><p>{a.description||a.source||"Actividad registrada"}<br/>{new Date(a.occurred_at).toLocaleString("es-US")}</p>
       </article>)}
-      {!filteredActions.length&&<article className={styles.card}><h3>{actionRows.length?"Sin coincidencias":"Sin actividad registrada todavía"}</h3><p>{actionRows.length?"No existen actividades recientes que coincidan con estos filtros.":"Compartidos, referidos, opiniones beta y otras acciones podrán registrarse aquí."}</p></article>}
+      {!actionRows.length&&<article className={styles.card}><h3>{activityError?"Error de consulta":activityType||activitySearch?"Sin coincidencias":"Sin actividad registrada todavía"}</h3><p>{activityError?"No fue posible consultar las actividades.":activityType||activitySearch?"No existen actividades que coincidan con estos filtros.":"Compartidos, referidos, opiniones beta y otras acciones podrán registrarse aquí."}</p></article>}
     </section>
 
+    {actionPages>1&&<nav className={styles.communityActivityPages} aria-label="Páginas de actividades">
+      {activityPage>1?<a href={activityLink(activityPage-1)}>← ANTERIOR</a>:<span>← ANTERIOR</span>}
+      <strong>Página {activityPage} de {actionPages}</strong>
+      {activityPage<actionPages?<a href={activityLink(activityPage+1)}>SIGUIENTE →</a>:<span>SIGUIENTE →</span>}
+    </nav>}
     {["admin","editor","marketing"].includes(profile.role)&&<details id="comunidad-gestion" className={styles.advancedPanel}>
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar miembros y participación manualmente.</p>
