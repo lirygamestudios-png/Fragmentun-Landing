@@ -47,6 +47,12 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
     window.addEventListener("keydown",onKey);
     return ()=>window.removeEventListener("keydown",onKey);
   },[selectedGame]);
+  const closeGameDetails=()=>{
+    if(selectedGame===null)return;
+    const index=selectedGame;
+    setSelectedGame(null);
+    requestAnimationFrame(()=>gameTriggersRef.current[index]?.focus());
+  };
   const dnaHeightStyle={"--liry-catalog-height":catalogHeight===null?undefined:`${catalogHeight}px`} as CSSProperties;
   return <div className={styles.worldShowcase}>
     <div className={styles.worldsGrid} ref={catalogRef}>
@@ -63,7 +69,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
         </div>
       </article>)}
     </div>
-    {selectedGame!==null&&<div className={styles.worldDetailBackdrop} onClick={()=>setSelectedGame(null)}><section className={styles.worldDetailDialog} role="dialog" aria-modal="true" aria-labelledby="liry-world-dialog-title" onClick={e=>e.stopPropagation()}><button type="button" ref={gameCloseRef} className={styles.worldDetailClose} onClick={()=>{const index=selectedGame;setSelectedGame(null);requestAnimationFrame(()=>gameTriggersRef.current[index]?.focus());}} aria-label="Cerrar detalles del videojuego">×</button><img src={catalogArt[selectedGame]} alt="" /><div className={styles.worldDetailBody}><p className={styles.kicker}>UNIVERSO LIRYGAMES</p><h3 id="liry-world-dialog-title">{publicCodenames[selectedGame]}</h3><p>{themes[selectedGame]}</p><strong>{games[selectedGame].state==="available"?"DISPONIBLE":games[selectedGame].state==="beta"?"EN BETA":"PRÓXIMAMENTE"}</strong><p>Estamos preparando esta experiencia. La fecha de lanzamiento y el acceso se comunicarán cuando estén confirmados.</p><a href="#contacto" onClick={()=>setSelectedGame(null)}>RECIBIR NOVEDADES →</a></div></section></div>}
+    {selectedGame!==null&&<div className={styles.worldDetailBackdrop} onClick={closeGameDetails}><section className={styles.worldDetailDialog} role="dialog" aria-modal="true" aria-labelledby="liry-world-dialog-title" onClick={e=>e.stopPropagation()}><button type="button" ref={gameCloseRef} className={styles.worldDetailClose} onClick={closeGameDetails} aria-label="Cerrar detalles del videojuego">×</button><img src={catalogArt[selectedGame]} alt="" /><div className={styles.worldDetailBody}><p className={styles.kicker}>UNIVERSO LIRYGAMES</p><h3 id="liry-world-dialog-title">{publicCodenames[selectedGame]}</h3><p>{themes[selectedGame]}</p><strong>{games[selectedGame].state==="available"?"DISPONIBLE":games[selectedGame].state==="beta"?"EN BETA":"PRÓXIMAMENTE"}</strong><p>Estamos preparando esta experiencia. La fecha de lanzamiento y el acceso se comunicarán cuando estén confirmados.</p><a href="#contacto" onClick={()=>setSelectedGame(null)}>RECIBIR NOVEDADES →</a></div></section></div>}
     <aside className={styles.dnaSide} style={dnaHeightStyle} id="liry-dna" aria-labelledby="dna-side-title">
       <p className={styles.kicker}>EXPERIENCIA INTERACTIVA</p>
       <h3 id="dna-side-title">DESCUBRE TU <span>LIRY DNA</span></h3>
