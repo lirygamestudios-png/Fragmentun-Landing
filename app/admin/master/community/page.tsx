@@ -376,6 +376,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
           <label>Puntos<input type="number" name="points_delta" min={-100000} max={100000} step={1} defaultValue="0"/></label>
           <label>Fuente<input name="source" maxLength={200}/></label>
           <label className={styles.span2}>Descripción y motivo del ajuste<textarea name="description" rows={3} maxLength={3000} placeholder="Para descontar puntos, explica el motivo con al menos 10 caracteres."/></label>
+          <p className={styles.advancedHint}>Los descuentos manuales nunca dejan el saldo negativo: si solicitas descontar más puntos de los disponibles, se aplicará únicamente el saldo existente. Para anular una actividad anterior utiliza CORREGIR PUNTOS; allí la reversión debe ser exacta o se rechaza.</p>
         </div>
         <MasterSubmitButton className={styles.formButton} pendingText="Registrando actividad…" confirmText="¿Confirmas que deseas registrar esta actividad y modificar los puntos del miembro?" disabled={!memberRows.length} disabledReason="Primero registra un miembro para poder añadir participación.">Registrar actividad</MasterSubmitButton>
       </MasterActionForm>
