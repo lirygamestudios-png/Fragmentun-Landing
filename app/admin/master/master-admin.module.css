@@ -2494,3 +2494,11 @@
 
 .moduleCommunity .communityContactLegend{padding:12px 17px;margin:0 0 18px;border-radius:11px;border:1px solid rgba(107,199,255,.26);background:linear-gradient(110deg,#101d38,#0b1730);color:#b9d5ec;font-size:12px;line-height:1.7}
 .moduleCommunity .communityContactLegend strong{color:#8de9ff;font-variant-numeric:tabular-nums}
+
+/* Navegación interna accesible del módulo Clientes y Comunidad */
+.moduleCommunity .communitySectionNav{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 20px;padding:12px 14px;border:1px solid rgba(107,199,255,.26);border-radius:13px;background:linear-gradient(110deg,#111f3a,#0a172f)}
+.moduleCommunity .communitySectionNav a{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:10px 15px;border:1px solid rgba(102,186,228,.45);border-radius:9px;background:linear-gradient(120deg,#12365c,#102747);color:#d8f3ff;text-decoration:none;font-size:11px;font-weight:800;letter-spacing:.04em;transition:transform .18s,background .18s,box-shadow .18s}
+.moduleCommunity .communitySectionNav a:hover{transform:translateY(-2px);background:#185384;box-shadow:0 0 18px rgba(95,207,255,.27)}
+.moduleCommunity .communitySectionNav a:focus-visible{outline:2px solid #8beaff;outline-offset:3px}
+.moduleCommunity #comunidad-miembros,.moduleCommunity #comunidad-participacion,.moduleCommunity #comunidad-gestion{scroll-margin-top:22px}
+@media(max-width:600px){.moduleCommunity .communitySectionNav a{flex:1 1 130px}}
