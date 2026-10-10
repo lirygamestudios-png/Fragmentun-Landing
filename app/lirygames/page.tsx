@@ -114,10 +114,11 @@ export default async function LiryGamesFrontDesk(){
           <strong id="liryboost-enrollment-title">INSCRIPCIÓN LIRYBOOST</strong>
           <p>La inscripción abrirá cuando publiquemos las bases oficiales y habilitemos la verificación segura de participantes.</p>
         </div>
-        <form aria-label="Vista previa del formulario LiryBoost" className={styles.liryBoostEnrollmentForm}>
-          <label>Nombre público <input type="text" placeholder="Tu nombre de participante" autoComplete="off" disabled /></label>
-          <label>Correo electrónico <input type="email" placeholder="tu@email.com" autoComplete="off" disabled /></label>
-          <label className={styles.liryBoostConsent}><input type="checkbox" disabled /> Acepto las bases y la política de privacidad (pendientes de publicación).</label>
+        <p id="liryboost-form-status" className={styles.liryBoostPreviewNotice} role="status">VISTA PREVIA · Formulario inactivo. No introduzcas datos personales: todavía no se reciben inscripciones.</p>
+        <form aria-label="Vista previa del formulario LiryBoost" aria-describedby="liryboost-form-status" className={styles.liryBoostEnrollmentForm}>
+          <label>Nombre público <input type="text" name="displayName" placeholder="Tu nombre de participante" autoComplete="off" aria-describedby="liryboost-form-status" disabled /></label>
+          <label>Correo electrónico <input type="email" name="email" placeholder="tu@email.com" autoComplete="off" aria-describedby="liryboost-form-status" disabled /></label>
+          <label className={styles.liryBoostConsent}><input type="checkbox" name="consent" disabled /> Acepto las bases y la política de privacidad (pendientes de publicación).</label>
           <button type="button" disabled>INSCRIPCIONES PRÓXIMAMENTE</button>
         </form>
       </div>
