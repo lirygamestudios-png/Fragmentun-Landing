@@ -2569,3 +2569,14 @@
 .moduleCommunity .communityFilterNotice a{color:#8fe7ff;font-weight:800;text-underline-offset:3px}
 .moduleCommunity .communityFilterNotice a:hover{color:#fff}
 .moduleCommunity .communityFilterNotice a:focus-visible{outline:2px solid #8beaff;outline-offset:3px}
+
+/* Edición segura de miembros: datos precargados del registro real */
+.moduleCommunity .adminForm .community-member-edit-picker{display:grid;gap:8px;margin:12px 0 16px}
+.moduleCommunity .adminForm .community-member-edit-picker label,.moduleCommunity .adminForm .community-member-edit-grid label{display:grid;gap:8px;min-width:0;color:#c0e0f3;font-size:12px;font-weight:700}
+.moduleCommunity .adminForm .community-member-edit-picker p{margin:0;color:#8ddff2;font-size:12px}
+.moduleCommunity .adminForm .community-member-edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-bottom:17px}
+.moduleCommunity .adminForm .community-member-edit-grid .community-member-notes{grid-column:1/-1}
+.moduleCommunity .adminForm .community-member-edit-picker :is(select),.moduleCommunity .adminForm .community-member-edit-grid :is(input,select,textarea){width:100%;min-height:44px;padding:10px 12px;border-radius:10px;border:1px solid rgba(103,188,233,.47);background:#102641;color:#f1fbff;color-scheme:dark}
+.moduleCommunity .adminForm .community-member-edit-grid select option{background:#102641;color:#f1fbff}
+.moduleCommunity .adminForm .community-member-edit-grid :is(input,select,textarea):focus-visible{outline:2px solid #8ce5ff;outline-offset:2px}
+@media(max-width:650px){.moduleCommunity .adminForm .community-member-edit-grid{grid-template-columns:1fr}}
