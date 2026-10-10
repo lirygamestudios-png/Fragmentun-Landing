@@ -8,10 +8,11 @@ export type PublicLiryBoostEntry={
   verifiedInvitations:number;
   publicListingConsented:boolean;
 };
+export type PublicLiryBoostRow=Pick<PublicLiryBoostEntry,"publicName"|"verifiedInvitations">;
 export function preparePublicLiryBoostTop(
  entries:ReadonlyArray<PublicLiryBoostEntry>,
  programActive:boolean
-):PublicLiryBoostEntry[]{
+):PublicLiryBoostRow[]{
  if(!programActive)return [];
  const bestByName=new Map<string,PublicLiryBoostEntry>();
  for(const entry of entries){
@@ -26,5 +27,6 @@ export function preparePublicLiryBoostTop(
  }
  return [...bestByName.values()]
   .sort((a,b)=>b.verifiedInvitations-a.verifiedInvitations||a.publicName.localeCompare(b.publicName,"es"))
-  .slice(0,10);
+  .slice(0,10)
+  .map(({publicName,verifiedInvitations})=>({publicName,verifiedInvitations}));
 }
