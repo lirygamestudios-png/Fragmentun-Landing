@@ -151,6 +151,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
   const memberPageSize=30;
   const memberPages=Math.max(1,Math.ceil(filteredMemberRows.length/memberPageSize));
   const memberPage=Math.min(memberPageRequested,memberPages);
+  const memberFiltersActive=Boolean(memberStatus||memberTier||memberSearch);
   const visibleMembers=filteredMemberRows.slice((memberPage-1)*memberPageSize,memberPage*memberPageSize);
   const memberLink=(page:number)=>{const p=new URLSearchParams();if(memberStatus)p.set("memberStatus",memberStatus);if(memberTier)p.set("memberTier",memberTier);if(memberSearch)p.set("memberSearch",memberSearch);if(activityType)p.set("activityType",activityType);if(activitySearch)p.set("activitySearch",activitySearch);if(activityPage>1)p.set("activityPage",String(activityPage));p.set("memberPage",String(page));return "?"+p.toString()+"#comunidad-miembros";};
   const actionRows=(actions||[]) as any[];
@@ -212,6 +213,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
     </section>
 
     <section id="comunidad-miembros" className={styles.sectionHead}><div><span>MIEMBROS</span><h2>Miembros</h2></div><p>La información comercial se mantiene separada; aquí se gestiona la relación con la comunidad y su participación.</p></section>
+    {memberFiltersActive&&<p className={styles.communityFilterNotice}>FILTROS DE MIEMBROS ACTIVOS · {filteredMemberRows.length} coincidencias. <a href="/admin/master/community#comunidad-miembros">Ver todos los miembros →</a></p>}
     <form method="GET" className={styles.communityMemberFilters} aria-label="Filtrar miembros de comunidad">
       {activityType&&<input type="hidden" name="activityType" value={activityType}/>}
       {activitySearch&&<input type="hidden" name="activitySearch" value={activitySearch}/>}
@@ -241,6 +243,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
     </nav>}
 
     <section id="comunidad-participacion" className={styles.sectionHead}><div><span>PARTICIPACIÓN</span><h2>Participación reciente</h2></div></section>
+    {(activityType||activitySearch)&&<p className={styles.communityFilterNotice}>FILTROS DE PARTICIPACIÓN ACTIVOS · {actionCount??0} coincidencias. <a href="/admin/master/community#comunidad-participacion">Ver todas las actividades →</a></p>}
     <form method="GET" className={styles.communityMemberFilters} aria-label="Filtrar actividades de participación">
       {memberStatus&&<input type="hidden" name="memberStatus" value={memberStatus}/>}
       {memberTier&&<input type="hidden" name="memberTier" value={memberTier}/>}
