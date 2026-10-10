@@ -152,7 +152,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
   const memberPages=Math.max(1,Math.ceil(filteredMemberRows.length/memberPageSize));
   const memberPage=Math.min(memberPageRequested,memberPages);
   const visibleMembers=filteredMemberRows.slice((memberPage-1)*memberPageSize,memberPage*memberPageSize);
-  const memberLink=(page:number)=>{const p=new URLSearchParams();if(memberStatus)p.set("memberStatus",memberStatus);if(memberTier)p.set("memberTier",memberTier);if(memberSearch)p.set("memberSearch",memberSearch);p.set("memberPage",String(page));return "?"+p.toString()+"#comunidad-miembros";};
+  const memberLink=(page:number)=>{const p=new URLSearchParams();if(memberStatus)p.set("memberStatus",memberStatus);if(memberTier)p.set("memberTier",memberTier);if(memberSearch)p.set("memberSearch",memberSearch);if(activityType)p.set("activityType",activityType);if(activitySearch)p.set("activitySearch",activitySearch);if(activityPage>1)p.set("activityPage",String(activityPage));p.set("memberPage",String(page));return "?"+p.toString()+"#comunidad-miembros";};
   const actionRows=(actions||[]) as any[];
   const actionPages=Math.max(1,Math.ceil((actionCount||0)/activityPageSize));
   const activityLink=(page:number)=>{const p=new URLSearchParams();if(activityType)p.set("activityType",activityType);if(activitySearch)p.set("activitySearch",activitySearch);if(memberStatus)p.set("memberStatus",memberStatus);if(memberTier)p.set("memberTier",memberTier);if(memberSearch)p.set("memberSearch",memberSearch);p.set("activityPage",String(page));return "?"+p.toString()+"#comunidad-participacion";};
@@ -213,6 +213,9 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
 
     <section id="comunidad-miembros" className={styles.sectionHead}><div><span>MIEMBROS</span><h2>Miembros</h2></div><p>La información comercial se mantiene separada; aquí se gestiona la relación con la comunidad y su participación.</p></section>
     <form method="GET" className={styles.communityMemberFilters} aria-label="Filtrar miembros de comunidad">
+      {activityType&&<input type="hidden" name="activityType" value={activityType}/>}
+      {activitySearch&&<input type="hidden" name="activitySearch" value={activitySearch}/>}
+      {activityPage>1&&<input type="hidden" name="activityPage" value={activityPage}/> }
       <label>Buscar miembro<input name="memberSearch" defaultValue={memberSearch} maxLength={80} placeholder="Nombre, usuario o correo"/></label>
       <label>Estado<select name="memberStatus" defaultValue={memberStatus}><option value="">Todos</option><option value="active">Activos</option><option value="inactive">Inactivos</option><option value="blocked">Bloqueados</option><option value="left">Salida</option></select></label>
       <label>Nivel<select name="memberTier" defaultValue={memberTier}><option value="">Todos</option><option value="member">Miembro</option><option value="engaged">Participativo</option><option value="advocate">Promotor</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderador</option></select></label>
