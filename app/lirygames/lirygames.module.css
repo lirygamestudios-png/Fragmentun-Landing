@@ -1041,3 +1041,9 @@
  .navMenuPanel{width:min(250px,calc(100vw - 24px));max-height:min(70dvh,540px);padding:8px}
  .navMenuPanel a{min-height:44px;display:flex;align-items:center;font-size:13px}
 }
+
+/* Navegación FrontDesk: anclas visibles debajo de cabecera fija y sin mareo. */
+#inicio,#mundos,#liry-dna,#perfil-gamer,#comunidad,#social,#liryboost,#tienda,#contacto,#modelo,#recomendaciones{scroll-margin-top:92px}
+@media(max-width:750px){
+ #inicio,#mundos,#liry-dna,#perfil-gamer,#comunidad,#social,#liryboost,#tienda,#contacto,#modelo,#recomendaciones{scroll-margin-top:76px}
+}
