@@ -203,9 +203,11 @@ export default async function LiryContactAdmin({
     </article>)}
    </div>}
   {!error&&totalPages>1&&<nav className={visual.pagination} aria-label="Paginación de mensajes">
+   {pageNumber>1?<a href={pageLink(1)}>« PRIMERA</a>:<span>« PRIMERA</span>}
    {pageNumber>1?<a href={pageLink(pageNumber-1)}>← ANTERIOR</a>:<span>← ANTERIOR</span>}
-   <strong>Página {pageNumber} de {totalPages}</strong>
+   <strong>Página {pageNumber} de {totalPages} · {Math.min((pageNumber-1)*pageSize+1,filteredCount??0)}–{Math.min(pageNumber*pageSize,filteredCount??0)} de {filteredCount??0}</strong>
    {pageNumber<totalPages?<a href={pageLink(pageNumber+1)}>SIGUIENTE →</a>:<span>SIGUIENTE →</span>}
+   {pageNumber<totalPages?<a href={pageLink(totalPages)}>ÚLTIMA »</a>:<span>ÚLTIMA »</span>}
   </nav>}
   <p style={{fontSize:11,color:"#7393aa",marginTop:24}}>50 mensajes por página, con navegación entre páginas. El historial registra cambios administrativos. Las notas y borradores son internos; todavía no se envían correos desde esta bandeja.</p>
  </main>;
