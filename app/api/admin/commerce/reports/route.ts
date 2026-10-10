@@ -11,6 +11,11 @@ async function requireAdmin(){
   return {ok:profile?.role==="admin",supabase};
 }
 
+function isolatedLiryData(){
+  const url=process.env.NEXT_PUBLIC_SUPABASE_URL||"";
+  return process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED==="true"&&Boolean(url)&&!url.includes("pasoapugmsazziflaomp");
+}
+
 export const dynamic="force-dynamic";
 
 function safeDate(value:string|null,end=false){
@@ -20,6 +25,7 @@ function safeDate(value:string|null,end=false){
 }
 
 export async function GET(request:NextRequest){
+  if(!isolatedLiryData())return NextResponse.json({error:"lirygames_data_isolation_pending"},{status:503,headers:{"Cache-Control":"no-store"}});
   const x=await requireAdmin();
   if(!x.ok)return NextResponse.json({error:"forbidden"},{status:403});
   const from=safeDate(request.nextUrl.searchParams.get("from"));
