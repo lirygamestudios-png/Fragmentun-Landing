@@ -325,10 +325,13 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
       <span className={styles.communityMemberFilterCount}>{actionCount??0} actividades coincidentes</span>
     </form>
     <section className={styles.grid}>
-      {actionRows.map((a:any)=><article key={a.id} className={`${styles.card} ${a.points_delta<0?styles.cardWarning:""}`}>
-        <div className={styles.cardTop}><span className={styles.badgeActive}>{actionLabel(a.action_type)}</span><em>{a.points_delta>=0?"+":""}{a.points_delta}</em></div>
-        <h3>{memberRows.find(m=>m.id===a.member_id)?.display_name||"Miembro"}</h3><p>{a.description||a.source||"Actividad registrada"}<br/>{new Date(a.occurred_at).toLocaleString("es-US")}</p>
-      </article>)}
+      {actionRows.map((a:any)=>{const correctedHere=actionRows.some((c:any)=>c.correction_of===a.id);const isCorrection=Boolean(a.correction_of);return <article key={a.id} className={`${styles.card} ${a.points_delta<0?styles.cardWarning:""}`}>
+        <div className={styles.cardTop}><span className={styles.badgeActive}>{isCorrection?"CORRECCIÓN":correctedHere?"ORIGINAL CORREGIDO":actionLabel(a.action_type)}</span><em>{a.points_delta>=0?"+":""}{a.points_delta}</em></div>
+        <h3>{memberRows.find(m=>m.id===a.member_id)?.display_name||memberRows.find(m=>m.id===a.member_id)?.handle||"Miembro"}</h3>
+        <p>{a.description||a.source||"Actividad registrada"}<br/>{new Date(a.occurred_at).toLocaleString("es-US")}</p>
+        {isCorrection&&<p>Vinculada a actividad original: <code>{String(a.correction_of).slice(0,8)}…</code></p>}
+        {correctedHere&&<p>Existe una corrección vinculada a esta actividad.</p>}
+      </article>})}
       {!actionRows.length&&<article className={styles.card}><h3>{activityError?"Error de consulta":activityType||activitySearch?"Sin coincidencias":"Sin actividad registrada todavía"}</h3><p>{activityError?"No fue posible consultar las actividades.":activityType||activitySearch?"No existen actividades que coincidan con estos filtros.":"Compartidos, referidos, opiniones beta y otras acciones podrán registrarse aquí."}</p></article>}
     </section>
 
@@ -375,6 +378,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
         <MasterActionForm action={compensateAction} className={styles.adminForm} successText="Corrección registrada en el historial.">
           <div id="comunidad-corregir-actividad" className={styles.formTitle}><span>CORRECCIÓN AUDITABLE</span><h2>Corregir puntos de una actividad</h2></div>
           <p className={styles.advancedHint}>La actividad original se conserva. Se añade un movimiento contrario por el mismo importe; cada actividad puede corregirse una sola vez. Para corregir actividades antiguas, encuéntralas en Participación.</p>
+          <p className={styles.advancedHint}>La lista de actividades muestra esta página de resultados. Si la actividad ya fue corregida en otra página, el servidor rechazará cualquier duplicado. No se modifica el registro original.</p>
           <div className={styles.formGrid}>
             <label className={styles.span2}>Actividad original
               <select name="original_action_id" defaultValue="" required>
