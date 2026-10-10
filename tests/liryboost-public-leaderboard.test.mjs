@@ -29,3 +29,12 @@ test("combina variantes de mayúsculas y espacios sin perder el mejor resultado"
  assert.equal(rows.length,1);
  assert.equal(rows[0].verifiedInvitations,5);
 });
+
+test("rechaza posibles correos y enlaces en nombres públicos",()=>{
+ const rows=preparePublicLiryBoostTop([
+  {publicName:"correo@dominio.com",verifiedInvitations:9},
+  {publicName:"https://example.com",verifiedInvitations:8},
+  {publicName:"Ana",verifiedInvitations:4}
+ ],true);
+ assert.deepEqual(rows,[{publicName:"Ana",verifiedInvitations:4}]);
+});
