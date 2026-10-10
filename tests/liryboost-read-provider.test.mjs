@@ -11,3 +11,8 @@ test("sin reglas no accede a participantes",async()=>{
 });
 test("error del proveedor cierra sin datos",async()=>assert.deepEqual(await readLiryBoostTop10({readPublicationState:async()=>{throw Error("connection failed")},readAuthorizedVerifiedEntries:async()=>[entry]}),{programActive:false,leaderboard:[]}));
 test("proveedor autorizado entrega alias y conteo",async()=>assert.deepEqual(await readLiryBoostTop10({readPublicationState:async()=>open,readAuthorizedVerifiedEntries:async()=>[entry]}),{programActive:true,leaderboard:[{publicName:"Nombre consentido",verifiedInvitations:5}]}));
+
+test("respuesta de registros malformada no publica datos",async()=>{
+ const result=await readLiryBoostTop10({readPublicationState:async()=>open,readAuthorizedVerifiedEntries:async()=>null});
+ assert.deepEqual(result,{programActive:false,leaderboard:[]});
+});
