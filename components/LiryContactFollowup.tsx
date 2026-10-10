@@ -1,6 +1,6 @@
 "use client";
 import visual from "../app/admin/master/community/messages/messages.module.css";
-import {useState,type FormEvent} from "react";
+import {useEffect,useState,type FormEvent} from "react";
 import {useRouter} from "next/navigation";
 type Owner={user_id:string;display_name:string|null};
 export function LiryContactFollowup({id,status,note,assignedTo,responseDraft,owners}:{id:string;status:string;note:string|null;assignedTo:string|null;responseDraft:string|null;owners:Owner[]}){
@@ -10,6 +10,13 @@ export function LiryContactFollowup({id,status,note,assignedTo,responseDraft,own
  const[busy,setBusy]=useState(false),[feedback,setFeedback]=useState("");
  const [saved,setSaved]=useState({status,note:note||"",owner:assignedTo||"",draft:responseDraft||""});
  const hasChanges=state!==saved.status||memo.trim()!==saved.note||owner!==saved.owner||draft.trim()!==saved.draft;
+ // Sincronizar actualizaciones del servidor sin borrar lo que el operador escribe.
+ useEffect(()=>{
+  if(hasChanges||busy)return;
+  const next={status,note:note||"",owner:assignedTo||"",draft:responseDraft||""};
+  setSaved(next);
+  setState(next.status);setMemo(next.note);setOwner(next.owner);setDraft(next.draft);
+ },[status,note,assignedTo,responseDraft]);
  async function save(e:FormEvent<HTMLFormElement>){
   e.preventDefault();
   if(busy||!hasChanges)return;
