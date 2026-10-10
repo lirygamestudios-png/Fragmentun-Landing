@@ -71,3 +71,6 @@
 .page select option,.page select optgroup{background:#10213b!important;background-color:#10213b!important;color:#f2faff!important;-webkit-text-fill-color:#f2faff}
 .page select option:checked{background:#20547c!important;color:#fff!important}
 .page select:disabled{opacity:.65}
+
+.page .discardChanges{background:linear-gradient(120deg,#253550,#1c2a45)!important;border:1px solid #7a9fbd!important;color:#d5eaff!important;box-shadow:none;letter-spacing:.02em}
+.page .discardChanges:hover:not(:disabled){background:linear-gradient(120deg,#304a6e,#233b60)!important;border-color:#aadfff!important;box-shadow:0 0 14px rgba(113,184,229,.16)}
