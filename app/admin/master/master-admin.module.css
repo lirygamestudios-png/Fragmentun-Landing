@@ -2521,3 +2521,13 @@
 .moduleCommunity .communityActivityPages span{opacity:.42}
 .moduleCommunity .communityActivityPages a:hover{border-color:#8ae7ff;box-shadow:0 0 17px rgba(88,197,255,.25)}
 .moduleCommunity .communityActivityPages a:focus-visible{outline:2px solid #8ae7ff;outline-offset:3px}
+
+/* Clientes y Comunidad — jerarquía y botones oficiales unificados. */
+.moduleCommunity .communityContactActions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 17px;padding:16px;border:1px solid rgba(113,199,247,.3);border-radius:15px;background:linear-gradient(130deg,#121b37,#09172e);box-shadow:inset 0 1px rgba(149,224,255,.07)}
+.moduleCommunity .communityContactActions>a{display:flex;justify-content:center;align-items:center;min-height:66px;min-width:0;margin:0!important;padding:14px 12px!important;border-radius:11px!important;text-align:center;line-height:1.45;font-size:11px!important;letter-spacing:.04em;box-shadow:inset 0 1px rgba(201,236,255,.1),0 7px 18px rgba(0,0,0,.16)}
+.moduleCommunity .communityContactActions>a:hover{transform:translateY(-2px);box-shadow:0 0 23px rgba(76,193,255,.24),0 9px 22px rgba(0,0,0,.24)}
+.moduleCommunity .communitySectionNav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;gap:12px;padding:15px;border-radius:14px}
+.moduleCommunity .communitySectionNav>a{display:flex;align-items:center;justify-content:center;min-height:53px;text-align:center;line-height:1.45;border-radius:10px;box-shadow:inset 0 1px rgba(170,223,255,.08)}
+.moduleCommunity .communityMemberFilters button,.moduleCommunity .communityMemberFilters>a,.moduleCommunity .communityActivityPages a{border-radius:10px;min-height:44px}
+@media(max-width:1080px){.moduleCommunity .communityContactActions{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.moduleCommunity .communityContactActions{grid-template-columns:1fr;padding:12px}.moduleCommunity .communityContactActions>a{min-height:52px}.moduleCommunity .communitySectionNav{grid-template-columns:1fr}.moduleCommunity .communitySectionNav>a{min-height:47px}}
