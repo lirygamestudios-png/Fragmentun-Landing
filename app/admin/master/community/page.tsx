@@ -150,6 +150,11 @@ export default async function CommunityPage(){
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
     </header>
 
+    <nav className={styles.communitySectionNav} aria-label="Accesos a secciones de Comunidad">
+      <a href="#comunidad-miembros">MIEMBROS</a>
+      <a href="#comunidad-participacion">PARTICIPACIÓN</a>
+      <a href="#comunidad-gestion">GESTIÓN Y REGISTROS</a>
+    </nav>
     <section className={styles.moduleStrip} aria-label="Estado del módulo">
       <span className={styles.moduleGlyph} aria-hidden="true">CC</span>
       <div className={styles.moduleStripCopy}><small>CLIENTES Y COMUNIDAD</small><strong>Participación, fidelización y acceso beta</strong></div>
@@ -178,7 +183,7 @@ export default async function CommunityPage(){
       <article><small>Identidad unificada</small><strong className={styles.kpiCompactValue}>PENDIENTE</strong><span>Sin cruce automático web/juego</span></article>
     </section>
 
-    <section className={styles.sectionHead}><div><span>MIEMBROS</span><h2>Miembros</h2></div><p>La información comercial se mantiene separada; aquí se gestiona la relación con la comunidad y su participación.</p></section>
+    <section id="comunidad-miembros" className={styles.sectionHead}><div><span>MIEMBROS</span><h2>Miembros</h2></div><p>La información comercial se mantiene separada; aquí se gestiona la relación con la comunidad y su participación.</p></section>
     <section className={styles.grid}>
       {memberRows.map((m:any)=><article key={m.id} className={`${styles.card} ${m.status==="blocked"?styles.cardAttention:["inactive","left"].includes(m.status)?styles.cardMuted:m.beta_priority||m.tier==="beta_priority"?styles.cardPriority:""}`}>
         <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActive:styles.badgePlanned}>{tierLabel(m.tier)}</span><em>{m.points} puntos</em></div>
@@ -188,7 +193,7 @@ export default async function CommunityPage(){
       {!memberRows.length&&<article className={styles.card}><h3>Registro de comunidad preparado</h3><p>No se han creado miembros ficticios. El registro empieza vacío.</p></article>}
     </section>
 
-    <section className={styles.sectionHead}><div><span>PARTICIPACIÓN</span><h2>Participación reciente</h2></div></section>
+    <section id="comunidad-participacion" className={styles.sectionHead}><div><span>PARTICIPACIÓN</span><h2>Participación reciente</h2></div></section>
     <section className={styles.grid}>
       {actionRows.map((a:any)=><article key={a.id} className={`${styles.card} ${a.points_delta<0?styles.cardWarning:""}`}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>{actionLabel(a.action_type)}</span><em>{a.points_delta>=0?"+":""}{a.points_delta}</em></div>
@@ -197,7 +202,7 @@ export default async function CommunityPage(){
       {!actionRows.length&&<article className={styles.card}><h3>Sin actividad registrada todavía</h3><p>Compartidos, referidos, opiniones beta y otras acciones podrán registrarse aquí.</p></article>}
     </section>
 
-    {["admin","editor","marketing"].includes(profile.role)&&<details className={styles.advancedPanel}>
+    {["admin","editor","marketing"].includes(profile.role)&&<details id="comunidad-gestion" className={styles.advancedPanel}>
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar miembros y participación manualmente.</p>
       <section className={styles.adminForms}>
