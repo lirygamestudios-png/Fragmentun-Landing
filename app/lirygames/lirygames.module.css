@@ -1005,3 +1005,12 @@
 .dnaExplorerDescription strong{color:#7adfff}
 @keyframes liryDnaReveal{from{opacity:.2;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.dnaExplorer{animation:none}.dnaExplorerChoice,.dnaExplorerSelected{transition:none}}
+
+/* La exploración flotante preserva exactamente la altura aprobada del catálogo y del ADN. */
+@media(min-width:1001px){
+ .worldShowcase .dnaExplorer{position:fixed;right:20px;bottom:20px;z-index:45;width:min(380px,calc(100vw - 32px));max-height:min(72vh,560px);overflow-y:auto;box-sizing:border-box;margin:0;box-shadow:0 14px 55px rgba(0,0,0,.65),0 0 24px rgba(69,201,255,.18)}
+}
+@media(max-width:1000px){
+ .dnaSide:has(.dnaExplorer){min-height:max-content}
+ .dnaExplorer{position:relative;max-width:100%;box-sizing:border-box}
+}
