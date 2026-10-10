@@ -59,6 +59,17 @@ export default async function MasterAdminPage(){
 
   if(!profile) redirect("/admin/lirygames/login?unauthorized=1");
 
+  // No presentar métricas de FRAGMENTUN como métricas de LIRYGAMES.
+  // Hasta separar y verificar ownership de los datos, suspender TODAS las lecturas ejecutivas.
+  const isolated=process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED==="true";
+  const endpoint=process.env.NEXT_PUBLIC_SUPABASE_URL||"";
+  if(!isolated||!endpoint||endpoint.includes("pasoapugmsazziflaomp")){
+    return <main className={styles.workspace}>
+      <header className={styles.topbar}><div><span className={styles.eyebrow}>LIRYGAMES · COMMANDER CENTER</span><h1>Centro de mando</h1><p>Acceso administrativo activo. Indicadores ejecutivos suspendidos hasta verificar el aislamiento de datos.</p></div></header>
+      <section className={styles.moduleStrip}><span className={styles.moduleGlyph} aria-hidden="true">LG</span><div className={styles.moduleStripCopy}><small>PROTECCIÓN DE DATOS</small><strong>Separación con FRAGMENTUN pendiente</strong><p>Para evitar mostrar resultados de otro estudio, los indicadores no se consultan mientras el backend compartido no esté aislado. Utiliza el menú lateral para navegar por las áreas administrativas.</p></div></section>
+    </main>;
+  }
+
   const liveSnapshotPromise=getMasterLiveSnapshot(supabase);
 
   const [
