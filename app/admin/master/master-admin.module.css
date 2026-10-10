@@ -2502,3 +2502,16 @@
 .moduleCommunity .communitySectionNav a:focus-visible{outline:2px solid #8beaff;outline-offset:3px}
 .moduleCommunity #comunidad-miembros,.moduleCommunity #comunidad-participacion,.moduleCommunity #comunidad-gestion{scroll-margin-top:22px}
 @media(max-width:600px){.moduleCommunity .communitySectionNav a{flex:1 1 130px}}
+
+/* LIRYGAMES Comunidad: filtros visuales de miembros */
+.moduleCommunity .communityMemberFilters{display:flex;flex-wrap:wrap;align-items:end;gap:12px;padding:18px;margin:0 0 18px;border-radius:14px;border:1px solid rgba(108,196,243,.32);background:linear-gradient(135deg,#111e3a,#0b1730)}
+.moduleCommunity .communityMemberFilters label{display:grid;gap:7px;flex:1 1 160px;min-width:0;color:#bedff4;font-size:12px;font-weight:700}
+.moduleCommunity .communityMemberFilters input,.moduleCommunity .communityMemberFilters select{width:100%;min-height:43px;border:1px solid rgba(110,182,233,.5);border-radius:9px;background:#112746;color:#f0faff;padding:10px 12px;font:inherit;color-scheme:dark}
+.moduleCommunity .communityMemberFilters select option{background:#112746;color:#f0faff}
+.moduleCommunity .communityMemberFilters :is(input,select):focus-visible{outline:2px solid #86e6ff;outline-offset:2px}
+.moduleCommunity .communityMemberFilters button,.moduleCommunity .communityMemberFilters>a{display:inline-flex;justify-content:center;align-items:center;min-height:43px;padding:10px 17px;border:1px solid #64d5ff;border-radius:9px;background:linear-gradient(120deg,#104a81,#143861);color:#e9faff;font-size:11px;font-weight:800;text-decoration:none;cursor:pointer;transition:transform .18s,box-shadow .18s}
+.moduleCommunity .communityMemberFilters>a{background:linear-gradient(120deg,#26354c,#1b2a46);border-color:#668dad}
+.moduleCommunity .communityMemberFilters :is(button,a):hover{transform:translateY(-1px);box-shadow:0 0 20px rgba(92,199,255,.23)}
+.moduleCommunity .communityMemberFilters :is(button,a):focus-visible{outline:2px solid #86e6ff;outline-offset:3px}
+.moduleCommunity .communityMemberFilterCount{color:#99c5df;font-size:12px;align-self:center;font-variant-numeric:tabular-nums}
+@media(max-width:560px){.moduleCommunity .communityMemberFilters{padding:13px}.moduleCommunity .communityMemberFilters button,.moduleCommunity .communityMemberFilters>a{flex:1}}
