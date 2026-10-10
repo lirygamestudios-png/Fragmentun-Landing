@@ -1,3 +1,5 @@
+import { createHash } from "crypto";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "../../../../lib/supabase/server";
@@ -31,6 +33,21 @@ async function requireCommunityEditor(){
   if(!(await hasSatisfiedMfa(supabase))) throw new Error("mfa_required");
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile||!["admin","editor","marketing"].includes(profile.role)) throw new Error("forbidden");
+
+  // Las acciones de Comunidad requieren el MFA específico de LIRYGAMES,
+  // además del nivel AAL2 general de Supabase.
+  const contextToken=(await cookies()).get("liry_mfa_context")?.value;
+  if(!contextToken)throw new Error("Verifica el autenticador de LIRYGAMES antes de guardar.");
+  const tokenHash=createHash("sha256").update(contextToken).digest("hex");
+  const {data:contextSession,error:contextError}=await supabase.from("admin_mfa_context_sessions")
+    .select("factor_id").eq("user_id",user.id).eq("context","lirygames_commander")
+    .eq("token_hash",tokenHash).gt("expires_at",new Date().toISOString()).maybeSingle();
+  if(contextError||!contextSession)throw new Error("La verificación LIRYGAMES ha vencido.");
+  const {data:factorsData,error:factorsError}=await supabase.auth.mfa.listFactors();
+  const validFactor=!factorsError&&(factorsData?.totp||[]).some(f=>
+    f.id===contextSession.factor_id&&f.status==="verified"&&
+    String(f.friendly_name||"").trim().toLowerCase()==="lirygames commander");
+  if(!validFactor)throw new Error("Se requiere el autenticador propio de LIRYGAMES.");
   return {supabase,user};
 }
 
