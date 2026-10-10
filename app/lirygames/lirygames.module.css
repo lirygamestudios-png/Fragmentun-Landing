@@ -1098,3 +1098,23 @@
 .worldDetailClose{position:absolute;right:13px;top:12px;z-index:1;width:40px;height:40px;display:grid;place-items:center;border:1px solid #64c6ee;border-radius:8px;background:#071d35;color:#fff;font-size:26px;cursor:pointer}
 .worldDetailClose:focus-visible,.worldDetailBody a:focus-visible{outline:2px solid #a2efff;outline-offset:3px}
 @media(max-width:600px){.worldDetailDialog{grid-template-columns:1fr;max-height:85dvh}.worldDetailDialog>img{height:180px;min-height:0}.worldDetailBody{padding:17px;gap:9px}}
+
+/* Restauración aprobada: hover del catálogo ilumina únicamente el borde.
+   El botón transparente de apertura no tiñe la imagen ni modifica sus filtros. */
+.page :global(#mundos) .worldsGrid>.gameCard:hover,
+.page :global(#mundos) .worldsGrid>.gameCard:focus-within{
+ border-color:#72dbff;
+ box-shadow:0 0 0 1px rgba(110,219,255,.6),0 0 19px rgba(50,190,255,.52),inset 0 0 12px rgba(60,191,255,.12);
+}
+.page :global(#mundos) .worldsGrid>.gameCard:hover>.gameCardArt,
+.page :global(#mundos) .worldsGrid>.gameCard:focus-within>.gameCardArt{
+ transform:none;filter:brightness(.88) saturate(.9);opacity:.88;
+}
+.page :global(#mundos) .worldsGrid>.gameCard .worldCardOpen,
+.page :global(#mundos) .worldsGrid>.gameCard .worldCardOpen:hover,
+.page :global(#mundos) .worldsGrid>.gameCard .worldCardOpen:active{
+ background:transparent!important;box-shadow:none!important;filter:none;opacity:1;
+}
+@media(prefers-reduced-motion:reduce){
+ .page :global(#mundos) .worldsGrid>.gameCard:hover{transform:none}
+}
