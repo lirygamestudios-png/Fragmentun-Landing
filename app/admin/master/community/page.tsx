@@ -6,6 +6,7 @@ import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 import {MasterActionForm} from "../../../../components/MasterActionForm";
 import {CommunityManagementJump} from "../../../../components/CommunityManagementJump";
+import {CommunityMemberEditFields} from "../../../../components/CommunityMemberEditFields";
 
 function tierLabel(value:string){
   const map:Record<string,string>={member:"MIEMBRO",engaged:"PARTICIPATIVO",advocate:"PROMOTOR",beta_priority:"PRIORIDAD BETA",moderator:"MODERADOR"};
@@ -310,16 +311,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
       <section className={`${styles.adminForms} ${styles.adminFormsSingle}`}>
       <MasterActionForm action={updateMember} className={styles.adminForm} successText="Miembro actualizado correctamente.">
         <div id="comunidad-actualizar-miembro" className={styles.formTitle}><span>GESTIONAR MIEMBRO</span><h2>Actualizar comunidad</h2></div>
-        <div className={styles.formGrid}>
-          <label>Miembro<select name="member_id" required defaultValue=""><option value="" disabled>Seleccionar miembro</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name||m.handle||m.email}</option>)}</select></label>
-          <label>Estado<select name="status" defaultValue="active"><option value="active">Activo</option><option value="inactive">Inactivo</option><option value="blocked">Bloqueado</option><option value="left">Salida</option></select></label>
-          <label>Nivel<select name="tier" defaultValue="member"><option value="member">Miembro</option><option value="engaged">Participativo</option><option value="advocate">Promotor</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderador</option></select></label>
-          <label>Prioridad beta<select name="beta_priority" defaultValue="false"><option value="false">No</option><option value="true">Sí</option></select></label>
-          <label>Puntos<input type="number" min="0" name="points" defaultValue="0"/></label>
-          <label>Fuente<input name="source"/></label>
-          <label className={styles.span2}>Etiquetas<input name="tags" placeholder="beta, promotor, creador"/></label>
-          <label className={styles.span2}>Notas<textarea name="notes" rows={3}/></label>
-        </div>
+        <CommunityMemberEditFields members={memberRows.map(m=>({id:m.id,display_name:m.display_name,handle:m.handle,email:m.email,status:m.status,tier:m.tier,beta_priority:Boolean(m.beta_priority),points:Number(m.points||0),source:m.source,tags:m.tags,notes:m.notes}))}/>
         <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length} disabledReason="No hay miembros registrados para actualizar.">Actualizar miembro</MasterSubmitButton>
       </MasterActionForm>
       </section>
