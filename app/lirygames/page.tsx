@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {LiryShare} from "../../components/LiryShare";
 import {LiryBoostTop10} from "../../components/LiryBoostTop10";
+import {LiryBoostEnrollment} from "../../components/LiryBoostEnrollment";
 import {LiryContactForm} from "../../components/LiryContactForm";
 import {LiryGameDiscovery} from "../../components/LiryGameDiscovery";
 import {getLiryPublicCatalog} from "../../lib/games/public-catalog-server";
@@ -105,22 +106,9 @@ export default async function LiryGamesFrontDesk(){
       </div>
       <LiryBoostTop10 />
       <div className={styles.liryBoostActions}>
-        <a className={styles.button} href="#liryboost-inscripcion">INSCRÍBETE EN LIRYBOOST →</a>
+        <LiryBoostEnrollment />
         <a href="#social" className={styles.liryBoostSecondary}>COMPARTIR LIRYGAMES →</a>
         <a href="#contacto" className={styles.liryBoostSecondary}>RECIBIR NOVEDADES →</a>
-      </div>
-      <div id="liryboost-inscripcion" className={styles.liryBoostEnrollment} aria-labelledby="liryboost-enrollment-title">
-        <div>
-          <strong id="liryboost-enrollment-title">INSCRIPCIÓN LIRYBOOST</strong>
-          <p>La inscripción abrirá cuando publiquemos las bases oficiales y habilitemos la verificación segura de participantes.</p>
-        </div>
-        <p id="liryboost-form-status" className={styles.liryBoostPreviewNotice} role="status">VISTA PREVIA · Formulario inactivo. No introduzcas datos personales: todavía no se reciben inscripciones.</p>
-        <form aria-label="Vista previa del formulario LiryBoost" aria-describedby="liryboost-form-status" className={styles.liryBoostEnrollmentForm}>
-          <label>Nombre público <input type="text" name="displayName" placeholder="Tu nombre de participante" autoComplete="off" aria-describedby="liryboost-form-status" disabled /></label>
-          <label>Correo electrónico <input type="email" name="email" placeholder="tu@email.com" autoComplete="off" aria-describedby="liryboost-form-status" disabled /></label>
-          <label className={styles.liryBoostConsent}><input type="checkbox" name="consent" disabled /> Acepto las bases y la política de privacidad (pendientes de publicación).</label>
-          <button type="button" disabled>INSCRIPCIONES PRÓXIMAMENTE</button>
-        </form>
       </div>
       <p className={styles.liryBoostNotice}>El registro de participaciones, la validación de invitaciones y el Top 10 todavía no están activos. Compartir ahora no genera puntos ni garantiza acceso beta. Publicaremos las condiciones antes de abrir la competencia.</p>
     </section>
