@@ -11,6 +11,8 @@ const traitDescriptions=["Te atrae descubrir mundos, secretos y caminos alternat
 
 export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
   const catalogRef=useRef<HTMLDivElement>(null);
+  const gameCloseRef=useRef<HTMLButtonElement>(null);
+  const gameTriggersRef=useRef<(HTMLButtonElement|null)[]>([]);
   const explorerCloseRef=useRef<HTMLButtonElement>(null);
   const explorerOpenRef=useRef<HTMLButtonElement>(null);
   const [exploringDna,setExploringDna]=useState(false);
@@ -40,7 +42,8 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
   },[exploringDna]);
   useEffect(()=>{
     if(selectedGame===null)return;
-    const onKey=(event:KeyboardEvent)=>{if(event.key==="Escape")setSelectedGame(null)};
+    gameCloseRef.current?.focus();
+    const onKey=(event:KeyboardEvent)=>{if(event.key==="Escape"){const index=selectedGame;setSelectedGame(null);requestAnimationFrame(()=>gameTriggersRef.current[index]?.focus());}};
     window.addEventListener("keydown",onKey);
     return ()=>window.removeEventListener("keydown",onKey);
   },[selectedGame]);
@@ -56,11 +59,11 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
             <span className={styles.worldAvailability}>{game.state==="available"?"DISPONIBLE":game.state==="beta"?"EN BETA":"PRÓXIMAMENTE"}</span>
           </div>
           <span className={styles.worldArrow} aria-hidden="true">→</span>
-          <button type="button" className={styles.worldCardOpen} aria-label={`Ver detalles de ${publicCodenames[index]??game.title}`} onClick={()=>setSelectedGame(index)} />
+          <button type="button" ref={node=>{gameTriggersRef.current[index]=node}} className={styles.worldCardOpen} aria-label={`Ver detalles de ${publicCodenames[index]??game.title}`} onClick={()=>setSelectedGame(index)} />
         </div>
       </article>)}
     </div>
-    {selectedGame!==null&&<div className={styles.worldDetailBackdrop} onClick={()=>setSelectedGame(null)}><section className={styles.worldDetailDialog} role="dialog" aria-modal="true" aria-labelledby="liry-world-dialog-title" onClick={e=>e.stopPropagation()}><button type="button" className={styles.worldDetailClose} onClick={()=>setSelectedGame(null)} aria-label="Cerrar detalles del videojuego">×</button><img src={catalogArt[selectedGame]} alt="" /><div className={styles.worldDetailBody}><p className={styles.kicker}>UNIVERSO LIRYGAMES</p><h3 id="liry-world-dialog-title">{publicCodenames[selectedGame]}</h3><p>{themes[selectedGame]}</p><strong>{games[selectedGame].state==="available"?"DISPONIBLE":games[selectedGame].state==="beta"?"EN BETA":"PRÓXIMAMENTE"}</strong><p>Estamos preparando esta experiencia. La fecha de lanzamiento y el acceso se comunicarán cuando estén confirmados.</p><a href="#contacto" onClick={()=>setSelectedGame(null)}>RECIBIR NOVEDADES →</a></div></section></div>}
+    {selectedGame!==null&&<div className={styles.worldDetailBackdrop} onClick={()=>setSelectedGame(null)}><section className={styles.worldDetailDialog} role="dialog" aria-modal="true" aria-labelledby="liry-world-dialog-title" onClick={e=>e.stopPropagation()}><button type="button" ref={gameCloseRef} className={styles.worldDetailClose} onClick={()=>{const index=selectedGame;setSelectedGame(null);requestAnimationFrame(()=>gameTriggersRef.current[index]?.focus());}} aria-label="Cerrar detalles del videojuego">×</button><img src={catalogArt[selectedGame]} alt="" /><div className={styles.worldDetailBody}><p className={styles.kicker}>UNIVERSO LIRYGAMES</p><h3 id="liry-world-dialog-title">{publicCodenames[selectedGame]}</h3><p>{themes[selectedGame]}</p><strong>{games[selectedGame].state==="available"?"DISPONIBLE":games[selectedGame].state==="beta"?"EN BETA":"PRÓXIMAMENTE"}</strong><p>Estamos preparando esta experiencia. La fecha de lanzamiento y el acceso se comunicarán cuando estén confirmados.</p><a href="#contacto" onClick={()=>setSelectedGame(null)}>RECIBIR NOVEDADES →</a></div></section></div>}
     <aside className={styles.dnaSide} style={dnaHeightStyle} id="liry-dna" aria-labelledby="dna-side-title">
       <p className={styles.kicker}>EXPERIENCIA INTERACTIVA</p>
       <h3 id="dna-side-title">DESCUBRE TU <span>LIRY DNA</span></h3>
