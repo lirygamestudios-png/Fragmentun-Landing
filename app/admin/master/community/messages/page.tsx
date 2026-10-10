@@ -169,6 +169,13 @@ export default async function LiryContactAdmin({
    </div>
    {(selected||pending||ageFilter||ownerFilter||draftFilter||subject||search)&&<a href="/admin/master/community/messages">LIMPIAR TODOS LOS FILTROS ↻</a>}
   </section>
+  {!error&&totalPages>1&&<nav className={visual.pagination} aria-label="Paginación superior de mensajes">
+   {pageNumber>1?<a href={pageLink(1)}>« PRIMERA</a>:<span>« PRIMERA</span>}
+   {pageNumber>1?<a href={pageLink(pageNumber-1)}>← ANTERIOR</a>:<span>← ANTERIOR</span>}
+   <strong>Página {pageNumber} de {totalPages}</strong>
+   {pageNumber<totalPages?<a href={pageLink(pageNumber+1)}>SIGUIENTE →</a>:<span>SIGUIENTE →</span>}
+   {pageNumber<totalPages?<a href={pageLink(totalPages)}>ÚLTIMA »</a>:<span>ÚLTIMA »</span>}
+  </nav>}
   {error?<p role="alert">No se pudo recuperar la bandeja. Intenta nuevamente.</p>:
    messages.length===0?<p style={{padding:25,border:"1px solid #28536f",borderRadius:8,color:"#aec9dd"}}>No hay mensajes que coincidan con los filtros seleccionados.</p>:
    <div className={visual.messageList} style={{display:"grid",gap:12}}>
