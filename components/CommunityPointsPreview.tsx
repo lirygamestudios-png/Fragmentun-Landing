@@ -10,6 +10,7 @@ export function CommunityPointsPreview({members}:{members:Member[]}){
  const outOfBounds=raw.trim()!==""&&!valid;
  const effective=member&&valid?Math.max(-member.points,n):0;
  const projected=member&&valid?member.points+effective:null;
+ const overMemberLimit=projected!==null&&projected>100000000;
  return <div style={{display:"grid",gap:10,minWidth:0,maxWidth:"100%"}}>
   <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,180px),1fr))",gap:12,minWidth:0}}>
    <label style={{minWidth:0,display:"grid",gap:5}}>Miembro<select style={{minWidth:0,width:"100%"}} name="member_id" required value={memberId} onChange={e=>setMemberId(e.target.value)}><option value="">Seleccionar miembro</option>{members.map(m=><option key={m.id} value={m.id}>{m.name}</option>)}</select></label>
@@ -20,6 +21,7 @@ export function CommunityPointsPreview({members}:{members:Member[]}){
     <strong>VISTA PREVIA · NO GUARDA CAMBIOS</strong>
     <p>Saldo actual: {member.points.toLocaleString("es-US")} puntos · Movimiento solicitado: {n>0?"+":""}{n.toLocaleString("es-US")} · Aplicación estimada: {effective>0?"+":""}{effective.toLocaleString("es-US")}</p>
     <p><strong>Saldo estimado después: {projected?.toLocaleString("es-US")} puntos</strong></p>
+    {overMemberLimit&&<p role="alert">El saldo estimado supera el límite de 100.000.000 puntos. El servidor rechazará la operación.</p>}
     {n<0&&effective!==n&&<p role="alert">El descuento solicitado supera el saldo actual. Se aplicaría únicamente el saldo disponible.</p>}
     {member.status!=="active"&&<p role="alert">El miembro no está activo. El servidor rechazará la operación si está bloqueado o dado de baja.</p>}
     <small>Vista basada en el saldo consultado al abrir la página. El servidor vuelve a comprobarlo al guardar; si otro movimiento cambia el saldo, el resultado definitivo puede variar.</small>
