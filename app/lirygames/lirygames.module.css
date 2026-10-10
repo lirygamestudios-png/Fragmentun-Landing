@@ -1047,3 +1047,14 @@
 @media(max-width:750px){
  #inicio,#mundos,#liry-dna,#perfil-gamer,#comunidad,#social,#liryboost,#tienda,#contacto,#modelo,#recomendaciones{scroll-margin-top:76px}
 }
+
+/* Bloque 6: menú móvil estable sobre el contenido, área táctil y foco de teclado. */
+.navMenu[open]>summary{border-color:#65c7e7;background:#0b3455;color:#fff}
+.navMenu>summary:focus-visible{outline:2px solid #8ceaff;outline-offset:2px}
+@media(max-width:750px){
+ .navMenu>summary{min-width:44px;min-height:44px}
+ .navMenuPanel{right:0;top:calc(100% + 7px);z-index:100}
+}
+@media(prefers-reduced-motion:reduce){
+ .navMenuPanel,.navMenuPanel a{animation:none;transition:none}
+}
