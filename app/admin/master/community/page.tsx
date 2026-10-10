@@ -380,23 +380,21 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
       </MasterActionForm>
       </section>
       <section className={`${styles.adminForms} ${styles.adminFormsSingle}`}>
-        <MasterActionForm action={compensateAction} className={styles.adminForm} successText="Corrección registrada en el historial.">
-          <div id="comunidad-corregir-actividad" className={styles.formTitle}><span>CORRECCIÓN AUDITABLE</span><h2>Corregir puntos de una actividad</h2></div>
-          <p className={styles.advancedHint}>La actividad original se conserva. Se añade un movimiento contrario por el mismo importe; cada actividad puede corregirse una sola vez. Para corregir actividades antiguas, encuéntralas en Participación.</p>
-          <p className={styles.advancedHint}>La lista de actividades muestra esta página de resultados. Si la actividad ya fue corregida en otra página, el servidor rechazará cualquier duplicado. No se modifica el registro original.</p>
-          <div className={styles.formGrid}>
-            <div className={styles.span2}>
-              <form method="GET" action="/admin/master/community" className={styles.communityMemberFilters}>
+        <form method="GET" action="/admin/master/community" className={styles.communityMemberFilters}>
                 <label>Buscar actividad antigua por identificador
                   <input name="correctionId" defaultValue={correctionId} maxLength={36} placeholder="Identificador UUID completo"/>
                 </label>
                 <button type="submit">BUSCAR ACTIVIDAD →</button>
               </form>
+        <MasterActionForm action={compensateAction} className={styles.adminForm} successText="Corrección registrada en el historial.">
+          <div id="comunidad-corregir-actividad" className={styles.formTitle}><span>CORRECCIÓN AUDITABLE</span><h2>Corregir puntos de una actividad</h2></div>
+          <p className={styles.advancedHint}>La actividad original se conserva. Se añade un movimiento contrario por el mismo importe; cada actividad puede corregirse una sola vez. Para corregir actividades antiguas, encuéntralas en Participación.</p>
+          <p className={styles.advancedHint}>La lista de actividades muestra esta página de resultados. Si la actividad ya fue corregida en otra página, el servidor rechazará cualquier duplicado. No se modifica el registro original.</p>
+          <div className={styles.formGrid}>
               {correctionId&&!validCorrectionId&&<p role="alert">Introduce un identificador UUID válido.</p>}
               {validCorrectionId&&locatedActionError&&<p role="alert">No fue posible consultar la actividad.</p>}
               {validCorrectionId&&!locatedAction&&!locatedActionError&&<p>No se encontró ninguna actividad con ese identificador.</p>}
               {locatedAction&&<p>Encontrada: {actionLabel(locatedAction.action_type)} · {locatedAction.points_delta} puntos · {new Date(locatedAction.occurred_at).toLocaleString("es-US")}. {canCorrectLocated?"Disponible para corrección.":"No disponible para corrección o ya corregida."}</p>}
-            </div>
             <label className={styles.span2}>Actividad original
               <select name="original_action_id" defaultValue={canCorrectLocated?locatedAction!.id:""} required>
                 <option value="" disabled>Seleccionar actividad</option>
