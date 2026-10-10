@@ -109,6 +109,16 @@ export default async function MasterGrowthPage(){
   if(!user) redirect("/admin/lirygames/login");
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile) redirect("/admin/lirygames/login?unauthorized=1");
+  // Evitar mostrar estadísticas provenientes de FRAGMENTUN como resultados LIRYGAMES.
+  if(process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED!=="true" ||
+     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+     process.env.NEXT_PUBLIC_SUPABASE_URL.includes("pasoapugmsazziflaomp")){
+    return <main className={styles.workspace}>
+      <header className={styles.topbar}><div><span className={styles.eyebrow}>LIRYGAMES · CRECIMIENTO</span><h1>Crecimiento</h1><p>Indicadores suspendidos hasta verificar la separación de datos con FRAGMENTUN.</p></div></header>
+      <section className={styles.moduleStrip}><span className={styles.moduleGlyph} aria-hidden="true">LG</span><div className={styles.moduleStripCopy}><small>PROTECCIÓN DE DATOS</small><strong>Datos propios aún no verificados</strong><p>Este módulo no consulta métricas compartidas mientras no exista aislamiento comprobado. Conserva el acceso mediante el menú lateral del Commander Center.</p></div></section>
+    </main>;
+  }
+
 
   const since30=new Date(Date.now()-30*86400000).toISOString();
   const[
