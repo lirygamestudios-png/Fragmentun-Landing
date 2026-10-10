@@ -5,7 +5,7 @@ import {LiryContactFollowup} from "../../../../../components/LiryContactFollowup
 
 type ContactMessage={
  id:string;name:string;email:string;subject:string;game_slug:string|null;
- message:string;status:string;created_at:string;internal_note:string|null;assigned_to:string|null;response_draft:string|null;
+ message:string;status:string;created_at:string;updated_at:string|null;internal_note:string|null;assigned_to:string|null;response_draft:string|null;
 };
 type HistoryItem={id:string;contact_id:string;actor_user_id:string;action:string;details:Record<string,unknown>|null;created_at:string};
 const category:Record<string,string>={
@@ -35,7 +35,7 @@ export default async function LiryContactAdmin({
  const db=supabase;
  const {data:owners}=await db.from("admin_profiles").select("user_id,display_name").order("display_name");
  let query=db.from("lirygames_contact_messages")
-  .select("id,name,email,subject,game_slug,message,status,created_at,internal_note,assigned_to,response_draft")
+  .select("id,name,email,subject,game_slug,message,status,created_at,updated_at,internal_note,assigned_to,response_draft")
   .order("created_at",{ascending:false}).limit(100);
  if(selected)query=query.eq("status",selected);
  if(subject)query=query.eq("subject",subject);
@@ -165,7 +165,7 @@ export default async function LiryContactAdmin({
     {messages.map(item=><article key={item.id} className={visual.messageCard} style={{background:"#081b30",border:"1px solid #24516f",borderRadius:7,padding:18}}>
       <div style={{display:"flex",justifyContent:"space-between",gap:12,flexWrap:"wrap",marginBottom:12}}>
        <div><strong>{item.name}</strong><div style={{fontSize:12,marginTop:4}}><a href={"mailto:"+item.email} style={{color:"#6bd9ff"}}>{item.email}</a></div></div>
-       <div style={{fontSize:11,color:"#abc7df"}}>{new Date(item.created_at).toLocaleString("es",{dateStyle:"medium",timeStyle:"short"})}</div>
+       <div className={visual.messageDates}><span>Recibido: {new Date(item.created_at).toLocaleString("es",{dateStyle:"medium",timeStyle:"short"})}</span>{item.updated_at&&new Date(item.updated_at).getTime()>new Date(item.created_at).getTime()+1000&&<span>Última gestión: {new Date(item.updated_at).toLocaleString("es",{dateStyle:"medium",timeStyle:"short"})}</span>}</div>
       </div>
       <div style={{display:"flex",gap:10,flexWrap:"wrap",marginBottom:12,fontSize:11}}>
        {isPending(item)&&<span style={{border:"1px solid "+(ageDays(item.created_at)>=3?"#ffb06d":"#3986a7"),borderRadius:5,padding:"3px 7px",color:ageDays(item.created_at)>=3?"#ffd0a8":"#b5ebff"}}>{ageDays(item.created_at)>=3?"ATENCIÓN PRIORITARIA · ":"PENDIENTE · "}{ageDays(item.created_at)===0?"Hoy":ageDays(item.created_at)===1?"1 día":ageDays(item.created_at)+" días"}</span>}
