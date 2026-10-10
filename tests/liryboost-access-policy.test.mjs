@@ -1,0 +1,10 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {canPerformLiryBoostAction} from "../lib/liryboost/access-policy.ts";
+const who=(role,userId="u1",authenticated=true)=>({role,userId,authenticated});
+test("anónimo no puede consultar ni publicar",()=>{assert.equal(canPerformLiryBoostAction(who("anonymous",null,false),"publish_ranking"),false);});
+test("participante consulta solo sus propios totales",()=>{assert.equal(canPerformLiryBoostAction(who("participant"),"read_own_summary","u1"),true);assert.equal(canPerformLiryBoostAction(who("participant"),"read_own_summary","u2"),false);});
+test("participante no verifica ni revoca",()=>{assert.equal(canPerformLiryBoostAction(who("participant"),"verify_referral"),false);assert.equal(canPerformLiryBoostAction(who("participant"),"revoke_referral"),false);});
+test("verificador puede validar y revocar pero no publicar",()=>{assert.equal(canPerformLiryBoostAction(who("verifier"),"verify_referral"),true);assert.equal(canPerformLiryBoostAction(who("verifier"),"publish_ranking"),false);});
+test("administrador autenticado puede gestionar",()=>{assert.equal(canPerformLiryBoostAction(who("admin"),"publish_ranking"),true);});
+test("ni siquiera administrador sin sesión puede gestionar",()=>{assert.equal(canPerformLiryBoostAction(who("admin",null,false),"publish_ranking"),false);});
