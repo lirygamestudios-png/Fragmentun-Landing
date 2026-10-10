@@ -12,10 +12,17 @@ export function preparePublicLiryBoostTop(
  programActive:boolean
 ):PublicLiryBoostEntry[]{
  if(!programActive)return [];
- const usedNames=new Set<string>();
- return entries.filter(entry=>{
+ const bestByName=new Map<string,PublicLiryBoostEntry>();
+ for(const entry of entries){
   const name=entry.publicName.trim();
-  if(!name||name.length>60||!Number.isSafeInteger(entry.verifiedInvitations)||entry.verifiedInvitations<=0||usedNames.has(name))return false;
-  usedNames.add(name);return true;
- }).sort((a,b)=>b.verifiedInvitations-a.verifiedInvitations||a.publicName.localeCompare(b.publicName,"es")).slice(0,10);
+  if(!name||name.length>60||!Number.isSafeInteger(entry.verifiedInvitations)||entry.verifiedInvitations<=0)continue;
+  const key=name.toLocaleLowerCase("es");
+  const previous=bestByName.get(key);
+  if(!previous||entry.verifiedInvitations>previous.verifiedInvitations){
+   bestByName.set(key,{publicName:name,verifiedInvitations:entry.verifiedInvitations});
+  }
+ }
+ return [...bestByName.values()]
+  .sort((a,b)=>b.verifiedInvitations-a.verifiedInvitations||a.publicName.localeCompare(b.publicName,"es"))
+  .slice(0,10);
 }
