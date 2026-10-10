@@ -309,10 +309,10 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
       <MasterActionForm action={createMember} className={styles.adminForm} successText="Miembro registrado correctamente.">
         <div id="comunidad-registrar-miembro" className={styles.formTitle}><span>NUEVO MIEMBRO</span><h2>Registrar comunidad</h2></div>
         <div className={styles.formGrid}>
-          <label>Nombre<input name="display_name"/></label>
-          <label>Correo<input type="email" name="email"/></label>
-          <label>Usuario<input name="handle"/></label>
-          <label>Fuente<input name="source" placeholder="LiryBoost / Discord / web"/></label>
+          <label>Nombre<input name="display_name" maxLength={120}/></label>
+          <label>Correo<input type="email" name="email" maxLength={254}/></label>
+          <label>Usuario<input name="handle" maxLength={80}/></label>
+          <label>Fuente<input name="source" maxLength={200} placeholder="LiryBoost / Discord / web"/></label>
           <label>Nivel<select name="tier" defaultValue="member"><option value="member">Miembro</option><option value="engaged">Participativo</option><option value="advocate">Promotor</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderador</option></select></label>
         </div>
         <MasterSubmitButton className={styles.formButton}>Registrar miembro</MasterSubmitButton>
@@ -323,9 +323,9 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
         <div className={styles.formGrid}>
           <label>Miembro<select name="member_id" required defaultValue=""><option value="" disabled>Seleccionar miembro</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name||m.handle||m.email}</option>)}</select></label>
           <label>Tipo<select name="action_type" defaultValue="share"><option value="share">Compartido</option><option value="referral">Referido</option><option value="comment">Comentario</option><option value="event">Evento</option><option value="survey">Encuesta</option><option value="beta_signup">Registro beta</option><option value="beta_feedback">Opinión beta</option><option value="purchase">Compra</option><option value="community_join">Ingreso a comunidad</option><option value="other">Otro</option></select></label>
-          <label>Puntos<input type="number" name="points_delta" defaultValue="0"/></label>
-          <label>Fuente<input name="source"/></label>
-          <label className={styles.span2}>Descripción<textarea name="description" rows={3}/></label>
+          <label>Puntos<input type="number" name="points_delta" min={-100000} max={100000} step={1} defaultValue="0"/></label>
+          <label>Fuente<input name="source" maxLength={200}/></label>
+          <label className={styles.span2}>Descripción<textarea name="description" rows={3} maxLength={3000}/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length} disabledReason="Primero registra un miembro para poder añadir participación.">Registrar actividad</MasterSubmitButton>
       </MasterActionForm>
