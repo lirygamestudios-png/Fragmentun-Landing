@@ -115,7 +115,7 @@ export default async function CommunityPage(){
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile) redirect("/admin/lirygames/login?unauthorized=1");
 
-  const[{data:members},{data:actions},{count:crmContacts},{count:shareClicks},{data:gameMetrics},{data:gamePurchases},{count:pendingContactCount,error:pendingContactError},{count:overdueContactCount,error:overdueContactError}]=await Promise.all([
+  const[{data:members},{data:actions},{count:crmContacts},{count:shareClicks},{data:gameMetrics},{data:gamePurchases},{count:pendingContactCount,error:pendingContactError},{count:overdueContactCount,error:overdueContactError},{count:unassignedContactCount,error:unassignedContactError}]=await Promise.all([
     supabase.from("community_members").select("id,display_name,handle,email,status,tier,points,beta_priority,source,joined_at,last_activity_at,tags,notes").order("points",{ascending:false}),
     supabase.from("community_actions").select("id,member_id,action_type,source,points_delta,description,occurred_at").order("occurred_at",{ascending:false}).limit(50),
     supabase.from("crm_contacts").select("*",{count:"exact",head:true}),
@@ -123,7 +123,8 @@ export default async function CommunityPage(){
     supabase.from("game_engagement_daily").select("metric_date,game_id,platform,active_players,new_players,sessions").order("metric_date",{ascending:false}).limit(1000),
     supabase.from("game_purchase_events").select("player_ref,game_id,platform,status,purchased_at").order("purchased_at",{ascending:false}).limit(5000),
     supabase.from("lirygames_contact_messages").select("*",{count:"exact",head:true}).in("status",["new","reviewing"]),
-    supabase.from("lirygames_contact_messages").select("*",{count:"exact",head:true}).in("status",["new","reviewing"]).lte("created_at",new Date(Date.now()-7*86400000).toISOString())
+    supabase.from("lirygames_contact_messages").select("*",{count:"exact",head:true}).in("status",["new","reviewing"]).lte("created_at",new Date(Date.now()-7*86400000).toISOString()),
+    supabase.from("lirygames_contact_messages").select("*",{count:"exact",head:true}).in("status",["new","reviewing"]).is("assigned_to",null)
   ]);
 
   const memberRows=(members||[]) as any[];
@@ -141,7 +142,7 @@ export default async function CommunityPage(){
   const payingPlayers=new Set(gamePurchaseRows.filter(p=>p.status==="paid").map(p=>p.player_ref).filter(Boolean)).size;
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleCommunity}`}>
-    <div style={{marginBottom:14}}><a className={styles.communityMessagesButton} href="/admin/master/community/messages">✉ MENSAJES DE CONTACTO →</a>{!pendingContactError&&<a className={styles.communityPendingShortcut} href="/admin/master/community/messages?pending=1">{pendingContactCount??0} PENDIENTES DE ATENCIÓN →</a>}{!overdueContactError&&<a className={styles.communityOverdueShortcut} href="/admin/master/community/messages?pending=1&age=7">{overdueContactCount??0} CON 7+ DÍAS →</a>}</div>
+    <div style={{marginBottom:14}}><a className={styles.communityMessagesButton} href="/admin/master/community/messages">✉ MENSAJES DE CONTACTO →</a>{!pendingContactError&&<a className={styles.communityPendingShortcut} href="/admin/master/community/messages?pending=1">{pendingContactCount??0} PENDIENTES DE ATENCIÓN →</a>}{!overdueContactError&&<a className={styles.communityOverdueShortcut} href="/admin/master/community/messages?pending=1&age=7">{overdueContactCount??0} CON 7+ DÍAS →</a>}{!unassignedContactError&&<a className={styles.communityUnassignedShortcut} href="/admin/master/community/messages?pending=1&owner=unassigned">{unassignedContactCount??0} SIN RESPONSABLE →</a>}</div>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · CLIENTES Y COMUNIDAD</span><h1>Clientes y Comunidad</h1><p>Miembros, participación y acceso beta sin duplicar la información comercial.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
