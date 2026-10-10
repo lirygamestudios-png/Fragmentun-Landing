@@ -1,0 +1,13 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {createHash} from "node:crypto";
+import {matchesLiryCommanderContext} from "../lib/liryboost/commander-mfa-context.ts";
+const token="a".repeat(64);
+const record={user_id:"u1",context:"lirygames_commander",token_hash:createHash("sha256").update(token).digest("hex"),expires_at:"2026-12-01T00:00:00Z",factor_id:"factor1"};
+const now=Date.parse("2026-10-10T12:00:00Z");
+test("token correcto y vigente",()=>assert.equal(matchesLiryCommanderContext(record,"u1",token,now),true));
+test("rechaza usuario distinto",()=>assert.equal(matchesLiryCommanderContext(record,"u2",token,now),false));
+test("rechaza token incorrecto",()=>assert.equal(matchesLiryCommanderContext(record,"u1","b".repeat(64),now),false));
+test("rechaza contexto diferente",()=>assert.equal(matchesLiryCommanderContext({...record,context:"fragmentun"},"u1",token,now),false));
+test("rechaza sesión expirada",()=>assert.equal(matchesLiryCommanderContext(record,"u1",token,Date.parse("2027-01-01T00:00:00Z")),false));
+test("rechaza cookie ausente",()=>assert.equal(matchesLiryCommanderContext(record,"u1",null,now),false));
