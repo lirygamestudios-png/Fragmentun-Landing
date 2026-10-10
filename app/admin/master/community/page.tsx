@@ -114,6 +114,22 @@ async function addAction(formData:FormData){
 }
 
 
+
+async function compensateAction(formData:FormData){
+  "use server";
+  const {supabase}=await requireCommunityEditor();
+  const actionId=String(formData.get("original_action_id")||"").trim();
+  const reason=String(formData.get("correction_reason")||"").trim();
+  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(actionId))throw new Error("community_original_not_found");
+  if(reason.length<10||reason.length>3000)throw new Error("community_adjustment_reason_required");
+  const token=(await cookies()).get("liry_mfa_context")?.value;
+  if(!token)throw new Error("mfa_required");
+  const {error}=await supabase.rpc("liry_compensate_community_action",{p_original_action_id:actionId,p_reason:reason,p_context_token:token});
+  if(error)throw new Error(error.message);
+  revalidatePath("/admin/master/community");
+}
+
+
 async function updateMember(formData:FormData){
   "use server";
   const {supabase}=await requireCommunityEditor();
@@ -148,7 +164,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
   const activityPageSize=30;
   const activityType=["share","referral","comment","event","survey","beta_signup","beta_feedback","purchase","community_join","other"].includes(filters.activityType||"")?filters.activityType||"":"";
   const activitySearch=(filters.activitySearch||"").trim().slice(0,80).toLocaleLowerCase("es");
-  let activityQuery=supabase.from("community_actions").select("id,member_id,action_type,source,points_delta,description,occurred_at",{count:"exact"}).order("occurred_at",{ascending:false});
+  let activityQuery=supabase.from("community_actions").select("id,member_id,action_type,source,points_delta,description,occurred_at,correction_of",{count:"exact"}).order("occurred_at",{ascending:false});
   if(activityType)activityQuery=activityQuery.eq("action_type",activityType);
   if(activitySearch)activityQuery=activityQuery.or(`description.ilike.%${activitySearch.replace(/[%_,()]/g,"")}%,source.ilike.%${activitySearch.replace(/[%_,()]/g,"")}%`);
   activityQuery=activityQuery.range((activityPage-1)*activityPageSize,activityPage*activityPageSize-1);
@@ -327,6 +343,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
       <nav className={styles.communityManagementNav} aria-label="Accesos a formularios de gestión">
         <a href="#comunidad-registrar-miembro">REGISTRAR MIEMBRO</a>
         <a href="#comunidad-registrar-actividad">REGISTRAR ACTIVIDAD</a>
+        <a href="#comunidad-corregir-actividad">CORREGIR PUNTOS</a>
         <a href="#comunidad-actualizar-miembro">ACTUALIZAR MIEMBRO</a>
       </nav>
       <section className={styles.adminForms}>
@@ -353,6 +370,24 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
         </div>
         <MasterSubmitButton className={styles.formButton} pendingText="Registrando actividad…" confirmText="¿Confirmas que deseas registrar esta actividad y modificar los puntos del miembro?" disabled={!memberRows.length} disabledReason="Primero registra un miembro para poder añadir participación.">Registrar actividad</MasterSubmitButton>
       </MasterActionForm>
+      </section>
+      <section className={`${styles.adminForms} ${styles.adminFormsSingle}`}>
+        <MasterActionForm action={compensateAction} className={styles.adminForm} successText="Corrección registrada en el historial.">
+          <div id="comunidad-corregir-actividad" className={styles.formTitle}><span>CORRECCIÓN AUDITABLE</span><h2>Corregir puntos de una actividad</h2></div>
+          <p className={styles.advancedHint}>La actividad original se conserva. Se añade un movimiento contrario por el mismo importe; cada actividad puede corregirse una sola vez. Para corregir actividades antiguas, encuéntralas en Participación.</p>
+          <div className={styles.formGrid}>
+            <label className={styles.span2}>Actividad original
+              <select name="original_action_id" defaultValue="" required>
+                <option value="" disabled>Selecciona una actividad disponible</option>
+                {actionRows.filter(a=>!a.correction_of&&Number(a.points_delta)!==0&&!actionRows.some(c=>c.correction_of===a.id)).map((a:any)=><option key={a.id} value={a.id}>{new Date(a.occurred_at).toLocaleDateString("es-US")} · {memberRows.find(m=>m.id===a.member_id)?.display_name||"Miembro"} · {actionLabel(a.action_type)} · {Number(a.points_delta)>0?"+":""}{a.points_delta} puntos</option>)}
+              </select>
+            </label>
+            <label className={styles.span2}>Motivo de la corrección
+              <textarea name="correction_reason" minLength={10} maxLength={3000} required rows={3} placeholder="Explica el error y el motivo de esta corrección (mínimo 10 caracteres)."/>
+            </label>
+          </div>
+          <MasterSubmitButton className={styles.formButton} pendingText="Aplicando corrección…" confirmText="¿Confirmas que deseas crear una corrección compensatoria permanente vinculada a esta actividad?" disabled={!actionRows.some(a=>!a.correction_of&&Number(a.points_delta)!==0)} disabledReason="No hay actividades disponibles en esta página para corregir.">Registrar corrección</MasterSubmitButton>
+        </MasterActionForm>
       </section>
 
       <section className={`${styles.adminForms} ${styles.adminFormsSingle}`}>
