@@ -248,7 +248,16 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
         <small>CONTROL DE INTEGRIDAD · SOLO LECTURA</small>
         <strong>{pointReconciliationError?"CONCILIACIÓN NO DISPONIBLE":pointDifferenceRows.length?"REVISIÓN NECESARIA":memberRows.length?"SIN DIFERENCIAS DETECTADAS":"SIN MIEMBROS PARA CONCILIAR"}</strong>
         <p>{pointReconciliationError?"No fue posible consultar la conciliación.":memberRows.length?`Se revisaron ${memberRows.length} miembro(s) contra su historial. Consulta de solo lectura.`:"Todavía no existen miembros registrados. La conciliación comenzará a mostrar resultados cuando haya datos reales."}</p>
-        {!pointReconciliationError&&pointDifferenceRows.length>0&&<p role="alert">{pointDifferenceRows.length} miembro(s) presentan diferencias. Revisar: {pointDifferenceRows.slice(0,5).map(row=>row.member_name).join(", ")}.</p>}
+        {!pointReconciliationError&&pointDifferenceRows.length>0&&<div role="alert">
+          <p>{pointDifferenceRows.length} miembro(s) presentan diferencias. Ningún saldo se corregirá automáticamente.</p>
+          <details>
+            <summary>CONSULTAR DIFERENCIAS DE PUNTOS</summary>
+            <ul>
+              {pointDifferenceRows.slice(0,20).map(row=><li key={row.member_id}>{row.member_name}: saldo {row.stored_points} · historial {row.history_points} · diferencia {row.difference}</li>)}
+            </ul>
+            {pointDifferenceRows.length>20&&<p>Se muestran las primeras 20 diferencias de {pointDifferenceRows.length}; revisar el resto en la base de datos.</p>}
+          </details>
+        </div>}
       </div>
     </section>
     <section id="comunidad-miembros" className={styles.sectionHead}><div><span>MIEMBROS</span><h2>Miembros</h2></div><p>La información comercial se mantiene separada; aquí se gestiona la relación con la comunidad y su participación.</p></section>
