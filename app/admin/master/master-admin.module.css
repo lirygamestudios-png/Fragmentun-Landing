@@ -2486,3 +2486,8 @@
 .moduleCommunity .communityOverdueShortcut:hover{transform:translateY(-2px);background:linear-gradient(120deg,#813c4a,#543362);box-shadow:0 0 23px rgba(247,145,145,.2)}
 .moduleCommunity .communityOverdueShortcut:focus-visible{outline:2px solid #ffc1c1;outline-offset:3px}
 @media(max-width:600px){.moduleCommunity .communityOverdueShortcut{width:100%;margin:9px 0 0;text-align:center}}
+
+.moduleCommunity .communityUnassignedShortcut{display:inline-flex;align-items:center;justify-content:center;min-height:45px;padding:12px 17px;margin-left:12px;border:1px solid rgba(117,211,233,.6);border-radius:10px;background:linear-gradient(120deg,#164754,#173251);color:#d1f8ff;text-decoration:none;font-size:12px;font-weight:800;letter-spacing:.035em;transition:transform .18s,box-shadow .18s,background .18s}
+.moduleCommunity .communityUnassignedShortcut:hover{transform:translateY(-2px);background:linear-gradient(120deg,#1c6978,#20446e);box-shadow:0 0 21px rgba(117,211,233,.25)}
+.moduleCommunity .communityUnassignedShortcut:focus-visible{outline:2px solid #8ceaff;outline-offset:3px}
+@media(max-width:600px){.moduleCommunity .communityUnassignedShortcut{width:100%;margin:9px 0 0;text-align:center}}
