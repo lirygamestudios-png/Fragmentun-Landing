@@ -45,6 +45,7 @@ export function LiryContactFollowup({id,status,note,assignedTo,responseDraft,own
   </label>
   <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
    <button disabled={busy||!hasChanges} type="submit" style={{background:"#086fa9",border:"1px solid #24cafa",borderRadius:5,padding:"9px 13px",color:"#fff",fontWeight:700,cursor:"pointer"}}>{busy?"GUARDANDO...":"GUARDAR SEGUIMIENTO"}</button>
+   {hasChanges&&<button type="button" disabled={busy} onClick={()=>{setState(saved.status);setMemo(saved.note);setOwner(saved.owner);setDraft(saved.draft);setFeedback("");}} className={visual.discardChanges}>DESCARTAR CAMBIOS</button>}
    <span role="status" aria-live="polite" style={{fontSize:11,color:hasChanges?"#ffcd9e":"#9eddd4"}}>{hasChanges?(feedback&& !feedback.startsWith("Cambios guardados")?feedback:"● Cambios sin guardar"):(feedback||"Sin cambios pendientes")}</span>
   </div>
  </form>
