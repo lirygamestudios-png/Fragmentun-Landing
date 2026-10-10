@@ -16,5 +16,6 @@ export function actorFromVerifiedCommanderSession(input:{
  const role=input.trustedProfileRole;
  if(role==="admin"||role==="owner")return {authenticated:true,role:"admin",userId:id};
  if(role==="verifier")return {authenticated:true,role:"verifier",userId:id};
- return {authenticated:true,role:"participant",userId:id};
+ if(role==="participant")return {authenticated:true,role:"participant",userId:id};
+ return {authenticated:false,role:"anonymous",userId:null};
 }
