@@ -1,0 +1,10 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {validateLiryBoostEnrollment} from "../lib/liryboost/enrollment-validation.ts";
+const input={alias:"Jugador Uno",email:"jugador@example.com",rulesAccepted:true,privacyAccepted:true};
+test("datos válidos y consentimientos separados",()=>assert.deepEqual(validateLiryBoostEnrollment(input),{valid:true,errors:[]}));
+test("alias demasiado corto",()=>assert.ok(validateLiryBoostEnrollment({...input,alias:"A"}).errors.includes("invalid_alias")));
+test("alias no admite símbolos de marcado",()=>assert.ok(validateLiryBoostEnrollment({...input,alias:"<script>"}).errors.includes("invalid_alias")));
+test("email inválido",()=>assert.ok(validateLiryBoostEnrollment({...input,email:"invalido"}).errors.includes("invalid_email")));
+test("falta aceptar reglas",()=>assert.ok(validateLiryBoostEnrollment({...input,rulesAccepted:false}).errors.includes("rules_required")));
+test("falta aceptar privacidad",()=>assert.ok(validateLiryBoostEnrollment({...input,privacyAccepted:false}).errors.includes("privacy_required")));
