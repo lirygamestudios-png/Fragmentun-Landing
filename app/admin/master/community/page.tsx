@@ -109,7 +109,7 @@ async function updateMember(formData:FormData){
   revalidatePath("/admin/master/community");
 }
 
-export default async function CommunityPage({searchParams}:{searchParams:Promise<{memberStatus?:string;memberTier?:string;memberSearch?:string}>}){
+export default async function CommunityPage({searchParams}:{searchParams:Promise<{memberStatus?:string;memberTier?:string;memberSearch?:string;activityType?:string;activitySearch?:string}>}){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user) redirect("/admin/lirygames/login");
@@ -140,6 +140,12 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
     (!memberSearch||[m.display_name,m.handle,m.email].some(v=>String(v||"").toLocaleLowerCase("es").includes(memberSearch)))
   );
   const actionRows=(actions||[]) as any[];
+  const activityType=["share","referral","comment","event","survey","beta_signup","beta_feedback","purchase","community_join","other"].includes(filters.activityType||"")?filters.activityType||"":"";
+  const activitySearch=(filters.activitySearch||"").trim().slice(0,80).toLocaleLowerCase("es");
+  const filteredActions=actionRows.filter(a=>
+    (!activityType||a.action_type===activityType)&&
+    (!activitySearch||[a.description,a.source,memberRows.find(m=>m.id===a.member_id)?.display_name].some(v=>String(v||"").toLocaleLowerCase("es").includes(activitySearch)))
+  );
   const active=memberRows.filter(m=>m.status==="active");
   const beta=memberRows.filter(m=>m.beta_priority||m.tier==="beta_priority");
   const advocates=memberRows.filter(m=>m.tier==="advocate");
@@ -213,12 +219,25 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
     </section>
 
     <section id="comunidad-participacion" className={styles.sectionHead}><div><span>PARTICIPACIÓN</span><h2>Participación reciente</h2></div></section>
+    <form method="GET" className={styles.communityMemberFilters} aria-label="Filtrar actividades de participación">
+      {memberStatus&&<input type="hidden" name="memberStatus" value={memberStatus}/>}
+      {memberTier&&<input type="hidden" name="memberTier" value={memberTier}/>}
+      {memberSearch&&<input type="hidden" name="memberSearch" value={memberSearch}/>}
+      <label>Buscar actividad<input name="activitySearch" maxLength={80} defaultValue={activitySearch} placeholder="Miembro, descripción o fuente"/></label>
+      <label>Tipo de actividad<select name="activityType" defaultValue={activityType}>
+        <option value="">Todos los tipos</option>
+        {["share","referral","comment","event","survey","beta_signup","beta_feedback","purchase","community_join","other"].map(v=><option key={v} value={v}>{actionLabel(v)}</option>)}
+      </select></label>
+      <button type="submit">FILTRAR →</button>
+      <a href="/admin/master/community#comunidad-participacion">LIMPIAR</a>
+      <span className={styles.communityMemberFilterCount}>{filteredActions.length} de {actionRows.length} actividades recientes</span>
+    </form>
     <section className={styles.grid}>
-      {actionRows.map((a:any)=><article key={a.id} className={`${styles.card} ${a.points_delta<0?styles.cardWarning:""}`}>
+      {filteredActions.map((a:any)=><article key={a.id} className={`${styles.card} ${a.points_delta<0?styles.cardWarning:""}`}>
         <div className={styles.cardTop}><span className={styles.badgeActive}>{actionLabel(a.action_type)}</span><em>{a.points_delta>=0?"+":""}{a.points_delta}</em></div>
         <h3>{memberRows.find(m=>m.id===a.member_id)?.display_name||"Miembro"}</h3><p>{a.description||a.source||"Actividad registrada"}<br/>{new Date(a.occurred_at).toLocaleString("es-US")}</p>
       </article>)}
-      {!actionRows.length&&<article className={styles.card}><h3>Sin actividad registrada todavía</h3><p>Compartidos, referidos, opiniones beta y otras acciones podrán registrarse aquí.</p></article>}
+      {!filteredActions.length&&<article className={styles.card}><h3>{actionRows.length?"Sin coincidencias":"Sin actividad registrada todavía"}</h3><p>{actionRows.length?"No existen actividades recientes que coincidan con estos filtros.":"Compartidos, referidos, opiniones beta y otras acciones podrán registrarse aquí."}</p></article>}
     </section>
 
     {["admin","editor","marketing"].includes(profile.role)&&<details id="comunidad-gestion" className={styles.advancedPanel}>
