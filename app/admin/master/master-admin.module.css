@@ -2543,3 +2543,16 @@
 .moduleCommunity .communityActivityPages strong{text-align:center;line-height:1.6}
 @media(max-width:1050px){.moduleCommunity .communityMemberFilters{grid-template-columns:repeat(2,minmax(0,1fr))}.moduleCommunity .communityMemberFilters label:first-child{grid-column:1/-1}.moduleCommunity .communityMemberFilterCount{grid-column:1/-1}}
 @media(max-width:600px){.moduleCommunity .communityMemberFilters{grid-template-columns:1fr}.moduleCommunity .communityMemberFilters label:first-child{grid-column:auto}.moduleCommunity .communityMemberFilters button,.moduleCommunity .communityMemberFilters>a{width:100%}.moduleCommunity .communityMemberFilterCount{text-align:center}.moduleCommunity .communityActivityPages{gap:8px}.moduleCommunity .communityActivityPages a,.moduleCommunity .communityActivityPages span{min-width:0;flex:1 1 125px}.moduleCommunity .communityActivityPages strong{flex:1 1 100%}}
+
+/* Comunidad: controles avanzados consistentes con los filtros aprobados */
+.moduleCommunity .advancedPanel{border:1px solid rgba(105,193,241,.35);border-radius:14px;background:linear-gradient(140deg,#111f3d,#0b1932);overflow:visible}
+.moduleCommunity .advancedPanel>summary{padding:17px 19px;cursor:pointer;color:#def5ff;font-weight:800;letter-spacing:.035em;transition:color .18s,background .18s}
+.moduleCommunity .advancedPanel>summary:hover{color:#85e8ff;background:rgba(70,160,225,.08)}
+.moduleCommunity .advancedPanel>summary:focus-visible{outline:2px solid #85e8ff;outline-offset:3px;border-radius:9px}
+.moduleCommunity .advancedPanel[open]>summary{border-bottom:1px solid rgba(107,199,255,.23)}
+.moduleCommunity .advancedPanel .adminForm :is(input,select,textarea){color-scheme:dark;background-color:#122746;color:#effaff;border-radius:10px;min-height:43px}
+.moduleCommunity .advancedPanel .adminForm select option,.moduleCommunity .advancedPanel .adminForm select optgroup{background:#122746;color:#effaff}
+.moduleCommunity .advancedPanel .adminForm :is(input,select,textarea):focus-visible{outline:2px solid #85e8ff;outline-offset:2px}
+.moduleCommunity .advancedPanel .formButton{border-radius:10px;transition:transform .18s,box-shadow .18s,border-color .18s}
+.moduleCommunity .advancedPanel .formButton:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 0 19px rgba(86,201,255,.24)}
+@media(max-width:600px){.moduleCommunity .advancedPanel>summary{padding:15px}}
