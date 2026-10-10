@@ -1,5 +1,5 @@
 import {NextResponse} from "next/server";
-import {buildLiryBoostPublicSnapshot} from "../../../../lib/liryboost/public-snapshot";
+import {readLiryBoostTop10} from "../../../../lib/liryboost/read-provider";
 
 /**
  * Endpoint público de solo lectura. Cerrado hasta que exista un origen
@@ -8,13 +8,11 @@ import {buildLiryBoostPublicSnapshot} from "../../../../lib/liryboost/public-sna
  */
 export const dynamic="force-dynamic";
 export async function GET(){
- const top=buildLiryBoostPublicSnapshot(
-  {programActive:false,rulesPublished:false,verificationEnabled:false},
-  []
- );
+ // Proveedor aún no conectado: el programa permanece cerrado.
+ const snapshot=await readLiryBoostTop10(null);
  return NextResponse.json({
-  programActive:false,
-  leaderboard:top,
+  programActive:snapshot.programActive,
+  leaderboard:snapshot.leaderboard,
   message:"LiryBoost todavía no está activo."
  },{headers:{"Cache-Control":"no-store, max-age=0"}});
 }
