@@ -92,6 +92,7 @@ async function addAction(formData:FormData){
 async function updateMember(formData:FormData){
   "use server";
   const {supabase}=await requireCommunityEditor();
+  if(formData.get("member_update_confirmed")!=="yes")throw new Error("Confirma la revisión del miembro antes de guardar.");
   const id=String(formData.get("member_id")||"").trim();
   const status=String(formData.get("status")||"active");
   const tier=String(formData.get("tier")||"member");
