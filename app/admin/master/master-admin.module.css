@@ -2580,3 +2580,12 @@
 .moduleCommunity .adminForm .community-member-edit-grid select option{background:#102641;color:#f1fbff}
 .moduleCommunity .adminForm .community-member-edit-grid :is(input,select,textarea):focus-visible{outline:2px solid #8ce5ff;outline-offset:2px}
 @media(max-width:650px){.moduleCommunity .adminForm .community-member-edit-grid{grid-template-columns:1fr}}
+
+/* Comunidad: identidad y restauración de datos en edición de miembros */
+.moduleCommunity .community-member-edit-identity{display:grid;gap:7px;padding:14px 17px;margin:5px 0 14px;border-radius:12px;border:1px solid rgba(101,202,243,.35);background:linear-gradient(125deg,#102e50,#111c38)}
+.moduleCommunity .community-member-edit-identity strong{color:#e8faff;font-size:14px}
+.moduleCommunity .community-member-edit-identity span{color:#b2d6ec;font-size:12px;overflow-wrap:anywhere}
+.moduleCommunity .community-member-edit-identity button{justify-self:start;min-height:40px;padding:9px 15px;border-radius:9px;border:1px solid #62c9f6;background:linear-gradient(120deg,#124879,#123457);color:#ecfaff;font-size:11px;font-weight:800;cursor:pointer;transition:transform .18s,box-shadow .18s}
+.moduleCommunity .community-member-edit-identity button:hover{transform:translateY(-1px);box-shadow:0 0 19px rgba(85,203,255,.26)}
+.moduleCommunity .community-member-edit-identity button:focus-visible{outline:2px solid #91eaff;outline-offset:3px}
+@media(max-width:600px){.moduleCommunity .community-member-edit-identity button{width:100%}}
