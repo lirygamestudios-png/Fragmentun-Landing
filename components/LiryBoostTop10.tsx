@@ -13,8 +13,8 @@ export function LiryBoostTop10(){
   fetch("/api/liryboost/top10",{signal:controller.signal,cache:"no-store"})
    .then(r=>{if(!r.ok)throw new Error("Unavailable");return r.json() as Promise<ResponseShape>})
    .then(data=>{
-    if(!data.programActive||!Array.isArray(data.leaderboard)){setEntries([]);setActive(false);setUnavailable(false);return;}
-    setEntries(data.leaderboard.filter(e=>typeof e.publicName==="string"&&Number.isSafeInteger(e.verifiedInvitations)&&e.verifiedInvitations>0).slice(0,10));
+    if(data?.programActive!==true||!Array.isArray(data.leaderboard)){setEntries([]);setActive(false);setUnavailable(false);return;}
+    setEntries(data.leaderboard.filter(e=>e&&typeof e.publicName==="string"&&e.publicName.trim().length>0&&e.publicName.length<=60&&Number.isSafeInteger(e.verifiedInvitations)&&e.verifiedInvitations>0).slice(0,10));
     setActive(true);setUnavailable(false);
    }).catch(()=>{if(!controller.signal.aborted){setEntries([]);setActive(false);setUnavailable(true);}});
   return ()=>controller.abort();
