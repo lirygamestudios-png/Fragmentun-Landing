@@ -14,7 +14,7 @@ export function preparePublicLiryBoostTop(
  programActive:boolean
 ):PublicLiryBoostRow[]{
  if(!programActive)return [];
- const bestByName=new Map<string,PublicLiryBoostEntry>();
+ const bestByName=new Map<string,PublicLiryBoostRow>();
  for(const entry of entries){
   const name=entry.publicName.trim();
   // Solo se presenta información autorizada y previamente verificada por el servidor.
