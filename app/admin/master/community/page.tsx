@@ -267,9 +267,14 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
     {["admin","editor","marketing"].includes(profile.role)&&<details id="comunidad-gestion" className={styles.advancedPanel}>
       <summary>Opciones avanzadas</summary>
       <p className={styles.advancedHint}>Úsalas para registrar o modificar miembros y participación manualmente.</p>
+      <nav className={styles.communityManagementNav} aria-label="Accesos a formularios de gestión">
+        <a href="#comunidad-registrar-miembro">REGISTRAR MIEMBRO</a>
+        <a href="#comunidad-registrar-actividad">REGISTRAR ACTIVIDAD</a>
+        <a href="#comunidad-actualizar-miembro">ACTUALIZAR MIEMBRO</a>
+      </nav>
       <section className={styles.adminForms}>
       <MasterActionForm action={createMember} className={styles.adminForm} successText="Miembro registrado correctamente.">
-        <div className={styles.formTitle}><span>NUEVO MIEMBRO</span><h2>Registrar comunidad</h2></div>
+        <div id="comunidad-registrar-miembro" className={styles.formTitle}><span>NUEVO MIEMBRO</span><h2>Registrar comunidad</h2></div>
         <div className={styles.formGrid}>
           <label>Nombre<input name="display_name"/></label>
           <label>Correo<input type="email" name="email"/></label>
@@ -281,7 +286,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
       </MasterActionForm>
 
       <MasterActionForm action={addAction} className={styles.adminForm} successText="Participación registrada correctamente.">
-        <div className={styles.formTitle}><span>NUEVA ACTIVIDAD</span><h2>Registrar participación</h2></div>
+        <div id="comunidad-registrar-actividad" className={styles.formTitle}><span>NUEVA ACTIVIDAD</span><h2>Registrar participación</h2></div>
         <div className={styles.formGrid}>
           <label>Miembro<select name="member_id" required defaultValue=""><option value="" disabled>Seleccionar miembro</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name||m.handle||m.email}</option>)}</select></label>
           <label>Tipo<select name="action_type" defaultValue="share"><option value="share">Compartido</option><option value="referral">Referido</option><option value="comment">Comentario</option><option value="event">Evento</option><option value="survey">Encuesta</option><option value="beta_signup">Registro beta</option><option value="beta_feedback">Opinión beta</option><option value="purchase">Compra</option><option value="community_join">Ingreso a comunidad</option><option value="other">Otro</option></select></label>
@@ -295,7 +300,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
 
       <section className={`${styles.adminForms} ${styles.adminFormsSingle}`}>
       <MasterActionForm action={updateMember} className={styles.adminForm} successText="Miembro actualizado correctamente.">
-        <div className={styles.formTitle}><span>GESTIONAR MIEMBRO</span><h2>Actualizar comunidad</h2></div>
+        <div id="comunidad-actualizar-miembro" className={styles.formTitle}><span>GESTIONAR MIEMBRO</span><h2>Actualizar comunidad</h2></div>
         <div className={styles.formGrid}>
           <label>Miembro<select name="member_id" required defaultValue=""><option value="" disabled>Seleccionar miembro</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name||m.handle||m.email}</option>)}</select></label>
           <label>Estado<select name="status" defaultValue="active"><option value="active">Activo</option><option value="inactive">Inactivo</option><option value="blocked">Bloqueado</option><option value="left">Salida</option></select></label>
