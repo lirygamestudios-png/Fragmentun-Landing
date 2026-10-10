@@ -156,7 +156,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
   const memberLink=(page:number)=>{const p=new URLSearchParams();if(memberStatus)p.set("memberStatus",memberStatus);if(memberTier)p.set("memberTier",memberTier);if(memberSearch)p.set("memberSearch",memberSearch);if(activityType)p.set("activityType",activityType);if(activitySearch)p.set("activitySearch",activitySearch);if(activityPage>1)p.set("activityPage",String(activityPage));p.set("memberPage",String(page));return "?"+p.toString()+"#comunidad-miembros";};
   const actionRows=(actions||[]) as any[];
   const actionPages=Math.max(1,Math.ceil((actionCount||0)/activityPageSize));
-  const activityLink=(page:number)=>{const p=new URLSearchParams();if(activityType)p.set("activityType",activityType);if(activitySearch)p.set("activitySearch",activitySearch);if(memberStatus)p.set("memberStatus",memberStatus);if(memberTier)p.set("memberTier",memberTier);if(memberSearch)p.set("memberSearch",memberSearch);p.set("activityPage",String(page));return "?"+p.toString()+"#comunidad-participacion";};
+  const activityLink=(page:number)=>{const p=new URLSearchParams();if(activityType)p.set("activityType",activityType);if(activitySearch)p.set("activitySearch",activitySearch);if(memberStatus)p.set("memberStatus",memberStatus);if(memberTier)p.set("memberTier",memberTier);if(memberSearch)p.set("memberSearch",memberSearch);if(memberPage>1)p.set("memberPage",String(memberPage));p.set("activityPage",String(page));return "?"+p.toString()+"#comunidad-participacion";};
   if(!activityError&&actionCount!==null&&activityPage>actionPages)redirect("/admin/master/community"+activityLink(actionPages));
   const clearMembersLink=()=>{const p=new URLSearchParams();if(activityType)p.set("activityType",activityType);if(activitySearch)p.set("activitySearch",activitySearch);if(activityPage>1)p.set("activityPage",String(activityPage));return "/admin/master/community"+(p.size?"?"+p.toString():"")+"#comunidad-miembros";};
   const clearActivitiesLink=()=>{const p=new URLSearchParams();if(memberStatus)p.set("memberStatus",memberStatus);if(memberTier)p.set("memberTier",memberTier);if(memberSearch)p.set("memberSearch",memberSearch);if(memberPage>1)p.set("memberPage",String(memberPage));return "/admin/master/community"+(p.size?"?"+p.toString():"")+"#comunidad-participacion";};
@@ -247,6 +247,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
     <section id="comunidad-participacion" className={styles.sectionHead}><div><span>PARTICIPACIÓN</span><h2>Participación reciente</h2></div></section>
     {(activityType||activitySearch)&&<p className={styles.communityFilterNotice}>FILTROS DE PARTICIPACIÓN ACTIVOS · {actionCount??0} coincidencias. <a href={clearActivitiesLink()}>Ver todas las actividades →</a></p>}
     <form method="GET" className={styles.communityMemberFilters} aria-label="Filtrar actividades de participación">
+      {memberPage>1&&<input type="hidden" name="memberPage" value={memberPage}/> }
       {memberStatus&&<input type="hidden" name="memberStatus" value={memberStatus}/>}
       {memberTier&&<input type="hidden" name="memberTier" value={memberTier}/>}
       {memberSearch&&<input type="hidden" name="memberSearch" value={memberSearch}/>}
