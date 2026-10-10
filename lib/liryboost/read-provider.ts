@@ -19,6 +19,7 @@ export async function readLiryBoostTop10(provider:LiryBoostReadProvider|null):Pr
   if(state.programActive!==true||state.rulesPublished!==true||state.verificationEnabled!==true)
    return {programActive:false,leaderboard:[]};
   const entries=await provider.readAuthorizedVerifiedEntries();
+  if(!Array.isArray(entries))return {programActive:false,leaderboard:[]};
   return {programActive:true,leaderboard:buildLiryBoostPublicSnapshot(state,entries)};
  }catch{
   // Cualquier fallo se cierra sin revelar datos.
