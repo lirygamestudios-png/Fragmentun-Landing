@@ -105,8 +105,21 @@ export default async function LiryGamesFrontDesk(){
       </div>
       <LiryBoostTop10 />
       <div className={styles.liryBoostActions}>
-        <a className={styles.button} href="#social">COMPARTIR LIRYGAMES →</a>
+        <a className={styles.button} href="#liryboost-inscripcion">INSCRÍBETE EN LIRYBOOST →</a>
+        <a href="#social" className={styles.liryBoostSecondary}>COMPARTIR LIRYGAMES →</a>
         <a href="#contacto" className={styles.liryBoostSecondary}>RECIBIR NOVEDADES →</a>
+      </div>
+      <div id="liryboost-inscripcion" className={styles.liryBoostEnrollment} aria-labelledby="liryboost-enrollment-title">
+        <div>
+          <strong id="liryboost-enrollment-title">INSCRIPCIÓN LIRYBOOST</strong>
+          <p>La inscripción abrirá cuando publiquemos las bases oficiales y habilitemos la verificación segura de participantes.</p>
+        </div>
+        <form aria-label="Vista previa del formulario LiryBoost" className={styles.liryBoostEnrollmentForm}>
+          <label>Nombre público <input type="text" placeholder="Tu nombre de participante" autoComplete="off" disabled /></label>
+          <label>Correo electrónico <input type="email" placeholder="tu@email.com" autoComplete="off" disabled /></label>
+          <label className={styles.liryBoostConsent}><input type="checkbox" disabled /> Acepto las bases y la política de privacidad (pendientes de publicación).</label>
+          <button type="button" disabled>INSCRIPCIONES PRÓXIMAMENTE</button>
+        </form>
       </div>
       <p className={styles.liryBoostNotice}>El registro de participaciones, la validación de invitaciones y el Top 10 todavía no están activos. Compartir ahora no genera puntos ni garantiza acceso beta. Publicaremos las condiciones antes de abrir la competencia.</p>
     </section>
