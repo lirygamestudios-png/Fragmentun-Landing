@@ -15,6 +15,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
   const explorerOpenRef=useRef<HTMLButtonElement>(null);
   const [exploringDna,setExploringDna]=useState(false);
   const [activeTrait,setActiveTrait]=useState(0);
+  const [selectedGame,setSelectedGame]=useState<number|null>(null);
   const [catalogHeight,setCatalogHeight]=useState<number|null>(null);
   useEffect(()=>{
     const catalog=catalogRef.current;
@@ -37,6 +38,12 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
     window.addEventListener("keydown",onKeyDown);
     return ()=>window.removeEventListener("keydown",onKeyDown);
   },[exploringDna]);
+  useEffect(()=>{
+    if(selectedGame===null)return;
+    const onKey=(event:KeyboardEvent)=>{if(event.key==="Escape")setSelectedGame(null)};
+    window.addEventListener("keydown",onKey);
+    return ()=>window.removeEventListener("keydown",onKey);
+  },[selectedGame]);
   const dnaHeightStyle={"--liry-catalog-height":catalogHeight===null?undefined:`${catalogHeight}px`} as CSSProperties;
   return <div className={styles.worldShowcase}>
     <div className={styles.worldsGrid} ref={catalogRef}>
@@ -49,9 +56,11 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
             <span className={styles.worldAvailability}>{game.state==="available"?"DISPONIBLE":game.state==="beta"?"EN BETA":"PRÓXIMAMENTE"}</span>
           </div>
           <span className={styles.worldArrow} aria-hidden="true">→</span>
+          <button type="button" className={styles.worldCardOpen} aria-label={`Ver detalles de ${publicCodenames[index]??game.title}`} onClick={()=>setSelectedGame(index)} />
         </div>
       </article>)}
     </div>
+    {selectedGame!==null&&<div className={styles.worldDetailBackdrop} onClick={()=>setSelectedGame(null)}><section className={styles.worldDetailDialog} role="dialog" aria-modal="true" aria-labelledby="liry-world-dialog-title" onClick={e=>e.stopPropagation()}><button type="button" className={styles.worldDetailClose} onClick={()=>setSelectedGame(null)} aria-label="Cerrar detalles del videojuego">×</button><img src={catalogArt[selectedGame]} alt="" /><div className={styles.worldDetailBody}><p className={styles.kicker}>UNIVERSO LIRYGAMES</p><h3 id="liry-world-dialog-title">{publicCodenames[selectedGame]}</h3><p>{themes[selectedGame]}</p><strong>{games[selectedGame].state==="available"?"DISPONIBLE":games[selectedGame].state==="beta"?"EN BETA":"PRÓXIMAMENTE"}</strong><p>Estamos preparando esta experiencia. La fecha de lanzamiento y el acceso se comunicarán cuando estén confirmados.</p><a href="#contacto" onClick={()=>setSelectedGame(null)}>RECIBIR NOVEDADES →</a></div></section></div>}
     <aside className={styles.dnaSide} style={dnaHeightStyle} id="liry-dna" aria-labelledby="dna-side-title">
       <p className={styles.kicker}>EXPERIENCIA INTERACTIVA</p>
       <h3 id="dna-side-title">DESCUBRE TU <span>LIRY DNA</span></h3>
