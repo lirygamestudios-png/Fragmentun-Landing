@@ -16,7 +16,7 @@ export function preparePublicLiryBoostTop(
  for(const entry of entries){
   const name=entry.publicName.trim();
   // Solo se presenta información autorizada y previamente verificada por el servidor.
-  if(!name||name.length>60||name.includes("@")||/[<>\\r\\n]/.test(name)||/https?:|www\\.|\\d{3}[-. ]?\\d{3}[-. ]?\\d{4}/i.test(name)||!Number.isSafeInteger(entry.verifiedInvitations)||entry.verifiedInvitations<=0)continue;
+  if(!name||name.length>60||name.includes("@")||/[<>\r\n]/.test(name)||/https?:|www\.|\d{3}[-. ]?\d{3}[-. ]?\d{4}/i.test(name)||!Number.isSafeInteger(entry.verifiedInvitations)||entry.verifiedInvitations<=0)continue;
   const key=name.toLocaleLowerCase("es");
   const previous=bestByName.get(key);
   if(!previous||entry.verifiedInvitations>previous.verifiedInvitations){
