@@ -91,7 +91,7 @@ async function createMember(formData:FormData){
 
 async function addAction(formData:FormData){
   "use server";
-  const {supabase,user}=await requireCommunityEditor();
+  const {supabase}=await requireCommunityEditor();
   const memberId=String(formData.get("member_id")||"").trim();
   const type=String(formData.get("action_type")||"other");
   const source=String(formData.get("source")||"").trim()||null;
@@ -100,29 +100,14 @@ async function addAction(formData:FormData){
   const allowed=new Set(["share","referral","comment","event","survey","beta_signup","beta_feedback","purchase","community_join","other"]);
   if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(memberId)||!allowed.has(type)||!Number.isFinite(delta)||!Number.isInteger(delta)||Math.abs(delta)>100000||(source?.length||0)>200||(description?.length||0)>3000) throw new Error("La actividad contiene valores no permitidos.");
 
-  const{data:member,error:memberError}=await supabase.from("community_members").select("points,status").eq("id",memberId).maybeSingle();
-  if(memberError) throw new Error(memberError.message);
-  if(!member) throw new Error("member_not_found");
-  if(["blocked","left"].includes(member.status)) throw new Error("member_not_active");
-
-  const currentPoints=Number(member.points||0);
-  const requestedDelta=Math.trunc(delta);
-  const effectiveDelta=requestedDelta<0?Math.max(requestedDelta,-currentPoints):requestedDelta;
-  const nextPoints=currentPoints+effectiveDelta;
-  if(!Number.isSafeInteger(nextPoints)||nextPoints>100000000)throw new Error("La actividad supera el límite de puntos del miembro.");
-
-  const{data:action,error}=await supabase.from("community_actions").insert({
-    member_id:memberId,action_type:type,source,description,points_delta:effectiveDelta,created_by:user.id
-  }).select("id").single();
-  if(error||!action) throw new Error(error?.message||"community_action_create_failed");
-
-  const{error:updateError}=await supabase.from("community_members").update({
-    points:nextPoints,last_activity_at:new Date().toISOString(),updated_at:new Date().toISOString()
-  }).eq("id",memberId);
-  if(updateError){
-    await supabase.from("community_actions").delete().eq("id",action.id);
-    throw new Error(updateError.message);
-  }
+  // Una transacción de Supabase registra actividad y actualiza saldo conjuntamente.
+  const contextToken=(await cookies()).get("liry_mfa_context")?.value;
+  if(!contextToken)throw new Error("mfa_required");
+  const {error}=await supabase.rpc("liry_record_community_action",{
+    p_member_id:memberId,p_action_type:type,p_source:source,
+    p_description:description,p_points_delta:delta,p_context_token:contextToken
+  });
+  if(error)throw new Error(error.message);
   revalidatePath("/admin/master/community");
 }
 
