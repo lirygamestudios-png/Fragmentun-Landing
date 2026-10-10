@@ -38,3 +38,11 @@ test("ordena por recuento, después primera verificación, y limita Top 10",()=>
  assert.equal(result[0].referrerId,"member-11");
  assert.equal(result[0].verifiedCount,2);
 });
+
+test("excluye verificaciones sin fecha válida",()=>{
+ const result=rankVerifiedReferrals([
+  {referrerId:"a",invitedId:"x",verifiedAt:"no-es-fecha"},
+  {referrerId:"b",invitedId:"y",verifiedAt:"2026-10-10T10:00:00Z"}
+ ]);
+ assert.deepEqual(result,[{rank:1,referrerId:"b",verifiedCount:1}]);
+});
