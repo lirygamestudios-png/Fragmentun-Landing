@@ -153,13 +153,18 @@ async function updateMember(formData:FormData){
   revalidatePath("/admin/master/community");
 }
 
-export default async function CommunityPage({searchParams}:{searchParams:Promise<{memberStatus?:string;memberTier?:string;memberSearch?:string;memberPage?:string;activityType?:string;activitySearch?:string;activityPage?:string}>}){
+export default async function CommunityPage({searchParams}:{searchParams:Promise<{memberStatus?:string;memberTier?:string;memberSearch?:string;memberPage?:string;activityType?:string;activitySearch?:string;activityPage?:string;correctionId?:string}>}){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user) redirect("/admin/lirygames/login");
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile) redirect("/admin/lirygames/login?unauthorized=1");
   const filters=await searchParams;
+  const correctionId=String(filters.correctionId||"").trim().slice(0,36);
+  const validCorrectionId=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(correctionId);
+  const {data:locatedAction,error:locatedActionError}=validCorrectionId?await supabase.from("community_actions").select("id,member_id,action_type,source,points_delta,description,occurred_at,correction_of").eq("id",correctionId).maybeSingle():{data:null,error:null};
+  const {data:correctionMatches,error:correctionLookupError}=locatedAction?await supabase.from("community_actions").select("id").eq("correction_of",locatedAction.id).limit(1):{data:[],error:null};
+  const canCorrectLocated=Boolean(locatedAction&&!locatedAction.correction_of&&Number(locatedAction.points_delta)!==0&&!correctionMatches?.length&&!locatedActionError&&!correctionLookupError);
   const activityPage=/^[1-9]\d{0,3}$/.test(filters.activityPage||"")?Number(filters.activityPage):1;
   const activityPageSize=30;
   const activityType=["share","referral","comment","event","survey","beta_signup","beta_feedback","purchase","community_join","other"].includes(filters.activityType||"")?filters.activityType||"":"";
@@ -380,17 +385,30 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
           <p className={styles.advancedHint}>La actividad original se conserva. Se añade un movimiento contrario por el mismo importe; cada actividad puede corregirse una sola vez. Para corregir actividades antiguas, encuéntralas en Participación.</p>
           <p className={styles.advancedHint}>La lista de actividades muestra esta página de resultados. Si la actividad ya fue corregida en otra página, el servidor rechazará cualquier duplicado. No se modifica el registro original.</p>
           <div className={styles.formGrid}>
+            <div className={styles.span2}>
+              <form method="GET" action="/admin/master/community" className={styles.communityMemberFilters}>
+                <label>Buscar actividad antigua por identificador
+                  <input name="correctionId" defaultValue={correctionId} maxLength={36} placeholder="Identificador UUID completo"/>
+                </label>
+                <button type="submit">BUSCAR ACTIVIDAD →</button>
+              </form>
+              {correctionId&&!validCorrectionId&&<p role="alert">Introduce un identificador UUID válido.</p>}
+              {validCorrectionId&&locatedActionError&&<p role="alert">No fue posible consultar la actividad.</p>}
+              {validCorrectionId&&!locatedAction&&!locatedActionError&&<p>No se encontró ninguna actividad con ese identificador.</p>}
+              {locatedAction&&<p>Encontrada: {actionLabel(locatedAction.action_type)} · {locatedAction.points_delta} puntos · {new Date(locatedAction.occurred_at).toLocaleString("es-US")}. {canCorrectLocated?"Disponible para corrección.":"No disponible para corrección o ya corregida."}</p>}
+            </div>
             <label className={styles.span2}>Actividad original
-              <select name="original_action_id" defaultValue="" required>
-                <option value="" disabled>Selecciona una actividad disponible</option>
-                {actionRows.filter(a=>!a.correction_of&&Number(a.points_delta)!==0&&!actionRows.some(c=>c.correction_of===a.id)).map((a:any)=><option key={a.id} value={a.id}>{new Date(a.occurred_at).toLocaleDateString("es-US")} · {memberRows.find(m=>m.id===a.member_id)?.display_name||"Miembro"} · {actionLabel(a.action_type)} · {Number(a.points_delta)>0?"+":""}{a.points_delta} puntos</option>)}
+              <select name="original_action_id" defaultValue={canCorrectLocated?locatedAction!.id:""} required>
+                <option value="" disabled>Seleccionar actividad</option>
+                {canCorrectLocated&&locatedAction&&<option value={locatedAction.id}>{new Date(locatedAction.occurred_at).toLocaleDateString("es-US")} · Actividad encontrada · {locatedAction.points_delta} puntos</option>}
+                {actionRows.filter(a=>!a.correction_of&&Number(a.points_delta)!==0&&a.id!==locatedAction?.id&&!actionRows.some(c=>c.correction_of===a.id)).map((a:any)=><option key={a.id} value={a.id}>{new Date(a.occurred_at).toLocaleDateString("es-US")} · {memberRows.find(m=>m.id===a.member_id)?.display_name||"Miembro"} · {actionLabel(a.action_type)} · {Number(a.points_delta)>0?"+":""}{a.points_delta} puntos</option>)}
               </select>
             </label>
             <label className={styles.span2}>Motivo de la corrección
               <textarea name="correction_reason" minLength={10} maxLength={3000} required rows={3} placeholder="Explica el error y el motivo de esta corrección (mínimo 10 caracteres)."/>
             </label>
           </div>
-          <MasterSubmitButton className={styles.formButton} pendingText="Aplicando corrección…" confirmText="¿Confirmas que deseas crear una corrección compensatoria permanente vinculada a esta actividad?" disabled={!actionRows.some(a=>!a.correction_of&&Number(a.points_delta)!==0)} disabledReason="No hay actividades disponibles en esta página para corregir.">Registrar corrección</MasterSubmitButton>
+          <MasterSubmitButton className={styles.formButton} pendingText="Aplicando corrección…" confirmText="¿Confirmas que deseas crear una corrección compensatoria permanente vinculada a esta actividad?" disabled={!canCorrectLocated&&!actionRows.some(a=>!a.correction_of&&Number(a.points_delta)!==0)} disabledReason="No hay actividades disponibles en esta página para corregir.">Registrar corrección</MasterSubmitButton>
         </MasterActionForm>
       </section>
 
