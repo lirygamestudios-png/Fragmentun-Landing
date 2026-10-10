@@ -2564,3 +2564,8 @@
 .moduleCommunity .communityManagementNav a:focus-visible{outline:2px solid #8beaff;outline-offset:3px}
 .moduleCommunity #comunidad-registrar-miembro,.moduleCommunity #comunidad-registrar-actividad,.moduleCommunity #comunidad-actualizar-miembro{scroll-margin-top:24px}
 @media(max-width:650px){.moduleCommunity .communityManagementNav{grid-template-columns:1fr;margin:12px 8px}.moduleCommunity .communityManagementNav a{min-height:45px}}
+
+.moduleCommunity .communityFilterNotice{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 12px;padding:12px 15px;border:1px solid rgba(103,203,249,.35);border-radius:11px;background:linear-gradient(115deg,#122744,#0c1b33);color:#c1e3f6;font-size:11px;font-weight:700;letter-spacing:.02em}
+.moduleCommunity .communityFilterNotice a{color:#8fe7ff;font-weight:800;text-underline-offset:3px}
+.moduleCommunity .communityFilterNotice a:hover{color:#fff}
+.moduleCommunity .communityFilterNotice a:focus-visible{outline:2px solid #8beaff;outline-offset:3px}
