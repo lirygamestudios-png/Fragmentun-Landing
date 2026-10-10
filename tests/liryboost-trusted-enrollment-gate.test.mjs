@@ -1,0 +1,7 @@
+import test from "node:test";import assert from "node:assert/strict";import {assessTrustedEnrollment} from "../lib/liryboost/trusted-enrollment-gate.ts";
+const t="2026-10-09T00:00:00Z";const base={trustedIdentity:{userId:"u1",verifiedEmail:"jugador@example.com",emailVerified:true},draft:{alias:"Jugador Uno",email:"jugador@example.com",rulesAccepted:true,privacyAccepted:true},identity:{emailVerified:true,verifiedEmail:"jugador@example.com",submittedEmail:"jugador@example.com",existingAccountUserId:null,currentUserId:"u1"},consent:{userId:"u1",rulesVersion:"v1",privacyVersion:"v1",rulesAcceptedAt:t,privacyAcceptedAt:t,publicRankingOptIn:false,rankingConsentAt:null,rankingConsentRevokedAt:null},rulesVersion:"v1",privacyVersion:"v1",now:Date.parse("2026-10-10T00:00:00Z")};
+test("identidad confiable y consentimiento permiten preparar transacción",()=>assert.equal(assessTrustedEnrollment(base),"ready_for_transaction"));
+test("identidad confiable ausente bloquea",()=>assert.equal(assessTrustedEnrollment({...base,trustedIdentity:null}),"identity_unverified"));
+test("identidad de otra persona bloquea",()=>assert.equal(assessTrustedEnrollment({...base,trustedIdentity:{...base.trustedIdentity,userId:"u2"}}),"identity_unverified"));
+test("correo sin verificar bloquea",()=>assert.equal(assessTrustedEnrollment({...base,trustedIdentity:{...base.trustedIdentity,emailVerified:false}}),"identity_unverified"));
+test("consentimiento de otro usuario bloquea",()=>assert.equal(assessTrustedEnrollment({...base,consent:{...base.consent,userId:"u2"}}),"consent_missing"));
