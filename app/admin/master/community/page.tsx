@@ -252,9 +252,9 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
           <p>{pointDifferenceRows.length} miembro(s) presentan diferencias. Ningún saldo se corregirá automáticamente.</p>
           <details>
             <summary>CONSULTAR DIFERENCIAS DE PUNTOS</summary>
-            <table aria-label="Detalle de diferencias de puntos"><thead><tr><th scope="col">Miembro</th><th scope="col">Saldo</th><th scope="col">Historial</th><th scope="col">Diferencia</th></tr></thead><tbody>
+            <div className={styles.communityReconciliationScroll}><table aria-label="Detalle de diferencias de puntos"><thead><tr><th scope="col">Miembro</th><th scope="col">Saldo</th><th scope="col">Historial</th><th scope="col">Diferencia</th></tr></thead><tbody>
               {pointDifferenceRows.slice(0,20).map(row=><tr key={row.member_id}><th scope="row">{row.member_name}</th><td>{Number(row.stored_points).toLocaleString("es-US")}</td><td>{Number(row.history_points).toLocaleString("es-US")}</td><td>{Number(row.difference)>0?"+":""}{Number(row.difference).toLocaleString("es-US")}</td></tr>)}
-            </tbody></table>
+            </tbody></table></div>
             {pointDifferenceRows.length>20&&<p>Se muestran las primeras 20 diferencias de {pointDifferenceRows.length}; revisar el resto en la base de datos.</p>}
           </details>
         </div>}
