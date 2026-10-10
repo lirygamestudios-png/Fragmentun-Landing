@@ -13,9 +13,19 @@ test("filtra identidades vacías, puntuaciones inválidas y repetidos",()=>{
   {publicName:"Leo",verifiedInvitations:4}
  ],true);
  assert.equal(items.length,2);
- assert.equal(items[0].publicName,"Leo");
+ assert.equal(items[0].publicName,"Ana");
+ assert.equal(items[0].verifiedInvitations,8);
 });
 test("limita a diez nombres públicos",()=>{
  const items=Array.from({length:20},(_,i)=>({publicName:"Jugador-"+i,verifiedInvitations:i+1}));
  assert.equal(preparePublicLiryBoostTop(items,true).length,10);
+});
+
+test("combina variantes de mayúsculas y espacios sin perder el mejor resultado",()=>{
+ const rows=preparePublicLiryBoostTop([
+  {publicName:" ANA ",verifiedInvitations:2},
+  {publicName:"ana",verifiedInvitations:5}
+ ],true);
+ assert.equal(rows.length,1);
+ assert.equal(rows[0].verifiedInvitations,5);
 });
