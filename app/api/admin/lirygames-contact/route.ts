@@ -1,3 +1,5 @@
+import {createHash} from "crypto";
+import {cookies} from "next/headers";
 import {NextRequest,NextResponse} from "next/server";
 import {createSupabaseServerClient} from "../../../../lib/supabase/server";
 import {consumePublicRateLimit} from "../../../../lib/rate-limit";
@@ -8,6 +10,20 @@ export async function PATCH(req:NextRequest){
  if(!user)return NextResponse.json({ok:false,message:"Inicia sesión."},{status:401});
  const {data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
  if(!profile||!["admin","editor"].includes(profile.role))return NextResponse.json({ok:false,message:"Acceso no autorizado."},{status:403});
+ // El MFA de la interfaz no protege por sí solo las rutas API.
+ const contextToken=(await cookies()).get("liry_mfa_context")?.value;
+ if(!contextToken)return NextResponse.json({ok:false,message:"Verifica tu acceso LIRYGAMES antes de guardar."},{status:403});
+ const tokenHash=createHash("sha256").update(contextToken).digest("hex");
+ const {data:contextSession,error:contextError}=await supabase.from("admin_mfa_context_sessions")
+  .select("factor_id").eq("user_id",user.id).eq("context","lirygames_commander")
+  .eq("token_hash",tokenHash).gt("expires_at",new Date().toISOString()).maybeSingle();
+ if(contextError||!contextSession)return NextResponse.json({ok:false,message:"La verificación LIRYGAMES ha vencido. Vuelve a verificar tu acceso."},{status:403});
+ const {data:factorsData,error:factorsError}=await supabase.auth.mfa.listFactors();
+ const validFactor=!factorsError&&(factorsData?.totp||[]).some(f=>
+  f.id===contextSession.factor_id&&f.status==="verified"&&
+  String(f.friendly_name||"").trim().toLowerCase()==="lirygames commander");
+ if(!validFactor)return NextResponse.json({ok:false,message:"Se requiere el autenticador de LIRYGAMES para guardar cambios."},{status:403});
+
  const rate=await consumePublicRateLimit(req,"lirygames_admin_contact","update",60,35);
  if(!rate.allowed)return NextResponse.json({ok:false,message:"Demasiados intentos."},{status:429});
  let data:Record<string,unknown>;
