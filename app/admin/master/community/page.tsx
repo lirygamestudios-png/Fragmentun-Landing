@@ -246,8 +246,8 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
       <span className={styles.moduleGlyph} aria-hidden="true">✓</span>
       <div className={styles.moduleStripCopy}>
         <small>CONTROL DE INTEGRIDAD · SOLO LECTURA</small>
-        <strong>{pointReconciliationError?"CONCILIACIÓN NO DISPONIBLE":pointDifferenceRows.length?"REVISIÓN NECESARIA":"SIN DIFERENCIAS DETECTADAS"}</strong>
-        <p>{pointReconciliationError?"No fue posible consultar la conciliación.":"Comparación de puntos acumulados con actividades registradas; no modifica datos."}</p>
+        <strong>{pointReconciliationError?"CONCILIACIÓN NO DISPONIBLE":pointDifferenceRows.length?"REVISIÓN NECESARIA":memberRows.length?"SIN DIFERENCIAS DETECTADAS":"SIN MIEMBROS PARA CONCILIAR"}</strong>
+        <p>{pointReconciliationError?"No fue posible consultar la conciliación.":memberRows.length?`Se revisaron ${memberRows.length} miembro(s) contra su historial. Consulta de solo lectura.`:"Todavía no existen miembros registrados. La conciliación comenzará a mostrar resultados cuando haya datos reales."}</p>
         {!pointReconciliationError&&pointDifferenceRows.length>0&&<p role="alert">{pointDifferenceRows.length} miembro(s) presentan diferencias. Revisar: {pointDifferenceRows.slice(0,5).map(row=>row.member_name).join(", ")}.</p>}
       </div>
     </section>
