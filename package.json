@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "test:liryboost": "node --experimental-strip-types --test tests/liryboost-referrals.test.mjs",
+    "test:liryboost": "node --experimental-strip-types --test tests/liryboost-*.test.mjs",
     "start": "next start"
   },
   "dependencies": {
