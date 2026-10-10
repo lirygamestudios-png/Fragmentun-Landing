@@ -3,7 +3,7 @@
  * El servidor deberá resolver identidad, consentimiento y verificación antes
  * de llamar a esta función; NO es un control de autorización independiente.
  */
-import {preparePublicLiryBoostTop,type PublicLiryBoostEntry,type PublicLiryBoostRow} from "./public-leaderboard";
+import {preparePublicLiryBoostTop,type PublicLiryBoostEntry,type PublicLiryBoostRow} from "./public-leaderboard.ts";
 export type LiryBoostPublicationState={
  programActive:boolean;
  rulesPublished:boolean;
