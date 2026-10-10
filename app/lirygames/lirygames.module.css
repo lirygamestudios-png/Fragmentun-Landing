@@ -1014,3 +1014,16 @@
  .dnaSide:has(.dnaExplorer){min-height:max-content}
  .dnaExplorer{position:relative;max-width:100%;box-sizing:border-box}
 }
+
+/* Liry ADN · ergonomía móvil y control táctil; no altera los tamaños del catálogo. */
+@media(max-width:1000px){
+ .dnaSide .dnaSideButton{min-height:44px;justify-content:center;text-align:center}
+ .dnaExplorerChoices{gap:9px}
+ .dnaExplorerChoice,.dnaExplorerSelected{min-height:44px;padding:11px 8px;font-size:12px;touch-action:manipulation}
+ .dnaExplorer{scroll-margin-top:80px}
+}
+@media(max-width:450px){
+ .dnaExplorer{padding:12px}
+ .dnaExplorerChoices{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .dnaExplorerDescription{font-size:12px!important}
+}
