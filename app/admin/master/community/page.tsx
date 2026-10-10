@@ -81,7 +81,11 @@ async function createMember(formData:FormData){
   const{error}=await supabase.from("community_members").insert({
     display_name:displayName,email,handle,source,tier,beta_priority:tier==="beta_priority",created_by:user.id
   });
-  if(error) throw new Error(error.message);
+  if(error){
+    // Si existe una restricción única en Supabase, traducir el rechazo a un aviso claro.
+    if(error.code==="23505")throw new Error("Ya existe un miembro con ese correo o usuario.");
+    throw new Error(error.message);
+  }
   revalidatePath("/admin/master/community");
 }
 
