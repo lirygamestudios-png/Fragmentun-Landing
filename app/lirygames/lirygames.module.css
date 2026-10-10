@@ -977,3 +977,17 @@
 @keyframes liryGoldGlimmer{0%,10%,22%,100%{box-shadow:inset 0 0 25px #3d9aff14}15%{box-shadow:inset 0 0 22px rgba(201,168,76,.24),0 0 9px rgba(201,168,76,.15)}}
 @media(max-width:600px){.liryLeaderboard::before,.liryPodiumPlinth{animation-duration:14s}}
 @media(prefers-reduced-motion:reduce){.liryLeaderboard::before,.liryPodiumPlinth{animation:none!important}}
+
+
+/* Mobile enrollment: reliable touch controls, readable consent, keyboard focus. */
+.liryBoostOpen:focus-visible{outline:2px solid #a7e9ff;outline-offset:3px}
+.liryBoostEnrollment{scroll-margin-top:80px}
+.liryBoostEnrollmentForm input:disabled{opacity:.78;-webkit-text-fill-color:#a9b8c4}
+@media(max-width:600px){
+ .liryBoostOpen{width:100%;min-height:46px;text-align:center}
+ .liryBoostEnrollment{width:100%;max-width:100%;margin-top:14px;padding:16px 14px;gap:13px}
+ .liryBoostClose{width:44px;height:44px;top:8px;right:8px}
+ .liryBoostEnrollment>div:first-of-type{padding-right:48px}
+ .liryBoostEnrollmentForm .liryBoostConsent{line-height:1.5;align-items:flex-start;gap:10px}
+ .liryBoostEnrollmentForm .liryBoostConsent span{min-width:0}
+}
