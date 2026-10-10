@@ -62,6 +62,8 @@ async function createMember(formData:FormData){
   const allowed=new Set(["member","engaged","advocate","beta_priority","moderator"]);
   if(!displayName&&!email) throw new Error("member_identity_required");
   if(!allowed.has(tier)) throw new Error("invalid_tier");
+  if((displayName?.length||0)>120||(email?.length||0)>254||(handle?.length||0)>80||(source?.length||0)>200)throw new Error("Los datos del miembro superan la longitud permitida.");
+  if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw new Error("El correo del miembro no tiene un formato válido.");
   const{error}=await supabase.from("community_members").insert({
     display_name:displayName,email,handle,source,tier,beta_priority:tier==="beta_priority",created_by:user.id
   });
@@ -78,7 +80,7 @@ async function addAction(formData:FormData){
   const description=String(formData.get("description")||"").trim()||null;
   const delta=Number(formData.get("points_delta")||0);
   const allowed=new Set(["share","referral","comment","event","survey","beta_signup","beta_feedback","purchase","community_join","other"]);
-  if(!memberId||!allowed.has(type)||!Number.isFinite(delta)||!Number.isInteger(delta)) throw new Error("invalid_action");
+  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(memberId)||!allowed.has(type)||!Number.isFinite(delta)||!Number.isInteger(delta)||Math.abs(delta)>100000||(source?.length||0)>200||(description?.length||0)>3000) throw new Error("La actividad contiene valores no permitidos.");
 
   const{data:member,error:memberError}=await supabase.from("community_members").select("points,status").eq("id",memberId).maybeSingle();
   if(memberError) throw new Error(memberError.message);
@@ -89,6 +91,7 @@ async function addAction(formData:FormData){
   const requestedDelta=Math.trunc(delta);
   const effectiveDelta=requestedDelta<0?Math.max(requestedDelta,-currentPoints):requestedDelta;
   const nextPoints=currentPoints+effectiveDelta;
+  if(!Number.isSafeInteger(nextPoints)||nextPoints>100000000)throw new Error("La actividad supera el límite de puntos del miembro.");
 
   const{data:action,error}=await supabase.from("community_actions").insert({
     member_id:memberId,action_type:type,source,description,points_delta:effectiveDelta,created_by:user.id
