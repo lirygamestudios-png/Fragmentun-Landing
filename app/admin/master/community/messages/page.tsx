@@ -152,6 +152,13 @@ export default async function LiryContactAdmin({
     <a key={value} href={queryString(value)} style={{padding:"9px 13px",border:"1px solid "+(value===selected?"#4ddaff":"#295571"),background:value===selected?"#0e3e62":"#07182c",borderRadius:5,color:"#e4f6ff",fontSize:11,textDecoration:"none"}}>{label}</a>
    )}
   </nav>
+  <section className={visual.viewSummary} aria-label="Resumen de la vista seleccionada">
+   <div>
+    <strong>{error?"No se pudo cargar la vista":messages.length+" mensaje"+(messages.length===1?"":"s")+" en esta vista"}</strong>
+    <span>Máximo 100 registros por consulta · {selected?({"new":"Nuevos","reviewing":"En revisión","resolved":"Resueltos","archived":"Archivados"}[selected]||"Estado"):"Todos los estados"}{pending?" · Solo pendientes":""}{ageFilter?" · "+ageFilter+"+ días":""}{ownerFilter==="unassigned"?" · Sin responsable":ownerFilter?" · Responsable seleccionado":""}{draftFilter==="ready"?" · Con borrador":draftFilter==="missing"?" · Sin borrador":""}{subject?" · "+(category[subject]||subject):""}{search?" · Búsqueda activa":""}</span>
+   </div>
+   {(selected||pending||ageFilter||ownerFilter||draftFilter||subject||search)&&<a href="/admin/master/community/messages">LIMPIAR TODOS LOS FILTROS ↻</a>}
+  </section>
   {error?<p role="alert">No se pudo recuperar la bandeja. Intenta nuevamente.</p>:
    messages.length===0?<p style={{padding:25,border:"1px solid #28536f",borderRadius:8,color:"#aec9dd"}}>No hay mensajes que coincidan con los filtros seleccionados.</p>:
    <div className={visual.messageList} style={{display:"grid",gap:12}}>
