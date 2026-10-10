@@ -109,7 +109,7 @@ async function updateMember(formData:FormData){
   revalidatePath("/admin/master/community");
 }
 
-export default async function CommunityPage(){
+export default async function CommunityPage({searchParams}:{searchParams:Promise<{memberStatus?:string;memberTier?:string;memberSearch?:string}>}){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user) redirect("/admin/lirygames/login");
@@ -129,7 +129,16 @@ export default async function CommunityPage(){
   ]);
 
   const contactOverviewAvailable=!pendingContactError&&!overdueContactError&&!unassignedContactError;
+  const filters=await searchParams;
+  const memberStatus=["active","inactive","blocked","left"].includes(filters.memberStatus||"")?filters.memberStatus||"":"";
+  const memberTier=["member","engaged","advocate","beta_priority","moderator"].includes(filters.memberTier||"")?filters.memberTier||"":"";
+  const memberSearch=(filters.memberSearch||"").trim().slice(0,80).toLocaleLowerCase("es");
   const memberRows=(members||[]) as any[];
+  const filteredMemberRows=memberRows.filter(m=>
+    (!memberStatus||m.status===memberStatus)&&
+    (!memberTier||m.tier===memberTier)&&
+    (!memberSearch||[m.display_name,m.handle,m.email].some(v=>String(v||"").toLocaleLowerCase("es").includes(memberSearch)))
+  );
   const actionRows=(actions||[]) as any[];
   const active=memberRows.filter(m=>m.status==="active");
   const beta=memberRows.filter(m=>m.beta_priority||m.tier==="beta_priority");
@@ -186,13 +195,21 @@ export default async function CommunityPage(){
     </section>
 
     <section id="comunidad-miembros" className={styles.sectionHead}><div><span>MIEMBROS</span><h2>Miembros</h2></div><p>La información comercial se mantiene separada; aquí se gestiona la relación con la comunidad y su participación.</p></section>
+    <form method="GET" className={styles.communityMemberFilters} aria-label="Filtrar miembros de comunidad">
+      <label>Buscar miembro<input name="memberSearch" defaultValue={memberSearch} maxLength={80} placeholder="Nombre, usuario o correo"/></label>
+      <label>Estado<select name="memberStatus" defaultValue={memberStatus}><option value="">Todos</option><option value="active">Activos</option><option value="inactive">Inactivos</option><option value="blocked">Bloqueados</option><option value="left">Salida</option></select></label>
+      <label>Nivel<select name="memberTier" defaultValue={memberTier}><option value="">Todos</option><option value="member">Miembro</option><option value="engaged">Participativo</option><option value="advocate">Promotor</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderador</option></select></label>
+      <button type="submit">FILTRAR →</button>
+      <a href="/admin/master/community#comunidad-miembros">LIMPIAR</a>
+      <span className={styles.communityMemberFilterCount}>{filteredMemberRows.length} de {memberRows.length} miembros</span>
+    </form>
     <section className={styles.grid}>
-      {memberRows.map((m:any)=><article key={m.id} className={`${styles.card} ${m.status==="blocked"?styles.cardAttention:["inactive","left"].includes(m.status)?styles.cardMuted:m.beta_priority||m.tier==="beta_priority"?styles.cardPriority:""}`}>
+      {filteredMemberRows.map((m:any)=><article key={m.id} className={`${styles.card} ${m.status==="blocked"?styles.cardAttention:["inactive","left"].includes(m.status)?styles.cardMuted:m.beta_priority||m.tier==="beta_priority"?styles.cardPriority:""}`}>
         <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActive:styles.badgePlanned}>{tierLabel(m.tier)}</span><em>{m.points} puntos</em></div>
         <h3>{m.display_name||m.handle||m.email||"Miembro"}</h3>
         <p>{m.handle||m.email||"Sin usuario o correo"}<br/>{m.source||"Fuente no registrada"}<br/>{m.beta_priority?"Beta prioritario":"Acceso beta estándar"}</p>
       </article>)}
-      {!memberRows.length&&<article className={styles.card}><h3>Registro de comunidad preparado</h3><p>No se han creado miembros ficticios. El registro empieza vacío.</p></article>}
+      {!filteredMemberRows.length&&<article className={styles.card}><h3>{memberRows.length?"Sin coincidencias":"Registro de comunidad preparado"}</h3><p>{memberRows.length?"No hay miembros con los filtros seleccionados.":"No se han creado miembros ficticios. El registro empieza vacío."}</p></article>}
     </section>
 
     <section id="comunidad-participacion" className={styles.sectionHead}><div><span>PARTICIPACIÓN</span><h2>Participación reciente</h2></div></section>
