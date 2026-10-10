@@ -5,3 +5,6 @@ test("datos incorrectos bloquean",()=>assert.equal(evaluateEnrollmentReadiness({
 test("correo no verificado bloquea",()=>assert.equal(evaluateEnrollmentReadiness({...base,identity:{...base.identity,emailVerified:false}}),"identity_unverified"));
 test("bases desactualizadas bloquean",()=>assert.equal(evaluateEnrollmentReadiness({...base,rulesVersion:"v2"}),"consent_missing"));
 test("falta aceptación expresa de privacidad",()=>assert.equal(evaluateEnrollmentReadiness({...base,draft:{...base.draft,privacyAccepted:false}}),"invalid_fields"));
+
+test("consentimiento perteneciente a otro usuario se rechaza",()=>assert.equal(evaluateEnrollmentReadiness({...base,consent:{...base.consent,userId:"u2"}}),"consent_missing"));
+test("sin identidad autenticada no se puede continuar",()=>assert.equal(evaluateEnrollmentReadiness({...base,identity:{...base.identity,currentUserId:null}}),"identity_unverified"));
