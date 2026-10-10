@@ -2592,3 +2592,11 @@
 
 .moduleCommunity .community-member-edit-confirm{display:flex;align-items:center;gap:11px;padding:13px 15px;margin:12px 0;border:1px solid rgba(107,207,255,.4);border-radius:10px;background:linear-gradient(120deg,#112742,#0d1d35);color:#d0effb;font-weight:700;font-size:12px;line-height:1.6}
 .moduleCommunity .community-member-edit-confirm input[type="checkbox"]{width:18px;min-width:18px;height:18px;min-height:18px;accent-color:#4ec9ff;cursor:pointer}
+
+/* Conciliación de Comunidad: tabla de solo lectura visible en móvil */
+.moduleCommunity .communityReconciliationScroll{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;margin-top:10px;border:1px solid rgba(103,203,249,.28);border-radius:10px}
+.moduleCommunity .communityReconciliationScroll table{width:100%;min-width:560px;border-collapse:collapse;color:#d8f2ff;font-size:12px}
+.moduleCommunity .communityReconciliationScroll :is(th,td){padding:10px 12px;text-align:left;border-bottom:1px solid rgba(103,203,249,.17)}
+.moduleCommunity .communityReconciliationScroll thead th{background:#153755;color:#aeeaff;font-weight:800}
+.moduleCommunity .communityReconciliationScroll tbody tr:last-child :is(th,td){border-bottom:0}
+.moduleCommunity .communityReconciliationScroll tbody tr:hover{background:rgba(90,190,244,.08)}
