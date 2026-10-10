@@ -1,0 +1,10 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {authorizeLiryBoostCommand} from "../lib/liryboost/command-authorization.ts";
+import {actorFromVerifiedCommanderSession} from "../lib/liryboost/commander-actor.ts";
+const session=(role,mfa=true)=>actorFromVerifiedCommanderSession({userId:"admin-test",sessionVerified:true,commanderMfaVerified:mfa,trustedProfileRole:role});
+test("administrador con MFA y perfil confiable puede consultar resumen",async()=>assert.equal(await authorizeLiryBoostCommand(async()=>session("admin"),"read_private_referrals"),true));
+test("MFA incompleto no autoriza resumen",async()=>assert.equal(await authorizeLiryBoostCommand(async()=>session("admin",false),"read_private_referrals"),false));
+test("verificador no consulta registros privados",async()=>assert.equal(await authorizeLiryBoostCommand(async()=>session("verifier"),"read_private_referrals"),false));
+test("rol desconocido no puede consultar",async()=>assert.equal(await authorizeLiryBoostCommand(async()=>session("viewer"),"read_private_referrals"),false));
+test("fallo al resolver la identidad deniega acceso",async()=>assert.equal(await authorizeLiryBoostCommand(async()=>{throw Error("no-session")},"read_private_referrals"),false));
