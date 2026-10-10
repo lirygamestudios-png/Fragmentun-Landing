@@ -2481,3 +2481,8 @@
 .moduleCommunity .communityPendingShortcut:hover{transform:translateY(-2px);background:linear-gradient(120deg,#775031,#51416f);box-shadow:0 0 23px rgba(255,194,114,.22)}
 .moduleCommunity .communityPendingShortcut:focus-visible{outline:2px solid #ffdda4;outline-offset:3px}
 @media(max-width:600px){.moduleCommunity .communityPendingShortcut{width:100%;margin:9px 0 0;text-align:center}}
+
+.moduleCommunity .communityOverdueShortcut{display:inline-flex;align-items:center;justify-content:center;min-height:45px;padding:12px 17px;margin-left:12px;border:1px solid rgba(247,145,145,.63);border-radius:10px;background:linear-gradient(120deg,#61303b,#3b274c);color:#ffd7da;text-decoration:none;font-size:12px;font-weight:800;letter-spacing:.035em;transition:transform .18s,box-shadow .18s,background .18s}
+.moduleCommunity .communityOverdueShortcut:hover{transform:translateY(-2px);background:linear-gradient(120deg,#813c4a,#543362);box-shadow:0 0 23px rgba(247,145,145,.2)}
+.moduleCommunity .communityOverdueShortcut:focus-visible{outline:2px solid #ffc1c1;outline-offset:3px}
+@media(max-width:600px){.moduleCommunity .communityOverdueShortcut{width:100%;margin:9px 0 0;text-align:center}}
