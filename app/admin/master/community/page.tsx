@@ -116,7 +116,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile) redirect("/admin/lirygames/login?unauthorized=1");
   const filters=await searchParams;
-  const activityPage=/^[1-9]\\d{0,3}$/.test(filters.activityPage||"")?Number(filters.activityPage):1;
+  const activityPage=/^[1-9]\d{0,3}$/.test(filters.activityPage||"")?Number(filters.activityPage):1;
   const activityPageSize=30;
   const activityType=["share","referral","comment","event","survey","beta_signup","beta_feedback","purchase","community_join","other"].includes(filters.activityType||"")?filters.activityType||"":"";
   const activitySearch=(filters.activitySearch||"").trim().slice(0,80).toLocaleLowerCase("es");
@@ -227,7 +227,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
       {memberStatus&&<input type="hidden" name="memberStatus" value={memberStatus}/>}
       {memberTier&&<input type="hidden" name="memberTier" value={memberTier}/>}
       {memberSearch&&<input type="hidden" name="memberSearch" value={memberSearch}/>}
-      <label>Buscar actividad<input name="activitySearch" maxLength={80} defaultValue={activitySearch} placeholder="Miembro, descripción o fuente"/></label>
+      <label>Buscar actividad<input name="activitySearch" maxLength={80} defaultValue={activitySearch} placeholder="Descripción o fuente"/></label>
       <label>Tipo de actividad<select name="activityType" defaultValue={activityType}>
         <option value="">Todos los tipos</option>
         {["share","referral","comment","event","survey","beta_signup","beta_feedback","purchase","community_join","other"].map(v=><option key={v} value={v}>{actionLabel(v)}</option>)}
