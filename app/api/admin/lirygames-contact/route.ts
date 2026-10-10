@@ -36,7 +36,7 @@ export async function PATCH(req:NextRequest){
  const responseDraft=typeof data.responseDraft==="string"?data.responseDraft.trim():"";
  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)||
  !["new","reviewing","resolved","archived"].includes(status)||internalNote.length>3000||responseDraft.length>5000||
- (assignedTo!==null&&!/^[0-9a-f-]{36}$/i.test(assignedTo)))
+ (assignedTo!==null&&!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(assignedTo)))
  return NextResponse.json({ok:false,message:"Datos inválidos."},{status:400});
  const db=supabase;
  if(assignedTo){
