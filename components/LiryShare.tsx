@@ -26,8 +26,8 @@ export function LiryShare(){
  return <div className={styles.liryShareActions} aria-label="Compartir LIRYGAMES">
    <button type="button" onClick={nativeShare} className={styles.liryShareButton}>COMPARTIR ↗</button>
    <button type="button" onClick={copyLink} className={styles.liryShareButton}>{copied?"ENLACE COPIADO ✓":"COPIAR ENLACE"}</button>
-   <button type="button" onClick={()=>shareTo("whatsapp")} style={buttonStyle}>WHATSAPP ↗</button>
-   <button type="button" onClick={()=>shareTo("facebook")} style={buttonStyle}>FACEBOOK ↗</button>
-   <button type="button" onClick={()=>shareTo("x")} style={buttonStyle}>X ↗</button>
+   <button type="button" onClick={()=>shareTo("whatsapp")} className={styles.liryShareButton}>WHATSAPP ↗</button>
+   <button type="button" onClick={()=>shareTo("facebook")} className={styles.liryShareButton}>FACEBOOK ↗</button>
+   <button type="button" onClick={()=>shareTo("x")} className={styles.liryShareButton}>X ↗</button>
  </div>;
 }
