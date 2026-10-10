@@ -28,7 +28,7 @@ export function CommunityMemberEditFields({members}:{members:Member[]}){
    <label>Estado<select name="status" defaultValue={member.status}><option value="active">Activo</option><option value="inactive">Inactivo</option><option value="blocked">Bloqueado</option><option value="left">Salida</option></select></label>
    <label>Nivel<select name="tier" defaultValue={member.tier}><option value="member">Miembro</option><option value="engaged">Participativo</option><option value="advocate">Promotor</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderador</option></select></label>
    <label>Prioridad beta<select name="beta_priority" defaultValue={String(member.beta_priority)}><option value="false">No</option><option value="true">Sí</option></select></label>
-   <label>Puntos<input type="number" min="0" max="100000000" step="1" name="points" defaultValue={member.points}/></label>
+   <label>Puntos acumulados<input type="number" min="0" max="100000000" step="1" value={member.points} readOnly aria-describedby="community-points-hint"/><small id="community-points-hint">Para sumar o descontar puntos utiliza Registrar participación; así queda constancia en el historial.</small></label>
    <label>Fuente<input name="source" maxLength={200} defaultValue={member.source||""}/></label>
    <label>Etiquetas<input name="tags" maxLength={1529} defaultValue={(member.tags||[]).join(", ")} placeholder="beta, promotor, creador"/></label>
    <label className="community-member-notes">Notas<textarea name="notes" rows={3} maxLength={3000} defaultValue={member.notes||""}/></label>
