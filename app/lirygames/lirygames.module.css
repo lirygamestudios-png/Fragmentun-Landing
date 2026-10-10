@@ -1033,3 +1033,11 @@
 .dnaSide button.dnaSideButton:hover{background:linear-gradient(135deg,#0a2a49,#103b5d);border-color:#81e8ff;box-shadow:0 0 17px rgba(40,196,255,.35)}
 .dnaSide button.dnaSideButton:active{background:#082740}
 .dnaSide button.dnaSideButton:focus-visible{outline:2px solid #8ceaff;outline-offset:3px}
+
+/* FrontDesk · menú móvil: enlaces completos, desplazamiento seguro y foco visible. */
+.navMenuPanel{max-height:min(65vh,520px);overflow-y:auto;overscroll-behavior:contain}
+.navMenuPanel a:focus-visible{outline:2px solid #83e8ff;outline-offset:-2px}
+@media(max-width:750px){
+ .navMenuPanel{width:min(250px,calc(100vw - 24px));max-height:min(70dvh,540px);padding:8px}
+ .navMenuPanel a{min-height:44px;display:flex;align-items:center;font-size:13px}
+}
