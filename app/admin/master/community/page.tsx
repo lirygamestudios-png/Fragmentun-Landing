@@ -26,8 +26,16 @@ function actionLabel(value:string){
   return map[value]||String(value||"").replaceAll("_"," ").toUpperCase();
 }
 
+function requireIsolatedCommunityData(){
+  // El proyecto compartido de FRAGMENTUN no es fuente válida de clientes LIRYGAMES.
+  const endpoint=process.env.NEXT_PUBLIC_SUPABASE_URL||"";
+  const isolated=process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED==="true";
+  if(!isolated||!endpoint||endpoint.includes("pasoapugmsazziflaomp"))throw new Error("LIRYGAMES_COMMUNITY_DATA_NOT_ISOLATED");
+}
+
 async function requireCommunityEditor(){
   "use server";
+  requireIsolatedCommunityData();
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user) redirect("/admin/lirygames/login");
@@ -160,6 +168,15 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
   if(!user) redirect("/admin/lirygames/login");
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile) redirect("/admin/lirygames/login?unauthorized=1");
+  // Mostrar el módulo sin consultar ni mezclar datos procedentes de FRAGMENTUN.
+  const isolated=process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED==="true";
+  const endpoint=process.env.NEXT_PUBLIC_SUPABASE_URL||"";
+  if(!isolated||!endpoint||endpoint.includes("pasoapugmsazziflaomp")){
+    return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleCommunity}`}>
+      <header className={styles.topbar}><div><span className={styles.eyebrow}>LIRYGAMES · DATOS AISLADOS</span><h1>Clientes y Comunidad</h1><p>Diseño y navegación del Commander Center preservados.</p></div><a className={styles.publicSite} href="/admin/master">← Inicio</a></header>
+      <section className={styles.moduleStrip} aria-label="Protección de datos entre estudios"><span className={styles.moduleGlyph} aria-hidden="true">CC</span><div className={styles.moduleStripCopy}><small>PROTECCIÓN DE INFORMACIÓN</small><strong>Separación de datos pendiente</strong><p>Los registros de FRAGMENTUN no se muestran ni modifican desde LIRYGAMES. La gestión de comunidad se habilitará cuando exista una fuente de datos independiente y verificada.</p></div></section>
+    </main>;
+  }
   const filters=await searchParams;
   const correctionId=String(filters.correctionId||"").trim().slice(0,36);
   const validCorrectionId=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(correctionId);
