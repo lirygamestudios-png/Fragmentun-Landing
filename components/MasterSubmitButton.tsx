@@ -10,6 +10,7 @@ type Props=ButtonHTMLAttributes<HTMLButtonElement>&{
   successText?:string;
   confirmText?:string;
   disabledReason?:string;
+  communityBalances?:Record<string,number>;
 };
 
 export function MasterSubmitButton({
@@ -19,6 +20,7 @@ export function MasterSubmitButton({
   successText="Acción completada.",
   confirmText,
   disabledReason="Esta acción no está disponible todavía.",
+  communityBalances,
   type,
   onClick,
   ...props
@@ -42,7 +44,19 @@ export function MasterSubmitButton({
   },[pending]);
 
   function handleClick(event:MouseEvent<HTMLButtonElement>){
-    if(confirmText&&!window.confirm(confirmText)){
+    let message=confirmText;
+    if(communityBalances&&event.currentTarget.form){
+      const fields=new FormData(event.currentTarget.form);
+      const memberId=String(fields.get("member_id")||"");
+      const raw=String(fields.get("points_delta")||"");
+      const delta=Number(raw);
+      const balance=communityBalances[memberId];
+      if(Number.isSafeInteger(balance)&&balance>=0&&raw.trim()!==""&&Number.isSafeInteger(delta)&&Math.abs(delta)<=100000){
+        const applied=Math.max(-balance,delta);
+        message="¿Confirmas el movimiento de puntos?\n\nSaldo consultado: "+balance+"\nSolicitado: "+delta+"\nAplicación estimada: "+applied+"\nSaldo estimado: "+(balance+applied)+"\n\nEl servidor recalculará el saldo al guardar.";
+      }
+    }
+    if(message&&!window.confirm(message)){
       event.preventDefault();
       return;
     }
