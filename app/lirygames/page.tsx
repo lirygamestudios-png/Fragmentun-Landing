@@ -87,26 +87,26 @@ export default async function LiryGamesFrontDesk(){
         </article>
       </div>
     </section>
-    <section className={styles.section} id="liryboost" aria-labelledby="liryboost-title" style={{scrollMarginTop:100}}>
+    <section className={`${styles.section} ${styles.liryBoostSection}`} id="liryboost" aria-labelledby="liryboost-title">
       <p className={styles.kicker}>COMPARTE · CONECTA · PARTICIPA</p>
       <h2 id="liryboost-title">LIRYBOOST</h2>
       <p className={styles.sectionIntro}>Próximamente podrás participar compartiendo LIRYGAMES. Los diez participantes con mayor cantidad de invitaciones verificadas tendrán prioridad para recibir acceso a las versiones beta, según las reglas oficiales de cada convocatoria.</p>
-      <div aria-label="Cómo funcionará LiryBoost" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,210px),1fr))",gap:14,marginTop:24}}>
+      <div aria-label="Cómo funcionará LiryBoost" className={styles.liryBoostSteps}>
         {[
           {number:"01",title:"COMPARTE",detail:"Invita a nuevos jugadores con tu enlace personal, una vez abierto el programa."},
           {number:"02",title:"VERIFICAMOS",detail:"Contabilizaremos únicamente las invitaciones válidas, de acuerdo con las reglas publicadas."},
           {number:"03",title:"ACCEDE ANTES",detail:"El Top 10 tendrá prioridad para las versiones beta disponibles, sujeto a las condiciones de cada juego."}
-        ].map(step=><article key={step.number} style={{minWidth:0,padding:"20px",border:"1px solid rgba(201,168,76,.25)",borderRadius:14,background:"linear-gradient(145deg,rgba(21,30,58,.9),rgba(11,16,35,.8))"}}>
-          <span style={{display:"block",fontSize:".8rem",letterSpacing:".16em",color:"#e2bf6e",marginBottom:12}}>{step.number}</span>
-          <strong style={{display:"block",letterSpacing:".08em",marginBottom:9}}>{step.title}</strong>
-          <p style={{margin:0,lineHeight:1.6,opacity:.88}}>{step.detail}</p>
+        ].map(step=><article key={step.number} className={styles.liryBoostStep}>
+          <span className={styles.liryBoostNumber}>{step.number}</span>
+          <strong className={styles.liryBoostStepTitle}>{step.title}</strong>
+          <p className={styles.liryBoostDetail}>{step.detail}</p>
         </article>)}
       </div>
-      <div style={{display:"flex",gap:14,flexWrap:"wrap",alignItems:"center",marginTop:22}}>
+      <div className={styles.liryBoostActions}>
         <a className={styles.button} href="#social">COMPARTIR LIRYGAMES →</a>
-        <a href="#contacto" style={{textDecoration:"underline",textUnderlineOffset:4}}>RECIBIR NOVEDADES →</a>
+        <a href="#contacto" className={styles.liryBoostSecondary}>RECIBIR NOVEDADES →</a>
       </div>
-      <p style={{marginTop:16,fontSize:".84rem",opacity:.8}}>El registro de participaciones, la validación de invitaciones y el Top 10 todavía no están activos. Compartir ahora no genera puntos ni garantiza acceso beta. Publicaremos las condiciones antes de abrir la competencia.</p>
+      <p className={styles.liryBoostNotice}>El registro de participaciones, la validación de invitaciones y el Top 10 todavía no están activos. Compartir ahora no genera puntos ni garantiza acceso beta. Publicaremos las condiciones antes de abrir la competencia.</p>
     </section>
     <div className={styles.socialTrio} aria-label="Comunidad, eventos y recomendaciones">
       <section className={styles.section} id="comunidad">
