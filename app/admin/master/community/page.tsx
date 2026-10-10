@@ -102,7 +102,9 @@ async function updateMember(formData:FormData){
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedEstado=new Set(["active","inactive","blocked","left"]);
   const allowedNivel=new Set(["member","engaged","advocate","beta_priority","moderator"]);
-  if(!id||!allowedEstado.has(status)||!allowedNivel.has(tier)||!Number.isFinite(points)||!Number.isInteger(points)||points<0) throw new Error("invalid_member_update");
+  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)||!allowedEstado.has(status)||!allowedNivel.has(tier)||!Number.isFinite(points)||!Number.isInteger(points)||points<0||points>100000000||tags.length>30||tags.some(tag=>tag.length>50)||String(formData.get("notes")||"").length>3000||String(formData.get("source")||"").length>200) throw new Error("invalid_member_update");
+  const {data:existing,error:lookupError}=await supabase.from("community_members").select("id").eq("id",id).maybeSingle();
+  if(lookupError||!existing)throw new Error("member_not_found");
   const{error}=await supabase.from("community_members").update({
     status,tier,points,beta_priority:status==="active"&&(betaPriority||tier==="beta_priority"),source,tags,notes,updated_at:new Date().toISOString()
   }).eq("id",id);
