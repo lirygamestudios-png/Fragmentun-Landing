@@ -2556,3 +2556,11 @@
 .moduleCommunity .advancedPanel .formButton{border-radius:10px;transition:transform .18s,box-shadow .18s,border-color .18s}
 .moduleCommunity .advancedPanel .formButton:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 0 19px rgba(86,201,255,.24)}
 @media(max-width:600px){.moduleCommunity .advancedPanel>summary{padding:15px}}
+
+/* Navegación clara entre las tres acciones administrativas de Comunidad. */
+.moduleCommunity .communityManagementNav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 16px 22px;padding:13px;border:1px solid rgba(107,199,255,.28);border-radius:13px;background:linear-gradient(135deg,#0e223e,#0b182e)}
+.moduleCommunity .communityManagementNav a{display:flex;align-items:center;justify-content:center;min-height:47px;padding:11px 13px;border:1px solid rgba(104,201,248,.53);border-radius:10px;background:linear-gradient(125deg,#123f70,#102d53);color:#e2f8ff;text-align:center;text-decoration:none;font-size:11px;font-weight:800;letter-spacing:.035em;transition:transform .18s,box-shadow .18s,background .18s}
+.moduleCommunity .communityManagementNav a:hover{transform:translateY(-2px);background:#19588b;box-shadow:0 0 21px rgba(94,209,255,.27)}
+.moduleCommunity .communityManagementNav a:focus-visible{outline:2px solid #8beaff;outline-offset:3px}
+.moduleCommunity #comunidad-registrar-miembro,.moduleCommunity #comunidad-registrar-actividad,.moduleCommunity #comunidad-actualizar-miembro{scroll-margin-top:24px}
+@media(max-width:650px){.moduleCommunity .communityManagementNav{grid-template-columns:1fr;margin:12px 8px}.moduleCommunity .communityManagementNav a{min-height:45px}}
