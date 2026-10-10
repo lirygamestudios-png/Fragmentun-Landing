@@ -15,7 +15,7 @@ export function LiryBoostTop10(){
    .then(data=>{
     if(!data||typeof data.programActive!=="boolean"||!Array.isArray(data.leaderboard))throw new Error("Invalid leaderboard response");
     if(data.programActive===false){setEntries([]);setActive(false);setUnavailable(false);return;}
-    setEntries(data.leaderboard.filter(e=>e&&typeof e.publicName==="string"&&e.publicName.trim().length>0&&e.publicName.length<=60&&!/[<>@\\r\\n]/.test(e.publicName)&&Number.isSafeInteger(e.verifiedInvitations)&&e.verifiedInvitations>0).slice(0,10));
+    setEntries(data.leaderboard.filter(e=>e&&typeof e.publicName==="string"&&e.publicName.trim().length>0&&e.publicName.length<=60&&!/[<>@]/.test(e.publicName)&&!e.publicName.includes("\n")&&!e.publicName.includes("\r")&&Number.isSafeInteger(e.verifiedInvitations)&&e.verifiedInvitations>0).slice(0,10));
     setActive(true);setUnavailable(false);
    }).catch(()=>{if(!controller.signal.aborted){setEntries([]);setActive(false);setUnavailable(true);}});
   return ()=>controller.abort();
