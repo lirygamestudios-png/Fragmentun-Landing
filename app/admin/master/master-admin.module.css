@@ -2589,3 +2589,6 @@
 .moduleCommunity .community-member-edit-identity button:hover{transform:translateY(-1px);box-shadow:0 0 19px rgba(85,203,255,.26)}
 .moduleCommunity .community-member-edit-identity button:focus-visible{outline:2px solid #91eaff;outline-offset:3px}
 @media(max-width:600px){.moduleCommunity .community-member-edit-identity button{width:100%}}
+
+.moduleCommunity .community-member-edit-confirm{display:flex;align-items:center;gap:11px;padding:13px 15px;margin:12px 0;border:1px solid rgba(107,207,255,.4);border-radius:10px;background:linear-gradient(120deg,#112742,#0d1d35);color:#d0effb;font-weight:700;font-size:12px;line-height:1.6}
+.moduleCommunity .community-member-edit-confirm input[type="checkbox"]{width:18px;min-width:18px;height:18px;min-height:18px;accent-color:#4ec9ff;cursor:pointer}
