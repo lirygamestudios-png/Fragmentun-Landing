@@ -5,6 +5,7 @@ import { hasSatisfiedMfa } from "../../../../lib/supabase/mfa";
 import styles from "../master-admin.module.css";
 import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 import {MasterActionForm} from "../../../../components/MasterActionForm";
+import {CommunityManagementJump} from "../../../../components/CommunityManagementJump";
 
 function tierLabel(value:string){
   const map:Record<string,string>={member:"MIEMBRO",engaged:"PARTICIPATIVO",advocate:"PROMOTOR",beta_priority:"PRIORIDAD BETA",moderator:"MODERADOR"};
@@ -143,6 +144,7 @@ export default async function CommunityPage(){
   const payingPlayers=new Set(gamePurchaseRows.filter(p=>p.status==="paid").map(p=>p.player_ref).filter(Boolean)).size;
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleCommunity}`}>
+    <CommunityManagementJump/>
     <div style={{marginBottom:14}}><a className={styles.communityMessagesButton} href="/admin/master/community/messages">✉ MENSAJES DE CONTACTO →</a>{!pendingContactError&&<a className={styles.communityPendingShortcut} href="/admin/master/community/messages?pending=1">{pendingContactCount??0} PENDIENTES DE ATENCIÓN →</a>}{!overdueContactError&&<a className={styles.communityOverdueShortcut} href="/admin/master/community/messages?pending=1&age=7">{overdueContactCount??0} CON 7+ DÍAS →</a>}{!unassignedContactError&&<a className={styles.communityUnassignedShortcut} href="/admin/master/community/messages?pending=1&owner=unassigned">{unassignedContactCount??0} SIN RESPONSABLE →</a>}</div>
     {contactOverviewAvailable&&<p className={styles.communityContactLegend}>SEGUIMIENTO DE CONTACTO · <strong>{pendingContactCount??0}</strong> requieren atención · <strong>{unassignedContactCount??0}</strong> aún sin asignar · <strong>{overdueContactCount??0}</strong> con 7 días o más. Los indicadores se consultan en Supabase y no implican envío de correos.</p>}
     <header className={styles.topbar}>
