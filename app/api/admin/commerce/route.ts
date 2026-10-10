@@ -11,9 +11,15 @@ async function requireAdmin(){
   return {ok:profile?.role==="admin",supabase,user};
 }
 
+function isolatedLiryData(){
+  const url=process.env.NEXT_PUBLIC_SUPABASE_URL||"";
+  return process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED==="true"&&Boolean(url)&&!url.includes("pasoapugmsazziflaomp");
+}
+
 export const dynamic="force-dynamic";
 
 export async function GET(){
+  if(!isolatedLiryData())return NextResponse.json({error:"lirygames_data_isolation_pending"},{status:503,headers:{"Cache-Control":"no-store"}});
   const x=await requireAdmin();
   if(!x.ok)return NextResponse.json({error:"forbidden"},{status:403});
 
@@ -55,6 +61,7 @@ export async function GET(){
 }
 
 export async function PUT(request:NextRequest){
+  if(!isolatedLiryData())return NextResponse.json({error:"lirygames_data_isolation_pending"},{status:503,headers:{"Cache-Control":"no-store"}});
   const x=await requireAdmin();
   if(!x.ok||!x.user)return NextResponse.json({error:"forbidden"},{status:403});
   const body=await request.json().catch(()=>null);
