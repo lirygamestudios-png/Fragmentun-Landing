@@ -115,13 +115,14 @@ export default async function CommunityPage(){
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile) redirect("/admin/lirygames/login?unauthorized=1");
 
-  const[{data:members},{data:actions},{count:crmContacts},{count:shareClicks},{data:gameMetrics},{data:gamePurchases}]=await Promise.all([
+  const[{data:members},{data:actions},{count:crmContacts},{count:shareClicks},{data:gameMetrics},{data:gamePurchases},{count:pendingContactCount,error:pendingContactError}]=await Promise.all([
     supabase.from("community_members").select("id,display_name,handle,email,status,tier,points,beta_priority,source,joined_at,last_activity_at,tags,notes").order("points",{ascending:false}),
     supabase.from("community_actions").select("id,member_id,action_type,source,points_delta,description,occurred_at").order("occurred_at",{ascending:false}).limit(50),
     supabase.from("crm_contacts").select("*",{count:"exact",head:true}),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","share_click"),
     supabase.from("game_engagement_daily").select("metric_date,game_id,platform,active_players,new_players,sessions").order("metric_date",{ascending:false}).limit(1000),
-    supabase.from("game_purchase_events").select("player_ref,game_id,platform,status,purchased_at").order("purchased_at",{ascending:false}).limit(5000)
+    supabase.from("game_purchase_events").select("player_ref,game_id,platform,status,purchased_at").order("purchased_at",{ascending:false}).limit(5000),
+    supabase.from("lirygames_contact_messages").select("*",{count:"exact",head:true}).in("status",["new","reviewing"])
   ]);
 
   const memberRows=(members||[]) as any[];
@@ -139,7 +140,7 @@ export default async function CommunityPage(){
   const payingPlayers=new Set(gamePurchaseRows.filter(p=>p.status==="paid").map(p=>p.player_ref).filter(Boolean)).size;
 
   return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleCommunity}`}>
-    <div style={{marginBottom:14}}><a className={styles.communityMessagesButton} href="/admin/master/community/messages">✉ MENSAJES DE CONTACTO →</a></div>
+    <div style={{marginBottom:14}}><a className={styles.communityMessagesButton} href="/admin/master/community/messages">✉ MENSAJES DE CONTACTO →</a>{!pendingContactError&&<a className={styles.communityPendingShortcut} href="/admin/master/community/messages?pending=1">{pendingContactCount??0} PENDIENTES DE ATENCIÓN →</a>}</div>
     <header className={styles.topbar}>
       <div><span className={styles.eyebrow}>LIRYGAMES · CLIENTES Y COMUNIDAD</span><h1>Clientes y Comunidad</h1><p>Miembros, participación y acceso beta sin duplicar la información comercial.</p></div>
       <a className={styles.publicSite} href="/admin/master">← Inicio</a>
