@@ -8,3 +8,6 @@ test("falta aceptación expresa de privacidad",()=>assert.equal(evaluateEnrollme
 
 test("consentimiento perteneciente a otro usuario se rechaza",()=>assert.equal(evaluateEnrollmentReadiness({...base,consent:{...base.consent,userId:"u2"}}),"consent_missing"));
 test("sin identidad autenticada no se puede continuar",()=>assert.equal(evaluateEnrollmentReadiness({...base,identity:{...base.identity,currentUserId:null}}),"identity_unverified"));
+
+test("correo del formulario distinto del autenticado se rechaza",()=>assert.equal(evaluateEnrollmentReadiness({...base,draft:{...base.draft,email:"otro@example.com"}}),"identity_unverified"));
+test("correo del formulario admite diferencias de mayúsculas",()=>assert.equal(evaluateEnrollmentReadiness({...base,draft:{...base.draft,email:"JUGADOR@example.com"}}),"ready_for_transaction"));
