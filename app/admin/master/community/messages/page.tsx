@@ -60,9 +60,14 @@ export default async function LiryContactAdmin({
   :{data:[] as HistoryItem[],error:null};
  const historyRows=(history||[]) as HistoryItem[];
  const ownerNames=new Map((owners||[]).map(o=>[o.user_id,o.display_name||"Administrador"]));
- const {data:allStates,error:countError}=await db.from("lirygames_contact_messages").select("status,assigned_to").limit(1000);
- const totals={all:0,new:0,reviewing:0,resolved:0,archived:0,unassigned:0};
- if(!countError){for(const row of allStates||[]){totals.all++;if(row.status in totals)totals[row.status as "new"|"reviewing"|"resolved"|"archived"]++;if(!row.assigned_to&&["new","reviewing"].includes(row.status))totals.unassigned++;}}
+ const countBase=()=>db.from("lirygames_contact_messages").select("*",{count:"exact",head:true});
+ const [allCount,newCount,reviewCount,resolvedCount,archivedCount,unassignedCount]=await Promise.all([
+  countBase(),countBase().eq("status","new"),countBase().eq("status","reviewing"),
+  countBase().eq("status","resolved"),countBase().eq("status","archived"),
+  countBase().in("status",["new","reviewing"]).is("assigned_to",null)
+ ]);
+ const countError=[allCount,newCount,reviewCount,resolvedCount,archivedCount,unassignedCount].some(result=>Boolean(result.error));
+ const totals={all:allCount.count??0,new:newCount.count??0,reviewing:reviewCount.count??0,resolved:resolvedCount.count??0,archived:archivedCount.count??0,unassigned:unassignedCount.count??0};
  const layout={minHeight:"100vh",padding:"38px clamp(20px,5vw,85px)",background:"#050b19",color:"#e9f6ff",fontFamily:"Arial,sans-serif"};
  return <main className={visual.page} style={layout}>
   <a className={visual.back} href="/admin/master/community" style={{color:"#76daff",fontSize:12,textDecoration:"none"}}>← VOLVER A CLIENTES Y COMUNIDAD</a>
@@ -74,7 +79,7 @@ export default async function LiryContactAdmin({
   {!countError&&<section className={visual.metrics} aria-label="Resumen de atención" style={{margin:"0 0 24px"}}>
    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap",marginBottom:11}}>
     <h2 style={{fontSize:12,letterSpacing:".14em",color:"#7ddfff",fontWeight:800,margin:0}}>PANORAMA DE CONTACTO</h2>
-    <span style={{fontSize:11,color:"#8faec8"}}>Información real · Últimos 1,000 registros</span>
+    <span style={{fontSize:11,color:"#8faec8"}}>Información real · Conteos completos de Supabase</span>
    </div>
    <div className={visual.metricGrid} style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(175px,1fr))",gap:12}}>
     {([["Recibidos",totals.all,"Total registrado"],["Nuevos",totals.new,"Por revisar"],["En revisión",totals.reviewing,"En seguimiento"],["Resueltos",totals.resolved,"Atendidos"],["Sin responsable",totals.unassigned,"Requieren asignación"]] as const).map(([label,total,description],index)=>
