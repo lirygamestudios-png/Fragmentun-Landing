@@ -938,3 +938,15 @@
 @media(max-width:520px){.liryPodium{gap:6px}.liryPodiumVacant{font-size:8px}.liryPodiumPlinth{height:33px}.liryPodiumPlinth[data-rank="1"]{height:55px}.liryPodiumPlinth[data-rank="3"]{height:27px}.liryTopRow{grid-template-columns:26px minmax(0,1fr);gap:5px;padding:5px 8px}.liryTopRow small{grid-column:2}.liryLeaderboard{padding:10px}}
 @media(prefers-reduced-motion:no-preference){.liryPodiumParticipant{animation:liryTopReveal .55s ease-out both}.liryPodiumParticipant:nth-child(2){animation-delay:.13s}.liryPodiumParticipant:nth-child(3){animation-delay:.25s}}
 @keyframes liryTopReveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+
+/* LiryBoost: vista previa cerrada de inscripción, sin captura de datos. */
+.liryBoostEnrollment{margin:20px auto 0;padding:20px;max-width:780px;border:1px solid rgba(90,190,240,.25);border-radius:18px;background:rgba(5,20,39,.64);display:grid;gap:16px}
+.liryBoostEnrollment strong{color:#e1f3ff;letter-spacing:.1em;font-size:.85rem}
+.liryBoostEnrollment p{color:#b9cddd;margin:8px 0 0;font-size:.92rem;line-height:1.6}
+.liryBoostEnrollmentForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.liryBoostEnrollmentForm label{display:grid;gap:7px;color:#c6daeb;font-size:.82rem}
+.liryBoostEnrollmentForm input:not([type="checkbox"]){width:100%;min-width:0;border:1px solid rgba(134,193,227,.25);border-radius:9px;background:rgba(255,255,255,.04);padding:11px 12px;color:#b8c5ce}
+.liryBoostEnrollmentForm .liryBoostConsent{grid-column:1/-1;display:flex;align-items:center;gap:9px}
+.liryBoostEnrollmentForm button{grid-column:1/-1;border:1px solid rgba(99,178,217,.35);border-radius:10px;padding:12px;background:rgba(41,101,136,.24);color:#c4d9e9;cursor:not-allowed;font-weight:700;letter-spacing:.06em}
+@media(max-width:600px){.liryBoostEnrollment{padding:15px}.liryBoostEnrollmentForm{grid-template-columns:1fr}}
