@@ -315,7 +315,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
           <label>Fuente<input name="source" maxLength={200} placeholder="LiryBoost / Discord / web"/></label>
           <label>Nivel<select name="tier" defaultValue="member"><option value="member">Miembro</option><option value="engaged">Participativo</option><option value="advocate">Promotor</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderador</option></select></label>
         </div>
-        <MasterSubmitButton className={styles.formButton}>Registrar miembro</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} pendingText="Registrando miembro…">Registrar miembro</MasterSubmitButton>
       </MasterActionForm>
 
       <MasterActionForm action={addAction} className={styles.adminForm} successText="Participación registrada correctamente.">
@@ -327,7 +327,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
           <label>Fuente<input name="source" maxLength={200}/></label>
           <label className={styles.span2}>Descripción<textarea name="description" rows={3} maxLength={3000}/></label>
         </div>
-        <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length} disabledReason="Primero registra un miembro para poder añadir participación.">Registrar actividad</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} pendingText="Registrando actividad…" confirmText="¿Confirmas que deseas registrar esta actividad y modificar los puntos del miembro?" disabled={!memberRows.length} disabledReason="Primero registra un miembro para poder añadir participación.">Registrar actividad</MasterSubmitButton>
       </MasterActionForm>
       </section>
 
@@ -335,7 +335,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
       <MasterActionForm action={updateMember} className={styles.adminForm} successText="Miembro actualizado correctamente.">
         <div id="comunidad-actualizar-miembro" className={styles.formTitle}><span>GESTIONAR MIEMBRO</span><h2>Actualizar comunidad</h2></div>
         <CommunityMemberEditFields members={memberRows.map(m=>({id:m.id,display_name:m.display_name,handle:m.handle,email:m.email,status:m.status,tier:m.tier,beta_priority:Boolean(m.beta_priority),points:Number(m.points||0),source:m.source,tags:m.tags,notes:m.notes}))}/>
-        <MasterSubmitButton className={styles.formButton} disabled={!memberRows.length} disabledReason="No hay miembros registrados para actualizar.">Actualizar miembro</MasterSubmitButton>
+        <MasterSubmitButton className={styles.formButton} pendingText="Guardando cambios…" confirmText="¿Confirmas que deseas actualizar los datos del miembro seleccionado?" disabled={!memberRows.length} disabledReason="No hay miembros registrados para actualizar.">Actualizar miembro</MasterSubmitButton>
       </MasterActionForm>
       </section>
     </details>}
