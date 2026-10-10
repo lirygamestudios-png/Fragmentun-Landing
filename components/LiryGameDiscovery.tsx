@@ -11,6 +11,8 @@ const traitDescriptions=["Te atrae descubrir mundos, secretos y caminos alternat
 
 export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
   const catalogRef=useRef<HTMLDivElement>(null);
+  const explorerCloseRef=useRef<HTMLButtonElement>(null);
+  const explorerOpenRef=useRef<HTMLButtonElement>(null);
   const [exploringDna,setExploringDna]=useState(false);
   const [activeTrait,setActiveTrait]=useState(0);
   const [catalogHeight,setCatalogHeight]=useState<number|null>(null);
@@ -23,6 +25,18 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
     observer.observe(catalog);
     return ()=>observer.disconnect();
   },[]);
+  useEffect(()=>{
+    if(!exploringDna)return;
+    explorerCloseRef.current?.focus();
+    const onKeyDown=(event:KeyboardEvent)=>{
+      if(event.key==="Escape"){
+        setExploringDna(false);
+        explorerOpenRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown",onKeyDown);
+    return ()=>window.removeEventListener("keydown",onKeyDown);
+  },[exploringDna]);
   const dnaHeightStyle={"--liry-catalog-height":catalogHeight===null?undefined:`${catalogHeight}px`} as CSSProperties;
   return <div className={styles.worldShowcase}>
     <div className={styles.worldsGrid} ref={catalogRef}>
@@ -45,8 +59,8 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
         <img className={styles.dnaMap} src="/liry-dna-cinematic.svg" alt="" loading="eager" decoding="async" /><img className={styles.dnaPhotoUpper} src="/LIRY_DNA_Hiperrealista.png" alt="" loading="eager" decoding="async" onLoad={(e)=>e.currentTarget.classList.add(styles.dnaPhotoLoaded)} onError={(e)=>e.currentTarget.style.display="none"} />
       </div>
       <p>Conoce los seis estilos que formarán parte de tu identidad gamer.</p>
-      <button type="button" className={styles.dnaSideButton} aria-expanded={exploringDna} aria-controls="liry-dna-explorer" onClick={()=>setExploringDna(v=>!v)}>{"EXPLORAR ESTILOS →"}</button>
-      {exploringDna&&<div id="liry-dna-explorer" className={styles.dnaExplorer}><div className={styles.dnaExplorerHeading}><p className={styles.dnaExplorerLabel}>CONOCE LOS SEIS ESTILOS</p><button type="button" className={styles.dnaExplorerClose} onClick={()=>setExploringDna(false)} aria-label="Cerrar exploración de estilos" title="Cerrar exploración">×</button></div><div className={styles.dnaExplorerChoices} role="group" aria-label="Elegir un estilo gamer">{traits.map((trait,i)=><button type="button" key={trait} className={activeTrait===i?styles.dnaExplorerSelected:styles.dnaExplorerChoice} onClick={()=>setActiveTrait(i)} aria-pressed={activeTrait===i}>{trait}</button>)}</div><p className={styles.dnaExplorerDescription}><strong>{traits[activeTrait]}</strong> — {traitDescriptions[activeTrait]}</p><small>Exploración informativa: no es una evaluación ni se almacena información personal.</small></div>}
+      <button type="button" ref={explorerOpenRef} className={styles.dnaSideButton} aria-expanded={exploringDna} aria-controls="liry-dna-explorer" onClick={()=>setExploringDna(v=>!v)}>{"EXPLORAR ESTILOS →"}</button>
+      {exploringDna&&<div id="liry-dna-explorer" className={styles.dnaExplorer}><div className={styles.dnaExplorerHeading}><p className={styles.dnaExplorerLabel}>CONOCE LOS SEIS ESTILOS</p><button type="button" ref={explorerCloseRef} className={styles.dnaExplorerClose} onClick={()=>{setExploringDna(false);explorerOpenRef.current?.focus();}} aria-label="Cerrar exploración de estilos" title="Cerrar exploración">×</button></div><div className={styles.dnaExplorerChoices} role="group" aria-label="Elegir un estilo gamer">{traits.map((trait,i)=><button type="button" key={trait} className={activeTrait===i?styles.dnaExplorerSelected:styles.dnaExplorerChoice} onClick={()=>setActiveTrait(i)} aria-pressed={activeTrait===i}>{trait}</button>)}</div><p className={styles.dnaExplorerDescription}><strong>{traits[activeTrait]}</strong> — {traitDescriptions[activeTrait]}</p><small>Exploración informativa: no es una evaluación ni se almacena información personal.</small></div>}
       <ul className={styles.dnaTraitList}>
         {traits.map((trait,i)=><li key={trait}><span className={styles.dnaTraitIndex}>{i+1}</span><span>{trait}</span><span className={styles.dnaTraitPending}>Por evaluar</span><span className={styles.dnaTraitTrack} aria-hidden="true"><span className={styles.dnaTraitShimmer}/></span></li>)}
       </ul>
