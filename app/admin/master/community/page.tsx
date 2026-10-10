@@ -9,6 +9,7 @@ import {MasterSubmitButton} from "../../../../components/MasterSubmitButton";
 import {MasterActionForm} from "../../../../components/MasterActionForm";
 import {CommunityManagementJump} from "../../../../components/CommunityManagementJump";
 import {CommunityMemberEditFields} from "../../../../components/CommunityMemberEditFields";
+import {CommunityPointsPreview} from "../../../../components/CommunityPointsPreview";
 
 function tierLabel(value:string){
   const map:Record<string,string>={member:"MIEMBRO",engaged:"PARTICIPATIVO",advocate:"PROMOTOR",beta_priority:"PRIORIDAD BETA",moderator:"MODERADOR"};
@@ -371,9 +372,9 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
       <MasterActionForm action={addAction} className={styles.adminForm} successText="Participación registrada correctamente.">
         <div id="comunidad-registrar-actividad" className={styles.formTitle}><span>NUEVA ACTIVIDAD</span><h2>Registrar participación</h2></div>
         <div className={styles.formGrid}>
-          <label>Miembro<select name="member_id" required defaultValue=""><option value="" disabled>Seleccionar miembro</option>{memberRows.map((m:any)=><option key={m.id} value={m.id}>{m.display_name||m.handle||m.email}</option>)}</select></label>
+          <CommunityPointsPreview members={memberRows.map(m=>({id:m.id,name:m.display_name||m.handle||m.email||"Miembro",points:Number(m.points||0),status:m.status}))}/>
           <label>Tipo<select name="action_type" defaultValue="share"><option value="share">Compartido</option><option value="referral">Referido</option><option value="comment">Comentario</option><option value="event">Evento</option><option value="survey">Encuesta</option><option value="beta_signup">Registro beta</option><option value="beta_feedback">Opinión beta</option><option value="purchase">Compra</option><option value="community_join">Ingreso a comunidad</option><option value="other">Otro</option></select></label>
-          <label>Puntos<input type="number" name="points_delta" min={-100000} max={100000} step={1} defaultValue="0"/></label>
+          
           <label>Fuente<input name="source" maxLength={200}/></label>
           <label className={styles.span2}>Descripción y motivo del ajuste<textarea name="description" rows={3} maxLength={3000} placeholder="Para descontar puntos, explica el motivo con al menos 10 caracteres."/></label>
           <p className={styles.advancedHint}>Los descuentos manuales nunca dejan el saldo negativo: si solicitas descontar más puntos de los disponibles, se aplicará únicamente el saldo existente. Para anular una actividad anterior utiliza CORREGIR PUNTOS; allí la reversión debe ser exacta o se rechaza.</p>
