@@ -2600,3 +2600,12 @@
 .moduleCommunity .communityReconciliationScroll thead th{background:#153755;color:#aeeaff;font-weight:800}
 .moduleCommunity .communityReconciliationScroll tbody tr:last-child :is(th,td){border-bottom:0}
 .moduleCommunity .communityReconciliationScroll tbody tr:hover{background:rgba(90,190,244,.08)}
+
+/* LIRYGAMES · Clientes y Comunidad — legibilidad y continuidad de interacción */
+.moduleCommunity select,.moduleCommunity .formGrid select,.moduleCommunity .communityMemberFilters select{color:#f5f9ff!important;background-color:#101a31!important;border:1px solid rgba(114,220,255,.64)!important;color-scheme:dark;min-height:44px;font-size:14px;font-weight:650;line-height:1.35;cursor:pointer}
+.moduleCommunity select option,.moduleCommunity select optgroup{color:#f7fbff!important;background:#101a31!important;font-weight:600}
+.moduleCommunity select:focus-visible,.moduleCommunity .communityMemberFilters select:focus-visible{outline:2px solid #81eaff;outline-offset:2px;box-shadow:0 0 0 4px rgba(79,216,255,.15),0 0 22px rgba(124,77,255,.14)}
+.moduleCommunity .communitySectionNav a,.moduleCommunity .communityManagementNav a{transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease}
+.moduleCommunity .communitySectionNav a:hover,.moduleCommunity .communityManagementNav a:hover{transform:translateY(-2px);border-color:rgba(114,220,255,.75);box-shadow:0 6px 22px rgba(79,216,255,.13)}
+.moduleCommunity .communitySectionNav a:focus-visible,.moduleCommunity .communityManagementNav a:focus-visible{outline:2px solid #81eaff;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.moduleCommunity .communitySectionNav a,.moduleCommunity .communityManagementNav a{transition:none!important}.moduleCommunity .communitySectionNav a:hover,.moduleCommunity .communityManagementNav a:hover{transform:none!important}}
