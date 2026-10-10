@@ -7,9 +7,12 @@ const themes=["COMPETITIVO · ACCIÓN · MULTIJUGADOR","ESTRATEGIA · ACCIÓN ·
 const publicCodenames=["LIRY // ARENA-01","LIRY // BOT-02","LIRY // ECON-03","LIRY // EARTH-04","LIRY // LINK-05","LIRY // REALM-06","LIRY // EMOTION-07","LIRY // TITAN-08","LIRY // CODE-09"];
 const catalogArt=["/lirygames-games/skill-arena.webp","/lirygames-games/inflabots-arena.webp","/lirygames-games/la-batalla-del-dinero.webp","/lirygames-games/gaias-last-stand.webp","/lirygames-games/nexo-social.webp","/lirygames-games/eternun.webp","/lirygames-games/fragmentun.webp","/lirygames-games/cripto-titans.webp","/lirygames-games/codeverse.webp"];
 const traits=["Explorador","Estratega","Competidor","Social","Acción","Creativo"];
+const traitDescriptions=["Te atrae descubrir mundos, secretos y caminos alternativos.","Disfrutas planificar, administrar recursos y anticipar decisiones.","Te motivan los desafíos, las metas y la superación personal.","Prefieres colaborar, comunicarte y compartir experiencias.","Buscas ritmo, reflejos y situaciones llenas de energía.","Te gusta construir, experimentar e imaginar nuevas soluciones."];
 
 export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
   const catalogRef=useRef<HTMLDivElement>(null);
+  const [exploringDna,setExploringDna]=useState(false);
+  const [activeTrait,setActiveTrait]=useState(0);
   const [catalogHeight,setCatalogHeight]=useState<number|null>(null);
   useEffect(()=>{
     const catalog=catalogRef.current;
@@ -42,7 +45,8 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
         <img className={styles.dnaMap} src="/liry-dna-cinematic.svg" alt="" loading="eager" decoding="async" /><img className={styles.dnaPhotoUpper} src="/LIRY_DNA_Hiperrealista.png" alt="" loading="eager" decoding="async" onLoad={(e)=>e.currentTarget.classList.add(styles.dnaPhotoLoaded)} onError={(e)=>e.currentTarget.style.display="none"} />
       </div>
       <p>Conoce los seis estilos que formarán parte de tu identidad gamer.</p>
-      <a className={styles.dnaSideButton} href="#liry-dna">EXPLORAR ESTILOS →</a>
+      <button type="button" className={styles.dnaSideButton} aria-expanded={exploringDna} aria-controls="liry-dna-explorer" onClick={()=>setExploringDna(v=>!v)}>{exploringDna?"CERRAR EXPLORACIÓN ↑":"EXPLORAR ESTILOS →"}</button>
+      {exploringDna&&<div id="liry-dna-explorer" className={styles.dnaExplorer}><p className={styles.dnaExplorerLabel}>CONOCE LOS SEIS ESTILOS</p><div className={styles.dnaExplorerChoices} role="group" aria-label="Elegir un estilo gamer">{traits.map((trait,i)=><button type="button" key={trait} className={activeTrait===i?styles.dnaExplorerSelected:styles.dnaExplorerChoice} onClick={()=>setActiveTrait(i)} aria-pressed={activeTrait===i}>{trait}</button>)}</div><p className={styles.dnaExplorerDescription}><strong>{traits[activeTrait]}</strong> — {traitDescriptions[activeTrait]}</p><small>Exploración informativa: no es una evaluación ni se almacena información personal.</small></div>}
       <ul className={styles.dnaTraitList}>
         {traits.map((trait,i)=><li key={trait}><span className={styles.dnaTraitIndex}>{i+1}</span><span>{trait}</span><span className={styles.dnaTraitPending}>Por evaluar</span><span className={styles.dnaTraitTrack} aria-hidden="true"><span className={styles.dnaTraitShimmer}/></span></li>)}
       </ul>
