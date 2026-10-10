@@ -336,6 +336,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
         <p>{a.description||a.source||"Actividad registrada"}<br/>{new Date(a.occurred_at).toLocaleString("es-US")}</p>
         {isCorrection&&<p>Vinculada a actividad original: <code>{String(a.correction_of).slice(0,8)}…</code></p>}
         {correctedHere&&<p>Existe una corrección vinculada a esta actividad.</p>}
+        {!isCorrection&&Number(a.points_delta)!==0&&<p><a href={`?correctionId=${encodeURIComponent(a.id)}#comunidad-corregir-actividad`}>REVISAR PARA CORRECCIÓN →</a></p>}
       </article>})}
       {!actionRows.length&&<article className={styles.card}><h3>{activityError?"Error de consulta":activityType||activitySearch?"Sin coincidencias":"Sin actividad registrada todavía"}</h3><p>{activityError?"No fue posible consultar las actividades.":activityType||activitySearch?"No existen actividades que coincidan con estos filtros.":"Compartidos, referidos, opiniones beta y otras acciones podrán registrarse aquí."}</p></article>}
     </section>
@@ -380,7 +381,7 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
       </MasterActionForm>
       </section>
       <section className={`${styles.adminForms} ${styles.adminFormsSingle}`}>
-        <form method="GET" action="/admin/master/community" className={styles.communityMemberFilters}>
+        <form method="GET" action="/admin/master/community#comunidad-corregir-actividad" className={styles.communityMemberFilters}>
                 <label>Buscar actividad antigua por identificador
                   <input name="correctionId" defaultValue={correctionId} maxLength={36} placeholder="Identificador UUID completo"/>
                 </label>
