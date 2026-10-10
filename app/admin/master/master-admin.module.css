@@ -2531,3 +2531,15 @@
 .moduleCommunity .communityMemberFilters button,.moduleCommunity .communityMemberFilters>a,.moduleCommunity .communityActivityPages a{border-radius:10px;min-height:44px}
 @media(max-width:1080px){.moduleCommunity .communityContactActions{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.moduleCommunity .communityContactActions{grid-template-columns:1fr;padding:12px}.moduleCommunity .communityContactActions>a{min-height:52px}.moduleCommunity .communitySectionNav{grid-template-columns:1fr}.moduleCommunity .communitySectionNav>a{min-height:47px}}
+
+/* Comunidad: coherencia visual de acciones, formularios y paginación. */
+.moduleCommunity .communityMemberFilters{display:grid;grid-template-columns:minmax(180px,2fr) repeat(2,minmax(140px,1fr)) auto auto;align-items:end;gap:12px}
+.moduleCommunity .communityMemberFilters label{min-width:0}
+.moduleCommunity .communityMemberFilters button,.moduleCommunity .communityMemberFilters>a{min-width:105px;margin:0;white-space:normal;text-align:center;border-radius:10px;box-shadow:inset 0 1px rgba(195,235,255,.12)}
+.moduleCommunity .communityMemberFilters button:hover,.moduleCommunity .communityMemberFilters>a:hover{background:linear-gradient(125deg,#176da9,#194774);border-color:#9aeaff;box-shadow:0 0 22px rgba(90,211,255,.3);transform:translateY(-2px)}
+.moduleCommunity .communityMemberFilterCount{grid-column:1/-1;margin-top:2px;text-align:right}
+.moduleCommunity .communityActivityPages{padding:12px;border:1px solid rgba(107,199,255,.25);border-radius:13px;background:linear-gradient(120deg,#111c37,#0b1730)}
+.moduleCommunity .communityActivityPages a,.moduleCommunity .communityActivityPages span{min-width:115px}
+.moduleCommunity .communityActivityPages strong{text-align:center;line-height:1.6}
+@media(max-width:1050px){.moduleCommunity .communityMemberFilters{grid-template-columns:repeat(2,minmax(0,1fr))}.moduleCommunity .communityMemberFilters label:first-child{grid-column:1/-1}.moduleCommunity .communityMemberFilterCount{grid-column:1/-1}}
+@media(max-width:600px){.moduleCommunity .communityMemberFilters{grid-template-columns:1fr}.moduleCommunity .communityMemberFilters label:first-child{grid-column:auto}.moduleCommunity .communityMemberFilters button,.moduleCommunity .communityMemberFilters>a{width:100%}.moduleCommunity .communityMemberFilterCount{text-align:center}.moduleCommunity .communityActivityPages{gap:8px}.moduleCommunity .communityActivityPages a,.moduleCommunity .communityActivityPages span{min-width:0;flex:1 1 125px}.moduleCommunity .communityActivityPages strong{flex:1 1 100%}}
