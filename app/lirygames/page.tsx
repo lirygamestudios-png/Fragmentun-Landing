@@ -102,6 +102,27 @@ export default async function LiryGamesFrontDesk(){
           <p className={styles.liryBoostDetail}>{step.detail}</p>
         </article>)}
       </div>
+      <div className={styles.liryLeaderboard} aria-labelledby="liry-top-title">
+        <div className={styles.liryLeaderboardHeader}>
+          <span className={styles.liryLeaderboardEyebrow}>LIRYBOOST · CLASIFICACIÓN</span>
+          <h3 id="liry-top-title">TOP 10</h3>
+          <p>Diez posiciones esperando a sus primeros participantes verificados.</p>
+          <span className={styles.liryLeaderboardPending}>COMPETENCIA AÚN NO ACTIVADA</span>
+        </div>
+        <div className={styles.liryPodium} aria-label="Podio pendiente de participantes">
+          {[2,1,3].map(rank=><div key={rank} className={styles.liryPodiumParticipant}>
+            <span className={styles.liryPodiumMedal} aria-hidden="true">{rank===1?"♛":rank===2?"◇":"✧"}</span>
+            <span className={styles.liryPodiumVacant}>POSICIÓN LIBRE</span>
+            <div className={styles.liryPodiumPlinth} data-rank={rank}><strong>#{rank}</strong></div>
+          </div>)}
+        </div>
+        <ol className={styles.liryTopRest} start={4} aria-label="Puestos del cuarto al décimo">
+          {[4,5,6,7,8,9,10].map(rank=><li key={rank} className={styles.liryTopRow}>
+            <strong>{String(rank).padStart(2,"0")}</strong><span>Posición disponible</span><small>Sin participantes</small>
+          </li>)}
+        </ol>
+        <p className={styles.liryTopFootnote}>No mostramos posiciones ocupadas, puntuaciones ni rankings ficticios. El tablero reflejará datos verificados cuando el programa se active.</p>
+      </div>
       <div className={styles.liryBoostActions}>
         <a className={styles.button} href="#social">COMPARTIR LIRYGAMES →</a>
         <a href="#contacto" className={styles.liryBoostSecondary}>RECIBIR NOVEDADES →</a>
