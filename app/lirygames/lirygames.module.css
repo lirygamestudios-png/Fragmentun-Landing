@@ -906,3 +906,18 @@
 .page :global(.liryContactSubmit){display:inline-flex;align-items:center;justify-content:center;width:fit-content;min-height:42px;padding:11px 23px;border-radius:22px;border:1px solid #32ccff;background:linear-gradient(120deg,#075b91,#0a78b3);color:#fff;font-size:11px;font-weight:800;letter-spacing:.06em;cursor:pointer;transition:background .2s,border-color .2s,box-shadow .2s,transform .2s}
 .page :global(.liryContactSubmit:hover),.page :global(.liryContactSubmit:focus-visible){background:linear-gradient(120deg,#0b84c4,#0a426d);border-color:#a3efff;box-shadow:0 0 28px rgba(66,219,255,.65),inset 0 0 10px rgba(80,210,255,.2);transform:translateY(-1px)}
 .page :global(.liryContactSubmit:disabled){opacity:.65;cursor:wait;transform:none}
+
+/* LiryBoost: hereda identidad cromática, tipografía y movimiento del FrontDesk aprobado. */
+.liryBoostSection{scroll-margin-top:100px;background:radial-gradient(ellipse at 80% 15%,rgba(36,82,145,.14),transparent 50%),transparent}
+.liryBoostSteps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:24px}
+.liryBoostStep{position:relative;min-width:0;padding:22px;background:linear-gradient(155deg,#041323,#020914 90%);border:1px solid #19507799;border-radius:9px;box-shadow:inset 0 0 24px #0c295322;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.liryBoostStep:hover{transform:translateY(-3px);border-color:#54b8fd;box-shadow:inset 0 0 24px #0c295344,0 12px 30px rgba(6,35,73,.22)}
+.liryBoostNumber{display:block;font-size:11px;font-weight:800;letter-spacing:.15em;color:#61daff;margin-bottom:12px}
+.liryBoostStepTitle{display:block;font-size:15px;font-weight:800;letter-spacing:.06em;color:#ecf8ff;margin-bottom:9px}
+.liryBoostDetail{margin:0;line-height:1.7;font-size:13px;color:#a8c0df}
+.liryBoostActions{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:22px}
+.liryBoostActions .button{margin-top:0}
+.liryBoostSecondary{color:#80cdff;text-decoration:underline;text-underline-offset:4px;font-size:12px;font-weight:700}
+.liryBoostNotice{margin-top:18px;font-size:12px;line-height:1.7;color:#90a8c5}
+@media(max-width:800px){.liryBoostSteps{grid-template-columns:1fr;gap:12px}.liryBoostStep{padding:18px}}
+@media(prefers-reduced-motion:reduce){.liryBoostStep{transition:none}.liryBoostStep:hover{transform:none}}
