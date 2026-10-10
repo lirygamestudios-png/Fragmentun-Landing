@@ -64,6 +64,20 @@ async function createMember(formData:FormData){
   if(!allowed.has(tier)) throw new Error("invalid_tier");
   if((displayName?.length||0)>120||(email?.length||0)>254||(handle?.length||0)>80||(source?.length||0)>200)throw new Error("Los datos del miembro superan la longitud permitida.");
   if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw new Error("El correo del miembro no tiene un formato válido.");
+  // Evitar altas repetidas con el mismo correo o usuario antes de registrar el miembro.
+  // La unicidad concurrente requiere además restricciones en la base de datos.
+  if(email){
+    const {data:duplicateByEmail,error:emailError}=await supabase.from("community_members")
+      .select("id").ilike("email",email).limit(1);
+    if(emailError)throw new Error("No fue posible verificar si el correo ya está registrado.");
+    if(duplicateByEmail?.length)throw new Error("Ya existe un miembro con ese correo.");
+  }
+  if(handle){
+    const {data:duplicateByHandle,error:handleError}=await supabase.from("community_members")
+      .select("id").ilike("handle",handle).limit(1);
+    if(handleError)throw new Error("No fue posible verificar si el usuario ya está registrado.");
+    if(duplicateByHandle?.length)throw new Error("Ya existe un miembro con ese usuario.");
+  }
   const{error}=await supabase.from("community_members").insert({
     display_name:displayName,email,handle,source,tier,beta_priority:tier==="beta_priority",created_by:user.id
   });
