@@ -15,6 +15,7 @@ const errorMessages:Record<string,string>={
   invalid_action:"Revisa el miembro, el tipo de actividad y los puntos que quieres registrar.",
   invalid_member_update:"Revisa los campos del miembro: estado, nivel, puntos, etiquetas y notas.",
   community_action_create_failed:"No se pudo registrar la actividad. Inténtalo nuevamente.",
+  community_adjustment_reason_required:"Para descontar puntos debes explicar el motivo con al menos 10 caracteres.",
   community_points_limit:"La actividad superaría el límite permitido de puntos del miembro.",
   community_action_transaction_failed:"No fue posible guardar la actividad y los puntos. Inténtalo nuevamente.",
   mfa_required:"Completa la verificación en dos pasos antes de realizar esta acción.",
