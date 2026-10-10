@@ -54,6 +54,11 @@ export function MasterSubmitButton({
       if(Number.isSafeInteger(balance)&&balance>=0&&raw.trim()!==""&&Number.isSafeInteger(delta)&&Math.abs(delta)<=100000){
         const applied=Math.max(-balance,delta);
         message="¿Confirmas el movimiento de puntos?\n\nSaldo consultado: "+balance+"\nSolicitado: "+delta+"\nAplicación estimada: "+applied+"\nSaldo estimado: "+(balance+applied)+"\n\nEl servidor recalculará el saldo al guardar.";
+        if(balance+applied>100000000){
+          event.preventDefault();
+          window.alert("El saldo estimado superaría el límite de 100.000.000 puntos. Reduce la cantidad antes de continuar.");
+          return;
+        }
       }
     }
     if(message&&!window.confirm(message)){
