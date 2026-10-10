@@ -28,10 +28,10 @@ export function CommunityMemberEditFields({members}:{members:Member[]}){
    <label>Estado<select name="status" defaultValue={member.status}><option value="active">Activo</option><option value="inactive">Inactivo</option><option value="blocked">Bloqueado</option><option value="left">Salida</option></select></label>
    <label>Nivel<select name="tier" defaultValue={member.tier}><option value="member">Miembro</option><option value="engaged">Participativo</option><option value="advocate">Promotor</option><option value="beta_priority">Prioridad beta</option><option value="moderator">Moderador</option></select></label>
    <label>Prioridad beta<select name="beta_priority" defaultValue={String(member.beta_priority)}><option value="false">No</option><option value="true">Sí</option></select></label>
-   <label>Puntos<input type="number" min="0" name="points" defaultValue={member.points}/></label>
-   <label>Fuente<input name="source" defaultValue={member.source||""}/></label>
-   <label>Etiquetas<input name="tags" defaultValue={(member.tags||[]).join(", ")} placeholder="beta, promotor, creador"/></label>
-   <label className="community-member-notes">Notas<textarea name="notes" rows={3} defaultValue={member.notes||""}/></label>
+   <label>Puntos<input type="number" min="0" max="100000000" step="1" name="points" defaultValue={member.points}/></label>
+   <label>Fuente<input name="source" maxLength={200} defaultValue={member.source||""}/></label>
+   <label>Etiquetas<input name="tags" maxLength={1529} defaultValue={(member.tags||[]).join(", ")} placeholder="beta, promotor, creador"/></label>
+   <label className="community-member-notes">Notas<textarea name="notes" rows={3} maxLength={3000} defaultValue={member.notes||""}/></label>
   </div>}
  </div>;
 }
