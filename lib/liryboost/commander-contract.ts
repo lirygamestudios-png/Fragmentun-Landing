@@ -31,7 +31,7 @@ export function summarizeLiryBoostReferrals(
  // y ordenados desde el almacén transaccional.
  const latest=new Map<string,LiryBoostReferralEvent>();
  for(const event of events){
-  if(event.referrerUserId!==referrerUserId||!event.invitedUserId.trim())continue;
+  if(event.referrerUserId!==referrerUserId||!event.invitedUserId.trim()||!Number.isFinite(Date.parse(event.occurredAt)))continue;
   const previous=latest.get(event.invitedUserId);
   if(!previous||event.occurredAt>=previous.occurredAt)latest.set(event.invitedUserId,event);
  }
@@ -39,7 +39,7 @@ export function summarizeLiryBoostReferrals(
   if(event.status==="verified"&&event.verifiedAt&&Number.isFinite(Date.parse(event.verifiedAt)))summary.verifiedInvitations++;
   else if(event.status==="pending")summary.pendingInvitations++;
   else if(event.status==="rejected")summary.rejectedInvitations++;
-  else summary.revokedInvitations++;
+  else if(event.status==="revoked")summary.revokedInvitations++;
  }
  return summary;
 }
