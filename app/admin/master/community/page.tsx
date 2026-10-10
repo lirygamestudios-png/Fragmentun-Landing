@@ -109,7 +109,7 @@ async function updateMember(formData:FormData){
   revalidatePath("/admin/master/community");
 }
 
-export default async function CommunityPage({searchParams}:{searchParams:Promise<{memberStatus?:string;memberTier?:string;memberSearch?:string;activityType?:string;activitySearch?:string;activityPage?:string}>}){
+export default async function CommunityPage({searchParams}:{searchParams:Promise<{memberStatus?:string;memberTier?:string;memberSearch?:string;memberPage?:string;activityType?:string;activitySearch?:string;activityPage?:string}>}){
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user) redirect("/admin/lirygames/login");
@@ -147,6 +147,12 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
     (!memberTier||m.tier===memberTier)&&
     (!memberSearch||[m.display_name,m.handle,m.email].some(v=>String(v||"").toLocaleLowerCase("es").includes(memberSearch)))
   );
+  const memberPageRequested=/^[1-9]\d{0,3}$/.test(filters.memberPage||"")?Number(filters.memberPage):1;
+  const memberPageSize=30;
+  const memberPages=Math.max(1,Math.ceil(filteredMemberRows.length/memberPageSize));
+  const memberPage=Math.min(memberPageRequested,memberPages);
+  const visibleMembers=filteredMemberRows.slice((memberPage-1)*memberPageSize,memberPage*memberPageSize);
+  const memberLink=(page:number)=>{const p=new URLSearchParams();if(memberStatus)p.set("memberStatus",memberStatus);if(memberTier)p.set("memberTier",memberTier);if(memberSearch)p.set("memberSearch",memberSearch);p.set("memberPage",String(page));return "?"+p.toString()+"#comunidad-miembros";};
   const actionRows=(actions||[]) as any[];
   const actionPages=Math.max(1,Math.ceil((actionCount||0)/activityPageSize));
   const activityLink=(page:number)=>{const p=new URLSearchParams();if(activityType)p.set("activityType",activityType);if(activitySearch)p.set("activitySearch",activitySearch);p.set("activityPage",String(page));return "?"+p.toString()+"#comunidad-participacion";};
@@ -214,13 +220,21 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
       <span className={styles.communityMemberFilterCount}>{filteredMemberRows.length} de {memberRows.length} miembros</span>
     </form>
     <section className={styles.grid}>
-      {filteredMemberRows.map((m:any)=><article key={m.id} className={`${styles.card} ${m.status==="blocked"?styles.cardAttention:["inactive","left"].includes(m.status)?styles.cardMuted:m.beta_priority||m.tier==="beta_priority"?styles.cardPriority:""}`}>
+      {visibleMembers.map((m:any)=><article key={m.id} className={`${styles.card} ${m.status==="blocked"?styles.cardAttention:["inactive","left"].includes(m.status)?styles.cardMuted:m.beta_priority||m.tier==="beta_priority"?styles.cardPriority:""}`}>
         <div className={styles.cardTop}><span className={m.status==="active"?styles.badgeActive:styles.badgePlanned}>{tierLabel(m.tier)}</span><em>{m.points} puntos</em></div>
         <h3>{m.display_name||m.handle||m.email||"Miembro"}</h3>
         <p>{m.handle||m.email||"Sin usuario o correo"}<br/>{m.source||"Fuente no registrada"}<br/>{m.beta_priority?"Beta prioritario":"Acceso beta estándar"}</p>
       </article>)}
       {!filteredMemberRows.length&&<article className={styles.card}><h3>{memberRows.length?"Sin coincidencias":"Registro de comunidad preparado"}</h3><p>{memberRows.length?"No hay miembros con los filtros seleccionados.":"No se han creado miembros ficticios. El registro empieza vacío."}</p></article>}
     </section>
+
+    {memberPages>1&&<nav className={styles.communityActivityPages} aria-label="Páginas de miembros">
+      {memberPage>1?<a href={memberLink(1)}>« PRIMERA</a>:<span>« PRIMERA</span>}
+      {memberPage>1?<a href={memberLink(memberPage-1)}>← ANTERIOR</a>:<span>← ANTERIOR</span>}
+      <strong>Página {memberPage} de {memberPages} · {filteredMemberRows.length} miembros</strong>
+      {memberPage<memberPages?<a href={memberLink(memberPage+1)}>SIGUIENTE →</a>:<span>SIGUIENTE →</span>}
+      {memberPage<memberPages?<a href={memberLink(memberPages)}>ÚLTIMA »</a>:<span>ÚLTIMA »</span>}
+    </nav>}
 
     <section id="comunidad-participacion" className={styles.sectionHead}><div><span>PARTICIPACIÓN</span><h2>Participación reciente</h2></div></section>
     <form method="GET" className={styles.communityMemberFilters} aria-label="Filtrar actividades de participación">
