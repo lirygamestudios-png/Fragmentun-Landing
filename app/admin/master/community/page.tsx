@@ -155,7 +155,8 @@ export default async function CommunityPage({searchParams}:{searchParams:Promise
   const memberLink=(page:number)=>{const p=new URLSearchParams();if(memberStatus)p.set("memberStatus",memberStatus);if(memberTier)p.set("memberTier",memberTier);if(memberSearch)p.set("memberSearch",memberSearch);p.set("memberPage",String(page));return "?"+p.toString()+"#comunidad-miembros";};
   const actionRows=(actions||[]) as any[];
   const actionPages=Math.max(1,Math.ceil((actionCount||0)/activityPageSize));
-  const activityLink=(page:number)=>{const p=new URLSearchParams();if(activityType)p.set("activityType",activityType);if(activitySearch)p.set("activitySearch",activitySearch);p.set("activityPage",String(page));return "?"+p.toString()+"#comunidad-participacion";};
+  const activityLink=(page:number)=>{const p=new URLSearchParams();if(activityType)p.set("activityType",activityType);if(activitySearch)p.set("activitySearch",activitySearch);if(memberStatus)p.set("memberStatus",memberStatus);if(memberTier)p.set("memberTier",memberTier);if(memberSearch)p.set("memberSearch",memberSearch);p.set("activityPage",String(page));return "?"+p.toString()+"#comunidad-participacion";};
+  if(!activityError&&actionCount!==null&&activityPage>actionPages)redirect("/admin/master/community"+activityLink(actionPages));
   const active=memberRows.filter(m=>m.status==="active");
   const beta=memberRows.filter(m=>m.beta_priority||m.tier==="beta_priority");
   const advocates=memberRows.filter(m=>m.tier==="advocate");
