@@ -19,3 +19,14 @@ test("ignora eventos de otro participante",()=>{
  const result=summarizeLiryBoostReferrals([{...base,referrerUserId:"other"}],"a");
  assert.equal(result.pendingInvitations,0);
 });
+
+test("fecha inválida de verificación no se trata como revocación",()=>{
+ const r=summarizeLiryBoostReferrals([{...base,status:"verified",verifiedAt:"sin-fecha"}],"a");
+ assert.equal(r.verifiedInvitations,0);
+ assert.equal(r.revokedInvitations,0);
+});
+test("evento sin fecha válida no modifica el estado vigente",()=>{
+ const r=summarizeLiryBoostReferrals([base,{...base,eventId:"2",occurredAt:"fecha-mala",status:"revoked"}],"a");
+ assert.equal(r.pendingInvitations,1);
+ assert.equal(r.revokedInvitations,0);
+});
