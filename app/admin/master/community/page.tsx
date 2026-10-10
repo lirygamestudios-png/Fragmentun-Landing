@@ -155,7 +155,7 @@ export default async function CommunityPage(){
     <nav className={styles.communitySectionNav} aria-label="Accesos a secciones de Comunidad">
       <a href="#comunidad-miembros">MIEMBROS</a>
       <a href="#comunidad-participacion">PARTICIPACIÓN</a>
-      <a href="#comunidad-gestion" data-open-community-management="true">GESTIÓN Y REGISTROS</a>
+      {["admin","editor","marketing"].includes(profile.role)&&<a href="#comunidad-gestion" data-open-community-management="true">GESTIÓN Y REGISTROS</a>}
     </nav>
     <section className={styles.moduleStrip} aria-label="Estado del módulo">
       <span className={styles.moduleGlyph} aria-hidden="true">CC</span>
