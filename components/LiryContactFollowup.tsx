@@ -8,13 +8,16 @@ export function LiryContactFollowup({id,status,note,assignedTo,responseDraft,own
  const[state,setState]=useState(status),[memo,setMemo]=useState(note||""),[owner,setOwner]=useState(assignedTo||"");
  const[draft,setDraft]=useState(responseDraft||"");
  const[busy,setBusy]=useState(false),[feedback,setFeedback]=useState("");
+ const [saved,setSaved]=useState({status,note:note||"",owner:assignedTo||"",draft:responseDraft||""});
+ const hasChanges=state!==saved.status||memo!==saved.note||owner!==saved.owner||draft!==saved.draft;
  async function save(e:FormEvent<HTMLFormElement>){
   e.preventDefault();setBusy(true);setFeedback("");
   try{
    const r=await fetch("/api/admin/lirygames-contact",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({id,status:state,internalNote:memo,assignedTo:owner||null,responseDraft:draft})});
    const result=await r.json();
    if(!r.ok||!result.ok)throw Error(result.message||"No se pudo guardar.");
-   setFeedback("Cambios guardados correctamente. Vista actualizada.");
+   setSaved({status,note:memo.trim(),owner,draft:draft.trim()});
+   setFeedback("Cambios guardados correctamente.");
    router.refresh();
   }catch(err){setFeedback(err instanceof Error?err.message:"No se pudo guardar.")}
   finally{setBusy(false)}
@@ -38,9 +41,9 @@ export function LiryContactFollowup({id,status,note,assignedTo,responseDraft,own
   <label style={{display:"grid",gap:4,fontSize:11,color:"#aac7dd"}}>Borrador de respuesta (no se envía automáticamente)
    <textarea maxLength={5000} rows={4} value={draft} onChange={e=>setDraft(e.target.value)} placeholder="Redacta aquí la respuesta para el usuario..." style={{background:"#071728",color:"#fff",padding:9,border:"1px solid #35688b",borderRadius:4,resize:"vertical"}}/>
   </label>
-  <div style={{display:"flex",alignItems:"center",gap:12}}>
+  <div style={{display:"flex",alignItems:"center",gap:12,flexWrap:"wrap"}}>
    <button disabled={busy} type="submit" style={{background:"#086fa9",border:"1px solid #24cafa",borderRadius:5,padding:"9px 13px",color:"#fff",fontWeight:700,cursor:"pointer"}}>{busy?"GUARDANDO...":"GUARDAR SEGUIMIENTO"}</button>
-   <span role="status" style={{fontSize:11,color:"#9eddd4"}}>{feedback}</span>
+   <span role="status" aria-live="polite" style={{fontSize:11,color:feedback.startsWith("Cambios guardados")?"#9eddd4":"#ffcd9e"}}>{feedback|| (hasChanges?"● Cambios sin guardar":"Sin cambios pendientes")}</span>
   </div>
  </form>
 }
