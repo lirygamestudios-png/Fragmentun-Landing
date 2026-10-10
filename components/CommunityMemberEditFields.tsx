@@ -14,6 +14,12 @@ export function CommunityMemberEditFields({members}:{members:Member[]}){
     </select>
    </label>
    <p role="status">{member?"Datos actuales cargados. Revisa los cambios antes de guardar.":"Selecciona un miembro para cargar sus datos actuales."}</p>
+   {member&&<div className="community-member-edit-identity" aria-label="Identidad del miembro seleccionado">
+    <strong>{member.display_name||member.handle||"Miembro registrado"}</strong>
+    <span>{member.email||"Sin correo registrado"}</span>
+    <span>{member.handle||"Sin usuario registrado"}</span>
+    <button type="button" onClick={()=>setResetKey(v=>v+1)}>RESTAURAR DATOS CARGADOS ↻</button>
+   </div>}
   </div>
   {member&&<div key={member.id+"-"+resetKey} className="community-member-edit-grid">
    <label>Estado<select name="status" defaultValue={member.status}><option value="active">Activo</option><option value="inactive">Inactivo</option><option value="blocked">Bloqueado</option><option value="left">Salida</option></select></label>
