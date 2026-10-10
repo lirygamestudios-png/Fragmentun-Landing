@@ -78,3 +78,8 @@
 .messageDates{display:grid;gap:5px;text-align:right;font-size:11px;color:#a9c8df;font-variant-numeric:tabular-nums}
 .messageDates span:last-child:not(:first-child){color:#8be2f2}
 @media(max-width:560px){.messageDates{text-align:left}}
+
+.pagination{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:14px;margin:24px 0 12px;color:#b5d8ec;font-size:12px}
+.pagination a,.pagination span{display:inline-flex;align-items:center;justify-content:center;min-width:126px;min-height:40px;padding:10px 13px;border:1px solid rgba(107,199,255,.43);border-radius:9px;background:linear-gradient(120deg,#103957,#12244a);color:#e4faff;text-decoration:none;font-size:11px;font-weight:750}
+.pagination span{opacity:.4}.pagination a:hover{border-color:#8fe8ff;box-shadow:0 0 18px rgba(85,202,255,.25)}
+.pagination a:focus-visible{outline:2px solid #8ceaff;outline-offset:3px}
