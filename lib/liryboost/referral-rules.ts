@@ -29,7 +29,7 @@ export function rankVerifiedReferrals(
  const counts=new Map<string,{count:number;firstVerifiedAt:string}>();
  for(const item of verifiedReferrals){
   const invited=item.invitedId.trim(),referrer=item.referrerId.trim();
-  if(!invited||!referrer||referrer===invited||unique.has(invited))continue;
+  if(!invited||!referrer||referrer===invited||!Number.isFinite(Date.parse(item.verifiedAt))||unique.has(invited))continue;
   unique.add(invited);
   const entry=counts.get(referrer);
   if(entry){entry.count+=1;if(item.verifiedAt<entry.firstVerifiedAt)entry.firstVerifiedAt=item.verifiedAt;}
