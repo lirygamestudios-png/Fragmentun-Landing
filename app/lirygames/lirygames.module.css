@@ -991,3 +991,17 @@
  .liryBoostEnrollmentForm .liryBoostConsent{line-height:1.5;align-items:flex-start;gap:10px}
  .liryBoostEnrollmentForm .liryBoostConsent span{min-width:0}
 }
+
+/* Liry ADN — exploración informativa e interactiva de estilos */
+.dnaSide .dnaSideButton{cursor:pointer;font:inherit;font-size:11px;font-weight:800;letter-spacing:.03em}
+.dnaExplorer{margin:14px 0;padding:15px;border:1px solid rgba(85,210,255,.38);border-radius:12px;background:linear-gradient(135deg,rgba(16,45,78,.91),rgba(13,21,47,.94));animation:liryDnaReveal .26s ease-out}
+.dnaExplorerLabel{margin:0 0 10px!important;color:#8bdeff!important;font-size:10px!important;font-weight:800;letter-spacing:.12em}
+.dnaExplorerChoices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.dnaExplorerChoice,.dnaExplorerSelected{padding:9px 6px;min-height:40px;border:1px solid rgba(112,174,226,.4);border-radius:8px;background:#0a203a;color:#e5f4ff;font-size:11px;font-weight:650;cursor:pointer;transition:background .16s,border-color .16s,box-shadow .16s}
+.dnaExplorerSelected{border-color:#70e3ff;background:#17456a;box-shadow:0 0 14px rgba(65,187,249,.2);color:#fff}
+.dnaExplorerChoice:hover{border-color:#88dbff;background:#153653}
+.dnaExplorerChoice:focus-visible,.dnaExplorerSelected:focus-visible,.dnaSide .dnaSideButton:focus-visible{outline:2px solid #8ceaff;outline-offset:3px}
+.dnaExplorerDescription{color:#d4e8fa!important;line-height:1.55!important;margin:12px 0 8px!important}
+.dnaExplorerDescription strong{color:#7adfff}
+@keyframes liryDnaReveal{from{opacity:.2;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.dnaExplorer{animation:none}.dnaExplorerChoice,.dnaExplorerSelected{transition:none}}
