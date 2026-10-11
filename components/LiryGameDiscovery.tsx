@@ -5,7 +5,7 @@ import styles from "../app/lirygames/lirygames.module.css";
 
 const themes=["COMPETITIVO · ACCIÓN · MULTIJUGADOR","ESTRATEGIA · ACCIÓN · MULTIJUGADOR","EKONIA · ESTRATEGIA · SIMULACIÓN","SUPERVIVENCIA · RPG · MUNDO ABIERTO","SOCIAL · SIMULACIÓN · MULTIJUGADOR","FANTASÍA · RPG · MUNDO ABIERTO","PUZZLE · AVENTURA · EXPLORACIÓN","ESTRATEGIA · NFT · MULTIJUGADOR","PLATAFORMAS · AVENTURA · PUZZLES"];
 const publicCodenames=["LIRY // ARENA-01","LIRY // BOT-02","LIRY // ECON-03","LIRY // EARTH-04","LIRY // LINK-05","LIRY // REALM-06","LIRY // EMOTION-07","LIRY // TITAN-08","LIRY // CODE-09"];
-const catalogArt=["/lirygames-games/skill-arena.webp","/lirygames-games/inflabots-arena.webp","/lirygames-games/la-batalla-del-dinero.webp","/lirygames-games/gaias-last-stand.webp","/lirygames-games/nexo-social.webp","/lirygames-games/eternun.webp","/lirygames-games/fragmentun.webp","/lirygames-games/cripto-titans.webp","/lirygames-games/codeverse.webp"];
+const catalogArt=["/liry-assets/world-01.webp","/liry-assets/world-02.webp","/liry-assets/world-03.webp","/liry-assets/world-04.webp","/liry-assets/world-05.webp","/liry-assets/world-06.webp","/liry-assets/world-07.webp","/liry-assets/world-08.webp","/liry-assets/world-09.webp"];
 const traits=["Explorador","Estratega","Competidor","Social","Acción","Creativo"];
 const traitDescriptions=["Te atrae descubrir mundos, secretos y caminos alternativos.","Disfrutas planificar, administrar recursos y anticipar decisiones.","Te motivan los desafíos, las metas y la superación personal.","Prefieres colaborar, comunicarte y compartir experiencias.","Buscas ritmo, reflejos y situaciones llenas de energía.","Te gusta construir, experimentar e imaginar nuevas soluciones."];
 
