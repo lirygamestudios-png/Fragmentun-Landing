@@ -2,7 +2,7 @@
 export type LiryIdentityKind="visitor"|"registered"|"active";
 export type LiryVisitorIdentity={kind:"visitor";userId:null;displayName:"Visitante";verifiedAt:null};
 export type LiryRegisteredIdentity={kind:"registered";userId:string;displayName:string;verifiedAt:string};
-export type LiryActiveIdentity=LiryRegisteredIdentity&{kind:"active";activityVerifiedAt:string};
+export type LiryActiveIdentity=Omit<LiryRegisteredIdentity,"kind">&{kind:"active";activityVerifiedAt:string};
 export type LiryPublicIdentity=LiryVisitorIdentity|LiryRegisteredIdentity|LiryActiveIdentity;
 export const LIRY_VISITOR_IDENTITY:Readonly<LiryVisitorIdentity>=Object.freeze({kind:"visitor",userId:null,displayName:"Visitante",verifiedAt:null});
 /** No usar este contrato para decidir permisos: toda autorización pertenece al servidor. */
