@@ -6,6 +6,9 @@ const locales = ["es", "en"] as const;
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const method=request.method.toUpperCase();
+  // Restringir rutas históricas que exponen nombres internos de las IP.
+  if(pathname.startsWith("/lirygames-games/")) return new NextResponse(null,{status:404,headers:{"Cache-Control":"no-store"}});
+
 
   if(
     (pathname.startsWith("/api/admin") || pathname.startsWith("/api/auth")) &&
