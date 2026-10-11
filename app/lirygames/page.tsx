@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {LiryShare} from "../../components/LiryShare";
+import {LiryStoreCategories} from "../../components/LiryStoreCategories";
 import {LiryOfficialNetworks} from "../../components/LiryOfficialNetworks";
 import {LiryCommunityTabs} from "../../components/LiryCommunityTabs";
 import {LiryBoostTop10} from "../../components/LiryBoostTop10";
@@ -169,15 +170,7 @@ export default async function LiryGamesFrontDesk(){
         <small>Explora nuestras futuras colecciones. Los productos y los pagos se habilitarán únicamente cuando existan artículos y proveedores confirmados.</small>
         <span className={styles.storeComingSoon}>CATÁLOGO PRÓXIMAMENTE</span>
       </div>
-      <div className={styles.storeCategories} aria-label="Categorías previstas para Tienda Liry">
-        {[
-          {name:"ROPA",symbol:"♧",tone:"wear"},
-          {name:"ACCESORIOS",symbol:"◆",tone:"accessories"},
-          {name:"COLECCIONABLES",symbol:"✧",tone:"collectibles"},
-          {name:"ARTE DIGITAL",symbol:"▧",tone:"art"},
-          {name:"EQUIPO GAMER",symbol:"⌘",tone:"gear"}
-        ].map(item=><div className={styles.storeCategory} key={item.name}><div className={`${styles.storeCategoryVisual} ${styles[`storeTone_${item.tone}`]} `} aria-hidden="true">{item.symbol}</div><strong>{item.name}</strong><span className={styles.storeCategoryLine}/></div>)}
-      </div>
+      <LiryStoreCategories />
       <p className={styles.storeLegal}>Modelo freemium: los tres mundos internos iniciales previstos para cada videojuego serán gratuitos; las compras cosméticas serán opcionales. No hay pagos activos ni artículos disponibles actualmente.</p>
     </section>
     <div className={styles.finalDiscover} aria-label="Tu viaje y secretos de Liry">
