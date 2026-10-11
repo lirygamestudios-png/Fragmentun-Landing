@@ -5,7 +5,7 @@ export function LiryBoostEnrollment(){
  const dialogRef=useRef<HTMLDialogElement>(null);
  const triggerRef=useRef<HTMLButtonElement>(null);
  return <>
-  <button ref={triggerRef} type="button" className={styles.liryBoostOpen} onClick={()=>dialogRef.current?.showModal()} aria-haspopup="dialog" aria-controls="liryboost-inscripcion">INSCRÍBETE EN LIRYBOOST →</button>
+  <button ref={triggerRef} type="button" className={styles.liryBoostOpen} onClick={()=>dialogRef.current?.showModal()} aria-haspopup="dialog" aria-controls="liryboost-inscripcion">CONOCE LIRYBOOST →</button>
   <dialog ref={dialogRef} id="liryboost-inscripcion" className={styles.gamerInfoDialog} aria-labelledby="liryboost-enrollment-title" onClose={()=>triggerRef.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
    <div className={styles.gamerInfoDialogInside}>
     <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar inscripción y volver al FrontDesk">×</button></form>
