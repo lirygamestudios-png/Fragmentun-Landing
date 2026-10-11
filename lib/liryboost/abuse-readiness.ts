@@ -10,7 +10,7 @@ export function inspectInactiveLiryBoostAbuse(input:unknown):readonly LiryBoostA
   const x=row as Record<string,unknown>;
   if(![x.referrerId,x.inviteeId,x.invitationId].every(v=>typeof v==="string"&&/^[a-zA-Z0-9_-]{8,80}$/.test(v)))return ["invalid_batch"];
   if(x.referrerId===x.inviteeId)signals.add("self_referral");
-  if(invitationIds.has(x.invitationId)||inviteeIds.has(x.inviteeId))signals.add("duplicate_invitees");
+  if(invitationIds.has(x.invitationId as string)||inviteeIds.has(x.inviteeId as string))signals.add("duplicate_invitees");
   invitationIds.add(x.invitationId as string);inviteeIds.add(x.inviteeId as string);
  }
  if(input.length>25)signals.add("too_many_invites");
