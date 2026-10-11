@@ -153,3 +153,12 @@
  .areaDialogActions .areaLink{width:100%;justify-content:center;white-space:normal;line-height:1.4}
  .areaDialog .areaClose{right:12px;top:10px}
 }
+
+/* Auditoría visual: controles consistentes y selección perceptible en todas las áreas. */
+.grid .areaLink{width:100%;max-width:100%;margin-top:12px;justify-content:center;text-align:center;white-space:normal;line-height:1.45}
+.previewChoices button[aria-pressed="true"]{background:#17668d;border-color:#c1f5ff;color:#fff;box-shadow:inset 0 0 0 1px #b6f2ff8c,0 0 14px #4bd6ff77}
+.previewChoices button[aria-pressed="false"]{opacity:.9}
+.previewChoices button:focus-visible,.previewReset:focus-visible,.areaDialogActions .areaLink:focus-visible{outline:2px solid #d9f9ff;outline-offset:3px}
+.previewOption input{width:18px;height:18px;accent-color:#41c5ed;cursor:pointer}
+.previewOption:focus-within{color:#e4f9ff}
+@media(max-width:560px){.grid .areaLink{min-height:44px;margin-top:14px}.previewChoices button{min-height:44px}}
