@@ -1218,3 +1218,7 @@
 .gamerWorldStatus p{font-size:11px;margin:8px 0}
 .gamerWorldStatus small{margin:0;padding:0;border:0}
 @media(max-width:480px){.gamerWorldChoice{flex-wrap:wrap}.gamerWorldChoice span{white-space:normal}}
+
+/* Perfil Gamer: resaltar afinidad efímera sin modificar dimensiones de tarjetas. */
+.gamerStylesHighlighted>span{border-color:#4ae6ff;box-shadow:inset 0 0 0 1px rgba(74,230,255,.55),0 0 14px rgba(29,208,255,.45);transition:border-color .22s ease,box-shadow .22s ease}
+@media(prefers-reduced-motion:reduce){.gamerStylesHighlighted>span{transition:none}}
