@@ -14,8 +14,8 @@ export function LiryIdAccess(){
  const current=modes.find(x=>x.id===mode)!;
  return <>
   <button type="button" ref={triggerRef} className={styles.gamerCardAction} aria-haspopup="dialog" onClick={()=>{setMode("entrar");dialogRef.current?.showModal()}}>LIRY ID · ACCESO <span aria-hidden="true">→</span></button>
-  <dialog ref={dialogRef} className={`${styles.gamerInfoDialog} ${styles.liryCompactDialog}`} aria-label="Liry ID: acceso a cuenta" onClose={()=>triggerRef.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
-   <div className={styles.gamerInfoDialogInside}>
+  <dialog ref={dialogRef} className={styles.liryStandaloneDialog} aria-label="Liry ID: acceso a cuenta" onClose={()=>triggerRef.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
+   <div className={styles.liryStandaloneContent}>
     <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar Liry ID">×</button></form>
     <p className={styles.gamerInfoEyebrow}>LIRYGAMES STUDIOS · IDENTIDAD ÚNICA</p>
     <h3>{current.heading}</h3>
