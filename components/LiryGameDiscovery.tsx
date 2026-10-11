@@ -9,6 +9,23 @@ const catalogArt=["/lirygames-games/skill-arena.webp","/lirygames-games/inflabot
 const traits=["Explorador","Estratega","Competidor","Social","Acción","Creativo"];
 const traitDescriptions=["Te atrae descubrir mundos, secretos y caminos alternativos.","Disfrutas planificar, administrar recursos y anticipar decisiones.","Te motivan los desafíos, las metas y la superación personal.","Prefieres colaborar, comunicarte y compartir experiencias.","Buscas ritmo, reflejos y situaciones llenas de energía.","Te gusta construir, experimentar e imaginar nuevas soluciones."];
 
+const dnaQuestions=[
+ "¿Disfrutas descubrir secretos y explorar escenarios desconocidos?",
+ "¿Te gusta planificar tácticas y resolver problemas complejos?",
+ "¿Te motivan los desafíos y superar tus propias marcas?",
+ "¿Prefieres jugar y colaborar con otras personas?",
+ "¿Disfrutas los juegos de reflejos y acción intensa?",
+ "¿Te gusta crear, construir o experimentar con nuevas ideas?"
+] as const;
+const dnaOptions=[{label:"Nada",value:0},{label:"Poco",value:1},{label:"Bastante",value:2},{label:"Mucho",value:3}] as const;
+/* Afinidades editoriales orientativas (exploración, estrategia, competencia, social, acción, creatividad).
+   No son telemetría ni resultados de gameplay; solo correspondencia declarada por catálogo. */
+const gameAffinity:number[][]=[
+ [1,1,3,2,3,0],[1,3,3,1,2,1],[1,3,1,0,0,2],
+ [3,2,1,1,3,1],[1,0,1,3,0,2],[3,2,0,1,2,2],
+ [3,1,0,1,1,3],[2,3,2,1,1,1],[2,2,1,1,1,3]
+];
+
 export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
   const catalogRef=useRef<HTMLDivElement>(null);
   const gameCloseRef=useRef<HTMLButtonElement>(null);
@@ -17,6 +34,8 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
   const explorerOpenRef=useRef<HTMLButtonElement>(null);
   const [exploringDna,setExploringDna]=useState(false);
   const [activeTrait,setActiveTrait]=useState(0);
+  const [dnaSurvey,setDnaSurvey]=useState(false);
+  const [dnaAnswers,setDnaAnswers]=useState<(number|null)[]>(Array(6).fill(null));
   const [selectedGame,setSelectedGame]=useState<number|null>(null);
   const [catalogHeight,setCatalogHeight]=useState<number|null>(null);
   useEffect(()=>{
@@ -78,7 +97,21 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
       </div>
       <p>Conoce los seis estilos que formarán parte de tu identidad gamer.</p>
       <button type="button" ref={explorerOpenRef} className={styles.dnaSideButton} aria-expanded={exploringDna} aria-controls="liry-dna-explorer" onClick={()=>setExploringDna(v=>!v)}>{"EXPLORAR ESTILOS →"}</button>
-      {exploringDna&&<div id="liry-dna-explorer" className={styles.dnaExplorer}><div className={styles.dnaExplorerHeading}><p className={styles.dnaExplorerLabel}>CONOCE LOS SEIS ESTILOS</p><button type="button" ref={explorerCloseRef} className={styles.dnaExplorerClose} onClick={()=>{setExploringDna(false);explorerOpenRef.current?.focus();}} aria-label="Cerrar exploración de estilos" title="Cerrar exploración">×</button></div><div className={styles.dnaExplorerChoices} role="group" aria-label="Elegir un estilo gamer">{traits.map((trait,i)=><button type="button" key={trait} className={activeTrait===i?styles.dnaExplorerSelected:styles.dnaExplorerChoice} onClick={()=>setActiveTrait(i)} aria-pressed={activeTrait===i}>{trait}</button>)}</div><p className={styles.dnaExplorerDescription}><strong>{traits[activeTrait]}</strong> — {traitDescriptions[activeTrait]}</p><small>Exploración informativa: no es una evaluación ni se almacena información personal.</small></div>}
+      {exploringDna&&<div id="liry-dna-explorer" className={styles.dnaExplorer}><div className={styles.dnaExplorerHeading}><p className={styles.dnaExplorerLabel}>CONOCE LOS SEIS ESTILOS</p><button type="button" ref={explorerCloseRef} className={styles.dnaExplorerClose} onClick={()=>{setExploringDna(false);explorerOpenRef.current?.focus();}} aria-label="Cerrar exploración de estilos" title="Cerrar exploración">×</button></div><div className={styles.dnaExplorerChoices} role="group" aria-label="Elegir un estilo gamer">{traits.map((trait,i)=><button type="button" key={trait} className={activeTrait===i?styles.dnaExplorerSelected:styles.dnaExplorerChoice} onClick={()=>setActiveTrait(i)} aria-pressed={activeTrait===i}>{trait}</button>)}</div><p className={styles.dnaExplorerDescription}><strong>{traits[activeTrait]}</strong> — {traitDescriptions[activeTrait]}</p><small>Exploración informativa: no es una evaluación ni se almacena información personal.</small>
+      <button type="button" className={styles.dnaSurveyToggle} onClick={()=>setDnaSurvey(v=>!v)} aria-expanded={dnaSurvey}>{dnaSurvey?"OCULTAR CUESTIONARIO":"DESCUBRIR MI LIRY ADN →"}</button>
+      {dnaSurvey&&<div className={styles.dnaSurvey} aria-label="Cuestionario de preferencias Liry ADN">
+        <p>Responde según tus gustos. No necesitas cuenta y las respuestas solo se utilizan en esta sesión.</p>
+        {dnaQuestions.map((question,i)=><fieldset key={question} className={styles.dnaSurveyQuestion}><legend>{i+1}. {question}</legend><div className={styles.dnaSurveyAnswers}>{dnaOptions.map(option=><label key={option.value}><input type="radio" name={`liry-dna-q-${i}`} checked={dnaAnswers[i]===option.value} onChange={()=>setDnaAnswers(current=>current.map((answer,index)=>index===i?option.value:answer))}/>{option.label}</label>)}</div></fieldset>)}
+        {dnaAnswers.every(answer=>answer!==null)?
+          <div className={styles.dnaSurveyResult} aria-live="polite"><h4>TU PERFIL DE AFINIDADES</h4>
+            {traits.map((trait,i)=><div className={styles.dnaResultRow} key={trait}><span>{trait}</span><meter min="0" max="3" value={dnaAnswers[i]??0}>{dnaAnswers[i]} de 3</meter><strong>{Math.round((dnaAnswers[i]??0)/3*100)}%</strong></div>)}
+            <h4>JUEGOS QUE PODRÍAN INTERESARTE</h4>
+            {[...games.map((game,i)=>({game,i,score:gameAffinity[i]?.reduce((sum,weight,j)=>sum+weight*(dnaAnswers[j]??0),0)??0}))]
+              .sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3).map(({game,i})=><button type="button" key={game.slug} className={styles.dnaRecommendation} onClick={()=>{setExploringDna(false);setSelectedGame(i)}}>{game.title} <span>Ver ficha →</span></button>)}
+            <small>Recomendaciones orientativas calculadas a partir de tus respuestas; no representan una evaluación psicológica ni datos de jugadores.</small>
+            <button type="button" className={styles.dnaSurveyRestart} onClick={()=>setDnaAnswers(Array(6).fill(null))}>VOLVER A RESPONDER</button>
+          </div>:<p aria-live="polite">{dnaAnswers.filter(x=>x!==null).length} de 6 respuestas completadas</p>}
+      </div>}</div>}
       <ul className={styles.dnaTraitList}>
         {traits.map((trait,i)=><li key={trait}><span className={styles.dnaTraitIndex}>{i+1}</span><span>{trait}</span><span className={styles.dnaTraitPending}>Por evaluar</span><span className={styles.dnaTraitTrack} aria-hidden="true"><span className={styles.dnaTraitShimmer}/></span></li>)}
       </ul>
