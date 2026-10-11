@@ -19,8 +19,8 @@ export function LiryIdAccess(){
     <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar Liry ID">×</button></form>
     <p className={styles.gamerInfoEyebrow}>LIRYGAMES STUDIOS · IDENTIDAD ÚNICA</p>
     <h3>{current.heading}</h3>
-    <div style={{display:"flex",flexWrap:"wrap",gap:8,margin:"12px 0"}} role="group" aria-label="Opciones de acceso Liry ID">
-     {modes.map(x=><button type="button" key={x.id} aria-pressed={mode===x.id} onClick={()=>setMode(x.id)} style={{border:"1px solid "+(mode===x.id?"#6be8ff":"#315a72"),borderRadius:8,padding:"9px 10px",background:mode===x.id?"#103f5a":"#081b30",color:"#e4f9ff",fontSize:11,cursor:"pointer"}}>{x.label}</button>)}
+    <div className={styles.liryAccessTabs} role="group" aria-label="Opciones de acceso Liry ID">
+     {modes.map(x=><button type="button" key={x.id} aria-pressed={mode===x.id} onClick={()=>setMode(x.id)} className={styles.liryAccessTab}>{x.label}</button>)}
     </div>
     <p className={styles.liryCompactDescription} aria-live="polite">{current.description}</p>
     <div className={styles.liryCompactNotice}>
