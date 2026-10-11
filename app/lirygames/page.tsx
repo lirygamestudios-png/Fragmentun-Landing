@@ -32,10 +32,14 @@ export default async function LiryGamesFrontDesk(){
   // Publicar solo identificadores editoriales: no serializar títulos ni slugs internos de IP.
   const internalCatalog=await getLiryPublicCatalog();
   const publicCodenames=["LIRY // ARENA-01","LIRY // BOT-02","LIRY // ECON-03","LIRY // EARTH-04","LIRY // LINK-05","LIRY // REALM-06","LIRY // EMOTION-07","LIRY // TITAN-08","LIRY // CODE-09"];
-  const games=internalCatalog.map((game,index)=>({
-    ...game,
+  // Lista explícita de campos permitidos: jamás pasar títulos, rutas ni textos internos al cliente.
+  const games=internalCatalog.slice(0,9).map((game,index)=>({
     slug:`liry-public-${String(index+1).padStart(2,"0")}`,
-    title:publicCodenames[index]??`LIRY // PROJECT-${String(index+1).padStart(2,"0")}`
+    title:publicCodenames[index]??`LIRY // PROJECT-${String(index+1).padStart(2,"0")}`,
+    state:game.state,
+    tagline:"Experiencia LIRYGAMES en preparación",
+    playUrl:null,
+    internalWorldCount:game.internalWorldCount
   }));
   return <main className={styles.page}>
     <header className={styles.nav}>
@@ -68,9 +72,10 @@ export default async function LiryGamesFrontDesk(){
             <div className={styles.gamerIdentityText}><strong>Visitante</strong><span>Nivel —</span><div className={styles.gamerXpTrack} aria-label="Experiencia aún no disponible"><span /></div><small>XP pendiente de conexión</small></div>
           </div>
           <p className={styles.gamerMicroLabel}>Tu estilo de juego</p>
-          <div className={styles.gamerStyles}><span>⚔ <b>Explorador</b></span><span>♜ <b>Estratega</b></span><span>✧ <b>Social</b></span></div>
+          <div className={styles.gamerStyles}><span>◇ <b>Por descubrir</b></span></div>
+          <small className={styles.gamerDataNote}>Tu estilo se determinará con tu Liry ADN. Ningún estilo se asigna sin evaluación.</small>
           <div className={styles.gamerMetrics}><div><small>Juegos jugados</small><strong>—</strong></div><div><small>Logros</small><strong>—</strong></div><div><small>Horas de juego</small><strong>—</strong></div></div>
-          <a className={styles.gamerCardAction} href="#perfil-gamer" aria-label="Perfil gamer próximamente">VER MI PERFIL <span aria-hidden="true">→</span></a>
+          <details className={styles.gamerProfileDetails}><summary className={styles.gamerCardAction}>CÓMO ACTIVAR MI PERFIL <span aria-hidden="true">→</span></summary><div className={styles.gamerProfileHelp}><p>Tu perfil completo estará disponible cuando habilitemos las cuentas gamer. Por ahora puedes conocer tus afinidades con Liry ADN sin registrarte.</p><a href="#liry-dna">EXPLORAR LIRY ADN →</a><small>Sin cuenta activa no se guardan niveles, experiencia, partidas ni logros.</small></div></details>
           <small className={styles.gamerDataNote}>Vista preliminar · sin sesión gamer</small>
         </article>
         <article className={styles.gamerCard}>
