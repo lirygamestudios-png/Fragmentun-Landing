@@ -1242,3 +1242,8 @@
 /* Tienda Liry: categorías accionables sin cambiar tamaño o composición. */
 button.storeCategory{font:inherit;color:inherit;cursor:pointer;text-align:center}
 button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4ff;box-shadow:0 0 13px rgba(37,223,255,.2);outline-offset:2px}
+
+/* Secretos de Liry: alinear de manera legible el párrafo principal dentro de su columna. */
+.secretsCopy{box-sizing:border-box;text-align:left}
+.secretsCopy p:nth-of-type(2){text-align:justify;text-align-last:left;hyphens:auto;overflow-wrap:break-word;max-width:38ch}
+@media(max-width:750px){.secretsCopy p:nth-of-type(2){text-align:left;hyphens:none;max-width:none}}
