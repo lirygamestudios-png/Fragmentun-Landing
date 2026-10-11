@@ -17,7 +17,7 @@ export function LiryPrivacyPreview(){
     <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar preferencias">×</button></form>
     <p className={styles.gamerInfoEyebrow}>LIRYGAMES STUDIOS · LIRY ID</p>
     <h3>PREFERENCIAS DE TU PERFIL</h3>
-    <p>Vista de preparación: los cambios solo se muestran aquí. No se guardan en tu equipo ni se envían al servidor.</p>
+    <p className={styles.liryModalJustifiedText}>Vista de preparación: los cambios solo se muestran aquí. No se guardan en tu equipo ni se envían al servidor.</p>
     <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:12}} role="group" aria-label="Apartados">
      <button type="button" className={styles.gamerInfoDone} aria-pressed={tab==="privacidad"} onClick={()=>setTab("privacidad")}>PRIVACIDAD</button>
      <button type="button" className={styles.gamerInfoDone} aria-pressed={tab==="avisos"} onClick={()=>setTab("avisos")}>PREFERENCIAS</button>
