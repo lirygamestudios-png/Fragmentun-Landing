@@ -132,7 +132,7 @@ export default async function LiryGamesFrontDesk(){
       <div className={styles.liryBoostActions}>
         <LiryBoostEnrollment />
         <a href="#social" className={styles.liryBoostSecondary}>COMPARTIR LIRYGAMES →</a>
-        <a href="#contacto" className={styles.liryBoostSecondary}>RECIBIR NOVEDADES →</a>
+        <a href="#contacto" className={styles.liryBoostSecondary}>CONTACTAR CON LIRYGAMES →</a>
       </div>
       <p className={styles.liryBoostNotice}>El registro de participaciones, la validación de invitaciones y el Top 10 todavía no están activos. Compartir ahora no genera puntos ni garantiza acceso beta. Publicaremos las condiciones antes de abrir la competencia.</p>
     </section>
