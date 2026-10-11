@@ -6,6 +6,7 @@ const VALID_STYLES=["Explorador","Estratega","Competidor","Social","Acción","Cr
 export function LiryGamerIdentity(){
  const [avatar,setAvatar]=useState<string|null>(null);
  const [style,setStyle]=useState<string|null>(null);
+ const [highlight,setHighlight]=useState(false);
  const avatarUrl=useRef<string|null>(null);
  const styleTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
  const fileRef=useRef<HTMLInputElement>(null);
@@ -15,6 +16,7 @@ export function LiryGamerIdentity(){
   const handler=(event:Event)=>{
    const value=(event as CustomEvent<{style:string|null}>).detail?.style;
    if(styleTimer.current){clearTimeout(styleTimer.current);styleTimer.current=null;}
+   setHighlight(false);
    setStyle(typeof value==="string"&&VALID_STYLES.some(s=>s===value)?value:null);
   };
   const onDnaClosed=(event:Event)=>{
@@ -22,7 +24,8 @@ export function LiryGamerIdentity(){
     if(!detail||!VALID_STYLES.some(s=>s===detail.style))return;
     if(styleTimer.current)clearTimeout(styleTimer.current);
     setStyle(detail.style);
-    styleTimer.current=setTimeout(()=>{setStyle(null);styleTimer.current=null;},10000);
+    setHighlight(true);
+    styleTimer.current=setTimeout(()=>{setStyle(null);setHighlight(false);styleTimer.current=null;},10000);
   };
   window.addEventListener("liry:dna-style",handler);
   window.addEventListener("liry:dna-closed",onDnaClosed);
@@ -46,7 +49,7 @@ export function LiryGamerIdentity(){
    <div className={styles.gamerIdentityText}><strong>Visitante</strong><span>Nivel —</span><div className={styles.gamerXpTrack} aria-label="Experiencia pendiente de partidas verificadas"><span /></div><small>XP pendiente de actividad verificada</small></div>
   </div>
   <p className={styles.gamerMicroLabel}>Tu estilo de juego</p>
-  <div className={styles.gamerStyles}><span>◇ <b>{style??"Por descubrir"}</b></span></div>
+  <div className={`${styles.gamerStyles} ${highlight?styles.gamerStylesHighlighted:""}`} aria-live="polite"><span>◇ <b>{style??"Por descubrir"}</b></span></div>
   <small className={styles.gamerDataNote}>{style?"Afinidad de tu Liry ADN. Tras cerrar la evaluación permanece visible durante 10 segundos; no equivale a progreso de juego.":"Completa el cuestionario Liry ADN para descubrir tu estilo. Sin evaluación no se asigna ninguno."}</small>
   <div className={styles.gamerMetrics}><div><small>Juegos jugados</small><strong>—</strong></div><div><small>Logros</small><strong>—</strong></div><div><small>Horas de juego</small><strong>—</strong></div></div>
   <small className={styles.gamerDataNote}>Estado visitante · sin sesión gamer. El avatar no se guarda ni se transmite.</small>
