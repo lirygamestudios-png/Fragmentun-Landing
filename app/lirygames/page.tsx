@@ -85,7 +85,7 @@ export default async function LiryGamesFrontDesk(){
             <div className={styles.journeyRing}><div className={styles.journeyRingCenter}><strong>— / 9</strong><span>Mundos descubiertos</span></div></div>
             <ol className={styles.journeyWorlds}>{games.map((game,index)=><li key={game.slug}><span className={styles.journeyNumber}>{index+1}</span><span className={styles.journeyName}>{game.title}</span><span className={styles.journeyPending} aria-label="Sin avance registrado">○</span></li>)}</ol>
           </div>
-          <a className={styles.gamerCardAction} href="#mundos">EXPLORAR LOS 9 MUNDOS <span aria-hidden="true">→</span></a>
+          <LiryGamerInfoDialog topic="mundos" />
           <LiryGamerInfoDialog topic="journey" />
           <small className={styles.gamerDataNote}>Progreso sin iniciar · pendiente de actividad verificada.</small>
         </article>
@@ -99,6 +99,7 @@ export default async function LiryGamesFrontDesk(){
               {icon:"♜",title:"Maestro de estrategias",detail:"Gana diez partidas estratégicas"}
             ].map(item=><div className={styles.achievementRow} key={item.title}><span className={styles.achievementMedal} aria-hidden="true">{item.icon}</span><div><strong>{item.title}</strong><span>{item.detail}</span><small>Pendiente de obtener</small></div></div>)}
           </div>
+          <LiryGamerInfoDialog topic="logros-lista" />
           <LiryGamerInfoDialog topic="logros" />
           <small className={styles.gamerDataNote}>Objetivos previstos · ningún logro acreditado.</small>
         </article>
