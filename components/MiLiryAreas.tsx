@@ -63,6 +63,16 @@ export function MiLiryAreas(){
     </div>
     <p>El inventario solo mostrará artículos entregados y confirmados por el servidor del videojuego. La compra de skins, elementos de ataque u otros objetos freemium no está habilitada desde esta pantalla.</p>
    </section>}
+   {selected.id==="comunidad"&&<section className={styles.worldsPanel} aria-label="Estado de Mi Comunidad">
+    <h3>MI COMUNIDAD</h3>
+    <p className={styles.worldsEmpty}>No existe una sesión gamer verificada. Las relaciones y publicaciones privadas no están disponibles en modo visitante.</p>
+    <div className={styles.worldsFacts}>
+     <div><strong>MIS AMISTADES</strong><span>Sin datos verificados</span></div>
+     <div><strong>MIS PUBLICACIONES</strong><span>No disponibles</span></div>
+     <div><strong>EVENTOS</strong><span>Pendientes de activación</span></div>
+    </div>
+    <p>Las solicitudes de amistad y publicaciones requerirán identidad autenticada, consentimiento, controles de visibilidad y herramientas de reporte y moderación. No se muestran perfiles de terceros ni actividad inventada.</p>
+   </section>}
    <div className={styles.areaDialogActions}><Link className={styles.areaLink} href={selected.href}>EXPLORAR SECCIÓN →</Link><form method="dialog"><button type="submit" className={styles.areaLink}>VOLVER A MI LIRY</button></form></div>
   </div>
  </dialog></>;
