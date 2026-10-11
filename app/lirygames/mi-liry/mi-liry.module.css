@@ -52,3 +52,9 @@
 .areaLink:focus-visible,.areaClose:focus-visible{outline:2px solid #daf7ff;outline-offset:3px}
 .areaClose{position:absolute;right:20px;top:18px;font-size:22px;padding:3px 12px}
 @media(prefers-reduced-motion:reduce){.areaLink,.areaClose{transition:none}}
+
+.identityDetails{display:grid;gap:10px;margin-top:22px;padding:18px;border:1px solid #2e7293;border-radius:10px;background:#0a203b}
+.identityDetails>div{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;border-bottom:1px solid #214663;padding-bottom:10px}
+.identityDetails strong{font-size:11px;letter-spacing:.1em;color:#88dbf8}
+.identityDetails span{font-size:12px;color:#d4e2f2}
+.identityDetails p{font-size:12px;margin:4px 0 0;color:#a5c3d9}
