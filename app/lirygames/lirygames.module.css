@@ -1150,3 +1150,20 @@
 .dnaAffinityTrack{height:9px;border-radius:20px;overflow:hidden;background:#10243d;border:1px solid color-mix(in srgb,var(--dna-accent) 55%,#142b49)}
 .dnaAffinityTrack span{display:block;height:100%;border-radius:inherit;background:var(--dna-accent);box-shadow:0 0 7px var(--dna-accent);transition:width .2s}
 @media(prefers-reduced-motion:reduce){.dnaAffinityTrack span{transition:none}}
+
+/* Afinidad Liry ADN: destacar solo bordes, sin teñir las imágenes ni cambiar el orden o altura. */
+.page :global(#mundos) .worldsGrid>.gameCardRecommended{
+ border-color:#66ddff;
+ box-shadow:0 0 0 1px rgba(102,221,255,.45),0 0 16px rgba(54,198,255,.30);
+}
+.page :global(#mundos) .worldsGrid>.gameCardRecommended:hover,
+.page :global(#mundos) .worldsGrid>.gameCardRecommended:focus-within{
+ border-color:#9eecff;
+ box-shadow:0 0 0 1px rgba(158,236,255,.7),0 0 24px rgba(54,198,255,.53);
+}
+.gameRecommendedLabel{
+ position:absolute;top:9px;left:9px;z-index:3;pointer-events:none;
+ display:inline-block;max-width:calc(100% - 18px);padding:5px 8px;
+ border:1px solid #73dfff;border-radius:5px;background:rgba(3,21,40,.92);
+ color:#e9faff;font-size:9px;font-weight:800;letter-spacing:.04em;
+}
