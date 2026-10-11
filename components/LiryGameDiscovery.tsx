@@ -39,8 +39,18 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
   const [dnaAnswers,setDnaAnswers]=useState<(number|null)[]>(Array(6).fill(null));
   const [selectedGame,setSelectedGame]=useState<number|null>(null);
   const [catalogHeight,setCatalogHeight]=useState<number|null>(null);
-  const resetDnaEvaluation=()=>{setDnaSurvey(false);setDnaStep(0);setDnaAnswers(Array(6).fill(null));setActiveTrait(0)};
-  const closeDnaExplorer=()=>{setExploringDna(false);resetDnaEvaluation();explorerOpenRef.current?.focus()};
+  const resetDnaEvaluation=(preserveStyle=false)=>{
+    if(!preserveStyle)window.dispatchEvent(new CustomEvent("liry:dna-style",{detail:{style:null}}));
+    setDnaSurvey(false);setDnaStep(0);setDnaAnswers(Array(6).fill(null));setActiveTrait(0);
+  };
+  const closeDnaExplorer=()=>{
+    const completed=dnaStep===6&&dnaAnswers.every(answer=>answer!==null);
+    const scores=completed?dnaAnswers.map(answer=>answer??0):[];
+    const max=completed?Math.max(...scores):0;
+    const chosen=max>0?traits[scores.indexOf(max)]:null;
+    if(chosen)window.dispatchEvent(new CustomEvent("liry:dna-closed",{detail:{style:chosen,durationMs:10000}}));
+    setExploringDna(false);resetDnaEvaluation(Boolean(chosen));explorerOpenRef.current?.focus({preventScroll:true});
+  };
   useEffect(()=>{
     const catalog=catalogRef.current;
     if(!catalog)return;
@@ -81,7 +91,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
     const scores=completed?dnaAnswers.map(answer=>answer??0):[];
     const max=completed?Math.max(...scores):0;
     const chosen=max>0?traits[scores.indexOf(max)]:null;
-    window.dispatchEvent(new CustomEvent("liry:dna-style",{detail:{style:chosen}}));
+    if(completed)window.dispatchEvent(new CustomEvent("liry:dna-style",{detail:{style:chosen}}));
   },[dnaStep,dnaAnswers]);
   const hasDnaResults=dnaStep===6&&dnaAnswers.every(answer=>answer!==null)&&dnaAnswers.some(answer=>answer!==0);
   const recommendedIndexes=hasDnaResults?[...games.map((game,i)=>({i,score:gameAffinity[i]?.reduce((sum,weight,j)=>sum+weight*(dnaAnswers[j]??0),0)??0}))].sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3).map(entry=>entry.i):[];
