@@ -21,7 +21,7 @@ export function LiryContactForm(){
   const script=document.createElement("script");
   script.src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";script.async=true;
   script.onload=()=>{if(cancelled||!turnstileContainer.current||!window.turnstile)return;
-   turnstileWidgetId.current=window.turnstile.render(turnstileContainer.current,{sitekey:turnstileSiteKey,callback:token=>{setTurnstileToken(token);setTurnstileError("");},"expired-callback":()=>setTurnstileToken(""),"error-callback":()=>{setTurnstileToken("");setTurnstileError("La verificación no pudo completarse.");}});
+   turnstileWidgetId.current=window.turnstile.render(turnstileContainer.current,{sitekey:turnstileSiteKey,callback:token=>{setTurnstileToken(token);setTurnstileError("");},"expired-callback":()=>{setTurnstileToken("");setTurnstileError("La verificación ha vencido. Complétala nuevamente para enviar el mensaje.");},"error-callback":()=>{setTurnstileToken("");setTurnstileError("La verificación no pudo completarse.");}});
   };
   script.onerror=()=>setTurnstileError("No se pudo cargar la verificación.");
   document.head.appendChild(script);
