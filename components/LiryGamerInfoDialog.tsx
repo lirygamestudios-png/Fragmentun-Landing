@@ -4,7 +4,7 @@ import styles from "../app/lirygames/lirygames.module.css";
 
 type Topic="perfil"|"journey"|"logros"|"mundos"|"logros-lista";
 const panels={
-  perfil:{title:"CÓMO ACTIVAR MI PERFIL",paragraph:"Tu perfil completo estará disponible cuando habilitemos las cuentas gamer. Por ahora puedes conocer tus afinidades con Liry ADN sin registrarte.",notice:"Sin cuenta activa no se guardan niveles, experiencia, partidas ni logros."},
+  perfil:{title:"MI PERFIL Y LIRY ID",paragraph:"Visitante: explora Liry ADN y utiliza un avatar temporal. Próximamente, Liry ID permitirá guardar tu identidad; la actividad de juego se acreditará únicamente desde videojuegos conectados.",notice:"Registro e inicio de sesión aún no disponibles. Esta pantalla no crea cuentas ni guarda progreso."},
   journey:{title:"CÓMO FUNCIONARÁ TU VIAJE",paragraph:"Cuando habilitemos las cuentas y los videojuegos, este recorrido mostrará los mundos que realmente hayas visitado. Explorar las tarjetas de presentación no cuenta como jugar.",notice:"Sin juegos activos y sin una cuenta vinculada, no existen avances que registrar. Ninguna visita a esta página suma progreso."},
   mundos:{title:"LOS NUEVE MUNDOS",paragraph:"Explora el catálogo de experiencias previstas. Todos los lanzamientos están pendientes y ninguna visita a las fichas contará como partida jugada.",notice:"El progreso real llegará únicamente con cuentas y actividad verificadas."},
   "logros-lista":{title:"OBJETIVOS DE LOGROS",paragraph:"Estas son metas previstas para futuras experiencias gamer. Todavía no existe un sistema activo de acreditación.",notice:"Los objetivos son informativos: ningún logro ni recompensa se obtiene por visitar esta pantalla."},
