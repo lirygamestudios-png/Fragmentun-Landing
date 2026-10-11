@@ -32,3 +32,8 @@
 .back:hover,.areaLink:hover,.notice a:hover,.back:focus-visible,.areaLink:focus-visible,.notice a:focus-visible{border-radius:9px;background:#14658e;border-color:#94edff;box-shadow:0 0 0 1px #8de8ff77,0 0 14px #42caff99,0 0 27px #248fd650;}
 .back:focus-visible,.areaLink:focus-visible,.notice a:focus-visible{border-radius:9px}
 .grid{column-gap:18px;row-gap:18px}
+
+/* Estado táctil y separación de acciones sin mover el contenido. */
+.back,.areaLink,.notice a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;max-width:100%;text-align:center}
+.back:active,.areaLink:active,.notice a:active{background:#1d779f;border-color:#c4f6ff;box-shadow:0 0 0 1px #b5efff99,0 0 16px #46ccffa8}
+@media(max-width:560px){.back,.areaLink,.notice a{width:fit-content}.areaLink{margin-top:18px}}
