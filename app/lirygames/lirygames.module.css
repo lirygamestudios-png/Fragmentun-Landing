@@ -1136,3 +1136,7 @@
 .dnaRecommendation span{color:#7fe3ff;white-space:nowrap}
 .dnaSurveyRestart{margin-top:10px}
 .dnaSurvey button:focus-visible,.dnaSurveyToggle:focus-visible{outline:2px solid #85eaff;outline-offset:2px}
+
+/* Liry ADN: respuesta textual a la izquierda, cotejo a la derecha en las cuatro opciones. */
+.dnaSurveyAnswers label{justify-content:space-between;min-width:0;gap:8px;text-align:left}
+.dnaSurveyAnswers label input[type="radio"]{flex:0 0 auto;margin-left:auto;margin-right:2px}
