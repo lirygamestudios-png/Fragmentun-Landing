@@ -29,7 +29,14 @@ export const metadata={
 };
 
 export default async function LiryGamesFrontDesk(){
-  const games=await getLiryPublicCatalog();
+  // Publicar solo identificadores editoriales: no serializar títulos ni slugs internos de IP.
+  const internalCatalog=await getLiryPublicCatalog();
+  const publicCodenames=["LIRY // ARENA-01","LIRY // BOT-02","LIRY // ECON-03","LIRY // EARTH-04","LIRY // LINK-05","LIRY // REALM-06","LIRY // EMOTION-07","LIRY // TITAN-08","LIRY // CODE-09"];
+  const games=internalCatalog.map((game,index)=>({
+    ...game,
+    slug:`liry-public-${String(index+1).padStart(2,"0")}`,
+    title:publicCodenames[index]??`LIRY // PROJECT-${String(index+1).padStart(2,"0")}`
+  }));
   return <main className={styles.page}>
     <header className={styles.nav}>
       <a className={styles.brand} href="#inicio" aria-label="LiryGames Studios"><span className={styles.sigil} aria-hidden="true"><i></i><b></b></span><span className={styles.wordmark}><strong>LIRY</strong><span>GAMES STUDIOS</span><small>UNIVERSO DE VIDEOJUEGOS</small></span></a>
@@ -147,7 +154,7 @@ export default async function LiryGamesFrontDesk(){
             <section className={styles.section} id="recomendaciones">
         <div className={styles.socialPanelHeader}><h2>RECOMENDACIONES PARA TI</h2><p className={styles.socialIntro}>Basado en tu Liry DNA.</p></div>
         <div className={styles.recommendList}>
-          {[{title:"Nexo Social",reason:"Conecta con otros jugadores",index:4},{title:"Gaias Last Stand",reason:"Explora un mundo de supervivencia",index:3},{title:"Eternun",reason:"Descubre un universo de fantasía",index:5}].map(game=><article className={styles.recommendItem} key={game.title}><div className={`${styles.recommendThumb} ${styles[`recommendThumb${game.index}`]} `} aria-hidden="true"><span>✧</span></div><div className={styles.recommendText}><strong>{game.title}</strong><p>{game.reason}</p><small>Selección editorial · personalización pendiente</small></div><a href="#mundos">Ver juego →</a></article>)}
+          {[{title:"LIRY // LINK-05",reason:"Conecta con otros jugadores",index:4},{title:"LIRY // EARTH-04",reason:"Explora un mundo de supervivencia",index:3},{title:"LIRY // REALM-06",reason:"Descubre un universo de fantasía",index:5}].map(game=><article className={styles.recommendItem} key={game.title}><div className={`${styles.recommendThumb} ${styles[`recommendThumb${game.index}`]} `} aria-hidden="true"><span>✧</span></div><div className={styles.recommendText}><strong>{game.title}</strong><p>{game.reason}</p><small>Selección editorial · personalización pendiente</small></div><a href="#mundos">Ver juego →</a></article>)}
         </div>
         <a className={styles.recommendAll} href="#mundos">VER TODOS LOS MUNDOS <span aria-hidden="true">→</span></a>
       </section>
