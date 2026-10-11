@@ -158,7 +158,7 @@ export default async function LiryGamesFrontDesk(){
         <small className={styles.socialPending}>Enlaces oficiales pendientes de verificación.</small>
       </section>
             <section className={styles.section} id="recomendaciones">
-        <div className={styles.socialPanelHeader}><h2>RECOMENDACIONES PARA TI</h2><p className={styles.socialIntro}>Basado en tu Liry DNA.</p></div>
+        <div className={styles.socialPanelHeader}><h2>RECOMENDACIONES PARA TI</h2><p className={styles.socialIntro}>Descubre tres mundos destacados.</p></div>
         <div className={styles.recommendList}>
           {[{title:"LIRY // LINK-05",reason:"Conecta con otros jugadores",index:4},{title:"LIRY // EARTH-04",reason:"Explora un mundo de supervivencia",index:3},{title:"LIRY // REALM-06",reason:"Descubre un universo de fantasía",index:5}].map(game=><article className={styles.recommendItem} key={game.title}><div className={`${styles.recommendThumb} ${styles[`recommendThumb${game.index}`]} `} aria-hidden="true"><span>✧</span></div><div className={styles.recommendText}><strong>{game.title}</strong><p>{game.reason}</p><small>Selección editorial · personalización pendiente</small></div><a href="#mundos">Ver juego →</a></article>)}
         </div>
