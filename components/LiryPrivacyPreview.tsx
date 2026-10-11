@@ -12,8 +12,8 @@ export function LiryPrivacyPreview(){
  function reset(){setVisibility("private");setLanguage("es");setMarketing(false);setTab("privacidad");}
  return <>
   <button type="button" ref={trigger} className={styles.gamerCardAction} aria-haspopup="dialog" onClick={()=>{reset();ref.current?.showModal()}}>PRIVACIDAD Y PREFERENCIAS <span aria-hidden="true">→</span></button>
-  <dialog ref={ref} className={`${styles.gamerInfoDialog} ${styles.liryCompactDialog}`} aria-label="Preferencias de perfil en preparación" onClose={()=>trigger.current?.focus({preventScroll:true})} onClick={e=>{if(e.target===ref.current)ref.current.close()}}>
-   <div className={styles.gamerInfoDialogInside}>
+  <dialog ref={ref} className={styles.liryStandaloneDialog} aria-label="Preferencias de perfil en preparación" onClose={()=>trigger.current?.focus({preventScroll:true})} onClick={e=>{if(e.target===ref.current)ref.current.close()}}>
+   <div className={styles.liryStandaloneContent}>
     <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar preferencias">×</button></form>
     <p className={styles.gamerInfoEyebrow}>LIRYGAMES STUDIOS · LIRY ID</p>
     <h3>PREFERENCIAS DE TU PERFIL</h3>
