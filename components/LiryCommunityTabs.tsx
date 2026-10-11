@@ -1,7 +1,7 @@
 "use client";
 import {useRef,useState,type KeyboardEvent} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
-import {LIRY_COMMUNITY_SERVICES} from "../lib/games/liry-community-readiness";
+import {canShowCommunityActivity} from "../lib/games/liry-community-readiness";
 const categories=[
  {id:"todos",label:"TODOS",title:"La comunidad está por despertar",copy:"Las publicaciones y actividades aparecerán cuando el servicio comunitario esté disponible. Sin conversaciones ficticias."},
  {id:"amigos",label:"AMIGOS",title:"Amigos próximamente",copy:"Las listas de amigos estarán disponibles cuando se habiliten las cuentas Liry ID."},
@@ -26,7 +26,8 @@ export function LiryCommunityTabs(){
  };
  const selected=categories.find(item=>item.id===tab)??categories[0];
  const serviceKey=tab==="todos"?"posts":tab==="amigos"?"friends":tab==="logros"?"achievements":"events";
- const servicePending=LIRY_COMMUNITY_SERVICES[serviceKey]==="not_configured";
+ // Sin autenticación gamer ni fuente verificada, nunca representar actividad real.
+ const servicePending=!canShowCommunityActivity(serviceKey,false,false);
  return <>
   <div className={styles.communityTabs} role="tablist" aria-label="Categorías de comunidad">
    {categories.map(item=><button type="button" role="tab" key={item.id} id={`liry-tab-${item.id}`} ref={node=>{tabButtons.current[item.id]=node}} tabIndex={tab===item.id?0:-1} onKeyDown={event=>handleTabKeyDown(event,categories.findIndex(category=>category.id===item.id))} aria-controls="liry-community-panel" aria-selected={tab===item.id} className={tab===item.id?styles.communityTabActive:undefined} onClick={()=>setTab(item.id)}>{item.label}</button>)}
