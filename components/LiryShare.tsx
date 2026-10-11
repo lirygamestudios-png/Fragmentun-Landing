@@ -25,8 +25,9 @@ export function LiryShare(){
    const dest=provider==="whatsapp"?"https://api.whatsapp.com/send?text="+title+"%20"+url:
      provider==="facebook"?"https://www.facebook.com/sharer/sharer.php?u="+url:
      "https://twitter.com/intent/tweet?text="+title+"&url="+url;
-   const opened=window.open(dest,"_blank","noopener,noreferrer");
-   setShareNotice(opened===null?"El navegador podría haber bloqueado la nueva pestaña. Prueba con COMPARTIR o COPIAR ENLACE.":"Se abrió la opción de compartir. La publicación depende de la red social.");
+   // Con noopener algunos navegadores devuelven null aunque la pestaña se abra correctamente.
+   window.open(dest,"_blank","noopener,noreferrer");
+   setShareNotice("Se solicitó abrir la red social. Si no aparece una nueva pestaña, utiliza COMPARTIR o COPIAR ENLACE. La publicación depende de la red social.");
  }
  return <><div className={styles.liryShareActions} aria-label="Compartir LIRYGAMES">
    <button type="button" onClick={nativeShare} className={styles.liryShareButton}>COMPARTIR ↗</button>
