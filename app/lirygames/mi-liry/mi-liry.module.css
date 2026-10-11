@@ -119,3 +119,11 @@
 .identitySecurity ul{padding-left:20px;margin:10px 0 0}
 
 .identityPreview{margin-top:17px;padding:16px;border:1px solid #337fa3;border-radius:10px;background:#081e38}.identityPreview h3{color:#9ce7ff;font-size:12px;letter-spacing:.1em}.identityPreview p{color:#b9d6e7;font-size:12px}.previewAvatar{display:grid;place-items:center;width:60px;height:60px;border:1px solid #7cdefd;border-radius:50%;background:#113657;color:#95eaff;font-size:32px;box-shadow:0 0 16px #26bcf83c}.previewLabel{font-weight:700;letter-spacing:.08em}.previewChoices{display:flex;gap:10px;flex-wrap:wrap}.previewChoices button{border:1px solid #367c9c;border-radius:9px;background:#0b2949;color:#e0f8ff;padding:9px 14px;font-size:11px;font-weight:700;cursor:pointer;transition:background .2s,border-color .2s,box-shadow .2s}.previewChoices button:hover,.previewChoices button:focus-visible,.previewChoices button[aria-pressed=true]{background:#17668d;border-color:#9beaff;box-shadow:0 0 13px #4bd6ff77}.previewOption{display:flex;gap:10px;align-items:center;margin-top:17px;color:#cde4f1;font-size:12px}.previewNote{margin-bottom:0}@media(prefers-reduced-motion:reduce){.previewChoices button{transition:none}}
+
+/* Previsualización reactiva: el acento solo cambia el avatar de ejemplo. */
+.previewAvatar[data-accent="cyan"]{border-color:#6ee7ff;background:#10435a;color:#c6f7ff;box-shadow:0 0 18px #3bdcffa8}
+.previewAvatar[data-accent="violet"]{border-color:#b79aff;background:#32204f;color:#eadfff;box-shadow:0 0 18px #9874ff99}
+.previewReset{display:inline-flex;align-items:center;justify-content:center;min-height:40px;margin-top:16px;padding:9px 13px;border:1px solid #4aabc9;border-radius:9px;color:#ddf6ff;background:#0b2949;font-size:11px;font-weight:800;cursor:pointer;transition:background-color .2s,border-color .2s,box-shadow .2s}
+.previewReset:hover,.previewReset:focus-visible{background:#14658e;border-color:#a0edff;box-shadow:0 0 14px #42caff88}
+.previewReset:focus-visible{outline:2px solid #d9f9ff;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.previewReset{transition:none}}
