@@ -7,16 +7,17 @@ export function LiryContactForm(){
  const[gameSlug,setGameSlug]=useState("");
  const[message,setMessage]=useState("");
  const[ack,setAck]=useState(false);
+ const[website,setWebsite]=useState("");
  const[busy,setBusy]=useState(false);
  const[result,setResult]=useState("");
  const[done,setDone]=useState(false);
  async function submit(e:FormEvent<HTMLFormElement>){
   e.preventDefault();setBusy(true);setDone(false);setResult("");
   try{
-   const r=await fetch("/api/lirygames/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,subject,gameSlug,message,privacyAcknowledged:ack})});
+   const r=await fetch("/api/lirygames/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,subject,gameSlug,message,privacyAcknowledged:ack,website})});
    const j=await r.json();
    if(!r.ok||!j.ok)throw Error(j.message||"No se pudo enviar.");
-   setName("");setEmail("");setSubject("opinion");setGameSlug("");setMessage("");setAck(false);
+   setName("");setEmail("");setSubject("opinion");setGameSlug("");setMessage("");setAck(false);setWebsite("");
    setDone(true);setResult(j.message||"Mensaje enviado correctamente.");
   }catch(error){setResult(error instanceof Error?error.message:"Error de envío");}
   finally{setBusy(false)}
@@ -39,7 +40,7 @@ export function LiryContactForm(){
    <input style={field} type="text" value={gameSlug} onChange={e=>{setGameSlug(e.target.value);resetFeedback()}} placeholder="Videojuego o producto (opcional)" aria-label="Videojuego o producto (opcional)" maxLength={80}/>
    <textarea style={{...field,minHeight:112,resize:"vertical"}} aria-label="Tu mensaje" placeholder="Escribe tu mensaje aquí..." value={message} onChange={e=>{setMessage(e.target.value);resetFeedback()}} minLength={10} maxLength={3000} required/>
    <label className="liryContactConsent"><input className="liryContactCheck" type="checkbox" checked={ack} onChange={e=>{setAck(e.target.checked);resetFeedback()}} required/><span>Autorizo el tratamiento de mis datos para responder a este mensaje. No implica suscripción a publicidad.</span></label>
-   <input name="website" aria-hidden="true" autoComplete="off" tabIndex={-1} style={{position:"absolute",left:-9999}}/>
+   <input name="website" aria-hidden="true" autoComplete="off" tabIndex={-1} value={website} onChange={e=>setWebsite(e.target.value)} style={{position:"absolute",left:-9999}}/>
    <button className="liryContactSubmit" disabled={busy} type="submit">{busy?"ENVIANDO...":"ENVIAR MENSAJE →"}</button>
   </>
   {result&&<p role="status" style={{fontSize:12,color:done?"#89ebd0":"#ffb2b2",margin:0}}>{result}</p>}
