@@ -53,6 +53,16 @@ export function MiLiryAreas(){
     </div>
     <p>Los logros aparecerán únicamente cuando un videojuego activo confirme sus eventos mediante el servidor. Esta pantalla no concede premios ni simula progresos.</p>
    </section>}
+   {selected.id==="inventario"&&<section className={styles.worldsPanel} aria-label="Inventario digital verificado">
+    <h3>ARTÍCULOS DE MI CUENTA</h3>
+    <p className={styles.worldsEmpty}>No hay artículos digitales vinculados a una cuenta de jugador autenticada.</p>
+    <div className={styles.worldsFacts}>
+     <div><strong>SKINS Y APARIENCIAS</strong><span>Sin datos verificados</span></div>
+     <div><strong>OBJETOS DE JUEGO</strong><span>No disponibles</span></div>
+     <div><strong>COMPRAS Y ENTREGAS</strong><span>Sin conexión</span></div>
+    </div>
+    <p>El inventario solo mostrará artículos entregados y confirmados por el servidor del videojuego. La compra de skins, elementos de ataque u otros objetos freemium no está habilitada desde esta pantalla.</p>
+   </section>}
    <div className={styles.areaDialogActions}><Link className={styles.areaLink} href={selected.href}>EXPLORAR SECCIÓN →</Link><form method="dialog"><button type="submit" className={styles.areaLink}>VOLVER A MI LIRY</button></form></div>
   </div>
  </dialog></>;
