@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {LiryShare} from "../../components/LiryShare";
+import {LiryCommunityTabs} from "../../components/LiryCommunityTabs";
 import {LiryBoostTop10} from "../../components/LiryBoostTop10";
 import {LiryBoostEnrollment} from "../../components/LiryBoostEnrollment";
 import {LiryContactForm} from "../../components/LiryContactForm";
@@ -131,11 +132,7 @@ export default async function LiryGamesFrontDesk(){
     <div className={styles.socialTrio} aria-label="Comunidad, eventos y recomendaciones">
       <section className={styles.section} id="comunidad">
         <div className={styles.socialPanelHeader}><h2>COMUNIDAD LIRY</h2><p className={styles.socialIntro}>Conecta, comparte, juega.</p></div>
-        <div className={styles.communityTabs} aria-label="Categorías de comunidad"><span className={styles.communityTabActive}>TODOS</span><span>AMIGOS</span><span>LOGROS</span><span>EVENTOS</span></div>
-        <div className={styles.communityFeed}>
-          <div className={styles.communityEmpty}><span className={styles.communityEmptyIcon} aria-hidden="true">◉</span><strong>La comunidad está por despertar</strong><p>Las publicaciones, mensajes y actividades aparecerán cuando el servicio comunitario esté disponible. Sin conversaciones ficticias.</p></div>
-          <div className={styles.communityPost}><span className={styles.communityAvatar} aria-hidden="true">L</span><div><strong>Tu comunidad Liry</strong><p>Comparte la página e invita a otros jugadores a descubrir los nueve mundos.</p><small>Comunidad en preparación</small></div></div>
-        </div>
+        <LiryCommunityTabs />
         <div className={styles.communityCompose}><span>Publicaciones disponibles próximamente</span><span aria-hidden="true">➤</span></div>
       </section>
       <section className={styles.section} id="social">
