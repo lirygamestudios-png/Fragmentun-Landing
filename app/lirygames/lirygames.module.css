@@ -560,7 +560,7 @@
 .gamerCardAction:hover,.gamerCardAction:focus-visible{background:#063451}
 .gamerDataNote{display:block;margin-top:7px;color:#7f9fba!important;font-size:9px!important}
 .journeyContent{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:10px;flex:1;margin:10px 0}
-.journeyRing{aspect-ratio:1;border-radius:50%;padding:7px;background:conic-gradient(#1abcf1 0deg,#5b36bb 170deg,#142943 170deg 360deg);box-shadow:0 0 20px #098ed552;max-width:180px;width:100%;display:grid;place-items:center}
+.journeyRing{aspect-ratio:1;border-radius:50%;padding:7px;background:conic-gradient(#1abcf1 0%,#5b36bb var(--journey-progress,0%),#142943 var(--journey-progress,0%) 100%);box-shadow:0 0 20px #098ed552;max-width:180px;width:100%;display:grid;place-items:center}
 .journeyRingCenter{background:radial-gradient(circle at 50% 50%,#102a4b,#04111d 70%);border:1px solid #1c89bc;border-radius:50%;height:100%;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px}
 .journeyRingCenter strong{font-size:24px;color:#fff}
 .journeyRingCenter span{font-size:9px;color:#c3e6fb;text-align:center}
