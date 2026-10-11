@@ -21,3 +21,15 @@ export function isWellFormedGameEvent(value:unknown):value is LiryGameEventCandi
 export function hasDuplicateEventIds(events:readonly LiryGameEventCandidate[]):boolean{
  return new Set(events.map(event=>event.eventId)).size!==events.length;
 }
+
+/** Prechequeo sin efectos: no guarda eventos ni concede recompensas. */
+export type LiryEventBatchCheck={ok:boolean;reason:"ok"|"invalid_batch"|"invalid_event"|"duplicate_event";count:number};
+export function checkGameEventBatch(value:unknown):LiryEventBatchCheck{
+ if(!Array.isArray(value)||value.length===0||value.length>100)
+  return {ok:false,reason:"invalid_batch",count:0};
+ if(!value.every(isWellFormedGameEvent))
+  return {ok:false,reason:"invalid_event",count:value.length};
+ if(hasDuplicateEventIds(value))
+  return {ok:false,reason:"duplicate_event",count:value.length};
+ return {ok:true,reason:"ok",count:value.length};
+}
