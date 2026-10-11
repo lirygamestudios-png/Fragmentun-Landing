@@ -4,6 +4,7 @@ import {LiryBoostTop10} from "../../components/LiryBoostTop10";
 import {LiryBoostEnrollment} from "../../components/LiryBoostEnrollment";
 import {LiryContactForm} from "../../components/LiryContactForm";
 import {LiryGameDiscovery} from "../../components/LiryGameDiscovery";
+import {LiryGamerInfoDialog} from "../../components/LiryGamerInfoDialog";
 import {getLiryPublicCatalog} from "../../lib/games/public-catalog-server";
 import styles from "./lirygames.module.css";
 
@@ -75,7 +76,7 @@ export default async function LiryGamesFrontDesk(){
           <div className={styles.gamerStyles}><span>◇ <b>Por descubrir</b></span></div>
           <small className={styles.gamerDataNote}>Tu estilo se determinará con tu Liry ADN. Ningún estilo se asigna sin evaluación.</small>
           <div className={styles.gamerMetrics}><div><small>Juegos jugados</small><strong>—</strong></div><div><small>Logros</small><strong>—</strong></div><div><small>Horas de juego</small><strong>—</strong></div></div>
-          <details className={styles.gamerProfileDetails}><summary className={styles.gamerCardAction}>CÓMO ACTIVAR MI PERFIL <span aria-hidden="true">→</span></summary><div className={styles.gamerProfileHelp}><p>Tu perfil completo estará disponible cuando habilitemos las cuentas gamer. Por ahora puedes conocer tus afinidades con Liry ADN sin registrarte.</p><a href="#liry-dna">EXPLORAR LIRY ADN →</a><small>Sin cuenta activa no se guardan niveles, experiencia, partidas ni logros.</small></div></details>
+          <LiryGamerInfoDialog topic="perfil" />
           <small className={styles.gamerDataNote}>Vista preliminar · sin sesión gamer</small>
         </article>
         <article className={styles.gamerCard}>
@@ -85,7 +86,7 @@ export default async function LiryGamesFrontDesk(){
             <ol className={styles.journeyWorlds}>{games.map((game,index)=><li key={game.slug}><span className={styles.journeyNumber}>{index+1}</span><span className={styles.journeyName}>{game.title}</span><span className={styles.journeyPending} aria-label="Sin avance registrado">○</span></li>)}</ol>
           </div>
           <a className={styles.gamerCardAction} href="#mundos">EXPLORAR LOS 9 MUNDOS <span aria-hidden="true">→</span></a>
-          <details className={styles.gamerProfileDetails}><summary className={styles.gamerCardAction}>CÓMO FUNCIONARÁ TU VIAJE <span aria-hidden="true">→</span></summary><div className={styles.gamerProfileHelp}><p>Cuando habilitemos las cuentas y los videojuegos, este recorrido mostrará los mundos que realmente hayas visitado. Explorar las tarjetas de presentación no cuenta como jugar.</p><small>Sin juegos activos y sin una cuenta vinculada, no existen avances que registrar. Ninguna visita a esta página suma progreso.</small></div></details>
+          <LiryGamerInfoDialog topic="journey" />
           <small className={styles.gamerDataNote}>Progreso sin iniciar · pendiente de actividad verificada.</small>
         </article>
         <article className={styles.gamerCard}>
@@ -98,7 +99,7 @@ export default async function LiryGamesFrontDesk(){
               {icon:"♜",title:"Maestro de estrategias",detail:"Gana diez partidas estratégicas"}
             ].map(item=><div className={styles.achievementRow} key={item.title}><span className={styles.achievementMedal} aria-hidden="true">{item.icon}</span><div><strong>{item.title}</strong><span>{item.detail}</span><small>Pendiente de obtener</small></div></div>)}
           </div>
-          <details className={styles.gamerProfileDetails}><summary className={styles.gamerCardAction}>CÓMO OBTENER LOGROS <span aria-hidden="true">→</span></summary><div className={styles.gamerProfileHelp}><p>Los ejemplos anteriores describen objetivos previstos, no premios obtenidos. Los logros solo podrán acreditarse al completarse requisitos comprobables dentro de un videojuego habilitado.</p><small>Sin partidas verificadas no se asignan medallas, recompensas ni puntos de experiencia.</small></div></details>
+          <LiryGamerInfoDialog topic="logros" />
           <small className={styles.gamerDataNote}>Objetivos previstos · ningún logro acreditado.</small>
         </article>
       </div>
