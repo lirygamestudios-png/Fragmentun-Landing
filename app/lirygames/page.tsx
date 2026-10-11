@@ -212,8 +212,8 @@ export default async function LiryGamesFrontDesk(){
         <div className={styles.secretsCopy}>
           <h2>SECRETOS DE LIRY</h2>
           <p>Hay más de lo que ves...</p>
-          <p>Encuentra los fragmentos ocultos y desbloquea desafíos cuando estén disponibles.</p>
-          <div className={styles.secretsTrack} aria-label="Secretos aún no disponibles"><span /></div>
+          <p>Próximamente podrás descubrir fragmentos ocultos y acceder a desafíos especiales.</p>
+          <div className={styles.secretsTrack} role="img" aria-label="Sistema de secretos aún no disponible; no hay progreso registrado"><span /></div>
           <small>PRÓXIMAMENTE · SIN PROGRESO SIMULADO</small>
         </div>
         
