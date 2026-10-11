@@ -226,7 +226,7 @@ export default async function LiryGamesFrontDesk(){
     <footer className={styles.footer}>
       <div className={styles.footerIdentity}><strong>LIRY<span>GAMES</span></strong><small>STUDIOS</small></div>
       <div className={styles.footerTagline}>MÁS QUE VIDEOJUEGOS.<br/>ES TODO UN UNIVERSO.</div>
-      <nav className={styles.footerNav} aria-label="Enlaces del pie de página"><a href="#inicio">INICIO</a><a href="#mundos">MUNDOS</a><a href="#liry-dna">LIRY DNA</a><a href="#perfil-gamer">TU VIAJE</a><a href="#comunidad">COMUNIDAD</a><a href="#liryboost">LIRYBOOST</a><a href="#tienda">TIENDA</a></nav>
+      <nav className={styles.footerNav} aria-label="Enlaces del pie de página"><a href="#inicio">INICIO</a><a href="#mundos">MUNDOS</a><a href="#liry-dna">LIRY DNA</a><a href="#perfil-gamer">TU VIAJE</a><a href="#comunidad">COMUNIDAD</a><a href="#liryboost">LIRYBOOST</a><a href="#tienda">TIENDA</a><a href="#social">REDES</a><a href="#contacto">CONTACTO</a></nav>
       <div className={styles.footerCopyright}>© {new Date().getFullYear()} LIRYGAMES STUDIOS. Todos los derechos reservados.</div>
     </footer>
   </main>;
