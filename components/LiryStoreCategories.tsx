@@ -2,11 +2,11 @@
 import {useRef,useState} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
 const collections=[
- {name:"ROPA",symbol:"♧",tone:"wear",message:"Prendas inspiradas en el universo LIRYGAMES. La colección aún no tiene artículos confirmados."},
- {name:"ACCESORIOS",symbol:"◆",tone:"accessories",message:"Accesorios temáticos previstos. No hay referencias ni precios publicados."},
- {name:"COLECCIONABLES",symbol:"✧",tone:"collectibles",message:"Objetos coleccionables previstos para futuras colecciones oficiales."},
- {name:"ARTE DIGITAL",symbol:"▧",tone:"art",message:"Colecciones de arte digital previstas. Los derechos y formatos se comunicarán al lanzamiento."},
- {name:"EQUIPO GAMER",symbol:"⌘",tone:"gear",message:"Equipamiento para jugadores en evaluación. No hay productos o proveedores confirmados."}
+ {name:"ROPA",symbol:"♧",tone:"wear",message:"Moda LIRY · colección en preparación."},
+ {name:"ACCESORIOS",symbol:"◆",tone:"accessories",message:"Accesorios LIRY · colección en preparación."},
+ {name:"COLECCIONABLES",symbol:"✧",tone:"collectibles",message:"Piezas exclusivas · colección en preparación."},
+ {name:"ARTE DIGITAL",symbol:"▧",tone:"art",message:"Arte digital · colección en preparación."},
+ {name:"EQUIPO GAMER",symbol:"⌘",tone:"gear",message:"Equipo gamer · colección en preparación."}
 ] as const;
 export function LiryStoreCategories(){
  const [selected,setSelected]=useState<(typeof collections)[number]>(collections[0]);
@@ -23,7 +23,7 @@ export function LiryStoreCategories(){
     <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar categoría">×</button></form>
     <p className={styles.gamerInfoEyebrow}>LIRYGAMES STUDIOS · TIENDA LIRY</p>
     <h3 id="liry-store-detail-title">{selected.name}</h3>
-    <p>{selected.message}</p><p>No se reciben pedidos ni pagos. Cuando se habilite la tienda se mostrarán productos, condiciones, proveedores y disponibilidad reales.</p>
+    <p>{selected.message}</p><p>Sin artículos ni pagos activos. Anunciaremos proveedores y condiciones oficiales al abrir la tienda.</p>
     <form method="dialog"><button type="submit" className={styles.gamerInfoDone}>ENTENDIDO</button></form>
    </div>
   </dialog>
