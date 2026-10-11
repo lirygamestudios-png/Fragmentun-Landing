@@ -15,6 +15,7 @@ const groups=[
     ["/admin/master/monetization","$","Monetización"],
     ["/admin/master/commerce","▣","Comercio"],
     ["/admin/master/community","◎","Clientes y Comunidad"],
+    ["/admin/master/community/messages","✉","Bandeja de mensajes"],
     ["/admin/master/finance","▥","Finanzas"],
     ["/admin/master/capital","◇","Capital"],
     ["/admin/master/partners","∞","Alianzas"],
