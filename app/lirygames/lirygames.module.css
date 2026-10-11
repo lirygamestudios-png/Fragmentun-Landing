@@ -1233,3 +1233,8 @@
 .liryShareIconButton{width:46px;min-width:46px;height:44px;padding:7px;display:inline-grid;place-items:center;color:#69e8ff;font-size:23px;line-height:1}
 .liryShareIconButton span{display:block;font-family:Arial,sans-serif;font-weight:800}
 @media(max-width:520px){.liryShareIconButton{width:100%;min-width:0;height:44px}}
+
+/* Redes oficiales: los iconos ahora son controles accesibles sin cambiar la cuadrícula. */
+.socialNetworkLabels button{display:grid;place-items:center;min-height:36px;font:inherit;color:#7fcdea;background:#081c30;border:1px solid #1e435c;border-radius:4px;padding:7px;cursor:pointer}
+.socialNetworkLabels button:hover,.socialNetworkLabels button:focus-visible{color:#55e5ff;border-color:#55e5ff;box-shadow:0 0 10px #25dfff26}
+.socialNetworkLabels button svg{width:20px;height:20px}
