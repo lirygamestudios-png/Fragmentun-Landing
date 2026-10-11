@@ -13,12 +13,13 @@ const panels={
 
 export function LiryGamerInfoDialog({topic}:{topic:Topic}){
   const dialogRef=useRef<HTMLDialogElement>(null);
+  const triggerRef=useRef<HTMLButtonElement>(null);
   const [selectedWorld,setSelectedWorld]=useState<number|null>(null);
   const worldNames=["LIRY // ARENA-01","LIRY // BOT-02","LIRY // ECON-03","LIRY // EARTH-04","LIRY // LINK-05","LIRY // REALM-06","LIRY // EMOTION-07","LIRY // TITAN-08","LIRY // CODE-09"];
   const data=panels[topic];
   return <>
-    <button type="button" className={styles.gamerCardAction} onClick={()=>{setSelectedWorld(null);dialogRef.current?.showModal()}} aria-haspopup="dialog">{data.title} <span aria-hidden="true">→</span></button>
-    <dialog ref={dialogRef} className={styles.gamerInfoDialog} aria-label={data.title} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
+    <button type="button" ref={triggerRef} className={styles.gamerCardAction} onClick={()=>{setSelectedWorld(null);dialogRef.current?.showModal()}} aria-haspopup="dialog">{data.title} <span aria-hidden="true">→</span></button>
+    <dialog ref={dialogRef} className={styles.gamerInfoDialog} aria-label={data.title} onClose={()=>{setSelectedWorld(null);triggerRef.current?.focus()}} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
       <div className={styles.gamerInfoDialogInside}>
         <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar subpantalla">×</button></form>
         <p className={styles.gamerInfoEyebrow}>LIRYGAMES STUDIOS · TU EXPERIENCIA</p>
