@@ -1206,3 +1206,15 @@
 .gamerInfoModalList li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid rgba(79,178,225,.35);border-radius:8px;background:rgba(12,47,77,.55);color:#ecfaff;font-size:12px}
 .gamerInfoModalList li small{margin:0;padding:0;border:0;color:#7ddcff;font-size:10px;text-align:right}
 @media(max-width:480px){.gamerInfoModalList li{align-items:flex-start;flex-direction:column;gap:4px}.gamerInfoModalList li small{text-align:left}}
+
+
+/* Consulta individual de mundos dentro de la subpantalla: no mueve tarjetas exteriores. */
+.gamerWorldChoice{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;border:0;background:transparent;color:#ecfaff;font:inherit;font-size:12px;cursor:pointer;padding:3px}
+.gamerWorldChoice span{color:#7ddcff;font-size:10px;white-space:nowrap}
+.gamerWorldChoice[aria-pressed="true"]{color:#88e6ff}
+.gamerWorldChoice:focus-visible{outline:2px solid #9aeaff;outline-offset:3px}
+.gamerWorldStatus{border:1px solid #52c9f1;border-radius:9px;background:#0b2d46;padding:12px;margin:12px 0}
+.gamerWorldStatus strong{color:#e5faff;font-size:12px}
+.gamerWorldStatus p{font-size:11px;margin:8px 0}
+.gamerWorldStatus small{margin:0;padding:0;border:0}
+@media(max-width:480px){.gamerWorldChoice{flex-wrap:wrap}.gamerWorldChoice span{white-space:normal}}
