@@ -1409,3 +1409,8 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .page :is(.button,.heroSecondary,.bannerCta,.liryShareButton,.liryBoostSecondary,.gamerInfoDone,.liryContactSubmit,.recommendAll,.profileAccess,.dnaSideButton,.gamerCardAction,.liryAccessTab,.liryBoostClose,.dnaExplorerClose,.worldDetailClose,.storeCategory):not(:disabled):is(:hover,:focus-visible){background-color:#14658e;color:#faffff;border-color:#94edff;box-shadow:0 0 0 1px #8de8ff77,0 0 14px #42caff99,0 0 27px #248fd650}
 .page :is(.liryShareActions,.liryBoostActions){gap:max(10px,0.65rem)}
 .page :is(.gamerInfoClose,.liryBoostClose,.dnaExplorerClose,.worldDetailClose):focus-visible{outline-offset:3px}
+
+/* Liry ADN: jerarquía de preguntas y confirmación visible antes del avance automático. */
+.dnaSurveyQuestion legend{color:#ffd84d;font-weight:800;font-size:12px;line-height:1.55}
+.dnaSurveyAnswers label.dnaSurveyAnswerSelected{border-color:#ffd84d;background:#153b55;color:#fff6bf;box-shadow:inset 0 0 0 1px rgba(255,216,77,.35),0 0 14px rgba(255,216,77,.22)}
+.dnaSurveyAnswers label.dnaSurveyAnswerSelected input[type="radio"]{accent-color:#ffd84d}
