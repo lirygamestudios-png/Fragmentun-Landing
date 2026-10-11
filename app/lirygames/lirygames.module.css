@@ -1393,3 +1393,7 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .page :is(.button,.heroSecondary,.bannerCta,.liryShareButton,.liryBoostSecondary,.gamerInfoDone,.liryContactSubmit,.recommendAll):not(:disabled):is(:hover,:focus-visible){background:#14658e;color:#fff;border-color:#99f0ff;box-shadow:0 0 0 1px #7cdfff66,0 0 13px #37c7f5a0,0 0 27px #2489d660;text-decoration:none}
 .page :is(.button,.heroSecondary,.bannerCta,.liryShareButton,.liryBoostSecondary,.gamerInfoDone,.liryContactSubmit,.recommendAll):focus-visible{outline:2px solid #d7f8ff;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.page :is(.button,.heroSecondary,.bannerCta,.liryShareButton,.liryBoostSecondary,.gamerInfoDone,.gamerInfoClose,.liryContactSubmit,.recommendAll){transition:none}}
+
+/* Enlaces complementarios: forma rectangular y halo al hover. */
+.page .profileAccess,.page .dnaSideButton,.page .gamerCardAction,.page .liryAccessTab{border-radius:0;transition:background-color .2s,border-color .2s,box-shadow .2s,color .2s}
+.page .profileAccess:hover,.page .dnaSideButton:hover,.page .gamerCardAction:hover,.page .liryAccessTab:hover{background:#125c84;color:#fff;border-color:#86eaff;box-shadow:0 0 14px #39c8ff95}
