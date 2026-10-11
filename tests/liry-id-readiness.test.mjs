@@ -4,6 +4,8 @@ import {auditInactiveLiryReadiness} from "../lib/games/liry-readiness-audit.ts";
 import {getInactiveLiryGamerView,LIRY_INTEGRATION_PORTS} from "../lib/games/liry-integration-gateway.ts";
 import {isLiryActivationReady,LIRY_ACTIVATION_REQUIREMENTS} from "../lib/games/liry-activation-readiness.ts";
 import {isValidGameLink,LIRY_GAME_LINKS_PENDING} from "../lib/games/liry-game-link-contract.ts";
+import {isLiryPublicIdentity,LIRY_VISITOR_IDENTITY} from "../lib/games/liry-id-contract.ts";
+import {makePublicGamerSnapshot} from "../lib/games/public-gamer-snapshot.ts";
 
 test("Liry ID permanece bloqueado, con siete requisitos pendientes",()=>{
  const result=auditInactiveLiryReadiness();
@@ -44,4 +46,13 @@ test("no aceptar estados vinculados incompletos o códigos no publicados",()=>{
 });
 test("ningún puerto de integración autenticado está configurado",()=>{
  assert.ok(Object.values(LIRY_INTEGRATION_PORTS).every(x=>x==="not_configured"));
+});
+
+test("identidad visitante y eventos sin comprobación nunca elevan privilegios",()=>{
+ assert.equal(isLiryPublicIdentity(LIRY_VISITOR_IDENTITY),true);
+ assert.equal(isLiryPublicIdentity({kind:"active",userId:null,displayName:"Visitante",verifiedAt:null}),false);
+ assert.equal(makePublicGamerSnapshot(false,null).status,"visitor");
+ assert.equal(makePublicGamerSnapshot(true,null,false).status,"identified_no_activity");
+ const invented={accountId:"fake",verifiedAt:new Date().toISOString(),gamesPlayed:1,achievedCount:0,playMinutes:5,visitedWorldIds:[],achievementIds:[],experiencePoints:999};
+ assert.equal(makePublicGamerSnapshot(true,invented,false).verifiedActivity,null);
 });
