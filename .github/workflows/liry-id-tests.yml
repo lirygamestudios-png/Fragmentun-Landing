@@ -1,0 +1,24 @@
+name: Liry ID — pruebas de regresión
+on:
+  push:
+    branches:
+      - work/master-admin-implementation
+    paths:
+      - 'lib/games/**'
+      - 'tests/liry-id-*.test.mjs'
+      - 'tests/liry-ts-loader.mjs'
+      - 'package.json'
+      - '.github/workflows/liry-id-tests.yml'
+  workflow_dispatch:
+jobs:
+  liry-id:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Ejecutar pruebas de Liry ID
+        run: npm run test:liry-id
