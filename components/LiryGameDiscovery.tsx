@@ -98,7 +98,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
   const dnaHeightStyle={"--liry-catalog-height":catalogHeight===null?undefined:`${catalogHeight}px`} as CSSProperties;
   return <div className={styles.worldShowcase}>
     <div className={styles.worldsGrid} ref={catalogRef}>
-      {games.map((game,index)=><article className={`${styles.gameCard} ${recommendedIndexes.includes(index)?styles.gameCardRecommended:""}`} key={game.slug} style={{["--world-index" as string]:index+1}}>
+      {games.map((game,index)=><article className={`${styles.gameCard} ${recommendedIndexes.includes(index)?styles.gameCardRecommended:""}`} key={game.slug} id={`liry-world-${String(index+1).padStart(2,"0")}`} style={{["--world-index" as string]:index+1}}>
         {recommendedIndexes.includes(index)&&<span className={styles.gameRecommendedLabel}>AFÍN A TU LIRY ADN</span>}
         <img className={styles.gameCardArt} src={catalogArt[index]} alt="" loading="lazy" decoding="async" />
         <div className={styles.cardContent}>
