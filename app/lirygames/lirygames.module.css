@@ -560,7 +560,7 @@
 .gamerCardAction:hover,.gamerCardAction:focus-visible{background:#063451}
 .gamerDataNote{display:block;margin-top:7px;color:#7f9fba!important;font-size:9px!important}
 .journeyContent{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:10px;flex:1;margin:10px 0}
-.journeyRing{aspect-ratio:1;border-radius:50%;padding:7px;background:conic-gradient(#1abcf1 0%,#5b36bb var(--journey-progress,0%),#142943 var(--journey-progress,0%) 100%);box-shadow:0 0 20px #098ed552;max-width:180px;width:100%;display:grid;place-items:center}
+.journeyRing{aspect-ratio:1;border-radius:50%;padding:7px;background:conic-gradient(#25dfff 0% var(--journey-progress,0%),#142943 var(--journey-progress,0%) 100%);box-shadow:0 0 20px #098ed552;max-width:180px;width:100%;display:grid;place-items:center}
 .journeyRingCenter{background:radial-gradient(circle at 50% 50%,#102a4b,#04111d 70%);border:1px solid #1c89bc;border-radius:50%;height:100%;width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px}
 .journeyRingCenter strong{font-size:24px;color:#fff}
 .journeyRingCenter span{font-size:9px;color:#c3e6fb;text-align:center}
@@ -1222,3 +1222,9 @@
 /* Perfil Gamer: resaltar afinidad efímera sin modificar dimensiones de tarjetas. */
 .gamerStylesHighlighted>span{border-color:#4ae6ff;box-shadow:inset 0 0 0 1px rgba(74,230,255,.55),0 0 14px rgba(29,208,255,.45);transition:border-color .22s ease,box-shadow .22s ease}
 @media(prefers-reduced-motion:reduce){.gamerStylesHighlighted>span{transition:none}}
+
+/* Liry Journey: cian uniforme y resplandor suave. Logros: iluminar solo logros acreditados. */
+.journeyRing{box-shadow:0 0 19px rgba(37,223,255,.25)}
+.achievementEarned{border-color:#25dfff;box-shadow:0 0 13px rgba(37,223,255,.17)}
+.achievementEarned .achievementMedal{color:#8df3ff;border-color:#25dfff;background:radial-gradient(circle,rgba(37,223,255,.27),#0b1728 72%);filter:drop-shadow(0 0 4px rgba(37,223,255,.4))}
+.achievementEarned small{color:#91f3ff!important}
