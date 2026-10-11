@@ -1403,3 +1403,9 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .page :is(.gamerInfoClose,.gamerInfoDone,.liryBoostClose,.dnaExplorerClose,.worldDetailClose):not(:disabled):hover{background-color:#14658e;color:#fff;border-color:#93ecff;box-shadow:0 0 0 1px #80e8ff66,0 0 15px #45caff99}
 .page :is(.gamerInfoClose,.gamerInfoDone,.liryBoostClose,.dnaExplorerClose,.worldDetailClose):focus-visible{border-color:#93ecff;outline:2px solid #d5f8ff;outline-offset:3px;box-shadow:0 0 16px #45caff99}
 @media(prefers-reduced-motion:reduce){.page :is(.gamerInfoClose,.gamerInfoDone,.liryBoostClose,.dnaExplorerClose,.worldDetailClose){transition:none!important}}
+
+/* Criterio visual corregido 2026-10-11: rectángulos de esquinas redondeadas, independientes. */
+.page :is(.button,.heroSecondary,.bannerCta,.liryShareButton,.liryBoostSecondary,.liryBoostEnrollmentButton,.gamerInfoDone,.gamerInfoClose,.liryContactSubmit,.recommendAll,.liryBoostStepButton,.profileAccess,.dnaSideButton,.gamerCardAction,.liryAccessTab,.liryBoostClose,.dnaExplorerClose,.worldDetailClose,.storeCategory){border-radius:9px}
+.page :is(.button,.heroSecondary,.bannerCta,.liryShareButton,.liryBoostSecondary,.gamerInfoDone,.liryContactSubmit,.recommendAll,.profileAccess,.dnaSideButton,.gamerCardAction,.liryAccessTab,.liryBoostClose,.dnaExplorerClose,.worldDetailClose,.storeCategory):not(:disabled):is(:hover,:focus-visible){background-color:#14658e;color:#faffff;border-color:#94edff;box-shadow:0 0 0 1px #8de8ff77,0 0 14px #42caff99,0 0 27px #248fd650}
+.page :is(.liryShareActions,.liryBoostActions){gap:max(10px,0.65rem)}
+.page :is(.gamerInfoClose,.liryBoostClose,.dnaExplorerClose,.worldDetailClose):focus-visible{outline-offset:3px}
