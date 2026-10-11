@@ -6,6 +6,7 @@ import {LiryContactForm} from "../../components/LiryContactForm";
 import {LiryGameDiscovery} from "../../components/LiryGameDiscovery";
 import {LiryGamerInfoDialog} from "../../components/LiryGamerInfoDialog";
 import {getLiryPublicCatalog} from "../../lib/games/public-catalog-server";
+import {VISITOR_GAMER_SNAPSHOT} from "../../lib/games/public-gamer-snapshot";
 import styles from "./lirygames.module.css";
 
 export const metadata={
@@ -32,6 +33,8 @@ export const metadata={
 export default async function LiryGamesFrontDesk(){
   // Publicar solo identificadores editoriales: no serializar títulos ni slugs internos de IP.
   const internalCatalog=await getLiryPublicCatalog();
+  // Hasta existir proveedor de identidad y telemetría autorizado: estado visitante, sin datos fabricados.
+  const gamerSnapshot=VISITOR_GAMER_SNAPSHOT;
   const publicCodenames=["LIRY // ARENA-01","LIRY // BOT-02","LIRY // ECON-03","LIRY // EARTH-04","LIRY // LINK-05","LIRY // REALM-06","LIRY // EMOTION-07","LIRY // TITAN-08","LIRY // CODE-09"];
   // Lista explícita de campos permitidos: jamás pasar títulos, rutas ni textos internos al cliente.
   const games=internalCatalog.slice(0,9).map((game,index)=>({
@@ -70,14 +73,14 @@ export default async function LiryGamesFrontDesk(){
           <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">♙</span><h3>MI PERFIL GAMER</h3></header>
           <div className={styles.gamerIdentity}>
             <div className={styles.gamerPortrait} aria-hidden="true"><span>?</span></div>
-            <div className={styles.gamerIdentityText}><strong>Visitante</strong><span>Nivel —</span><div className={styles.gamerXpTrack} aria-label="Experiencia aún no disponible"><span /></div><small>XP pendiente de conexión</small></div>
+            <div className={styles.gamerIdentityText}><strong>{gamerSnapshot.displayName}</strong><span>Nivel —</span><div className={styles.gamerXpTrack} aria-label="Experiencia aún no disponible"><span /></div><small>XP pendiente de actividad verificada</small></div>
           </div>
           <p className={styles.gamerMicroLabel}>Tu estilo de juego</p>
           <div className={styles.gamerStyles}><span>◇ <b>Por descubrir</b></span></div>
           <small className={styles.gamerDataNote}>Tu estilo se determinará con tu Liry ADN. Ningún estilo se asigna sin evaluación.</small>
           <div className={styles.gamerMetrics}><div><small>Juegos jugados</small><strong>—</strong></div><div><small>Logros</small><strong>—</strong></div><div><small>Horas de juego</small><strong>—</strong></div></div>
           <LiryGamerInfoDialog topic="perfil" />
-          <small className={styles.gamerDataNote}>Vista preliminar · sin sesión gamer</small>
+          <small className={styles.gamerDataNote}>Estado visitante · sin sesión gamer</small>
         </article>
         <article className={styles.gamerCard}>
           <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">⬡</span><div><h3>TU LIRY JOURNEY</h3><p>Esta es tu historia en Liry. Sigue explorando.</p></div></header>
