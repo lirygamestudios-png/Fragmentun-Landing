@@ -80,8 +80,8 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
   },[exploringDna,dnaStep,dnaAnswers]);
   useEffect(()=>{
     if(selectedGame===null)return;
-    gameCloseRef.current?.focus();
-    const onKey=(event:KeyboardEvent)=>{if(event.key==="Escape"){const index=selectedGame;setSelectedGame(null);requestAnimationFrame(()=>gameTriggersRef.current[index]?.focus());}};
+    gameCloseRef.current?.focus({preventScroll:true});
+    const onKey=(event:KeyboardEvent)=>{if(event.key==="Escape"){const index=selectedGame;setSelectedGame(null);requestAnimationFrame(()=>gameTriggersRef.current[index]?.focus({preventScroll:true}));}};
     window.addEventListener("keydown",onKey);
     return ()=>window.removeEventListener("keydown",onKey);
   },[selectedGame]);
@@ -89,7 +89,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
     if(selectedGame===null)return;
     const index=selectedGame;
     setSelectedGame(null);
-    requestAnimationFrame(()=>gameTriggersRef.current[index]?.focus());
+    requestAnimationFrame(()=>gameTriggersRef.current[index]?.focus({preventScroll:true}));
   };
 
   // Preferencia local efímera: nunca XP ni identidad autenticada.
