@@ -26,13 +26,13 @@ export const metadata={
     siteName:"LIRYGAMES STUDIOS",
     title:"LIRYGAMES STUDIOS — 9 mundos, infinitas formas de jugar",
     description:"Nueve universos de juego. Explora los próximos lanzamientos y únete a la comunidad LIRYGAMES.",
-    images:[]
+    images:[{url:"/lirygames/opengraph-image",width:1200,height:630,alt:"LIRYGAMES STUDIOS — 9 mundos, infinitas formas de jugar"}]
   },
   twitter:{
     card:"summary" as const,
     title:"LIRYGAMES STUDIOS — 9 mundos, infinitas formas de jugar",
     description:"Descubre los videojuegos y la comunidad de LIRYGAMES STUDIOS.",
-    images:[]
+    images:["/lirygames/opengraph-image"]
   },
   robots:{index:false,follow:false}
 };
