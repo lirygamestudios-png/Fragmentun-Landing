@@ -1199,3 +1199,10 @@
   color:#fff;border:1px solid #5fcefc;font-family:inherit;
 }
 .gamerInfoDialog .gamerInfoDone:hover{background:#104a70;color:#fff}
+
+
+/* Listas de consulta en subpantallas gamer: nunca expanden la landing. */
+.gamerInfoModalList{list-style:none;margin:16px 0;padding:0;display:grid;gap:7px;max-height:36dvh;overflow:auto}
+.gamerInfoModalList li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid rgba(79,178,225,.35);border-radius:8px;background:rgba(12,47,77,.55);color:#ecfaff;font-size:12px}
+.gamerInfoModalList li small{margin:0;padding:0;border:0;color:#7ddcff;font-size:10px;text-align:right}
+@media(max-width:480px){.gamerInfoModalList li{align-items:flex-start;flex-direction:column;gap:4px}.gamerInfoModalList li small{text-align:left}}
