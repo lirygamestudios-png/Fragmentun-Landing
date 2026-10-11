@@ -19,3 +19,9 @@ test("auditoría mínima no incluye identidad ni contenido del evento",()=>{
  assert.equal(prepareInactiveAuditRecord("invalid_event",-1,"2026-10-11T10:00:00Z"),null);
  assert.equal(prepareInactiveAuditRecord("invalid_event",1,"invalid"),null);
 });
+
+test("categorías desconocidas y marcas temporales futuras se rechazan",()=>{
+ assert.equal(planInactiveEventRecovery("unexpected_error",0),"quarantine");
+ assert.equal(prepareInactiveAuditRecord("unexpected_error",1,"2026-10-11T10:00:00Z"),null);
+ assert.equal(prepareInactiveAuditRecord("network_timeout",1,"2099-01-01T00:00:00Z"),null);
+});
