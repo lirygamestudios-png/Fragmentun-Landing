@@ -1,5 +1,7 @@
 "use client";
-import {useState,type FormEvent} from "react";
+import {useEffect,useRef,useState,type FormEvent} from "react";
+declare global {interface Window {turnstile?:{render:(node:HTMLElement,options:{sitekey:string;callback:(token:string)=>void;"expired-callback":()=>void;"error-callback":()=>void})=>string;remove:(id:string)=>void;reset:(id:string)=>void}}}
+const turnstileSiteKey=process.env.NEXT_PUBLIC_LIRY_TURNSTILE_SITE_KEY;
 export function LiryContactForm(){
  const[name,setName]=useState("");
  const[email,setEmail]=useState("");
@@ -9,18 +11,34 @@ export function LiryContactForm(){
  const[ack,setAck]=useState(false);
  const[website,setWebsite]=useState("");
  const[busy,setBusy]=useState(false);
+ const[turnstileToken,setTurnstileToken]=useState("");
+ const[turnstileError,setTurnstileError]=useState("");
+ const turnstileContainer=useRef<HTMLDivElement>(null);
+ const turnstileWidgetId=useRef<string|null>(null);
+ useEffect(()=>{
+  if(!turnstileSiteKey)return;
+  let cancelled=false;
+  const script=document.createElement("script");
+  script.src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";script.async=true;
+  script.onload=()=>{if(cancelled||!turnstileContainer.current||!window.turnstile)return;
+   turnstileWidgetId.current=window.turnstile.render(turnstileContainer.current,{sitekey:turnstileSiteKey,callback:token=>{setTurnstileToken(token);setTurnstileError("");},"expired-callback":()=>setTurnstileToken(""),"error-callback":()=>{setTurnstileToken("");setTurnstileError("La verificación no pudo completarse.");}});
+  };
+  script.onerror=()=>setTurnstileError("No se pudo cargar la verificación.");
+  document.head.appendChild(script);
+  return ()=>{cancelled=true;if(turnstileWidgetId.current&&window.turnstile)window.turnstile.remove(turnstileWidgetId.current);script.remove();};
+ },[]);
  const[result,setResult]=useState("");
  const[done,setDone]=useState(false);
  async function submit(e:FormEvent<HTMLFormElement>){
-  e.preventDefault();setBusy(true);setDone(false);setResult("");
+  e.preventDefault();if(!turnstileToken){setResult("Completa la verificación antirrobot antes de enviar.");return;}setBusy(true);setDone(false);setResult("");
   try{
-   const r=await fetch("/api/lirygames/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,subject,gameSlug,message,privacyAcknowledged:ack,website})});
+   const r=await fetch("/api/lirygames/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,subject,gameSlug,message,privacyAcknowledged:ack,website,turnstileToken})});
    const j=await r.json();
    if(!r.ok||!j.ok)throw Error(j.message||"No se pudo enviar.");
    setName("");setEmail("");setSubject("opinion");setGameSlug("");setMessage("");setAck(false);setWebsite("");
    setDone(true);setResult(j.message||"Mensaje enviado correctamente.");
   }catch(error){setResult(error instanceof Error?error.message:"Error de envío");}
-  finally{setBusy(false)}
+  finally{setBusy(false);setTurnstileToken("");if(turnstileWidgetId.current)window.turnstile?.reset(turnstileWidgetId.current)}
  }
  function resetFeedback(){setDone(false);setResult("");}
  const field={width:"100%",minWidth:0,padding:"11px 12px",border:"1px solid #286e98",borderRadius:6,background:"#061429",color:"#f2fbff",fontSize:12};
@@ -41,7 +59,10 @@ export function LiryContactForm(){
    <textarea style={{...field,minHeight:112,resize:"vertical"}} aria-label="Tu mensaje" placeholder="Escribe tu mensaje aquí..." value={message} onChange={e=>{setMessage(e.target.value);resetFeedback()}} minLength={10} maxLength={3000} required/>
    <label className="liryContactConsent"><input className="liryContactCheck" type="checkbox" checked={ack} onChange={e=>{setAck(e.target.checked);resetFeedback()}} required/><span>Autorizo el tratamiento de mis datos para responder a este mensaje. No implica suscripción a publicidad.</span></label>
    <input name="website" aria-hidden="true" autoComplete="off" tabIndex={-1} value={website} onChange={e=>setWebsite(e.target.value)} style={{position:"absolute",left:-9999}}/>
-   <button className="liryContactSubmit" disabled={busy} type="submit">{busy?"ENVIANDO...":"ENVIAR MENSAJE →"}</button>
+   <div aria-label="Verificación antirrobot" ref={turnstileContainer} style={{minHeight:65}}/>
+   {!turnstileSiteKey&&<p role="status" style={{color:"#ffb2b2",fontSize:12}}>La verificación antirrobot está pendiente de configuración. El envío se habilitará cuando esté disponible.</p>}
+   {turnstileError&&<p role="alert" style={{color:"#ffb2b2",fontSize:12}}>{turnstileError}</p>}
+   <button className="liryContactSubmit" disabled={busy||!turnstileToken} type="submit">{busy?"ENVIANDO...":"ENVIAR MENSAJE →"}</button>
   </>
   {result&&<p role="status" style={{fontSize:12,color:done?"#89ebd0":"#ffb2b2",margin:0}}>{result}</p>}
  </form>;
