@@ -28,6 +28,8 @@ const gameAffinity:number[][]=[
 
 export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
   const catalogRef=useRef<HTMLDivElement>(null);
+  const advanceTimerRef=useRef<ReturnType<typeof setTimeout>|null>(null);
+  const clearAdvanceTimer=()=>{if(advanceTimerRef.current!==null){clearTimeout(advanceTimerRef.current);advanceTimerRef.current=null;}};
   const gameCloseRef=useRef<HTMLButtonElement>(null);
   const gameTriggersRef=useRef<(HTMLButtonElement|null)[]>([]);
   const explorerCloseRef=useRef<HTMLButtonElement>(null);
@@ -40,6 +42,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
   const [selectedGame,setSelectedGame]=useState<number|null>(null);
   const [catalogHeight,setCatalogHeight]=useState<number|null>(null);
   const resetDnaEvaluation=(preserveStyle=false)=>{
+    clearAdvanceTimer();
     if(!preserveStyle)window.dispatchEvent(new CustomEvent("liry:dna-style",{detail:{style:null}}));
     setDnaSurvey(false);setDnaStep(0);setDnaAnswers(Array(6).fill(null));setActiveTrait(0);
   };
@@ -51,6 +54,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
     if(chosen)window.dispatchEvent(new CustomEvent("liry:dna-closed",{detail:{style:chosen,durationMs:10000}}));
     setExploringDna(false);resetDnaEvaluation(Boolean(chosen));explorerOpenRef.current?.focus({preventScroll:true});
   };
+  useEffect(()=>()=>clearAdvanceTimer(),[]);
   useEffect(()=>{
     const catalog=catalogRef.current;
     if(!catalog)return;
@@ -128,7 +132,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
       <button type="button" className={styles.dnaSurveyToggle} onClick={()=>{if(dnaSurvey)resetDnaEvaluation();else setDnaSurvey(true)}} aria-expanded={dnaSurvey}>{dnaSurvey?"OCULTAR CUESTIONARIO":"DESCUBRIR MI LIRY ADN →"}</button>
       {dnaSurvey&&<div className={styles.dnaSurvey} aria-label="Cuestionario de preferencias Liry ADN">
         <p>Responde según tus gustos. No necesitas cuenta y las respuestas solo se utilizan en esta sesión.</p>
-        {dnaQuestions.map((question,i)=>i!==dnaStep?null:<fieldset key={question} className={styles.dnaSurveyQuestion}><legend>{i+1}. {question}</legend><div className={styles.dnaSurveyAnswers}>{dnaOptions.map(option=><label key={option.value}>{option.label}<input type="radio" name={`liry-dna-q-${i}`} checked={dnaAnswers[i]===option.value} onChange={()=>{setDnaAnswers(current=>current.map((answer,index)=>index===i?option.value:answer));setDnaStep(Math.min(i+1,6));}}/></label>)}</div></fieldset>)}
+        {dnaQuestions.map((question,i)=>i!==dnaStep?null:<fieldset key={question} className={styles.dnaSurveyQuestion}><legend>{i+1}. {question}</legend><div className={styles.dnaSurveyAnswers}>{dnaOptions.map(option=><label key={option.value} className={dnaAnswers[i]===option.value?styles.dnaSurveyAnswerSelected:undefined}>{option.label}<input type="radio" name={`liry-dna-q-${i}`} checked={dnaAnswers[i]===option.value} onChange={()=>{clearAdvanceTimer();setDnaAnswers(current=>current.map((answer,index)=>index===i?option.value:answer));advanceTimerRef.current=setTimeout(()=>{setDnaStep(Math.min(i+1,6));advanceTimerRef.current=null;},420);}}/></label>)}</div></fieldset>)}
         {dnaStep===6&&dnaAnswers.every(answer=>answer!==null)?
           <div className={styles.dnaSurveyResult} aria-live="polite"><h4>TU PERFIL DE AFINIDADES</h4>
             {traits.map((trait,i)=><div className={styles.dnaResultRow} key={trait}><span>{trait}</span><div className={styles.dnaAffinityTrack} style={{["--dna-accent" as string]:["#19d7ff","#ad58f4","#f5685f","#ffd34c","#d65ef7","#7665ff"][i]}}><span style={{width:`${Math.round((dnaAnswers[i]??0)/3*100)}%`}} /></div><strong>{Math.round((dnaAnswers[i]??0)/3*100)}%</strong></div>)}
@@ -137,8 +141,8 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
             {[...games.map((game,i)=>({game,i,score:gameAffinity[i]?.reduce((sum,weight,j)=>sum+weight*(dnaAnswers[j]??0),0)??0}))]
               .sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3).map(({game,i})=><button type="button" key={game.slug} className={styles.dnaRecommendation} onClick={()=>{setExploringDna(false);resetDnaEvaluation();setSelectedGame(i)}}>{publicCodenames[i]??`LIRY // PROJECT-${String(i+1).padStart(2,"0")}`} <span>Ver ficha →</span></button>)}</>}
             <small>Recomendaciones orientativas calculadas a partir de tus respuestas; no representan una evaluación psicológica ni datos de jugadores.</small>
-            <button type="button" className={styles.dnaSurveyRestart} onClick={()=>{window.dispatchEvent(new CustomEvent("liry:dna-style",{detail:{style:null}}));setDnaAnswers(Array(6).fill(null));setDnaStep(0)}}>VOLVER A RESPONDER</button>
-          </div>:<div className={styles.dnaSurveyProgress} aria-live="polite"><span>Pregunta {dnaStep+1} de 6</span><progress value={dnaStep} max={6} />{dnaStep>0&&<button type="button" className={styles.dnaSurveyBack} onClick={()=>setDnaStep(step=>Math.max(0,step-1))}>← ANTERIOR</button>}</div>}
+            <button type="button" className={styles.dnaSurveyRestart} onClick={()=>{clearAdvanceTimer();window.dispatchEvent(new CustomEvent("liry:dna-style",{detail:{style:null}}));setDnaAnswers(Array(6).fill(null));setDnaStep(0)}}>VOLVER A RESPONDER</button>
+          </div>:<div className={styles.dnaSurveyProgress} aria-live="polite"><span>Pregunta {dnaStep+1} de 6</span><progress value={dnaStep} max={6} />{dnaStep>0&&<button type="button" className={styles.dnaSurveyBack} onClick={()=>{clearAdvanceTimer();setDnaStep(step=>Math.max(0,step-1));}}>← ANTERIOR</button>}</div>}
       </div>}</div>}
       <ul className={styles.dnaTraitList}>
         {traits.map((trait,i)=><li key={trait}><span className={styles.dnaTraitIndex}>{i+1}</span><span>{trait}</span><span className={styles.dnaTraitPending}>Por evaluar</span><span className={styles.dnaTraitTrack} aria-hidden="true"><span className={styles.dnaTraitShimmer}/></span></li>)}
