@@ -25,6 +25,13 @@ export default async function LegalDocument({params}:{params:Promise<{slug:strin
   <section style={{maxWidth:850,background:"#0a2036",border:"1px solid #287597",borderRadius:12,padding:"clamp(18px,3vw,28px)",marginTop:28}}>
    <strong style={{color:"#65e5ff"}}>DOCUMENTO EN PREPARACIÓN · NO VIGENTE</strong>
    <p style={{lineHeight:1.7}}>Esta página reserva el acceso al documento correspondiente. Su contenido legal definitivo debe revisarse y aprobarse antes de su publicación y antes de habilitar las funciones que regula.</p>
+   {slug==="privacidad"&&<div style={{borderTop:"1px solid #244e68",marginTop:24,paddingTop:16,lineHeight:1.7}}>
+    <h2 style={{fontSize:19}}>Información del formulario de contacto</h2>
+    <p>En la versión actual del FrontDesk, el formulario solicita nombre, correo electrónico, motivo, mensaje y, de manera opcional, el videojuego o producto relacionado. Se utiliza para tramitar y responder la consulta enviada. La casilla de autorización del formulario no constituye una suscripción a publicidad.</p>
+    <p>El envío incorpora validaciones y un límite de frecuencia. La aceptación del mensaje depende del servicio de almacenamiento configurado; su operación real debe comprobarse antes del lanzamiento.</p>
+    <p><strong>Pendiente de confirmar:</strong> identidad jurídica y domicilio del responsable, correo de privacidad, proveedor y ubicación del almacenamiento, conservación efectiva, régimen de derechos y destinatarios, uso real de analítica y cookies, y tratamiento de datos de menores.</p>
+    <p>Las cuentas de jugador, las compras y el ranking activo de LiryBoost no deben describirse como sistemas en funcionamiento mientras no estén habilitados y verificados.</p>
+   </div>}
    <h2 style={{fontSize:19,marginTop:26}}>Aspectos que deberá cubrir</h2>
    <ul style={{lineHeight:1.8,paddingLeft:23}}>{doc.check.map(x=><li key={x}>{x}</li>)}</ul>
   </section>
