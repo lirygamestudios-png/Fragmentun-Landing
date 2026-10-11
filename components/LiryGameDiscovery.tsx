@@ -62,7 +62,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
   },[]);
   useEffect(()=>{
     if(!exploringDna)return;
-    explorerCloseRef.current?.focus();
+    explorerCloseRef.current?.focus({preventScroll:true});
     const onKeyDown=(event:KeyboardEvent)=>{
       if(event.key==="Escape"){
         closeDnaExplorer();
@@ -70,7 +70,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
     };
     window.addEventListener("keydown",onKeyDown);
     return ()=>window.removeEventListener("keydown",onKeyDown);
-  },[exploringDna]);
+  },[exploringDna,dnaStep,dnaAnswers]);
   useEffect(()=>{
     if(selectedGame===null)return;
     gameCloseRef.current?.focus();
