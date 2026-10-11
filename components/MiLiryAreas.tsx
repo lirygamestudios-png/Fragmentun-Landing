@@ -43,6 +43,16 @@ export function MiLiryAreas(){
     <div className={styles.worldsFacts}><div><strong>JUEGOS VINCULADOS</strong><span>Sin datos verificados</span></div><div><strong>ÚLTIMA PARTIDA</strong><span>No disponible</span></div><div><strong>PROGRESO</strong><span>No disponible</span></div></div>
     <p>Los títulos pendientes de registro no se publican aquí. En el futuro, solo aparecerán juegos autorizados y datos confirmados por el servidor.</p>
    </section>}
+   {selected.id==="logros"&&<section className={styles.worldsPanel} aria-label="Estado de logros y recompensas">
+    <h3>LOGROS DE MI CUENTA</h3>
+    <p className={styles.worldsEmpty}>No hay insignias, desafíos completados ni recompensas acreditadas a una cuenta autenticada.</p>
+    <div className={styles.worldsFacts}>
+     <div><strong>INSIGNIAS</strong><span>Sin datos verificados</span></div>
+     <div><strong>DESAFÍOS</strong><span>No disponibles</span></div>
+     <div><strong>RECOMPENSAS</strong><span>No acreditadas</span></div>
+    </div>
+    <p>Los logros aparecerán únicamente cuando un videojuego activo confirme sus eventos mediante el servidor. Esta pantalla no concede premios ni simula progresos.</p>
+   </section>}
    <div className={styles.areaDialogActions}><Link className={styles.areaLink} href={selected.href}>EXPLORAR SECCIÓN →</Link><form method="dialog"><button type="submit" className={styles.areaLink}>VOLVER A MI LIRY</button></form></div>
   </div>
  </dialog></>;
