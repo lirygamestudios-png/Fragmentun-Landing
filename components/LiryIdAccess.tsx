@@ -22,7 +22,8 @@ export function LiryIdAccess(){
     <div style={{display:"flex",flexWrap:"wrap",gap:8,margin:"12px 0"}} role="group" aria-label="Opciones de acceso Liry ID">
      {modes.map(x=><button type="button" key={x.id} aria-pressed={mode===x.id} onClick={()=>setMode(x.id)} style={{border:"1px solid "+(mode===x.id?"#6be8ff":"#315a72"),borderRadius:8,padding:"9px 10px",background:mode===x.id?"#103f5a":"#081b30",color:"#e4f9ff",fontSize:11,cursor:"pointer"}}>{x.label}</button>)}
     </div>
-    <p>{current.description}</p>
+    <p aria-live="polite">{current.description}</p>
+    <p style={{fontSize:12,color:"#a6d2e6"}}>Modalidad seleccionada: {current.label}. No se recopilan credenciales.</p>
     <div style={{padding:"15px",border:"1px solid #2f657f",borderRadius:9,background:"#0a2036"}}>
      <strong style={{color:"#79e6ff"}}>PRÓXIMAMENTE · ACCESO DESACTIVADO</strong>
      <p style={{marginBottom:0}}>Esta es una vista informativa. No solicita correo ni contraseña y no registra usuarios. Podrás explorar el FrontDesk sin crear una cuenta.</p>
