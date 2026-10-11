@@ -1228,3 +1228,8 @@
 .achievementEarned{border-color:#25dfff;box-shadow:0 0 13px rgba(37,223,255,.17)}
 .achievementEarned .achievementMedal{color:#8df3ff;border-color:#25dfff;background:radial-gradient(circle,rgba(37,223,255,.27),#0b1728 72%);filter:drop-shadow(0 0 4px rgba(37,223,255,.4))}
 .achievementEarned small{color:#91f3ff!important}
+
+/* Iconos de compartir: botones compactos con el estilo aprobado de Social. */
+.liryShareIconButton{width:46px;min-width:46px;height:44px;padding:7px;display:inline-grid;place-items:center;color:#69e8ff;font-size:23px;line-height:1}
+.liryShareIconButton span{display:block;font-family:Arial,sans-serif;font-weight:800}
+@media(max-width:520px){.liryShareIconButton{width:100%;min-width:0;height:44px}}
