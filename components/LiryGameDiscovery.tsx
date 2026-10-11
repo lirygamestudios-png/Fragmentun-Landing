@@ -76,10 +76,13 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
     requestAnimationFrame(()=>gameTriggersRef.current[index]?.focus());
   };
   useEffect(()=>{if(exploringDna&&dnaSurvey)explorerPanelRef.current?.scrollTo({top:0,behavior:"instant"});},[dnaStep,dnaSurvey,exploringDna]);
+  const hasDnaResults=dnaStep===6&&dnaAnswers.every(answer=>answer!==null)&&dnaAnswers.some(answer=>answer!==0);
+  const recommendedIndexes=hasDnaResults?[...games.map((game,i)=>({i,score:gameAffinity[i]?.reduce((sum,weight,j)=>sum+weight*(dnaAnswers[j]??0),0)??0}))].sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3).map(entry=>entry.i):[];
   const dnaHeightStyle={"--liry-catalog-height":catalogHeight===null?undefined:`${catalogHeight}px`} as CSSProperties;
   return <div className={styles.worldShowcase}>
     <div className={styles.worldsGrid} ref={catalogRef}>
-      {games.map((game,index)=><article className={styles.gameCard} key={game.slug} style={{["--world-index" as string]:index+1}}>
+      {games.map((game,index)=><article className={`${styles.gameCard} ${recommendedIndexes.includes(index)?styles.gameCardRecommended:""}`} key={game.slug} style={{["--world-index" as string]:index+1}}>
+        {recommendedIndexes.includes(index)&&<span className={styles.gameRecommendedLabel}>AFÍN A TU LIRY ADN</span>}
         <img className={styles.gameCardArt} src={catalogArt[index]} alt="" loading="lazy" decoding="async" />
         <div className={styles.cardContent}>
           <div className={styles.worldCardText}>
