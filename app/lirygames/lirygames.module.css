@@ -1140,3 +1140,13 @@
 /* Liry ADN: respuesta textual a la izquierda, cotejo a la derecha en las cuatro opciones. */
 .dnaSurveyAnswers label{justify-content:space-between;min-width:0;gap:8px;text-align:left}
 .dnaSurveyAnswers label input[type="radio"]{flex:0 0 auto;margin-left:auto;margin-right:2px}
+
+/* Liry ADN: respuestas perfectamente alineadas, secuencia de una pregunta y resultados con el color de su vitrina. */
+.dnaSurveyAnswers label{display:grid;grid-template-columns:minmax(0,1fr) 16px;align-items:center;gap:8px;min-height:43px;padding:8px 10px}
+.dnaSurveyAnswers label input[type="radio"]{width:15px;height:15px;margin:0;justify-self:center;align-self:center}
+.dnaSurveyProgress{display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-size:11px;color:#a6e7ff;margin-top:12px}
+.dnaSurveyProgress progress{flex:1 1 100%;width:100%;height:8px;accent-color:#36ccff}
+.dnaSurveyBack{cursor:pointer;border:1px solid #4fbfe8;border-radius:8px;background:#0a2944;color:#effaff;padding:8px 12px;font-size:10px}
+.dnaAffinityTrack{height:9px;border-radius:20px;overflow:hidden;background:#10243d;border:1px solid color-mix(in srgb,var(--dna-accent) 55%,#142b49)}
+.dnaAffinityTrack span{display:block;height:100%;border-radius:inherit;background:var(--dna-accent);box-shadow:0 0 7px var(--dna-accent);transition:width .2s}
+@media(prefers-reduced-motion:reduce){.dnaAffinityTrack span{transition:none}}
