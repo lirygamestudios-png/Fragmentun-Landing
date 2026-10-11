@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run test:liry-id && next build",
+    "build": "npm run test:liry-id && npm run test:liryboost && next build",
     "test:liry-id": "node --experimental-strip-types --loader ./tests/liry-ts-loader.mjs --test tests/liry-id-*.test.mjs",
     "test:liryboost": "node --experimental-strip-types --test tests/liryboost-*.test.mjs",
     "start": "next start"
