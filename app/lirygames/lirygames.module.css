@@ -1397,3 +1397,9 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 /* Enlaces complementarios: forma rectangular y halo al hover. */
 .page .profileAccess,.page .dnaSideButton,.page .gamerCardAction,.page .liryAccessTab{border-radius:0;transition:background-color .2s,border-color .2s,box-shadow .2s,color .2s}
 .page .profileAccess:hover,.page .dnaSideButton:hover,.page .gamerCardAction:hover,.page .liryAccessTab:hover{background:#125c84;color:#fff;border-color:#86eaff;box-shadow:0 0 14px #39c8ff95}
+
+/* Modal controls inherit the approved rectangular interactive styling. */
+.page :is(.gamerInfoClose,.gamerInfoDone,.liryBoostClose,.dnaExplorerClose,.worldDetailClose){border-radius:0}
+.page :is(.gamerInfoClose,.gamerInfoDone,.liryBoostClose,.dnaExplorerClose,.worldDetailClose):not(:disabled):hover{background-color:#14658e;color:#fff;border-color:#93ecff;box-shadow:0 0 0 1px #80e8ff66,0 0 15px #45caff99}
+.page :is(.gamerInfoClose,.gamerInfoDone,.liryBoostClose,.dnaExplorerClose,.worldDetailClose):focus-visible{border-color:#93ecff;outline:2px solid #d5f8ff;outline-offset:3px;box-shadow:0 0 16px #45caff99}
+@media(prefers-reduced-motion:reduce){.page :is(.gamerInfoClose,.gamerInfoDone,.liryBoostClose,.dnaExplorerClose,.worldDetailClose){transition:none!important}}
