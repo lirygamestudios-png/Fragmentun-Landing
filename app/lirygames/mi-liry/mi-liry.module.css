@@ -37,3 +37,18 @@
 .back,.areaLink,.notice a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;max-width:100%;text-align:center}
 .back:active,.areaLink:active,.notice a:active{background:#1d779f;border-color:#c4f6ff;box-shadow:0 0 0 1px #b5efff99,0 0 16px #46ccffa8}
 @media(max-width:560px){.back,.areaLink,.notice a{width:fit-content}.areaLink{margin-top:18px}}
+
+/* Áreas MI LIRY: subpantalla que preserva distribución y foco. */
+.areaDialog{width:min(92vw,610px);max-height:88vh;overflow:auto;border:1px solid #55bce4;border-radius:13px;padding:0;color:#eef7ff;background:#08172d;box-shadow:0 0 60px #000b,0 0 26px #35b9fa40}
+.areaDialog::backdrop{background:#020817cc;backdrop-filter:blur(5px)}
+.areaDialogContent{position:relative;padding:clamp(22px,4vw,38px);background:radial-gradient(ellipse at 90% 0%,#1b518065,transparent 60%),#08172d}
+.areaDialogContent h2{font-size:clamp(24px,4vw,35px);margin:16px 0;color:#f0faff}
+.areaDialogContent p{color:#c3d6e8;line-height:1.7}
+.areaStatus{display:inline-flex;margin-top:10px;color:#7bdaf8;font-size:12px}
+.areaDialogActions{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:28px}
+.areaDialogActions form{margin:0}
+.areaLink,.areaClose{font-family:inherit;cursor:pointer;border:1px solid #3dadd4;border-radius:9px;padding:12px 16px;background:#0b2643;color:#d9f5ff;text-decoration:none;font-size:11px;font-weight:800;letter-spacing:.05em;box-shadow:inset 0 0 0 1px #1b526066;transition:background-color .22s ease,color .22s ease,border-color .22s ease,box-shadow .22s ease}
+.areaLink:hover,.areaClose:hover,.areaLink:focus-visible,.areaClose:focus-visible{background:#14658e;color:#fff;border-color:#94edff;box-shadow:0 0 0 1px #8de8ff77,0 0 14px #42caff99,0 0 27px #248fd650}
+.areaLink:focus-visible,.areaClose:focus-visible{outline:2px solid #daf7ff;outline-offset:3px}
+.areaClose{position:absolute;right:20px;top:18px;font-size:22px;padding:3px 12px}
+@media(prefers-reduced-motion:reduce){.areaLink,.areaClose{transition:none}}
