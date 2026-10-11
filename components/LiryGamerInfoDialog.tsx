@@ -19,7 +19,7 @@ export function LiryGamerInfoDialog({topic}:{topic:Topic}){
   const data=panels[topic];
   return <>
     <button type="button" ref={triggerRef} className={styles.gamerCardAction} onClick={()=>{setSelectedWorld(null);dialogRef.current?.showModal()}} aria-haspopup="dialog">{data.title} <span aria-hidden="true">→</span></button>
-    <dialog ref={dialogRef} className={styles.gamerInfoDialog} aria-label={data.title} onClose={()=>{setSelectedWorld(null);triggerRef.current?.focus()}} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
+    <dialog ref={dialogRef} className={styles.gamerInfoDialog} aria-label={data.title} onClose={()=>{setSelectedWorld(null);triggerRef.current?.focus({preventScroll:true})}} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
       <div className={styles.gamerInfoDialogInside}>
         <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar subpantalla">×</button></form>
         <p className={styles.gamerInfoEyebrow}>LIRYGAMES STUDIOS · TU EXPERIENCIA</p>
