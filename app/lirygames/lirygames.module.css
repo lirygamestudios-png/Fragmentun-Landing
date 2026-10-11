@@ -1247,3 +1247,8 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .secretsCopy{box-sizing:border-box;text-align:left}
 .secretsCopy p:nth-of-type(2){text-align:justify;text-align-last:left;hyphens:auto;overflow-wrap:break-word;max-width:38ch}
 @media(max-width:750px){.secretsCopy p:nth-of-type(2){text-align:left;hyphens:none;max-width:none}}
+
+/* Navegación legal: enlaces discretos debajo de la navegación principal del footer. */
+.footerLegalNav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 15px;padding:12px 10px;border-top:1px solid #24516a55;max-width:1100px;margin:auto}
+.footerLegalNav a{font-size:10px;color:#92cadd;text-decoration:none;letter-spacing:.03em}
+.footerLegalNav a:hover,.footerLegalNav a:focus-visible{color:#60e3ff;text-decoration:underline}
