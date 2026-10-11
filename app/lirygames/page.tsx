@@ -90,11 +90,14 @@ export default async function LiryGamesFrontDesk(){
           <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">✣</span><h3>LOGROS POR DESBLOQUEAR</h3><span className={styles.gamerTopRight}>Vista previa</span></header>
           <div className={styles.achievementList}>
             {[
-              {icon:"✧",title:"Primeros pasos",detail:"Completa tu primer juego"},
-              {icon:"⬡",title:"Explorador de mundos",detail:"Descubre cinco mundos"},
-              {icon:"✦",title:"La comunidad te necesita",detail:"Juega con tres amigos"},
-              {icon:"♜",title:"Maestro de estrategias",detail:"Gana diez partidas estratégicas"}
-            ].map(item=><div className={styles.achievementRow} key={item.title}><span className={styles.achievementMedal} aria-hidden="true">{item.icon}</span><div><strong>{item.title}</strong><span>{item.detail}</span><small>Pendiente de obtener</small></div></div>)}
+              {id:"first-steps",icon:"✧",title:"Primeros pasos",detail:"Completa tu primer juego"},
+              {id:"world-explorer",icon:"⬡",title:"Explorador de mundos",detail:"Descubre cinco mundos"},
+              {id:"community-friends",icon:"✦",title:"La comunidad te necesita",detail:"Juega con tres amigos"},
+              {id:"strategy-master",icon:"♜",title:"Maestro de estrategias",detail:"Gana diez partidas estratégicas"}
+            ].map(item=>{
+              const earned=gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?.achievementIds.includes(item.id)===true;
+              return <div className={`${styles.achievementRow} ${earned?styles.achievementEarned:""}`} key={item.id} aria-label={`${item.title}: ${earned?"Acreditado":"Pendiente"}`}><span className={styles.achievementMedal} aria-hidden="true">{item.icon}</span><div><strong>{item.title}</strong><span>{item.detail}</span><small>{earned?"LOGRO ACREDITADO":"Pendiente de obtener"}</small></div></div>;
+            })}
           </div>
           <LiryGamerInfoDialog topic="logros-lista" />
           <LiryGamerInfoDialog topic="logros" />
