@@ -1253,50 +1253,74 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .footerLegalNav a{font-size:10px;color:#92cadd;text-decoration:none;letter-spacing:.03em}
 .footerLegalNav a:hover,.footerLegalNav a:focus-visible{color:#60e3ff;text-decoration:underline}
 
-/* Justificación localizada: solo párrafos explicativos de Liry ID y Preferencias. */
-.liryModalJustifiedText{text-align:justify;text-align-last:left;hyphens:auto;overflow-wrap:break-word}
-@media(max-width:600px){.liryModalJustifiedText{text-align:left;hyphens:none}}
 
-/* Subpantallas Liry ID: contenido compacto y sin scroll salvo pantallas muy pequeñas. */
-.liryCompactDialog{width:min(92vw,540px);max-height:90dvh}
-.liryCompactDialog .gamerInfoDialogInside{padding:clamp(17px,3vw,26px)}
-.liryCompactDialog .gamerInfoDialogInside h3{margin:7px 35px 10px 0;font-size:clamp(18px,2.5vw,23px)}
-.liryCompactDialog .gamerInfoEyebrow{margin:0 0 5px}
-.liryCompactDialog .gamerInfoDone{padding:9px 13px}
-.liryCompactDialog .gamerInfoDialogInside>form:last-child{margin-top:10px}
-.liryCompactDescription{text-align:left;line-height:1.5!important;margin:7px 0 9px!important;overflow-wrap:break-word}
-.liryCompactNotice{padding:11px 13px;border:1px solid #2f657f;border-radius:9px;background:#0a2036}
-.liryCompactNotice strong{color:#79e6ff;font-size:12px}
-.liryCompactNotice p{margin:5px 0 0;line-height:1.45;font-size:12px;text-align:left}
-.liryCompactStatus{font-size:11px!important;line-height:1.4!important;margin:9px 0 0!important;text-align:left}
-.liryCompactDialog fieldset{padding:8px 12px!important}
-.liryCompactDialog fieldset label{margin:7px 0!important}
-.liryCompactDialog fieldset small{margin-top:8px;padding-top:8px}
-@media(max-width:600px){.liryCompactDialog{width:min(94vw,540px);max-height:92dvh}.liryCompactDialog .gamerInfoDialogInside{padding:18px}.liryCompactDialog .gamerInfoDone{font-size:10px}}
-
-/* Perfil Liry: jerarquía tipográfica y alineación consistente en ambos diálogos. */
-.liryCompactDialog,.liryCompactDialog .gamerInfoDialogInside{direction:ltr;text-align:left}
-.liryCompactDialog .gamerInfoEyebrow,.liryCompactDialog h3,.liryCompactDialog p,.liryCompactDialog small,.liryCompactDialog strong,.liryCompactDialog legend,.liryCompactDialog label{max-width:100%;text-align:left!important;text-align-last:left!important;word-spacing:normal!important;letter-spacing:normal;hyphens:none!important;overflow-wrap:normal}
-.liryCompactDialog .gamerInfoEyebrow{letter-spacing:.09em!important;font-size:10px!important}
-.liryCompactDialog h3{line-height:1.2!important;letter-spacing:.012em!important}
-.liryCompactDialog .liryCompactDescription{max-width:44ch;font-size:13px!important;line-height:1.55!important;margin:9px 0 14px!important}
-.liryCompactDialog .gamerInfoDialogInside>form:last-child{display:flex;justify-content:flex-end;margin-top:16px}
-.liryCompactDialog .gamerInfoDialogInside>form:last-child button{min-width:140px}
-.liryCompactDialog [role="group"]{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;gap:7px!important;margin:12px 0 14px!important}
-.liryCompactDialog [role="group"] button{white-space:normal;text-align:center;line-height:1.3;min-height:41px;padding:8px 5px!important}
-.liryCompactDialog .liryCompactNotice{margin-top:12px}
-.liryCompactDialog .liryCompactNotice p{max-width:48ch;font-size:12px!important;line-height:1.5!important}
-.liryCompactDialog .liryCompactStatus{margin-top:13px!important;font-size:12px!important;line-height:1.5!important}
-.liryCompactDialog fieldset{margin:10px 0 0;min-width:0}
-.liryCompactDialog fieldset label{justify-content:flex-start;line-height:1.4;white-space:normal}
-.liryCompactDialog fieldset small{line-height:1.45!important}
-@media(max-width:420px){.liryCompactDialog [role="group"]{grid-template-columns:1fr 1fr}.liryCompactDialog [role="group"] button:last-child:nth-child(odd){grid-column:1/-1}.liryCompactDialog .gamerInfoDialogInside>form:last-child button{width:100%}}
-/* Contención segura de las subpantallas Liry ID: sin desbordamiento horizontal. */
-.liryCompactDialog{box-sizing:border-box;max-width:calc(100vw - 24px);overflow-x:hidden}
-.liryCompactDialog .gamerInfoDialogInside{box-sizing:border-box;min-width:0;width:100%;padding:clamp(16px,3vw,24px)}
-.liryCompactDialog .gamerInfoDialogInside>*{box-sizing:border-box;min-width:0;max-width:100%}
-.liryCompactDialog .gamerInfoDialogInside [role="group"]{min-width:0;width:100%;grid-template-columns:repeat(3,minmax(0,1fr))}
-.liryCompactDialog .gamerInfoDialogInside [role="group"] button{min-width:0;overflow-wrap:anywhere}
-.liryCompactDialog .gamerInfoDialogInside fieldset{min-width:0;max-width:100%;box-sizing:border-box}
-.liryCompactDialog .gamerInfoDialogInside p,.liryCompactDialog .gamerInfoDialogInside small{overflow-wrap:break-word}
-@media(max-width:420px){.liryCompactDialog .gamerInfoDialogInside [role="group"]{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* LIRY ID / PRIVACIDAD: estilos únicos, sin reglas acumulativas. */
+.liryCompactDialog{
+  box-sizing:border-box;width:min(520px,calc(100vw - 32px));max-width:calc(100vw - 32px);
+  max-height:90dvh;overflow-x:hidden;overflow-y:auto;text-align:left;
+}
+.liryCompactDialog .gamerInfoDialogInside{
+  box-sizing:border-box;width:100%;min-width:0;padding:22px 24px;
+  display:flex;flex-direction:column;align-items:stretch;text-align:left;
+}
+.liryCompactDialog .gamerInfoDialogInside>*{
+  box-sizing:border-box;min-width:0;max-width:100%;
+}
+.liryCompactDialog .gamerInfoEyebrow{
+  margin:0 38px 7px 0;font-size:10px!important;letter-spacing:.1em;
+  text-align:left!important;
+}
+.liryCompactDialog .gamerInfoDialogInside h3{
+  margin:0 38px 12px 0;padding:0;font-size:clamp(18px,3vw,23px);
+  line-height:1.25;text-align:left;
+}
+.liryCompactDialog .gamerInfoDialogInside p{
+  padding:0;margin:0 0 12px;font-size:13px;line-height:1.55;
+  text-align:left;text-indent:0;hyphens:none;overflow-wrap:break-word;
+}
+.liryCompactDialog .gamerInfoDialogInside .liryCompactDescription{
+  margin:0 0 14px;font-size:13px;line-height:1.5;text-align:left;
+}
+.liryCompactDialog .gamerInfoDialogInside [role="group"]{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;margin:0 0 14px;width:100%;
+}
+.liryCompactDialog .gamerInfoDialogInside [role="group"] button{
+  min-width:0;min-height:40px;white-space:normal;overflow-wrap:anywhere;
+  text-align:center;line-height:1.3;padding:8px;
+}
+.liryCompactDialog .liryCompactNotice{
+  box-sizing:border-box;width:100%;padding:12px 14px;margin:0;
+  border:1px solid #2f657f;border-radius:9px;background:#0a2036;
+}
+.liryCompactDialog .liryCompactNotice strong{font-size:12px;color:#79e6ff}
+.liryCompactDialog .gamerInfoDialogInside .liryCompactNotice p{
+  margin:5px 0 0;font-size:12px;line-height:1.5;
+}
+.liryCompactDialog .gamerInfoDialogInside .liryCompactStatus{
+  margin:12px 0 0;font-size:12px;line-height:1.4;
+}
+.liryCompactDialog fieldset{
+  width:100%;min-width:0;box-sizing:border-box;
+  padding:10px 14px;margin:0;border:1px solid #315a72;border-radius:8px;
+}
+.liryCompactDialog fieldset label{
+  display:flex;align-items:center;justify-content:flex-start;
+  gap:10px;margin:9px 0;line-height:1.45;text-align:left;
+}
+.liryCompactDialog fieldset input{margin:0;flex:0 0 auto}
+.liryCompactDialog fieldset small{
+  display:block;margin:10px 0 0;padding-top:8px;line-height:1.5;
+}
+.liryCompactDialog .gamerInfoDialogInside>form:last-child{
+  display:flex;justify-content:flex-end;margin:14px 0 0;
+}
+.liryCompactDialog .gamerInfoDialogInside>form:last-child button{
+  min-width:140px;padding:10px 14px;
+}
+@media(max-width:420px){
+  .liryCompactDialog{width:calc(100vw - 24px);max-width:calc(100vw - 24px)}
+  .liryCompactDialog .gamerInfoDialogInside{padding:17px}
+  .liryCompactDialog .gamerInfoDialogInside [role="group"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .liryCompactDialog .gamerInfoDialogInside [role="group"] button:last-child:nth-child(odd){grid-column:1/-1}
+}
