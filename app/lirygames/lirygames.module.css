@@ -597,7 +597,7 @@
 .socialTrio>.section .socialPanelHeader .socialIntro{margin-bottom:0}
 
 .communityTabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;margin-bottom:10px}
-.communityTabs>span{font-size:8px;text-align:center;color:#9ab4ca;padding:8px 1px;border-radius:4px;background:#081e32}
+.communityTabs>button{font:inherit;font-size:8px;text-align:center;color:#9ab4ca;padding:8px 1px;border:0;border-radius:4px;background:#081e32;cursor:pointer}.communityTabs>button:focus-visible{outline:2px solid #4de6fe;outline-offset:2px}
 .communityTabs .communityTabActive{background:#0b4b70;color:#4fe1ff;font-weight:800;border-bottom:2px solid #4de6fe}
 .communityFeed{display:grid;gap:9px}
 .communityEmpty{background:radial-gradient(circle at 50% 0%,#123b566e,transparent 75%),#041324;border:1px solid #173854;border-radius:5px;padding:15px 11px;text-align:center;min-height:125px}
