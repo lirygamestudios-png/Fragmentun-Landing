@@ -22,11 +22,11 @@ export function LiryPrivacyPreview(){
      <button type="button" className={styles.gamerInfoDone} aria-pressed={tab==="privacidad"} onClick={()=>setTab("privacidad")}>PRIVACIDAD</button>
      <button type="button" className={styles.gamerInfoDone} aria-pressed={tab==="avisos"} onClick={()=>setTab("avisos")}>PREFERENCIAS</button>
     </div>
-    {tab==="privacidad"?<fieldset className={styles.liryPrivacyFieldset}>
-      <legend>Visibilidad prevista</legend>
-      {([["private","Solo yo"],["friends","Amigos"],["public","Público"]] as const).map(([value,label])=><label key={value} style={{display:"flex",alignItems:"center",gap:9,margin:"11px 0"}}><input type="radio" name="liry-visibility" checked={visibility===value} onChange={()=>setVisibility(value)}/>{label}</label>)}
-      <small>Privado por defecto. Nada se publica en esta vista.</small>
-    </fieldset> :<div className={styles.liryPrivacyOptions}>
+    {tab==="privacidad"?<div className={styles.liryPrivacyVisibility} role="radiogroup" aria-label="Visibilidad prevista">
+      <strong className={styles.liryPrivacyHeading}>VISIBILIDAD PREVISTA</strong>
+      {([["private","Solo yo"],["friends","Amigos"],["public","Público"]] as const).map(([value,label])=><label key={value} className={styles.liryPrivacyRadioRow}><input type="radio" name="liry-visibility" checked={visibility===value} onChange={()=>setVisibility(value)}/><span>{label}</span></label>)}
+      <p className={styles.liryPrivacyHint}>Privado por defecto. Nada se publica en esta vista.</p>
+    </div> :<div className={styles.liryPrivacyOptions}>
       <label className={styles.liryLanguageRow}><span>Idioma previsto</span><select value={language} onChange={e=>setLanguage(e.target.value as "es"|"en")} className={styles.liryLanguageSelect}><option value="es">Español</option><option value="en">English</option></select></label>
       <label className={styles.liryMarketingRow}><input type="checkbox" checked={marketing} onChange={e=>setMarketing(e.target.checked)}/> Promociones futuras</label>
       <small>No activa ninguna suscripción. Avisos del servicio por separado.</small>
