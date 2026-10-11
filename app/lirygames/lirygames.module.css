@@ -1238,3 +1238,7 @@
 .socialNetworkLabels button{display:grid;place-items:center;min-height:36px;font:inherit;color:#7fcdea;background:#081c30;border:1px solid #1e435c;border-radius:4px;padding:7px;cursor:pointer}
 .socialNetworkLabels button:hover,.socialNetworkLabels button:focus-visible{color:#55e5ff;border-color:#55e5ff;box-shadow:0 0 10px #25dfff26}
 .socialNetworkLabels button svg{width:20px;height:20px}
+
+/* Tienda Liry: categorías accionables sin cambiar tamaño o composición. */
+button.storeCategory{font:inherit;color:inherit;cursor:pointer;text-align:center}
+button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4ff;box-shadow:0 0 13px rgba(37,223,255,.2);outline-offset:2px}
