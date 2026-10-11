@@ -1182,3 +1182,20 @@
 .gamerInfoDialog a{color:#83e2ff;font-weight:800}
 .gamerInfoDialog :is(button,a):focus-visible{outline:2px solid #9aeaff;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.gamerInfoDialog::backdrop{backdrop-filter:none}}
+
+
+/* Paridad de botones: el botón modal hereda la apariencia de los enlaces aprobados. */
+.gamerCard button.gamerCardAction,.gamerCard .gamerCardAction:is(button){
+  appearance:none;-webkit-appearance:none;background:transparent;
+  color:#f6fbff;border:1px solid #00cfff;font-family:inherit;
+  line-height:normal;text-align:left;cursor:pointer;
+}
+.gamerCard .gamerCardAction:is(button):hover,
+.gamerCard .gamerCardAction:is(button):focus-visible{
+  background:#063451;color:#f6fbff;border-color:#00cfff;
+}
+.gamerInfoDialog .gamerInfoDone{
+  appearance:none;-webkit-appearance:none;background:#0a3352;
+  color:#fff;border:1px solid #5fcefc;font-family:inherit;
+}
+.gamerInfoDialog .gamerInfoDone:hover{background:#104a70;color:#fff}
