@@ -1386,3 +1386,10 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .liryIdentityStages span{display:inline-block;margin-left:9px;color:#7edfff;font-size:10px;font-weight:800}
 .liryIdentityStages p{margin:6px 0 0;font-size:12px;line-height:1.5;text-align:left}
 @media(max-width:440px){.liryIdentityStages span{display:block;margin:5px 0 0}}
+
+/* Norma visual CTA aprobada: silueta rectangular y borde cian con resplandor al hover. */
+.page :is(.button,.heroSecondary,.bannerCta,.liryShareButton,.liryBoostSecondary,.liryBoostEnrollmentButton,.gamerInfoDone,.gamerInfoClose,.liryContactSubmit,.recommendAll,.liryBoostStepButton){border-radius:0;transition:background-color .22s ease,color .22s ease,border-color .22s ease,box-shadow .22s ease,transform .22s ease}
+.page :is(.button,.heroSecondary,.bannerCta,.liryShareButton,.liryBoostSecondary,.gamerInfoDone,.liryContactSubmit,.recommendAll){border:1px solid #389ccc}
+.page :is(.button,.heroSecondary,.bannerCta,.liryShareButton,.liryBoostSecondary,.gamerInfoDone,.liryContactSubmit,.recommendAll):not(:disabled):is(:hover,:focus-visible){background:#14658e;color:#fff;border-color:#99f0ff;box-shadow:0 0 0 1px #7cdfff66,0 0 13px #37c7f5a0,0 0 27px #2489d660;text-decoration:none}
+.page :is(.button,.heroSecondary,.bannerCta,.liryShareButton,.liryBoostSecondary,.gamerInfoDone,.liryContactSubmit,.recommendAll):focus-visible{outline:2px solid #d7f8ff;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.page :is(.button,.heroSecondary,.bannerCta,.liryShareButton,.liryBoostSecondary,.gamerInfoDone,.gamerInfoClose,.liryContactSubmit,.recommendAll){transition:none}}
