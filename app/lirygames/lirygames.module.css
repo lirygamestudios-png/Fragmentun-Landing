@@ -1256,3 +1256,20 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 /* Justificación localizada: solo párrafos explicativos de Liry ID y Preferencias. */
 .liryModalJustifiedText{text-align:justify;text-align-last:left;hyphens:auto;overflow-wrap:break-word}
 @media(max-width:600px){.liryModalJustifiedText{text-align:left;hyphens:none}}
+
+/* Subpantallas Liry ID: contenido compacto y sin scroll salvo pantallas muy pequeñas. */
+.liryCompactDialog{width:min(92vw,540px);max-height:90dvh}
+.liryCompactDialog .gamerInfoDialogInside{padding:clamp(17px,3vw,26px)}
+.liryCompactDialog .gamerInfoDialogInside h3{margin:7px 35px 10px 0;font-size:clamp(18px,2.5vw,23px)}
+.liryCompactDialog .gamerInfoEyebrow{margin:0 0 5px}
+.liryCompactDialog .gamerInfoDone{padding:9px 13px}
+.liryCompactDialog .gamerInfoDialogInside>form:last-child{margin-top:10px}
+.liryCompactDescription{text-align:left;line-height:1.5!important;margin:7px 0 9px!important;overflow-wrap:break-word}
+.liryCompactNotice{padding:11px 13px;border:1px solid #2f657f;border-radius:9px;background:#0a2036}
+.liryCompactNotice strong{color:#79e6ff;font-size:12px}
+.liryCompactNotice p{margin:5px 0 0;line-height:1.45;font-size:12px;text-align:left}
+.liryCompactStatus{font-size:11px!important;line-height:1.4!important;margin:9px 0 0!important;text-align:left}
+.liryCompactDialog fieldset{padding:8px 12px!important}
+.liryCompactDialog fieldset label{margin:7px 0!important}
+.liryCompactDialog fieldset small{margin-top:8px;padding-top:8px}
+@media(max-width:600px){.liryCompactDialog{width:min(94vw,540px);max-height:92dvh}.liryCompactDialog .gamerInfoDialogInside{padding:18px}.liryCompactDialog .gamerInfoDone{font-size:10px}}
