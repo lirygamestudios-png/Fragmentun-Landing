@@ -72,7 +72,7 @@ export default async function LiryGamesFrontDesk(){
       <div className={styles.gamerGrid}>
         <article className={styles.gamerCard}>
           <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">♙</span><h3>MI PERFIL GAMER</h3></header>
-          <LiryGamerIdentity />
+          <LiryGamerIdentity snapshot={gamerSnapshot} />
           <LiryGamerInfoDialog topic="perfil" />
           <small className={styles.gamerDataNote}>Estado visitante · sin sesión gamer</small>
         </article>
