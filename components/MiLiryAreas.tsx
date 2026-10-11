@@ -73,6 +73,16 @@ export function MiLiryAreas(){
     </div>
     <p>Las solicitudes de amistad y publicaciones requerirán identidad autenticada, consentimiento, controles de visibilidad y herramientas de reporte y moderación. No se muestran perfiles de terceros ni actividad inventada.</p>
    </section>}
+   {selected.id==="liryboost"&&<section className={styles.worldsPanel} aria-label="Estado de participación en LiryBoost">
+    <h3>MI PARTICIPACIÓN EN LIRYBOOST</h3>
+    <p className={styles.worldsEmpty}>La competencia todavía no está activa. No existen invitaciones ni puestos de clasificación acreditados para esta sesión visitante.</p>
+    <div className={styles.worldsFacts}>
+     <div><strong>INVITACIONES VÁLIDAS</strong><span>Sin datos verificados</span></div>
+     <div><strong>MI POSICIÓN</strong><span>Sin clasificación activa</span></div>
+     <div><strong>ACCESO A BETA</strong><span>No asignado</span></div>
+    </div>
+    <p>El futuro Top 10 mostrará únicamente participaciones verificadas, bajo reglas publicadas previamente. Compartir una página no garantiza una posición ni acceso anticipado hasta que exista un sistema de atribución y validación activo.</p>
+   </section>}
    <div className={styles.areaDialogActions}><Link className={styles.areaLink} href={selected.href}>EXPLORAR SECCIÓN →</Link><form method="dialog"><button type="submit" className={styles.areaLink}>VOLVER A MI LIRY</button></form></div>
   </div>
  </dialog></>;
