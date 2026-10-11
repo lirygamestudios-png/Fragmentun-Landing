@@ -2,6 +2,7 @@ import {NextRequest,NextResponse} from "next/server";
 import {consumePublicRateLimit} from "../../../../lib/rate-limit";
 import {createSupabaseServerClient} from "../../../../lib/supabase/server";
 import {validateLiryContactPayload} from "../../../../lib/games/liry-contact-validation";
+import {verifyLiryContactTurnstile} from "../../../../lib/games/liry-contact-turnstile";
 export const runtime="nodejs";
 export async function POST(req:NextRequest){
  const limit=await consumePublicRateLimit(req,"lirygames_contact","submit",3600,5);
@@ -20,6 +21,7 @@ export async function POST(req:NextRequest){
  if(body.website)return NextResponse.json({ok:true});
  const validation=validateLiryContactPayload(body);
  if(!validation.ok)return NextResponse.json({ok:false,message:validation.message},{status:400});
+ if(!await verifyLiryContactTurnstile(body.turnstileToken))return NextResponse.json({ok:false,message:"No se pudo verificar que eres una persona. Completa la verificación e inténtalo nuevamente."},{status:403});
  const {name,email,subject,message,gameSlug}=validation.fields;
  try{
   const db=await createSupabaseServerClient();
