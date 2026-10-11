@@ -60,9 +60,12 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
     observer.observe(catalog);
     return ()=>observer.disconnect();
   },[]);
+  // Enfocar el cierre solo cuando se abre: responder preguntas no debe robar el foco.
+  useEffect(()=>{
+    if(exploringDna)explorerCloseRef.current?.focus({preventScroll:true});
+  },[exploringDna]);
   useEffect(()=>{
     if(!exploringDna)return;
-    explorerCloseRef.current?.focus({preventScroll:true});
     const onKeyDown=(event:KeyboardEvent)=>{
       if(event.key==="Escape"){
         closeDnaExplorer();
