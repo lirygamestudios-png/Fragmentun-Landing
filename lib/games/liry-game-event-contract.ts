@@ -23,7 +23,7 @@ export function hasDuplicateEventIds(events:readonly LiryGameEventCandidate[]):b
 }
 
 /** Prechequeo sin efectos: no guarda eventos ni concede recompensas. */
-export type LiryEventBatchCheck={ok:boolean;reason:"ok"|"invalid_batch"|"invalid_event"|"duplicate_event";count:number};
+export type LiryEventBatchCheck={ok:boolean;reason:"ok"|"invalid_batch"|"invalid_event"|"duplicate_event"|"mixed_accounts"|"mixed_games";count:number};
 export function checkGameEventBatch(value:unknown):LiryEventBatchCheck{
  if(!Array.isArray(value)||value.length===0||value.length>100)
   return {ok:false,reason:"invalid_batch",count:0};
@@ -31,5 +31,9 @@ export function checkGameEventBatch(value:unknown):LiryEventBatchCheck{
   return {ok:false,reason:"invalid_event",count:value.length};
  if(hasDuplicateEventIds(value))
   return {ok:false,reason:"duplicate_event",count:value.length};
+ if(value.some(event=>event.accountId!==value[0].accountId))
+  return {ok:false,reason:"mixed_accounts",count:value.length};
+ if(value.some(event=>event.publicGameCode!==value[0].publicGameCode))
+  return {ok:false,reason:"mixed_games",count:value.length};
  return {ok:true,reason:"ok",count:value.length};
 }
