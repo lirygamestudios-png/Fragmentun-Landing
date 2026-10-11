@@ -29,10 +29,6 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  // Alias públicos neutros: los nombres editoriales no deben figurar en el HTML/JS del navegador.
-  async rewrites() {
-    return [{source:"/liry-assets/world-01.webp",destination:"/lirygames-games/skill-arena.webp"},{source:"/liry-assets/world-02.webp",destination:"/lirygames-games/inflabots-arena.webp"},{source:"/liry-assets/world-03.webp",destination:"/lirygames-games/la-batalla-del-dinero.webp"},{source:"/liry-assets/world-04.webp",destination:"/lirygames-games/gaias-last-stand.webp"},{source:"/liry-assets/world-05.webp",destination:"/lirygames-games/nexo-social.webp"},{source:"/liry-assets/world-06.webp",destination:"/lirygames-games/eternun.webp"},{source:"/liry-assets/world-07.webp",destination:"/lirygames-games/fragmentun.webp"},{source:"/liry-assets/world-08.webp",destination:"/lirygames-games/cripto-titans.webp"},{source:"/liry-assets/world-09.webp",destination:"/lirygames-games/codeverse.webp"}];
-  },
   async headers() {
     return [
       {
