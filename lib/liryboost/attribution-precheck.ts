@@ -20,15 +20,15 @@ export function precheckLiryBoostAttribution(
  candidate:LiryBoostAttributionCandidate,
  alreadyAttributedInviteeIds:ReadonlySet<string>
 ):LiryBoostPrecheckResult{
- const inviter=candidate.inviterId?.toLowerCase();
- const invitee=candidate.inviteeId?.toLowerCase();
+ const inviter=typeof candidate.inviterId==="string"?candidate.inviterId.toLowerCase():"";
+ const invitee=typeof candidate.inviteeId==="string"?candidate.inviteeId.toLowerCase():"";
  if(!inviter||!invitee||!UUID.test(inviter)||!UUID.test(invitee))
   return {eligible:false,reason:"invalid_identity"};
  if(inviter===invitee)return {eligible:false,reason:"self_referral"};
  if(candidate.verifiedInvitee!==true)return {eligible:false,reason:"not_verified"};
  if(candidate.participationConsented!==true)return {eligible:false,reason:"missing_consent"};
  if(candidate.inviterEligible!==true)return {eligible:false,reason:"inviter_not_eligible"};
- if(alreadyAttributedInviteeIds.has(invitee))
+ if([...alreadyAttributedInviteeIds].some(id=>typeof id==="string"&&id.toLowerCase()===invitee))
   return {eligible:false,reason:"duplicate_invitee"};
  return {eligible:true,reason:"precheck_only"};
 }
