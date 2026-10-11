@@ -15,13 +15,23 @@ export function MiLiryAreas(){
  const [selected,setSelected]=useState<(typeof areas)[number]>(areas[0]);
  const dialog=useRef<HTMLDialogElement>(null);
  const trigger=useRef<HTMLButtonElement|null>(null);
+ const closeButton=useRef<HTMLButtonElement>(null);
+ const openArea=(area:(typeof areas)[number],button:HTMLButtonElement)=>{
+  setSelected(area);
+  trigger.current=button;
+  const modal=dialog.current;
+  if(!modal)return;
+  modal.showModal();
+  modal.scrollTop=0;
+  closeButton.current?.focus({preventScroll:true});
+ };
  return <><div className={styles.grid}>{areas.map(area=><article className={styles.card} key={area.id}>
   <h3>{area.title}</h3><p>{area.desc}</p><small>{area.status}</small>
-  <button className={styles.areaLink} type="button" aria-haspopup="dialog" onClick={event=>{setSelected(area);trigger.current=event.currentTarget;dialog.current?.showModal();}}>ABRIR MI ÁREA →</button>
+  <button className={styles.areaLink} type="button" aria-haspopup="dialog" aria-label={`Abrir ${area.title}`} onClick={event=>openArea(area,event.currentTarget)}>ABRIR MI ÁREA →</button>
  </article>)}</div>
- <dialog ref={dialog} className={styles.areaDialog} aria-labelledby="mi-liry-area-title" onClose={()=>trigger.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
+ <dialog ref={dialog} className={styles.areaDialog} aria-labelledby="mi-liry-area-title" onClose={()=>{trigger.current?.focus({preventScroll:true});trigger.current=null;}} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
   <div className={styles.areaDialogContent}>
-   <form method="dialog"><button className={styles.areaClose} aria-label="Cerrar área" type="submit">×</button></form>
+   <form method="dialog"><button ref={closeButton} className={styles.areaClose} aria-label="Cerrar área y volver a MI LIRY" type="submit">×</button></form>
    <span className={styles.eyebrow}>MI LIRY · ESPACIO PERSONAL</span>
    <h2 id="mi-liry-area-title">{selected.title}</h2><p>{selected.detail}</p>
    <span className={styles.areaStatus}>{selected.status}</span>
