@@ -1369,3 +1369,12 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .liryStandaloneContent .liryPrivacyOptions>small{display:block;margin:0;padding:0;border:0;line-height:1.45;color:#9bc8e5}
 .liryStandaloneContent .liryPrivacyOptions .liryLanguageRow{width:100%;min-width:0;max-width:100%;justify-self:stretch}
 .liryStandaloneContent .liryPrivacyOptions .liryLanguageSelect{width:100%;max-width:100%;min-width:0}
+
+/* Pestaña Privacidad: eliminar la sangría nativa del fieldset/legend.
+   Sin alterar Liry ID ni el selector de idioma aprobado. */
+.liryStandaloneContent .liryPrivacyVisibility{box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr);gap:9px;width:100%;min-width:0;margin:0;padding:12px 14px;border:1px solid #315a72;border-radius:8px;text-align:left}
+.liryStandaloneContent .liryPrivacyHeading{display:block;font-size:12px;line-height:1.4;letter-spacing:.03em;color:#cdeaff;text-align:left;margin:0;padding:0}
+.liryStandaloneContent .liryPrivacyRadioRow{box-sizing:border-box;display:grid;grid-template-columns:18px minmax(0,1fr);align-items:center;column-gap:10px;min-width:0;width:100%;margin:0;padding:2px 0;text-align:left;line-height:1.4}
+.liryStandaloneContent .liryPrivacyRadioRow input{box-sizing:border-box;display:block;width:16px;height:16px;margin:0;justify-self:start}
+.liryStandaloneContent .liryPrivacyRadioRow span{display:block;min-width:0;text-align:left}
+.liryStandaloneContent .liryPrivacyVisibility .liryPrivacyHint{border-top:1px solid #315a72;margin:4px 0 0;padding:8px 0 0;font-size:12px;line-height:1.45;text-align:left}
