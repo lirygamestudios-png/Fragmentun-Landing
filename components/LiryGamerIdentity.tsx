@@ -55,8 +55,8 @@ export function LiryGamerIdentity({snapshot}:{snapshot:Readonly<PublicGamerSnaps
   <p className={styles.gamerMicroLabel}>Tu estilo de juego</p>
   <div className={`${styles.gamerStyles} ${highlight?styles.gamerStylesHighlighted:""}`} aria-live="polite"><span>◇ <b>{style??"Por descubrir"}</b></span></div>
   <small className={styles.gamerDataNote}>{style?"Afinidad de tu Liry ADN. Tras cerrar la evaluación permanece visible durante 10 segundos; no equivale a progreso de juego.":"Completa el cuestionario Liry ADN para descubrir tu estilo. Sin evaluación no se asigna ninguno."}</small>
-  <div className={styles.gamerMetrics}><div><small>Juegos jugados</small><strong>—</strong></div><div><small>Logros</small><strong>—</strong></div><div><small>Horas de juego</small><strong>—</strong></div></div>
-  <small className={styles.gamerDataNote}>Estado visitante · sin sesión gamer. El avatar no se guarda ni se transmite.</small>
+  <div className={styles.gamerMetrics}><div><small>Juegos jugados</small><strong>{verified?verified.gamesPlayed:"—"}</strong></div><div><small>Logros</small><strong>{verified?verified.achievedCount:"—"}</strong></div><div><small>Horas de juego</small><strong>{verified?(verified.playMinutes/60).toFixed(1):"—"}</strong></div></div>
+  <small className={styles.gamerDataNote}>{verified?"Actividad recibida desde una fuente verificada. El avatar seleccionado sigue siendo temporal y no se transmite.":"Estado visitante · sin sesión gamer. El avatar no se guarda ni se transmite."}</small>
   <dialog ref={dialogRef} className={styles.gamerInfoDialog} aria-label="Avatar gamer" onClose={()=>triggerRef.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
    <div className={styles.gamerInfoDialogInside}>
     <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar subpantalla">×</button></form>
