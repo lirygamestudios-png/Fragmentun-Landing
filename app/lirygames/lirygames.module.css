@@ -1348,3 +1348,14 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .liryStandaloneContent>form:last-child{display:flex;justify-content:flex-end;margin-top:14px}
 .liryStandaloneContent>form:last-child .gamerInfoDone{margin:0;min-width:140px;padding:10px 14px}
 @media(max-width:420px){.liryStandaloneContent{padding:17px}.liryStandaloneContent [role="group"]{grid-template-columns:repeat(2,minmax(0,1fr))}.liryStandaloneContent [role="group"] button:last-child:nth-child(odd){grid-column:1/-1}}
+
+/* Componentes de acceso y selector de idioma: filas independientes sin sangría. */
+.liryStandaloneContent .liryLanguageRow{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;width:100%;min-width:0;margin:0;align-items:start;text-align:left}
+.liryStandaloneContent .liryLanguageRow span{display:block;text-align:left;min-width:0}
+.liryStandaloneContent .liryLanguageSelect{display:block;box-sizing:border-box;width:100%;min-width:0;max-width:100%;height:38px;padding:6px 9px;margin:0;background:#071b31;color:#e5f9ff;border:1px solid #36708b;border-radius:6px;font:inherit;text-align:left}
+.liryStandaloneContent .liryMarketingRow{display:grid;grid-template-columns:17px minmax(0,1fr);gap:10px;align-items:center;min-width:0;width:100%;margin:0;text-align:left}
+.liryStandaloneContent .liryMarketingRow input{box-sizing:border-box;width:16px;height:16px;margin:0}
+.liryStandaloneContent .liryAccessTabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;min-width:0;gap:7px!important;margin:0 0 14px!important}
+.liryStandaloneContent .liryAccessTab{box-sizing:border-box;min-width:0;width:100%;border:1px solid #315a72;border-radius:8px;padding:8px 6px;background:#081b30;color:#e4f9ff;font-size:10px;font-weight:700;line-height:1.35;text-align:center;white-space:normal;overflow-wrap:break-word;cursor:pointer}
+.liryStandaloneContent .liryAccessTab[aria-pressed="true"]{border-color:#6be8ff;background:#103f5a}
+@media(max-width:420px){.liryStandaloneContent .liryAccessTabs{grid-template-columns:repeat(3,minmax(0,1fr))}.liryStandaloneContent .liryAccessTab{padding:7px 3px;font-size:9px}}
