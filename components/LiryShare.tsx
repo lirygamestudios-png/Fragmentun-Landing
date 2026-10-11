@@ -12,7 +12,7 @@ export function LiryShare(){
  async function nativeShare(){
    const data={title:"LIRYGAMES STUDIOS",text:"Descubre nuestros nueve mundos.",url:pageUrl()};
    if(typeof navigator.share==="function"){
-     try{await navigator.share(data);setShareNotice("");}catch(error){if((error as Error)?.name!=="AbortError")await copyLink();}
+     try{await navigator.share(data);setShareNotice("Contenido compartido desde el dispositivo.");}catch(error){if((error as Error)?.name!=="AbortError")await copyLink();else setShareNotice("Compartir cancelado.");}
    }else await copyLink();
  }
  async function copyLink(){
@@ -25,8 +25,8 @@ export function LiryShare(){
    const dest=provider==="whatsapp"?"https://api.whatsapp.com/send?text="+title+"%20"+url:
      provider==="facebook"?"https://www.facebook.com/sharer/sharer.php?u="+url:
      "https://twitter.com/intent/tweet?text="+title+"&url="+url;
-   window.open(dest,"_blank","noopener,noreferrer");
-   setShareNotice("Se solicitó abrir la red social en otra pestaña. Si no aparece, comprueba el bloqueo de ventanas emergentes.");
+   const opened=window.open(dest,"_blank","noopener,noreferrer");
+   setShareNotice(opened===null?"El navegador podría haber bloqueado la nueva pestaña. Prueba con COMPARTIR o COPIAR ENLACE.":"Se abrió la opción de compartir. La publicación depende de la red social.");
  }
  return <><div className={styles.liryShareActions} aria-label="Compartir LIRYGAMES">
    <button type="button" onClick={nativeShare} className={styles.liryShareButton}>COMPARTIR ↗</button>
