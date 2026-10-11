@@ -2,6 +2,7 @@
 import {useRef,useState} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
 import {LIRY_GAME_LINKS_PENDING} from "../lib/games/liry-game-link-contract";
+import {LIRY_VISITOR_IDENTITY} from "../lib/games/liry-id-contract";
 
 type Topic="perfil"|"journey"|"logros"|"mundos"|"logros-lista";
 const panels={
@@ -28,7 +29,7 @@ export function LiryGamerInfoDialog({topic}:{topic:Topic}){
         <p>{data.paragraph}</p>
         {topic==="mundos"&&<><ol className={styles.gamerInfoModalList}>{worldLinks.map((link,index)=><li key={link.publicGameCode}><button type="button" className={styles.gamerWorldChoice} aria-pressed={selectedWorld===index} onClick={()=>setSelectedWorld(index)}>{link.publicGameCode} <span>VER VINCULACIÓN →</span></button></li>)}</ol>{selectedWorld!==null&&<div className={styles.gamerWorldStatus} role="status"><strong>{worldLinks[selectedWorld].publicGameCode}</strong><p>ESTADO DE VINCULACIÓN: {worldLinks[selectedWorld].status==="not_connected"?"NO CONECTADO":worldLinks[selectedWorld].status==="pending_verification"?"PENDIENTE DE VERIFICACIÓN":"VERIFICADO"}</p><small>Este mundo todavía no está conectado a Liry ID. No se registran partidas, XP ni progreso en esta vista.</small></div>}</>}
         {topic==="logros-lista"&&<ul className={styles.gamerInfoModalList}>{[["Primeros pasos","Completa tu primer juego"],["Explorador de mundos","Descubre cinco mundos"],["La comunidad te necesita","Juega con tres amigos"],["Maestro de estrategias","Gana diez partidas estratégicas"]].map(([title,description])=><li key={title}><span>{title}</span><small>{description} · PENDIENTE</small></li>)}</ul>}
-        {topic==="perfil"&&<p><a href="#liry-dna" onClick={()=>dialogRef.current?.close()}>EXPLORAR LIRY ADN →</a></p>}
+        {topic==="perfil"&&<><div className={styles.liryIdentityStages} aria-label="Etapas de identidad gamer"><div><strong>01 · VISITANTE</strong><span>{LIRY_VISITOR_IDENTITY.kind==="visitor"?"ESTADO ACTUAL":"—"}</span><p>Explora el FrontDesk sin cuenta ni progreso guardado.</p></div><div><strong>02 · CUENTA LIRY ID</strong><span>NO DISPONIBLE</span><p>Identidad y preferencias guardadas solo tras activar el registro seguro.</p></div><div><strong>03 · JUGADOR ACTIVO</strong><span>NO DISPONIBLE</span><p>Actividad reconocida únicamente desde videojuegos conectados.</p></div></div><p><a href="#liry-dna" onClick={()=>dialogRef.current?.close()}>EXPLORAR LIRY ADN →</a></p></>}
         <small>{data.notice}</small>
         <form method="dialog"><button type="submit" className={styles.gamerInfoDone}>ENTENDIDO</button></form>
       </div>
