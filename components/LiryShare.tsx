@@ -1,13 +1,14 @@
 "use client";
 import {useRef,useState} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
+import {resolveLiryShareUrl} from "../lib/games/liry-share-url";
 
 export function LiryShare(){
  const[copied,setCopied]=useState(false);
  const previewRef=useRef<HTMLDialogElement>(null);
  const previewTrigger=useRef<HTMLButtonElement|null>(null);
  const[shareNotice,setShareNotice]=useState("");
- function pageUrl(){return new URL("/lirygames",window.location.origin).toString();}
+ function pageUrl(){return resolveLiryShareUrl(process.env.NEXT_PUBLIC_LIRY_PUBLIC_URL,window.location.origin)??new URL("/lirygames",window.location.origin).toString();}
  async function nativeShare(){
    const data={title:"LIRYGAMES STUDIOS",text:"Descubre nuestros nueve mundos.",url:pageUrl()};
    if(typeof navigator.share==="function"){
