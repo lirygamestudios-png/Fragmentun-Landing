@@ -1167,3 +1167,18 @@
  border:1px solid #73dfff;border-radius:5px;background:rgba(3,21,40,.92);
  color:#e9faff;font-size:9px;font-weight:800;letter-spacing:.04em;
 }
+
+
+/* Subpantallas informativas gamer: flotan sin modificar el grid ni el scroll. */
+.gamerInfoDialog{position:fixed;inset:0;margin:auto;width:min(92vw,510px);max-height:min(85dvh,700px);overflow:auto;padding:0;border:1px solid rgba(94,213,255,.65);border-radius:16px;color:#eaf7ff;background:linear-gradient(150deg,#102541,#070f22 75%);box-shadow:0 20px 80px rgba(0,0,0,.65),0 0 30px rgba(48,178,255,.15);z-index:2000}
+.gamerInfoDialog::backdrop{background:rgba(2,7,19,.79);backdrop-filter:blur(7px)}
+.gamerInfoDialogInside{padding:clamp(22px,4vw,36px);position:relative}
+.gamerInfoDialogInside h3{font-size:clamp(18px,3vw,24px);color:#ebfaff;margin:12px 35px 20px 0}
+.gamerInfoDialogInside p{color:#c5dff2;line-height:1.7;font-size:14px}
+.gamerInfoDialogInside small{display:block;border-top:1px solid rgba(91,191,235,.25);padding-top:14px;margin-top:18px;line-height:1.65;color:#9bc8e5}
+.gamerInfoEyebrow{font-size:10px!important;font-weight:800;letter-spacing:.13em;color:#65dcff!important}
+.gamerInfoClose{position:absolute;top:17px;right:17px;border:1px solid #397d9a;border-radius:50%;width:35px;height:35px;background:#142c44;color:#fff;font-size:22px;cursor:pointer}
+.gamerInfoDone{border:1px solid #5fcefc;background:#0a3352;color:#fff;padding:11px 22px;border-radius:7px;font-size:11px;font-weight:800;cursor:pointer;margin-top:18px}
+.gamerInfoDialog a{color:#83e2ff;font-weight:800}
+.gamerInfoDialog :is(button,a):focus-visible{outline:2px solid #9aeaff;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.gamerInfoDialog::backdrop{backdrop-filter:none}}
