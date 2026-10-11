@@ -26,8 +26,8 @@ export function LiryShare(){
  return <div className={styles.liryShareActions} aria-label="Compartir LIRYGAMES">
    <button type="button" onClick={nativeShare} className={styles.liryShareButton}>COMPARTIR ↗</button>
    <button type="button" onClick={copyLink} className={styles.liryShareButton}>{copied?"ENLACE COPIADO ✓":"COPIAR ENLACE"}</button>
-   <button type="button" onClick={()=>shareTo("whatsapp")} className={styles.liryShareButton}>WHATSAPP ↗</button>
-   <button type="button" onClick={()=>shareTo("facebook")} className={styles.liryShareButton}>FACEBOOK ↗</button>
-   <button type="button" onClick={()=>shareTo("x")} className={styles.liryShareButton}>X ↗</button>
+   <button type="button" onClick={()=>shareTo("whatsapp")} className={`${styles.liryShareButton} ${styles.liryShareIconButton}`} title="WhatsApp" aria-label="Compartir en WhatsApp"><span aria-hidden="true">☏</span></button>
+   <button type="button" onClick={()=>shareTo("facebook")} className={`${styles.liryShareButton} ${styles.liryShareIconButton}`} title="Facebook" aria-label="Compartir en Facebook"><span aria-hidden="true">f</span></button>
+   <button type="button" onClick={()=>shareTo("x")} className={`${styles.liryShareButton} ${styles.liryShareIconButton}`} title="X" aria-label="Compartir en X"><span aria-hidden="true">𝕏</span></button>
  </div>;
 }
