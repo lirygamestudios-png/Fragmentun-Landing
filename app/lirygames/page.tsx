@@ -5,6 +5,7 @@ import {LiryBoostEnrollment} from "../../components/LiryBoostEnrollment";
 import {LiryContactForm} from "../../components/LiryContactForm";
 import {LiryGameDiscovery} from "../../components/LiryGameDiscovery";
 import {LiryGamerInfoDialog} from "../../components/LiryGamerInfoDialog";
+import {LiryGamerIdentity} from "../../components/LiryGamerIdentity";
 import {getLiryPublicCatalog} from "../../lib/games/public-catalog-server";
 import {VISITOR_GAMER_SNAPSHOT} from "../../lib/games/public-gamer-snapshot";
 import styles from "./lirygames.module.css";
@@ -71,14 +72,7 @@ export default async function LiryGamesFrontDesk(){
       <div className={styles.gamerGrid}>
         <article className={styles.gamerCard}>
           <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">♙</span><h3>MI PERFIL GAMER</h3></header>
-          <div className={styles.gamerIdentity}>
-            <div className={styles.gamerPortrait} aria-hidden="true"><span>?</span></div>
-            <div className={styles.gamerIdentityText}><strong>{gamerSnapshot.displayName}</strong><span>Nivel —</span><div className={styles.gamerXpTrack} aria-label="Experiencia aún no disponible"><span /></div><small>XP pendiente de actividad verificada</small></div>
-          </div>
-          <p className={styles.gamerMicroLabel}>Tu estilo de juego</p>
-          <div className={styles.gamerStyles}><span>◇ <b>Por descubrir</b></span></div>
-          <small className={styles.gamerDataNote}>Tu estilo se determinará con tu Liry ADN. Ningún estilo se asigna sin evaluación.</small>
-          <div className={styles.gamerMetrics}><div><small>Juegos jugados</small><strong>—</strong></div><div><small>Logros</small><strong>—</strong></div><div><small>Horas de juego</small><strong>—</strong></div></div>
+          <LiryGamerIdentity />
           <LiryGamerInfoDialog topic="perfil" />
           <small className={styles.gamerDataNote}>Estado visitante · sin sesión gamer</small>
         </article>
