@@ -127,3 +127,14 @@
 .previewReset:hover,.previewReset:focus-visible{background:#14658e;border-color:#a0edff;box-shadow:0 0 14px #42caff88}
 .previewReset:focus-visible{outline:2px solid #d9f9ff;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.previewReset{transition:none}}
+
+/* Estado sin datos de MIS MUNDOS: sin cifras, IP ni progreso inventados. */
+.worldsPanel{margin-top:20px;padding:18px;border:1px solid #32789e;border-radius:10px;background:#091e37}
+.worldsPanel h3{font-size:12px;letter-spacing:.1em;color:#99e5ff;margin:0 0 12px}
+.worldsPanel p{font-size:12px;line-height:1.6;color:#bed9ea}
+.worldsEmpty{padding:13px 14px;border:1px dashed #467f9e;border-radius:9px;background:#0c2846}
+.worldsFacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:13px 0}
+.worldsFacts div{display:grid;gap:7px;padding:12px;border:1px solid #255978;border-radius:9px;background:#0b2845}
+.worldsFacts strong{font-size:10px;color:#82daf9;letter-spacing:.07em}
+.worldsFacts span{font-size:11px;color:#d6e7f4}
+@media(max-width:560px){.worldsFacts{grid-template-columns:1fr}}
