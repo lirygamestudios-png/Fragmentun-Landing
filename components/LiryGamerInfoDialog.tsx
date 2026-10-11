@@ -1,5 +1,5 @@
 "use client";
-import {useRef} from "react";
+import {useRef,useState} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
 
 type Topic="perfil"|"journey"|"logros"|"mundos"|"logros-lista";
@@ -13,16 +13,18 @@ const panels={
 
 export function LiryGamerInfoDialog({topic}:{topic:Topic}){
   const dialogRef=useRef<HTMLDialogElement>(null);
+  const [selectedWorld,setSelectedWorld]=useState<number|null>(null);
+  const worldNames=["LIRY // ARENA-01","LIRY // BOT-02","LIRY // ECON-03","LIRY // EARTH-04","LIRY // LINK-05","LIRY // REALM-06","LIRY // EMOTION-07","LIRY // TITAN-08","LIRY // CODE-09"];
   const data=panels[topic];
   return <>
-    <button type="button" className={styles.gamerCardAction} onClick={()=>dialogRef.current?.showModal()} aria-haspopup="dialog">{data.title} <span aria-hidden="true">→</span></button>
+    <button type="button" className={styles.gamerCardAction} onClick={()=>{setSelectedWorld(null);dialogRef.current?.showModal()}} aria-haspopup="dialog">{data.title} <span aria-hidden="true">→</span></button>
     <dialog ref={dialogRef} className={styles.gamerInfoDialog} aria-label={data.title} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
       <div className={styles.gamerInfoDialogInside}>
         <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar subpantalla">×</button></form>
         <p className={styles.gamerInfoEyebrow}>LIRYGAMES STUDIOS · TU EXPERIENCIA</p>
         <h3>{data.title}</h3>
         <p>{data.paragraph}</p>
-        {topic==="mundos"&&<ol className={styles.gamerInfoModalList}>{["LIRY // ARENA-01","LIRY // BOT-02","LIRY // ECON-03","LIRY // EARTH-04","LIRY // LINK-05","LIRY // REALM-06","LIRY // EMOTION-07","LIRY // TITAN-08","LIRY // CODE-09"].map(label=><li key={label}><span>{label}</span><small>PRÓXIMAMENTE</small></li>)}</ol>}
+        {topic==="mundos"&&<><ol className={styles.gamerInfoModalList}>{worldNames.map((label,index)=><li key={label}><button type="button" className={styles.gamerWorldChoice} aria-pressed={selectedWorld===index} onClick={()=>setSelectedWorld(index)}>{label} <span>VER ESTADO →</span></button></li>)}</ol>{selectedWorld!==null&&<div className={styles.gamerWorldStatus} role="status"><strong>{worldNames[selectedWorld]}</strong><p>PRÓXIMAMENTE · Sin acceso jugable autorizado.</p><small>No se registran partidas ni progreso desde esta vista.</small></div>}</>}
         {topic==="logros-lista"&&<ul className={styles.gamerInfoModalList}>{[["Primeros pasos","Completa tu primer juego"],["Explorador de mundos","Descubre cinco mundos"],["La comunidad te necesita","Juega con tres amigos"],["Maestro de estrategias","Gana diez partidas estratégicas"]].map(([title,description])=><li key={title}><span>{title}</span><small>{description} · PENDIENTE</small></li>)}</ul>}
         {topic==="perfil"&&<p><a href="#liry-dna" onClick={()=>dialogRef.current?.close()}>EXPLORAR LIRY ADN →</a></p>}
         <small>{data.notice}</small>
