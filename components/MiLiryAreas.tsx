@@ -37,6 +37,12 @@ export function MiLiryAreas(){
     <p>Los cambios de nombre, avatar y preferencias requerirán una sesión personal verificada. Ningún dato se guarda desde esta vista previa.</p>
     <ul><li>Inicio de sesión gamer independiente del administrador</li><li>Validación de nombre público y controles de privacidad</li><li>Confirmación del usuario antes de guardar cambios</li></ul>
    </section>}
+   {selected.id==="mundos"&&<section className={styles.worldsPanel} aria-label="Estado de mundos del jugador">
+    <h3>MUNDOS DE MI CUENTA</h3>
+    <p className={styles.worldsEmpty}>Todavía no hay partidas ni mundos vinculados a una cuenta autenticada.</p>
+    <div className={styles.worldsFacts}><div><strong>JUEGOS VINCULADOS</strong><span>Sin datos verificados</span></div><div><strong>ÚLTIMA PARTIDA</strong><span>No disponible</span></div><div><strong>PROGRESO</strong><span>No disponible</span></div></div>
+    <p>Los títulos pendientes de registro no se publican aquí. En el futuro, solo aparecerán juegos autorizados y datos confirmados por el servidor.</p>
+   </section>}
    <div className={styles.areaDialogActions}><Link className={styles.areaLink} href={selected.href}>EXPLORAR SECCIÓN →</Link><form method="dialog"><button type="submit" className={styles.areaLink}>VOLVER A MI LIRY</button></form></div>
   </div>
  </dialog></>;
