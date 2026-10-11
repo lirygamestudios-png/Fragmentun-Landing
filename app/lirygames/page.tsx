@@ -11,6 +11,7 @@ import {LiryGameDiscovery} from "../../components/LiryGameDiscovery";
 import {LiryGamerInfoDialog} from "../../components/LiryGamerInfoDialog";
 import {LiryGamerIdentity} from "../../components/LiryGamerIdentity";
 import {LiryIdAccess} from "../../components/LiryIdAccess";
+import {LiryPrivacyPreview} from "../../components/LiryPrivacyPreview";
 import {getLiryPublicCatalog} from "../../lib/games/public-catalog-server";
 import {VISITOR_GAMER_SNAPSHOT} from "../../lib/games/public-gamer-snapshot";
 import styles from "./lirygames.module.css";
@@ -79,6 +80,7 @@ export default async function LiryGamesFrontDesk(){
           <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">♙</span><h3>MI PERFIL GAMER</h3></header>
           <LiryGamerIdentity snapshot={gamerSnapshot} />
           <LiryIdAccess />
+          <LiryPrivacyPreview />
           <LiryGamerInfoDialog topic="perfil" />
           <small className={styles.gamerDataNote}>Estado visitante · sin sesión gamer</small>
         </article>
