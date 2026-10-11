@@ -1291,3 +1291,18 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .liryCompactDialog fieldset label{justify-content:flex-start;line-height:1.4;white-space:normal}
 .liryCompactDialog fieldset small{line-height:1.45!important}
 @media(max-width:420px){.liryCompactDialog [role="group"]{grid-template-columns:1fr 1fr}.liryCompactDialog [role="group"] button:last-child:nth-child(odd){grid-column:1/-1}.liryCompactDialog .gamerInfoDialogInside>form:last-child button{width:100%}}
+
+/* Corrección de sangría: reset local, sin acumular padding de contenedores heredados. */
+.liryCompactDialog .gamerInfoDialogInside{box-sizing:border-box;display:flex;flex-direction:column;align-items:stretch;gap:0;padding:20px!important;text-indent:0!important}
+.liryCompactDialog .gamerInfoDialogInside>*{box-sizing:border-box;min-width:0;max-width:100%;margin-left:0!important;margin-right:0!important;text-indent:0!important}
+.liryCompactDialog .gamerInfoDialogInside>h3,.liryCompactDialog .gamerInfoDialogInside>p{padding-left:0!important;padding-right:0!important}
+.liryCompactDialog .gamerInfoDialogInside>h3{padding-right:38px!important}
+.liryCompactDialog .gamerInfoDialogInside>form:first-child{position:static;align-self:stretch;height:0}
+.liryCompactDialog .gamerInfoDialogInside>form:first-child .gamerInfoClose{right:14px;top:14px}
+.liryCompactDialog .gamerInfoDialogInside>form:last-child{align-self:stretch;display:flex;justify-content:flex-end}
+.liryCompactDialog .gamerInfoDialogInside>fieldset,.liryCompactDialog .gamerInfoDialogInside>div:not([role="group"]){max-width:100%;box-sizing:border-box}
+.liryCompactDialog .gamerInfoDialogInside>div[role="group"]{width:100%;padding:0!important}
+.liryCompactDialog .gamerInfoDialogInside fieldset{padding:10px 12px!important}
+.liryCompactDialog .gamerInfoDialogInside fieldset label{padding-left:0!important;margin-left:0!important;display:flex;gap:10px;align-items:center}
+.liryCompactDialog .gamerInfoDialogInside fieldset input{flex:0 0 auto;margin:0}
+@media(max-width:600px){.liryCompactDialog .gamerInfoDialogInside{padding:16px!important}}
