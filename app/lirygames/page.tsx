@@ -79,8 +79,8 @@ export default async function LiryGamesFrontDesk(){
         <article className={styles.gamerCard}>
           <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">⬡</span><div><h3>TU LIRY JOURNEY</h3><p>Esta es tu historia en Liry. Sigue explorando.</p></div></header>
           <div className={styles.journeyContent}>
-            <div className={styles.journeyRing}><div className={styles.journeyRingCenter}><strong>— / 9</strong><span>Mundos descubiertos</span></div></div>
-            <ol className={styles.journeyWorlds}>{games.map((game,index)=><li key={game.slug}><span className={styles.journeyNumber}>{index+1}</span><span className={styles.journeyName}>{game.title}</span><span className={styles.journeyPending} aria-label="Sin avance registrado">○</span></li>)}</ol>
+            <div className={styles.journeyRing}><div className={styles.journeyRingCenter}><strong>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length} / 9`:"— / 9"}</strong><span>Mundos descubiertos</span></div></div>
+            <ol className={styles.journeyWorlds}>{games.map((game,index)=><li key={game.slug}><span className={styles.journeyNumber}>{index+1}</span><span className={styles.journeyName}>{game.title}</span><span className={styles.journeyPending} aria-label={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?.visitedWorldIds.includes(game.slug)?"Mundo visitado con actividad verificada":"Sin avance registrado"}>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?.visitedWorldIds.includes(game.slug)?"✓":"○"}</span></li>)}</ol>
           </div>
           <LiryGamerInfoDialog topic="mundos" />
           <LiryGamerInfoDialog topic="journey" />
