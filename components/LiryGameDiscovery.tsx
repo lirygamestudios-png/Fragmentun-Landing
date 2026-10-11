@@ -75,6 +75,14 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
     requestAnimationFrame(()=>gameTriggersRef.current[index]?.focus());
   };
 
+  // Preferencia local efímera: nunca XP ni identidad autenticada.
+  useEffect(()=>{
+    const completed=dnaStep===6&&dnaAnswers.every(answer=>answer!==null);
+    const scores=completed?dnaAnswers.map(answer=>answer??0):[];
+    const max=completed?Math.max(...scores):0;
+    const chosen=max>0?traits[scores.indexOf(max)]:null;
+    window.dispatchEvent(new CustomEvent("liry:dna-style",{detail:{style:chosen}}));
+  },[dnaStep,dnaAnswers]);
   const hasDnaResults=dnaStep===6&&dnaAnswers.every(answer=>answer!==null)&&dnaAnswers.some(answer=>answer!==0);
   const recommendedIndexes=hasDnaResults?[...games.map((game,i)=>({i,score:gameAffinity[i]?.reduce((sum,weight,j)=>sum+weight*(dnaAnswers[j]??0),0)??0}))].sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3).map(entry=>entry.i):[];
   const dnaHeightStyle={"--liry-catalog-height":catalogHeight===null?undefined:`${catalogHeight}px`} as CSSProperties;
