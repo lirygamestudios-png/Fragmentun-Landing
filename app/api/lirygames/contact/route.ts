@@ -1,6 +1,7 @@
 import {NextRequest,NextResponse} from "next/server";
 import {consumePublicRateLimit} from "../../../../lib/rate-limit";
 import {createSupabaseServerClient} from "../../../../lib/supabase/server";
+import {validateLiryContactPayload} from "../../../../lib/games/liry-contact-validation";
 export const runtime="nodejs";
 const categories=["opinion","suggestion","problem","business","other"];
 export async function POST(req:NextRequest){
@@ -10,14 +11,9 @@ export async function POST(req:NextRequest){
  try{body=await req.json()}catch{return NextResponse.json({ok:false,message:"Datos incorrectos."},{status:400})}
  if(!body||typeof body!=="object")return NextResponse.json({ok:false},{status:400});
  if(body.website)return NextResponse.json({ok:true});
- const name=typeof body.name==="string"?body.name.trim():"";
- const email=typeof body.email==="string"?body.email.trim().toLowerCase():"";
- const subject=typeof body.subject==="string"?body.subject:"";
- const message=typeof body.message==="string"?body.message.trim():"";
- const gameSlug=typeof body.gameSlug==="string"?body.gameSlug.trim():"";
- if(name.length<2||name.length>100||email.length>254||! /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!categories.includes(subject)||message.length<10||message.length>3000||gameSlug.length>80||body.privacyAcknowledged!==true){
-  return NextResponse.json({ok:false,message:"Revisa los campos y acepta el aviso de privacidad."},{status:400});
- }
+ const validation=validateLiryContactPayload(body);
+ if(!validation.ok)return NextResponse.json({ok:false,message:validation.message},{status:400});
+ const {name,email,subject,message,gameSlug}=validation.fields;
  try{
   const db=await createSupabaseServerClient();
   const {data:accepted,error}=await db.rpc("lirygames_submit_contact",{
