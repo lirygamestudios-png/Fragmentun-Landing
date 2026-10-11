@@ -101,7 +101,7 @@ export default async function LiryGamesFrontDesk(){
           </div>
           <LiryGamerInfoDialog topic="logros-lista" />
           <LiryGamerInfoDialog topic="logros" />
-          <small className={styles.gamerDataNote}>Objetivos previstos · ningún logro acreditado.</small>
+          <small className={styles.gamerDataNote}>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.achievementIds.length} logros acreditados mediante actividad verificada.`:"Objetivos previstos · ningún logro acreditado."}</small>
         </article>
       </div>
     </section>
