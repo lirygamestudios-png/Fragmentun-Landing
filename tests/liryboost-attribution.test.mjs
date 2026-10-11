@@ -19,3 +19,10 @@ test("rechaza verificación, consentimiento y elegibilidad ausentes",()=>{
 test("rechaza invitado previamente atribuido",()=>{
  assert.equal(precheckLiryBoostAttribution(valid,new Set([invitee])).reason,"duplicate_invitee");
 });
+
+test("detecta duplicados aunque el UUID almacenado use mayúsculas",()=>{
+ assert.equal(precheckLiryBoostAttribution(valid,new Set([invitee.toUpperCase()])).reason,"duplicate_invitee");
+});
+test("rechaza IDs no textuales sin lanzar excepción",()=>{
+ assert.equal(precheckLiryBoostAttribution({...valid,inviteeId:null},new Set()).reason,"invalid_identity");
+});
