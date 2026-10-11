@@ -1,5 +1,5 @@
 "use client";
-import {useRef,useState} from "react";
+import {useRef,useState,type KeyboardEvent} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
 const categories=[
  {id:"todos",label:"TODOS",title:"La comunidad está por despertar",copy:"Las publicaciones y actividades aparecerán cuando el servicio comunitario esté disponible. Sin conversaciones ficticias."},
@@ -11,7 +11,7 @@ type Category=(typeof categories)[number]["id"];
 export function LiryCommunityTabs(){
  const [tab,setTab]=useState<Category>("todos");
  const tabButtons=useRef<Record<string,HTMLButtonElement|null>>({});
- const handleTabKeyDown=(event:React.KeyboardEvent<HTMLButtonElement>,index:number)=>{
+ const handleTabKeyDown=(event:KeyboardEvent<HTMLButtonElement>,index:number)=>{
   let next=index;
   if(event.key==="ArrowRight")next=(index+1)%categories.length;
   else if(event.key==="ArrowLeft")next=(index-1+categories.length)%categories.length;
