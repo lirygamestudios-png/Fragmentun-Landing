@@ -84,11 +84,12 @@ export default async function LiryGamesFrontDesk(){
             <div className={styles.journeyRing}><div className={styles.journeyRingCenter}><strong>— / 9</strong><span>Mundos descubiertos</span></div></div>
             <ol className={styles.journeyWorlds}>{games.map((game,index)=><li key={game.slug}><span className={styles.journeyNumber}>{index+1}</span><span className={styles.journeyName}>{game.title}</span><span className={styles.journeyPending} aria-label="Sin avance registrado">○</span></li>)}</ol>
           </div>
-          <a className={styles.gamerCardAction} href="#mundos">VER TODOS LOS MUNDOS <span aria-hidden="true">→</span></a>
-          <small className={styles.gamerDataNote}>El progreso aparecerá con actividad verificada.</small>
+          <a className={styles.gamerCardAction} href="#mundos">EXPLORAR LOS 9 MUNDOS <span aria-hidden="true">→</span></a>
+          <details className={styles.gamerProfileDetails}><summary className={styles.gamerCardAction}>CÓMO FUNCIONARÁ TU VIAJE <span aria-hidden="true">→</span></summary><div className={styles.gamerProfileHelp}><p>Cuando habilitemos las cuentas y los videojuegos, este recorrido mostrará los mundos que realmente hayas visitado. Explorar las tarjetas de presentación no cuenta como jugar.</p><small>Sin juegos activos y sin una cuenta vinculada, no existen avances que registrar. Ninguna visita a esta página suma progreso.</small></div></details>
+          <small className={styles.gamerDataNote}>Progreso sin iniciar · pendiente de actividad verificada.</small>
         </article>
         <article className={styles.gamerCard}>
-          <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">✣</span><h3>LOGROS RECIENTES</h3><span className={styles.gamerTopRight}>Ver todos →</span></header>
+          <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">✣</span><h3>LOGROS POR DESBLOQUEAR</h3><span className={styles.gamerTopRight}>Vista previa</span></header>
           <div className={styles.achievementList}>
             {[
               {icon:"✧",title:"Primeros pasos",detail:"Completa tu primer juego"},
@@ -97,7 +98,8 @@ export default async function LiryGamesFrontDesk(){
               {icon:"♜",title:"Maestro de estrategias",detail:"Gana diez partidas estratégicas"}
             ].map(item=><div className={styles.achievementRow} key={item.title}><span className={styles.achievementMedal} aria-hidden="true">{item.icon}</span><div><strong>{item.title}</strong><span>{item.detail}</span><small>Pendiente de obtener</small></div></div>)}
           </div>
-          <small className={styles.gamerDataNote}>Los logros y recompensas reales aparecerán aquí.</small>
+          <details className={styles.gamerProfileDetails}><summary className={styles.gamerCardAction}>CÓMO OBTENER LOGROS <span aria-hidden="true">→</span></summary><div className={styles.gamerProfileHelp}><p>Los ejemplos anteriores describen objetivos previstos, no premios obtenidos. Los logros solo podrán acreditarse al completarse requisitos comprobables dentro de un videojuego habilitado.</p><small>Sin partidas verificadas no se asignan medallas, recompensas ni puntos de experiencia.</small></div></details>
+          <small className={styles.gamerDataNote}>Objetivos previstos · ningún logro acreditado.</small>
         </article>
       </div>
     </section>
