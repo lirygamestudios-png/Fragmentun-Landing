@@ -14,7 +14,8 @@ export function parseLiryBoostReferralToken(raw: unknown): string | null {
 
 export function makeLiryBoostReferralLink(
   canonicalOrigin: unknown,
-  issuedToken: unknown
+  issuedToken: unknown,
+  approvedHostname: unknown
 ): string | null {
   const token = parseLiryBoostReferralToken(issuedToken);
   if (!token || typeof canonicalOrigin !== "string") return null;
@@ -24,7 +25,14 @@ export function makeLiryBoostReferralLink(
   if (origin.protocol !== "https:" || origin.username || origin.password ||
       origin.search || origin.hash || origin.pathname !== "/") return null;
   const hostname = origin.hostname.toLowerCase();
-  if (hostname === "localhost" || hostname.endsWith(".vercel.app")) return null;
+  // El hostname debe coincidir con una configuración explícita y confiable del servidor.
+  // No aceptar como autorización un hostname recibido del propio visitante.
+  if (typeof approvedHostname !== "string" ||
+      !/^[a-z0-9.-]+$/.test(approvedHostname) ||
+      hostname !== approvedHostname.toLowerCase() ||
+      hostname === "localhost" || hostname.endsWith(".vercel.app") ||
+      hostname.endsWith(".localhost") || hostname.endsWith(".local") ||
+      hostname.startsWith("127.") || hostname === "0.0.0.0") return null;
   const result = new URL("/lirygames", origin.origin);
   result.searchParams.set(LIRYBOOST_REFERRAL_PARAMETER, token);
   return result.toString();
