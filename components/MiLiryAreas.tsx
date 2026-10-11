@@ -30,6 +30,11 @@ export function MiLiryAreas(){
     <div><strong>PREFERENCIAS</strong><span>No configuradas</span></div>
     <p>Los datos personales solo se mostrarán al titular después de una autenticación segura. Esta vista no almacena información.</p>
    </div>}
+   {selected.id==="identidad"&&<section className={styles.identitySecurity} aria-label="Seguridad del perfil">
+    <h3>SEGURIDAD DE MI IDENTIDAD</h3>
+    <p>Los cambios de nombre, avatar y preferencias requerirán una sesión personal verificada. Ningún dato se guarda desde esta vista previa.</p>
+    <ul><li>Inicio de sesión gamer independiente del administrador</li><li>Validación de nombre público y controles de privacidad</li><li>Confirmación del usuario antes de guardar cambios</li></ul>
+   </section>}
    <div className={styles.areaDialogActions}><Link className={styles.areaLink} href={selected.href}>EXPLORAR SECCIÓN →</Link><form method="dialog"><button type="submit" className={styles.areaLink}>VOLVER A MI LIRY</button></form></div>
   </div>
  </dialog></>;
