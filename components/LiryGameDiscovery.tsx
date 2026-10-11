@@ -39,6 +39,8 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
   const [dnaAnswers,setDnaAnswers]=useState<(number|null)[]>(Array(6).fill(null));
   const [selectedGame,setSelectedGame]=useState<number|null>(null);
   const [catalogHeight,setCatalogHeight]=useState<number|null>(null);
+  const resetDnaEvaluation=()=>{setDnaSurvey(false);setDnaStep(0);setDnaAnswers(Array(6).fill(null));setActiveTrait(0)};
+  const closeDnaExplorer=()=>{setExploringDna(false);resetDnaEvaluation();explorerOpenRef.current?.focus()};
   useEffect(()=>{
     const catalog=catalogRef.current;
     if(!catalog)return;
@@ -53,8 +55,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
     explorerCloseRef.current?.focus();
     const onKeyDown=(event:KeyboardEvent)=>{
       if(event.key==="Escape"){
-        setExploringDna(false);
-        explorerOpenRef.current?.focus();
+        closeDnaExplorer();
       }
     };
     window.addEventListener("keydown",onKeyDown);
@@ -97,8 +98,8 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
         <img className={styles.dnaMap} src="/liry-dna-cinematic.svg" alt="" loading="eager" decoding="async" /><img className={styles.dnaPhotoUpper} src="/LIRY_DNA_Hiperrealista.png" alt="" loading="eager" decoding="async" onLoad={(e)=>e.currentTarget.classList.add(styles.dnaPhotoLoaded)} onError={(e)=>e.currentTarget.style.display="none"} />
       </div>
       <p>Conoce los seis estilos que formarán parte de tu identidad gamer.</p>
-      <button type="button" ref={explorerOpenRef} className={styles.dnaSideButton} aria-expanded={exploringDna} aria-controls="liry-dna-explorer" onClick={()=>setExploringDna(v=>!v)}>{"EXPLORAR ESTILOS →"}</button>
-      {exploringDna&&<div id="liry-dna-explorer" className={styles.dnaExplorer}><div className={styles.dnaExplorerHeading}><p className={styles.dnaExplorerLabel}>CONOCE LOS SEIS ESTILOS</p><button type="button" ref={explorerCloseRef} className={styles.dnaExplorerClose} onClick={()=>{setExploringDna(false);explorerOpenRef.current?.focus();}} aria-label="Cerrar exploración de estilos" title="Cerrar exploración">×</button></div><div className={styles.dnaExplorerChoices} role="group" aria-label="Elegir un estilo gamer">{traits.map((trait,i)=><button type="button" key={trait} className={activeTrait===i?styles.dnaExplorerSelected:styles.dnaExplorerChoice} onClick={()=>setActiveTrait(i)} aria-pressed={activeTrait===i}>{trait}</button>)}</div><p className={styles.dnaExplorerDescription}><strong>{traits[activeTrait]}</strong> — {traitDescriptions[activeTrait]}</p><small>Exploración informativa: no es una evaluación ni se almacena información personal.</small>
+      <button type="button" ref={explorerOpenRef} className={styles.dnaSideButton} aria-expanded={exploringDna} aria-controls="liry-dna-explorer" onClick={()=>exploringDna?closeDnaExplorer():setExploringDna(true)}>{"EXPLORAR ESTILOS →"}</button>
+      {exploringDna&&<div id="liry-dna-explorer" className={styles.dnaExplorer}><div className={styles.dnaExplorerHeading}><p className={styles.dnaExplorerLabel}>CONOCE LOS SEIS ESTILOS</p><button type="button" ref={explorerCloseRef} className={styles.dnaExplorerClose} onClick={closeDnaExplorer} aria-label="Cerrar exploración de estilos" title="Cerrar exploración">×</button></div><div className={styles.dnaExplorerChoices} role="group" aria-label="Elegir un estilo gamer">{traits.map((trait,i)=><button type="button" key={trait} className={activeTrait===i?styles.dnaExplorerSelected:styles.dnaExplorerChoice} onClick={()=>setActiveTrait(i)} aria-pressed={activeTrait===i}>{trait}</button>)}</div><p className={styles.dnaExplorerDescription}><strong>{traits[activeTrait]}</strong> — {traitDescriptions[activeTrait]}</p><small>Exploración informativa: no es una evaluación ni se almacena información personal.</small>
       <button type="button" className={styles.dnaSurveyToggle} onClick={()=>setDnaSurvey(v=>!v)} aria-expanded={dnaSurvey}>{dnaSurvey?"OCULTAR CUESTIONARIO":"DESCUBRIR MI LIRY ADN →"}</button>
       {dnaSurvey&&<div className={styles.dnaSurvey} aria-label="Cuestionario de preferencias Liry ADN">
         <p>Responde según tus gustos. No necesitas cuenta y las respuestas solo se utilizan en esta sesión.</p>
@@ -109,7 +110,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
             <h4>JUEGOS QUE PODRÍAN INTERESARTE</h4>
             {dnaAnswers.every(answer=>answer===0)?<p>No has señalado preferencias por ahora. Puedes explorar libremente los nueve juegos o volver a responder.</p>:<>
             {[...games.map((game,i)=>({game,i,score:gameAffinity[i]?.reduce((sum,weight,j)=>sum+weight*(dnaAnswers[j]??0),0)??0}))]
-              .sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3).map(({game,i})=><button type="button" key={game.slug} className={styles.dnaRecommendation} onClick={()=>{setExploringDna(false);setSelectedGame(i)}}>{game.title} <span>Ver ficha →</span></button>)}</>}
+              .sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3).map(({game,i})=><button type="button" key={game.slug} className={styles.dnaRecommendation} onClick={()=>{setExploringDna(false);resetDnaEvaluation();setSelectedGame(i)}}>{game.title} <span>Ver ficha →</span></button>)}</>}
             <small>Recomendaciones orientativas calculadas a partir de tus respuestas; no representan una evaluación psicológica ni datos de jugadores.</small>
             <button type="button" className={styles.dnaSurveyRestart} onClick={()=>{setDnaAnswers(Array(6).fill(null));setDnaStep(0)}}>VOLVER A RESPONDER</button>
           </div>:<div className={styles.dnaSurveyProgress} aria-live="polite"><span>Pregunta {dnaStep+1} de 6</span><progress value={dnaStep} max={6} />{dnaStep>0&&<button type="button" className={styles.dnaSurveyBack} onClick={()=>setDnaStep(step=>Math.max(0,step-1))}>← ANTERIOR</button>}</div>}
