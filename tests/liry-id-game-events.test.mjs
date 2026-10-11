@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {isWellFormedGameEvent,hasDuplicateEventIds} from "../lib/games/liry-game-event-contract.ts";
+import {isWellFormedGameEvent,hasDuplicateEventIds,checkGameEventBatch} from "../lib/games/liry-game-event-contract.ts";
 const event={eventId:"evt_12345678",accountId:"user_12345678",publicGameCode:"LIRY // ARENA-01",occurredAt:"2026-10-10T12:00:00Z",experiencePoints:15};
 test("evento futuro con forma válida no acredita XP por sí solo",()=>{assert.equal(isWellFormedGameEvent(event),true)});
 test("rechazar código privado o no publicado y XP negativo/fraccionario",()=>{
@@ -12,4 +12,14 @@ test("rechazar eventos futuros, identificadores incorrectos y fechas inválidas"
 test("detectar eventos duplicados en un mismo lote",()=>{
  assert.equal(hasDuplicateEventIds([event,{...event,publicGameCode:"LIRY // BOT-02"}]),true);
  assert.equal(hasDuplicateEventIds([event,{...event,eventId:"evt_87654321"}]),false);
+});
+
+test("lotes vacíos, demasiado grandes y eventos alterados quedan bloqueados",()=>{
+ assert.equal(checkGameEventBatch([]).reason,"invalid_batch");
+ assert.equal(checkGameEventBatch(Array.from({length:101},(_,i)=>({...event,eventId:`event_${i+10000000}`}))).reason,"invalid_batch");
+ assert.equal(checkGameEventBatch([{...event,experiencePoints:-3}]).reason,"invalid_event");
+});
+test("lote con duplicados se rechaza, sin adjudicar XP",()=>{
+ assert.equal(checkGameEventBatch([event,{...event}]).reason,"duplicate_event");
+ assert.deepEqual(checkGameEventBatch([event]),{ok:true,reason:"ok",count:1});
 });
