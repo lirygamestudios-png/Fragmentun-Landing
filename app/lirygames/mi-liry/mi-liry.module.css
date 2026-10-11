@@ -138,3 +138,18 @@
 .worldsFacts strong{font-size:10px;color:#82daf9;letter-spacing:.07em}
 .worldsFacts span{font-size:11px;color:#d6e7f4}
 @media(max-width:560px){.worldsFacts{grid-template-columns:1fr}}
+
+/* Auditoría de acceso táctil y lectura: seis subpantallas MI LIRY. */
+.areaDialog{box-sizing:border-box;max-height:min(88dvh,850px);overscroll-behavior:contain}
+.areaDialogContent{box-sizing:border-box;padding-top:clamp(60px,6vw,70px)}
+.areaDialog .areaClose{display:inline-flex;justify-content:center;align-items:center;min-width:44px;min-height:44px;right:14px;top:12px;padding:5px 12px}
+.areaDialogActions .areaLink{min-height:44px;box-sizing:border-box}
+.areaDialogActions{row-gap:12px}
+@media(max-width:560px){
+ .areaDialog{width:calc(100vw - 24px);max-height:calc(100dvh - 24px);margin:auto}
+ .areaDialogContent{padding:62px 16px 20px}
+ .areaDialogActions{flex-direction:column;align-items:stretch}
+ .areaDialogActions form{width:100%}
+ .areaDialogActions .areaLink{width:100%;justify-content:center;white-space:normal;line-height:1.4}
+ .areaDialog .areaClose{right:12px;top:10px}
+}
