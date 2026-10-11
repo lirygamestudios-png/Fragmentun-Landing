@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {LiryShare} from "../../components/LiryShare";
+import {LirySecretsInfo} from "../../components/LirySecretsInfo";
 import {LiryStoreCategories} from "../../components/LiryStoreCategories";
 import {LiryOfficialNetworks} from "../../components/LiryOfficialNetworks";
 import {LiryCommunityTabs} from "../../components/LiryCommunityTabs";
@@ -215,6 +216,7 @@ export default async function LiryGamesFrontDesk(){
           <p>Próximamente podrás descubrir fragmentos ocultos y acceder a desafíos especiales.</p>
           <div className={styles.secretsTrack} role="img" aria-label="Sistema de secretos aún no disponible; no hay progreso registrado"><span /></div>
           <small>PRÓXIMAMENTE · SIN PROGRESO SIMULADO</small>
+          <LirySecretsInfo />
         </div>
         
       </section>
