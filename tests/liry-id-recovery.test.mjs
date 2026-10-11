@@ -25,3 +25,9 @@ test("categorías desconocidas y marcas temporales futuras se rechazan",()=>{
  assert.equal(prepareInactiveAuditRecord("unexpected_error",1,"2026-10-11T10:00:00Z"),null);
  assert.equal(prepareInactiveAuditRecord("network_timeout",1,"2099-01-01T00:00:00Z"),null);
 });
+
+test("los contadores fuera de rango se aíslan o rechazan sin procesar eventos",()=>{
+ assert.equal(planInactiveEventRecovery("network_timeout",-1),"quarantine");
+ assert.equal(planInactiveEventRecovery("storage_unavailable",Number.MAX_SAFE_INTEGER+1),"quarantine");
+ assert.equal(prepareInactiveAuditRecord("network_timeout",101,"2026-10-11T10:00:00Z"),null);
+});
