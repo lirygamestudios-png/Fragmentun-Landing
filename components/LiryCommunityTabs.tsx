@@ -1,6 +1,7 @@
 "use client";
 import {useRef,useState,type KeyboardEvent} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
+import {LIRY_COMMUNITY_SERVICES} from "../lib/games/liry-community-readiness";
 const categories=[
  {id:"todos",label:"TODOS",title:"La comunidad está por despertar",copy:"Las publicaciones y actividades aparecerán cuando el servicio comunitario esté disponible. Sin conversaciones ficticias."},
  {id:"amigos",label:"AMIGOS",title:"Amigos próximamente",copy:"Las listas de amigos estarán disponibles cuando se habiliten las cuentas Liry ID."},
@@ -24,13 +25,15 @@ export function LiryCommunityTabs(){
   tabButtons.current[target]?.focus({preventScroll:true});
  };
  const selected=categories.find(item=>item.id===tab)??categories[0];
+ const serviceKey=tab==="todos"?"posts":tab==="amigos"?"friends":tab==="logros"?"achievements":"events";
+ const servicePending=LIRY_COMMUNITY_SERVICES[serviceKey]==="not_configured";
  return <>
   <div className={styles.communityTabs} role="tablist" aria-label="Categorías de comunidad">
    {categories.map(item=><button type="button" role="tab" key={item.id} id={`liry-tab-${item.id}`} ref={node=>{tabButtons.current[item.id]=node}} tabIndex={tab===item.id?0:-1} onKeyDown={event=>handleTabKeyDown(event,categories.findIndex(category=>category.id===item.id))} aria-controls="liry-community-panel" aria-selected={tab===item.id} className={tab===item.id?styles.communityTabActive:undefined} onClick={()=>setTab(item.id)}>{item.label}</button>)}
   </div>
   <div className={styles.communityFeed} role="tabpanel" id="liry-community-panel" aria-labelledby={`liry-tab-${tab}`}>
-    <div className={styles.communityEmpty}><span className={styles.communityEmptyIcon} aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="7" r="3"/><path d="M5.5 20v-2a6.5 6.5 0 0 1 13 0v2M4.5 10a2.5 2.5 0 1 0 0-5M19.5 5a2.5 2.5 0 1 1 0 5M2 19v-2a4 4 0 0 1 3-3.8M22 19v-2a4 4 0 0 0-3-3.8"/></svg></span><strong>{selected.title}</strong><p>{selected.copy}</p></div>
-    {tab==="todos"&&<div className={styles.communityPost}><span className={styles.communityAvatar} aria-hidden="true">L</span><div><strong>Tu comunidad Liry</strong><p>Comparte la página e invita a otros jugadores a descubrir los nueve mundos.</p><small>Mensaje informativo · comunidad en preparación</small></div></div>}
+    {servicePending&&<div className={styles.communityEmpty}><span className={styles.communityEmptyIcon} aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="7" r="3"/><path d="M5.5 20v-2a6.5 6.5 0 0 1 13 0v2M4.5 10a2.5 2.5 0 1 0 0-5M19.5 5a2.5 2.5 0 1 1 0 5M2 19v-2a4 4 0 0 1 3-3.8M22 19v-2a4 4 0 0 0-3-3.8"/></svg></span><strong>{selected.title}</strong><p>{selected.copy}</p></div>}
+    {tab==="todos"&&servicePending&&<div className={styles.communityPost}><span className={styles.communityAvatar} aria-hidden="true">L</span><div><strong>Tu comunidad Liry</strong><p>Comparte la página e invita a otros jugadores a descubrir los nueve mundos.</p><small>Mensaje informativo · comunidad en preparación</small></div></div>}
   </div>
  </>;
 }
