@@ -23,3 +23,10 @@ test("lote con duplicados se rechaza, sin adjudicar XP",()=>{
  assert.equal(checkGameEventBatch([event,{...event}]).reason,"duplicate_event");
  assert.deepEqual(checkGameEventBatch([event]),{ok:true,reason:"ok",count:1});
 });
+
+test("lotes con eventos de diferentes cuentas no se aceptan como una sola adjudicación",()=>{
+ assert.equal(checkGameEventBatch([event,{...event,eventId:"evt_87654321",accountId:"user_87654321"}]).reason,"mixed_accounts");
+});
+test("lotes con juegos distintos requieren procesamiento por vínculo autorizado",()=>{
+ assert.equal(checkGameEventBatch([event,{...event,eventId:"evt_87654321",publicGameCode:"LIRY // BOT-02"}]).reason,"mixed_games");
+});
