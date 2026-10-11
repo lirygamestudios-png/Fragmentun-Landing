@@ -24,6 +24,12 @@ export function MiLiryAreas(){
    <span className={styles.eyebrow}>MI LIRY · ESPACIO PERSONAL</span>
    <h2 id="mi-liry-area-title">{selected.title}</h2><p>{selected.detail}</p>
    <span className={styles.areaStatus}>{selected.status}</span>
+   {selected.id==="identidad"&&<div className={styles.identityDetails} aria-label="Preparación de identidad del jugador">
+    <div><strong>NOMBRE PÚBLICO</strong><span>Sin identidad verificada</span></div>
+    <div><strong>AVATAR</strong><span>Pendiente de personalización</span></div>
+    <div><strong>PREFERENCIAS</strong><span>No configuradas</span></div>
+    <p>Los datos personales solo se mostrarán al titular después de una autenticación segura. Esta vista no almacena información.</p>
+   </div>}
    <div className={styles.areaDialogActions}><Link className={styles.areaLink} href={selected.href}>EXPLORAR SECCIÓN →</Link><form method="dialog"><button type="submit" className={styles.areaLink}>VOLVER A MI LIRY</button></form></div>
   </div>
  </dialog></>;
