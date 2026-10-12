@@ -15,8 +15,14 @@ export function deriveLiryBoostConsentState(events:ReadonlyArray<ConsentEvent>,r
     typeof event.rulesVersion!=="string"||!event.rulesVersion.trim())
    return {active:false,reason:"invalid_history"};
   previous=event.sequence;
-  if(event.kind==="accepted")acceptedVersion=event.rulesVersion;
-  else acceptedVersion=null;
+  if(event.kind==="accepted"){
+   if(acceptedVersion!==null)return {active:false,reason:"invalid_history"};
+   acceptedVersion=event.rulesVersion;
+  }else{
+   if(acceptedVersion===null||event.rulesVersion!==acceptedVersion)
+    return {active:false,reason:"invalid_history"};
+   acceptedVersion=null;
+  }
  }
  if(events.length===0)return {active:false,reason:"none"};
  if(acceptedVersion===null)return {active:false,reason:"withdrawn"};
