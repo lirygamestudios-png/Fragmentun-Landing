@@ -4,9 +4,9 @@
  * no son prueba de autenticación por sí mismas.
  * NO crea participantes, ni abre la inscripción.
  */
-import {reviewLiryBoostEnrollmentRequest,type LiryBoostEnrollmentRequest} from "./enrollment-request";
-import {checkEnrollmentIdentityBinding,type EnrollmentIdentityBinding} from "./enrollment-identity";
-import {checkLiryBoostRegistrationReadiness,type LiryBoostRegistrationReadiness} from "./registration-readiness";
+import {reviewLiryBoostEnrollmentRequest,type LiryBoostEnrollmentRequest} from "./enrollment-request.ts";
+import {checkEnrollmentIdentityBinding,type EnrollmentIdentityBinding} from "./enrollment-identity.ts";
+import {checkLiryBoostRegistrationReadiness,type LiryBoostRegistrationReadiness} from "./registration-readiness.ts";
 
 export type LiryBoostRegistrationDecision=
  {processable:false;stage:"launch_gate"|"request"|"identity";reason:string}|
