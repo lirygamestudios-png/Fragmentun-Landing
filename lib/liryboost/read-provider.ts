@@ -4,11 +4,12 @@
  * Un proveedor futuro deberá validar autorización del servidor, consentimiento
  * vigente, invitaciones verificadas y exclusividad de invitado antes de entregar filas.
  */
-import {buildLiryBoostPublicSnapshot,type LiryBoostPublicationState} from "./public-snapshot.ts";
-import type {PublicLiryBoostEntry,PublicLiryBoostRow} from "./public-leaderboard.ts";
+import type {LiryBoostPublicationState} from "./public-snapshot.ts";
+import {prepareConsentCurrentTop10,type VerifiedPublicListingEntry} from "./consent-current-top10.ts";
+import type {PublicLiryBoostRow} from "./public-leaderboard.ts";
 export type LiryBoostReadProvider={
  readPublicationState:()=>Promise<LiryBoostPublicationState>;
- readAuthorizedVerifiedEntries:()=>Promise<ReadonlyArray<PublicLiryBoostEntry>>;
+ readAuthorizedVerifiedEntries:()=>Promise<ReadonlyArray<VerifiedPublicListingEntry>>;
 };
 export async function readLiryBoostTop10(provider:LiryBoostReadProvider|null):Promise<{
  programActive:boolean;leaderboard:ReadonlyArray<PublicLiryBoostRow>;
@@ -20,7 +21,7 @@ export async function readLiryBoostTop10(provider:LiryBoostReadProvider|null):Pr
    return {programActive:false,leaderboard:[]};
   const entries=await provider.readAuthorizedVerifiedEntries();
   if(!Array.isArray(entries))return {programActive:false,leaderboard:[]};
-  return {programActive:true,leaderboard:buildLiryBoostPublicSnapshot(state,entries)};
+  return {programActive:true,leaderboard:prepareConsentCurrentTop10(entries,true)};
  }catch{
   // Cualquier fallo se cierra sin revelar datos.
   return {programActive:false,leaderboard:[]};
