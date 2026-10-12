@@ -1,0 +1,10 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {verifySharedAttributionTransaction} from "../lib/liryboost/attribution-transaction-proof.ts";
+const tx="123e4567-e89b-42d3-a456-426614174001";
+const ok={transactionId:tx,committed:true,source:"central_database"};
+test("misma transacción confirmada en ambas evidencias",()=>assert.deepEqual(verifySharedAttributionTransaction(ok,ok),{valid:true,reason:"shared_committed_transaction"}));
+test("transacciones distintas no se combinan",()=>assert.equal(verifySharedAttributionTransaction(ok,{...ok,transactionId:"123e4567-e89b-42d3-a456-426614174002"}).valid,false));
+test("sin commit no se concede atribución",()=>assert.equal(verifySharedAttributionTransaction(ok,{...ok,committed:false}).valid,false));
+test("origen de memoria local no constituye evidencia",()=>assert.equal(verifySharedAttributionTransaction(ok,{...ok,source:"local_memory"}).valid,false));
+test("identificador incorrecto no es evidencia",()=>assert.equal(verifySharedAttributionTransaction(ok,{...ok,transactionId:"unknown"}).valid,false));
