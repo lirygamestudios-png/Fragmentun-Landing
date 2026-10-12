@@ -36,7 +36,7 @@ export function reviewLiryBoostRegistration(
  if(!identity.bound)return {processable:false,stage:"identity",reason:identity.reason};
  const consent=reviewLiryBoostConsentEvidence(serverConsentEvidence);
  if(!consent.valid)return {processable:false,stage:"consent",reason:consent.reason};
- if(serverConsentEvidence.authenticatedUserId.toLowerCase()!==serverIdentity.authenticatedUserId.toLowerCase()||
+ if(String(serverConsentEvidence.authenticatedUserId).toLowerCase()!==String(serverIdentity.authenticatedUserId).toLowerCase()||
     serverConsentEvidence.acceptedRulesVersion!==serverPublishedRulesVersion)
   return {processable:false,stage:"consent",reason:"evidence_mismatch"};
  return {processable:true,stage:"precheck_only",reason:"requires_server_transaction"};
