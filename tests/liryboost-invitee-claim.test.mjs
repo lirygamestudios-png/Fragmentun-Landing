@@ -1,0 +1,12 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {reviewInviteeClaim} from "../lib/liryboost/invitee-claim.ts";
+const invitee="123e4567-e89b-42d3-a456-426614174001";
+const referrer="123e4567-e89b-42d3-a456-426614174000";
+const other="123e4567-e89b-42d3-a456-426614174002";
+const won={source:"central_database",committed:true,status:"won",claimedInviteeId:invitee,winningReferrerId:referrer};
+test("reconoce solo ganador confirmado",()=>assert.deepEqual(reviewInviteeClaim(invitee,referrer,won),{credited:true,reason:"won"}));
+test("segundo participante no acredita mismo invitado",()=>assert.deepEqual(reviewInviteeClaim(invitee,other,{...won,status:"already_claimed"}),{credited:false,reason:"already_claimed"}));
+test("rechaza ganador declarado distinto del solicitante",()=>assert.equal(reviewInviteeClaim(invitee,other,won).credited,false));
+test("rechaza resultado no confirmado",()=>assert.equal(reviewInviteeClaim(invitee,referrer,{...won,committed:false}).credited,false));
+test("rechaza autoinvitación y fuente local",()=>{assert.equal(reviewInviteeClaim(invitee,invitee,won).credited,false);assert.equal(reviewInviteeClaim(invitee,referrer,{...won,source:"local_memory"}).credited,false)});
