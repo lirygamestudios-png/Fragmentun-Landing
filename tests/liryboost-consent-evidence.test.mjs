@@ -18,3 +18,10 @@ test("sin fecha registrada válida no hay consentimiento verificable",()=>{
 test("consentimiento revocado no autoriza",()=>{
  assert.equal(reviewLiryBoostConsentEvidence({...evidence,consentRevokedAt:"2026-10-11T13:00:00Z"}).reason,"revoked");
 });
+
+test("rechaza consentimiento con fecha futura",()=>{
+ assert.equal(reviewLiryBoostConsentEvidence({...evidence,consentRecordedAt:"2999-01-01T00:00:00Z"}).reason,"no_record");
+});
+test("rechaza marcas de tiempo sin zona horaria",()=>{
+ assert.equal(reviewLiryBoostConsentEvidence({...evidence,consentRecordedAt:"2026-10-11T12:00:00"}).reason,"no_record");
+});
