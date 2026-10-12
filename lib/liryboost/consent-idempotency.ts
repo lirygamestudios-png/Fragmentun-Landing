@@ -18,3 +18,16 @@ export function reviewConsentOperation(operation:ConsentOperation):
   return {valid:false,reason:"invalid_rules"};
  return {valid:true,fingerprint:actor+":"+key.toLowerCase()};
 }
+
+/** Compara un reintento con la operación original recuperada del servidor.
+ * No sustituye UNIQUE ni el bloqueo transaccional de la base de datos.
+ */
+export function compareConsentRetry(original:ConsentOperation,retry:ConsentOperation):
+ "same_operation"|"conflict"|"invalid"{
+ const a=reviewConsentOperation(original);
+ const b=reviewConsentOperation(retry);
+ if(!a.valid||!b.valid)return "invalid";
+ if(a.fingerprint!==b.fingerprint)return "conflict";
+ if(original.kind!==retry.kind||original.rulesVersion!==retry.rulesVersion)return "conflict";
+ return "same_operation";
+}
