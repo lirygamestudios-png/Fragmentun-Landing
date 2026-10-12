@@ -1,0 +1,10 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {prepareConsentCurrentTop10} from "../lib/liryboost/consent-current-top10.ts";
+const base={participantId:"123e4567-e89b-42d3-a456-426614174000",publicName:"Participante",verifiedInvitations:3,publicListingConsented:true,consentCurrent:true,participationEligible:true,serverVerified:true};
+test("clasificación pública desactivada devuelve vacío",()=>assert.deepEqual(prepareConsentCurrentTop10([base],false),[]));
+test("incluye solo consentimiento público vigente confirmado",()=>assert.deepEqual(prepareConsentCurrentTop10([base],true),[{publicName:"Participante",verifiedInvitations:3}]));
+test("excluye consentimiento revocado",()=>assert.deepEqual(prepareConsentCurrentTop10([{...base,consentCurrent:false}],true),[]));
+test("excluye participantes inelegibles",()=>assert.deepEqual(prepareConsentCurrentTop10([{...base,participationEligible:false}],true),[]));
+test("excluye datos sin verificación de servidor",()=>assert.deepEqual(prepareConsentCurrentTop10([{...base,serverVerified:false}],true),[]));
+test("excluye perfiles sin autorización pública",()=>assert.deepEqual(prepareConsentCurrentTop10([{...base,publicListingConsented:false}],true),[]));
