@@ -21,5 +21,5 @@ export function reviewConsentTransactionResult(
   return {ok:false,status:"invalid"};
  const verified=classifyStoredConsentOutcome(input.fingerprint,persistedOutcome);
  if(!verified.acknowledged)return {ok:false,status:verified.status==="conflict"?"conflict":"unconfirmed"};
- return {ok:true,status:verified.status};
+ return {ok:true,status:verified.status==="replayed"?"replayed":"committed"};
 }
