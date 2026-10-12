@@ -22,7 +22,8 @@ export function reviewLiryBoostConsentEvidence(e:LiryBoostConsentEvidence):
  if(typeof e.acceptedRulesVersion!=="string"||!e.acceptedRulesVersion.trim()||
     e.acceptedRulesVersion!==e.publishedRulesVersion)
   return {valid:false,reason:"rules_mismatch"};
- if(typeof e.consentRecordedAt!=="string"||!Number.isFinite(Date.parse(e.consentRecordedAt)))
+ if(typeof e.consentRecordedAt!=="string"||!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(e.consentRecordedAt)||
+    !Number.isFinite(Date.parse(e.consentRecordedAt))||Date.parse(e.consentRecordedAt)>Date.now())
   return {valid:false,reason:"no_record"};
  if(e.consentRevokedAt!==null&&e.consentRevokedAt!==undefined)
   return {valid:false,reason:"revoked"};
