@@ -16,13 +16,18 @@ export function reviewLiryBoostRegistration(
  request:LiryBoostEnrollmentRequest,
  serverIdentity:EnrollmentIdentityBinding,
  serverReadiness:LiryBoostRegistrationReadiness,
- serverPublishedRulesVersion:unknown
+ serverPublishedRulesVersion:unknown,
+ serverParticipantId:unknown
 ):LiryBoostRegistrationDecision{
  const gate=checkLiryBoostRegistrationReadiness(serverReadiness);
  if(!gate.ready)return {processable:false,stage:"launch_gate",reason:"program_not_authorized"};
  // La versión vigente debe venir del servidor; nunca confiar en expectedRulesVersion del visitante.
  if(typeof serverPublishedRulesVersion!=="string"||!serverPublishedRulesVersion.trim()||request?.acceptedRulesVersion!==serverPublishedRulesVersion)
   return {processable:false,stage:"request",reason:"invalid_rules"};
+ // El participante solicitado debe ser el registro asociado por el servidor al usuario autenticado.
+ if(typeof serverParticipantId!=="string"||typeof request?.participantId!=="string"||
+    request.participantId.toLowerCase()!==serverParticipantId.toLowerCase())
+  return {processable:false,stage:"request",reason:"participant_mismatch"};
  const input=reviewLiryBoostEnrollmentRequest({...request,expectedRulesVersion:serverPublishedRulesVersion});
  if(!input.accepted)return {processable:false,stage:"request",reason:input.reason};
  const identity=checkEnrollmentIdentityBinding(serverIdentity);
