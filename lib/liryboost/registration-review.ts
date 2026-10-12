@@ -7,9 +7,10 @@
 import {reviewLiryBoostEnrollmentRequest,type LiryBoostEnrollmentRequest} from "./enrollment-request.ts";
 import {checkEnrollmentIdentityBinding,type EnrollmentIdentityBinding} from "./enrollment-identity.ts";
 import {checkLiryBoostRegistrationReadiness,type LiryBoostRegistrationReadiness} from "./registration-readiness.ts";
+import {reviewLiryBoostConsentEvidence,type LiryBoostConsentEvidence} from "./consent-evidence.ts";
 
 export type LiryBoostRegistrationDecision=
- {processable:false;stage:"launch_gate"|"request"|"identity";reason:string}|
+ {processable:false;stage:"launch_gate"|"request"|"identity"|"consent";reason:string}|
  {processable:true;stage:"precheck_only";reason:"requires_server_transaction"};
 
 export function reviewLiryBoostRegistration(
@@ -17,7 +18,8 @@ export function reviewLiryBoostRegistration(
  serverIdentity:EnrollmentIdentityBinding,
  serverReadiness:LiryBoostRegistrationReadiness,
  serverPublishedRulesVersion:unknown,
- serverParticipantId:unknown
+ serverParticipantId:unknown,
+ serverConsentEvidence:LiryBoostConsentEvidence
 ):LiryBoostRegistrationDecision{
  const gate=checkLiryBoostRegistrationReadiness(serverReadiness);
  if(!gate.ready)return {processable:false,stage:"launch_gate",reason:"program_not_authorized"};
@@ -32,5 +34,10 @@ export function reviewLiryBoostRegistration(
  if(!input.accepted)return {processable:false,stage:"request",reason:input.reason};
  const identity=checkEnrollmentIdentityBinding(serverIdentity);
  if(!identity.bound)return {processable:false,stage:"identity",reason:identity.reason};
+ const consent=reviewLiryBoostConsentEvidence(serverConsentEvidence);
+ if(!consent.valid)return {processable:false,stage:"consent",reason:consent.reason};
+ if(serverConsentEvidence.authenticatedUserId.toLowerCase()!==serverIdentity.authenticatedUserId.toLowerCase()||
+    serverConsentEvidence.acceptedRulesVersion!==serverPublishedRulesVersion)
+  return {processable:false,stage:"consent",reason:"evidence_mismatch"};
  return {processable:true,stage:"precheck_only",reason:"requires_server_transaction"};
 }
