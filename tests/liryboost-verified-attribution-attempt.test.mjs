@@ -1,0 +1,11 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {reviewVerifiedAttributionAttempt} from "../lib/liryboost/verified-attribution-attempt.ts";
+const ref="123e4567-e89b-42d3-a456-426614174000";
+const invitee="123e4567-e89b-42d3-a456-426614174001";
+const data={source:"central_database",confirmed:true,status:"committed",referrerUserId:ref,inviteeUserId:invitee};
+test("committed se traduce a atribución confirmada",()=>assert.deepEqual(reviewVerifiedAttributionAttempt(ref,invitee,data),{counted:true,retryAllowed:false,reason:"confirmed"}));
+test("duplicado no vuelve a sumar",()=>assert.deepEqual(reviewVerifiedAttributionAttempt(ref,invitee,{...data,status:"duplicate"}),{counted:false,retryAllowed:false,reason:"duplicate"}));
+test("rechazo verificable permite nuevo intento sujeto a validación",()=>assert.deepEqual(reviewVerifiedAttributionAttempt(ref,invitee,{...data,status:"rejected"}),{counted:false,retryAllowed:true,reason:"rejected"}));
+test("identidad inválida nunca admite reintento ni puntos",()=>assert.deepEqual(reviewVerifiedAttributionAttempt(ref,ref,{...data,inviteeUserId:ref,status:"rejected"}),{counted:false,retryAllowed:false,reason:"unverified"}));
+test("confirmación no central no se interpreta como éxito",()=>assert.equal(reviewVerifiedAttributionAttempt(ref,invitee,{...data,source:"local_memory"}).counted,false));
