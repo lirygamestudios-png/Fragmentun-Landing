@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {reviewConsentTransactionResult} from "../lib/liryboost/consent-transaction-contract.ts";
+import {reviewConsentTransactionResult,reviewGatedConsentTransaction} from "../lib/liryboost/consent-transaction-contract.ts";
 const actorId="123e4567-e89b-42d3-a456-426614174000";
 const operationKey="123e4567-e89b-42d3-a456-426614174001";
 const operation={actorId,operationKey,kind:"accepted",rulesVersion:"v1"};
@@ -10,3 +10,14 @@ test("reconoce replay de la misma operación",()=>assert.deepEqual(reviewConsent
 test("no confirma resultado pendiente",()=>assert.deepEqual(reviewConsentTransactionResult(operation,actorId,{status:"committed",confirmed:false,storedOperationFingerprint:fingerprint}),{ok:false,status:"unconfirmed"}));
 test("rechaza identidad de otro actor",()=>assert.deepEqual(reviewConsentTransactionResult(operation,"123e4567-e89b-42d3-a456-426614174002",{status:"committed",confirmed:true,storedOperationFingerprint:fingerprint}),{ok:false,status:"invalid"}));
 test("rechaza conflicto persistido",()=>assert.deepEqual(reviewConsentTransactionResult(operation,actorId,{status:"conflict",confirmed:true,storedOperationFingerprint:fingerprint}),{ok:false,status:"conflict"}));
+
+const central={source:"central_database",available:true,allowed:true,confirmed:true};
+test("compuerta central cerrada impide confirmar operación",()=>{
+ assert.deepEqual(reviewGatedConsentTransaction(operation,actorId,{...central,available:false},{status:"committed",confirmed:true,storedOperationFingerprint:fingerprint}),{ok:false,status:"unconfirmed"});
+});
+test("fallback local no valida consentimiento",()=>{
+ assert.equal(reviewGatedConsentTransaction(operation,actorId,{...central,source:"local_memory"},{status:"committed",confirmed:true,storedOperationFingerprint:fingerprint}).ok,false);
+});
+test("comprobación central permite evaluar transacción confirmada",()=>{
+ assert.deepEqual(reviewGatedConsentTransaction(operation,actorId,central,{status:"committed",confirmed:true,storedOperationFingerprint:fingerprint}),{ok:true,status:"committed"});
+});
