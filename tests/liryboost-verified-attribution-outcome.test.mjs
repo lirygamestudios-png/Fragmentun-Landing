@@ -1,0 +1,11 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {reviewVerifiedAttributionOutcome} from "../lib/liryboost/verified-attribution-outcome.ts";
+const ref="123e4567-e89b-42d3-a456-426614174000";
+const invitee="123e4567-e89b-42d3-a456-426614174001";
+const ok={source:"central_database",confirmed:true,status:"committed",referrerUserId:ref,inviteeUserId:invitee};
+test("admite únicamente atribución confirmada y vinculada",()=>assert.deepEqual(reviewVerifiedAttributionOutcome(ref,invitee,ok),{creditable:true,reason:"confirmed"}));
+test("rechaza auto-invitación",()=>assert.equal(reviewVerifiedAttributionOutcome(ref,ref,{...ok,inviteeUserId:ref}).creditable,false));
+test("rechaza identidad no coincidente",()=>assert.equal(reviewVerifiedAttributionOutcome(ref,invitee,{...ok,referrerUserId:invitee}).creditable,false));
+test("no acredita invitado duplicado",()=>assert.deepEqual(reviewVerifiedAttributionOutcome(ref,invitee,{...ok,status:"duplicate"}),{creditable:false,reason:"duplicate"}));
+test("rechaza confirmación ausente y almacenamiento local",()=>{assert.equal(reviewVerifiedAttributionOutcome(ref,invitee,{...ok,confirmed:false}).creditable,false);assert.equal(reviewVerifiedAttributionOutcome(ref,invitee,{...ok,source:"local_memory"}).creditable,false)});
