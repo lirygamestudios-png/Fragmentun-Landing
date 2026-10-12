@@ -20,6 +20,6 @@ export function reviewConsentTransactionResult(
     operation.actorId.toLowerCase()!==serverActorId.toLowerCase())
   return {ok:false,status:"invalid"};
  const verified=classifyStoredConsentOutcome(input.fingerprint,persistedOutcome);
- if(!verified.acknowledged)return {ok:false,status:verified.status};
+ if(!verified.acknowledged)return {ok:false,status:verified.status==="conflict"?"conflict":"unconfirmed"};
  return {ok:true,status:verified.status};
 }
