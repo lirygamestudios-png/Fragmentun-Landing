@@ -1,0 +1,14 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {reviewEligibleAttribution} from "../lib/liryboost/attribution-eligibility.ts";
+const referrer="123e4567-e89b-42d3-a456-426614174000";
+const invitee="123e4567-e89b-42d3-a456-426614174001";
+const outcome={source:"central_database",confirmed:true,status:"committed",referrerUserId:referrer,inviteeUserId:invitee};
+const evidence={programActive:true,referrerEligible:true,inviteeEligible:true,referrerConsentCurrent:true,inviteeConsentCurrent:true,atomicEligibilityConfirmed:true};
+test("permite evaluar atribución solo con evidencia de elegibilidad confirmada",()=>assert.deepEqual(reviewEligibleAttribution(referrer,invitee,outcome,evidence),{creditable:true,reason:"confirmed"}));
+test("rechaza programa inactivo",()=>assert.equal(reviewEligibleAttribution(referrer,invitee,outcome,{...evidence,programActive:false}).reason,"program_inactive"));
+test("rechaza promotor no elegible",()=>assert.equal(reviewEligibleAttribution(referrer,invitee,outcome,{...evidence,referrerEligible:false}).creditable,false));
+test("rechaza invitado no elegible",()=>assert.equal(reviewEligibleAttribution(referrer,invitee,outcome,{...evidence,inviteeEligible:false}).creditable,false));
+test("rechaza consentimiento revocado o desactualizado",()=>{assert.equal(reviewEligibleAttribution(referrer,invitee,outcome,{...evidence,referrerConsentCurrent:false}).creditable,false);assert.equal(reviewEligibleAttribution(referrer,invitee,outcome,{...evidence,inviteeConsentCurrent:false}).creditable,false)});
+test("rechaza comprobación fuera de la transacción",()=>assert.equal(reviewEligibleAttribution(referrer,invitee,outcome,{...evidence,atomicEligibilityConfirmed:false}).creditable,false));
+test("rechaza atribución no confirmada",()=>assert.equal(reviewEligibleAttribution(referrer,invitee,{...outcome,confirmed:false},evidence).creditable,false));
