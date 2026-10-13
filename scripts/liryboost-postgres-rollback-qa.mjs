@@ -15,9 +15,13 @@ const run=(sql,{expectFailure=false}={})=>{
  if(p.error||((p.status!==0)!==expectFailure))throw Error("Unexpected QA SQL result");
  return p.stdout.trim();
 };
+const existingQaSchema=run("SELECT count(*) FROM pg_namespace WHERE nspname='liryboost_qa';");
+if(existingQaSchema!=="0"){console.error("REFUSED: existing QA schema.");process.exit(2)}
+let qaSchemaCreated=false;
 try{
- run(`CREATE SCHEMA IF NOT EXISTS liryboost_qa;
- CREATE TABLE liryboost_qa.events(event_id uuid PRIMARY KEY,invitee uuid NOT NULL);
+ run("CREATE SCHEMA liryboost_qa;");
+ qaSchemaCreated=true;
+ run(` CREATE TABLE liryboost_qa.events(event_id uuid PRIMARY KEY,invitee uuid NOT NULL);
  CREATE TABLE liryboost_qa.counters(invitee uuid PRIMARY KEY,total int NOT NULL CHECK(total>=0));`);
  const invitee="123e4567-e89b-42d3-a456-426614174001";
  const event="123e4567-e89b-42d3-a456-426614174004";
@@ -37,5 +41,5 @@ try{
  console.log("PASS: injected SQL error rolls back event and counter; valid retry commits once.");
  console.log("LIMITATION: synthetic local schema; no real LiryBoost service or network-failure simulation.");
 }finally{
- try{run("DROP SCHEMA IF EXISTS liryboost_qa CASCADE;")}catch{console.error("QA cleanup failed; inspect disposable local database")}
+ if(qaSchemaCreated){try{run("DROP SCHEMA IF EXISTS liryboost_qa CASCADE;")}catch{console.error("QA cleanup failed; inspect disposable local database")}}
 }
