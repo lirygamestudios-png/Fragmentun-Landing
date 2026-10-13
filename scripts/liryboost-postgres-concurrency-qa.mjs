@@ -29,8 +29,12 @@ function session(query){
   p.stdin.end(query);
  });
 }
+// Direct execution safety: never reuse or delete a pre-existing QA schema.
+const existingQaSchema=sql("SELECT count(*) FROM pg_namespace WHERE nspname='liryboost_qa';");
+if(existingQaSchema!=="0"){console.error("REFUSED: pre-existing QA schema.");process.exit(2)}
+let qaSchemaCreated=false;
 try{
- sql("CREATE SCHEMA IF NOT EXISTS liryboost_qa; CREATE TABLE IF NOT EXISTS liryboost_qa.concurrent_claims(invitee uuid PRIMARY KEY,referrer uuid NOT NULL);");
+ sql("CREATE SCHEMA liryboost_qa; CREATE TABLE IF NOT EXISTS liryboost_qa.concurrent_claims(invitee uuid PRIMARY KEY,referrer uuid NOT NULL);");
  const runs=Number(process.env.LIRYBOOST_QA_RUNS||"100");
  if(!Number.isSafeInteger(runs)||runs<1||runs>1000)throw Error("Invalid QA_RUNS");
  for(let i=0;i<runs;i++){
@@ -48,5 +52,6 @@ try{
  console.log(`PASS: ${runs} two-session claim races; exactly one winner per invitee.`);
  console.log("LIMITATION: isolated schema exercise only; does not test production consent workflows.");
 }finally{
- try{sql("DROP SCHEMA IF EXISTS liryboost_qa CASCADE;")}catch{console.error("QA cleanup failed: inspect disposable database")}
+ if(qaSchemaCreated){try{sql("DROP SCHEMA IF EXISTS liryboost_qa CASCADE;")}catch{console.error("QA cleanup failed: inspect disposable database")}
+}
 }
