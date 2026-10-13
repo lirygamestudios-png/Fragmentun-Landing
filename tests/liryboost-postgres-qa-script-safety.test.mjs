@@ -28,3 +28,11 @@ test("synthetic RLS QA refuses pre-existing roles",()=>{
  assert.match(source,/pg_roles/);
  assert.match(source,/existing QA roles/);
 });
+
+test("RLS QA cleans up only roles created by its own execution",()=>{
+ const source=readFileSync(new URL("../scripts/liryboost-postgres-rls-qa.mjs",import.meta.url),"utf8");
+ assert.match(source,/qaAnonCreated=true/);
+ assert.match(source,/qaMemberCreated=true/);
+ assert.match(source,/if\(qaMemberCreated\)/);
+ assert.match(source,/if\(qaAnonCreated\)/);
+});
