@@ -1,0 +1,10 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {reviewServerGamerSession} from "../lib/games/liry-server-identity.ts";
+const now=1791930000000;
+const proof={userId:"123e4567-e89b-42d3-a456-426614174000",emailConfirmed:true,audience:"lirygames_public",expiresAt:now+3600000,verifiedByProvider:true};
+test("sin proveedor gamer no existe sesión",async()=>assert.equal((await reviewServerGamerSession(null,now)).authorized,false));
+test("verificador confiable permite evaluación",async()=>assert.equal((await reviewServerGamerSession({verifyCurrentSession:async()=>proof},now)).authorized,true));
+test("sesión del admin queda rechazada",async()=>assert.equal((await reviewServerGamerSession({verifyCurrentSession:async()=>({...proof,audience:"admin"})},now)).authorized,false));
+test("prueba no verificada por proveedor se rechaza",async()=>assert.equal((await reviewServerGamerSession({verifyCurrentSession:async()=>({...proof,verifiedByProvider:false})},now)).authorized,false));
+test("error del proveedor no autoriza sesión",async()=>assert.equal((await reviewServerGamerSession({verifyCurrentSession:async()=>{throw Error("offline")}},now)).authorized,false));
