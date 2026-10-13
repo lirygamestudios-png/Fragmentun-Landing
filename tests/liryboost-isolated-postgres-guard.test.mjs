@@ -1,0 +1,11 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {reviewIsolatedPostgresTarget} from "../lib/liryboost/isolated-postgres-guard.ts";
+const local={environment:"isolated_test",explicitQaApproval:"LIRYBOOST_LOCAL_QA_ONLY",databaseUrl:"postgresql://tester:secret@127.0.0.1:5432/liryboost_qa_disposable"};
+test("permite destino local descartable explícito",()=>assert.deepEqual(reviewIsolatedPostgresTarget(local),{allowed:true,reason:"isolated_local_qa"}));
+test("rechaza Supabase externo",()=>assert.equal(reviewIsolatedPostgresTarget({...local,databaseUrl:"postgresql://tester:secret@db.example.supabase.co:5432/liryboost_qa_disposable"}).allowed,false));
+test("rechaza nombre de base de producción",()=>assert.equal(reviewIsolatedPostgresTarget({...local,databaseUrl:"postgresql://tester:secret@127.0.0.1:5432/postgres"}).allowed,false));
+test("rechaza permiso ausente",()=>assert.equal(reviewIsolatedPostgresTarget({...local,explicitQaApproval:false}).allowed,false));
+test("rechaza entorno no aislado",()=>assert.equal(reviewIsolatedPostgresTarget({...local,environment:"production"}).allowed,false));
+test("rechaza parámetros de conexión añadidos",()=>assert.equal(reviewIsolatedPostgresTarget({...local,databaseUrl:local.databaseUrl+"?host=db.example.com"}).allowed,false));
+test("rechaza URL no PostgreSQL",()=>assert.equal(reviewIsolatedPostgresTarget({...local,databaseUrl:"https://localhost:5432/liryboost_qa_disposable"}).allowed,false));
