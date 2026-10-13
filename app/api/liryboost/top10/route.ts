@@ -1,18 +1,12 @@
 import {NextResponse} from "next/server";
 import {readLiryBoostTop10} from "../../../../lib/liryboost/read-provider";
+import {buildLiryBoostHttpPayload,LIRYBOOST_PUBLIC_NO_CACHE_HEADERS} from "../../../../lib/liryboost/http-publication";
 
-/**
- * Endpoint público de solo lectura. Cerrado hasta que exista un origen
- * autenticado de invitaciones verificadas y consentimientos auditables.
- * No usa credenciales administrativas ni consulta Supabase.
- */
+/** Sin proveedor verificado: cerrado, sin datos ficticios ni caché. */
 export const dynamic="force-dynamic";
 export async function GET(){
- // Proveedor aún no conectado: el programa permanece cerrado.
  const snapshot=await readLiryBoostTop10(null);
- return NextResponse.json({
-  programActive:snapshot.programActive,
-  leaderboard:snapshot.leaderboard,
-  message:"LiryBoost todavía no está activo."
- },{headers:{"Cache-Control":"no-store, max-age=0"}});
+ return NextResponse.json(buildLiryBoostHttpPayload(snapshot),{
+  headers:LIRYBOOST_PUBLIC_NO_CACHE_HEADERS
+ });
 }
