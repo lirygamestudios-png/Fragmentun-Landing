@@ -3,6 +3,7 @@ import {useEffect,useRef,useState,type ChangeEvent} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
 import type {PublicGamerSnapshot} from "../lib/games/public-gamer-snapshot";
 import {calculateGamerXpProgress} from "../lib/games/gamer-xp";
+import {validateTemporaryGamerAvatar} from "../lib/games/liry-avatar-validation";
 
 const VALID_STYLES=["Explorador","Estratega","Competidor","Social","Acción","Creativo"] as const;
 export function LiryGamerIdentity({snapshot}:{snapshot:Readonly<PublicGamerSnapshot>}){
@@ -38,8 +39,9 @@ export function LiryGamerIdentity({snapshot}:{snapshot:Readonly<PublicGamerSnaps
  function selectAvatar(event:ChangeEvent<HTMLInputElement>){
   const file=event.target.files?.[0];
   if(!file)return;
-  if(!["image/png","image/jpeg","image/webp"].includes(file.type)||file.size>2*1024*1024){
-   event.target.value="";window.alert("Usa JPG, PNG o WebP de hasta 2 MB.");return;
+  const validation=validateTemporaryGamerAvatar(file);
+  if(!validation.ok){
+   event.target.value="";window.alert(validation.message);return;
   }
   if(avatarUrl.current)URL.revokeObjectURL(avatarUrl.current);
   const url=URL.createObjectURL(file);avatarUrl.current=url;setAvatar(url);event.target.value="";
