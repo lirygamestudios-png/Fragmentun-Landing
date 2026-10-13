@@ -26,6 +26,16 @@ if(dbCheck.error||dbCheck.status!==0||dbCheck.stdout.trim()!=="liryboost_qa_disp
  console.error("REFUSED: local disposable database identity not confirmed.");
  process.exit(2);
 }
+// Fail before any suite can TRUNCATE or DROP an already-existing QA schema.
+// The test scripts own and delete their synthetic schema; never reuse one.
+const schemaCheck=spawnSync("psql",["-X","-qAt","-v","ON_ERROR_STOP=1","-d",process.env.LIRYBOOST_QA_DATABASE_URL],{
+ input:"SELECT count(*) FROM pg_namespace WHERE nspname = 'liryboost_qa';",
+ encoding:"utf8",timeout:10000,env:{...process.env,PGCONNECT_TIMEOUT:"3"}
+});
+if(schemaCheck.error||schemaCheck.status!==0||schemaCheck.stdout.trim()!=="0"){
+ console.error("REFUSED: existing QA schema detected or its absence could not be verified.");
+ process.exit(2);
+}
 const suites=[
  ["C01 simultaneous claims","scripts/liryboost-postgres-concurrency-qa.mjs"],
  ["C02/C03 idempotency and consent","scripts/liryboost-postgres-idempotency-consent-qa.mjs"],
