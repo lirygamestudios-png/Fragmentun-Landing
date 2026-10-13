@@ -1,5 +1,6 @@
 "use client";
 import {useRef,useState} from "react";
+import {LIRY_ID_PUBLIC_ACCESS} from "../lib/games/liry-id-public-access";
 import styles from "../app/lirygames/lirygames.module.css";
 type Mode="entrar"|"registro"|"recuperar";
 const modes:{id:Mode;label:string;heading:string;description:string}[]=[
@@ -25,7 +26,7 @@ export function LiryIdAccess(){
     <p className={styles.liryCompactDescription} aria-live="polite">{current.description}</p>
     <div className={styles.liryCompactNotice}>
      <strong style={{color:"#79e6ff"}}>PRÓXIMAMENTE · ACCESO DESACTIVADO</strong>
-     <p>Sin registro activo. No solicitamos datos ni contraseñas.</p>
+     <p>{LIRY_ID_PUBLIC_ACCESS.message} No solicitamos datos ni contraseñas.</p>
     </div>
     <form method="dialog"><button type="submit" className={styles.gamerInfoDone}>ENTENDIDO</button></form>
    </div>
