@@ -14,12 +14,16 @@ if(existingQaSchema!=="0"){console.error("REFUSED: existing QA schema.");process
 const preexistingQaRoles=run("SELECT count(*) FROM pg_roles WHERE rolname IN ('liryboost_qa_anon','liryboost_qa_member');");
 if(preexistingQaRoles!=="0"){console.error("REFUSED: existing QA roles.");process.exit(2)}
 let qaSchemaCreated=false;
+let qaAnonCreated=false;
+let qaMemberCreated=false;
 try{
  run("CREATE SCHEMA liryboost_qa;");
  qaSchemaCreated=true;
- run(` CREATE ROLE liryboost_qa_anon NOLOGIN;
- CREATE ROLE liryboost_qa_member NOLOGIN;
- CREATE TABLE liryboost_qa.members(id uuid PRIMARY KEY, alias text NOT NULL,email text NOT NULL);
+ run("CREATE ROLE liryboost_qa_anon NOLOGIN;");
+ qaAnonCreated=true;
+ run("CREATE ROLE liryboost_qa_member NOLOGIN;");
+ qaMemberCreated=true;
+ run(` CREATE TABLE liryboost_qa.members(id uuid PRIMARY KEY, alias text NOT NULL,email text NOT NULL);
  INSERT INTO liryboost_qa.members VALUES ('123e4567-e89b-42d3-a456-426614174001','QA alias','private@example.test');
  ALTER TABLE liryboost_qa.members ENABLE ROW LEVEL SECURITY;
  ALTER TABLE liryboost_qa.members FORCE ROW LEVEL SECURITY;
@@ -33,5 +37,7 @@ try{
  console.log("PASS: anonymous access denied, unrelated member hidden, owner permitted");
  console.log("LIMIT: synthetic RLS policy, not real Supabase authorization");
 }finally{
- if(qaSchemaCreated){try{run("DROP SCHEMA IF EXISTS liryboost_qa CASCADE; DROP ROLE IF EXISTS liryboost_qa_member; DROP ROLE IF EXISTS liryboost_qa_anon;")}catch{console.error("Disposable QA cleanup failed")}}
+ if(qaSchemaCreated){try{run("DROP SCHEMA liryboost_qa CASCADE;")}catch{console.error("QA schema cleanup failed")}}
+ if(qaMemberCreated){try{run("DROP ROLE liryboost_qa_member;")}catch{console.error("QA member role cleanup failed")}}
+ if(qaAnonCreated){try{run("DROP ROLE liryboost_qa_anon;")}catch{console.error("QA anon role cleanup failed")}}
 }
