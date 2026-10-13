@@ -21,9 +21,14 @@ function query(sql){
 const runId="123e4567-e89b-42d3-a456-426614174009";
 const invitee="123e4567-e89b-42d3-a456-426614174001";
 const referrer="123e4567-e89b-42d3-a456-426614174000";
+// Direct execution safety: never reuse or delete a pre-existing QA schema.
+const existingQaSchema=query("SELECT count(*) FROM pg_namespace WHERE nspname='liryboost_qa';");
+if(existingQaSchema!=="0"){console.error("REFUSED: pre-existing QA schema.");process.exit(2)}
+let qaSchemaCreated=false;
 try{
- query(`CREATE SCHEMA IF NOT EXISTS liryboost_qa;
- CREATE TABLE liryboost_qa.idempotent_events(operation_id uuid PRIMARY KEY, payload_digest text NOT NULL);
+ query("CREATE SCHEMA liryboost_qa;");
+ qaSchemaCreated=true;
+ query(` CREATE TABLE liryboost_qa.idempotent_events(operation_id uuid PRIMARY KEY, payload_digest text NOT NULL);
  CREATE TABLE liryboost_qa.consent_events(user_id uuid NOT NULL, event_no int NOT NULL, status text NOT NULL CHECK(status IN ('accepted','revoked')), PRIMARY KEY(user_id,event_no));
  CREATE TABLE liryboost_qa.credits(invitee uuid PRIMARY KEY, referrer uuid NOT NULL);
  INSERT INTO liryboost_qa.consent_events VALUES ('${invitee}',1,'accepted');`);
@@ -44,5 +49,6 @@ try{
  console.log("PASS: idempotent replay, conflicting payload rejection, revoked consent blocks new credit.");
  console.log("LIMITATION: sequential SQL invariants; no concurrent revocation/credit interleaving tested.");
 }finally{
- try{query("DROP SCHEMA IF EXISTS liryboost_qa CASCADE;")}catch{console.error("Local QA cleanup failed; inspect disposable database.")}
+ if(qaSchemaCreated){try{query("DROP SCHEMA IF EXISTS liryboost_qa CASCADE;")}catch{console.error("Local QA cleanup failed; inspect disposable database.")}
+}
 }
