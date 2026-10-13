@@ -3,7 +3,7 @@ import {useEffect,useRef,useState,type ChangeEvent} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
 import type {PublicGamerSnapshot} from "../lib/games/public-gamer-snapshot";
 import {calculateGamerXpProgress} from "../lib/games/gamer-xp";
-import {validateTemporaryGamerAvatar} from "../lib/games/liry-avatar-validation";
+import {validateTemporaryGamerAvatar,validateTemporaryGamerAvatarContent} from "../lib/games/liry-avatar-validation";
 
 const VALID_STYLES=["Explorador","Estratega","Competidor","Social","Acción","Creativo"] as const;
 export function LiryGamerIdentity({snapshot}:{snapshot:Readonly<PublicGamerSnapshot>}){
@@ -36,12 +36,15 @@ export function LiryGamerIdentity({snapshot}:{snapshot:Readonly<PublicGamerSnaps
   window.addEventListener("liry:dna-closed",onDnaClosed);
   return ()=>{window.removeEventListener("liry:dna-style",handler);window.removeEventListener("liry:dna-closed",onDnaClosed);if(styleTimer.current)clearTimeout(styleTimer.current);if(avatarUrl.current)URL.revokeObjectURL(avatarUrl.current)};
  },[]);
- function selectAvatar(event:ChangeEvent<HTMLInputElement>){
+ async function selectAvatar(event:ChangeEvent<HTMLInputElement>){
   const file=event.target.files?.[0];
   if(!file)return;
   const validation=validateTemporaryGamerAvatar(file);
   if(!validation.ok){
    event.target.value="";window.alert(validation.message);return;
+  }
+  if(!await validateTemporaryGamerAvatarContent(file)){
+   event.target.value="";window.alert("La imagen no coincide con su formato declarado.");return;
   }
   if(avatarUrl.current)URL.revokeObjectURL(avatarUrl.current);
   const url=URL.createObjectURL(file);avatarUrl.current=url;setAvatar(url);event.target.value="";
