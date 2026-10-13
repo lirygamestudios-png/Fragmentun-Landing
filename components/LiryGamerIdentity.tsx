@@ -13,6 +13,8 @@ export function LiryGamerIdentity({snapshot}:{snapshot:Readonly<PublicGamerSnaps
  const [style,setStyle]=useState<string|null>(null);
  const [highlight,setHighlight]=useState(false);
  const avatarUrl=useRef<string|null>(null);
+ const avatarSelection=useRef(0);
+ const [avatarError,setAvatarError]=useState<string|null>(null);
  const styleTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
  const fileRef=useRef<HTMLInputElement>(null);
  const dialogRef=useRef<HTMLDialogElement>(null);
@@ -34,22 +36,27 @@ export function LiryGamerIdentity({snapshot}:{snapshot:Readonly<PublicGamerSnaps
   };
   window.addEventListener("liry:dna-style",handler);
   window.addEventListener("liry:dna-closed",onDnaClosed);
-  return ()=>{window.removeEventListener("liry:dna-style",handler);window.removeEventListener("liry:dna-closed",onDnaClosed);if(styleTimer.current)clearTimeout(styleTimer.current);if(avatarUrl.current)URL.revokeObjectURL(avatarUrl.current)};
+  return ()=>{window.removeEventListener("liry:dna-style",handler);window.removeEventListener("liry:dna-closed",onDnaClosed);if(styleTimer.current)clearTimeout(styleTimer.current);avatarSelection.current++;if(avatarUrl.current)URL.revokeObjectURL(avatarUrl.current)};
  },[]);
  async function selectAvatar(event:ChangeEvent<HTMLInputElement>){
   const file=event.target.files?.[0];
   if(!file)return;
+  event.target.value="";
+  const selection=++avatarSelection.current;
+  setAvatarError(null);
   const validation=validateTemporaryGamerAvatar(file);
-  if(!validation.ok){
-   event.target.value="";window.alert(validation.message);return;
-  }
-  if(!await validateTemporaryGamerAvatarContent(file)){
-   event.target.value="";window.alert("La imagen no coincide con su formato declarado.");return;
-  }
+  if(!validation.ok){setAvatarError(validation.message);return;}
+  const validContent=await validateTemporaryGamerAvatarContent(file);
+  if(selection!==avatarSelection.current)return;
+  if(!validContent){setAvatarError("La imagen no coincide con su formato declarado.");return;}
   if(avatarUrl.current)URL.revokeObjectURL(avatarUrl.current);
-  const url=URL.createObjectURL(file);avatarUrl.current=url;setAvatar(url);event.target.value="";
+  const url=URL.createObjectURL(file);avatarUrl.current=url;setAvatar(url);
  }
- function removeAvatar(){if(avatarUrl.current)URL.revokeObjectURL(avatarUrl.current);avatarUrl.current=null;setAvatar(null)}
+ function removeAvatar(){
+  avatarSelection.current++;
+  if(avatarUrl.current)URL.revokeObjectURL(avatarUrl.current);
+  avatarUrl.current=null;setAvatar(null);setAvatarError(null);
+ }
  return <>
   <div className={styles.gamerIdentity}>
    <button type="button" ref={triggerRef} className={styles.gamerPortrait} aria-label="Elegir avatar temporal" title="Elegir avatar" onClick={()=>dialogRef.current?.showModal()} style={{cursor:"pointer",padding:0,overflow:"hidden"}}>
@@ -70,6 +77,7 @@ export function LiryGamerIdentity({snapshot}:{snapshot:Readonly<PublicGamerSnaps
     <p>Selecciona una imagen para verla como avatar durante esta visita. No se sube al servidor ni se guarda en una cuenta.</p>
     <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" aria-label="Seleccionar imagen para avatar" onChange={selectAvatar}/>
     <p>JPG, PNG o WebP · máximo 2 MB.</p>
+    {avatarError&&<p role="alert" className={styles.gamerDataNote}>{avatarError}</p>}
     {avatar&&<button type="button" className={styles.gamerInfoDone} onClick={removeAvatar}>QUITAR AVATAR</button>}
     <form method="dialog"><button type="submit" className={styles.gamerInfoDone}>ENTENDIDO</button></form>
    </div>
