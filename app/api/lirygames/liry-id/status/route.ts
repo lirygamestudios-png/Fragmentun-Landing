@@ -1,5 +1,5 @@
 import {NextResponse} from "next/server";
-import {LIRY_ID_PUBLIC_ACCESS} from "../../../../lib/games/liry-id-public-access";
+import {LIRY_ID_PUBLIC_ACCESS} from "../../../../../lib/games/liry-id-public-access";
 
 /** Estado público de LIRY ID; nunca revela credenciales ni sesión administrativa. */
 export const dynamic="force-dynamic";
