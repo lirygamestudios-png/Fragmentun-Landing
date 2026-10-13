@@ -11,6 +11,8 @@ const run=(sql,shouldFail=false)=>{
 };
 const existingQaSchema=run("SELECT count(*) FROM pg_namespace WHERE nspname='liryboost_qa';");
 if(existingQaSchema!=="0"){console.error("REFUSED: existing QA schema.");process.exit(2)}
+const preexistingQaRoles=run("SELECT count(*) FROM pg_roles WHERE rolname IN ('liryboost_qa_anon','liryboost_qa_member');");
+if(preexistingQaRoles!=="0"){console.error("REFUSED: existing QA roles.");process.exit(2)}
 let qaSchemaCreated=false;
 try{
  run("CREATE SCHEMA liryboost_qa;");
