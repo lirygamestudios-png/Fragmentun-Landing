@@ -20,3 +20,18 @@ test("QA rejects external database before spawning psql",()=>{
  assert.equal(r.status,2);
  assert.match(r.stderr,/REFUSED/);
 });
+
+test("QA rejects an unapproved local database name",()=>{
+ const r=spawnSync(process.execPath,["--experimental-strip-types",path],{
+  encoding:"utf8",timeout:10000,env:{...process.env,
+   LIRYBOOST_QA_ENVIRONMENT:"isolated_test",LIRYBOOST_QA_APPROVAL:"LIRYBOOST_LOCAL_QA_ONLY",
+   LIRYBOOST_QA_DATABASE_URL:"postgresql://qa:test@127.0.0.1:5432/postgres"}
+ });
+ assert.equal(r.status,2);assert.match(r.stderr,/REFUSED/);
+});
+test("QA rejects missing database URL",()=>{
+ const env={...process.env,LIRYBOOST_QA_ENVIRONMENT:"isolated_test",LIRYBOOST_QA_APPROVAL:"LIRYBOOST_LOCAL_QA_ONLY"};
+ delete env.LIRYBOOST_QA_DATABASE_URL;
+ const r=spawnSync(process.execPath,["--experimental-strip-types",path],{encoding:"utf8",timeout:10000,env});
+ assert.equal(r.status,2);assert.match(r.stderr,/REFUSED/);
+});
