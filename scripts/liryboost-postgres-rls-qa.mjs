@@ -9,9 +9,13 @@ const run=(sql,shouldFail=false)=>{
  if(p.error||((p.status!==0)!==shouldFail))throw Error("Unexpected synthetic RLS result");
  return p.stdout.trim();
 };
+const existingQaSchema=run("SELECT count(*) FROM pg_namespace WHERE nspname='liryboost_qa';");
+if(existingQaSchema!=="0"){console.error("REFUSED: existing QA schema.");process.exit(2)}
+let qaSchemaCreated=false;
 try{
- run(`CREATE SCHEMA liryboost_qa;
- CREATE ROLE liryboost_qa_anon NOLOGIN;
+ run("CREATE SCHEMA liryboost_qa;");
+ qaSchemaCreated=true;
+ run(` CREATE ROLE liryboost_qa_anon NOLOGIN;
  CREATE ROLE liryboost_qa_member NOLOGIN;
  CREATE TABLE liryboost_qa.members(id uuid PRIMARY KEY, alias text NOT NULL,email text NOT NULL);
  INSERT INTO liryboost_qa.members VALUES ('123e4567-e89b-42d3-a456-426614174001','QA alias','private@example.test');
@@ -27,5 +31,5 @@ try{
  console.log("PASS: anonymous access denied, unrelated member hidden, owner permitted");
  console.log("LIMIT: synthetic RLS policy, not real Supabase authorization");
 }finally{
- try{run("DROP SCHEMA IF EXISTS liryboost_qa CASCADE; DROP ROLE IF EXISTS liryboost_qa_member; DROP ROLE IF EXISTS liryboost_qa_anon;")}catch{console.error("Disposable QA cleanup failed")}
+ if(qaSchemaCreated){try{run("DROP SCHEMA IF EXISTS liryboost_qa CASCADE; DROP ROLE IF EXISTS liryboost_qa_member; DROP ROLE IF EXISTS liryboost_qa_anon;")}catch{console.error("Disposable QA cleanup failed")}}
 }
