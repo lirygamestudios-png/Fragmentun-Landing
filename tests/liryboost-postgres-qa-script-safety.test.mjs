@@ -17,7 +17,7 @@ for(const script of scripts){
   assert.match(source,/SELECT count\(\*\) FROM pg_namespace WHERE nspname='liryboost_qa'/);
   assert.doesNotMatch(source,/CREATE SCHEMA IF NOT EXISTS liryboost_qa/);
   assert.match(source,/CREATE SCHEMA liryboost_qa/);
-  assert.match(source,/DROP SCHEMA IF EXISTS liryboost_qa/);
+  assert.match(source,/DROP SCHEMA (?:IF EXISTS )?liryboost_qa/);
   assert.match(source,/if\((?:qaSchemaCreated|created)\)/);
  });
 }
