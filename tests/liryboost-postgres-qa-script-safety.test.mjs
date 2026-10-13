@@ -21,3 +21,10 @@ for(const script of scripts){
   assert.match(source,/if\((?:qaSchemaCreated|created)\)/);
  });
 }
+
+test("synthetic RLS QA refuses pre-existing roles",()=>{
+ const source=readFileSync(new URL("../scripts/liryboost-postgres-rls-qa.mjs",import.meta.url),"utf8");
+ assert.match(source,/preexistingQaRoles/);
+ assert.match(source,/pg_roles/);
+ assert.match(source,/existing QA roles/);
+});
