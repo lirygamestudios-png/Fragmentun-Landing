@@ -1,0 +1,12 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {prepareRevocationSafeTop10} from "../lib/liryboost/revocation-safe-top10.ts";
+const id="123e4567-e89b-42d3-a456-426614174000";
+const row={participantId:id,publicName:"Gamer QA",verifiedInvitations:3,publicListingConsented:true,consentCurrent:true,participationEligible:true,serverVerified:true};
+test("una revocación elimina inmediatamente del resultado preparado",()=>assert.deepEqual(prepareRevocationSafeTop10([row],[id],true,true),[]));
+test("revocación con UUID de distinta capitalización también excluye",()=>assert.deepEqual(prepareRevocationSafeTop10([row],[id.toUpperCase()],true,true),[]));
+test("sin instantánea consistente no se publica",()=>assert.deepEqual(prepareRevocationSafeTop10([row],[],false,true),[]));
+test("sin lectura de revocaciones no se publica",()=>assert.deepEqual(prepareRevocationSafeTop10([row],null,true,true),[]));
+test("sin autorización el Top 10 queda cerrado",()=>assert.deepEqual(prepareRevocationSafeTop10([row],[],true,false),[]));
+test("el consentimiento vigente conserva una fila autorizada",()=>assert.deepEqual(prepareRevocationSafeTop10([row],[],true,true),[{publicName:"Gamer QA",verifiedInvitations:3}]));
+test("un identificador de revocación inválido cierra la publicación",()=>assert.deepEqual(prepareRevocationSafeTop10([row],["invalid"],true,true),[]));
