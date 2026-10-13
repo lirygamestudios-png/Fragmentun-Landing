@@ -21,9 +21,9 @@ const preexisting=run("SELECT count(*) FROM pg_namespace WHERE nspname='liryboos
 if(preexisting!=="0"){console.error("REFUSED: QA schema already exists.");process.exit(2)}
 let created=false;
 try{
+ run(`CREATE SCHEMA liryboost_qa;`);
  created=true;
- run(`CREATE SCHEMA liryboost_qa;
- CREATE TABLE liryboost_qa.private_members(user_id uuid PRIMARY KEY,contact_email text NOT NULL,alias text NOT NULL,visible boolean NOT NULL);
+ run(`CREATE TABLE liryboost_qa.private_members(user_id uuid PRIMARY KEY,contact_email text NOT NULL,alias text NOT NULL,visible boolean NOT NULL);
  CREATE TABLE liryboost_qa.scores(user_id uuid PRIMARY KEY REFERENCES liryboost_qa.private_members(user_id),points int NOT NULL CHECK(points>=0));
  INSERT INTO liryboost_qa.private_members VALUES ('${id}','synthetic@example.test','Gamer QA',true);
  INSERT INTO liryboost_qa.scores VALUES ('${id}',3);
