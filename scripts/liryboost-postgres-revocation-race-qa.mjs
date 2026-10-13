@@ -28,9 +28,13 @@ function session(query){
 const invitee="123e4567-e89b-42d3-a456-426614174001",referrer="123e4567-e89b-42d3-a456-426614174000";
 const runs=Number(process.env.LIRYBOOST_QA_RUNS||100);
 if(!Number.isSafeInteger(runs)||runs<1||runs>1000)throw Error("Invalid QA runs");
+const existingQaSchema=sql("SELECT count(*) FROM pg_namespace WHERE nspname='liryboost_qa';");
+if(existingQaSchema!=="0"){console.error("REFUSED: existing QA schema.");process.exit(2)}
+let qaSchemaCreated=false;
 try{
- sql(`CREATE SCHEMA IF NOT EXISTS liryboost_qa;
- CREATE TABLE liryboost_qa.consent_current(user_id uuid PRIMARY KEY, active boolean NOT NULL);
+ sql("CREATE SCHEMA liryboost_qa;");
+ qaSchemaCreated=true;
+ sql(` CREATE TABLE liryboost_qa.consent_current(user_id uuid PRIMARY KEY, active boolean NOT NULL);
  CREATE TABLE liryboost_qa.credits(invitee uuid PRIMARY KEY, referrer uuid NOT NULL);`);
  for(let i=0;i<runs;i++){
   sql(`TRUNCATE liryboost_qa.credits,liryboost_qa.consent_current;
@@ -61,5 +65,5 @@ try{
  console.log(`PASS: ${runs} overlapping revoke/credit operations; post-revocation credits blocked.`);
  console.log("LIMITATION: previous valid credits are not retroactively removed; full revocation business rules require separate design.");
 }finally{
- try{sql("DROP SCHEMA IF EXISTS liryboost_qa CASCADE;")}catch{console.error("Local QA cleanup failed")}
+ if(qaSchemaCreated){try{sql("DROP SCHEMA IF EXISTS liryboost_qa CASCADE;")}catch{console.error("Local QA cleanup failed")}}
 }
