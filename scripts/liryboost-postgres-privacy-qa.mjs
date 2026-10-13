@@ -16,7 +16,12 @@ const run=(sql)=>{
  return r.stdout.trim();
 };
 const id="123e4567-e89b-42d3-a456-426614174000";
+// Direct invocation must not delete an existing synthetic QA schema.
+const preexisting=run("SELECT count(*) FROM pg_namespace WHERE nspname='liryboost_qa';");
+if(preexisting!=="0"){console.error("REFUSED: QA schema already exists.");process.exit(2)}
+let created=false;
 try{
+ created=true;
  run(`CREATE SCHEMA liryboost_qa;
  CREATE TABLE liryboost_qa.private_members(user_id uuid PRIMARY KEY,contact_email text NOT NULL,alias text NOT NULL,visible boolean NOT NULL);
  CREATE TABLE liryboost_qa.scores(user_id uuid PRIMARY KEY REFERENCES liryboost_qa.private_members(user_id),points int NOT NULL CHECK(points>=0));
@@ -34,5 +39,5 @@ try{
  console.log("PASS: public view contains only alias/points and removes revoked member.");
  console.log("LIMITATION: role grants, RLS, cached responses and actual API not tested.");
 }finally{
- try{run("DROP SCHEMA IF EXISTS liryboost_qa CASCADE;")}catch{console.error("QA cleanup failed")}
+ if(created){try{run("DROP SCHEMA IF EXISTS liryboost_qa CASCADE;")}catch{console.error("QA cleanup failed")}}
 }
