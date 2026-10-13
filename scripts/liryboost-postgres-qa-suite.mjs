@@ -11,6 +11,21 @@ if(!target.allowed){
  console.error("REFUSED: explicitly approved disposable localhost database required.");
  process.exit(2);
 }
+// Preflight: block the suite if local psql is missing or PostgreSQL cannot
+// confirm the disposable database's identity. Does not create any objects.
+const cli=spawnSync("psql",["--version"],{encoding:"utf8",timeout:5000});
+if(cli.error||cli.status!==0){
+ console.error("REFUSED: psql is not installed or accessible on the QA machine.");
+ process.exit(2);
+}
+const dbCheck=spawnSync("psql",["-X","-qAt","-v","ON_ERROR_STOP=1","-d",process.env.LIRYBOOST_QA_DATABASE_URL],{
+ input:"SELECT current_database();",encoding:"utf8",timeout:10000,
+ env:{...process.env,PGCONNECT_TIMEOUT:"3"}
+});
+if(dbCheck.error||dbCheck.status!==0||dbCheck.stdout.trim()!=="liryboost_qa_disposable"){
+ console.error("REFUSED: local disposable database identity not confirmed.");
+ process.exit(2);
+}
 const suites=[
  ["C01 simultaneous claims","scripts/liryboost-postgres-concurrency-qa.mjs"],
  ["C02/C03 idempotency and consent","scripts/liryboost-postgres-idempotency-consent-qa.mjs"],
