@@ -1,0 +1,10 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {reviewLiryAuthProjectIsolation} from "../lib/games/liry-auth-project-isolation.ts";
+const valid={gamerUrl:"https://gamerqa123.supabase.co/",fragmentunUrl:"https://fragmentqa123.supabase.co/",gamerPublishableKey:"sb_publishable_gamer_fixture_only",fragmentunPublishableKey:"sb_publishable_fragment_fixture"};
+test("permite proyectos Supabase separados",()=>assert.equal(reviewLiryAuthProjectIsolation(valid).ready,true));
+test("rechaza proyecto administrativo compartido",()=>assert.equal(reviewLiryAuthProjectIsolation({...valid,gamerUrl:valid.fragmentunUrl}).ready,false));
+test("rechaza misma clave pública",()=>assert.equal(reviewLiryAuthProjectIsolation({...valid,gamerPublishableKey:valid.fragmentunPublishableKey}).ready,false));
+test("rechaza configuración ausente",()=>assert.equal(reviewLiryAuthProjectIsolation({...valid,gamerUrl:undefined}).ready,false));
+test("rechaza origen sin HTTPS",()=>assert.equal(reviewLiryAuthProjectIsolation({...valid,gamerUrl:"http://gamerqa123.supabase.co/"}).ready,false));
+test("rechaza URLs con credenciales o parámetros",()=>assert.equal(reviewLiryAuthProjectIsolation({...valid,gamerUrl:"https://x:y@gamerqa123.supabase.co/"}).ready,false));
