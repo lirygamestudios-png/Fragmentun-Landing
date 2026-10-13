@@ -23,9 +23,15 @@ const run=(sql)=>{
  if(r.error||r.status!==0)throw new Error("Local psql test failed; review PostgreSQL availability and QA credentials.");
  return r.stdout.trim();
 };
+// Direct execution safety: never reuse or delete a pre-existing QA schema.
+const existingQaSchema=run("SELECT count(*) FROM pg_namespace WHERE nspname='liryboost_qa';");
+if(existingQaSchema!=="0"){console.error("REFUSED: pre-existing QA schema.");process.exit(2)}
+let qaSchemaCreated=false;
 try{
  // Transaction-scoped test objects; deliberately no public/private production schema changes.
- run("CREATE SCHEMA IF NOT EXISTS liryboost_qa; CREATE TABLE IF NOT EXISTS liryboost_qa.claim_smoke(invitee UUID PRIMARY KEY, referrer UUID NOT NULL); TRUNCATE liryboost_qa.claim_smoke;");
+ run("CREATE SCHEMA liryboost_qa;");
+ qaSchemaCreated=true;
+ run("CREATE TABLE IF NOT EXISTS liryboost_qa.claim_smoke(invitee UUID PRIMARY KEY, referrer UUID NOT NULL); TRUNCATE liryboost_qa.claim_smoke;");
  const invitee="123e4567-e89b-42d3-a456-426614174001";
  const a="123e4567-e89b-42d3-a456-426614174000",b="123e4567-e89b-42d3-a456-426614174002";
  // Two contenders in one atomic insert statement; unique constraint admits only one.
@@ -35,5 +41,6 @@ try{
  console.log("PASS: a single invitee has exactly one stored referrer (schema smoke test).");
  console.log("NOTE: this is NOT a concurrent-session stress test or complete attribution service.");
 }finally{
- try{run("DROP SCHEMA IF EXISTS liryboost_qa CASCADE;")}catch{console.error("QA cleanup failed; inspect disposable local database.");}
+ if(qaSchemaCreated){try{run("DROP SCHEMA IF EXISTS liryboost_qa CASCADE;")}catch{console.error("QA cleanup failed; inspect disposable local database.");}
+}
 }
