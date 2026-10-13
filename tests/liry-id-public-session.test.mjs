@@ -1,0 +1,12 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {reviewLiryPublicSession} from "../lib/games/liry-public-session.ts";
+const now=1791930000000;
+const userId="123e4567-e89b-42d3-a456-426614174000";
+const valid={source:"trusted_server",audience:"lirygames_public",userId,emailConfirmed:true,sessionVerified:true,expiresAt:now+3600000};
+test("acepta evidencia gamer confirmada",()=>assert.equal(reviewLiryPublicSession(valid,now).authorized,true));
+test("rechaza audiencia administrativa",()=>assert.equal(reviewLiryPublicSession({...valid,audience:"fragmentun_admin"},now).authorized,false));
+test("rechaza sesión sin confirmación de correo",()=>assert.equal(reviewLiryPublicSession({...valid,emailConfirmed:false},now).authorized,false));
+test("rechaza sesión vencida",()=>assert.equal(reviewLiryPublicSession({...valid,expiresAt:now-1},now).authorized,false));
+test("rechaza evidencia originada en el navegador",()=>assert.equal(reviewLiryPublicSession({...valid,source:"client"},now).authorized,false));
+test("rechaza duración excesiva",()=>assert.equal(reviewLiryPublicSession({...valid,expiresAt:now+25*3600000},now).authorized,false));
