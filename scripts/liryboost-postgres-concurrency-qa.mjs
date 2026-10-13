@@ -34,7 +34,9 @@ const existingQaSchema=sql("SELECT count(*) FROM pg_namespace WHERE nspname='lir
 if(existingQaSchema!=="0"){console.error("REFUSED: pre-existing QA schema.");process.exit(2)}
 let qaSchemaCreated=false;
 try{
- sql("CREATE SCHEMA liryboost_qa; CREATE TABLE IF NOT EXISTS liryboost_qa.concurrent_claims(invitee uuid PRIMARY KEY,referrer uuid NOT NULL);");
+ sql("CREATE SCHEMA liryboost_qa;");
+ qaSchemaCreated=true;
+ sql("CREATE TABLE liryboost_qa.concurrent_claims(invitee uuid PRIMARY KEY,referrer uuid NOT NULL);");
  const runs=Number(process.env.LIRYBOOST_QA_RUNS||"100");
  if(!Number.isSafeInteger(runs)||runs<1||runs>1000)throw Error("Invalid QA_RUNS");
  for(let i=0;i<runs;i++){
