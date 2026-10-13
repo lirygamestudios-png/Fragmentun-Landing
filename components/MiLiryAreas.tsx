@@ -13,6 +13,7 @@ const areas=[
 ] as const;
 export function MiLiryAreas(){
  const [selected,setSelected]=useState<(typeof areas)[number]>(areas[0]);
+ const [previewSession,setPreviewSession]=useState(0);
  const dialog=useRef<HTMLDialogElement>(null);
  const trigger=useRef<HTMLButtonElement|null>(null);
  const closeButton=useRef<HTMLButtonElement>(null);
@@ -29,7 +30,7 @@ export function MiLiryAreas(){
   <h3>{area.title}</h3><p>{area.desc}</p><small>{area.status}</small>
   <button className={styles.areaLink} type="button" aria-haspopup="dialog" aria-label={`Abrir ${area.title}`} onClick={event=>openArea(area,event.currentTarget)}>ABRIR MI ÁREA →</button>
  </article>)}</div>
- <dialog ref={dialog} className={styles.areaDialog} aria-labelledby="mi-liry-area-title" onClose={()=>{trigger.current?.focus({preventScroll:true});trigger.current=null;}} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
+ <dialog ref={dialog} className={styles.areaDialog} aria-labelledby="mi-liry-area-title" onClose={()=>{setPreviewSession(value=>value+1);trigger.current?.focus({preventScroll:true});trigger.current=null;}} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
   <div className={styles.areaDialogContent}>
    <form method="dialog"><button ref={closeButton} className={styles.areaClose} aria-label="Cerrar área y volver a MI LIRY" type="submit">×</button></form>
    <span className={styles.eyebrow}>MI LIRY · ESPACIO PERSONAL</span>
@@ -41,7 +42,7 @@ export function MiLiryAreas(){
     <div><strong>PREFERENCIAS</strong><span>No configuradas</span></div>
     <p>Los datos personales solo se mostrarán al titular después de una autenticación segura. Esta vista no almacena información.</p>
    </div>}
-   {selected.id==="identidad"&&<MiLiryIdentityPreview />}
+   {selected.id==="identidad"&&<MiLiryIdentityPreview key={previewSession} />}
    {selected.id==="identidad"&&<section className={styles.identitySecurity} aria-label="Seguridad del perfil">
     <h3>SEGURIDAD DE MI IDENTIDAD</h3>
     <p>Los cambios de nombre, avatar y preferencias requerirán una sesión personal verificada. Ningún dato se guarda desde esta vista previa.</p>
