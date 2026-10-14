@@ -1414,3 +1414,16 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .dnaSurveyQuestion legend{color:#ffd84d;font-weight:800;font-size:12px;line-height:1.55}
 .dnaSurveyAnswers label.dnaSurveyAnswerSelected{border-color:#ffd84d;background:#153b55;color:#fff6bf;box-shadow:inset 0 0 0 1px rgba(255,216,77,.35),0 0 14px rgba(255,216,77,.22)}
 .dnaSurveyAnswers label.dnaSurveyAnswerSelected input[type="radio"]{accent-color:#ffd84d}
+
+/* Accesos diferenciados y contacto integrado en Comunidad. */
+.nav .developerNavAccess{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:none;min-width:38px;min-height:38px;padding:7px 10px;border:1px solid #389ccc;border-radius:9px;background:#0b2643;color:#d9f5ff;font:inherit;font-size:10px;font-weight:800;letter-spacing:.04em;cursor:pointer;white-space:nowrap;transition:background .2s,border-color .2s,box-shadow .2s}
+.nav .developerNavAccess svg{width:19px;height:19px;flex:none}
+.nav .developerNavAccess:hover,.nav .developerNavAccess:focus-visible{background:#14658e;color:#fff;border-color:#94edff;box-shadow:0 0 14px #42caff99,0 0 27px #248fd650}
+.nav .developerNavAccess:focus-visible{outline:2px solid #d7f8ff;outline-offset:3px}
+.communityContactAction{display:inline-flex;align-items:center;justify-content:center;margin-top:12px;min-height:44px;padding:10px 14px;border:1px solid #389ccc;border-radius:9px;background:#0b2643;color:#d9f5ff;font:inherit;font-size:11px;font-weight:800;cursor:pointer;transition:background .2s,border-color .2s,box-shadow .2s}
+.communityContactAction:hover,.communityContactAction:focus-visible{background:#14658e;border-color:#94edff;color:#fff;box-shadow:0 0 14px #42caff99}
+.communityContactAction:focus-visible{outline:2px solid #d7f8ff;outline-offset:3px}
+@media(max-width:1250px){.nav .developerNavAccess span{display:none}}
+@media(max-width:750px){.nav .developerNavAccess{min-width:36px;width:36px;height:38px;padding:7px}.nav{padding-right:218px}.navUtilities{right:12px;gap:2px}}
+@media(max-width:420px){.nav{padding-right:189px}.navUtilities{right:5px}.nav .developerNavAccess{width:32px;min-width:32px}}
+@media(prefers-reduced-motion:reduce){.nav .developerNavAccess,.communityContactAction{transition:none}}
