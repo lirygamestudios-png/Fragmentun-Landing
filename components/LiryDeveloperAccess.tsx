@@ -7,7 +7,7 @@ export function LiryDeveloperAccess(){
  const dialog=useRef<HTMLDialogElement>(null);
  const trigger=useRef<HTMLButtonElement>(null);
  return <>
-  <button type="button" ref={trigger} className={styles.gamerCardAction} aria-haspopup="dialog" aria-controls="liry-developer-access-dialog" onClick={()=>{if(dialog.current&&!dialog.current.open)dialog.current.showModal()}}>DESARROLLADOR · ACCESO <span aria-hidden="true">→</span></button>
+  <button type="button" ref={trigger} className={styles.developerNavAccess} aria-label="Abrir acceso LIRY DEVELOPER" title="Acceso para desarrolladores" aria-haspopup="dialog" aria-controls="liry-developer-access-dialog" onClick={()=>{if(dialog.current&&!dialog.current.open)dialog.current.showModal()}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 5l-4 14"/></svg><span>DEVELOPER</span></button>
   <dialog id="liry-developer-access-dialog" ref={dialog} className={styles.liryStandaloneDialog} aria-labelledby="liry-developer-access-title" onClose={()=>trigger.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
    <div className={styles.liryStandaloneContent}>
     <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar acceso de desarrolladores">×</button></form>
