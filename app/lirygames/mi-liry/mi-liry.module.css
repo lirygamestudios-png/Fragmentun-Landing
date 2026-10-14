@@ -162,3 +162,22 @@
 .previewOption input{width:18px;height:18px;accent-color:#41c5ed;cursor:pointer}
 .previewOption:focus-within{color:#e4f9ff}
 @media(max-width:560px){.grid .areaLink{min-height:44px;margin-top:14px}.previewChoices button{min-height:44px}}
+
+/* LIRY DEVELOPER: formularios con tratamiento visual FrontDesk aprobado. */
+.developerForm{display:grid;gap:15px;margin-top:20px}
+.developerForm h2{margin:0;color:#e9f8ff;font-size:clamp(19px,2.6vw,25px);letter-spacing:.03em}
+.developerForm>div,.developerForm fieldset{display:grid;gap:9px;min-width:0;margin:0;padding:16px;border:1px solid #2e7293;border-radius:11px;background:linear-gradient(140deg,#102444,#09152b)}
+.developerForm label,.developerForm legend{font-size:13px;font-weight:700;line-height:1.5;color:#d7eafb}
+.developerForm legend{padding:0 8px;color:#8ce1ff;letter-spacing:.04em}
+.developerForm input:not([type=checkbox]):not([type=radio]),.developerForm textarea,.developerForm select{display:block;width:100%;min-height:44px;border:1px solid #3a7d9d;border-radius:9px;padding:11px 13px;background:#07162c;color:#f0faff;font:inherit;font-size:14px;outline:none}
+.developerForm textarea{min-height:100px;resize:vertical}
+.developerForm input::placeholder,.developerForm textarea::placeholder{color:#89a9be}
+.developerForm input:focus-visible,.developerForm textarea:focus-visible,.developerForm select:focus-visible{border-color:#9ceaff;outline:2px solid #94eaff;outline-offset:2px;box-shadow:0 0 15px #43c8ff66}
+.developerForm fieldset label{display:flex;align-items:flex-start;gap:11px;cursor:pointer}
+.developerForm input[type=checkbox],.developerForm input[type=radio]{flex:none;width:18px;height:18px;margin-top:2px;accent-color:#58d1f8}
+.developerForm button{width:fit-content;min-height:44px;padding:11px 18px;border:1px solid #3dadd4;border-radius:9px;background:#0b2643;color:#d9f5ff;font-size:12px;font-weight:800;letter-spacing:.06em;cursor:pointer;transition:background .22s,border-color .22s,box-shadow .22s}
+.developerForm button:hover,.developerForm button:focus-visible{background:#14658e;border-color:#94edff;box-shadow:0 0 14px #42caff99,0 0 27px #248fd650}
+.developerForm button:focus-visible{outline:2px solid #daf7ff;outline-offset:3px}
+.developerForm [role=status]{border-left:3px solid #58d1f8;padding:9px 13px;background:#091f39;border-radius:0 8px 8px 0}
+@media(max-width:560px){.developerForm>div,.developerForm fieldset{padding:13px}.developerForm button{width:100%}}
+@media(prefers-reduced-motion:reduce){.developerForm button{transition:none}}
