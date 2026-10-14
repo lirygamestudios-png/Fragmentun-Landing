@@ -7,7 +7,7 @@ export default function OpenGraphImage(){
   <div style={{width:"100%",height:"100%",display:"flex",flexDirection:"column",justifyContent:"center",padding:"72px",background:"linear-gradient(135deg,#031025 0%,#091e3c 55%,#062d49 100%)",color:"#eafbff",fontFamily:"sans-serif",border:"14px solid #126b94"}}>
    <div style={{display:"flex",fontSize:24,letterSpacing:8,color:"#71dcf5",marginBottom:36}}>LIRYGAMES STUDIOS</div>
    <div style={{display:"flex",flexDirection:"column",fontWeight:800,fontSize:78,lineHeight:1.12}}>
-    <div>CIENTOS DE MUNDOS.</div>
+    <div style={{fontSize:62}}>CIENTOS DE MUNDOS.</div>
     <div style={{color:"#64d6f4"}}>INFINITAS FORMAS</div>
     <div>DE JUGAR.</div>
    </div>
