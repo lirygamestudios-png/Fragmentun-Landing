@@ -1,5 +1,6 @@
 "use client";
 import {useRef} from "react";
+import Link from "next/link";
 import styles from "../app/lirygames/lirygames.module.css";
 /** Entrada diferenciada de desarrolladores. No solicita contraseñas ni acepta archivos. */
 export function LiryDeveloperAccess(){
@@ -18,7 +19,8 @@ export function LiryDeveloperAccess(){
      <p>El desarrollador podrá solicitar admisión, gestionar su ficha y subir versiones a revisión. Solo LIRYGAMES autorizará la publicación.</p>
      <p>No solicitamos todavía archivos, credenciales ni información comercial.</p>
     </div>
-    <form method="dialog"><button type="submit" className={styles.gamerInfoDone}>ENTENDIDO</button></form>
+    <Link href="/lirygames/developer" className={styles.gamerInfoDone}>VER PANEL DE DESARROLLADOR →</Link>
+    <form method="dialog"><button type="submit" className={styles.gamerInfoDone}>CERRAR</button></form>
    </div>
   </dialog>
  </>;
