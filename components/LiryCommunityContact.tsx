@@ -7,7 +7,7 @@ export function LiryCommunityContact(){
  const opener=useRef<HTMLButtonElement>(null);
  const [opened,setOpened]=useState(false);
  return <>
-  <button ref={opener} className={styles.communityContactAction} type="button" aria-haspopup="dialog" aria-controls="liry-community-contact" onClick={()=>{if(dialog.current&&!dialog.current.open){dialog.current.showModal();setOpened(true)}}}>CONTACTAR CON LIRYGAMES →</button>
+  <button ref={opener} className={styles.communityContactAction} type="button" aria-haspopup="dialog" aria-controls="liry-community-contact" aria-expanded={opened} onClick={()=>{if(dialog.current&&!dialog.current.open){dialog.current.showModal();setOpened(true)}}}>CONTACTAR CON LIRYGAMES →</button>
   <dialog ref={dialog} id="liry-community-contact" className={styles.liryStandaloneDialog} aria-labelledby="community-contact-heading" onClose={()=>{setOpened(false);opener.current?.focus({preventScroll:true})}}>
    <div className={styles.liryStandaloneContent}>
     <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar contacto">×</button></form>
