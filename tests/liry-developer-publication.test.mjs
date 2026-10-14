@@ -1,0 +1,10 @@
+import test from "node:test";import assert from "node:assert/strict";
+import {mayPublishDeveloperGame,publicThirdPartyCatalog,THIRD_PARTY_CATALOG_CAPACITY} from "../lib/games/liry-developer-publication.ts";
+const valid={developerId:"dev-1",gameId:"game-1",model:"freemium",state:"approved",artifactHash:"a".repeat(64),approvedArtifactHash:"a".repeat(64),ownerVerified:true,commercialRightsVerified:true,humanApproved:true};
+test("100 slots maximum",()=>assert.equal(THIRD_PARTY_CATALOG_CAPACITY,100));
+test("requires approval and matching build",()=>assert.equal(mayPublishDeveloperGame(valid),true));
+test("rejects unreviewed build",()=>assert.equal(mayPublishDeveloperGame({...valid,approvedArtifactHash:"b".repeat(64)}),false));
+test("rejects unapproved applicant",()=>assert.equal(mayPublishDeveloperGame({...valid,ownerVerified:false}),false));
+test("rejects monetization other than premium or freemium",()=>assert.equal(mayPublishDeveloperGame({...valid,model:"subscription"}),false));
+test("rejects uploaded but not approved",()=>assert.equal(mayPublishDeveloperGame({...valid,state:"uploaded_private"}),false));
+test("publishes only authorized entries",()=>assert.deepEqual(publicThirdPartyCatalog([{published:true,releaseApproved:true},{published:true,releaseApproved:false}]).length,1));
