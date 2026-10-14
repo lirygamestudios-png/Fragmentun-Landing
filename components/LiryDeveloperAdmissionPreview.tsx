@@ -10,7 +10,7 @@ export function LiryDeveloperAdmissionPreview(){
  const [content,setContent]=useState(false);
  const [review,setReview]=useState(false);
  const ready=model!==null&&rights&&executable&&disclosure&&content&&review;
- return <section className={styles.notice} aria-labelledby="admission-preview-title">
+ return <section className={`${styles.notice} ${styles.developerForm}`} aria-labelledby="admission-preview-title">
   <h2 id="admission-preview-title">SOLICITUD DE PUBLICACIÓN · VISTA PREVIA</h2>
   <p>Este cuestionario demuestra el primer filtro de admisión. No se envían ni almacenan datos.</p>
   <fieldset><legend>1. Selecciona el modelo comercial obligatorio</legend>
