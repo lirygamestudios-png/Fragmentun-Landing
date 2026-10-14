@@ -195,3 +195,12 @@
 .developerFinanceNotice strong{color:#8ceaff}
 @media(max-width:560px){.developerFinanceGrid{grid-template-columns:1fr}.developerFinanceCard{padding:14px}}
 @media(prefers-reduced-motion:reduce){.developerFinanceCard{transition:none}}
+
+/* Subpantallas LIRY DEVELOPER: mismo tratamiento que MI LIRY. */
+.developerDialog{width:min(94vw,740px);max-height:88dvh;overflow:auto;padding:0;border:1px solid #55bce4;border-radius:13px;background:#08172d;color:#eef7ff;box-shadow:0 0 60px #000b,0 0 26px #35b9fa40}
+.developerDialog::backdrop{background:#020817cc;backdrop-filter:blur(5px)}
+.developerDialogBody{position:relative;padding:clamp(16px,3vw,28px);background:radial-gradient(ellipse at 90% 0%,#1b518065,transparent 60%),#08172d}
+.developerDialogBody>.eyebrow{display:block;padding-right:46px}
+.developerDialogBody .notice{margin-top:17px}
+.developerDialogBody .developerForm>div,.developerDialogBody .developerForm fieldset{overflow-wrap:anywhere}
+@media(max-width:560px){.developerDialog{width:96vw;max-height:91dvh}.developerDialogBody{padding:18px 13px}.developerDialogBody .areaClose{right:10px;top:10px}}
