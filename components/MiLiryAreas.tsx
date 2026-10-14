@@ -22,6 +22,7 @@ export function MiLiryAreas(){
   trigger.current=button;
   const modal=dialog.current;
   if(!modal)return;
+  if(modal.open)return;
   modal.showModal();
   modal.scrollTop=0;
   closeButton.current?.focus({preventScroll:true});
