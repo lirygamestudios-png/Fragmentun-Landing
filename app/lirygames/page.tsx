@@ -6,12 +6,12 @@ import {LiryOfficialNetworks} from "../../components/LiryOfficialNetworks";
 import {LiryCommunityTabs} from "../../components/LiryCommunityTabs";
 import {LiryBoostTop10} from "../../components/LiryBoostTop10";
 import {LiryBoostEnrollment} from "../../components/LiryBoostEnrollment";
-import {LiryContactForm} from "../../components/LiryContactForm";
 import {LiryGameDiscovery} from "../../components/LiryGameDiscovery";
 import {LiryGamerInfoDialog} from "../../components/LiryGamerInfoDialog";
 import {LiryGamerIdentity} from "../../components/LiryGamerIdentity";
 import {LiryIdAccess} from "../../components/LiryIdAccess";
 import {LiryDeveloperAccess} from "../../components/LiryDeveloperAccess";
+import {LiryCommunityContact} from "../../components/LiryCommunityContact";
 import {LiryPrivacyPreview} from "../../components/LiryPrivacyPreview";
 import {getLiryPublicCatalog} from "../../lib/games/public-catalog-server";
 import {VISITOR_GAMER_SNAPSHOT} from "../../lib/games/public-gamer-snapshot";
@@ -56,7 +56,7 @@ export default async function LiryGamesFrontDesk(){
   return <main className={styles.page}>
     <header className={styles.nav}>
       <a className={styles.brand} href="#inicio" aria-label="LiryGames Studios"><span className={styles.sigil} aria-hidden="true"><i></i><b></b></span><span className={styles.wordmark}><strong>LIRY</strong><span>GAMES STUDIOS</span><small>UNIVERSO DE VIDEOJUEGOS</small></span></a>
-      <nav aria-label="Navegación LIRYGAMES"><a href="#inicio">Inicio</a><a href="#mundos">Mundos</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">Tu viaje</a><a href="#comunidad">Comunidad</a><a href="#liryboost">LiryBoost</a><a href="#tienda">Tienda</a><a href="#contacto">Contacto</a></nav><div className={styles.navUtilities}><a className={styles.navSearch} href="#mundos" aria-label="Explorar los videojuegos" title="Explorar videojuegos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m16 16 5 5"/></svg></a><a className={styles.navNotice} href="#social" aria-label="Ver la sección social" title="Redes sociales y compartir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></a><a className={styles.profileAccess} href="/lirygames/mi-liry" aria-label="Abrir Mi Liry, espacio personal del jugador" title="Mi Liry · espacio personal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 3-6 7-6s6.5 2 7 6"/></svg><span>VISITANTE</span></a><span className={styles.languagePreview} aria-label="Idioma actual: Español. Traducción al inglés próximamente" title="Selector de idioma · traducción próximamente"><span className={styles.languageActive}>ES</span><span className={styles.languageDivider}>/</span><span className={styles.languageInactive}>EN</span></span><details className={styles.navMenu}><summary aria-label="Abrir menú de navegación"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary><div className={styles.navMenuPanel}><a href="#inicio">Inicio</a><a href="#mundos">Cientos de Mundos</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">Tu viaje</a><a href="#comunidad">Comunidad</a><a href="#liryboost">LiryBoost</a><a href="#social">Redes sociales</a><a href="#tienda">Tienda</a><a href="#contacto">Contacto</a></div></details></div>
+      <nav aria-label="Navegación LIRYGAMES"><a href="#inicio">Inicio</a><a href="#mundos">Mundos</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">Tu viaje</a><a href="#comunidad">Comunidad</a><a href="#liryboost">LiryBoost</a><a href="#tienda">Tienda</a></nav><div className={styles.navUtilities}><a className={styles.navSearch} href="#mundos" aria-label="Explorar los videojuegos" title="Explorar videojuegos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m16 16 5 5"/></svg></a><a className={styles.navNotice} href="#social" aria-label="Ver la sección social" title="Redes sociales y compartir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></a><LiryDeveloperAccess /><a className={styles.profileAccess} href="/lirygames/mi-liry" aria-label="Abrir Mi Liry, espacio personal del jugador" title="Mi Liry · espacio personal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 3-6 7-6s6.5 2 7 6"/></svg><span>VISITANTE</span></a><span className={styles.languagePreview} aria-label="Idioma actual: Español. Traducción al inglés próximamente" title="Selector de idioma · traducción próximamente"><span className={styles.languageActive}>ES</span><span className={styles.languageDivider}>/</span><span className={styles.languageInactive}>EN</span></span><details className={styles.navMenu}><summary aria-label="Abrir menú de navegación"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary><div className={styles.navMenuPanel}><a href="#inicio">Inicio</a><a href="#mundos">Cientos de Mundos</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">Tu viaje</a><a href="#comunidad">Comunidad</a><a href="#liryboost">LiryBoost</a><a href="#social">Redes sociales</a><a href="#tienda">Tienda</a></div></details></div>
     </header>
     <section className={styles.hero} id="inicio">
       <div className={styles.heroUniverse} aria-hidden="true"><span className={styles.heroOrbitOne}></span><span className={styles.heroOrbitTwo}></span><span className={styles.heroPlanet}></span><span className={styles.heroSatellite}></span><span className={styles.heroStardust}></span></div>
@@ -81,7 +81,6 @@ export default async function LiryGamesFrontDesk(){
           <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">♙</span><h3>MI PERFIL GAMER</h3></header>
           <LiryGamerIdentity snapshot={gamerSnapshot} />
           <LiryIdAccess />
-          <LiryDeveloperAccess />
           <LiryPrivacyPreview />
           <LiryGamerInfoDialog topic="perfil" />
           <small className={styles.gamerDataNote}>Estado visitante · sin sesión gamer</small>
@@ -142,6 +141,7 @@ export default async function LiryGamesFrontDesk(){
       <section className={styles.section} id="comunidad">
         <div className={styles.socialPanelHeader}><h2>COMUNIDAD LIRY</h2><p className={styles.socialIntro}>Conecta, comparte, juega.</p></div>
         <LiryCommunityTabs />
+        <LiryCommunityContact />
         <div className={styles.communityCompose}><span>Publicaciones disponibles próximamente</span><span aria-hidden="true">➤</span></div>
       </section>
       <section className={styles.section} id="social">
@@ -228,11 +228,11 @@ export default async function LiryGamesFrontDesk(){
       </section>
       <div className={styles.finalSignature} aria-label="Liry: más que videojuegos"><span aria-hidden="true">▽</span><strong>MÁS QUE<br/>VIDEOJUEGOS.<br/>ES TODO<br/>UN UNIVERSO.</strong></div>
     </div>
-    <section className={`${styles.section} ${styles.contactSection}`} id="contacto" aria-labelledby="liry-contact-title"><p className={styles.kicker}>TU OPINIÓN NOS IMPORTA</p><h2 id="liry-contact-title">CONTACTA CON LIRYGAMES</h2><p>Comparte sugerencias, opiniones sobre nuestros videojuegos o propuestas de colaboración. Queremos escucharte.</p><LiryContactForm /></section>
+    
     <footer className={styles.footer}>
       <div className={styles.footerIdentity}><strong>LIRY<span>GAMES</span></strong><small>STUDIOS</small></div>
       <div className={styles.footerTagline}>MÁS QUE VIDEOJUEGOS.<br/>ES TODO UN UNIVERSO.</div>
-      <nav className={styles.footerNav} aria-label="Enlaces del pie de página"><a href="#inicio">INICIO</a><a href="#mundos">MUNDOS</a><a href="#liry-dna">LIRY DNA</a><a href="#perfil-gamer">TU VIAJE</a><a href="#comunidad">COMUNIDAD</a><a href="#liryboost">LIRYBOOST</a><a href="#tienda">TIENDA</a><a href="#social">REDES</a><a href="#contacto">CONTACTO</a></nav>
+      <nav className={styles.footerNav} aria-label="Enlaces del pie de página"><a href="#inicio">INICIO</a><a href="#mundos">MUNDOS</a><a href="#liry-dna">LIRY DNA</a><a href="#perfil-gamer">TU VIAJE</a><a href="#comunidad">COMUNIDAD</a><a href="#liryboost">LIRYBOOST</a><a href="#tienda">TIENDA</a><a href="#social">REDES</a><a href="#comunidad">CONTACTO</a></nav>
       <nav className={styles.footerLegalNav} aria-label="Documentación legal de LIRYGAMES"><a href="/lirygames/legal">CENTRO LEGAL</a></nav>
       <div className={styles.footerCopyright}>© {new Date().getFullYear()} LIRYGAMES STUDIOS. Todos los derechos reservados.</div>
     </footer>
