@@ -33,6 +33,7 @@ export function LiryDeveloperAreas(){
    <div className={styles.developerDialogBody}>
     <form method="dialog"><button ref={close} className={styles.areaClose} type="submit" aria-label="Cerrar área y volver al panel desarrollador">×</button></form>
     <span className={styles.eyebrow}>LIRY DEVELOPER · ESPACIO PREPARATORIO</span>
+    <h2 id="liry-developer-area-heading" className={styles.developerDialogHeading}>{areas.find(area=>area.id===selected)?.label}</h2>
     <div key={session}>
      {selected==="admission"&&<LiryDeveloperAdmissionPreview/>}
      {selected==="listing"&&<LiryDeveloperGameListingPreview/>}
