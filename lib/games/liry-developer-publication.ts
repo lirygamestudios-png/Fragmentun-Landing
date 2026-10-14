@@ -1,7 +1,9 @@
 /** Programa de publicación independiente: nunca publica sin visto bueno.
  * Contrato preparatorio: no crea registros ni cobra.
  */
-export const THIRD_PARTY_CATALOG_CAPACITY=100 as const;
+export const TOTAL_CATALOG_CAPACITY=100 as const;
+export const OWN_GAME_RESERVED_SLOTS=9 as const;
+export const THIRD_PARTY_CATALOG_CAPACITY=91 as const;
 export type ThirdPartyGameModel="premium"|"freemium";
 export type DeveloperSubmissionState="draft"|"submitted"|"admission_review"|"admitted"|"uploaded_private"|"automated_checks"|"publication_review"|"approved"|"published"|"needs_changes"|"rejected"|"suspended";
 export type DeveloperSubmission={
