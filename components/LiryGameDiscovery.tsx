@@ -137,7 +137,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
           <div className={styles.dnaSurveyResult} aria-live="polite"><h4>TU PERFIL DE AFINIDADES</h4>
             {traits.map((trait,i)=><div className={styles.dnaResultRow} key={trait}><span>{trait}</span><div className={styles.dnaAffinityTrack} style={{["--dna-accent" as string]:["#19d7ff","#ad58f4","#f5685f","#ffd34c","#d65ef7","#7665ff"][i]}}><span style={{width:`${Math.round((dnaAnswers[i]??0)/3*100)}%`}} /></div><strong>{Math.round((dnaAnswers[i]??0)/3*100)}%</strong></div>)}
             <h4>JUEGOS QUE PODRÍAN INTERESARTE</h4>
-            {dnaAnswers.every(answer=>answer===0)?<p>No has señalado preferencias por ahora. Puedes explorar libremente los nueve juegos o volver a responder.</p>:<>
+            {dnaAnswers.every(answer=>answer===0)?<p>No has señalado preferencias por ahora. Puedes explorar libremente los videojuegos o volver a responder.</p>:<>
             {[...games.map((game,i)=>({game,i,score:gameAffinity[i]?.reduce((sum,weight,j)=>sum+weight*(dnaAnswers[j]??0),0)??0}))]
               .sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3).map(({game,i})=><button type="button" key={game.slug} className={styles.dnaRecommendation} onClick={()=>{setExploringDna(false);resetDnaEvaluation();setSelectedGame(i)}}>{publicCodenames[i]??`LIRY // PROJECT-${String(i+1).padStart(2,"0")}`} <span>Ver ficha →</span></button>)}</>}
             <small>Recomendaciones orientativas calculadas a partir de tus respuestas; no representan una evaluación psicológica ni datos de jugadores.</small>
