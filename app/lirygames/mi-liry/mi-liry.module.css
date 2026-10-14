@@ -221,3 +221,5 @@
  .developerDialogBody .areaClose{min-width:44px;min-height:44px;display:grid;place-items:center;padding:4px 10px}
  .developerDialogHeading{margin-right:45px}
 }
+
+.developerDialogDescription{margin:8px 45px 12px 0;padding:10px 12px;border-left:3px solid #58d1f8;border-radius:0 8px 8px 0;background:#091f39;color:#c3d6e8;font-size:12px;line-height:1.6}
