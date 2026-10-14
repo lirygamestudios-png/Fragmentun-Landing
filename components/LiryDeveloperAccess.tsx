@@ -7,7 +7,7 @@ export function LiryDeveloperAccess(){
  const dialog=useRef<HTMLDialogElement>(null);
  const trigger=useRef<HTMLButtonElement>(null);
  return <>
-  <button type="button" ref={trigger} className={styles.gamerCardAction} aria-haspopup="dialog" aria-controls="liry-developer-access-dialog" onClick={()=>dialog.current?.showModal()}>DESARROLLADOR · ACCESO <span aria-hidden="true">→</span></button>
+  <button type="button" ref={trigger} className={styles.gamerCardAction} aria-haspopup="dialog" aria-controls="liry-developer-access-dialog" onClick={()=>{if(dialog.current&&!dialog.current.open)dialog.current.showModal()}}>DESARROLLADOR · ACCESO <span aria-hidden="true">→</span></button>
   <dialog id="liry-developer-access-dialog" ref={dialog} className={styles.liryStandaloneDialog} aria-labelledby="liry-developer-access-title" onClose={()=>trigger.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
    <div className={styles.liryStandaloneContent}>
     <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar acceso de desarrolladores">×</button></form>
