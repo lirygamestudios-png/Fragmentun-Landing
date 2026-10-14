@@ -25,7 +25,7 @@ export function MiLiryAreas(){
   if(modal.open)return;
   modal.showModal();
   modal.scrollTop=0;
-  closeButton.current?.focus({preventScroll:true});
+  requestAnimationFrame(()=>{if(modal.open)closeButton.current?.focus({preventScroll:true});});
  };
  return <><div className={styles.grid}>{areas.map(area=><article className={styles.card} key={area.id}>
   <h3>{area.title}</h3><p>{area.desc}</p><small>{area.status}</small>
