@@ -30,11 +30,12 @@ export function LiryDeveloperAreas(){
    <h3>{area.label}</h3><p>{area.description}</p><small>VISTA PREPARATORIA</small>
    <button type="button" className={styles.areaLink} aria-haspopup="dialog" aria-label={`Abrir ${area.label}`} onClick={event=>open(area.id,event.currentTarget)}>ABRIR ÁREA →</button>
   </article>)}</div>
-  <dialog className={styles.developerDialog} ref={modal} aria-labelledby="liry-developer-area-heading" onClose={()=>{setSession(value=>value+1);opener.current?.focus({preventScroll:true});opener.current=null}} onClick={event=>{if(event.target===modal.current)modal.current.close()}}>
+  <dialog className={styles.developerDialog} ref={modal} aria-modal="true" aria-describedby="liry-developer-area-description" aria-labelledby="liry-developer-area-heading" onClose={()=>{setSession(value=>value+1);opener.current?.focus({preventScroll:true});opener.current=null}} onClick={event=>{if(event.target===modal.current)modal.current.close()}}>
    <div className={styles.developerDialogBody}>
     <form method="dialog"><button ref={close} className={styles.areaClose} type="submit" aria-label="Cerrar área y volver al panel desarrollador">×</button></form>
     <span className={styles.eyebrow}>LIRY DEVELOPER · ESPACIO PREPARATORIO</span>
     <h2 id="liry-developer-area-heading" className={styles.developerDialogHeading}>{areas.find(area=>area.id===selected)?.label}</h2>
+    <p id="liry-developer-area-description" className={styles.developerDialogDescription}>Vista preparatoria, sin cuenta activa ni envío de datos. LIRYGAMES debe aprobar cada publicación.</p>
     <div key={session}>
      {selected==="admission"&&<LiryDeveloperAdmissionPreview/>}
      {selected==="listing"&&<LiryDeveloperGameListingPreview/>}
