@@ -18,20 +18,20 @@ import {VISITOR_GAMER_SNAPSHOT} from "../../lib/games/public-gamer-snapshot";
 import styles from "./lirygames.module.css";
 
 export const metadata={
-  title:{absolute:"LIRYGAMES STUDIOS — 9 mundos, infinitas formas de jugar"},
-  description:"Descubre los nueve videojuegos de LIRYGAMES STUDIOS, un ecosistema de experiencias y comunidades gamer. Próximamente.",
+  title:{absolute:"LIRYGAMES STUDIOS — Cientos de mundos. Infinitas formas de jugar"},
+  description:"Descubre los videojuegos de LIRYGAMES STUDIOS, un ecosistema de experiencias y comunidades gamer. Próximamente.",
   applicationName:"LIRYGAMES STUDIOS",
   category:"Games",
   openGraph:{
     type:"website" as const,
     siteName:"LIRYGAMES STUDIOS",
-    title:"LIRYGAMES STUDIOS — 9 mundos, infinitas formas de jugar",
+    title:"LIRYGAMES STUDIOS — Cientos de mundos. Infinitas formas de jugar",
     description:"Nueve universos de juego. Explora los próximos lanzamientos y únete a la comunidad LIRYGAMES.",
-    images:[{url:"/lirygames/opengraph-image",width:1200,height:630,alt:"LIRYGAMES STUDIOS — 9 mundos, infinitas formas de jugar"}]
+    images:[{url:"/lirygames/opengraph-image",width:1200,height:630,alt:"LIRYGAMES STUDIOS — Cientos de mundos. Infinitas formas de jugar"}]
   },
   twitter:{
     card:"summary" as const,
-    title:"LIRYGAMES STUDIOS — 9 mundos, infinitas formas de jugar",
+    title:"LIRYGAMES STUDIOS — Cientos de mundos. Infinitas formas de jugar",
     description:"Descubre los videojuegos y la comunidad de LIRYGAMES STUDIOS.",
     images:["/lirygames/opengraph-image"]
   },
@@ -56,22 +56,22 @@ export default async function LiryGamesFrontDesk(){
   return <main className={styles.page}>
     <header className={styles.nav}>
       <a className={styles.brand} href="#inicio" aria-label="LiryGames Studios"><span className={styles.sigil} aria-hidden="true"><i></i><b></b></span><span className={styles.wordmark}><strong>LIRY</strong><span>GAMES STUDIOS</span><small>UNIVERSO DE VIDEOJUEGOS</small></span></a>
-      <nav aria-label="Navegación LIRYGAMES"><a href="#inicio">Inicio</a><a href="#mundos">Mundos</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">Tu viaje</a><a href="#comunidad">Comunidad</a><a href="#liryboost">LiryBoost</a><a href="#tienda">Tienda</a><a href="#contacto">Contacto</a></nav><div className={styles.navUtilities}><a className={styles.navSearch} href="#mundos" aria-label="Explorar los nueve videojuegos" title="Explorar videojuegos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m16 16 5 5"/></svg></a><a className={styles.navNotice} href="#social" aria-label="Ver la sección social" title="Redes sociales y compartir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></a><a className={styles.profileAccess} href="/lirygames/mi-liry" aria-label="Abrir Mi Liry, espacio personal del jugador" title="Mi Liry · espacio personal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 3-6 7-6s6.5 2 7 6"/></svg><span>VISITANTE</span></a><span className={styles.languagePreview} aria-label="Idioma actual: Español. Traducción al inglés próximamente" title="Selector de idioma · traducción próximamente"><span className={styles.languageActive}>ES</span><span className={styles.languageDivider}>/</span><span className={styles.languageInactive}>EN</span></span><details className={styles.navMenu}><summary aria-label="Abrir menú de navegación"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary><div className={styles.navMenuPanel}><a href="#inicio">Inicio</a><a href="#mundos">Los 9 Mundos</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">Tu viaje</a><a href="#comunidad">Comunidad</a><a href="#liryboost">LiryBoost</a><a href="#social">Redes sociales</a><a href="#tienda">Tienda</a><a href="#contacto">Contacto</a></div></details></div>
+      <nav aria-label="Navegación LIRYGAMES"><a href="#inicio">Inicio</a><a href="#mundos">Mundos</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">Tu viaje</a><a href="#comunidad">Comunidad</a><a href="#liryboost">LiryBoost</a><a href="#tienda">Tienda</a><a href="#contacto">Contacto</a></nav><div className={styles.navUtilities}><a className={styles.navSearch} href="#mundos" aria-label="Explorar los videojuegos" title="Explorar videojuegos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m16 16 5 5"/></svg></a><a className={styles.navNotice} href="#social" aria-label="Ver la sección social" title="Redes sociales y compartir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></a><a className={styles.profileAccess} href="/lirygames/mi-liry" aria-label="Abrir Mi Liry, espacio personal del jugador" title="Mi Liry · espacio personal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 3-6 7-6s6.5 2 7 6"/></svg><span>VISITANTE</span></a><span className={styles.languagePreview} aria-label="Idioma actual: Español. Traducción al inglés próximamente" title="Selector de idioma · traducción próximamente"><span className={styles.languageActive}>ES</span><span className={styles.languageDivider}>/</span><span className={styles.languageInactive}>EN</span></span><details className={styles.navMenu}><summary aria-label="Abrir menú de navegación"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary><div className={styles.navMenuPanel}><a href="#inicio">Inicio</a><a href="#mundos">Cientos de Mundos</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">Tu viaje</a><a href="#comunidad">Comunidad</a><a href="#liryboost">LiryBoost</a><a href="#social">Redes sociales</a><a href="#tienda">Tienda</a><a href="#contacto">Contacto</a></div></details></div>
     </header>
     <section className={styles.hero} id="inicio">
       <div className={styles.heroUniverse} aria-hidden="true"><span className={styles.heroOrbitOne}></span><span className={styles.heroOrbitTwo}></span><span className={styles.heroPlanet}></span><span className={styles.heroSatellite}></span><span className={styles.heroStardust}></span></div>
       <div className={styles.heroContent}>
-        <p className={styles.kicker}>UN ECOSISTEMA · NUEVE VIDEOJUEGOS</p>
-        <h1>9 MUNDOS.<br/><span>INFINITAS FORMAS<br/> DE JUGAR.</span></h1>
+        <p className={styles.kicker}>UN ECOSISTEMA · CIENTOS DE MUNDOS</p>
+        <h1>CIENTOS DE MUNDOS.<br/><span>INFINITAS FORMAS<br/> DE JUGAR.</span></h1>
         <p>No solo creamos juegos, creamos universos. En LIRYGAMES STUDIOS, cada mundo es una experiencia única. ¿Cuál será el tuyo?</p>
-        <div className={styles.heroActions}><a className={styles.button} href="#mundos">EXPLORA LOS 9 MUNDOS →</a><a className={styles.heroSecondary} href="#comunidad">ÚNETE A LA COMUNIDAD →</a></div>
+        <div className={styles.heroActions}><a className={styles.button} href="#mundos">EXPLORA LOS CIENTOS DE MUNDOS →</a><a className={styles.heroSecondary} href="#comunidad">ÚNETE A LA COMUNIDAD →</a></div>
       </div>
-      <a className={styles.heroStart} href="#mundos" aria-label="Comienza tu aventura explorando los nueve videojuegos"><span className={styles.heroPlay} aria-hidden="true">▶</span><span>TU AVENTURA<br/>COMIENZA AQUÍ</span></a>
+      <a className={styles.heroStart} href="#mundos" aria-label="Comienza tu aventura explorando los videojuegos"><span className={styles.heroPlay} aria-hidden="true">▶</span><span>TU AVENTURA<br/>COMIENZA AQUÍ</span></a>
       <div className={styles.heroJourney} aria-label="Etapas de la experiencia"><a href="#mundos">EXPLORA</a><a href="#comunidad">CONECTA</a><a href="#modelo">JUEGA</a><a href="#perfil-gamer">EVOLUCIONA</a></div>
     </section>
     <section className={styles.section} id="mundos">
       <p className={styles.kicker}>TU UNIVERSO DE JUEGO</p>
-      <h2>LOS 9 MUNDOS</h2>
+      <h2>LOS CIENTOS DE MUNDOS</h2>
       <p className={styles.sectionIntro}>Cada tarjeta representa un videojuego diferente. Su lanzamiento se anunciará cuando esté realmente disponible.</p>
       <LiryGameDiscovery games={games} />
     </section>
@@ -89,7 +89,7 @@ export default async function LiryGamesFrontDesk(){
         <article className={styles.gamerCard}>
           <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">⬡</span><div><h3>TU LIRY JOURNEY</h3><p>Esta es tu historia en Liry. Sigue explorando.</p></div></header>
           <div className={styles.journeyContent}>
-            <div className={styles.journeyRing} role="progressbar" aria-label="Mundos visitados con actividad verificada" aria-valuemin={0} aria-valuemax={9} aria-valuenow={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length:undefined} aria-valuetext={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length} de 9 mundos`:"Sin actividad verificada"} style={{["--journey-progress" as string]:gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length/9*100}%`:"0%"}}><div className={styles.journeyRingCenter}><strong>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length} / 9`:"— / 9"}</strong><span>Mundos descubiertos</span></div></div>
+            <div className={styles.journeyRing} role="progressbar" aria-label="Mundos visitados con actividad verificada" aria-valuemin={0} aria-valuemax={9} aria-valuenow={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length:undefined} aria-valuetext={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length} de cientos de mundos`:"Sin actividad verificada"} style={{["--journey-progress" as string]:gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length/9*100}%`:"0%"}}><div className={styles.journeyRingCenter}><strong>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length} / 9`:"— / 9"}</strong><span>Mundos descubiertos</span></div></div>
             <ol className={styles.journeyWorlds}>{games.map((game,index)=><li key={game.slug}><span className={styles.journeyNumber}>{index+1}</span><span className={styles.journeyName}>{game.title}</span><span className={styles.journeyPending} aria-label={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?.visitedWorldIds.includes(game.slug)?"Mundo visitado con actividad verificada":"Sin avance registrado"}>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?.visitedWorldIds.includes(game.slug)?"✓":"○"}</span></li>)}</ol>
           </div>
           <LiryGamerInfoDialog topic="mundos" />
@@ -146,7 +146,7 @@ export default async function LiryGamesFrontDesk(){
       </section>
       <section className={styles.section} id="social">
         <div className={styles.socialPanelHeader}><h2>SECCIÓN SOCIAL</h2>
-        <p className={styles.socialIntro}>Comparte los nueve mundos.</p></div>
+        <p className={styles.socialIntro}>Comparte los cientos de mundos.</p></div>
         <div className={styles.socialFeature}>
           <span className={styles.socialFeatureIcon} aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.5 6.6-4M8.7 13.5l6.6 4"/></svg></span>
           <strong>COMPARTE LIRYGAMES</strong>
