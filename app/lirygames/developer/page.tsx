@@ -3,6 +3,7 @@ import styles from "../mi-liry/mi-liry.module.css";
 import {LiryDeveloperAdmissionPreview} from "../../../components/LiryDeveloperAdmissionPreview";
 import {LiryDeveloperGameListingPreview} from "../../../components/LiryDeveloperGameListingPreview";
 import {LiryDeveloperReleasePreview} from "../../../components/LiryDeveloperReleasePreview";
+import {LiryDeveloperFinancePreview} from "../../../components/LiryDeveloperFinancePreview";
 export const metadata={title:"LIRY DEVELOPER | LIRYGAMES STUDIOS",description:"Vista preparatoria del portal de publicación supervisada.",robots:{index:false,follow:false}};
 const stages=[
  {label:"SOLICITUD DE ADMISIÓN",detail:"Identidad comercial, propiedad intelectual y tipo de juego Premium o Freemium.",status:"Próximamente"},
@@ -18,6 +19,7 @@ export default function LiryDeveloperPage(){
   <LiryDeveloperAdmissionPreview />
   <LiryDeveloperGameListingPreview />
   <LiryDeveloperReleasePreview />
+  <LiryDeveloperFinancePreview />
   <div className={styles.notice}><strong>PREPARACIÓN · SIN OPERACIONES REALES</strong><p>Esta pantalla no permite crear cuentas, presentar solicitudes, cargar archivos ni recibir pagos. El programa se habilitará tras verificar identidad, licencias, controles técnicos y financieros.</p><Link href="/lirygames">VOLVER A LIRYGAMES →</Link></div></section>
   <footer className={styles.footer}>© {new Date().getFullYear()} LIRYGAMES STUDIOS · Todos los derechos reservados.</footer>
  </main>;
