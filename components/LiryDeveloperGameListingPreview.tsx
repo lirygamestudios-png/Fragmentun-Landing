@@ -12,7 +12,7 @@ export function LiryDeveloperGameListingPreview(){
  const [platform,setPlatform]=useState("");
  const priceValid=model==="freemium"||(/^\d{1,4}(?:\.\d{1,2})?$/.test(price)&&Number(price)>0);
  const ready=name.trim().length>=2&&summary.trim().length>=20&&priceValid&&age!==""&&platform!=="";
- return <section className={styles.notice} aria-labelledby="developer-listing-preview-title">
+ return <section className={`${styles.notice} ${styles.developerForm}`} aria-labelledby="developer-listing-preview-title">
   <h2 id="developer-listing-preview-title">FICHA DEL VIDEOJUEGO · VISTA PREVIA</h2>
   <p>Prepara la información que acompañará una futura solicitud. Los datos permanecen únicamente en esta pantalla mientras esté abierta; no se envían ni se publican.</p>
   <div><label htmlFor="developer-game-title">Nombre comercial del videojuego</label><input id="developer-game-title" value={name} maxLength={100} onChange={event=>setName(textLength(event.target.value,100))} placeholder="Nombre del videojuego"/></div>
