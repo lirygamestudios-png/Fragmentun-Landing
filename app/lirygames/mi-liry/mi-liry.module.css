@@ -206,3 +206,18 @@
 @media(max-width:560px){.developerDialog{width:96vw;max-height:91dvh}.developerDialogBody{padding:18px 13px}.developerDialogBody .areaClose{right:10px;top:10px}}
 
 .developerDialogHeading{margin:15px 44px 4px 0;font-size:clamp(17px,2.4vw,23px);color:#dff5ff;letter-spacing:.04em}
+
+/* LIRY DEVELOPER móvil: lectura sin desbordamientos y controles táctiles adecuados. */
+.developerDialog,.developerDialogBody,.developerDialogBody .developerForm{min-width:0}
+.developerDialogBody .developerForm input,.developerDialogBody .developerForm select,.developerDialogBody .developerForm textarea{max-width:100%}
+.developerDialogBody .developerForm fieldset{min-width:0}
+.developerDialogBody .developerForm fieldset label{overflow-wrap:anywhere}
+.developerDialogBody .developerFinanceCard strong{overflow-wrap:anywhere}
+@media(max-width:560px){
+ .developerDialogBody .developerForm input:not([type=checkbox]):not([type=radio]),
+ .developerDialogBody .developerForm textarea,.developerDialogBody .developerForm select{font-size:16px}
+ .developerDialogBody .developerForm input[type=checkbox],
+ .developerDialogBody .developerForm input[type=radio]{width:22px;height:22px}
+ .developerDialogBody .areaClose{min-width:44px;min-height:44px;display:grid;place-items:center;padding:4px 10px}
+ .developerDialogHeading{margin-right:45px}
+}
