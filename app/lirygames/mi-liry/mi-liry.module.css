@@ -204,3 +204,5 @@
 .developerDialogBody .notice{margin-top:17px}
 .developerDialogBody .developerForm>div,.developerDialogBody .developerForm fieldset{overflow-wrap:anywhere}
 @media(max-width:560px){.developerDialog{width:96vw;max-height:91dvh}.developerDialogBody{padding:18px 13px}.developerDialogBody .areaClose{right:10px;top:10px}}
+
+.developerDialogHeading{margin:15px 44px 4px 0;font-size:clamp(17px,2.4vw,23px);color:#dff5ff;letter-spacing:.04em}
