@@ -22,6 +22,7 @@ export function LiryDeveloperAreas(){
   if(modal.current?.open)return;
   setSelected(id);opener.current=trigger;
   modal.current?.showModal();
+  if(modal.current)modal.current.scrollTop=0;
   requestAnimationFrame(()=>{if(modal.current?.open)close.current?.focus({preventScroll:true})});
  };
  return <>
