@@ -10,3 +10,10 @@ test("revocation is terminal without a fresh submission",()=>assert.equal(replay
 test("reactivation is explicit and linked to current version",()=>{const s=replayExternalEditorialDecisions([base,event("suspend",2),event("reactivate",3,{versionId:"v2",artifactHash:"b".repeat(64)})]);assert.equal(s?.state,"active");assert.equal(s?.currentVersionId,"v2")});
 test("rejects duplicates, missing sequence and different games",()=>{for(const bad of [event("suspend",3),event("suspend",2,{gameId:"other"}),event("suspend",2,{approvalId:"approval-1"}),event("suspend",2,{reviewerId:""}),event("suspend",2,{artifactHash:"b".repeat(64)})])assert.equal(replayExternalEditorialDecisions([base,bad]),null)});
 test("out-of-order timestamps and malformed records fail closed",()=>{assert.equal(replayExternalEditorialDecisions([base,event("suspend",2,{decidedAt:"2025-01-01T00:00:00Z"})]),null);assert.equal(replayExternalEditorialDecisions([base,null]),null)});
+
+test("first event must start at sequence one",()=>assert.equal(replayExternalEditorialDecisions([{...base,sequence:2}]),null));
+test("duplicate suspension and pending replacement are rejected",()=>{
+ assert.equal(replayExternalEditorialDecisions([base,event("suspend",2),event("suspend",3)]),null);
+ assert.equal(replayExternalEditorialDecisions([base,event("replace_pending",2),event("revoke",3)]),null);
+});
+test("reactivation cannot follow an active record without suspension",()=>assert.equal(replayExternalEditorialDecisions([base,event("reactivate",2)]),null));
