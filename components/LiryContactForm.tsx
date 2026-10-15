@@ -44,24 +44,24 @@ export function LiryContactForm(){
  }
  function resetFeedback(){setDone(false);setResult("");}
  const field={width:"100%",minWidth:0,padding:"11px 12px",border:"1px solid #286e98",borderRadius:6,background:"#061429",color:"#f2fbff",fontSize:12};
- return <form onSubmit={submit} style={{display:"grid",gap:11,maxWidth:700}} aria-label="Formulario de contacto LIRYGAMES">
+ return <form onSubmit={submit} style={{display:"grid",gap:11,maxWidth:700}} aria-label={copy.formLabel}>
   <>
    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(210px,1fr))",gap:10}}>
     <input style={field} type="text" value={name} onChange={e=>{setName(e.target.value);if(done){setDone(false);setResult("");}}} placeholder={copy.name} aria-label={copy.name} required minLength={2} maxLength={100}/>
     <input style={field} type="email" value={email} onChange={e=>{setEmail(e.target.value);resetFeedback()}} placeholder={copy.email} aria-label={copy.email} required maxLength={254}/>
    </div>
-   <select style={field} aria-label="Motivo del contacto" value={subject} onChange={e=>{setSubject(e.target.value);resetFeedback()}} required>
-    <option value="opinion">Opinión sobre nuestros juegos</option>
-    <option value="suggestion">Sugerencia de mejora</option>
-    <option value="problem">Reportar un problema</option>
-    <option value="business">Propuesta comercial o colaboración</option>
-    <option value="other">Otra consulta</option>
+   <select style={field} aria-label={copy.subjectLabel} value={subject} onChange={e=>{setSubject(e.target.value);resetFeedback()}} required>
+    <option value="opinion">{copy.subjectOptions[0]}</option>
+    <option value="suggestion">{copy.subjectOptions[1]}</option>
+    <option value="problem">{copy.subjectOptions[2]}</option>
+    <option value="business">{copy.subjectOptions[3]}</option>
+    <option value="other">{copy.subjectOptions[4]}</option>
    </select>
    <input style={field} type="text" value={gameSlug} onChange={e=>{setGameSlug(e.target.value);resetFeedback()}} placeholder={copy.game} aria-label={copy.game} maxLength={80}/>
-   <textarea style={{...field,minHeight:112,resize:"vertical"}} aria-label={copy.message} placeholder="Escribe tu mensaje aquí..." value={message} onChange={e=>{setMessage(e.target.value);resetFeedback()}} minLength={10} maxLength={3000} required/>
-   <label className="liryContactConsent"><input className="liryContactCheck" type="checkbox" checked={ack} onChange={e=>{setAck(e.target.checked);resetFeedback()}} required/><span>Autorizo el tratamiento de mis datos para responder a este mensaje. No implica suscripción a publicidad.</span></label>
+   <textarea style={{...field,minHeight:112,resize:"vertical"}} aria-label={copy.message} placeholder={copy.messagePlaceholder} value={message} onChange={e=>{setMessage(e.target.value);resetFeedback()}} minLength={10} maxLength={3000} required/>
+   <label className="liryContactConsent"><input className="liryContactCheck" type="checkbox" checked={ack} onChange={e=>{setAck(e.target.checked);resetFeedback()}} required/><span>{copy.consentText}</span></label>
    <input name="website" aria-hidden="true" autoComplete="off" tabIndex={-1} value={website} onChange={e=>setWebsite(e.target.value)} style={{position:"absolute",left:-9999}}/>
-   <div aria-label="Verificación antirrobot" ref={turnstileContainer} style={{minHeight:65}}/>
+   <div aria-label={copy.captchaLabel} ref={turnstileContainer} style={{minHeight:65}}/>
    {!turnstileSiteKey&&<p role="status" style={{color:"#ffb2b2",fontSize:12}}>{copy.captchaUnavailable}</p>}
    {turnstileError&&<p role="alert" style={{color:"#ffb2b2",fontSize:12}}>{turnstileError}</p>}
    <button className="liryContactSubmit" disabled={busy||!turnstileToken} type="submit">{busy?copy.sending:`${copy.submit} →`}</button>
