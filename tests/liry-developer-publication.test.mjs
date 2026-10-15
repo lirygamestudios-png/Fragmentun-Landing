@@ -1,5 +1,5 @@
 import test from "node:test";import assert from "node:assert/strict";
-import {mayPublishDeveloperGame,publicThirdPartyCatalog,THIRD_PARTY_CATALOG_CAPACITY,TOTAL_CATALOG_CAPACITY,OWN_GAME_RESERVED_SLOTS} from "../lib/games/liry-developer-publication.ts";
+import {mayPublishDeveloperGame,publicThirdPartyCatalog,publicApprovedThirdPartyCatalog,THIRD_PARTY_CATALOG_CAPACITY,TOTAL_CATALOG_CAPACITY,OWN_GAME_RESERVED_SLOTS} from "../lib/games/liry-developer-publication.ts";
 const valid={developerId:"dev-1",gameId:"game-1",model:"freemium",state:"approved",artifactHash:"a".repeat(64),approvedArtifactHash:"a".repeat(64),ownerVerified:true,commercialRightsVerified:true,humanApproved:true};
 test("100 total: 9 propios + 91 terceros",()=>{assert.equal(TOTAL_CATALOG_CAPACITY,100);assert.equal(OWN_GAME_RESERVED_SLOTS,9);assert.equal(THIRD_PARTY_CATALOG_CAPACITY,91)});
 test("requires approval and matching build",()=>assert.equal(mayPublishDeveloperGame(valid),true));
@@ -8,3 +8,9 @@ test("rejects unapproved applicant",()=>assert.equal(mayPublishDeveloperGame({..
 test("rejects monetization other than premium or freemium",()=>assert.equal(mayPublishDeveloperGame({...valid,model:"subscription"}),false));
 test("rejects uploaded but not approved",()=>assert.equal(mayPublishDeveloperGame({...valid,state:"uploaded_private"}),false));
 test("publishes only authorized entries",()=>assert.deepEqual(publicThirdPartyCatalog([{published:true,releaseApproved:true},{published:true,releaseApproved:false}]).length,1));
+
+const entry=(overrides={})=>({gameId:"game-1",published:true,releaseApproved:true,submission:valid,publicCard:{label:"Autorizado"},...overrides});
+test("external listing requires matching approved game and build",()=>assert.deepEqual(publicApprovedThirdPartyCatalog([entry()]),[{label:"Autorizado"}]));
+test("blocks an unpublished or unreviewed third-party game",()=>assert.equal(publicApprovedThirdPartyCatalog([entry({published:false}),entry({releaseApproved:false}),entry({submission:{...valid,humanApproved:false}})]).length,0));
+test("blocks card bound to another game's approval",()=>assert.equal(publicApprovedThirdPartyCatalog([entry({gameId:"game-2"})]).length,0));
+test("prevents duplicate game listing",()=>assert.equal(publicApprovedThirdPartyCatalog([entry(),entry()]).length,1));
