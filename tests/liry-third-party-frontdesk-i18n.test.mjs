@@ -147,3 +147,10 @@ test("contact subjects preserve backend values and consent meaning in ES and EN"
  assert.match(es.consentText,/No implica suscripción/);
  assert.match(en.consentText,/does not subscribe/i);
 });
+
+test("share controls offer matched translations without claiming verified publication",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.shareCopy,en=LIRY_FRONTDESK_STRINGS.en.shareCopy;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.match(en.socialNotice,/Posting depends on the social network/);
+ assert.match(es.socialNotice,/publicación depende de la red social/);
+});
