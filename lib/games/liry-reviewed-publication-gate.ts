@@ -1,4 +1,5 @@
 import {releaseHasTraceableHumanApproval,type IndependentReleaseEvidence} from "./liry-independent-release-evidence";
+import {replayExternalEditorialDecisions,type EditorialDecision} from "./liry-editorial-decision-ledger";
 import {permitsCurrentExternalRelease,type ExternalEditorialControl} from "./liry-editorial-revocation";
 import {projectApprovedExternalSource} from "./liry-approved-source-boundary";
 import type {PublicThirdPartyCard} from "./liry-developer-publication";
@@ -8,6 +9,7 @@ export type ReviewedExternalCandidate={
   record:unknown;
   evidence:IndependentReleaseEvidence;
   editorialControl:ExternalEditorialControl;
+  editorialHistory:readonly EditorialDecision[];
 };
 export function projectTraceablyReviewedExternalCatalog(
   candidates:readonly ReviewedExternalCandidate[]|unknown,
@@ -21,12 +23,20 @@ export function projectTraceablyReviewedExternalCatalog(
   const record=candidate.record;
   const evidence=candidate.evidence;
   const control=candidate.editorialControl;
+  const authoritative=replayExternalEditorialDecisions(candidate.editorialHistory);
   if(!record||typeof record!=="object"||Array.isArray(record)||
      !evidence||typeof evidence!=="object"||Array.isArray(evidence))continue;
   const r=record as Record<string,unknown>;
   const e=evidence as IndependentReleaseEvidence;
   if(typeof r.gameId!=="string"||r.gameId!==e.gameId||
      !releaseHasTraceableHumanApproval(e)||
+     !authoritative||!control||typeof control!=="object"||
+     authoritative.gameId!==(control as ExternalEditorialControl).gameId||
+     authoritative.currentVersionId!==(control as ExternalEditorialControl).currentVersionId||
+     authoritative.approvalVersionId!==(control as ExternalEditorialControl).approvalVersionId||
+     authoritative.approvalArtifactHash!==(control as ExternalEditorialControl).approvalArtifactHash||
+     authoritative.state!==(control as ExternalEditorialControl).state||
+     !permitsCurrentExternalRelease(authoritative,e.gameId,e.versionId,e.reviewedArtifactHash)||
      !permitsCurrentExternalRelease(control,e.gameId,e.versionId,e.reviewedArtifactHash))continue;
   const submission=r.submission;
   if(!submission||typeof submission!=="object"||Array.isArray(submission))continue;
