@@ -1,12 +1,9 @@
 import {chainEditorialDecisions} from "../lib/games/liry-editorial-hash-chain.ts";
-import {chainEditorialDecisions} from "../lib/games/liry-editorial-hash-chain.ts";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readAuthorizedExternalCatalog} from "../lib/games/liry-external-catalog-read-port.ts";
 const evidence={gameId:"external-1",versionId:"v1",reviewedVersionId:"v1",reviewedArtifactHash:"a".repeat(64),reviewerId:"reviewer",decision:"approved",decidedAt:"2026-10-14T22:00:00Z",rightsReviewed:true,executableReviewed:true,publicationEnabled:true,submission:{developerId:"dev",gameId:"external-1",model:"premium",state:"approved",artifactHash:"a".repeat(64),approvedArtifactHash:"a".repeat(64),ownerVerified:true,commercialRightsVerified:true,humanApproved:true}};
 const editorialHistory=[{gameId:"external-1",versionId:"v1",artifactHash:"a".repeat(64),sequence:1,action:"approve",reviewerId:"reviewer",decidedAt:"2026-10-14T22:00:00Z",approvalId:"initial-1"}];
-const chainedHistory=chainEditorialDecisions(editorialHistory);
-const expectedFinalHash=chainedHistory[chainedHistory.length-1].hash;
 const chainedHistory=chainEditorialDecisions(editorialHistory);
 const expectedFinalHash=chainedHistory[0].hash;
 const custodian={readTrustedAnchor:async()=>({gameId:"external-1",sequence:1,finalHash:expectedFinalHash,custodianId:"separate"})};
