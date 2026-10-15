@@ -91,3 +91,11 @@ test("privacy preview translation preserves all choices without saving",()=>{
  for(const field of ["visibilityLabels","visibilityStates"])assert.equal(es[field].length,en[field].length);
  assert.match(en.unsaved,/Not saved/);
 });
+
+test("Secretos de Liry conserva advertencias equivalentes en ES y EN",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.secrets;
+ const en=LIRY_FRONTDESK_STRINGS.en.secrets;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.match(en.empty,/no rewards to claim/i);
+ assert.match(es.empty,/no hay fragmentos disponibles/i);
+});
