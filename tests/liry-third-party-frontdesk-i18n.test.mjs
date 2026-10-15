@@ -63,3 +63,14 @@ test("Mi Liry six areas preserve identity and matching translations",()=>{
  for(let i=0;i<6;i++)assert.deepEqual(Object.keys(es.items[i]).sort(),Object.keys(en.items[i]).sort());
  assert.match(en.items[5].detail,/not yet recording entries/i);
 });
+
+test("Mi Liry inner panels retain bilingual copy and no simulated player data",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.miLiryPanels;
+ const en=LIRY_FRONTDESK_STRINGS.en.miLiryPanels;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ for(const id of Object.keys(es)){
+  assert.deepEqual(Object.keys(es[id]).sort(),Object.keys(en[id]).sort());
+  assert.ok(es[id].empty.length>20 && en[id].empty.length>20);
+ }
+ assert.match(en.liryboost.note,/does not guarantee/i);
+});
