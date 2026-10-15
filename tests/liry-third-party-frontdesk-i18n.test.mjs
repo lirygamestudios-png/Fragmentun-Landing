@@ -17,3 +17,20 @@ test("catalog and journey translations retain matched key coverage",()=>{
  }
  assert.match(LIRY_FRONTDESK_STRINGS.en.discovery.description,/not games available to play/i);
 });
+
+test("DNA questions, choices and styles have consistent bilingual coverage",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.gamerDna;
+ const en=LIRY_FRONTDESK_STRINGS.en.gamerDna;
+ for(const field of ["traits","questions","answers"])assert.equal(es[field].length,en[field].length);
+ assert.equal(es.questions.length,6);
+ assert.equal(en.traits.length,6);
+});
+test("gamer profile and community tab translations have matching structures",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es,en=LIRY_FRONTDESK_STRINGS.en;
+ assert.deepEqual(Object.keys(es.gamerProfile).sort(),Object.keys(en.gamerProfile).sort());
+ assert.deepEqual(Object.keys(es.communityTabs).sort(),Object.keys(en.communityTabs).sort());
+ for(const category of Object.keys(es.communityTabs)){
+  assert.deepEqual(Object.keys(es.communityTabs[category]).sort(),Object.keys(en.communityTabs[category]).sort());
+ }
+ assert.match(en.communityTabs.all.copy,/No fictional conversations/i);
+});
