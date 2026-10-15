@@ -26,7 +26,7 @@ export const metadata={
     type:"website" as const,
     siteName:"LIRYGAMES STUDIOS",
     title:"LIRYGAMES STUDIOS — Cientos de mundos. Infinitas formas de jugar",
-    description:"Nueve universos de juego. Explora los próximos lanzamientos y únete a la comunidad LIRYGAMES.",
+    description:"Cientos de mundos por descubrir. Explora los próximos lanzamientos y únete a la comunidad LIRYGAMES.",
     images:[{url:"/lirygames/opengraph-image",width:1200,height:630,alt:"LIRYGAMES STUDIOS — Cientos de mundos. Infinitas formas de jugar"}]
   },
   twitter:{
