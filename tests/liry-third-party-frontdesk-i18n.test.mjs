@@ -107,3 +107,11 @@ test("gamer information dialogs preserve five topics and four illustrative goals
  assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
  assert.match(en.panels.logros.notice,/no medals, rewards/i);
 });
+
+test("gamer identity stages have matching locale keys and disabled-account warnings",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.identityStages;
+ const en=LIRY_FRONTDESK_STRINGS.en.identityStages;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.match(es.unavailable,/NO DISPONIBLE/);
+ assert.match(en.unavailable,/NOT AVAILABLE/);
+});
