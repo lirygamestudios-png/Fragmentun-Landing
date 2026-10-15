@@ -13,7 +13,7 @@ import {LiryIdAccess} from "../../components/LiryIdAccess";
 import {LiryDeveloperAccess} from "../../components/LiryDeveloperAccess";
 import {LiryCommunityContact} from "../../components/LiryCommunityContact";
 import {LiryPrivacyPreview} from "../../components/LiryPrivacyPreview";
-import {getLiryPublicCatalog} from "../../lib/games/public-catalog-server";
+import {getLiryPublicCatalog,getLiryApprovedThirdPartyCatalog} from "../../lib/games/public-catalog-server";
 import {VISITOR_GAMER_SNAPSHOT} from "../../lib/games/public-gamer-snapshot";
 import styles from "./lirygames.module.css";
 
@@ -41,6 +41,7 @@ export const metadata={
 export default async function LiryGamesFrontDesk(){
   // Publicar solo identificadores editoriales: no serializar títulos ni slugs internos de IP.
   const internalCatalog=await getLiryPublicCatalog();
+  const approvedThirdPartyCatalog=await getLiryApprovedThirdPartyCatalog();
   // Hasta existir proveedor de identidad y telemetría autorizado: estado visitante, sin datos fabricados.
   const gamerSnapshot=VISITOR_GAMER_SNAPSHOT;
   const publicCodenames=["LIRY // ARENA-01","LIRY // BOT-02","LIRY // ECON-03","LIRY // EARTH-04","LIRY // LINK-05","LIRY // REALM-06","LIRY // EMOTION-07","LIRY // TITAN-08","LIRY // CODE-09"];
@@ -74,6 +75,7 @@ export default async function LiryGamesFrontDesk(){
       <h2>CIENTOS DE MUNDOS</h2>
       <p className={styles.sectionIntro}>Explora los proyectos presentados hasta ahora. El catálogo crecerá progresivamente con videojuegos propios y de desarrolladores independientes, publicados únicamente después de su aprobación. Las tarjetas actuales no representan juegos disponibles para jugar.</p>
       <LiryGameDiscovery games={games} />
+      {approvedThirdPartyCatalog.length>0&&<p className={styles.sectionIntro}>También hay {approvedThirdPartyCatalog.length} videojuegos independientes autorizados para su publicación.</p>}
     </section>
     <section className={`${styles.section} ${styles.gamerSection}`} id="perfil-gamer" aria-label="Perfil gamer, recorrido y logros">
       <div className={styles.gamerGrid}>
