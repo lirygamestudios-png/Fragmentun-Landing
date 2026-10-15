@@ -42,3 +42,17 @@ test("synthetic isolated disabled permissions and missing custody never read pro
 test("synthetic isolated read errors fail closed",async()=>{
  assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>{throw Error("offline")}},permission,syntheticCustodian,trustedAuthority),[]);
 });
+
+test("a forged reviewer permission in external data cannot publish",async()=>{
+ const forged={...candidate,reviewerAssertion:{...reviewerAssertion,reviewerId:"attacker",roles:["external_release_reviewer"]}};
+ const cards=await readAuthorizedExternalCatalog(provider([forged]),permission,syntheticCustodian,trustedAuthority);
+ assert.equal(cards.length,1);
+ // The server supplies the authority; the untrusted forged declaration is ignored.
+ const denied={readReviewerAuthority:async()=>({reviewerId:"synthetic-reviewer",verifiedByTrustedProvider:false,active:true,roles:["external_release_reviewer"],allowedGameIds:["synthetic-game-1"]})};
+ assert.deepEqual(await readAuthorizedExternalCatalog(provider([candidate]),permission,syntheticCustodian,denied),[]);
+});
+test("missing trusted identity provider prevents reading even synthetic source",async()=>{
+ let called=0;
+ assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>{called++;return [candidate]}},permission,syntheticCustodian,null),[]);
+ assert.equal(called,0);
+});
