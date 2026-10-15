@@ -1,13 +1,9 @@
 "use client";
 import {useRef,useState} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
-const collections=[
- {name:"ROPA",symbol:"wear",tone:"wear",message:"Moda LIRY · colección en preparación."},
- {name:"ACCESORIOS",symbol:"accessories",tone:"accessories",message:"Accesorios LIRY · colección en preparación."},
- {name:"COLECCIONABLES",symbol:"collectibles",tone:"collectibles",message:"Piezas exclusivas · colección en preparación."},
- {name:"ARTE DIGITAL",symbol:"art",tone:"art",message:"Arte digital · colección en preparación."},
- {name:"EQUIPO GAMER",symbol:"gear",tone:"gear",message:"Equipo gamer · colección en preparación."}
-] as const;
+import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
+const copy=liryFrontdeskStrings("es").store;
+const collections=copy.categories.map(item=>({...item,tone:item.id}));
 export function LiryStoreCategories(){
  const [selected,setSelected]=useState<(typeof collections)[number]>(collections[0]);
  const dialogRef=useRef<HTMLDialogElement>(null);
@@ -23,8 +19,8 @@ export function LiryStoreCategories(){
     <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar categoría">×</button></form>
     <p className={styles.gamerInfoEyebrow}>LIRYGAMES STUDIOS · TIENDA LIRY</p>
     <h3 id="liry-store-detail-title">{selected.name}</h3>
-    <p>{selected.message}</p><p>Sin artículos ni pagos activos. Anunciaremos proveedores y condiciones oficiales al abrir la tienda.</p>
-    <form method="dialog"><button type="submit" className={styles.gamerInfoDone}>ENTENDIDO</button></form>
+    <p>{selected.message}</p><p>{copy.unavailable}</p>
+    <form method="dialog"><button type="submit" className={styles.gamerInfoDone}>{copy.acknowledge}</button></form>
    </div>
   </dialog>
  </>;
