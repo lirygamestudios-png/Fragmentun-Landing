@@ -17,27 +17,28 @@ const record={gameId:decision.gameId,published:true,releaseApproved:true,submiss
 const candidate={record,evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,reviewerAssertion};
 const permission={sourceApproved:true,publicReadEnabled:true,humanReleaseGateEnabled:true,independentCustodyEnabled:true};
 const syntheticCustodian={readTrustedAnchor:async gameId=>({gameId,sequence:1,finalHash:expectedFinalHash,custodianId:"synthetic-independent-anchor"})};
+const trustedAuthority={readReviewerAuthority:async()=>({reviewerId:"synthetic-reviewer",verifiedByTrustedProvider:true,active:true,roles:["external_release_reviewer"],allowedGameIds:["synthetic-game-1"]})};
 const provider=rows=>({readApprovedRecords:async()=>rows});
 test("synthetic isolated approved route strips internal identifiers",async()=>{
- const cards=await readAuthorizedExternalCatalog(provider([candidate]),permission,syntheticCustodian);
+ const cards=await readAuthorizedExternalCatalog(provider([candidate]),permission,syntheticCustodian,trustedAuthority);
  assert.deepEqual(cards,[{slug:"synthetic-game-1",title:"Synthetic Fixture",description:"Testing only",model:"premium",coverUrl:null}]);
 });
 test("synthetic isolated mismatched claimed reviewer cannot publish",async()=>{
  const forged={...candidate,evidence:{...evidence,reviewerId:"different-reviewer"}};
- assert.deepEqual(await readAuthorizedExternalCatalog(provider([forged]),permission,syntheticCustodian),[]);
+ assert.deepEqual(await readAuthorizedExternalCatalog(provider([forged]),permission,syntheticCustodian,trustedAuthority),[]);
 });
 test("synthetic isolated unpublished or revoked release cannot publish",async()=>{
  for(const c of [{...candidate,record:{...record,published:false}},{...candidate,editorialControl:{...editorialControl,state:"revoked"}}]){
-  assert.deepEqual(await readAuthorizedExternalCatalog(provider([c]),permission,syntheticCustodian),[]);
+  assert.deepEqual(await readAuthorizedExternalCatalog(provider([c]),permission,syntheticCustodian,trustedAuthority),[]);
  }
 });
 test("synthetic isolated disabled permissions and missing custody never read provider",async()=>{
  let calls=0;
  const tracking={readApprovedRecords:async()=>{calls++;return [candidate]}};
- assert.deepEqual(await readAuthorizedExternalCatalog(tracking,{...permission,independentCustodyEnabled:false},syntheticCustodian),[]);
+ assert.deepEqual(await readAuthorizedExternalCatalog(tracking,{...permission,independentCustodyEnabled:false},syntheticCustodian,trustedAuthority),[]);
  assert.deepEqual(await readAuthorizedExternalCatalog(tracking,permission,null),[]);
  assert.equal(calls,0);
 });
 test("synthetic isolated read errors fail closed",async()=>{
- assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>{throw Error("offline")}},permission,syntheticCustodian),[]);
+ assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>{throw Error("offline")}},permission,syntheticCustodian,trustedAuthority),[]);
 });
