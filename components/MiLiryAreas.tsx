@@ -5,6 +5,7 @@ import styles from "../app/lirygames/mi-liry/mi-liry.module.css";
 import {MiLiryIdentityPreview} from "./MiLiryIdentityPreview";
 import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
 const copy=liryFrontdeskStrings("es").miLiryAreas;
+const panels=liryFrontdeskStrings("es").miLiryPanels;
 const links=["/lirygames#perfil-gamer","/lirygames#mundos","/lirygames#perfil-gamer","/lirygames#tienda","/lirygames#comunidad","/lirygames#liryboost"] as const;
 const areas=copy.items.map((item,index)=>({...item,href:links[index]}));
 export function MiLiryAreas(){
@@ -46,50 +47,50 @@ export function MiLiryAreas(){
     <ul><li>Inicio de sesión gamer independiente del administrador</li><li>Validación de nombre público y controles de privacidad</li><li>Confirmación del usuario antes de guardar cambios</li></ul>
    </section>}
    {selected.id==="mundos"&&<section className={styles.worldsPanel} aria-label="Estado de mundos del jugador">
-    <h3>MUNDOS DE MI CUENTA</h3>
-    <p className={styles.worldsEmpty}>Todavía no hay partidas ni mundos vinculados a una cuenta autenticada.</p>
+    <h3>{panels.mundos.title}</h3>
+    <p className={styles.worldsEmpty}>{panels.mundos.empty}</p>
     <div className={styles.worldsFacts}><div><strong>JUEGOS VINCULADOS</strong><span>Sin datos verificados</span></div><div><strong>ÚLTIMA PARTIDA</strong><span>No disponible</span></div><div><strong>PROGRESO</strong><span>No disponible</span></div></div>
-    <p>Los títulos pendientes de registro no se publican aquí. En el futuro, solo aparecerán juegos autorizados y datos confirmados por el servidor.</p>
+    <p>{panels.mundos.note}</p>
    </section>}
    {selected.id==="logros"&&<section className={styles.worldsPanel} aria-label="Estado de logros y recompensas">
-    <h3>LOGROS DE MI CUENTA</h3>
-    <p className={styles.worldsEmpty}>No hay insignias, desafíos completados ni recompensas acreditadas a una cuenta autenticada.</p>
+    <h3>{panels.logros.title}</h3>
+    <p className={styles.worldsEmpty}>{panels.logros.empty}</p>
     <div className={styles.worldsFacts}>
      <div><strong>INSIGNIAS</strong><span>Sin datos verificados</span></div>
      <div><strong>DESAFÍOS</strong><span>No disponibles</span></div>
      <div><strong>RECOMPENSAS</strong><span>No acreditadas</span></div>
     </div>
-    <p>Los logros aparecerán únicamente cuando un videojuego activo confirme sus eventos mediante el servidor. Esta pantalla no concede premios ni simula progresos.</p>
+    <p>{panels.logros.note}</p>
    </section>}
    {selected.id==="inventario"&&<section className={styles.worldsPanel} aria-label="Inventario digital verificado">
-    <h3>ARTÍCULOS DE MI CUENTA</h3>
-    <p className={styles.worldsEmpty}>No hay artículos digitales vinculados a una cuenta de jugador autenticada.</p>
+    <h3>{panels.inventario.title}</h3>
+    <p className={styles.worldsEmpty}>{panels.inventario.empty}</p>
     <div className={styles.worldsFacts}>
      <div><strong>SKINS Y APARIENCIAS</strong><span>Sin datos verificados</span></div>
      <div><strong>OBJETOS DE JUEGO</strong><span>No disponibles</span></div>
      <div><strong>COMPRAS Y ENTREGAS</strong><span>Sin conexión</span></div>
     </div>
-    <p>El inventario solo mostrará artículos entregados y confirmados por el servidor del videojuego. La compra de skins, elementos de ataque u otros objetos freemium no está habilitada desde esta pantalla.</p>
+    <p>{panels.inventario.note}</p>
    </section>}
    {selected.id==="comunidad"&&<section className={styles.worldsPanel} aria-label="Estado de Mi Comunidad">
-    <h3>MI COMUNIDAD</h3>
-    <p className={styles.worldsEmpty}>No existe una sesión gamer verificada. Las relaciones y publicaciones privadas no están disponibles en modo visitante.</p>
+    <h3>{panels.comunidad.title}</h3>
+    <p className={styles.worldsEmpty}>{panels.comunidad.empty}</p>
     <div className={styles.worldsFacts}>
      <div><strong>MIS AMISTADES</strong><span>Sin datos verificados</span></div>
      <div><strong>MIS PUBLICACIONES</strong><span>No disponibles</span></div>
      <div><strong>EVENTOS</strong><span>Pendientes de activación</span></div>
     </div>
-    <p>Las solicitudes de amistad y publicaciones requerirán identidad autenticada, consentimiento, controles de visibilidad y herramientas de reporte y moderación. No se muestran perfiles de terceros ni actividad inventada.</p>
+    <p>{panels.comunidad.note}</p>
    </section>}
    {selected.id==="liryboost"&&<section className={styles.worldsPanel} aria-label="Estado de participación en LiryBoost">
-    <h3>MI PARTICIPACIÓN EN LIRYBOOST</h3>
-    <p className={styles.worldsEmpty}>La competencia todavía no está activa. No existen invitaciones ni puestos de clasificación acreditados para esta sesión visitante.</p>
+    <h3>{panels.liryboost.title}</h3>
+    <p className={styles.worldsEmpty}>{panels.liryboost.empty}</p>
     <div className={styles.worldsFacts}>
      <div><strong>INVITACIONES VÁLIDAS</strong><span>Sin datos verificados</span></div>
      <div><strong>MI POSICIÓN</strong><span>Sin clasificación activa</span></div>
      <div><strong>ACCESO A BETA</strong><span>No asignado</span></div>
     </div>
-    <p>El futuro Top 10 mostrará únicamente participaciones verificadas, bajo reglas publicadas previamente. Compartir una página no garantiza una posición ni acceso anticipado hasta que exista un sistema de atribución y validación activo.</p>
+    <p>{panels.liryboost.note}</p>
    </section>}
    <div className={styles.areaDialogActions}><Link className={styles.areaLink} href={selected.href}>{copy.explore} →</Link><form method="dialog"><button type="submit" className={styles.areaLink}>{copy.back}</button></form></div>
   </div>
