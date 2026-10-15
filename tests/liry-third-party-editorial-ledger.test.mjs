@@ -1,0 +1,12 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {replayExternalEditorialDecisions} from "../lib/games/liry-editorial-decision-ledger.ts";
+const hash="a".repeat(64);
+const base={gameId:"external-1",versionId:"v1",artifactHash:hash,sequence:1,action:"approve",reviewerId:"reviewer-1",decidedAt:"2026-10-14T21:00:00Z",approvalId:"approval-1"};
+const event=(action,sequence,overrides={})=>({...base,action,sequence,approvalId:"approval-"+sequence,decidedAt:"2026-10-14T21:0"+sequence+":00Z",...overrides});
+test("ledger needs a first explicit approval",()=>{assert.equal(replayExternalEditorialDecisions([]),null);assert.equal(replayExternalEditorialDecisions([event("suspend",1)]),null)});
+test("suspension and replacement are never active",()=>{for(const action of ["suspend","replace_pending"]){const s=replayExternalEditorialDecisions([base,event(action,2)]);assert.equal(s?.state,action==="suspend"?"suspended":"replacement_pending")}});
+test("revocation is terminal without a fresh submission",()=>assert.equal(replayExternalEditorialDecisions([base,event("revoke",2),event("reactivate",3)]),null));
+test("reactivation is explicit and linked to current version",()=>{const s=replayExternalEditorialDecisions([base,event("suspend",2),event("reactivate",3,{versionId:"v2",artifactHash:"b".repeat(64)})]);assert.equal(s?.state,"active");assert.equal(s?.currentVersionId,"v2")});
+test("rejects duplicates, missing sequence and different games",()=>{for(const bad of [event("suspend",3),event("suspend",2,{gameId:"other"}),event("suspend",2,{approvalId:"approval-1"}),event("suspend",2,{reviewerId:""}),event("suspend",2,{artifactHash:"b".repeat(64)})])assert.equal(replayExternalEditorialDecisions([base,bad]),null)});
+test("out-of-order timestamps and malformed records fail closed",()=>{assert.equal(replayExternalEditorialDecisions([base,event("suspend",2,{decidedAt:"2025-01-01T00:00:00Z"})]),null);assert.equal(replayExternalEditorialDecisions([base,null]),null)});
