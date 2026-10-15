@@ -83,3 +83,11 @@ test("Mi Liry identity preview and privacy text match across locales",()=>{
  assert.equal(es.securityRules.length,3);
  assert.match(en.previewNote,/No settings are saved/);
 });
+
+test("privacy preview translation preserves all choices without saving",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.privacyPreview;
+ const en=LIRY_FRONTDESK_STRINGS.en.privacyPreview;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ for(const field of ["visibilityLabels","visibilityStates"])assert.equal(es[field].length,en[field].length);
+ assert.match(en.unsaved,/Not saved/);
+});
