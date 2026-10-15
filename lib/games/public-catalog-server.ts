@@ -33,5 +33,5 @@ import {readAuthorizedExternalCatalog} from "./liry-external-catalog-read-port";
 export async function getLiryApprovedThirdPartyCatalog():Promise<readonly PublicThirdPartyCard[]>{
   // No real approved read source is configured or authorized yet.
   // Passing an empty value with approval disabled cannot publish any title.
-  return readAuthorizedExternalCatalog(null, {sourceApproved:false,publicReadEnabled:false});
+  return readAuthorizedExternalCatalog(null, {sourceApproved:false,publicReadEnabled:false,humanReleaseGateEnabled:false});
 }
