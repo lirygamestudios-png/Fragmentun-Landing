@@ -51,7 +51,9 @@ export async function readAuthorizedExternalCatalog(
       const reviewerId=(evidence as Record<string,unknown>).reviewerId;
       if(typeof reviewerId!=="string")continue;
       const resolved=await authority.readReviewerAuthority(reviewerId,gameId);
-      const serverAssertion=safeServerReviewerAssertion(resolved,reviewerId,gameId);
+      const versionId=(evidence as Record<string,unknown>).versionId;
+      if(typeof versionId!=="string")continue;
+      const serverAssertion=safeServerReviewerAssertion(resolved,reviewerId,gameId,versionId,new Date().toISOString());
       if(!serverAssertion)continue;
       verified.push({...candidate,reviewerAssertion:serverAssertion});
     }
