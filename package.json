@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run test:liry-id && npm run test:liryboost && next build",
+    "build": "npm run test:liry-id && npm run test:liryboost && npm run test:liry-marketplace && next build",
     "test:liry-id": "node --experimental-strip-types --loader ./tests/liry-ts-loader.mjs --test tests/liry-id-*.test.mjs",
     "test:liryboost": "node --experimental-strip-types --test tests/liryboost-*.test.mjs",
-    "start": "next start"
+    "start": "next start",
+    "test:liry-marketplace": "node --experimental-strip-types --loader ./tests/liry-ts-loader.mjs --test tests/liry-developer-publication.test.mjs tests/liry-third-party-*.test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
