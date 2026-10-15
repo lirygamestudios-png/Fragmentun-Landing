@@ -162,3 +162,10 @@ test("DNA detail texts remain paired with six styles and preserve advisory warni
  assert.equal(en.descriptions.length,6);
  assert.match(en.recommendationNote,/not psychological assessments/i);
 });
+
+test("gamer profile avatar and XP labels match across languages",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.gamerProfileDetails,en=LIRY_FRONTDESK_STRINGS.en.gamerProfileDetails;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.match(es.avatarHelp,/No se sube al servidor/i);
+ assert.match(en.avatarHelp,/not uploaded to the server/i);
+});
