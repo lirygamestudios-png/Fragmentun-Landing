@@ -78,3 +78,26 @@ export function safePublicThirdPartyCards(records:readonly ApprovedThirdPartyPub
     return [{slug,title,description,model:card.model,coverUrl}];
   });
 }
+
+/** Estado comercial distinto del proceso de aprobación editorial.
+ * Una ficha visible no implica checkout ni acceso al ejecutable.
+ */
+export type ThirdPartyCommercialState="preparing"|"approved_not_released"|"published_information_only"|"on_sale";
+export type CommercialReadiness={
+ publicationApproved:boolean;
+ published:boolean;
+ commerceEnabled:boolean;
+ paymentProviderReady:boolean;
+ contractApproved:boolean;
+ priceVerified:boolean;
+};
+export function thirdPartyCommercialState(readiness:CommercialReadiness):ThirdPartyCommercialState{
+ if(!readiness.publicationApproved)return "preparing";
+ if(!readiness.published)return "approved_not_released";
+ if(!readiness.commerceEnabled||!readiness.paymentProviderReady||!readiness.contractApproved||!readiness.priceVerified)
+  return "published_information_only";
+ return "on_sale";
+}
+export function mayEnableThirdPartyCheckout(readiness:CommercialReadiness):boolean{
+ return thirdPartyCommercialState(readiness)==="on_sale";
+}
