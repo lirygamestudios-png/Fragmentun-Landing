@@ -1435,3 +1435,20 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
  .navUtilities{gap:2px;right:5px}
  .nav .developerNavAccess{width:36px;min-width:36px}
 }
+
+/* Catálogo externo: tarjetas coherentes con FrontDesk, solo con aprobación. */
+.thirdPartySection{margin-top:38px;padding-top:28px;border-top:1px solid #2e688260}
+.thirdPartySection h3{color:#e4f8ff;font-size:clamp(20px,2.4vw,30px);letter-spacing:.04em}
+.thirdPartySection>p:not(.kicker){color:#bcd5e8;line-height:1.6}
+.thirdPartyGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:22px}
+.thirdPartyCard{min-width:0;overflow:hidden;border:1px solid #39789c;border-radius:12px;background:linear-gradient(140deg,#142c50,#08162d);transition:border-color .2s,box-shadow .2s}
+.thirdPartyCard:hover,.thirdPartyCard:focus-within{border-color:#80e5ff;box-shadow:0 0 20px #35c9fc40}
+.thirdPartyCardArt{display:grid;place-items:center;height:130px;background:radial-gradient(circle at 60% 40%,#286b9966,transparent 65%),#0b2342;color:#83dffa;font-size:46px}
+.thirdPartyCardBody{padding:20px}
+.thirdPartyCardModel{display:inline-block;padding:5px 9px;border:1px solid #4aa7cc;border-radius:7px;color:#8ee5ff;font-size:10px;font-weight:800;letter-spacing:.09em}
+.thirdPartyCardBody h4{margin:13px 0 8px;font-size:19px;color:#f0faff;overflow-wrap:anywhere}
+.thirdPartyCardBody p{min-height:44px;font-size:13px;line-height:1.5;color:#c8dbee;overflow-wrap:anywhere}
+.thirdPartyCardBody small{font-size:10px;color:#8cc8de;letter-spacing:.06em}
+@media(max-width:800px){.thirdPartyGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.thirdPartyGrid{grid-template-columns:1fr}.thirdPartyCardArt{height:110px}}
+@media(prefers-reduced-motion:reduce){.thirdPartyCard{transition:none}}
