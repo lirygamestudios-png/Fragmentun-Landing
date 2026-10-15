@@ -1,3 +1,4 @@
+import {reviewerMayAuthorizeRelease,type VerifiedReviewerAssertion} from "./liry-reviewer-authority-contract";
 import {releaseHasTraceableHumanApproval,type IndependentReleaseEvidence} from "./liry-independent-release-evidence";
 import {verifyEditorialHashChain,type ChainedEditorialDecision} from "./liry-editorial-hash-chain";
 import {replayExternalEditorialDecisions,type EditorialDecision} from "./liry-editorial-decision-ledger";
@@ -13,6 +14,7 @@ export type ReviewedExternalCandidate={
   editorialHistory:readonly EditorialDecision[];
   chainedHistory:readonly ChainedEditorialDecision[];
   expectedFinalHash:string;
+  reviewerAssertion:VerifiedReviewerAssertion;
 };
 export function projectTraceablyReviewedExternalCatalog(
   candidates:readonly ReviewedExternalCandidate[]|unknown,
@@ -37,6 +39,7 @@ export function projectTraceablyReviewedExternalCatalog(
   const e=evidence as IndependentReleaseEvidence;
   if(typeof r.gameId!=="string"||r.gameId!==e.gameId||
      !releaseHasTraceableHumanApproval(e)||
+     !reviewerMayAuthorizeRelease(candidate.reviewerAssertion,e,history)||
      !authoritative||!latestDecision||
      (latestDecision.action!=="approve"&&latestDecision.action!=="reactivate")||
      latestDecision.gameId!==e.gameId||
