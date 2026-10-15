@@ -26,6 +26,7 @@ export function LiryThirdPartyCatalog({games}:{games:readonly PublicThirdPartyCa
     <div className={styles.thirdPartyCardBody}>
      <span className={styles.thirdPartyCardModel}>{game.model==="premium"?"PREMIUM":"FREEMIUM"}</span>
      <h4>{game.title}</h4>
+     <span className={styles.thirdPartyAvailability}>FICHA INFORMATIVA · VENTA NO HABILITADA</span>
      <p>{game.description}</p>
      <button type="button" className={styles.thirdPartyDetailButton} aria-haspopup="dialog" aria-label={`Ver detalles de ${game.title}`} onClick={event=>open(game,event.currentTarget)}>VER DETALLES →</button>
     </div>
@@ -37,6 +38,7 @@ export function LiryThirdPartyCatalog({games}:{games:readonly PublicThirdPartyCa
     <p className={styles.kicker}>LIRYGAMES · VIDEOJUEGO INDEPENDIENTE</p>
     <h3 id="third-party-dialog-title">{selected?.title??"Detalles del videojuego"}</h3>
     <span className={styles.thirdPartyCardModel}>{selected?.model==="premium"?"PREMIUM":"FREEMIUM"}</span>
+    <p className={styles.thirdPartyAvailability}>PUBLICACIÓN INFORMATIVA · SIN COMPRA NI DESCARGA</p>
     <p>{selected?.description}</p>
     <p className={styles.thirdPartyNotice}>{selected?.model==="premium"?"Modalidad de compra única. Precio y disponibilidad sujetos a publicación comercial.":"Acceso inicial gratuito con contenidos opcionales. Disponibilidad sujeta a publicación comercial."}</p>
     <p className={styles.thirdPartyNotice}>Ficha informativa. Las compras y descargas no están habilitadas desde esta vista.</p>
