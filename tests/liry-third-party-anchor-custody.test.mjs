@@ -1,0 +1,12 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {chainEditorialDecisions} from "../lib/games/liry-editorial-hash-chain.ts";
+import {verifyCustodiedEditorialHistory} from "../lib/games/liry-editorial-anchor-custody.ts";
+const d={gameId:"external-1",versionId:"v1",artifactHash:"a".repeat(64),sequence:1,action:"approve",reviewerId:"human-1",decidedAt:"2026-10-15T20:00:00Z",approvalId:"a1"};
+const entries=chainEditorialDecisions([d]);
+const anchor={gameId:"external-1",sequence:1,finalHash:entries[0].hash,custodianId:"separate-custodian"};
+const permission={custodianIndependent:true,readAuthorized:true};
+test("disabled custody never requests a trusted anchor",async()=>{let count=0;const port={readTrustedAnchor:async()=>{count++;return anchor}};assert.equal(await verifyCustodiedEditorialHistory(port,{...permission,custodianIndependent:false},"external-1",entries),null);assert.equal(await verifyCustodiedEditorialHistory(port,{...permission,readAuthorized:false},"external-1",entries),null);assert.equal(count,0);});
+test("matching independent anchor verifies exact source history",async()=>{const result=await verifyCustodiedEditorialHistory({readTrustedAnchor:async()=>anchor},permission,"external-1",entries);assert.deepEqual(result,[d]);});
+test("custody rejects missing provider, wrong game, sequence and hash",async()=>{assert.equal(await verifyCustodiedEditorialHistory(null,permission,"external-1",entries),null);for(const bad of [{...anchor,gameId:"external-2"},{...anchor,sequence:2},{...anchor,finalHash:"b".repeat(64)},{...anchor,custodianId:""}])assert.equal(await verifyCustodiedEditorialHistory({readTrustedAnchor:async()=>bad},permission,"external-1",entries),null);});
+test("custody rejects changed history and failed reads",async()=>{assert.equal(await verifyCustodiedEditorialHistory({readTrustedAnchor:async()=>anchor},permission,"external-1",[{...entries[0],decision:{...d,reviewerId:"fake"}}]),null);assert.equal(await verifyCustodiedEditorialHistory({readTrustedAnchor:async()=>{throw Error("offline")}},permission,"external-1",entries),null);});
