@@ -1,0 +1,10 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {reviewerMayAuthorizeRelease} from "../lib/games/liry-reviewer-authority-contract.ts";
+const hash="a".repeat(64);
+const evidence={gameId:"synthetic-1",versionId:"v1",reviewedArtifactHash:hash,reviewerId:"reviewer-a",decidedAt:"2026-10-15T20:00:00Z"};
+const history=[{gameId:"synthetic-1",versionId:"v1",artifactHash:hash,reviewerId:"reviewer-a",decidedAt:evidence.decidedAt,action:"approve"}];
+const actor={reviewerId:"reviewer-a",verifiedByTrustedProvider:true,active:true,roles:["external_release_reviewer"],allowedGameIds:["synthetic-1"]};
+test("synthetic verified reviewer with specific game scope passes contract",()=>assert.equal(reviewerMayAuthorizeRelease(actor,evidence,history),true));
+test("missing trusted identity, role, active status or game scope fails closed",()=>{for(const bad of [{...actor,verifiedByTrustedProvider:false},{...actor,active:false},{...actor,roles:["developer"]},{...actor,allowedGameIds:["other"]},null])assert.equal(reviewerMayAuthorizeRelease(bad,evidence,history),false);});
+test("wrong reviewer, version, hash, or decision does not authorize",()=>{for(const h of [[{...history[0],reviewerId:"other"}],[{...history[0],versionId:"v2"}],[{...history[0],artifactHash:"b".repeat(64)}],[{...history[0],action:"suspend"}]])assert.equal(reviewerMayAuthorizeRelease(actor,evidence,h),false);});
