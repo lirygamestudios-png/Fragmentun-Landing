@@ -15,8 +15,8 @@ test("blocks an unpublished or unreviewed third-party game",()=>assert.equal(pub
 test("blocks card bound to another game's approval",()=>assert.equal(publicApprovedThirdPartyCatalog([entry({gameId:"game-2"})]).length,0));
 test("prevents duplicate game listing",()=>assert.equal(publicApprovedThirdPartyCatalog([entry(),entry()]).length,1));
 
-const safeCard={slug:"indie-world",title:"Juego autorizado",description:"Descripción pública",model:"premium",coverUrl:"https://example.com/cover.jpg",developerId:"secret",artifactHash:"private"};
-test("projection excludes developer private data",()=>assert.deepEqual(safePublicThirdPartyCards([entry({publicCard:safeCard})]),[{slug:"indie-world",title:"Juego autorizado",description:"Descripción pública",model:"premium",coverUrl:"https://example.com/cover.jpg"}]));
+const safeCard={slug:"indie-world",title:"Juego autorizado",description:"Descripción pública",model:"freemium",coverUrl:"https://example.com/cover.jpg",developerId:"secret",artifactHash:"private"};
+test("projection excludes developer private data",()=>assert.deepEqual(safePublicThirdPartyCards([entry({publicCard:safeCard})]),[{slug:"indie-world",title:"Juego autorizado",description:"Descripción pública",model:"freemium",coverUrl:"https://example.com/cover.jpg"}]));
 test("projection rejects invalid public slug",()=>assert.deepEqual(safePublicThirdPartyCards([entry({publicCard:{...safeCard,slug:"../private"}})]),[]));
 test("projection rejects unpublished approved entry",()=>assert.deepEqual(safePublicThirdPartyCards([entry({published:false,publicCard:safeCard})]),[]));
 
@@ -25,5 +25,5 @@ test("commercial states distinguish preparation and approval",()=>{assert.equal(
 test("published information does not imply checkout",()=>{assert.equal(thirdPartyCommercialState({...commercial,paymentProviderReady:false}),"published_information_only");assert.equal(mayEnableThirdPartyCheckout({...commercial,priceVerified:false}),false)});
 test("checkout needs all commercial authorizations",()=>assert.equal(mayEnableThirdPartyCheckout(commercial),true));
 
-test("public model must match reviewed model",()=>assert.deepEqual(safePublicThirdPartyCards([entry({publicCard:{...safeCard,model:"freemium"}})]),[]));
+test("public model must match reviewed model",()=>assert.deepEqual(safePublicThirdPartyCards([entry({publicCard:{...safeCard,model:"premium"}})]),[]));
 test("duplicate public slugs are not published twice",()=>assert.equal(safePublicThirdPartyCards([entry({publicCard:safeCard}),entry({gameId:"game-2",submission:{...valid,gameId:"game-2"},publicCard:safeCard})]).length,1));
