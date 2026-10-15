@@ -2,11 +2,13 @@
 import {useRef,useState,type KeyboardEvent} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
 import {canShowCommunityActivity} from "../lib/games/liry-community-readiness";
+import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
+const communityCopy=liryFrontdeskStrings("es").communityTabs;
 const categories=[
- {id:"todos",label:"TODOS",title:"La comunidad está por despertar",copy:"Las publicaciones y actividades aparecerán cuando el servicio comunitario esté disponible. Sin conversaciones ficticias."},
- {id:"amigos",label:"AMIGOS",title:"Amigos próximamente",copy:"Las listas de amigos estarán disponibles cuando se habiliten las cuentas Liry ID."},
- {id:"logros",label:"LOGROS",title:"Logros comunitarios próximamente",copy:"Mostraremos únicamente logros de juego acreditados y compartidos con autorización."},
- {id:"eventos",label:"EVENTOS",title:"Eventos próximamente",copy:"Los eventos aparecerán cuando existan convocatorias oficiales confirmadas."}
+ {id:"todos",...communityCopy.all},
+ {id:"amigos",...communityCopy.friends},
+ {id:"logros",...communityCopy.achievements},
+ {id:"eventos",...communityCopy.events}
 ] as const;
 type Category=(typeof categories)[number]["id"];
 export function LiryCommunityTabs(){
