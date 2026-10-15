@@ -6,6 +6,7 @@ import {MiLiryIdentityPreview} from "./MiLiryIdentityPreview";
 import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
 const copy=liryFrontdeskStrings("es").miLiryAreas;
 const panels=liryFrontdeskStrings("es").miLiryPanels;
+const facts=liryFrontdeskStrings("es").miLiryFacts;
 const identity=liryFrontdeskStrings("es").miLiryIdentity;
 const links=["/lirygames#perfil-gamer","/lirygames#mundos","/lirygames#perfil-gamer","/lirygames#tienda","/lirygames#comunidad","/lirygames#liryboost"] as const;
 const areas=copy.items.map((item,index)=>({...item,href:links[index]}));
@@ -50,47 +51,31 @@ export function MiLiryAreas(){
    {selected.id==="mundos"&&<section className={styles.worldsPanel} aria-label="Estado de mundos del jugador">
     <h3>{panels.mundos.title}</h3>
     <p className={styles.worldsEmpty}>{panels.mundos.empty}</p>
-    <div className={styles.worldsFacts}><div><strong>JUEGOS VINCULADOS</strong><span>Sin datos verificados</span></div><div><strong>ÚLTIMA PARTIDA</strong><span>No disponible</span></div><div><strong>PROGRESO</strong><span>No disponible</span></div></div>
+    <div className={styles.worldsFacts}>{facts.mundos.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div>
     <p>{panels.mundos.note}</p>
    </section>}
    {selected.id==="logros"&&<section className={styles.worldsPanel} aria-label="Estado de logros y recompensas">
     <h3>{panels.logros.title}</h3>
     <p className={styles.worldsEmpty}>{panels.logros.empty}</p>
-    <div className={styles.worldsFacts}>
-     <div><strong>INSIGNIAS</strong><span>Sin datos verificados</span></div>
-     <div><strong>DESAFÍOS</strong><span>No disponibles</span></div>
-     <div><strong>RECOMPENSAS</strong><span>No acreditadas</span></div>
-    </div>
+    <div className={styles.worldsFacts}>{facts.logros.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div>
     <p>{panels.logros.note}</p>
    </section>}
    {selected.id==="inventario"&&<section className={styles.worldsPanel} aria-label="Inventario digital verificado">
     <h3>{panels.inventario.title}</h3>
     <p className={styles.worldsEmpty}>{panels.inventario.empty}</p>
-    <div className={styles.worldsFacts}>
-     <div><strong>SKINS Y APARIENCIAS</strong><span>Sin datos verificados</span></div>
-     <div><strong>OBJETOS DE JUEGO</strong><span>No disponibles</span></div>
-     <div><strong>COMPRAS Y ENTREGAS</strong><span>Sin conexión</span></div>
-    </div>
+    <div className={styles.worldsFacts}>{facts.inventario.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div>
     <p>{panels.inventario.note}</p>
    </section>}
    {selected.id==="comunidad"&&<section className={styles.worldsPanel} aria-label="Estado de Mi Comunidad">
     <h3>{panels.comunidad.title}</h3>
     <p className={styles.worldsEmpty}>{panels.comunidad.empty}</p>
-    <div className={styles.worldsFacts}>
-     <div><strong>MIS AMISTADES</strong><span>Sin datos verificados</span></div>
-     <div><strong>MIS PUBLICACIONES</strong><span>No disponibles</span></div>
-     <div><strong>EVENTOS</strong><span>Pendientes de activación</span></div>
-    </div>
+    <div className={styles.worldsFacts}>{facts.comunidad.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div>
     <p>{panels.comunidad.note}</p>
    </section>}
    {selected.id==="liryboost"&&<section className={styles.worldsPanel} aria-label="Estado de participación en LiryBoost">
     <h3>{panels.liryboost.title}</h3>
     <p className={styles.worldsEmpty}>{panels.liryboost.empty}</p>
-    <div className={styles.worldsFacts}>
-     <div><strong>INVITACIONES VÁLIDAS</strong><span>Sin datos verificados</span></div>
-     <div><strong>MI POSICIÓN</strong><span>Sin clasificación activa</span></div>
-     <div><strong>ACCESO A BETA</strong><span>No asignado</span></div>
-    </div>
+    <div className={styles.worldsFacts}>{facts.liryboost.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div>
     <p>{panels.liryboost.note}</p>
    </section>}
    <div className={styles.areaDialogActions}><Link className={styles.areaLink} href={selected.href}>{copy.explore} →</Link><form method="dialog"><button type="submit" className={styles.areaLink}>{copy.back}</button></form></div>
