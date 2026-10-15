@@ -56,3 +56,20 @@ test("missing trusted identity provider prevents reading even synthetic source",
  assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>{called++;return [candidate]}},permission,syntheticCustodian,null),[]);
  assert.equal(called,0);
 });
+
+test("mid-query reviewer revocation invalidates formerly approved batch",async()=>{
+ let calls=0;
+ const flippingAuthority={readReviewerAuthority:async()=>{
+   calls++;
+   return {...reviewerAssertion,revoked:calls>=2};
+ }};
+ assert.deepEqual(await readAuthorizedExternalCatalog(provider([candidate]),permission,syntheticCustodian,flippingAuthority),[]);
+ assert.equal(calls,2);
+});
+test("stable reviewer remains authorized during final verification",async()=>{
+ let calls=0;
+ const stable={readReviewerAuthority:async()=>{calls++;return {...reviewerAssertion}}};
+ const cards=await readAuthorizedExternalCatalog(provider([candidate]),permission,syntheticCustodian,stable);
+ assert.equal(cards.length,1);
+ assert.equal(calls,2);
+});
