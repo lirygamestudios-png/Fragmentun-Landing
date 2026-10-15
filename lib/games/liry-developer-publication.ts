@@ -67,6 +67,20 @@ export type PublicThirdPartyCard={
 export type ApprovedThirdPartyPublicRecord=Omit<ApprovedThirdPartyListing<PublicThirdPartyCard>,"publicCard">&{
   publicCard:PublicThirdPartyCard;
 };
+/** Only absolute, credential-free HTTPS addresses may enter public cards. */
+export function safeThirdPartyCoverUrl(value:unknown):string|null{
+  if(typeof value!=="string"||value.length>2048||value!==value.trim())return null;
+  try{
+    const url=new URL(value);
+    if(url.protocol!=="https:"||!url.hostname||url.username||url.password||url.hash)return null;
+    if(url.hostname==="localhost"||url.hostname.endsWith(".localhost")||
+       /^(?:127|10|192\.168)\./.test(url.hostname)||
+       /^172\.(?:1[6-9]|2\d|3[01])\./.test(url.hostname)||
+       url.hostname==="0.0.0.0"||url.hostname==="[::1]")return null;
+    return url.href;
+  }catch{return null;}
+}
+
 export function safePublicThirdPartyCards(records:readonly ApprovedThirdPartyPublicRecord[]):readonly PublicThirdPartyCard[]{
   const visible:PublicThirdPartyCard[]=[];
   const seenGames=new Set<string>();
@@ -85,7 +99,7 @@ export function safePublicThirdPartyCards(records:readonly ApprovedThirdPartyPub
        !title||title.length>120||
        (card.model!=="premium"&&card.model!=="freemium"))continue;
     const description=typeof card.description==="string"?card.description.trim().slice(0,300):"";
-    const coverUrl=typeof card.coverUrl==="string"&&/^https:\/\//i.test(card.coverUrl)?card.coverUrl:null;
+    const coverUrl=safeThirdPartyCoverUrl(card.coverUrl);
     seenGames.add(record.gameId);
     seenSlugs.add(slug);
     visible.push({slug,title,description,model:card.model,coverUrl});
