@@ -54,3 +54,12 @@ test("Mi Liry visitor copy is bilingual without suggesting active accounts",()=>
  assert.match(en.notice,/No fictional accounts/i);
  assert.equal(liryFrontdeskStrings("en").miLiry.back,es.back);
 });
+
+test("Mi Liry six areas preserve identity and matching translations",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.miLiryAreas,en=LIRY_FRONTDESK_STRINGS.en.miLiryAreas;
+ assert.equal(es.items.length,6);
+ assert.deepEqual(es.items.map(item=>item.id),en.items.map(item=>item.id));
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ for(let i=0;i<6;i++)assert.deepEqual(Object.keys(es.items[i]).sort(),Object.keys(en.items[i]).sort());
+ assert.match(en.items[5].detail,/not yet recording entries/i);
+});
