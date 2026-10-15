@@ -12,8 +12,8 @@ export function safeServerReviewerAssertion(raw:unknown,reviewerId:string,gameId
  const now=typeof checkedAt==="string"?Date.parse(checkedAt):NaN;
  const expiry=typeof a.expiresAt==="string"?Date.parse(a.expiresAt):NaN;
  if(!versionId||!Number.isFinite(now)||!Number.isFinite(expiry)||
-    !/^\\d{4}-\\d{2}-\\d{2}T/.test(checkedAt??"")||
-    !/^\\d{4}-\\d{2}-\\d{2}T/.test(String(a.expiresAt??""))||
+    !/^\d{4}-\d{2}-\d{2}T/.test(checkedAt??"")||
+    !/^\d{4}-\d{2}-\d{2}T/.test(String(a.expiresAt??""))||
     expiry<=now||a.revoked===true||
     !Array.isArray(a.allowedVersionIds)||!a.allowedVersionIds.includes(versionId))return null;
  if(a.reviewerId!==reviewerId||a.verifiedByTrustedProvider!==true||a.active!==true||
