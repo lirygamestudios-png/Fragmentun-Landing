@@ -6,6 +6,7 @@ import {MiLiryIdentityPreview} from "./MiLiryIdentityPreview";
 import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
 const copy=liryFrontdeskStrings("es").miLiryAreas;
 const panels=liryFrontdeskStrings("es").miLiryPanels;
+const identity=liryFrontdeskStrings("es").miLiryIdentity;
 const links=["/lirygames#perfil-gamer","/lirygames#mundos","/lirygames#perfil-gamer","/lirygames#tienda","/lirygames#comunidad","/lirygames#liryboost"] as const;
 const areas=copy.items.map((item,index)=>({...item,href:links[index]}));
 export function MiLiryAreas(){
@@ -35,16 +36,16 @@ export function MiLiryAreas(){
    <h2 id="mi-liry-area-title">{selected.title}</h2><p>{selected.detail}</p>
    <span className={styles.areaStatus}>{selected.status}</span>
    {selected.id==="identidad"&&<div className={styles.identityDetails} aria-label="Preparación de identidad del jugador">
-    <div><strong>NOMBRE PÚBLICO</strong><span>Sin identidad verificada</span></div>
-    <div><strong>AVATAR</strong><span>Pendiente de personalización</span></div>
-    <div><strong>PREFERENCIAS</strong><span>No configuradas</span></div>
-    <p>Los datos personales solo se mostrarán al titular después de una autenticación segura. Esta vista no almacena información.</p>
+    <div><strong>{identity.publicName}</strong><span>{identity.unverified}</span></div>
+    <div><strong>{identity.avatar}</strong><span>{identity.avatarPending}</span></div>
+    <div><strong>{identity.preferences}</strong><span>{identity.notConfigured}</span></div>
+    <p>{identity.privacyNote}</p>
    </div>}
    {selected.id==="identidad"&&<MiLiryIdentityPreview key={previewSession} />}
    {selected.id==="identidad"&&<section className={styles.identitySecurity} aria-label="Seguridad del perfil">
-    <h3>SEGURIDAD DE MI IDENTIDAD</h3>
-    <p>Los cambios de nombre, avatar y preferencias requerirán una sesión personal verificada. Ningún dato se guarda desde esta vista previa.</p>
-    <ul><li>Inicio de sesión gamer independiente del administrador</li><li>Validación de nombre público y controles de privacidad</li><li>Confirmación del usuario antes de guardar cambios</li></ul>
+    <h3>{identity.securityTitle}</h3>
+    <p>{identity.securityNote}</p>
+    <ul><li>{identity.securityRules[0]}</li><li>{identity.securityRules[1]}</li><li>{identity.securityRules[2]}</li></ul>
    </section>}
    {selected.id==="mundos"&&<section className={styles.worldsPanel} aria-label="Estado de mundos del jugador">
     <h3>{panels.mundos.title}</h3>
