@@ -27,3 +27,29 @@ export function mayPublishDeveloperGame(s:DeveloperSubmission):boolean{
 export function publicThirdPartyCatalog<T extends {published:boolean;releaseApproved:boolean}>(items:readonly T[]):readonly T[]{
  return items.filter(item=>item.published===true&&item.releaseApproved===true).slice(0,THIRD_PARTY_CATALOG_CAPACITY);
 }
+
+/** Publicación final de terceros: el estado editorial no basta para autorizar un juego.
+ * La ficha pública debe estar vinculada al videojuego y a una versión validada.
+ * No consulta datos privados ni habilita ninguna operación real.
+ */
+export type ApprovedThirdPartyListing<T> = {
+  gameId:string;
+  published:boolean;
+  releaseApproved:boolean;
+  submission:DeveloperSubmission;
+  publicCard:T;
+};
+export function publicApprovedThirdPartyCatalog<T>(items:readonly ApprovedThirdPartyListing<T>[]):readonly T[]{
+  const seen=new Set<string>();
+  const visible:T[]=[];
+  for(const entry of items){
+    if(visible.length>=THIRD_PARTY_CATALOG_CAPACITY)break;
+    if(!entry.published||!entry.releaseApproved||
+       entry.gameId!==entry.submission.gameId||
+       !mayPublishDeveloperGame(entry.submission)||
+       seen.has(entry.gameId))continue;
+    seen.add(entry.gameId);
+    visible.push(entry.publicCard);
+  }
+  return visible;
+}
