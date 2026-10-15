@@ -10,3 +10,10 @@ test("prepared English strings remain separate from released Spanish",()=>{
  assert.equal(LIRY_FRONTDESK_STRINGS.en.navigation.home,"Home");
  assert.equal(LIRY_FRONTDESK_STRINGS.es.hero.headline,"CIENTOS DE MUNDOS. INFINITAS FORMAS DE JUGAR.");
 });
+
+test("catalog and journey translations retain matched key coverage",()=>{
+ for(const section of ["navigation","hero","discovery","journey","visitor","catalog"]){
+  assert.deepEqual(Object.keys(LIRY_FRONTDESK_STRINGS.en[section]).sort(),Object.keys(LIRY_FRONTDESK_STRINGS.es[section]).sort());
+ }
+ assert.match(LIRY_FRONTDESK_STRINGS.en.discovery.description,/not games available to play/i);
+});
