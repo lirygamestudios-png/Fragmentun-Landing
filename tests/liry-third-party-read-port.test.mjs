@@ -17,3 +17,21 @@ test("approved read cannot override release checks",async()=>{const bad={...reco
 test("missing human gate prevents provider invocation",async()=>{let called=false;const port={readApprovedRecords:async()=>{called=true;return [{record,evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash}]}};assert.deepEqual(await readAuthorizedExternalCatalog(port,{sourceApproved:true,publicReadEnabled:true,humanReleaseGateEnabled:false,independentCustodyEnabled:true}),[]);assert.equal(called,false)});
 
 test("custody not configured prevents source reads",async()=>{let calls=0;const p={readApprovedRecords:async()=>{calls++;return []}};assert.deepEqual(await readAuthorizedExternalCatalog(p,{sourceApproved:true,publicReadEnabled:true,humanReleaseGateEnabled:true,independentCustodyEnabled:true}),[]);assert.equal(calls,0);});
+
+test("full pipeline rejects a forged anchor, amended decisions and revoked snapshots",async()=>{
+ const valid={record,evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash};
+ const allow={sourceApproved:true,publicReadEnabled:true,humanReleaseGateEnabled:true,independentCustodyEnabled:true};
+ const forged={readTrustedAnchor:async()=>({gameId:"external-1",sequence:1,finalHash:"b".repeat(64),custodianId:"separate"})};
+ assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>[valid]},allow,forged),[]);
+ const altered={...valid,editorialHistory:[{...editorialHistory[0],reviewerId:"other"}]};
+ assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>[altered]},allow,custodian),[]);
+ const revoked={...valid,editorialControl:{...editorialControl,state:"revoked"}};
+ assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>[revoked]},allow,custodian),[]);
+ const mismatched={...valid,expectedFinalHash:"b".repeat(64)};
+ assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>[mismatched]},allow,custodian),[]);
+});
+test("full pipeline does not publish malformed or unavailable source",async()=>{
+ const allow={sourceApproved:true,publicReadEnabled:true,humanReleaseGateEnabled:true,independentCustodyEnabled:true};
+ assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>({record})},allow,custodian),[]);
+ assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>{throw Error("unavailable")}},allow,custodian),[]);
+});
