@@ -8,12 +8,13 @@ const chainedHistory=chainEditorialDecisions(editorialHistory);
 const expectedFinalHash=chainedHistory[0].hash;
 const custodian={readTrustedAnchor:async()=>({gameId:"external-1",sequence:1,finalHash:expectedFinalHash,custodianId:"separate"})};
 const reviewerAssertion={reviewerId:"reviewer",verifiedByTrustedProvider:true,active:true,roles:["external_release_reviewer"],allowedGameIds:["external-1"]};
+const trustedAuthority={readReviewerAuthority:async()=>({reviewerId:"reviewer",verifiedByTrustedProvider:true,active:true,roles:["external_release_reviewer"],allowedGameIds:["external-1"]})};
 const editorialControl={gameId:"external-1",currentVersionId:"v1",approvalVersionId:"v1",approvalArtifactHash:"a".repeat(64),state:"active"};
 const record={gameId:"external-1",published:true,releaseApproved:true,submission:{developerId:"dev",gameId:"external-1",model:"premium",state:"approved",artifactHash:"a".repeat(64),approvedArtifactHash:"a".repeat(64),ownerVerified:true,commercialRightsVerified:true,humanApproved:true},publicCard:{slug:"external-1",title:"Fixture local",description:"No publicar",model:"premium",coverUrl:null,developerId:"secret"}};
 test("disabled read never invokes provider",async()=>{let calls=0;const port={readApprovedRecords:async()=>{calls++;return [record];}};assert.deepEqual(await readAuthorizedExternalCatalog(port,{sourceApproved:false,publicReadEnabled:true,humanReleaseGateEnabled:true,independentCustodyEnabled:true}),[]);assert.deepEqual(await readAuthorizedExternalCatalog(port,{sourceApproved:true,publicReadEnabled:false,humanReleaseGateEnabled:true,independentCustodyEnabled:true}),[]);assert.equal(calls,0);});
 test("missing provider and failures are closed",async()=>{const permission={sourceApproved:true,publicReadEnabled:true,humanReleaseGateEnabled:true,independentCustodyEnabled:true};assert.deepEqual(await readAuthorizedExternalCatalog(null,permission),[]);assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>{throw Error("offline");}},permission),[]);});
-test("authorized read projects only public fields",async()=>{const cards=await readAuthorizedExternalCatalog({readApprovedRecords:async()=>[{record,evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,reviewerAssertion}]},{sourceApproved:true,publicReadEnabled:true,humanReleaseGateEnabled:true,independentCustodyEnabled:true},custodian);assert.deepEqual(cards,[{slug:"external-1",title:"Fixture local",description:"No publicar",model:"premium",coverUrl:null}]);});
-test("approved read cannot override release checks",async()=>{const bad={...record,submission:{...record.submission,humanApproved:false}};assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>[{record:bad,evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,reviewerAssertion}]},{sourceApproved:true,publicReadEnabled:true,humanReleaseGateEnabled:true,independentCustodyEnabled:true},custodian),[]);});
+test("authorized read projects only public fields",async()=>{const cards=await readAuthorizedExternalCatalog({readApprovedRecords:async()=>[{record,evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,reviewerAssertion}]},{sourceApproved:true,publicReadEnabled:true,humanReleaseGateEnabled:true,independentCustodyEnabled:true},custodian,trustedAuthority);assert.deepEqual(cards,[{slug:"external-1",title:"Fixture local",description:"No publicar",model:"premium",coverUrl:null}]);});
+test("approved read cannot override release checks",async()=>{const bad={...record,submission:{...record.submission,humanApproved:false}};assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>[{record:bad,evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,reviewerAssertion}]},{sourceApproved:true,publicReadEnabled:true,humanReleaseGateEnabled:true,independentCustodyEnabled:true},custodian,trustedAuthority),[]);});
 
 test("missing human gate prevents provider invocation",async()=>{let called=false;const port={readApprovedRecords:async()=>{called=true;return [{record,evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,reviewerAssertion}]}};assert.deepEqual(await readAuthorizedExternalCatalog(port,{sourceApproved:true,publicReadEnabled:true,humanReleaseGateEnabled:false,independentCustodyEnabled:true}),[]);assert.equal(called,false)});
 
@@ -25,14 +26,14 @@ test("full pipeline rejects a forged anchor, amended decisions and revoked snaps
  const forged={readTrustedAnchor:async()=>({gameId:"external-1",sequence:1,finalHash:"b".repeat(64),custodianId:"separate"})};
  assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>[valid]},allow,forged),[]);
  const altered={...valid,editorialHistory:[{...editorialHistory[0],reviewerId:"other"}]};
- assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>[altered]},allow,custodian),[]);
+ assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>[altered]},allow,custodian,trustedAuthority),[]);
  const revoked={...valid,editorialControl:{...editorialControl,state:"revoked"}};
- assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>[revoked]},allow,custodian),[]);
+ assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>[revoked]},allow,custodian,trustedAuthority),[]);
  const mismatched={...valid,expectedFinalHash:"b".repeat(64)};
- assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>[mismatched]},allow,custodian),[]);
+ assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>[mismatched]},allow,custodian,trustedAuthority),[]);
 });
 test("full pipeline does not publish malformed or unavailable source",async()=>{
  const allow={sourceApproved:true,publicReadEnabled:true,humanReleaseGateEnabled:true,independentCustodyEnabled:true};
- assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>({record})},allow,custodian),[]);
- assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>{throw Error("unavailable")}},allow,custodian),[]);
+ assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>({record})},allow,custodian,trustedAuthority),[]);
+ assert.deepEqual(await readAuthorizedExternalCatalog({readApprovedRecords:async()=>{throw Error("unavailable")}},allow,custodian,trustedAuthority),[]);
 });
