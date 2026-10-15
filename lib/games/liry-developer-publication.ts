@@ -53,3 +53,28 @@ export function publicApprovedThirdPartyCatalog<T>(items:readonly ApprovedThirdP
   }
   return visible;
 }
+
+/** Projection explicitly whitelists public metadata. Internal developer IDs,
+ * verification flags, build hashes and commercial records never cross this boundary.
+ */
+export type PublicThirdPartyCard={
+  slug:string;
+  title:string;
+  description:string;
+  model:ThirdPartyGameModel;
+  coverUrl:string|null;
+};
+export type ApprovedThirdPartyPublicRecord=Omit<ApprovedThirdPartyListing<PublicThirdPartyCard>,"publicCard">&{
+  publicCard:PublicThirdPartyCard;
+};
+export function safePublicThirdPartyCards(records:readonly ApprovedThirdPartyPublicRecord[]):readonly PublicThirdPartyCard[]{
+  return publicApprovedThirdPartyCatalog(records).flatMap(card=>{
+    const slug=typeof card.slug==="string"?card.slug.trim():"";
+    const title=typeof card.title==="string"?card.title.trim():"";
+    if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)||!title||title.length>120||
+       (card.model!=="premium"&&card.model!=="freemium"))return [];
+    const description=typeof card.description==="string"?card.description.trim().slice(0,300):"";
+    const coverUrl=typeof card.coverUrl==="string"&&/^https:\/\//i.test(card.coverUrl)?card.coverUrl:null;
+    return [{slug,title,description,model:card.model,coverUrl}];
+  });
+}
