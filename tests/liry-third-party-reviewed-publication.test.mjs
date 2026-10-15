@@ -37,4 +37,5 @@ test("rejected, unpublished, or unapproved games remain invisible",()=>{
 });
 
 test("revocation suspension and replacement block old releases",()=>{for(const state of ["suspended","revoked","replacement_pending"])assert.deepEqual(projectTraceablyReviewedExternalCatalog([{...candidate,editorialControl:{...editorialControl,state}}],enabled),[]);assert.deepEqual(projectTraceablyReviewedExternalCatalog([{...candidate,editorialControl:{...editorialControl,currentVersionId:"v2"}}],enabled),[]);});
-\ntest("fabricated active state and missing editorial history cannot publish",()=>{assert.deepEqual(projectTraceablyReviewedExternalCatalog([{...candidate,editorialHistory:[]}],enabled),[]);assert.deepEqual(projectTraceablyReviewedExternalCatalog([{...candidate,editorialHistory:[{...editorialHistory[0],action:"suspend"}]}],enabled),[]);});
+
+test("fabricated active state and missing editorial history cannot publish",()=>{assert.deepEqual(projectTraceablyReviewedExternalCatalog([{...candidate,editorialHistory:[]}],enabled),[]);assert.deepEqual(projectTraceablyReviewedExternalCatalog([{...candidate,editorialHistory:[{...editorialHistory[0],action:"suspend"}]}],enabled),[]);});
