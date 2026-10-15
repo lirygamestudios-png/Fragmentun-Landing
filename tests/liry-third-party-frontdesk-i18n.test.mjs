@@ -154,3 +154,11 @@ test("share controls offer matched translations without claiming verified public
  assert.match(en.socialNotice,/Posting depends on the social network/);
  assert.match(es.socialNotice,/publicación depende de la red social/);
 });
+
+test("DNA detail texts remain paired with six styles and preserve advisory warnings",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.dnaDetails,en=LIRY_FRONTDESK_STRINGS.en.dnaDetails;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.equal(es.descriptions.length,6);
+ assert.equal(en.descriptions.length,6);
+ assert.match(en.recommendationNote,/not psychological assessments/i);
+});
