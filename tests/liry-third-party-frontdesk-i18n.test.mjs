@@ -99,3 +99,11 @@ test("Secretos de Liry conserva advertencias equivalentes en ES y EN",()=>{
  assert.match(en.empty,/no rewards to claim/i);
  assert.match(es.empty,/no hay fragmentos disponibles/i);
 });
+
+test("gamer information dialogs preserve five topics and four illustrative goals",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.gamerInfo,en=LIRY_FRONTDESK_STRINGS.en.gamerInfo;
+ assert.deepEqual(Object.keys(es.panels).sort(),Object.keys(en.panels).sort());
+ assert.equal(es.goals.length,4);assert.equal(en.goals.length,4);
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.match(en.panels.logros.notice,/no medals, rewards/i);
+});
