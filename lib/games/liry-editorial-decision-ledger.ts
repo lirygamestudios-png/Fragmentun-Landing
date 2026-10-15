@@ -33,13 +33,13 @@ export function replayExternalEditorialDecisions(events:readonly EditorialDecisi
   }else if(e.action==="suspend"||e.action==="revoke"||e.action==="replace_pending"){
    if(!snapshot||snapshot.state==="revoked"||
       (e.versionId!==snapshot.currentVersionId||e.artifactHash!==snapshot.approvalArtifactHash))return null;
-   snapshot={...snapshot,state:e.action==="suspend"?"suspended":e.action==="revoke"?"revoked":"replacement_pending"};
+   snapshot={gameId:e.gameId,currentVersionId:e.versionId,approvalVersionId:e.versionId,approvalArtifactHash:e.artifactHash,state:e.action==="suspend"?"suspended":e.action==="revoke"?"revoked":"replacement_pending"};
    suspended=true;
   }else if(e.action==="reactivate"){
    // Reinstatement always requires a NEW review ID and a new explicit event;
    // a revoked record is terminal and must be submitted as a fresh listing.
    if(!snapshot||!suspended||snapshot.state==="revoked")return null;
-   snapshot={...snapshot,currentVersionId:e.versionId,approvalVersionId:e.versionId,approvalArtifactHash:e.artifactHash,state:"active"};
+   snapshot={gameId:e.gameId,currentVersionId:e.versionId,approvalVersionId:e.versionId,approvalArtifactHash:e.artifactHash,state:"active"};
    suspended=false;
   }else return null;
   prior=e;
