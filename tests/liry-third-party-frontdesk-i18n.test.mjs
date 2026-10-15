@@ -130,3 +130,11 @@ test("Legal center preserves eight canonical slugs and prelaunch disclaimers in 
  assert.match(es.intro,/No constituyen políticas definitivas/i);
  assert.match(en.intro,/not final policies/i);
 });
+
+test("legal document routes are stable and labels available without changing clause substance",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.legalCenter,en=LIRY_FRONTDESK_STRINGS.en.legalCenter;
+ const expected=["privacidad","terminos","cookies","compras","liryboost","propiedad-intelectual","menores","accesibilidad"];
+ assert.deepEqual(es.documents.map(item=>item[0]),expected);
+ assert.deepEqual(en.documents.map(item=>item[0]),expected);
+ assert.match(es.draft,/PREPARACIÓN/);
+});
