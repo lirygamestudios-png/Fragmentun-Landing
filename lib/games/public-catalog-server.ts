@@ -24,3 +24,12 @@ export async function getLiryPublicCatalog():Promise<readonly PublicGameCard[]>{
     return plannedLiryGames;
   }
 }
+
+/** Canal preparatorio de terceros. Sin fuente de registros autorizados,
+ * devuelve una colección vacía; jamás inventa títulos ni consulta tablas privadas.
+ */
+import {safePublicThirdPartyCards,type ApprovedThirdPartyPublicRecord,type PublicThirdPartyCard} from "./liry-developer-publication";
+export async function getLiryApprovedThirdPartyCatalog():Promise<readonly PublicThirdPartyCard[]>{
+  const authorizedRecords:readonly ApprovedThirdPartyPublicRecord[]=[];
+  return safePublicThirdPartyCards(authorizedRecords);
+}
