@@ -14,6 +14,7 @@ export function LiryThirdPartyCatalog({games}:{games:readonly PublicThirdPartyCa
   opener.current=button;
   setSelected(game);
   dialog.current?.showModal();
+  if(dialog.current)dialog.current.scrollTop=0;
  };
  return <section className={styles.thirdPartySection} aria-labelledby="liry-third-party-title">
   <p className={styles.kicker}>PUBLICACIONES INDEPENDIENTES AUTORIZADAS</p>
@@ -26,11 +27,11 @@ export function LiryThirdPartyCatalog({games}:{games:readonly PublicThirdPartyCa
      <span className={styles.thirdPartyCardModel}>{game.model==="premium"?"PREMIUM":"FREEMIUM"}</span>
      <h4>{game.title}</h4>
      <p>{game.description}</p>
-     <button type="button" className={styles.thirdPartyDetailButton} aria-haspopup="dialog" onClick={event=>open(game,event.currentTarget)}>VER DETALLES →</button>
+     <button type="button" className={styles.thirdPartyDetailButton} aria-haspopup="dialog" aria-label={`Ver detalles de ${game.title}`} onClick={event=>open(game,event.currentTarget)}>VER DETALLES →</button>
     </div>
    </article>)}
   </div>
-  <dialog ref={dialog} className={styles.thirdPartyDialog} aria-labelledby="third-party-dialog-title" onClose={()=>{setSelected(null);opener.current?.focus({preventScroll:true});opener.current=null}} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
+  <dialog ref={dialog} className={styles.thirdPartyDialog} aria-modal="true" aria-labelledby="third-party-dialog-title" onClose={()=>{setSelected(null);opener.current?.focus({preventScroll:true});opener.current=null}} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
    <div className={styles.thirdPartyDialogBody}>
     <form method="dialog"><button type="submit" className={styles.thirdPartyClose} aria-label="Cerrar detalles del videojuego">×</button></form>
     <p className={styles.kicker}>LIRYGAMES · VIDEOJUEGO INDEPENDIENTE</p>
