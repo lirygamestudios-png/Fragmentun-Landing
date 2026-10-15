@@ -28,8 +28,10 @@ export async function getLiryPublicCatalog():Promise<readonly PublicGameCard[]>{
 /** Canal preparatorio de terceros. Sin fuente de registros autorizados,
  * devuelve una colección vacía; jamás inventa títulos ni consulta tablas privadas.
  */
-import {safePublicThirdPartyCards,type ApprovedThirdPartyPublicRecord,type PublicThirdPartyCard} from "./liry-developer-publication";
+import type {PublicThirdPartyCard} from "./liry-developer-publication";
+import {projectApprovedExternalSource} from "./liry-approved-source-boundary";
 export async function getLiryApprovedThirdPartyCatalog():Promise<readonly PublicThirdPartyCard[]>{
-  const authorizedRecords:readonly ApprovedThirdPartyPublicRecord[]=[];
-  return safePublicThirdPartyCards(authorizedRecords);
+  // No real approved read source is configured or authorized yet.
+  // Passing an empty value with approval disabled cannot publish any title.
+  return projectApprovedExternalSource([], {sourceApproved:false});
 }
