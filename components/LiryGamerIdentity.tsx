@@ -3,9 +3,11 @@ import {useEffect,useRef,useState,type ChangeEvent} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
 import type {PublicGamerSnapshot} from "../lib/games/public-gamer-snapshot";
 import {calculateGamerXpProgress} from "../lib/games/gamer-xp";
+import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
+const profileCopy=liryFrontdeskStrings("es").gamerProfile;
 import {validateTemporaryGamerAvatar,validateTemporaryGamerAvatarContent} from "../lib/games/liry-avatar-validation";
 
-const VALID_STYLES=["Explorador","Estratega","Competidor","Social","Acción","Creativo"] as const;
+const VALID_STYLES=liryFrontdeskStrings("es").gamerDna.traits;
 export function LiryGamerIdentity({snapshot}:{snapshot:Readonly<PublicGamerSnapshot>}){
  const verified=snapshot.status==="verified"?snapshot.verifiedActivity:null;
  const xp=verified?calculateGamerXpProgress(verified.experiencePoints):null;
@@ -59,7 +61,7 @@ export function LiryGamerIdentity({snapshot}:{snapshot:Readonly<PublicGamerSnaps
  }
  return <>
   <div className={styles.gamerIdentity}>
-   <button type="button" ref={triggerRef} className={styles.gamerPortrait} aria-label="Elegir avatar temporal" title="Elegir avatar" onClick={()=>dialogRef.current?.showModal()} style={{cursor:"pointer",padding:0,overflow:"hidden"}}>
+   <button type="button" ref={triggerRef} className={styles.gamerPortrait} aria-label={profileCopy.avatar} title="Elegir avatar" onClick={()=>dialogRef.current?.showModal()} style={{cursor:"pointer",padding:0,overflow:"hidden"}}>
     {avatar?<img src={avatar} alt="Vista previa de tu avatar" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<span>?</span>}
    </button>
    <div className={styles.gamerIdentityText}><strong>{snapshot.displayName}</strong><span>{xp?`Nivel ${xp.level}`:"Nivel —"}</span><div className={styles.gamerXpTrack} role="progressbar" aria-label={xp?"Progreso al siguiente nivel":"Experiencia pendiente de partidas verificadas"} aria-valuemin={xp?0:undefined} aria-valuemax={xp?100:undefined} aria-valuenow={xp?xp.progressPercent:undefined} aria-valuetext={xp?`${xp.currentLevelXp} de ${xp.nextLevelXp} XP hacia el siguiente nivel`:"Sin actividad verificada"}><span style={xp?{width:`${xp.progressPercent}%`,transition:"width .5s ease"}:undefined}/></div><small>{xp?`${xp.currentLevelXp}/${xp.nextLevelXp} XP · Total: ${xp.totalXp}`:"XP pendiente de actividad verificada"}</small></div>
