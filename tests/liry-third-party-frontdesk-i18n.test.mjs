@@ -122,3 +122,11 @@ test("Mi Liry facts preserve five sections and three status rows without invente
  for(const id of Object.keys(es)){assert.equal(es[id].length,3);assert.equal(en[id].length,3);}
  assert.match(en.liryboost[1][1],/No active leaderboard/);
 });
+
+test("Legal center preserves eight canonical slugs and prelaunch disclaimers in both locales",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.legalCenter,en=LIRY_FRONTDESK_STRINGS.en.legalCenter;
+ assert.deepEqual(es.documents.map(item=>item[0]),en.documents.map(item=>item[0]));
+ assert.equal(es.documents.length,8);
+ assert.match(es.intro,/No constituyen políticas definitivas/i);
+ assert.match(en.intro,/not final policies/i);
+});
