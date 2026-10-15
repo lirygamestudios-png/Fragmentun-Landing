@@ -26,7 +26,7 @@ export function projectTraceablyReviewedExternalCatalog(
   const record=candidate.record;
   const evidence=candidate.evidence;
   const control=candidate.editorialControl;
-  const verifiedHistory=verifyEditorialHashChain(candidate.chainedHistory,candidate.expectedFinalHash);
+  const verifiedHistory=typeof candidate.expectedFinalHash==="string"?verifyEditorialHashChain(candidate.chainedHistory,candidate.expectedFinalHash):null;
   const history=candidate.editorialHistory;
   if(!verifiedHistory||JSON.stringify(verifiedHistory)!==JSON.stringify(history))continue;
   const authoritative=replayExternalEditorialDecisions(history);
