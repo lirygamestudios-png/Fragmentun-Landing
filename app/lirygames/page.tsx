@@ -7,6 +7,7 @@ import {LiryCommunityTabs} from "../../components/LiryCommunityTabs";
 import {LiryBoostTop10} from "../../components/LiryBoostTop10";
 import {LiryBoostEnrollment} from "../../components/LiryBoostEnrollment";
 import {LiryGameDiscovery} from "../../components/LiryGameDiscovery";
+import {LiryThirdPartyCatalog} from "../../components/LiryThirdPartyCatalog";
 import {LiryGamerInfoDialog} from "../../components/LiryGamerInfoDialog";
 import {LiryGamerIdentity} from "../../components/LiryGamerIdentity";
 import {LiryIdAccess} from "../../components/LiryIdAccess";
@@ -75,7 +76,7 @@ export default async function LiryGamesFrontDesk(){
       <h2>CIENTOS DE MUNDOS</h2>
       <p className={styles.sectionIntro}>Explora los proyectos presentados hasta ahora. El catálogo crecerá progresivamente con videojuegos propios y de desarrolladores independientes, publicados únicamente después de su aprobación. Las tarjetas actuales no representan juegos disponibles para jugar.</p>
       <LiryGameDiscovery games={games} />
-      {approvedThirdPartyCatalog.length>0&&<p className={styles.sectionIntro}>También hay {approvedThirdPartyCatalog.length} videojuegos independientes autorizados para su publicación.</p>}
+      <LiryThirdPartyCatalog games={approvedThirdPartyCatalog} />
     </section>
     <section className={`${styles.section} ${styles.gamerSection}`} id="perfil-gamer" aria-label="Perfil gamer, recorrido y logros">
       <div className={styles.gamerGrid}>
