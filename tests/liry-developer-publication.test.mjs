@@ -1,5 +1,5 @@
 import test from "node:test";import assert from "node:assert/strict";
-import {mayPublishDeveloperGame,publicThirdPartyCatalog,publicApprovedThirdPartyCatalog,THIRD_PARTY_CATALOG_CAPACITY,TOTAL_CATALOG_CAPACITY,OWN_GAME_RESERVED_SLOTS} from "../lib/games/liry-developer-publication.ts";
+import {mayPublishDeveloperGame,publicThirdPartyCatalog,publicApprovedThirdPartyCatalog,safePublicThirdPartyCards,THIRD_PARTY_CATALOG_CAPACITY,TOTAL_CATALOG_CAPACITY,OWN_GAME_RESERVED_SLOTS} from "../lib/games/liry-developer-publication.ts";
 const valid={developerId:"dev-1",gameId:"game-1",model:"freemium",state:"approved",artifactHash:"a".repeat(64),approvedArtifactHash:"a".repeat(64),ownerVerified:true,commercialRightsVerified:true,humanApproved:true};
 test("100 total: 9 propios + 91 terceros",()=>{assert.equal(TOTAL_CATALOG_CAPACITY,100);assert.equal(OWN_GAME_RESERVED_SLOTS,9);assert.equal(THIRD_PARTY_CATALOG_CAPACITY,91)});
 test("requires approval and matching build",()=>assert.equal(mayPublishDeveloperGame(valid),true));
@@ -14,3 +14,8 @@ test("external listing requires matching approved game and build",()=>assert.dee
 test("blocks an unpublished or unreviewed third-party game",()=>assert.equal(publicApprovedThirdPartyCatalog([entry({published:false}),entry({releaseApproved:false}),entry({submission:{...valid,humanApproved:false}})]).length,0));
 test("blocks card bound to another game's approval",()=>assert.equal(publicApprovedThirdPartyCatalog([entry({gameId:"game-2"})]).length,0));
 test("prevents duplicate game listing",()=>assert.equal(publicApprovedThirdPartyCatalog([entry(),entry()]).length,1));
+
+const safeCard={slug:"indie-world",title:"Juego autorizado",description:"Descripción pública",model:"premium",coverUrl:"https://example.com/cover.jpg",developerId:"secret",artifactHash:"private"};
+test("projection excludes developer private data",()=>assert.deepEqual(safePublicThirdPartyCards([entry({publicCard:safeCard})]),[{slug:"indie-world",title:"Juego autorizado",description:"Descripción pública",model:"premium",coverUrl:"https://example.com/cover.jpg"}]));
+test("projection rejects invalid public slug",()=>assert.deepEqual(safePublicThirdPartyCards([entry({publicCard:{...safeCard,slug:"../private"}})]),[]));
+test("projection rejects unpublished approved entry",()=>assert.deepEqual(safePublicThirdPartyCards([entry({published:false,publicCard:safeCard})]),[]));
