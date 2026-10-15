@@ -11,9 +11,10 @@ const editorialHistory=[decision],chainedHistory=chainEditorialDecisions(editori
 const expectedFinalHash=chainedHistory[0].hash;
 const submission={developerId:"synthetic-developer",gameId:decision.gameId,model:"premium",state:"approved",artifactHash:hash,approvedArtifactHash:hash,ownerVerified:true,commercialRightsVerified:true,humanApproved:true};
 const evidence={gameId:decision.gameId,versionId:"v1",reviewedVersionId:"v1",reviewedArtifactHash:hash,submission,reviewerId:decision.reviewerId,decision:"approved",decidedAt:decision.decidedAt,rightsReviewed:true,executableReviewed:true,publicationEnabled:true};
+const reviewerAssertion={reviewerId:"synthetic-reviewer",verifiedByTrustedProvider:true,active:true,roles:["external_release_reviewer"],allowedGameIds:["synthetic-game-1"]};
 const editorialControl={gameId:decision.gameId,currentVersionId:"v1",approvalVersionId:"v1",approvalArtifactHash:hash,state:"active"};
 const record={gameId:decision.gameId,published:true,releaseApproved:true,submission,publicCard:{slug:"synthetic-game-1",title:"Synthetic Fixture",description:"Testing only",model:"premium",coverUrl:null,developerId:"private"}};
-const candidate={record,evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash};
+const candidate={record,evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,reviewerAssertion};
 const permission={sourceApproved:true,publicReadEnabled:true,humanReleaseGateEnabled:true,independentCustodyEnabled:true};
 const syntheticCustodian={readTrustedAnchor:async gameId=>({gameId,sequence:1,finalHash:expectedFinalHash,custodianId:"synthetic-independent-anchor"})};
 const provider=rows=>({readApprovedRecords:async()=>rows});
