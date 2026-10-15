@@ -1452,3 +1452,18 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 @media(max-width:800px){.thirdPartyGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.thirdPartyGrid{grid-template-columns:1fr}.thirdPartyCardArt{height:110px}}
 @media(prefers-reduced-motion:reduce){.thirdPartyCard{transition:none}}
+
+
+.thirdPartyDetailButton{margin-top:14px;min-height:44px;padding:11px 17px;border:1px solid #53bee5;border-radius:9px;background:#0b2b48;color:#e4f8ff;font-size:12px;font-weight:800;cursor:pointer}
+.thirdPartyDetailButton:hover,.thirdPartyDetailButton:focus-visible{border-color:#a1eeff;background:#155b82;box-shadow:0 0 18px #40caff70}
+.thirdPartyDetailButton:focus-visible,.thirdPartyClose:focus-visible{outline:2px solid #dbfaff;outline-offset:3px}
+.thirdPartyDialog{width:min(92vw,650px);max-height:88dvh;padding:0;overflow:auto;border:1px solid #55bce4;border-radius:13px;background:#08172d;color:#eef7ff;box-shadow:0 0 60px #000a,0 0 24px #35b9fa50}
+.thirdPartyDialog::backdrop{background:#020817d9}
+.thirdPartyDialogBody{position:relative;padding:clamp(20px,4vw,32px)}
+.thirdPartyDialogBody h3{margin:13px 52px 17px 0;font-size:clamp(22px,3vw,30px)}
+.thirdPartyDialogBody>p:not(.kicker){line-height:1.65;color:#cbdeee}
+.thirdPartyClose{position:absolute;right:14px;top:14px;display:grid;place-items:center;min-width:44px;min-height:44px;border:1px solid #55bce4;border-radius:9px;background:#103151;color:#e7fbff;font-size:26px;cursor:pointer}
+.thirdPartyClose:hover{background:#155b82;box-shadow:0 0 14px #42caff70}
+.thirdPartyNotice{padding:12px 15px;border-left:3px solid #54c7ed;background:#0b2643;border-radius:0 8px 8px 0}
+@media(max-width:560px){.thirdPartyDetailButton{width:100%}.thirdPartyDialog{width:96vw;max-height:90dvh}.thirdPartyDialogBody{padding:20px 15px}}
+@media(prefers-reduced-motion:reduce){.thirdPartyDetailButton{transition:none}}
