@@ -5,6 +5,7 @@ import type {PublicGamerSnapshot} from "../lib/games/public-gamer-snapshot";
 import {calculateGamerXpProgress} from "../lib/games/gamer-xp";
 import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
 const profileCopy=liryFrontdeskStrings("es").gamerProfile;
+const detailCopy=liryFrontdeskStrings("es").gamerProfileDetails;
 import {validateTemporaryGamerAvatar,validateTemporaryGamerAvatarContent} from "../lib/games/liry-avatar-validation";
 
 const VALID_STYLES=liryFrontdeskStrings("es").gamerDna.traits;
@@ -50,7 +51,7 @@ export function LiryGamerIdentity({snapshot}:{snapshot:Readonly<PublicGamerSnaps
   if(!validation.ok){setAvatarError(validation.message);return;}
   const validContent=await validateTemporaryGamerAvatarContent(file);
   if(selection!==avatarSelection.current)return;
-  if(!validContent){setAvatarError("La imagen no coincide con su formato declarado.");return;}
+  if(!validContent){setAvatarError(detailCopy.invalidFormat);return;}
   if(avatarUrl.current)URL.revokeObjectURL(avatarUrl.current);
   const url=URL.createObjectURL(file);avatarUrl.current=url;setAvatar(url);
  }
@@ -61,27 +62,27 @@ export function LiryGamerIdentity({snapshot}:{snapshot:Readonly<PublicGamerSnaps
  }
  return <>
   <div className={styles.gamerIdentity}>
-   <button type="button" ref={triggerRef} className={styles.gamerPortrait} aria-label={profileCopy.avatar} title="Elegir avatar" onClick={()=>dialogRef.current?.showModal()} style={{cursor:"pointer",padding:0,overflow:"hidden"}}>
-    {avatar?<img src={avatar} alt="Vista previa de tu avatar" style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<span>?</span>}
+   <button type="button" ref={triggerRef} className={styles.gamerPortrait} aria-label={profileCopy.avatar} title={detailCopy.chooseTitle} onClick={()=>dialogRef.current?.showModal()} style={{cursor:"pointer",padding:0,overflow:"hidden"}}>
+    {avatar?<img src={avatar} alt={detailCopy.previewAlt} style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<span>?</span>}
    </button>
-   <div className={styles.gamerIdentityText}><strong>{snapshot.displayName}</strong><span>{xp?`Nivel ${xp.level}`:"Nivel —"}</span><div className={styles.gamerXpTrack} role="progressbar" aria-label={xp?"Progreso al siguiente nivel":"Experiencia pendiente de partidas verificadas"} aria-valuemin={xp?0:undefined} aria-valuemax={xp?100:undefined} aria-valuenow={xp?xp.progressPercent:undefined} aria-valuetext={xp?`${xp.currentLevelXp} de ${xp.nextLevelXp} XP hacia el siguiente nivel`:"Sin actividad verificada"}><span style={xp?{width:`${xp.progressPercent}%`,transition:"width .5s ease"}:undefined}/></div><small>{xp?`${xp.currentLevelXp}/${xp.nextLevelXp} XP · Total: ${xp.totalXp}`:"XP pendiente de actividad verificada"}</small></div>
+   <div className={styles.gamerIdentityText}><strong>{snapshot.displayName}</strong><span>{xp?`${detailCopy.level} ${xp.level}`:`${detailCopy.level} —`}</span><div className={styles.gamerXpTrack} role="progressbar" aria-label={xp?detailCopy.xpProgress:detailCopy.xpPending} aria-valuemin={xp?0:undefined} aria-valuemax={xp?100:undefined} aria-valuenow={xp?xp.progressPercent:undefined} aria-valuetext={xp?`${xp.currentLevelXp} de ${xp.nextLevelXp} XP hacia el siguiente nivel`:detailCopy.noVerifiedActivity}><span style={xp?{width:`${xp.progressPercent}%`,transition:"width .5s ease"}:undefined}/></div><small>{xp?`${xp.currentLevelXp}/${xp.nextLevelXp} XP · Total: ${xp.totalXp}`:profileCopy.noActivity}</small></div>
   </div>
-  <p className={styles.gamerMicroLabel}>Tu estilo de juego</p>
-  <div className={`${styles.gamerStyles} ${highlight?styles.gamerStylesHighlighted:""}`} aria-live="polite"><span>◇ <b>{style??"Por descubrir"}</b></span></div>
-  <small className={styles.gamerDataNote}>{style?"Afinidad de tu Liry ADN. Tras cerrar la evaluación permanece visible durante 10 segundos; no equivale a progreso de juego.":"Completa el cuestionario Liry ADN para descubrir tu estilo. Sin evaluación no se asigna ninguno."}</small>
-  <div className={styles.gamerMetrics}><div><small>Juegos jugados</small><strong>{verified?verified.gamesPlayed:"—"}</strong></div><div><small>Logros</small><strong>{verified?verified.achievedCount:"—"}</strong></div><div><small>Horas de juego</small><strong>{verified?(verified.playMinutes/60).toFixed(1):"—"}</strong></div></div>
-  <small className={styles.gamerDataNote}>{verified?"Actividad recibida desde una fuente verificada. El avatar seleccionado sigue siendo temporal y no se transmite.":"Estado visitante · sin sesión gamer. El avatar no se guarda ni se transmite."}</small>
-  <dialog ref={dialogRef} className={styles.gamerInfoDialog} aria-label="Avatar gamer" onClose={()=>triggerRef.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
+  <p className={styles.gamerMicroLabel}>{detailCopy.playStyle}</p>
+  <div className={`${styles.gamerStyles} ${highlight?styles.gamerStylesHighlighted:""}`} aria-live="polite"><span>◇ <b>{style??detailCopy.undiscovered}</b></span></div>
+  <small className={styles.gamerDataNote}>{style?detailCopy.styleHint:detailCopy.styleIntro}</small>
+  <div className={styles.gamerMetrics}><div><small>{detailCopy.gamesPlayed}</small><strong>{verified?verified.gamesPlayed:"—"}</strong></div><div><small>{detailCopy.achievements}</small><strong>{verified?verified.achievedCount:"—"}</strong></div><div><small>{detailCopy.playHours}</small><strong>{verified?(verified.playMinutes/60).toFixed(1):"—"}</strong></div></div>
+  <small className={styles.gamerDataNote}>{verified?detailCopy.verifiedActivity:profileCopy.noSession}</small>
+  <dialog ref={dialogRef} className={styles.gamerInfoDialog} aria-label={detailCopy.avatarDialog} onClose={()=>triggerRef.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
    <div className={styles.gamerInfoDialogInside}>
-    <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar subpantalla">×</button></form>
-    <p className={styles.gamerInfoEyebrow}>LIRYGAMES STUDIOS · IDENTIDAD</p>
-    <h3>AVATAR GAMER</h3>
-    <p>Selecciona una imagen para verla como avatar durante esta visita. No se sube al servidor ni se guarda en una cuenta.</p>
-    <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" aria-label="Seleccionar imagen para avatar" onChange={selectAvatar}/>
-    <p>JPG, PNG o WebP · máximo 2 MB.</p>
+    <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label={detailCopy.close}>×</button></form>
+    <p className={styles.gamerInfoEyebrow}>{detailCopy.avatarEyebrow}</p>
+    <h3>{detailCopy.avatarDialog}</h3>
+    <p>{detailCopy.avatarHelp}</p>
+    <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" aria-label={detailCopy.avatarSelect} onChange={selectAvatar}/>
+    <p>{detailCopy.avatarFormat}</p>
     {avatarError&&<p role="alert" className={styles.gamerDataNote}>{avatarError}</p>}
-    {avatar&&<button type="button" className={styles.gamerInfoDone} onClick={removeAvatar}>QUITAR AVATAR</button>}
-    <form method="dialog"><button type="submit" className={styles.gamerInfoDone}>ENTENDIDO</button></form>
+    {avatar&&<button type="button" className={styles.gamerInfoDone} onClick={removeAvatar}>{detailCopy.removeAvatar}</button>}
+    <form method="dialog"><button type="submit" className={styles.gamerInfoDone}>{detailCopy.done}</button></form>
    </div>
   </dialog>
  </>;
