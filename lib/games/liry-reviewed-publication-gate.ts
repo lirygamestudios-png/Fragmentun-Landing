@@ -30,7 +30,7 @@ export function projectTraceablyReviewedExternalCatalog(
   const control=candidate.editorialControl;
   const verifiedHistory=typeof candidate.expectedFinalHash==="string"?verifyEditorialHashChain(candidate.chainedHistory,candidate.expectedFinalHash):null;
   const history=candidate.editorialHistory;
-  if(!verifiedHistory||JSON.stringify(verifiedHistory)!==JSON.stringify(history))continue;
+  if(!Array.isArray(history)||!verifiedHistory||JSON.stringify(verifiedHistory)!==JSON.stringify(history))continue;
   const authoritative=replayExternalEditorialDecisions(history);
   const latestDecision=Array.isArray(history)?history[history.length-1]:null;
   if(!record||typeof record!=="object"||Array.isArray(record)||
