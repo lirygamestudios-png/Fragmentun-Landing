@@ -74,3 +74,12 @@ test("Mi Liry inner panels retain bilingual copy and no simulated player data",(
  }
  assert.match(en.liryboost.note,/does not guarantee/i);
 });
+
+test("Mi Liry identity preview and privacy text match across locales",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.miLiryIdentity;
+ const en=LIRY_FRONTDESK_STRINGS.en.miLiryIdentity;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ for(const key of ["securityRules","avatars","themes"])assert.equal(es[key].length,en[key].length);
+ assert.equal(es.securityRules.length,3);
+ assert.match(en.previewNote,/No settings are saved/);
+});
