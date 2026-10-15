@@ -138,3 +138,12 @@ test("legal document routes are stable and labels available without changing cla
  assert.deepEqual(en.documents.map(item=>item[0]),expected);
  assert.match(es.draft,/PREPARACIÓN/);
 });
+
+test("contact subjects preserve backend values and consent meaning in ES and EN",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.contact,en=LIRY_FRONTDESK_STRINGS.en.contact;
+ assert.equal(es.subjectOptions.length,5);
+ assert.equal(en.subjectOptions.length,5);
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.match(es.consentText,/No implica suscripción/);
+ assert.match(en.consentText,/does not subscribe/i);
+});
