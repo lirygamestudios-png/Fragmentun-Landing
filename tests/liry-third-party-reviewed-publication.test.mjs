@@ -9,8 +9,9 @@ const evidence={gameId:"game-1",versionId:"v1",reviewedVersionId:"v1",reviewedAr
 const editorialHistory=[{gameId:"game-1",versionId:"v1",artifactHash:hash,sequence:1,action:"approve",reviewerId:"reviewer-1",decidedAt:"2026-10-14T22:00:00Z",approvalId:"initial-1"}];
 const chainedHistory=chainEditorialDecisions(editorialHistory);
 const expectedFinalHash=chainedHistory[chainedHistory.length-1].hash;
+const reviewerAssertion={reviewerId:"reviewer-1",verifiedByTrustedProvider:true,active:true,roles:["external_release_reviewer"],allowedGameIds:["game-1"]};
 const editorialControl={gameId:"game-1",currentVersionId:"v1",approvalVersionId:"v1",approvalArtifactHash:hash,state:"active"};
-const candidate={record,evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash};
+const candidate={record,evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,reviewerAssertion};
 const enabled={sourceApproved:true,humanReleaseGateEnabled:true};
 test("private release gate defaults to no external publications",()=>{
  assert.deepEqual(projectTraceablyReviewedExternalCatalog([candidate],{...enabled,humanReleaseGateEnabled:false}),[]);
@@ -19,7 +20,7 @@ test("private release gate defaults to no external publications",()=>{
 });
 test("reviewed record exposes only public fields",()=>assert.deepEqual(projectTraceablyReviewedExternalCatalog([candidate],enabled),[{slug:"approved-game",title:"Fixture aislada",description:"Solo pruebas",model:"freemium",coverUrl:null}]));
 test("new executable version requires separate review",()=>{
- assert.deepEqual(projectTraceablyReviewedExternalCatalog([{record,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,evidence:{...evidence,versionId:"v2"}}],enabled),[]);
+ assert.deepEqual(projectTraceablyReviewedExternalCatalog([{record,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,reviewerAssertion,evidence:{...evidence,versionId:"v2"}}],enabled),[]);
 });
 test("different reviewed hash, developer, game or commercial model cannot reuse evidence",()=>{
  const modified=[
@@ -28,14 +29,14 @@ test("different reviewed hash, developer, game or commercial model cannot reuse 
   {...record,submission:{...submission,model:"premium"}},
   {...record,gameId:"other"}
  ];
- for(const item of modified)assert.deepEqual(projectTraceablyReviewedExternalCatalog([{record:item,evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash}],enabled),[]);
+ for(const item of modified)assert.deepEqual(projectTraceablyReviewedExternalCatalog([{record:item,evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,reviewerAssertion}],enabled),[]);
 });
 test("rejected, unpublished, or unapproved games remain invisible",()=>{
  for(const c of [
-  {record:{...record,published:false},evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash},
-  {record:{...record,releaseApproved:false},evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash},
-  {record,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,evidence:{...evidence,decision:"pending"}},
-  {record,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,evidence:{...evidence,rightsReviewed:false}}
+  {record:{...record,published:false},evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,reviewerAssertion},
+  {record:{...record,releaseApproved:false},evidence,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,reviewerAssertion},
+  {record,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,reviewerAssertion,evidence:{...evidence,decision:"pending"}},
+  {record,editorialControl,editorialHistory,chainedHistory,expectedFinalHash,reviewerAssertion,evidence:{...evidence,rightsReviewed:false}}
  ])assert.deepEqual(projectTraceablyReviewedExternalCatalog([c],enabled),[]);
 });
 
