@@ -1,5 +1,7 @@
 "use client";
 import {useEffect,useRef,useState,type FormEvent} from "react";
+import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
+const copy=liryFrontdeskStrings("es").contact;
 declare global {interface Window {turnstile?:{render:(node:HTMLElement,options:{sitekey:string;callback:(token:string)=>void;"expired-callback":()=>void;"error-callback":()=>void})=>string;remove:(id:string)=>void;reset:(id:string)=>void}}}
 const turnstileSiteKey=process.env.NEXT_PUBLIC_LIRY_TURNSTILE_SITE_KEY;
 export function LiryContactForm(){
@@ -30,13 +32,13 @@ export function LiryContactForm(){
  const[result,setResult]=useState("");
  const[done,setDone]=useState(false);
  async function submit(e:FormEvent<HTMLFormElement>){
-  e.preventDefault();if(!turnstileToken){setResult("Completa la verificación antirrobot antes de enviar.");return;}setBusy(true);setDone(false);setResult("");
+  e.preventDefault();if(!turnstileToken){setResult(copy.captchaRequired);return;}setBusy(true);setDone(false);setResult("");
   try{
    const r=await fetch("/api/lirygames/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,subject,gameSlug,message,privacyAcknowledged:ack,website,turnstileToken})});
    const j=await r.json();
    if(!r.ok||!j.ok)throw Error(j.message||"No se pudo enviar.");
    setName("");setEmail("");setSubject("opinion");setGameSlug("");setMessage("");setAck(false);setWebsite("");
-   setDone(true);setResult(j.message||"Mensaje enviado correctamente.");
+   setDone(true);setResult(j.message||copy.success);
   }catch(error){setResult(error instanceof Error?error.message:"Error de envío");}
   finally{setBusy(false);setTurnstileToken("");if(turnstileWidgetId.current)window.turnstile?.reset(turnstileWidgetId.current)}
  }
@@ -45,8 +47,8 @@ export function LiryContactForm(){
  return <form onSubmit={submit} style={{display:"grid",gap:11,maxWidth:700}} aria-label="Formulario de contacto LIRYGAMES">
   <>
    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(210px,1fr))",gap:10}}>
-    <input style={field} type="text" value={name} onChange={e=>{setName(e.target.value);if(done){setDone(false);setResult("");}}} placeholder="Nombre" aria-label="Nombre" required minLength={2} maxLength={100}/>
-    <input style={field} type="email" value={email} onChange={e=>{setEmail(e.target.value);resetFeedback()}} placeholder="Correo electrónico" aria-label="Correo electrónico" required maxLength={254}/>
+    <input style={field} type="text" value={name} onChange={e=>{setName(e.target.value);if(done){setDone(false);setResult("");}}} placeholder={copy.name} aria-label={copy.name} required minLength={2} maxLength={100}/>
+    <input style={field} type="email" value={email} onChange={e=>{setEmail(e.target.value);resetFeedback()}} placeholder={copy.email} aria-label={copy.email} required maxLength={254}/>
    </div>
    <select style={field} aria-label="Motivo del contacto" value={subject} onChange={e=>{setSubject(e.target.value);resetFeedback()}} required>
     <option value="opinion">Opinión sobre nuestros juegos</option>
@@ -55,14 +57,14 @@ export function LiryContactForm(){
     <option value="business">Propuesta comercial o colaboración</option>
     <option value="other">Otra consulta</option>
    </select>
-   <input style={field} type="text" value={gameSlug} onChange={e=>{setGameSlug(e.target.value);resetFeedback()}} placeholder="Videojuego o producto (opcional)" aria-label="Videojuego o producto (opcional)" maxLength={80}/>
-   <textarea style={{...field,minHeight:112,resize:"vertical"}} aria-label="Tu mensaje" placeholder="Escribe tu mensaje aquí..." value={message} onChange={e=>{setMessage(e.target.value);resetFeedback()}} minLength={10} maxLength={3000} required/>
+   <input style={field} type="text" value={gameSlug} onChange={e=>{setGameSlug(e.target.value);resetFeedback()}} placeholder={copy.game} aria-label={copy.game} maxLength={80}/>
+   <textarea style={{...field,minHeight:112,resize:"vertical"}} aria-label={copy.message} placeholder="Escribe tu mensaje aquí..." value={message} onChange={e=>{setMessage(e.target.value);resetFeedback()}} minLength={10} maxLength={3000} required/>
    <label className="liryContactConsent"><input className="liryContactCheck" type="checkbox" checked={ack} onChange={e=>{setAck(e.target.checked);resetFeedback()}} required/><span>Autorizo el tratamiento de mis datos para responder a este mensaje. No implica suscripción a publicidad.</span></label>
    <input name="website" aria-hidden="true" autoComplete="off" tabIndex={-1} value={website} onChange={e=>setWebsite(e.target.value)} style={{position:"absolute",left:-9999}}/>
    <div aria-label="Verificación antirrobot" ref={turnstileContainer} style={{minHeight:65}}/>
-   {!turnstileSiteKey&&<p role="status" style={{color:"#ffb2b2",fontSize:12}}>La verificación antirrobot está pendiente de configuración. El envío se habilitará cuando esté disponible.</p>}
+   {!turnstileSiteKey&&<p role="status" style={{color:"#ffb2b2",fontSize:12}}>{copy.captchaUnavailable}</p>}
    {turnstileError&&<p role="alert" style={{color:"#ffb2b2",fontSize:12}}>{turnstileError}</p>}
-   <button className="liryContactSubmit" disabled={busy||!turnstileToken} type="submit">{busy?"ENVIANDO...":"ENVIAR MENSAJE →"}</button>
+   <button className="liryContactSubmit" disabled={busy||!turnstileToken} type="submit">{busy?copy.sending:`${copy.submit} →`}</button>
   </>
   {result&&<p role="status" style={{fontSize:12,color:done?"#89ebd0":"#ffb2b2",margin:0}}>{result}</p>}
  </form>;
