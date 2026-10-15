@@ -68,15 +68,29 @@ export type ApprovedThirdPartyPublicRecord=Omit<ApprovedThirdPartyListing<Public
   publicCard:PublicThirdPartyCard;
 };
 export function safePublicThirdPartyCards(records:readonly ApprovedThirdPartyPublicRecord[]):readonly PublicThirdPartyCard[]{
-  return publicApprovedThirdPartyCatalog(records).flatMap(card=>{
+  const visible:PublicThirdPartyCard[]=[];
+  const seenGames=new Set<string>();
+  const seenSlugs=new Set<string>();
+  for(const record of records){
+    if(visible.length>=THIRD_PARTY_CATALOG_CAPACITY)break;
+    const card=record.publicCard;
+    if(!record.published||!record.releaseApproved||
+       record.gameId!==record.submission.gameId||
+       !mayPublishDeveloperGame(record.submission)||
+       !card||card.model!==record.submission.model||
+       seenGames.has(record.gameId))continue;
     const slug=typeof card.slug==="string"?card.slug.trim():"";
     const title=typeof card.title==="string"?card.title.trim():"";
-    if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)||!title||title.length>120||
-       (card.model!=="premium"&&card.model!=="freemium"))return [];
+    if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)||seenSlugs.has(slug)||
+       !title||title.length>120||
+       (card.model!=="premium"&&card.model!=="freemium"))continue;
     const description=typeof card.description==="string"?card.description.trim().slice(0,300):"";
     const coverUrl=typeof card.coverUrl==="string"&&/^https:\/\//i.test(card.coverUrl)?card.coverUrl:null;
-    return [{slug,title,description,model:card.model,coverUrl}];
-  });
+    seenGames.add(record.gameId);
+    seenSlugs.add(slug);
+    visible.push({slug,title,description,model:card.model,coverUrl});
+  }
+  return visible;
 }
 
 /** Estado comercial distinto del proceso de aprobación editorial.
