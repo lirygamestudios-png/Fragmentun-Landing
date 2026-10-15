@@ -57,6 +57,18 @@ export async function readAuthorizedExternalCatalog(
       if(!serverAssertion)continue;
       verified.push({...candidate,reviewerAssertion:serverAssertion});
     }
+    // Re-read server-owned authority immediately before the final projection.
+    // If any grant changed or vanished mid-read, discard the whole batch.
+    for(const item of verified){
+      const entry=item as Record<string,unknown>;
+      const ev=entry.evidence as Record<string,unknown>;
+      const gameId=(entry.record as Record<string,unknown>).gameId;
+      if(typeof ev.reviewerId!=="string"||typeof ev.versionId!=="string"||
+         typeof gameId!=="string")return [];
+      const fresh=await authority.readReviewerAuthority(ev.reviewerId,gameId);
+      const verifiedGrant=safeServerReviewerAssertion(fresh,ev.reviewerId,gameId,ev.versionId,new Date().toISOString());
+      if(!verifiedGrant)return [];
+    }
     return projectTraceablyReviewedExternalCatalog(verified,{sourceApproved:true,humanReleaseGateEnabled:true});
   }catch{
     // Provider unavailable or incomplete: never leak errors/data to visitors.
