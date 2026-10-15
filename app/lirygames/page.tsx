@@ -71,8 +71,8 @@ export default async function LiryGamesFrontDesk(){
     </section>
     <section className={styles.section} id="mundos">
       <p className={styles.kicker}>TU UNIVERSO DE JUEGO</p>
-      <h2>LOS CIENTOS DE MUNDOS</h2>
-      <p className={styles.sectionIntro}>Cada tarjeta representa un videojuego diferente. Su lanzamiento se anunciará cuando esté realmente disponible.</p>
+      <h2>CIENTOS DE MUNDOS</h2>
+      <p className={styles.sectionIntro}>Explora los proyectos presentados hasta ahora. El catálogo crecerá progresivamente con videojuegos propios y de desarrolladores independientes, publicados únicamente después de su aprobación. Las tarjetas actuales no representan juegos disponibles para jugar.</p>
       <LiryGameDiscovery games={games} />
     </section>
     <section className={`${styles.section} ${styles.gamerSection}`} id="perfil-gamer" aria-label="Perfil gamer, recorrido y logros">
