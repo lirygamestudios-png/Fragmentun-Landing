@@ -24,3 +24,6 @@ const commercial={publicationApproved:true,published:true,commerceEnabled:true,p
 test("commercial states distinguish preparation and approval",()=>{assert.equal(thirdPartyCommercialState({...commercial,publicationApproved:false}),"preparing");assert.equal(thirdPartyCommercialState({...commercial,published:false}),"approved_not_released")});
 test("published information does not imply checkout",()=>{assert.equal(thirdPartyCommercialState({...commercial,paymentProviderReady:false}),"published_information_only");assert.equal(mayEnableThirdPartyCheckout({...commercial,priceVerified:false}),false)});
 test("checkout needs all commercial authorizations",()=>assert.equal(mayEnableThirdPartyCheckout(commercial),true));
+
+test("public model must match reviewed model",()=>assert.deepEqual(safePublicThirdPartyCards([entry({publicCard:{...safeCard,model:"freemium"}})]),[]));
+test("duplicate public slugs are not published twice",()=>assert.equal(safePublicThirdPartyCards([entry({publicCard:safeCard}),entry({gameId:"game-2",submission:{...valid,gameId:"game-2"},publicCard:safeCard})]).length,1));
