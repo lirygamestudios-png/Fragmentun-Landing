@@ -1,4 +1,5 @@
 import {releaseHasTraceableHumanApproval,type IndependentReleaseEvidence} from "./liry-independent-release-evidence";
+import {permitsCurrentExternalRelease,type ExternalEditorialControl} from "./liry-editorial-revocation";
 import {projectApprovedExternalSource} from "./liry-approved-source-boundary";
 import type {PublicThirdPartyCard} from "./liry-developer-publication";
 
@@ -6,6 +7,7 @@ import type {PublicThirdPartyCard} from "./liry-developer-publication";
 export type ReviewedExternalCandidate={
   record:unknown;
   evidence:IndependentReleaseEvidence;
+  editorialControl:ExternalEditorialControl;
 };
 export function projectTraceablyReviewedExternalCatalog(
   candidates:readonly ReviewedExternalCandidate[]|unknown,
@@ -18,12 +20,14 @@ export function projectTraceablyReviewedExternalCatalog(
   const candidate=item as Record<string,unknown>;
   const record=candidate.record;
   const evidence=candidate.evidence;
+  const control=candidate.editorialControl;
   if(!record||typeof record!=="object"||Array.isArray(record)||
      !evidence||typeof evidence!=="object"||Array.isArray(evidence))continue;
   const r=record as Record<string,unknown>;
   const e=evidence as IndependentReleaseEvidence;
   if(typeof r.gameId!=="string"||r.gameId!==e.gameId||
-     !releaseHasTraceableHumanApproval(e))continue;
+     !releaseHasTraceableHumanApproval(e)||
+     !permitsCurrentExternalRelease(control,e.gameId,e.versionId,e.reviewedArtifactHash))continue;
   const submission=r.submission;
   if(!submission||typeof submission!=="object"||Array.isArray(submission))continue;
   const s=submission as Record<string,unknown>;
