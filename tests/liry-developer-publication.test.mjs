@@ -1,5 +1,5 @@
 import test from "node:test";import assert from "node:assert/strict";
-import {mayPublishDeveloperGame,publicThirdPartyCatalog,publicApprovedThirdPartyCatalog,safePublicThirdPartyCards,THIRD_PARTY_CATALOG_CAPACITY,TOTAL_CATALOG_CAPACITY,OWN_GAME_RESERVED_SLOTS} from "../lib/games/liry-developer-publication.ts";
+import {mayPublishDeveloperGame,publicThirdPartyCatalog,publicApprovedThirdPartyCatalog,safePublicThirdPartyCards,thirdPartyCommercialState,mayEnableThirdPartyCheckout,THIRD_PARTY_CATALOG_CAPACITY,TOTAL_CATALOG_CAPACITY,OWN_GAME_RESERVED_SLOTS} from "../lib/games/liry-developer-publication.ts";
 const valid={developerId:"dev-1",gameId:"game-1",model:"freemium",state:"approved",artifactHash:"a".repeat(64),approvedArtifactHash:"a".repeat(64),ownerVerified:true,commercialRightsVerified:true,humanApproved:true};
 test("100 total: 9 propios + 91 terceros",()=>{assert.equal(TOTAL_CATALOG_CAPACITY,100);assert.equal(OWN_GAME_RESERVED_SLOTS,9);assert.equal(THIRD_PARTY_CATALOG_CAPACITY,91)});
 test("requires approval and matching build",()=>assert.equal(mayPublishDeveloperGame(valid),true));
@@ -19,3 +19,8 @@ const safeCard={slug:"indie-world",title:"Juego autorizado",description:"Descrip
 test("projection excludes developer private data",()=>assert.deepEqual(safePublicThirdPartyCards([entry({publicCard:safeCard})]),[{slug:"indie-world",title:"Juego autorizado",description:"Descripción pública",model:"premium",coverUrl:"https://example.com/cover.jpg"}]));
 test("projection rejects invalid public slug",()=>assert.deepEqual(safePublicThirdPartyCards([entry({publicCard:{...safeCard,slug:"../private"}})]),[]));
 test("projection rejects unpublished approved entry",()=>assert.deepEqual(safePublicThirdPartyCards([entry({published:false,publicCard:safeCard})]),[]));
+
+const commercial={publicationApproved:true,published:true,commerceEnabled:true,paymentProviderReady:true,contractApproved:true,priceVerified:true};
+test("commercial states distinguish preparation and approval",()=>{assert.equal(thirdPartyCommercialState({...commercial,publicationApproved:false}),"preparing");assert.equal(thirdPartyCommercialState({...commercial,published:false}),"approved_not_released")});
+test("published information does not imply checkout",()=>{assert.equal(thirdPartyCommercialState({...commercial,paymentProviderReady:false}),"published_information_only");assert.equal(mayEnableThirdPartyCheckout({...commercial,priceVerified:false}),false)});
+test("checkout needs all commercial authorizations",()=>assert.equal(mayEnableThirdPartyCheckout(commercial),true));
