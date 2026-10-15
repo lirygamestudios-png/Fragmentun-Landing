@@ -1,4 +1,5 @@
 import {releaseHasTraceableHumanApproval,type IndependentReleaseEvidence} from "./liry-independent-release-evidence";
+import {verifyEditorialHashChain,type ChainedEditorialDecision} from "./liry-editorial-hash-chain";
 import {replayExternalEditorialDecisions,type EditorialDecision} from "./liry-editorial-decision-ledger";
 import {permitsCurrentExternalRelease,type ExternalEditorialControl} from "./liry-editorial-revocation";
 import {projectApprovedExternalSource} from "./liry-approved-source-boundary";
@@ -10,6 +11,8 @@ export type ReviewedExternalCandidate={
   evidence:IndependentReleaseEvidence;
   editorialControl:ExternalEditorialControl;
   editorialHistory:readonly EditorialDecision[];
+  chainedHistory:readonly ChainedEditorialDecision[];
+  expectedFinalHash:string;
 };
 export function projectTraceablyReviewedExternalCatalog(
   candidates:readonly ReviewedExternalCandidate[]|unknown,
@@ -23,7 +26,9 @@ export function projectTraceablyReviewedExternalCatalog(
   const record=candidate.record;
   const evidence=candidate.evidence;
   const control=candidate.editorialControl;
+  const verifiedHistory=verifyEditorialHashChain(candidate.chainedHistory,candidate.expectedFinalHash);
   const history=candidate.editorialHistory;
+  if(!verifiedHistory||JSON.stringify(verifiedHistory)!==JSON.stringify(history))continue;
   const authoritative=replayExternalEditorialDecisions(history);
   const latestDecision=Array.isArray(history)?history[history.length-1]:null;
   if(!record||typeof record!=="object"||Array.isArray(record)||
