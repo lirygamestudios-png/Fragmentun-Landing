@@ -12,10 +12,10 @@ export function LiryThirdPartyCatalog({games}:{games:readonly PublicThirdPartyCa
    {games.map(game=><article key={game.slug} className={styles.thirdPartyCard}>
     <div className={styles.thirdPartyCardArt} aria-hidden="true"><span>✧</span></div>
     <div className={styles.thirdPartyCardBody}>
-     <span className={styles.thirdPartyCardModel}>{game.model==="premium"?"PREMIUM":"FREEMIUM"}</span>
+     <span className={styles.thirdPartyCardModel} aria-label={game.model==="premium"?"Juego de compra única Premium":"Juego Freemium con acceso inicial gratuito"}>{game.model==="premium"?"PREMIUM":"FREEMIUM"}</span>
      <h4>{game.title}</h4>
      <p>{game.description}</p>
-     <small>PUBLICACIÓN AUTORIZADA</small>
+     <small>{game.model==="premium"?"Acceso mediante compra · precio por confirmar":"Acceso inicial gratuito · extras opcionales"}</small>
     </div>
    </article>)}
   </div>
