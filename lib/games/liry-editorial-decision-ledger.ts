@@ -20,6 +20,7 @@ export function replayExternalEditorialDecisions(events:readonly EditorialDecisi
   if(!validId(e.gameId)||!validId(e.versionId)||!validHash(e.artifactHash)||
      !validId(e.reviewerId)||!validId(e.approvalId)||
      !Number.isSafeInteger(e.sequence)||e.sequence<1||
+     (!prior&&e.sequence!==1)||
      typeof e.decidedAt!=="string"||
      !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/.test(e.decidedAt)||
      !Number.isFinite(Date.parse(e.decidedAt))||
@@ -31,14 +32,15 @@ export function replayExternalEditorialDecisions(events:readonly EditorialDecisi
    if(snapshot!==null)return null;
    snapshot={gameId:e.gameId,currentVersionId:e.versionId,approvalVersionId:e.versionId,approvalArtifactHash:e.artifactHash,state:"active"};
   }else if(e.action==="suspend"||e.action==="revoke"||e.action==="replace_pending"){
-   if(!snapshot||snapshot.state==="revoked"||
+   if(!snapshot||snapshot.state!=="active"||
       (e.versionId!==snapshot.currentVersionId||e.artifactHash!==snapshot.approvalArtifactHash))return null;
    snapshot={gameId:e.gameId,currentVersionId:e.versionId,approvalVersionId:e.versionId,approvalArtifactHash:e.artifactHash,state:e.action==="suspend"?"suspended":e.action==="revoke"?"revoked":"replacement_pending"};
    suspended=true;
   }else if(e.action==="reactivate"){
    // Reinstatement always requires a NEW review ID and a new explicit event;
    // a revoked record is terminal and must be submitted as a fresh listing.
-   if(!snapshot||!suspended||snapshot.state==="revoked")return null;
+   if(!snapshot||!suspended||
+      (snapshot.state!=="suspended"&&snapshot.state!=="replacement_pending"))return null;
    snapshot={gameId:e.gameId,currentVersionId:e.versionId,approvalVersionId:e.versionId,approvalArtifactHash:e.artifactHash,state:"active"};
    suspended=false;
   }else return null;
