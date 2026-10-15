@@ -1,3 +1,4 @@
+import {safeServerReviewerAssertion,type ReviewerAuthorityReadPort} from "./liry-server-reviewer-authority";
 import {verifyCustodiedEditorialHistory,type EditorialAnchorPort} from "./liry-editorial-anchor-custody";
 import {projectTraceablyReviewedExternalCatalog} from "./liry-reviewed-publication-gate";
 import type {PublicThirdPartyCard} from "./liry-developer-publication";
@@ -18,12 +19,14 @@ export type ExternalCatalogReadPermission={
 export async function readAuthorizedExternalCatalog(
   port:ExternalCatalogReadPort|null,
   permission:ExternalCatalogReadPermission,
-  custodian:EditorialAnchorPort|null=null
+  custodian:EditorialAnchorPort|null=null,
+  authority:ReviewerAuthorityReadPort|null=null
 ):Promise<readonly PublicThirdPartyCard[]>{
   if(permission?.sourceApproved!==true||permission?.publicReadEnabled!==true||
      permission?.humanReleaseGateEnabled!==true||
      permission?.independentCustodyEnabled!==true||
      !custodian||typeof custodian.readTrustedAnchor!=="function"||
+     !authority||typeof authority.readReviewerAuthority!=="function"||
      !port||typeof port.readApprovedRecords!=="function")return [];
   try{
     const records=await port.readApprovedRecords();
@@ -43,7 +46,14 @@ export async function readAuthorizedExternalCatalog(
       if(!Array.isArray(chain))continue;
       const tail=chain[chain.length-1] as Record<string,unknown>|undefined;
       if(!tail||tail.hash!==candidate.expectedFinalHash)continue;
-      verified.push(item);
+      const evidence=candidate.evidence;
+      if(!evidence||typeof evidence!=="object"||Array.isArray(evidence))continue;
+      const reviewerId=(evidence as Record<string,unknown>).reviewerId;
+      if(typeof reviewerId!=="string")continue;
+      const resolved=await authority.readReviewerAuthority(reviewerId,gameId);
+      const serverAssertion=safeServerReviewerAssertion(resolved,reviewerId,gameId);
+      if(!serverAssertion)continue;
+      verified.push({...candidate,reviewerAssertion:serverAssertion});
     }
     return projectTraceablyReviewedExternalCatalog(verified,{sourceApproved:true,humanReleaseGateEnabled:true});
   }catch{
