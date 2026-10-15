@@ -39,3 +39,15 @@ test("rejected, unpublished, or unapproved games remain invisible",()=>{
 test("revocation suspension and replacement block old releases",()=>{for(const state of ["suspended","revoked","replacement_pending"])assert.deepEqual(projectTraceablyReviewedExternalCatalog([{...candidate,editorialControl:{...editorialControl,state}}],enabled),[]);assert.deepEqual(projectTraceablyReviewedExternalCatalog([{...candidate,editorialControl:{...editorialControl,currentVersionId:"v2"}}],enabled),[]);});
 
 test("fabricated active state and missing editorial history cannot publish",()=>{assert.deepEqual(projectTraceablyReviewedExternalCatalog([{...candidate,editorialHistory:[]}],enabled),[]);assert.deepEqual(projectTraceablyReviewedExternalCatalog([{...candidate,editorialHistory:[{...editorialHistory[0],action:"suspend"}]}],enabled),[]);});
+
+test("editorial decision must match evidence reviewer, timestamp and version",()=>{
+ for(const history of [
+  [{...editorialHistory[0],reviewerId:"other-reviewer"}],
+  [{...editorialHistory[0],decidedAt:"2026-10-14T22:01:00Z"}],
+  [{...editorialHistory[0],versionId:"v2"}],
+  [{...editorialHistory[0],artifactHash:"b".repeat(64)}]
+ ])assert.deepEqual(projectTraceablyReviewedExternalCatalog([{...candidate,editorialHistory:history}],enabled),[]);
+});
+test("a distinct reviewer cannot claim another review decision",()=>{
+ assert.deepEqual(projectTraceablyReviewedExternalCatalog([{...candidate,evidence:{...evidence,reviewerId:"other-reviewer"}}],enabled),[]);
+});
