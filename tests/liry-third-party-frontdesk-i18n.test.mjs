@@ -46,3 +46,11 @@ test("LiryBoost, store, networks and contact keys match both languages",()=>{
  assert.match(en.liryBoost.preview,/registrations are not being accepted yet/i);
  assert.match(en.store.unavailable,/No active products or payments/i);
 });
+
+test("Mi Liry visitor copy is bilingual without suggesting active accounts",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.miLiry,en=LIRY_FRONTDESK_STRINGS.en.miLiry;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.match(es.visitorState,/SIN SESIÓN ACTIVA/);
+ assert.match(en.notice,/No fictional accounts/i);
+ assert.equal(liryFrontdeskStrings("en").miLiry.back,es.back);
+});
