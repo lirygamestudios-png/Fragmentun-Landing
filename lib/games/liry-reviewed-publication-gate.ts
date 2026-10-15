@@ -23,14 +23,23 @@ export function projectTraceablyReviewedExternalCatalog(
   const record=candidate.record;
   const evidence=candidate.evidence;
   const control=candidate.editorialControl;
-  const authoritative=replayExternalEditorialDecisions(candidate.editorialHistory);
+  const history=candidate.editorialHistory;
+  const authoritative=replayExternalEditorialDecisions(history);
+  const latestDecision=Array.isArray(history)?history[history.length-1]:null;
   if(!record||typeof record!=="object"||Array.isArray(record)||
      !evidence||typeof evidence!=="object"||Array.isArray(evidence))continue;
   const r=record as Record<string,unknown>;
   const e=evidence as IndependentReleaseEvidence;
   if(typeof r.gameId!=="string"||r.gameId!==e.gameId||
      !releaseHasTraceableHumanApproval(e)||
-     !authoritative||!control||typeof control!=="object"||
+     !authoritative||!latestDecision||
+     (latestDecision.action!=="approve"&&latestDecision.action!=="reactivate")||
+     latestDecision.gameId!==e.gameId||
+     latestDecision.versionId!==e.versionId||
+     latestDecision.artifactHash!==e.reviewedArtifactHash||
+     latestDecision.reviewerId!==e.reviewerId||
+     latestDecision.decidedAt!==e.decidedAt||
+     !control||typeof control!=="object"||
      authoritative.gameId!==(control as ExternalEditorialControl).gameId||
      authoritative.currentVersionId!==(control as ExternalEditorialControl).currentVersionId||
      authoritative.approvalVersionId!==(control as ExternalEditorialControl).approvalVersionId||
