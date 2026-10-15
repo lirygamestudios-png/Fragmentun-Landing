@@ -115,3 +115,10 @@ test("gamer identity stages have matching locale keys and disabled-account warni
  assert.match(es.unavailable,/NO DISPONIBLE/);
  assert.match(en.unavailable,/NOT AVAILABLE/);
 });
+
+test("Mi Liry facts preserve five sections and three status rows without invented achievements",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.miLiryFacts,en=LIRY_FRONTDESK_STRINGS.en.miLiryFacts;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ for(const id of Object.keys(es)){assert.equal(es[id].length,3);assert.equal(en[id].length,3);}
+ assert.match(en.liryboost[1][1],/No active leaderboard/);
+});
