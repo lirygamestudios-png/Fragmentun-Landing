@@ -34,3 +34,15 @@ test("gamer profile and community tab translations have matching structures",()=
  }
  assert.match(en.communityTabs.all.copy,/No fictional conversations/i);
 });
+
+test("LiryBoost, store, networks and contact keys match both languages",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es,en=LIRY_FRONTDESK_STRINGS.en;
+ for(const section of ["liryBoost","social","contact"]){
+  assert.deepEqual(Object.keys(es[section]).sort(),Object.keys(en[section]).sort());
+ }
+ assert.deepEqual(Object.keys(es.store).sort(),Object.keys(en.store).sort());
+ assert.deepEqual(es.store.categories.map(c=>c.id),en.store.categories.map(c=>c.id));
+ assert.equal(es.store.categories.length,5);
+ assert.match(en.liryBoost.preview,/registrations are not being accepted yet/i);
+ assert.match(en.store.unavailable,/No active products or payments/i);
+});
