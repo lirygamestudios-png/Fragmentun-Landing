@@ -305,3 +305,12 @@ test("hero title, navigation descriptions and English preview notice are paired 
  assert.match(en.languageAria,/English translation coming soon/);
  assert.match(en.description,/Which one will be yours/);
 });
+
+
+test("LiryBoost Top10 translations preserve inactive and verified-only notices",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.liryBoostBoard,en=LIRY_FRONTDESK_STRINGS.en.liryBoostBoard;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.match(es.empty,/Sin participantes ni puntuaciones ficticias/);
+ assert.match(en.empty,/No fictional participants or scores/);
+ assert.match(en.verified,/verified invitations/);
+});
