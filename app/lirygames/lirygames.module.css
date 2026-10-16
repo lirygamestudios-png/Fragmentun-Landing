@@ -1482,3 +1482,10 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
  .dnaSurveyResult,.dnaExplorerDescription{overflow-wrap:anywhere}
  .dnaRecommendation{min-height:44px;flex-wrap:wrap}
 }
+
+/* Mobile gamer affinity label: wrap long translated styles without changing desktop cards. */
+@media(max-width:420px){
+ .gamerStyles>span{grid-column:1/-1;min-width:0;min-height:44px;padding:8px 10px;text-align:center;overflow-wrap:anywhere}
+ .gamerStyles b{font-size:11px;line-height:1.45;white-space:normal}
+ .gamerIdentityText strong{overflow-wrap:anywhere}
+}
