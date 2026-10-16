@@ -271,3 +271,14 @@ test("store overview preserves freemium disclosure and no active payments in ES 
  assert.match(en.freemium,/No payments are active/);
  assert.match(en.intro,/suppliers have been confirmed/);
 });
+
+
+test("final FrontDesk banners have bilingual copy and no simulated secrets progress",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.finalSections,en=LIRY_FRONTDESK_STRINGS.en.finalSections;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.equal(es.signature.length,4);
+ assert.equal(en.signature.length,4);
+ assert.match(es.secretsNotice,/SIN PROGRESO SIMULADO/);
+ assert.match(en.secretsNotice,/NO SIMULATED PROGRESS/);
+ assert.match(en.journeyDisclaimer,/optional cosmetic purchases/);
+});
