@@ -102,21 +102,17 @@ export default async function LiryGamesFrontDesk(){
           <small className={styles.gamerDataNote}>{copy.journey.pendingNote}</small>
         </article>
         <article className={styles.gamerCard}>
-          <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">✣</span><h3>LOGROS POR DESBLOQUEAR</h3><span className={styles.gamerTopRight}>Vista previa</span></header>
+          <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">✣</span><h3>{copy.achievementsPreview.title}</h3><span className={styles.gamerTopRight}>{copy.achievementsPreview.preview}</span></header>
           <div className={styles.achievementList}>
-            {[
-              {id:"first-steps",icon:"✧",title:"Primeros pasos",detail:"Completa tu primer juego"},
-              {id:"world-explorer",icon:"⬡",title:"Explorador de mundos",detail:"Descubre cinco mundos"},
-              {id:"community-friends",icon:"✦",title:"La comunidad te necesita",detail:"Juega con tres amigos"},
-              {id:"strategy-master",icon:"♜",title:"Maestro de estrategias",detail:"Gana diez partidas estratégicas"}
-            ].map(item=>{
+            {copy.achievementsPreview.goals.map((item,index)=>{
               const earned=gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?.achievementIds.includes(item.id)===true;
-              return <div className={`${styles.achievementRow} ${earned?styles.achievementEarned:""}`} key={item.id} aria-label={`${item.title}: ${earned?"Acreditado":"Pendiente"}`}><span className={styles.achievementMedal} aria-hidden="true">{item.icon}</span><div><strong>{item.title}</strong><span>{item.detail}</span><small>{earned?"LOGRO ACREDITADO":"Pendiente de obtener"}</small></div></div>;
+              const icons=["✧","⬡","✦","♜"] as const;
+              return <div className={`${styles.achievementRow} ${earned?styles.achievementEarned:""}`} key={item.id} aria-label={`${item.title}: ${earned?copy.achievementsPreview.earned:copy.achievementsPreview.pending}`}><span className={styles.achievementMedal} aria-hidden="true">{icons[index]}</span><div><strong>{item.title}</strong><span>{item.detail}</span><small>{earned?copy.achievementsPreview.earnedLabel:copy.achievementsPreview.pendingLabel}</small></div></div>;
             })}
           </div>
           <LiryGamerInfoDialog topic="logros-lista" />
           <LiryGamerInfoDialog topic="logros" />
-          <small className={styles.gamerDataNote}>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.achievementIds.length} logros acreditados mediante actividad verificada.`:"Objetivos previstos · ningún logro acreditado."}</small>
+          <small className={styles.gamerDataNote}>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.achievementIds.length} ${copy.achievementsPreview.verifiedSuffix}`:copy.achievementsPreview.empty}</small>
         </article>
       </div>
     </section>
