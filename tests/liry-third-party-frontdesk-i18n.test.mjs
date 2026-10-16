@@ -170,4 +170,6 @@ test("gamer profile avatar and XP labels match across languages",()=>{
  assert.match(en.avatarHelp,/not uploaded to the server/i);
  assert.match(es.xpTowardNextLevel,/hacia el siguiente nivel/);
  assert.match(en.xpTowardNextLevel,/toward the next level/);
+ assert.equal(es.xpTotal,"Total");
+ assert.equal(en.xpTotal,"Total");
 });
