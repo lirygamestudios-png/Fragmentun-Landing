@@ -457,3 +457,12 @@ test("nine internal game catalog cards retain safe codenames and bilingual descr
  assert.equal(es.themes.length,9);assert.equal(en.themes.length,9);
  assert.match(en.preparing,/launch date and access details/);
 });
+
+
+test("Liry DNA explorer navigation and advisory labels are bilingual",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.dnaExplorerAccessibility,en=LIRY_FRONTDESK_STRINGS.en.dnaExplorerAccessibility;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.match(es.disclaimer,/no se guardan en una cuenta/);
+ assert.match(en.disclaimer,/not saved to an account/);
+ assert.match(en.closeAria,/Close style exploration/);
+});
