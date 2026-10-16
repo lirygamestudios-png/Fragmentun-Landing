@@ -495,3 +495,11 @@ test("Liry DNA affinity results expose exact percent values to assistive technol
  assert.match(source,/aria-valuemin=\{0\} aria-valuemax=\{100\}/);
  assert.match(source,/aria-valuenow=\{Math\.round\(\(dnaAnswers\[i\]\?\?0\)\/3\*100\)\}/);
 });
+
+
+test("DNA restart clears all answers and focuses the first question without scrolling",()=>{
+ const source=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");
+ assert.match(source,/setDnaAnswers\(Array\(6\)\.fill\(null\)\);setDnaStep\(0\);requestAnimationFrame/);
+ assert.match(source,/liry-dna-q-0/);
+ assert.match(source,/focus\(\{preventScroll:true\}\)/);
+});
