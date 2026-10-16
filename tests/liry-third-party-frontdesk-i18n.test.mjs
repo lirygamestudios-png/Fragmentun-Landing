@@ -203,3 +203,14 @@ test("privacy preview modal aria labels are available in ES and EN",()=>{
  assert.match(en.closeAria,/Close preferences/);
  for(const key of ["sectionsAria","visibilityAria"])assert.ok(es[key]?.length>3&&en[key]?.length>3);
 });
+
+
+test("FrontDesk main navigation accessibility text has ES and EN parity",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.navigation,en=LIRY_FRONTDESK_STRINGS.en.navigation;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ for(const key of ["skipCatalog","navAria","searchAria","searchTitle","socialAria","socialTitle","menuAria"]){
+  assert.ok(es[key]?.length>4);
+  assert.ok(en[key]?.length>4);
+ }
+ assert.match(en.skipCatalog,/Skip to the worlds catalog/);
+});
