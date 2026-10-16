@@ -1473,3 +1473,12 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 /* Keyboard-only bypass to main public catalog; hidden in visual navigation. */
 .skipToContent{position:absolute;left:12px;top:-90px;z-index:1000;padding:12px 18px;border:2px solid #75e4ff;border-radius:8px;background:#071c38;color:#fff;font-weight:700;text-decoration:none}
 .skipToContent:focus-visible{position:fixed;top:12px;outline:3px solid #ffdd7c;outline-offset:2px}
+
+/* Liry ADN: controles legibles en pantallas estrechas sin modificar el diseño de escritorio. */
+@media(max-width:480px){
+ .dnaSurveyAnswers{grid-template-columns:minmax(0,1fr)}
+ .dnaSurveyAnswers label{min-height:44px;overflow-wrap:anywhere}
+ .dnaSurveyProgress{min-width:0}
+ .dnaSurveyResult,.dnaExplorerDescription{overflow-wrap:anywhere}
+ .dnaRecommendation{min-height:44px;flex-wrap:wrap}
+}
