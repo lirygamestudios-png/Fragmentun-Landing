@@ -553,3 +553,10 @@ test("gamer avatar dialog clears stale validation errors on reopening",()=>{
  assert.match(source,/setAvatarError\(null\);dialogRef\.current\?\.showModal\(\)/);
  assert.match(source,/onClose=\{\(\)=>triggerRef\.current\?\.focus\(\{preventScroll:true\}\)\}/);
 });
+
+
+test("Tu Liry Journey displays complete world labels on narrow phones",()=>{
+ const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");
+ assert.match(css,/\.journeyName\{min-width:0;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere/);
+ assert.match(css,/\.journeyPending\{flex:0 0 auto\}/);
+});
