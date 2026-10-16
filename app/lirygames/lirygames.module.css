@@ -1504,3 +1504,11 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
  .gamerXpTrack{width:100%;max-width:100%;box-sizing:border-box}
  .gamerIdentityText small{display:block;max-width:100%;overflow-wrap:anywhere;line-height:1.5}
 }
+
+/* Perfil gamer móvil: métricas legibles y botones del avatar fáciles de pulsar. */
+@media(max-width:420px){
+ .gamerMetrics>div{min-width:0}
+ .gamerMetrics small{overflow-wrap:anywhere;line-height:1.45}
+ .gamerMetrics strong{overflow-wrap:anywhere}
+ .gamerInfoDialog .gamerInfoDone{min-height:44px;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+}
