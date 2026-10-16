@@ -362,3 +362,13 @@ test("developer listing translations preserve inactive form states",()=>{
  assert.match(en.inactive,/No saving, file uploads, submissions or sales/);
  assert.match(en.pending,/not admission/);
 });
+
+
+test("developer release preview keeps five bilingual stages and prevents live uploads",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.developerRelease,en=LIRY_FRONTDESK_STRINGS.en.developerRelease;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.deepEqual(es.checkpoints.map(s=>s.id),en.checkpoints.map(s=>s.id));
+ assert.equal(es.checkpoints.length,5);
+ assert.match(en.inactive,/No uploads, scanning, publication/);
+ assert.match(en.security,/cannot approve/);
+});
