@@ -538,3 +538,11 @@ test("mobile gamer XP indicator and totals fit narrow viewports",()=>{
  assert.match(css,/\.gamerXpTrack\{width:100%;max-width:100%;box-sizing:border-box\}/);
  assert.match(css,/\.gamerIdentityText small\{display:block;max-width:100%;overflow-wrap:anywhere/);
 });
+
+
+test("gamer mobile metrics and avatar action labels do not overflow small screens",()=>{
+ const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");
+ assert.match(css,/\.gamerMetrics small\{overflow-wrap:anywhere;line-height:1\.45\}/);
+ assert.match(css,/\.gamerMetrics strong\{overflow-wrap:anywhere\}/);
+ assert.match(css,/\.gamerInfoDialog \.gamerInfoDone\{min-height:44px;max-width:100%/);
+});
