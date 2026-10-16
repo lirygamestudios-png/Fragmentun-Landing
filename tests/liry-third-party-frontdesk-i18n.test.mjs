@@ -233,3 +233,13 @@ test("achievement previews preserve public goal IDs and accurate bilingual verif
  assert.match(en.empty,/no achievements credited/);
  assert.match(es.pendingLabel,/Pendiente/);
 });
+
+
+test("LiryBoost overview keeps three bilingual steps and inactive competition disclosure",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.liryBoostSection,en=LIRY_FRONTDESK_STRINGS.en.liryBoostSection;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.deepEqual(es.steps.map(x=>x.number),["01","02","03"]);
+ assert.deepEqual(en.steps.map(x=>x.number),["01","02","03"]);
+ assert.match(es.notice,/no genera puntos ni garantiza acceso beta/i);
+ assert.match(en.notice,/earns no points and does not guarantee beta access/i);
+});
