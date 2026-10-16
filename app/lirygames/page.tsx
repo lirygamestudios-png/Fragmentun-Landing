@@ -81,7 +81,7 @@ export default async function LiryGamesFrontDesk(){
       <LiryGameDiscovery games={games} />
       <LiryThirdPartyCatalog games={approvedThirdPartyCatalog} />
     </section>
-    <section className={`${styles.section} ${styles.gamerSection}`} id="perfil-gamer" aria-label="Perfil gamer, recorrido y logros">
+    <section className={`${styles.section} ${styles.gamerSection}`} id="perfil-gamer" aria-label={copy.journey.sectionAria}>
       <div className={styles.gamerGrid}>
         <article className={styles.gamerCard}>
           <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">♙</span><h3>{copy.gamerProfile.title}</h3></header>
@@ -92,14 +92,14 @@ export default async function LiryGamesFrontDesk(){
           <small className={styles.gamerDataNote}>Estado visitante · sin sesión gamer</small>
         </article>
         <article className={styles.gamerCard}>
-          <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">⬡</span><div><h3>TU LIRY JOURNEY</h3><p>Esta es tu historia en Liry. Sigue explorando.</p></div></header>
+          <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">⬡</span><div><h3>{copy.journey.title}</h3><p>{copy.journey.subtitle}</p></div></header>
           <div className={styles.journeyContent}>
-            <div className={styles.journeyRing} role="progressbar" aria-label="Mundos visitados con actividad verificada" aria-valuemin={0} aria-valuemax={9} aria-valuenow={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length:undefined} aria-valuetext={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length} mundos explorados`:"Sin actividad verificada"} style={{["--journey-progress" as string]:gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length/9*100}%`:"0%"}}><div className={styles.journeyRingCenter}><strong>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length} / 9`:"— / 9"}</strong><span>Mundos descubiertos</span></div></div>
-            <ol className={styles.journeyWorlds}>{games.map((game,index)=><li key={game.slug}><span className={styles.journeyNumber}>{index+1}</span><span className={styles.journeyName}>{game.title}</span><span className={styles.journeyPending} aria-label={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?.visitedWorldIds.includes(game.slug)?"Mundo visitado con actividad verificada":"Sin avance registrado"}>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?.visitedWorldIds.includes(game.slug)?"✓":"○"}</span></li>)}</ol>
+            <div className={styles.journeyRing} role="progressbar" aria-label={copy.journey.progressAria} aria-valuemin={0} aria-valuemax={9} aria-valuenow={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length:undefined} aria-valuetext={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length} ${copy.journey.exploredSuffix}`:copy.journey.noActivity} style={{["--journey-progress" as string]:gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length/9*100}%`:"0%"}}><div className={styles.journeyRingCenter}><strong>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.visitedWorldIds.filter(id=>games.some(game=>game.slug===id)).length} / 9`:"— / 9"}</strong><span>{copy.journey.discovered}</span></div></div>
+            <ol className={styles.journeyWorlds}>{games.map((game,index)=><li key={game.slug}><span className={styles.journeyNumber}>{index+1}</span><span className={styles.journeyName}>{game.title}</span><span className={styles.journeyPending} aria-label={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?.visitedWorldIds.includes(game.slug)?copy.journey.visitedAria:copy.journey.noProgressAria}>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?.visitedWorldIds.includes(game.slug)?"✓":"○"}</span></li>)}</ol>
           </div>
           <LiryGamerInfoDialog topic="mundos" />
           <LiryGamerInfoDialog topic="journey" />
-          <small className={styles.gamerDataNote}>Progreso sin iniciar · pendiente de actividad verificada.</small>
+          <small className={styles.gamerDataNote}>{copy.journey.pendingNote}</small>
         </article>
         <article className={styles.gamerCard}>
           <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">✣</span><h3>LOGROS POR DESBLOQUEAR</h3><span className={styles.gamerTopRight}>Vista previa</span></header>
