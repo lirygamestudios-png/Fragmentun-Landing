@@ -282,3 +282,14 @@ test("final FrontDesk banners have bilingual copy and no simulated secrets progr
  assert.match(en.secretsNotice,/NO SIMULATED PROGRESS/);
  assert.match(en.journeyDisclaimer,/optional cosmetic purchases/);
 });
+
+
+test("footer navigation and legal center link retain matching ES EN labels",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.footerCopy,en=LIRY_FRONTDESK_STRINGS.en.footerCopy;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.equal(es.links.length,9);
+ assert.equal(en.links.length,9);
+ assert.equal(es.tagline.length,2);
+ assert.equal(en.tagline.length,2);
+ assert.match(en.rights,/All rights reserved/);
+});
