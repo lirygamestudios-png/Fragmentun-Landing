@@ -335,3 +335,12 @@ test("developer landing and Liry ID service availability remain bilingual and in
  assert.match(en.liryIdDialog.availabilityMessage,/after verification/);
  assert.match(es.liryIdDialog.availabilityMessage,/después de las verificaciones/);
 });
+
+
+test("developer areas keep four stable internal panel ids and bilingual inactive notices",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.developerAreas,en=LIRY_FRONTDESK_STRINGS.en.developerAreas;
+ assert.deepEqual(es.areas.map(x=>x.id),["admission","listing","release","finance"]);
+ assert.deepEqual(es.areas.map(x=>x.id),en.areas.map(x=>x.id));
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.match(en.notice,/no active account or data submission/);
+});
