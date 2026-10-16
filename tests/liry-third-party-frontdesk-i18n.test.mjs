@@ -523,3 +523,11 @@ test("small-screen gamer affinity and profile labels allow long bilingual text t
  assert.match(css,/\.gamerStyles b\{font-size:11px;line-height:1\.45;white-space:normal\}/);
  assert.match(css,/\.gamerIdentityText strong\{overflow-wrap:anywhere\}/);
 });
+
+
+test("gamer avatar mobile dialog keeps reachable close control and usable file selector",()=>{
+ const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");
+ assert.match(css,/\.gamerInfoDialog \.gamerInfoClose\{min-width:44px;min-height:44px/);
+ assert.match(css,/\.gamerInfoDialog input\[type="file"\]\{display:block;max-width:100%/);
+ assert.match(css,/\.gamerInfoDialog\{max-width:calc\(100vw - 16px\)/);
+});
