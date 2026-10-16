@@ -175,3 +175,13 @@ test("gamer profile avatar and XP labels match across languages",()=>{
  assert.match(es.avatarValidationError,/hasta 2 MB/);
  assert.match(en.avatarValidationError,/up to 2 MB/);
 });
+
+
+test("Mi Liry area dialog accessibility labels are paired in ES and EN",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.miLiryAreas,en=LIRY_FRONTDESK_STRINGS.en.miLiryAreas;
+ for(const key of ["openAria","closeAria","identityAria","securityAria","worldsAria","achievementsAria","inventoryAria","communityAria","boostAria"]){
+  assert.ok(es[key]?.length>3);
+  assert.ok(en[key]?.length>3);
+ }
+ assert.match(en.closeAria,/return to MI LIRY/);
+});
