@@ -185,3 +185,12 @@ test("Mi Liry area dialog accessibility labels are paired in ES and EN",()=>{
  }
  assert.match(en.closeAria,/return to MI LIRY/);
 });
+
+
+test("Mi Liry identity preview accessible labels have ES and EN translations",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.miLiryIdentity,en=LIRY_FRONTDESK_STRINGS.en.miLiryIdentity;
+ assert.match(es.previewAria,/sin almacenamiento/);
+ assert.match(en.previewAria,/no data saved/);
+ assert.match(es.exampleAvatarAria,/Avatar de ejemplo/);
+ assert.match(en.exampleAvatarAria,/Example avatar/);
+});
