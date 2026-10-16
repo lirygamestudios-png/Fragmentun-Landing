@@ -433,3 +433,11 @@ test("community contact and official network dialogs have bilingual accessible c
  assert.match(en.networks.pendingSuffix,/pending verification/);
  assert.match(en.contact.intro,/collaboration proposals/);
 });
+
+
+test("contact CAPTCHA and request fallback errors have ES EN equivalents",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.contact,en=LIRY_FRONTDESK_STRINGS.en.contact;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ for(const key of ["captchaExpired","captchaFailed","captchaLoadFailed","submitFailed","submitError"])assert.ok(es[key].length>5&&en[key].length>5);
+ assert.match(en.captchaExpired,/expired/i);
+});
