@@ -568,3 +568,11 @@ test("Liry Journey progress counts unique known worlds only",()=>{
  assert.match(source,/games\.filter\(game=>verifiedVisitedWorldIds\?\.has\(game\.slug\)\)\.length/);
  assert.doesNotMatch(source,/visitedWorldIds\.filter\(id=>games\.some/);
 });
+
+
+test("Journey world visited icons share verified identity with ring calculation",()=>{
+ const source=readFileSync(new URL("../app/lirygames/page.tsx",import.meta.url),"utf8");
+ assert.match(source,/const verifiedVisitedWorldIds=gamerSnapshot\.status==="verified"&&gamerSnapshot\.verifiedActivity\?new Set/);
+ assert.match(source,/journeyPending\} aria-label=\{verifiedVisitedWorldIds\?\.has\(game\.slug\)/);
+ assert.match(source,/\{verifiedVisitedWorldIds\?\.has\(game\.slug\)\?"✓":"○"\}/);
+});
