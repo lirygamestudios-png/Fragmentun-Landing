@@ -62,7 +62,7 @@ export function LiryGamerIdentity({snapshot}:{snapshot:Readonly<PublicGamerSnaps
  }
  return <>
   <div className={styles.gamerIdentity}>
-   <button type="button" ref={triggerRef} className={styles.gamerPortrait} aria-label={profileCopy.avatar} title={detailCopy.chooseTitle} onClick={()=>dialogRef.current?.showModal()} style={{cursor:"pointer",padding:0,overflow:"hidden"}}>
+   <button type="button" ref={triggerRef} className={styles.gamerPortrait} aria-label={profileCopy.avatar} title={detailCopy.chooseTitle} onClick={()=>{setAvatarError(null);dialogRef.current?.showModal()}} style={{cursor:"pointer",padding:0,overflow:"hidden"}}>
     {avatar?<img src={avatar} alt={detailCopy.previewAlt} style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<span>?</span>}
    </button>
    <div className={styles.gamerIdentityText}><strong>{snapshot.displayName}</strong><span>{xp?`${detailCopy.level} ${xp.level}`:`${detailCopy.level} —`}</span><div className={styles.gamerXpTrack} role="progressbar" aria-label={xp?detailCopy.xpProgress:detailCopy.xpPending} aria-valuemin={xp?0:undefined} aria-valuemax={xp?100:undefined} aria-valuenow={xp?xp.progressPercent:undefined} aria-valuetext={xp?`${xp.currentLevelXp}/${xp.nextLevelXp} XP · ${detailCopy.xpTowardNextLevel}`:detailCopy.noVerifiedActivity}><span style={xp?{width:`${xp.progressPercent}%`,transition:"width .5s ease"}:undefined}/></div><small>{xp?`${xp.currentLevelXp}/${xp.nextLevelXp} XP · ${detailCopy.xpTotal}: ${xp.totalXp}`:profileCopy.noActivity}</small></div>
