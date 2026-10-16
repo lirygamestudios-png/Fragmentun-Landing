@@ -169,14 +169,14 @@ export default async function LiryGamesFrontDesk(){
     </div>
     <section className={styles.storeShowcase} id="tienda" aria-labelledby="liry-store-title">
       <div className={styles.storeIntro}>
-        <p className={styles.storeEyebrow}>ECOSISTEMA LIRYGAMES</p>
-        <h2 id="liry-store-title"><span aria-hidden="true">▢</span> TIENDA <em>LIRY</em></h2>
-        <p>Lleva el universo LIRY contigo.</p>
-        <small>Explora nuestras futuras colecciones. Los productos y los pagos se habilitarán únicamente cuando existan artículos y proveedores confirmados.</small>
-        <span className={styles.storeComingSoon}>CATÁLOGO PRÓXIMAMENTE</span>
+        <p className={styles.storeEyebrow}>{copy.storeOverview.eyebrow}</p>
+        <h2 id="liry-store-title"><span aria-hidden="true">▢</span> {copy.storeOverview.title} <em>LIRY</em></h2>
+        <p>{copy.storeOverview.subtitle}</p>
+        <small>{copy.storeOverview.intro}</small>
+        <span className={styles.storeComingSoon}>{copy.storeOverview.comingSoon}</span>
       </div>
       <LiryStoreCategories />
-      <p className={styles.storeLegal}>Modelo freemium: los tres mundos internos iniciales previstos para cada videojuego serán gratuitos; las compras cosméticas serán opcionales. No hay pagos activos ni artículos disponibles actualmente.</p>
+      <p className={styles.storeLegal}>{copy.storeOverview.freemium}</p>
     </section>
     <div className={styles.finalDiscover} aria-label="Tu viaje y secretos de Liry">
       <section className={styles.journeyBanner} id="modelo">
