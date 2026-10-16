@@ -1,3 +1,4 @@
+import {readFileSync} from "node:fs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {getReleasedLiryFrontdeskLocale,liryFrontdeskStrings,LIRY_FRONTDESK_STRINGS,RELEASED_LIRY_FRONTDESK_LOCALES} from "../lib/games/liry-frontdesk-i18n.ts";
@@ -472,4 +473,16 @@ test("Liry DNA progress element has bilingual accessible description",()=>{
  const es=LIRY_FRONTDESK_STRINGS.es.dnaExplorerAccessibility,en=LIRY_FRONTDESK_STRINGS.en.dnaExplorerAccessibility;
  assert.match(es.progressAria,/Progreso del cuestionario/);
  assert.match(en.progressAria,/questionnaire progress/);
+});
+
+test("DNA mobile layout and question transitions retain no forced page scrolling",()=>{
+ const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");
+ const component=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");
+ assert.match(css,/@media\(max-width:480px\)\{/);
+ assert.match(css,/\.dnaSurveyAnswers\{grid-template-columns:minmax\(0,1fr\)\}/);
+ assert.match(css,/\.dnaSurveyAnswers label\{min-height:44px/);
+ assert.match(component,/setDnaStep\(Math\.min\(i\+1,6\)\)/);
+ assert.match(component,/clearAdvanceTimer\(\);setDnaAnswers/);
+ assert.match(component,/focus\(\{preventScroll:true\}\)/);
+ assert.doesNotMatch(component,/scrollIntoView\(|window\.scrollTo\(/);
 });
