@@ -416,3 +416,11 @@ test("Mi Liry landing back-link accessibility is translated and English remains 
  assert.match(en.backAria,/Return to the LIRYGAMES STUDIOS FrontDesk/);
  assert.equal(liryFrontdeskStrings("en").miLiry.backAria,es.backAria);
 });
+
+
+test("community information placeholder has bilingual text without simulated posts",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.communityFeedIntro,en=LIRY_FRONTDESK_STRINGS.en.communityFeedIntro;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.match(en.notice,/community in preparation/);
+ assert.match(es.notice,/comunidad en preparación/);
+});
