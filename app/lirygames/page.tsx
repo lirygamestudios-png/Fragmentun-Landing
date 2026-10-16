@@ -178,18 +178,18 @@ export default async function LiryGamesFrontDesk(){
       <LiryStoreCategories />
       <p className={styles.storeLegal}>{copy.storeOverview.freemium}</p>
     </section>
-    <div className={styles.finalDiscover} aria-label="Tu viaje y secretos de Liry">
+    <div className={styles.finalDiscover} aria-label={copy.finalSections.groupAria}>
       <section className={styles.journeyBanner} id="modelo">
-        <div className={styles.journeyCinematicImage} role="img" aria-label="Paisaje cinematográfico del universo LIRYGAMES con mundos fantásticos" />
+        <div className={styles.journeyCinematicImage} role="img" aria-label={copy.finalSections.landscapeAria} />
         <div className={styles.journeyBannerContent}>
-          <h2>TU VIAJE, TUS REGLAS</h2>
-          <p>Explora. Juega. Conecta. Vive la experiencia Liry.</p>
-          <a href="#mundos" className={styles.bannerCta}>CONOCE MÁS SOBRE LIRY <span aria-hidden="true">→</span></a>
-          <small>Tres mundos internos gratuitos previstos en cada primer lanzamiento; cosméticos opcionales.</small>
+          <h2>{copy.finalSections.journeyTitle}</h2>
+          <p>{copy.finalSections.journeyIntro}</p>
+          <a href="#mundos" className={styles.bannerCta}>{copy.finalSections.journeyCta} <span aria-hidden="true">→</span></a>
+          <small>{copy.finalSections.journeyDisclaimer}</small>
         </div>
       </section>
       <section className={styles.secretsBanner} id="secretos">
-        <div className={styles.secretsHdArt} role="img" aria-label="Ilustración vectorial de alta definición de un portal de cristal violeta en el universo Liry">
+        <div className={styles.secretsHdArt} role="img" aria-label={copy.finalSections.secretsArtAria}>
           <svg viewBox="0 0 1200 520" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <defs>
               <linearGradient id="secretsSky" x1="0" x2="1" y1="0" y2="1"><stop stopColor="#090e28"/><stop offset=".48" stopColor="#38136e"/><stop offset="1" stopColor="#07071c"/></linearGradient>
@@ -215,16 +215,16 @@ export default async function LiryGamesFrontDesk(){
           </svg>
         </div>
         <div className={styles.secretsCopy}>
-          <h2>SECRETOS DE LIRY</h2>
-          <p>Hay más de lo que ves...</p>
-          <p>Próximamente podrás descubrir fragmentos ocultos y acceder a desafíos especiales.</p>
-          <div className={styles.secretsTrack} role="img" aria-label="Sistema de secretos aún no disponible; no hay progreso registrado"><span /></div>
-          <small>PRÓXIMAMENTE · SIN PROGRESO SIMULADO</small>
+          <h2>{copy.finalSections.secretsTitle}</h2>
+          <p>{copy.finalSections.secretsTagline}</p>
+          <p>{copy.finalSections.secretsDescription}</p>
+          <div className={styles.secretsTrack} role="img" aria-label={copy.finalSections.secretsTrackAria}><span /></div>
+          <small>{copy.finalSections.secretsNotice}</small>
           <LirySecretsInfo />
         </div>
         
       </section>
-      <div className={styles.finalSignature} aria-label="Liry: más que videojuegos"><span aria-hidden="true">▽</span><strong>MÁS QUE<br/>VIDEOJUEGOS.<br/>ES TODO<br/>UN UNIVERSO.</strong></div>
+      <div className={styles.finalSignature} aria-label={copy.finalSections.signatureAria}><span aria-hidden="true">▽</span><strong>{copy.finalSections.signature[0]}<br/>{copy.finalSections.signature[1]}<br/>{copy.finalSections.signature[2]}<br/>{copy.finalSections.signature[3]}</strong></div>
     </div>
     
     <footer className={styles.footer}>
