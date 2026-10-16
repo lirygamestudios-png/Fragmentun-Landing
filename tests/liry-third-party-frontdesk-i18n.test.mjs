@@ -344,3 +344,13 @@ test("developer areas keep four stable internal panel ids and bilingual inactive
  assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
  assert.match(en.notice,/no active account or data submission/);
 });
+
+
+test("developer admission preview stays bilingual, inoperable and retains all five requirements",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.developerAdmission,en=LIRY_FRONTDESK_STRINGS.en.developerAdmission;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.equal(es.models.length,2);assert.equal(en.models.length,2);
+ assert.equal(es.requirements.length,5);assert.equal(en.requirements.length,5);
+ assert.match(en.inactive,/No application submission/);
+ assert.match(en.ready,/human approval/);
+});
