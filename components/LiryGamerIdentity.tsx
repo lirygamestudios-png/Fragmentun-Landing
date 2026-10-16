@@ -48,7 +48,7 @@ export function LiryGamerIdentity({snapshot}:{snapshot:Readonly<PublicGamerSnaps
   const selection=++avatarSelection.current;
   setAvatarError(null);
   const validation=validateTemporaryGamerAvatar(file);
-  if(!validation.ok){setAvatarError(validation.message);return;}
+  if(!validation.ok){setAvatarError(detailCopy.avatarValidationError);return;}
   const validContent=await validateTemporaryGamerAvatarContent(file);
   if(selection!==avatarSelection.current)return;
   if(!validContent){setAvatarError(detailCopy.invalidFormat);return;}
