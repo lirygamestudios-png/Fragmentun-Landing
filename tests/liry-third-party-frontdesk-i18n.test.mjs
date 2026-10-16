@@ -325,3 +325,13 @@ test("Liry ID and developer previews remain bilingual and disabled",()=>{
  assert.match(en.developerDialog.inactive,/APPLICATIONS DISABLED/);
  assert.match(en.developerDialog.noData,/not requesting files, credentials/);
 });
+
+
+test("developer landing and Liry ID service availability remain bilingual and inactive",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es,en=LIRY_FRONTDESK_STRINGS.en;
+ assert.deepEqual(Object.keys(es.developerPage).sort(),Object.keys(en.developerPage).sort());
+ assert.match(en.developerPage.notice,/does not create accounts/);
+ assert.match(es.developerPage.notice,/no permite crear cuentas/);
+ assert.match(en.liryIdDialog.availabilityMessage,/after verification/);
+ assert.match(es.liryIdDialog.availabilityMessage,/después de las verificaciones/);
+});
