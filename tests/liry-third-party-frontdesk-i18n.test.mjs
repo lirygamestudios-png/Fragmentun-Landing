@@ -372,3 +372,13 @@ test("developer release preview keeps five bilingual stages and prevents live up
  assert.match(en.inactive,/No uploads, scanning, publication/);
  assert.match(en.security,/cannot approve/);
 });
+
+
+test("developer finance preview preserves four categories and no fictitious transactions",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.developerFinance,en=LIRY_FRONTDESK_STRINGS.en.developerFinance;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.deepEqual(es.fields.map(f=>f.id),["sales","refunds","commission","balance"]);
+ assert.deepEqual(es.fields.map(f=>f.id),en.fields.map(f=>f.id));
+ assert.match(en.notice,/no transactions or balances/i);
+ assert.match(en.inactive,/PAYOUTS INACTIVE/);
+});
