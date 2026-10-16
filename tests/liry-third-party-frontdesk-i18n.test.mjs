@@ -252,3 +252,13 @@ test("community and social overview remain bilingual with verified-link disclaim
  assert.match(en.linksPending,/pending verification/);
  assert.match(en.postsPending,/coming soon/);
 });
+
+
+test("recommendations preserve three public codenames and translated descriptions",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.recommendationsOverview,en=LIRY_FRONTDESK_STRINGS.en.recommendationsOverview;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.deepEqual(es.items.map(x=>x.code),en.items.map(x=>x.code));
+ assert.deepEqual(en.items.map(x=>x.index),[4,3,5]);
+ assert.equal(es.items.length,3);
+ assert.match(en.viewAll,/VIEW ALL WORLDS/);
+});
