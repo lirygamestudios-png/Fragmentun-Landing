@@ -28,51 +28,51 @@ export function MiLiryAreas(){
  };
  return <><div className={styles.grid}>{areas.map(area=><article className={styles.card} key={area.id}>
   <h3>{area.title}</h3><p>{area.desc}</p><small>{area.status}</small>
-  <button className={styles.areaLink} type="button" aria-haspopup="dialog" aria-label={`Abrir ${area.title}`} onClick={event=>openArea(area,event.currentTarget)}>{copy.open} →</button>
+  <button className={styles.areaLink} type="button" aria-haspopup="dialog" aria-label={`${copy.openAria} ${area.title}`} onClick={event=>openArea(area,event.currentTarget)}>{copy.open} →</button>
  </article>)}</div>
  <dialog ref={dialog} className={styles.areaDialog} aria-labelledby="mi-liry-area-title" onClose={()=>{setPreviewSession(value=>value+1);trigger.current?.focus({preventScroll:true});trigger.current=null;}} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
   <div className={styles.areaDialogContent}>
-   <form method="dialog"><button ref={closeButton} className={styles.areaClose} aria-label="Cerrar área y volver a MI LIRY" type="submit">×</button></form>
+   <form method="dialog"><button ref={closeButton} className={styles.areaClose} aria-label={copy.closeAria} type="submit">×</button></form>
    <span className={styles.eyebrow}>{copy.eyebrow}</span>
    <h2 id="mi-liry-area-title">{selected.title}</h2><p>{selected.detail}</p>
    <span className={styles.areaStatus}>{selected.status}</span>
-   {selected.id==="identidad"&&<div className={styles.identityDetails} aria-label="Preparación de identidad del jugador">
+   {selected.id==="identidad"&&<div className={styles.identityDetails} aria-label={copy.identityAria}>
     <div><strong>{identity.publicName}</strong><span>{identity.unverified}</span></div>
     <div><strong>{identity.avatar}</strong><span>{identity.avatarPending}</span></div>
     <div><strong>{identity.preferences}</strong><span>{identity.notConfigured}</span></div>
     <p>{identity.privacyNote}</p>
    </div>}
    {selected.id==="identidad"&&<MiLiryIdentityPreview key={previewSession} />}
-   {selected.id==="identidad"&&<section className={styles.identitySecurity} aria-label="Seguridad del perfil">
+   {selected.id==="identidad"&&<section className={styles.identitySecurity} aria-label={copy.securityAria}>
     <h3>{identity.securityTitle}</h3>
     <p>{identity.securityNote}</p>
     <ul><li>{identity.securityRules[0]}</li><li>{identity.securityRules[1]}</li><li>{identity.securityRules[2]}</li></ul>
    </section>}
-   {selected.id==="mundos"&&<section className={styles.worldsPanel} aria-label="Estado de mundos del jugador">
+   {selected.id==="mundos"&&<section className={styles.worldsPanel} aria-label={copy.worldsAria}>
     <h3>{panels.mundos.title}</h3>
     <p className={styles.worldsEmpty}>{panels.mundos.empty}</p>
     <div className={styles.worldsFacts}>{facts.mundos.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div>
     <p>{panels.mundos.note}</p>
    </section>}
-   {selected.id==="logros"&&<section className={styles.worldsPanel} aria-label="Estado de logros y recompensas">
+   {selected.id==="logros"&&<section className={styles.worldsPanel} aria-label={copy.achievementsAria}>
     <h3>{panels.logros.title}</h3>
     <p className={styles.worldsEmpty}>{panels.logros.empty}</p>
     <div className={styles.worldsFacts}>{facts.logros.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div>
     <p>{panels.logros.note}</p>
    </section>}
-   {selected.id==="inventario"&&<section className={styles.worldsPanel} aria-label="Inventario digital verificado">
+   {selected.id==="inventario"&&<section className={styles.worldsPanel} aria-label={copy.inventoryAria}>
     <h3>{panels.inventario.title}</h3>
     <p className={styles.worldsEmpty}>{panels.inventario.empty}</p>
     <div className={styles.worldsFacts}>{facts.inventario.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div>
     <p>{panels.inventario.note}</p>
    </section>}
-   {selected.id==="comunidad"&&<section className={styles.worldsPanel} aria-label="Estado de Mi Comunidad">
+   {selected.id==="comunidad"&&<section className={styles.worldsPanel} aria-label={copy.communityAria}>
     <h3>{panels.comunidad.title}</h3>
     <p className={styles.worldsEmpty}>{panels.comunidad.empty}</p>
     <div className={styles.worldsFacts}>{facts.comunidad.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div>
     <p>{panels.comunidad.note}</p>
    </section>}
-   {selected.id==="liryboost"&&<section className={styles.worldsPanel} aria-label="Estado de participación en LiryBoost">
+   {selected.id==="liryboost"&&<section className={styles.worldsPanel} aria-label={copy.boostAria}>
     <h3>{panels.liryboost.title}</h3>
     <p className={styles.worldsEmpty}>{panels.liryboost.empty}</p>
     <div className={styles.worldsFacts}>{facts.liryboost.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div>
