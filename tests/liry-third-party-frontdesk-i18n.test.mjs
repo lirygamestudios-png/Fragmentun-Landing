@@ -466,3 +466,10 @@ test("Liry DNA explorer navigation and advisory labels are bilingual",()=>{
  assert.match(en.disclaimer,/not saved to an account/);
  assert.match(en.closeAria,/Close style exploration/);
 });
+
+
+test("Liry DNA progress element has bilingual accessible description",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.dnaExplorerAccessibility,en=LIRY_FRONTDESK_STRINGS.en.dnaExplorerAccessibility;
+ assert.match(es.progressAria,/Progreso del cuestionario/);
+ assert.match(en.progressAria,/questionnaire progress/);
+});
