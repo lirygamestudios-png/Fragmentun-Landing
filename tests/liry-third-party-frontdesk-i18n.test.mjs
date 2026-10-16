@@ -515,3 +515,11 @@ test("DNA result handoff to gamer profile remains temporary and announces style 
  assert.match(gamer,/setStyle\(null\);setHighlight\(false\)/);
  assert.match(gamer,/aria-live="polite" aria-atomic="true"/);
 });
+
+
+test("small-screen gamer affinity and profile labels allow long bilingual text to wrap",()=>{
+ const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");
+ assert.match(css,/\.gamerStyles>span\{grid-column:1\/-1/);
+ assert.match(css,/\.gamerStyles b\{font-size:11px;line-height:1\.45;white-space:normal\}/);
+ assert.match(css,/\.gamerIdentityText strong\{overflow-wrap:anywhere\}/);
+});
