@@ -214,3 +214,11 @@ test("FrontDesk main navigation accessibility text has ES and EN parity",()=>{
  }
  assert.match(en.skipCatalog,/Skip to the worlds catalog/);
 });
+
+
+test("Journey copy and verified activity indicators have bilingual coverage",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.journey,en=LIRY_FRONTDESK_STRINGS.en.journey;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ for(const key of ["sectionAria","title","subtitle","progressAria","exploredSuffix","noActivity","discovered","visitedAria","noProgressAria","pendingNote"]){assert.ok(es[key]?.length>4&&en[key]?.length>4);}
+ assert.match(en.pendingNote,/awaiting verified activity/);
+});
