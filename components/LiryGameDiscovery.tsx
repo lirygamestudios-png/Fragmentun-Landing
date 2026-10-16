@@ -139,7 +139,7 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
             {[...games.map((game,i)=>({game,i,score:gameAffinity[i]?.reduce((sum,weight,j)=>sum+weight*(dnaAnswers[j]??0),0)??0}))]
               .sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3).map(({game,i})=><button type="button" key={game.slug} className={styles.dnaRecommendation} onClick={()=>{setExploringDna(false);resetDnaEvaluation();setSelectedGame(i)}}>{publicCodenames[i]??`LIRY // PROJECT-${String(i+1).padStart(2,"0")}`} <span>{detailCopy.viewCard} →</span></button>)}</>}
             <small>{detailCopy.recommendationNote}</small>
-            <button type="button" className={styles.dnaSurveyRestart} onClick={()=>{clearAdvanceTimer();window.dispatchEvent(new CustomEvent("liry:dna-style",{detail:{style:null}}));setDnaAnswers(Array(6).fill(null));setDnaStep(0)}}>{detailCopy.restart}</button>
+            <button type="button" className={styles.dnaSurveyRestart} onClick={()=>{clearAdvanceTimer();window.dispatchEvent(new CustomEvent("liry:dna-style",{detail:{style:null}}));setDnaAnswers(Array(6).fill(null));setDnaStep(0);requestAnimationFrame(()=>document.querySelector<HTMLInputElement>('input[name="liry-dna-q-0"]')?.focus({preventScroll:true}));}}>{detailCopy.restart}</button>
           </div>:<div className={styles.dnaSurveyProgress} aria-live="polite"><span>{detailCopy.question} {dnaStep+1} {detailCopy.of} 6</span><progress value={dnaStep} max={6} aria-label={accessibilityCopy.progressAria} />{dnaStep>0&&<button type="button" className={styles.dnaSurveyBack} onClick={()=>{clearAdvanceTimer();setDnaStep(step=>Math.max(0,step-1));}}>← {detailCopy.previous}</button>}</div>}
       </div>}</div>}
       <ul className={styles.dnaTraitList}>
