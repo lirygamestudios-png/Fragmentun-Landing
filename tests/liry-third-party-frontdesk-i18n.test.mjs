@@ -194,3 +194,12 @@ test("Mi Liry identity preview accessible labels have ES and EN translations",()
  assert.match(es.exampleAvatarAria,/Avatar de ejemplo/);
  assert.match(en.exampleAvatarAria,/Example avatar/);
 });
+
+
+test("privacy preview modal aria labels are available in ES and EN",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.privacyPreview,en=LIRY_FRONTDESK_STRINGS.en.privacyPreview;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.match(es.closeAria,/Cerrar preferencias/);
+ assert.match(en.closeAria,/Close preferences/);
+ for(const key of ["sectionsAria","visibilityAria"])assert.ok(es[key]?.length>3&&en[key]?.length>3);
+});
