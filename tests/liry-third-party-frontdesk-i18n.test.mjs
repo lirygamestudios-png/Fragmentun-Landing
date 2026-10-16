@@ -546,3 +546,10 @@ test("gamer mobile metrics and avatar action labels do not overflow small screen
  assert.match(css,/\.gamerMetrics strong\{overflow-wrap:anywhere\}/);
  assert.match(css,/\.gamerInfoDialog \.gamerInfoDone\{min-height:44px;max-width:100%/);
 });
+
+
+test("gamer avatar dialog clears stale validation errors on reopening",()=>{
+ const source=readFileSync(new URL("../components/LiryGamerIdentity.tsx",import.meta.url),"utf8");
+ assert.match(source,/setAvatarError\(null\);dialogRef\.current\?\.showModal\(\)/);
+ assert.match(source,/onClose=\{\(\)=>triggerRef\.current\?\.focus\(\{preventScroll:true\}\)\}/);
+});
