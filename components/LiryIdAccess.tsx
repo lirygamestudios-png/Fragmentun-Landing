@@ -1,6 +1,6 @@
 "use client";
 import {useRef,useState} from "react";
-import {LIRY_ID_PUBLIC_ACCESS} from "../lib/games/liry-id-public-access";
+
 import styles from "../app/lirygames/lirygames.module.css";
 import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
 const copy=liryFrontdeskStrings("es").liryIdDialog;
@@ -23,7 +23,7 @@ export function LiryIdAccess(){
     <p className={styles.liryCompactDescription} aria-live="polite">{current.description}</p>
     <div className={styles.liryCompactNotice}>
      <strong style={{color:"#79e6ff"}}>{copy.inactive}</strong>
-     <p>{LIRY_ID_PUBLIC_ACCESS.message} {copy.noData}</p>
+     <p>{copy.availabilityMessage} {copy.noData}</p>
     </div>
     <form method="dialog"><button type="submit" className={styles.gamerInfoDone}>{copy.ack}</button></form>
    </div>
