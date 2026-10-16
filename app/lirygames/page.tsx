@@ -160,11 +160,11 @@ export default async function LiryGamesFrontDesk(){
         <small className={styles.socialPending}>{copy.communityOverview.linksPending}</small>
       </section>
             <section className={styles.section} id="recomendaciones">
-        <div className={styles.socialPanelHeader}><h2>RECOMENDACIONES PARA TI</h2><p className={styles.socialIntro}>Descubre tres mundos destacados.</p></div>
+        <div className={styles.socialPanelHeader}><h2>{copy.recommendationsOverview.title}</h2><p className={styles.socialIntro}>{copy.recommendationsOverview.intro}</p></div>
         <div className={styles.recommendList}>
-          {[{title:"LIRY // LINK-05",reason:"Conecta con otros jugadores",index:4},{title:"LIRY // EARTH-04",reason:"Explora un mundo de supervivencia",index:3},{title:"LIRY // REALM-06",reason:"Descubre un universo de fantasía",index:5}].map(game=><article className={styles.recommendItem} key={game.title}><div className={`${styles.recommendThumb} ${styles[`recommendThumb${game.index}`]} `} aria-hidden="true"><img src={`/liry-assets/world-${String(game.index+1).padStart(2,"0")}.webp`} alt="" loading="lazy" style={{width:"100%",height:"100%",minHeight:52,objectFit:"cover",borderRadius:3}} /></div><div className={styles.recommendText}><strong>{game.title}</strong><p>{game.reason}</p></div><a href={`#liry-world-${String(game.index+1).padStart(2,"0")}`}>Ver juego →</a></article>)}
+          {copy.recommendationsOverview.items.map(game=><article className={styles.recommendItem} key={game.code}><div className={`${styles.recommendThumb} ${styles[`recommendThumb${game.index}`]} `} aria-hidden="true"><img src={`/liry-assets/world-${String(game.index+1).padStart(2,"0")}.webp`} alt="" loading="lazy" style={{width:"100%",height:"100%",minHeight:52,objectFit:"cover",borderRadius:3}} /></div><div className={styles.recommendText}><strong>{game.code}</strong><p>{game.reason}</p></div><a href={`#liry-world-${String(game.index+1).padStart(2,"0")}`}>{copy.recommendationsOverview.viewGame} →</a></article>)}
         </div>
-        <a className={styles.recommendAll} href="#mundos">VER TODOS LOS MUNDOS <span aria-hidden="true">→</span></a>
+        <a className={styles.recommendAll} href="#mundos">{copy.recommendationsOverview.viewAll} <span aria-hidden="true">→</span></a>
       </section>
     </div>
     <section className={styles.storeShowcase} id="tienda" aria-labelledby="liry-store-title">
