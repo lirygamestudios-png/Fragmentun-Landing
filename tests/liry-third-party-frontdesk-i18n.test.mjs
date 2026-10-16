@@ -531,3 +531,10 @@ test("gamer avatar mobile dialog keeps reachable close control and usable file s
  assert.match(css,/\.gamerInfoDialog input\[type="file"\]\{display:block;max-width:100%/);
  assert.match(css,/\.gamerInfoDialog\{max-width:calc\(100vw - 16px\)/);
 });
+
+
+test("mobile gamer XP indicator and totals fit narrow viewports",()=>{
+ const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");
+ assert.match(css,/\.gamerXpTrack\{width:100%;max-width:100%;box-sizing:border-box\}/);
+ assert.match(css,/\.gamerIdentityText small\{display:block;max-width:100%;overflow-wrap:anywhere/);
+});
