@@ -1512,3 +1512,11 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
  .gamerMetrics strong{overflow-wrap:anywhere}
  .gamerInfoDialog .gamerInfoDone{min-height:44px;max-width:100%;white-space:normal;overflow-wrap:anywhere}
 }
+
+/* Tu Liry Journey: nombres de mundos completos en móviles sin alterar el anillo cian. */
+@media(max-width:480px){
+ .journeyWorlds{min-width:0;width:100%}
+ .journeyWorlds li{min-width:0;align-items:flex-start;min-height:24px}
+ .journeyName{min-width:0;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;line-height:1.4}
+ .journeyPending{flex:0 0 auto}
+}
