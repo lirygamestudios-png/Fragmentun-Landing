@@ -8,10 +8,10 @@ export function MiLiryIdentityPreview(){
  const [avatar,setAvatar]=useState<LiryAvatarOption>("orb");
  const [theme,setTheme]=useState<LiryInterfaceTheme>("navy");
  const [notifications,setNotifications]=useState(false);
- return <section className={styles.identityPreview} aria-label="Simulador local de preferencias, sin almacenamiento">
+ return <section className={styles.identityPreview} aria-label={copy.previewAria}>
   <h3>{copy.previewTitle}</h3>
   <p>{copy.previewIntro}</p>
-  <div className={styles.previewAvatar} data-accent={theme} aria-label="Avatar de ejemplo">{avatar==="orb"?"◇":avatar==="shield"?"⬡":"✦"}</div>
+  <div className={styles.previewAvatar} data-accent={theme} aria-label={copy.exampleAvatarAria}>{avatar==="orb"?"◇":avatar==="shield"?"⬡":"✦"}</div>
   <p className={styles.previewLabel}>{copy.avatar}</p>
   <div className={styles.previewChoices}>{LIRY_AVATAR_OPTIONS.map(item=><button key={item} type="button" aria-pressed={avatar===item} onClick={()=>setAvatar(item)}>{item==="orb"?copy.avatars[0]:item==="shield"?copy.avatars[1]:copy.avatars[2]}</button>)}</div>
   <p className={styles.previewLabel}>{copy.visualAccent}</p>
