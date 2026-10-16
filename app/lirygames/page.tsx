@@ -135,29 +135,29 @@ export default async function LiryGamesFrontDesk(){
       </div>
       <p className={styles.liryBoostNotice}>{copy.liryBoostSection.notice}</p>
     </section>
-    <div className={styles.socialTrio} aria-label="Comunidad, eventos y recomendaciones">
+    <div className={styles.socialTrio} aria-label={copy.communityOverview.trioAria}>
       <section className={styles.section} id="comunidad">
-        <div className={styles.socialPanelHeader}><h2>COMUNIDAD LIRY</h2><p className={styles.socialIntro}>Conecta, comparte, juega.</p></div>
+        <div className={styles.socialPanelHeader}><h2>{copy.communityOverview.communityTitle}</h2><p className={styles.socialIntro}>{copy.communityOverview.communityIntro}</p></div>
         <LiryCommunityTabs />
         <LiryCommunityContact />
-        <div className={styles.communityCompose}><span>Publicaciones disponibles próximamente</span><span aria-hidden="true">➤</span></div>
+        <div className={styles.communityCompose}><span>{copy.communityOverview.postsPending}</span><span aria-hidden="true">➤</span></div>
       </section>
       <section className={styles.section} id="social">
-        <div className={styles.socialPanelHeader}><h2>SECCIÓN SOCIAL</h2>
-        <p className={styles.socialIntro}>Comparte los cientos de mundos.</p></div>
+        <div className={styles.socialPanelHeader}><h2>{copy.communityOverview.socialTitle}</h2>
+        <p className={styles.socialIntro}>{copy.communityOverview.socialIntro}</p></div>
         <div className={styles.socialFeature}>
           <span className={styles.socialFeatureIcon} aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.5 6.6-4M8.7 13.5l6.6 4"/></svg></span>
-          <strong>COMPARTE LIRYGAMES</strong>
-          <p>Haz que otros descubran LIRYGAMES.</p>
+          <strong>{copy.communityOverview.shareTitle}</strong>
+          <p>{copy.communityOverview.shareIntro}</p>
         </div>
-        <p className={styles.socialChannelsTitle}>COMPARTE EN TUS REDES</p>
+        <p className={styles.socialChannelsTitle}>{copy.communityOverview.shareNetworks}</p>
         <LiryShare />
         <div className={styles.socialChannels}>
-          <strong>SÍGUENOS EN REDES SOCIALES</strong>
-          <p>Perfiles oficiales próximamente.</p>
+          <strong>{copy.communityOverview.follow}</strong>
+          <p>{copy.communityOverview.officialPending}</p>
           <LiryOfficialNetworks />
         </div>
-        <small className={styles.socialPending}>Enlaces oficiales pendientes de verificación.</small>
+        <small className={styles.socialPending}>{copy.communityOverview.linksPending}</small>
       </section>
             <section className={styles.section} id="recomendaciones">
         <div className={styles.socialPanelHeader}><h2>RECOMENDACIONES PARA TI</h2><p className={styles.socialIntro}>Descubre tres mundos destacados.</p></div>
