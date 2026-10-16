@@ -222,3 +222,14 @@ test("Journey copy and verified activity indicators have bilingual coverage",()=
  for(const key of ["sectionAria","title","subtitle","progressAria","exploredSuffix","noActivity","discovered","visitedAria","noProgressAria","pendingNote"]){assert.ok(es[key]?.length>4&&en[key]?.length>4);}
  assert.match(en.pendingNote,/awaiting verified activity/);
 });
+
+
+test("achievement previews preserve public goal IDs and accurate bilingual verification wording",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.achievementsPreview,en=LIRY_FRONTDESK_STRINGS.en.achievementsPreview;
+ assert.deepEqual(es.goals.map(x=>x.id),en.goals.map(x=>x.id));
+ assert.equal(es.goals.length,4);
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ for(const goal of en.goals){assert.ok(goal.title.length>2&&goal.detail.length>5);}
+ assert.match(en.empty,/no achievements credited/);
+ assert.match(es.pendingLabel,/Pendiente/);
+});
