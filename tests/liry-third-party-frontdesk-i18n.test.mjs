@@ -441,3 +441,11 @@ test("contact CAPTCHA and request fallback errors have ES EN equivalents",()=>{
  for(const key of ["captchaExpired","captchaFailed","captchaLoadFailed","submitFailed","submitError"])assert.ok(es[key].length>5&&en[key].length>5);
  assert.match(en.captchaExpired,/expired/i);
 });
+
+
+test("third party catalog preview preserves bilingual no-sale warnings",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.thirdPartyCatalog,en=LIRY_FRONTDESK_STRINGS.en.thirdPartyCatalog;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.match(en.dialogAvailability,/NO PURCHASES OR DOWNLOADS/);
+ assert.match(es.listingNotice,/VENTA NO HABILITADA/);
+});
