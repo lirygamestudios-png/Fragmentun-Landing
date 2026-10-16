@@ -1497,3 +1497,10 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
  .gamerInfoDialog input[type="file"]{display:block;max-width:100%;min-width:0;box-sizing:border-box}
  .gamerInfoDialogInside{overflow-wrap:anywhere}
 }
+
+/* Perfil gamer: evitar recortes del indicador XP y sus cifras en teléfonos. */
+@media(max-width:420px){
+ .gamerIdentityText{min-width:0;max-width:100%}
+ .gamerXpTrack{width:100%;max-width:100%;box-sizing:border-box}
+ .gamerIdentityText small{display:block;max-width:100%;overflow-wrap:anywhere;line-height:1.5}
+}
