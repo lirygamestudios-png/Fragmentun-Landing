@@ -382,3 +382,29 @@ test("developer finance preview preserves four categories and no fictitious tran
  assert.match(en.notice,/no transactions or balances/i);
  assert.match(en.inactive,/PAYOUTS INACTIVE/);
 });
+
+ 
+test("full FrontDesk dictionary maintains recursive ES EN structure and stable public IDs",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es,en=LIRY_FRONTDESK_STRINGS.en;
+ function check(left,right,path){
+  assert.equal(Array.isArray(left),Array.isArray(right),path+" array type");
+  if(Array.isArray(left)){
+   assert.equal(left.length,right.length,path+" array length");
+   for(let i=0;i<left.length;i++)check(left[i],right[i],path+"["+i+"]");
+   return;
+  }
+  if(left!==null&&typeof left==="object"){
+   assert.ok(right!==null&&typeof right==="object",path+" object type");
+   assert.deepEqual(Object.keys(left).sort(),Object.keys(right).sort(),path+" dictionary keys");
+   for(const key of Object.keys(left)){
+    if(key==="id"||key==="code"||key==="number"||key==="index")assert.equal(left[key],right[key],path+" stable identifier");
+    else check(left[key],right[key],path+"."+key);
+   }
+   return;
+  }
+  assert.equal(typeof left,typeof right,path+" leaf type");
+  if(typeof left==="string")assert.ok(left.trim().length>0&&right.trim().length>0,path+" nonblank translated strings");
+ }
+ check(es,en,"LIRY_FRONTDESK_STRINGS");
+ assert.deepEqual(RELEASED_LIRY_FRONTDESK_LOCALES,["es"]);
+});
