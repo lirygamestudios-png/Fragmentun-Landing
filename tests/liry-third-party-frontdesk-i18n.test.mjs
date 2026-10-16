@@ -486,3 +486,12 @@ test("DNA mobile layout and question transitions retain no forced page scrolling
  assert.match(component,/focus\(\{preventScroll:true\}\)/);
  assert.doesNotMatch(component,/scrollIntoView\(|window\.scrollTo\(/);
 });
+
+
+test("Liry DNA affinity results expose exact percent values to assistive technology",()=>{
+ const source=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");
+ assert.match(source,/className=\{styles\.dnaAffinityTrack\} role="progressbar"/);
+ assert.match(source,/aria-label=\{trait\}/);
+ assert.match(source,/aria-valuemin=\{0\} aria-valuemax=\{100\}/);
+ assert.match(source,/aria-valuenow=\{Math\.round\(\(dnaAnswers\[i\]\?\?0\)\/3\*100\)\}/);
+});
