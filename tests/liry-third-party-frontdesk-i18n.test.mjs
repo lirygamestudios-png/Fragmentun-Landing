@@ -314,3 +314,14 @@ test("LiryBoost Top10 translations preserve inactive and verified-only notices",
  assert.match(en.empty,/No fictional participants or scores/);
  assert.match(en.verified,/verified invitations/);
 });
+
+
+test("Liry ID and developer previews remain bilingual and disabled",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es,en=LIRY_FRONTDESK_STRINGS.en;
+ for(const section of ["liryIdDialog","developerDialog"])assert.deepEqual(Object.keys(es[section]).sort(),Object.keys(en[section]).sort());
+ assert.deepEqual(es.liryIdDialog.modes.map(x=>x.id),en.liryIdDialog.modes.map(x=>x.id));
+ assert.equal(en.liryIdDialog.modes.length,3);
+ assert.match(en.liryIdDialog.inactive,/ACCESS DISABLED/);
+ assert.match(en.developerDialog.inactive,/APPLICATIONS DISABLED/);
+ assert.match(en.developerDialog.noData,/not requesting files, credentials/);
+});
