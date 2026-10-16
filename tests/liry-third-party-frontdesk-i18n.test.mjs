@@ -243,3 +243,12 @@ test("LiryBoost overview keeps three bilingual steps and inactive competition di
  assert.match(es.notice,/no genera puntos ni garantiza acceso beta/i);
  assert.match(en.notice,/earns no points and does not guarantee beta access/i);
 });
+
+
+test("community and social overview remain bilingual with verified-link disclaimers",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.communityOverview,en=LIRY_FRONTDESK_STRINGS.en.communityOverview;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.match(es.linksPending,/pendientes de verificación/);
+ assert.match(en.linksPending,/pending verification/);
+ assert.match(en.postsPending,/coming soon/);
+});
