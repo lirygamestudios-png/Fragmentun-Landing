@@ -408,3 +408,11 @@ test("full FrontDesk dictionary maintains recursive ES EN structure and stable p
  check(es,en,"LIRY_FRONTDESK_STRINGS");
  assert.deepEqual(RELEASED_LIRY_FRONTDESK_LOCALES,["es"]);
 });
+
+
+test("Mi Liry landing back-link accessibility is translated and English remains gated",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.miLiry,en=LIRY_FRONTDESK_STRINGS.en.miLiry;
+ assert.match(es.backAria,/Volver al FrontDesk/);
+ assert.match(en.backAria,/Return to the LIRYGAMES STUDIOS FrontDesk/);
+ assert.equal(liryFrontdeskStrings("en").miLiry.backAria,es.backAria);
+});
