@@ -16,15 +16,15 @@ export function LiryPrivacyPreview(){
   <button type="button" ref={trigger} className={styles.gamerCardAction} aria-haspopup="dialog" onClick={()=>{reset();ref.current?.showModal()}}>{copy.open} <span aria-hidden="true">→</span></button>
   <dialog ref={ref} className={styles.liryStandaloneDialog} aria-label={copy.dialog} onClose={()=>trigger.current?.focus({preventScroll:true})} onClick={e=>{if(e.target===ref.current)ref.current.close()}}>
    <div className={styles.liryStandaloneContent}>
-    <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar preferencias">×</button></form>
+    <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label={copy.closeAria}>×</button></form>
     <p className={styles.gamerInfoEyebrow}>LIRYGAMES STUDIOS · LIRY ID</p>
     <h3>{copy.title}</h3>
     <p className={styles.liryCompactDescription}>{copy.intro}</p>
-    <div className={styles.liryPrivacyTabs} role="group" aria-label="Apartados">
+    <div className={styles.liryPrivacyTabs} role="group" aria-label={copy.sectionsAria}>
      <button type="button" className={styles.gamerInfoDone} aria-pressed={tab==="privacidad"} onClick={()=>setTab("privacidad")}>{copy.privacy}</button>
      <button type="button" className={styles.gamerInfoDone} aria-pressed={tab==="avisos"} onClick={()=>setTab("avisos")}>{copy.preferences}</button>
     </div>
-    {tab==="privacidad"?<div className={styles.liryPrivacyVisibility} role="radiogroup" aria-label="Visibilidad prevista">
+    {tab==="privacidad"?<div className={styles.liryPrivacyVisibility} role="radiogroup" aria-label={copy.visibilityAria}>
       <strong className={styles.liryPrivacyHeading}>{copy.visibility}</strong>
       {([["private",copy.visibilityLabels[0]],["friends",copy.visibilityLabels[1]],["public",copy.visibilityLabels[2]]] as const).map(([value,label])=><label key={value} className={styles.liryPrivacyRadioRow}><input type="radio" name="liry-visibility" checked={visibility===value} onChange={()=>setVisibility(value)}/><span>{label}</span></label>)}
       <p className={styles.liryPrivacyHint}>{copy.privacyHint}</p>
