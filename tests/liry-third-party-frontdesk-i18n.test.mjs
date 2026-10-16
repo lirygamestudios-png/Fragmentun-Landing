@@ -293,3 +293,15 @@ test("footer navigation and legal center link retain matching ES EN labels",()=>
  assert.equal(en.tagline.length,2);
  assert.match(en.rights,/All rights reserved/);
 });
+
+
+test("hero title, navigation descriptions and English preview notice are paired in both locales",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.heroDetails,en=LIRY_FRONTDESK_STRINGS.en.heroDetails;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.equal(es.headlineLines.length,3);
+ assert.equal(en.headlineLines.length,3);
+ assert.equal(es.startLines.length,2);
+ assert.equal(en.startLines.length,2);
+ assert.match(en.languageAria,/English translation coming soon/);
+ assert.match(en.description,/Which one will be yours/);
+});
