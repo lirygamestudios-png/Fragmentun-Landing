@@ -5,12 +5,9 @@ import {LiryDeveloperAdmissionPreview} from "./LiryDeveloperAdmissionPreview";
 import {LiryDeveloperGameListingPreview} from "./LiryDeveloperGameListingPreview";
 import {LiryDeveloperReleasePreview} from "./LiryDeveloperReleasePreview";
 import {LiryDeveloperFinancePreview} from "./LiryDeveloperFinancePreview";
-const areas=[
- {id:"admission",label:"SOLICITUD DE ADMISIÓN",description:"Requisitos y elegibilidad Premium/Freemium."},
- {id:"listing",label:"FICHA DEL VIDEOJUEGO",description:"Descripción, modalidad, precio y clasificación."},
- {id:"release",label:"CARGA Y REVISIÓN",description:"Etapas de validación de cada versión."},
- {id:"finance",label:"VENTAS Y LIQUIDACIONES",description:"Ingresos verificables y comisiones."}
-] as const;
+import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
+const copy=liryFrontdeskStrings("es").developerAreas;
+const areas=copy.areas;
 type AreaId=(typeof areas)[number]["id"];
 export function LiryDeveloperAreas(){
  const [selected,setSelected]=useState<AreaId>("admission");
@@ -27,15 +24,15 @@ export function LiryDeveloperAreas(){
  };
  return <>
   <div className={styles.grid}>{areas.map(area=><article key={area.id} className={styles.card}>
-   <h3>{area.label}</h3><p>{area.description}</p><small>VISTA PREPARATORIA</small>
-   <button type="button" className={styles.areaLink} aria-haspopup="dialog" aria-label={`Abrir ${area.label}`} onClick={event=>open(area.id,event.currentTarget)}>ABRIR ÁREA →</button>
+   <h3>{area.label}</h3><p>{area.description}</p><small>{copy.preparing}</small>
+   <button type="button" className={styles.areaLink} aria-haspopup="dialog" aria-label={`${copy.openAria} ${area.label}`} onClick={event=>open(area.id,event.currentTarget)}>{copy.open} →</button>
   </article>)}</div>
   <dialog className={styles.developerDialog} ref={modal} aria-modal="true" aria-describedby="liry-developer-area-description" aria-labelledby="liry-developer-area-heading" onClose={()=>{setSession(value=>value+1);opener.current?.focus({preventScroll:true});opener.current=null}} onClick={event=>{if(event.target===modal.current)modal.current.close()}}>
    <div className={styles.developerDialogBody}>
-    <form method="dialog"><button ref={close} className={styles.areaClose} type="submit" aria-label="Cerrar área y volver al panel desarrollador">×</button></form>
-    <span className={styles.eyebrow}>LIRY DEVELOPER · ESPACIO PREPARATORIO</span>
+    <form method="dialog"><button ref={close} className={styles.areaClose} type="submit" aria-label={copy.closeAria}>×</button></form>
+    <span className={styles.eyebrow}>{copy.eyebrow}</span>
     <h2 id="liry-developer-area-heading" className={styles.developerDialogHeading}>{areas.find(area=>area.id===selected)?.label}</h2>
-    <p id="liry-developer-area-description" className={styles.developerDialogDescription}>Vista preparatoria, sin cuenta activa ni envío de datos. LIRYGAMES debe aprobar cada publicación.</p>
+    <p id="liry-developer-area-description" className={styles.developerDialogDescription}>{copy.notice}</p>
     <div key={session}>
      {selected==="admission"&&<LiryDeveloperAdmissionPreview/>}
      {selected==="listing"&&<LiryDeveloperGameListingPreview/>}
