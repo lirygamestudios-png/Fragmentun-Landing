@@ -6,7 +6,8 @@ import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
 const dnaCopy=liryFrontdeskStrings("es").gamerDna;
 const detailCopy=liryFrontdeskStrings("es").dnaDetails;
 
-const themes=["COMPETITIVO · ACCIÓN · MULTIJUGADOR","ESTRATEGIA · ACCIÓN · MULTIJUGADOR","ECONOMÍA · ESTRATEGIA · SIMULACIÓN","SUPERVIVENCIA · RPG · MUNDO ABIERTO","SOCIAL · SIMULACIÓN · MULTIJUGADOR","FANTASÍA · RPG · MUNDO ABIERTO","PUZZLE · AVENTURA · EXPLORACIÓN","ESTRATEGIA · NFT · MULTIJUGADOR","PLATAFORMAS · AVENTURA · PUZZLES"];
+const cardCopy=liryFrontdeskStrings("es").gameCards;
+const themes=cardCopy.themes;
 const publicCodenames=["LIRY // ARENA-01","LIRY // BOT-02","LIRY // ECON-03","LIRY // EARTH-04","LIRY // LINK-05","LIRY // REALM-06","LIRY // EMOTION-07","LIRY // TITAN-08","LIRY // CODE-09"];
 const catalogArt=["/liry-assets/world-01.webp","/liry-assets/world-02.webp","/liry-assets/world-03.webp","/liry-assets/world-04.webp","/liry-assets/world-05.webp","/liry-assets/world-06.webp","/liry-assets/world-07.webp","/liry-assets/world-08.webp","/liry-assets/world-09.webp"];
 const traits=dnaCopy.traits;
@@ -108,14 +109,14 @@ export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
           <div className={styles.worldCardText}>
             <h3>{publicCodenames[index]??`LIRY // PROJECT-${String(index+1).padStart(2,"0")}`}</h3>
             <p>{themes[index]??game.tagline}</p>
-            <span className={styles.worldAvailability}>{game.state==="available"?"DISPONIBLE":game.state==="beta"?"EN BETA":"PRÓXIMAMENTE"}</span>
+            <span className={styles.worldAvailability}>{game.state==="available"?cardCopy.available:game.state==="beta"?cardCopy.beta:cardCopy.comingSoon}</span>
           </div>
           <span className={styles.worldArrow} aria-hidden="true">→</span>
-          <button type="button" ref={node=>{gameTriggersRef.current[index]=node}} className={styles.worldCardOpen} aria-label={`Ver detalles de ${publicCodenames[index]??game.title}`} onClick={()=>setSelectedGame(index)} />
+          <button type="button" ref={node=>{gameTriggersRef.current[index]=node}} className={styles.worldCardOpen} aria-label={`${cardCopy.detailsAria} ${publicCodenames[index]??game.title}`} onClick={()=>setSelectedGame(index)} />
         </div>
       </article>)}
     </div>
-    {selectedGame!==null&&<div className={styles.worldDetailBackdrop} onClick={closeGameDetails}><section className={styles.worldDetailDialog} role="dialog" aria-modal="true" aria-labelledby="liry-world-dialog-title" onClick={e=>e.stopPropagation()}><button type="button" ref={gameCloseRef} className={styles.worldDetailClose} onClick={closeGameDetails} aria-label="Cerrar detalles del videojuego">×</button><img src={catalogArt[selectedGame]} alt="" /><div className={styles.worldDetailBody}><p className={styles.kicker}>UNIVERSO LIRYGAMES</p><h3 id="liry-world-dialog-title">{publicCodenames[selectedGame]}</h3><p>{themes[selectedGame]}</p><strong>{games[selectedGame].state==="available"?"DISPONIBLE":games[selectedGame].state==="beta"?"EN BETA":"PRÓXIMAMENTE"}</strong><p>Estamos preparando esta experiencia. La fecha de lanzamiento y el acceso se comunicarán cuando estén confirmados.</p><a href="#contacto" onClick={()=>setSelectedGame(null)}>CONTACTAR CON LIRYGAMES →</a></div></section></div>}
+    {selectedGame!==null&&<div className={styles.worldDetailBackdrop} onClick={closeGameDetails}><section className={styles.worldDetailDialog} role="dialog" aria-modal="true" aria-labelledby="liry-world-dialog-title" onClick={e=>e.stopPropagation()}><button type="button" ref={gameCloseRef} className={styles.worldDetailClose} onClick={closeGameDetails} aria-label={cardCopy.closeAria}>×</button><img src={catalogArt[selectedGame]} alt="" /><div className={styles.worldDetailBody}><p className={styles.kicker}>{cardCopy.universe}</p><h3 id="liry-world-dialog-title">{publicCodenames[selectedGame]}</h3><p>{themes[selectedGame]}</p><strong>{games[selectedGame].state==="available"?cardCopy.available:games[selectedGame].state==="beta"?cardCopy.beta:cardCopy.comingSoon}</strong><p>{cardCopy.preparing}</p><a href="#contacto" onClick={()=>setSelectedGame(null)}>{cardCopy.contact} →</a></div></section></div>}
     <aside className={styles.dnaSide} style={dnaHeightStyle} id="liry-dna" aria-labelledby="dna-side-title">
       <p className={styles.kicker}>EXPERIENCIA INTERACTIVA</p>
       <h3 id="dna-side-title">DESCUBRE TU <span>LIRY DNA</span></h3>
