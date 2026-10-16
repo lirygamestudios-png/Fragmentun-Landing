@@ -424,3 +424,12 @@ test("community information placeholder has bilingual text without simulated pos
  assert.match(en.notice,/community in preparation/);
  assert.match(es.notice,/comunidad en preparación/);
 });
+
+
+test("community contact and official network dialogs have bilingual accessible copy",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.communityDialogs,en=LIRY_FRONTDESK_STRINGS.en.communityDialogs;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ for(const area of ["contact","networks"])assert.deepEqual(Object.keys(es[area]).sort(),Object.keys(en[area]).sort());
+ assert.match(en.networks.pendingSuffix,/pending verification/);
+ assert.match(en.contact.intro,/collaboration proposals/);
+});
