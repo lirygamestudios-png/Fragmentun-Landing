@@ -503,3 +503,15 @@ test("DNA restart clears all answers and focuses the first question without scro
  assert.match(source,/liry-dna-q-0/);
  assert.match(source,/focus\(\{preventScroll:true\}\)/);
 });
+
+
+test("DNA result handoff to gamer profile remains temporary and announces style as one accessible update",()=>{
+ const dna=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");
+ const gamer=readFileSync(new URL("../components/LiryGamerIdentity.tsx",import.meta.url),"utf8");
+ assert.match(dna,/new CustomEvent\("liry:dna-closed"/);
+ assert.match(dna,/durationMs:10000/);
+ assert.match(gamer,/addEventListener\("liry:dna-closed",onDnaClosed\)/);
+ assert.match(gamer,/setHighlight\(true\)/);
+ assert.match(gamer,/setStyle\(null\);setHighlight\(false\)/);
+ assert.match(gamer,/aria-live="polite" aria-atomic="true"/);
+});
