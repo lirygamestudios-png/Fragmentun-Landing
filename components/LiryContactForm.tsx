@@ -23,9 +23,9 @@ export function LiryContactForm(){
   const script=document.createElement("script");
   script.src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";script.async=true;
   script.onload=()=>{if(cancelled||!turnstileContainer.current||!window.turnstile)return;
-   turnstileWidgetId.current=window.turnstile.render(turnstileContainer.current,{sitekey:turnstileSiteKey,callback:token=>{setTurnstileToken(token);setTurnstileError("");},"expired-callback":()=>{setTurnstileToken("");setTurnstileError("La verificación ha vencido. Complétala nuevamente para enviar el mensaje.");},"error-callback":()=>{setTurnstileToken("");setTurnstileError("La verificación no pudo completarse.");}});
+   turnstileWidgetId.current=window.turnstile.render(turnstileContainer.current,{sitekey:turnstileSiteKey,callback:token=>{setTurnstileToken(token);setTurnstileError("");},"expired-callback":()=>{setTurnstileToken("");setTurnstileError(copy.captchaExpired);},"error-callback":()=>{setTurnstileToken("");setTurnstileError(copy.captchaFailed);}});
   };
-  script.onerror=()=>setTurnstileError("No se pudo cargar la verificación.");
+  script.onerror=()=>setTurnstileError(copy.captchaLoadFailed);
   document.head.appendChild(script);
   return ()=>{cancelled=true;if(turnstileWidgetId.current&&window.turnstile)window.turnstile.remove(turnstileWidgetId.current);script.remove();};
  },[]);
@@ -36,10 +36,10 @@ export function LiryContactForm(){
   try{
    const r=await fetch("/api/lirygames/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,subject,gameSlug,message,privacyAcknowledged:ack,website,turnstileToken})});
    const j=await r.json();
-   if(!r.ok||!j.ok)throw Error(j.message||"No se pudo enviar.");
+   if(!r.ok||!j.ok)throw Error(j.message||copy.submitFailed);
    setName("");setEmail("");setSubject("opinion");setGameSlug("");setMessage("");setAck(false);setWebsite("");
    setDone(true);setResult(j.message||copy.success);
-  }catch(error){setResult(error instanceof Error?error.message:"Error de envío");}
+  }catch(error){setResult(error instanceof Error?error.message :copy.submitError);}
   finally{setBusy(false);setTurnstileToken("");if(turnstileWidgetId.current)window.turnstile?.reset(turnstileWidgetId.current)}
  }
  function resetFeedback(){setDone(false);setResult("");}
