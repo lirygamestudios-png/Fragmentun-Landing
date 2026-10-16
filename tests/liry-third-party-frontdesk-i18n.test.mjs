@@ -354,3 +354,11 @@ test("developer admission preview stays bilingual, inoperable and retains all fi
  assert.match(en.inactive,/No application submission/);
  assert.match(en.ready,/human approval/);
 });
+
+
+test("developer listing translations preserve inactive form states",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.developerListing,en=LIRY_FRONTDESK_STRINGS.en.developerListing;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.match(en.inactive,/No saving, file uploads, submissions or sales/);
+ assert.match(en.pending,/not admission/);
+});
