@@ -449,3 +449,11 @@ test("third party catalog preview preserves bilingual no-sale warnings",()=>{
  assert.match(en.dialogAvailability,/NO PURCHASES OR DOWNLOADS/);
  assert.match(es.listingNotice,/VENTA NO HABILITADA/);
 });
+
+
+test("nine internal game catalog cards retain safe codenames and bilingual descriptions",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.gameCards,en=LIRY_FRONTDESK_STRINGS.en.gameCards;
+ assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
+ assert.equal(es.themes.length,9);assert.equal(en.themes.length,9);
+ assert.match(en.preparing,/launch date and access details/);
+});
