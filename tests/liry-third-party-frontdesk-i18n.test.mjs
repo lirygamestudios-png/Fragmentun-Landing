@@ -168,4 +168,6 @@ test("gamer profile avatar and XP labels match across languages",()=>{
  assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
  assert.match(es.avatarHelp,/No se sube al servidor/i);
  assert.match(en.avatarHelp,/not uploaded to the server/i);
+ assert.match(es.xpTowardNextLevel,/hacia el siguiente nivel/);
+ assert.match(en.xpTowardNextLevel,/toward the next level/);
 });
