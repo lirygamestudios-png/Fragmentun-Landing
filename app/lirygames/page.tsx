@@ -117,15 +117,11 @@ export default async function LiryGamesFrontDesk(){
       </div>
     </section>
     <section className={`${styles.section} ${styles.liryBoostSection}`} id="liryboost" aria-labelledby="liryboost-title">
-      <p className={styles.kicker}>COMPARTE · CONECTA · PARTICIPA</p>
+      <p className={styles.kicker}>{copy.liryBoostSection.kicker}</p>
       <h2 id="liryboost-title">LIRYBOOST</h2>
-      <p className={styles.sectionIntro}>Próximamente podrás participar compartiendo LIRYGAMES. Los diez participantes con mayor cantidad de invitaciones verificadas tendrán prioridad para recibir acceso a las versiones beta, según las reglas oficiales de cada convocatoria.</p>
-      <div aria-label="Cómo funcionará LiryBoost" className={styles.liryBoostSteps}>
-        {[
-          {number:"01",title:"COMPARTE",detail:"Invita a nuevos jugadores con tu enlace personal, una vez abierto el programa."},
-          {number:"02",title:"VERIFICAMOS",detail:"Contabilizaremos únicamente las invitaciones válidas, de acuerdo con las reglas publicadas."},
-          {number:"03",title:"ACCEDE ANTES",detail:"El Top 10 tendrá prioridad para las versiones beta disponibles, sujeto a las condiciones de cada juego."}
-        ].map(step=><article key={step.number} className={styles.liryBoostStep}>
+      <p className={styles.sectionIntro}>{copy.liryBoostSection.intro}</p>
+      <div aria-label={copy.liryBoostSection.stepsAria} className={styles.liryBoostSteps}>
+        {copy.liryBoostSection.steps.map(step=><article key={step.number} className={styles.liryBoostStep}>
           <span className={styles.liryBoostNumber}>{step.number}</span>
           <strong className={styles.liryBoostStepTitle}>{step.title}</strong>
           <p className={styles.liryBoostDetail}>{step.detail}</p>
@@ -134,10 +130,10 @@ export default async function LiryGamesFrontDesk(){
       <LiryBoostTop10 />
       <div className={styles.liryBoostActions}>
         <LiryBoostEnrollment />
-        <a href="#social" className={styles.liryBoostSecondary}>COMPARTIR LIRYGAMES →</a>
-        <a href="#contacto" className={styles.liryBoostSecondary}>CONTACTAR CON LIRYGAMES →</a>
+        <a href="#social" className={styles.liryBoostSecondary}>{copy.liryBoostSection.share} →</a>
+        <a href="#contacto" className={styles.liryBoostSecondary}>{copy.liryBoostSection.contact} →</a>
       </div>
-      <p className={styles.liryBoostNotice}>El registro de participaciones, la validación de invitaciones y el Top 10 todavía no están activos. Compartir ahora no genera puntos ni garantiza acceso beta. Publicaremos las condiciones antes de abrir la competencia.</p>
+      <p className={styles.liryBoostNotice}>{copy.liryBoostSection.notice}</p>
     </section>
     <div className={styles.socialTrio} aria-label="Comunidad, eventos y recomendaciones">
       <section className={styles.section} id="comunidad">
