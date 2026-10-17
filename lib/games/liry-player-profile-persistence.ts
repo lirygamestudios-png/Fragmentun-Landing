@@ -10,7 +10,7 @@ export type LiryPlayerProfileUpdate=Readonly<{
  avatarObjectKey:string|null;
 }>;
 export function isValidLiryProfileUpdate(value:LiryPlayerProfileUpdate):boolean{
- if(!value||typeof value.ownerId!=="string"||typeof value.displayName!=="string")return false;
+ if(!value||typeof value!=="object"||Array.isArray(value)||typeof value.ownerId!=="string"||typeof value.displayName!=="string")return false;
  if(!/^[a-zA-Z0-9_-]{8,128}$/.test(value.ownerId)||value.displayName.trim().length<2||value.displayName.trim().length>40)return false;
  if(/[<>\x00-\x1f\x7f-\x9f]/.test(value.displayName)||value.displayName!==value.displayName.trim())return false;
  const p=value.preferences;
