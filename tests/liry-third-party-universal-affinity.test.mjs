@@ -26,3 +26,11 @@ test("an unapproved duplicate cannot suppress the approved DNA profile",()=>{
  const allowed=item("same");
  assert.equal(recommendUniversalLiryGames([denied,allowed],player).length,1);
 });
+
+test("global Journey verifies game origin and respects the 100-game capacity",()=>{
+ const own=Array.from({length:12},(_,i)=>item("owned-extra-"+i,"first_party"));
+ const external=Array.from({length:100},(_,i)=>item("external-extra-"+i));
+ const catalog=[...own,...external];
+ const activity=[{publicId:"external-extra-0",origin:"first_party",verified:true},{publicId:"external-extra-1",origin:"third_party",verified:true},{publicId:"owned-extra-0",origin:"first_party",verified:true},{publicId:"external-extra-99",origin:"third_party",verified:true}];
+ assert.deepEqual(universalLiryJourneyProgress(catalog,activity),{eligible:100,visited:2});
+});
