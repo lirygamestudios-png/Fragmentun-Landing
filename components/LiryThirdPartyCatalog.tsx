@@ -10,6 +10,8 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
  const copy=liryFrontdeskStrings(locale).thirdPartyCatalog;
 
  const [selected,setSelected]=useState<PublicThirdPartyCard|null>(null);
+ const [visibleCount,setVisibleCount]=useState(12);
+ const visibleGames=games.slice(0,visibleCount);
  const dialog=useRef<HTMLDialogElement>(null);
  const opener=useRef<HTMLButtonElement|null>(null);
  if(!games.length)return null;
@@ -25,7 +27,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
   <h3 id="liry-third-party-title">{copy.title}</h3>
   <p>{copy.intro}</p>
   <div className={styles.thirdPartyGrid}>
-   {games.map(game=><article key={game.slug} className={styles.thirdPartyCard}>
+   {visibleGames.map(game=><article key={game.slug} className={styles.thirdPartyCard}>
     <div className={styles.thirdPartyCardArt} aria-hidden="true"><span>✧</span></div>
     <div className={styles.thirdPartyCardBody}>
      <span className={styles.thirdPartyCardModel}>{game.model==="premium"?"PREMIUM":"FREEMIUM"}</span>
@@ -36,6 +38,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
     </div>
    </article>)}
   </div>
+  {games.length>visibleCount&&<div style={{display:"flex",justifyContent:"center",padding:"20px 0"}}><button type="button" className={styles.thirdPartyDetailButton} onClick={()=>setVisibleCount(count=>Math.min(count+12,games.length))} aria-label={locale==="es"?"Mostrar más videojuegos externos":"Show more third-party games"}>{locale==="es"?"VER MÁS VIDEOJUEGOS":"SHOW MORE GAMES"} ({visibleCount}/{games.length}) ↓</button></div>}
   <dialog ref={dialog} className={styles.thirdPartyDialog} aria-modal="true" aria-labelledby="third-party-dialog-title" onClose={()=>{setSelected(null);opener.current?.focus({preventScroll:true});opener.current=null}} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
    <div className={styles.thirdPartyDialogBody}>
     <form method="dialog"><button type="submit" className={styles.thirdPartyClose} aria-label={copy.closeAria}>×</button></form>
