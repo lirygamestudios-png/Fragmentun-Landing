@@ -591,3 +591,15 @@ test("Journey world modal preserves mobile touch targets and wrapping for connec
  assert.match(css,/\.gamerWorldChoice\{min-height:44px;min-width:0;overflow-wrap:anywhere\}/);
  assert.match(css,/\.gamerWorldStatus\{min-width:0;overflow-wrap:anywhere\}/);
 });
+
+
+test("LIRYGAMES FrontDesk ES EN links change server-rendered locale independently of FRAGMENTUN",()=>{
+ const source=readFileSync(new URL("../app/lirygames/page.tsx",import.meta.url),"utf8");
+ const miLiry=readFileSync(new URL("../app/lirygames/mi-liry/page.tsx",import.meta.url),"utf8");
+ assert.match(source,/getReleasedLiryFrontdeskLocale\(\(await searchParams\)\.lang\)/);
+ assert.match(source,/href="\/lirygames\?lang=es"/);
+ assert.match(source,/href="\/lirygames\?lang=en"/);
+ assert.match(source,/locale=\{locale\}/);
+ assert.match(miLiry,/getReleasedLiryFrontdeskLocale\(\(await searchParams\)\.lang\)/);
+ assert.match(miLiry,/<MiLiryAreas locale=\{locale\}/);
+});
