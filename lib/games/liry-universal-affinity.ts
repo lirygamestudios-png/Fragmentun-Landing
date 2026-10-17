@@ -58,7 +58,15 @@ export function universalLiryJourneyProgress(
  catalog:readonly LiryUniversalGame[],
  activity:readonly LiryVerifiedPlayerGame[]
 ):Readonly<{eligible:number;visited:number}>{
- const eligible=new Set(catalog.filter(game=>game.published&&game.releaseApproved).map(game=>game.publicId));
- const visited=new Set(activity.filter(a=>a.verified&&eligible.has(a.publicId)).map(a=>a.publicId));
+ const eligible=new Map<string,LiryGameOrigin>();
+ let owned=0,external=0;
+ for(const game of catalog){
+  if(!game||!game.publicId||eligible.has(game.publicId)||!game.published||!game.releaseApproved)continue;
+  if(game.origin==="first_party"){if(owned>=OWN_GAME_RESERVED_SLOTS)continue;owned++;}
+  else if(game.origin==="third_party"){if(external>=THIRD_PARTY_CATALOG_CAPACITY)continue;external++;}
+  else continue;
+  eligible.set(game.publicId,game.origin);
+ }
+ const visited=new Set(activity.filter(a=>a.verified===true&&eligible.get(a.publicId)===a.origin).map(a=>a.publicId));
  return {eligible:eligible.size,visited:visited.size};
 }
