@@ -1,10 +1,10 @@
 "use client";
 import {useState} from "react";
 import styles from "../app/lirygames/mi-liry/mi-liry.module.css";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const copy=liryFrontdeskStrings("es").developerAdmission;
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 type Model="premium"|"freemium";
-export function LiryDeveloperAdmissionPreview(){
+export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontdeskLocale}){
+ const copy=liryFrontdeskStrings(locale).developerAdmission;
  const [model,setModel]=useState<Model|null>(null);
  const [rights,setRights]=useState(false);
  const [executable,setExecutable]=useState(false);
