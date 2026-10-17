@@ -3,14 +3,18 @@ import {useRef,useState} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
 import {LIRY_GAME_LINKS_PENDING} from "../lib/games/liry-game-link-contract";
 import {LIRY_VISITOR_IDENTITY} from "../lib/games/liry-id-contract";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const copy=liryFrontdeskStrings("es").gamerInfo;
-const stages=liryFrontdeskStrings("es").identityStages;
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
+
+
 
 type Topic="perfil"|"journey"|"logros"|"mundos"|"logros-lista";
-const panels=copy.panels;
 
-export function LiryGamerInfoDialog({topic}:{topic:Topic}){
+
+export function LiryGamerInfoDialog({topic,locale="es"}:{topic:Topic,locale?:LiryFrontdeskLocale}){
+ const copy=liryFrontdeskStrings(locale).gamerInfo;
+ const stages=liryFrontdeskStrings(locale).identityStages;
+ const panels=copy.panels;
+
   const dialogRef=useRef<HTMLDialogElement>(null);
   const triggerRef=useRef<HTMLButtonElement>(null);
   const [selectedWorld,setSelectedWorld]=useState<number|null>(null);
