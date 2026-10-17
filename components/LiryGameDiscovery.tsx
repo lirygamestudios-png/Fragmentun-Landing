@@ -129,8 +129,8 @@ export function LiryGameDiscovery({games,locale="es"}:{games:readonly PublicGame
     </div>
     {selectedGame!==null&&<div className={styles.worldDetailBackdrop} onClick={closeGameDetails}><section className={styles.worldDetailDialog} role="dialog" aria-modal="true" aria-labelledby="liry-world-dialog-title" onClick={e=>e.stopPropagation()}><button type="button" ref={gameCloseRef} className={styles.worldDetailClose} onClick={closeGameDetails} aria-label={cardCopy.closeAria}>×</button><img src={catalogArt[selectedGame]} alt="" /><div className={styles.worldDetailBody}><p className={styles.kicker}>{cardCopy.universe}</p><h3 id="liry-world-dialog-title">{publicCodenames[selectedGame]}</h3><p>{themes[selectedGame]}</p><strong>{games[selectedGame].state==="available"?cardCopy.available:games[selectedGame].state==="beta"?cardCopy.beta:cardCopy.comingSoon}</strong><p>{cardCopy.preparing}</p><a href="#contacto" onClick={()=>setSelectedGame(null)}>{cardCopy.contact} →</a></div></section></div>}
     <aside className={styles.dnaSide} style={dnaHeightStyle} id="liry-dna" aria-labelledby="dna-side-title">
-      <p className={styles.kicker}>EXPERIENCIA INTERACTIVA</p>
-      <h3 id="dna-side-title">DESCUBRE TU <span>LIRY DNA</span></h3>
+      <p className={styles.kicker}>{accessibilityCopy.kicker}</p>
+      <h3 id="dna-side-title">{accessibilityCopy.titlePrefix} <span>LIRY DNA</span></h3>
       <div className={styles.dnaArt} aria-hidden="true">
         <img className={styles.dnaMap} src="/liry-dna-cinematic.svg" alt="" loading="eager" decoding="async" /><img className={styles.dnaPhotoUpper} src="/LIRY_DNA_Hiperrealista.png" alt="" loading="eager" decoding="async" onLoad={(e)=>e.currentTarget.classList.add(styles.dnaPhotoLoaded)} onError={(e)=>e.currentTarget.style.display="none"} />
       </div>
