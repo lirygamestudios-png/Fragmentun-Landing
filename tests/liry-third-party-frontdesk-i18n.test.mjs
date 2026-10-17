@@ -623,3 +623,11 @@ test("LIRYGAMES bilingual pages identify active content language for screen read
  assert.match(front,/<main className=\{styles\.page\} id="liry-main" lang=\{locale\}>/);
  assert.match(profile,/<main className=\{styles\.page\} lang=\{locale\}>/);
 });
+
+
+test("sharing LIRYGAMES preserves the selected ES EN language in destination links",()=>{
+ const source=readFileSync(new URL("../components/LiryShare.tsx",import.meta.url),"utf8");
+ assert.match(source,/url\.searchParams\.set\("lang",locale\)/);
+ assert.match(source,/encodeURIComponent\(copy\.socialTitle\)/);
+ assert.notEqual(LIRY_FRONTDESK_STRINGS.es.shareCopy.socialTitle,LIRY_FRONTDESK_STRINGS.en.shareCopy.socialTitle);
+});
