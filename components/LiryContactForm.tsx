@@ -1,10 +1,11 @@
 "use client";
 import {useEffect,useRef,useState,type FormEvent} from "react";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const copy=liryFrontdeskStrings("es").contact;
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
+
 declare global {interface Window {turnstile?:{render:(node:HTMLElement,options:{sitekey:string;callback:(token:string)=>void;"expired-callback":()=>void;"error-callback":()=>void})=>string;remove:(id:string)=>void;reset:(id:string)=>void}}}
 const turnstileSiteKey=process.env.NEXT_PUBLIC_LIRY_TURNSTILE_SITE_KEY;
-export function LiryContactForm(){
+export function LiryContactForm({locale="es"}:{locale?:LiryFrontdeskLocale}){
+ const copy=liryFrontdeskStrings(locale).contact;
  const[name,setName]=useState("");
  const[email,setEmail]=useState("");
  const[subject,setSubject]=useState("opinion");
