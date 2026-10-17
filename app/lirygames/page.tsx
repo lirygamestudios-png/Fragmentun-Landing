@@ -7,6 +7,7 @@ import {LiryCommunityTabs} from "../../components/LiryCommunityTabs";
 import {LiryBoostTop10} from "../../components/LiryBoostTop10";
 import {LiryBoostEnrollment} from "../../components/LiryBoostEnrollment";
 import {LiryGameDiscovery} from "../../components/LiryGameDiscovery";
+import {getApprovedPublicDnaProfiles} from "../../lib/games/liry-public-dna-projection";
 import {liryGlobalJourneySummary} from "../../lib/games/liry-global-journey";
 import {LiryThirdPartyCatalog} from "../../components/LiryThirdPartyCatalog";
 import {LiryGamerInfoDialog} from "../../components/LiryGamerInfoDialog";
@@ -46,6 +47,7 @@ export default async function LiryGamesFrontDesk({searchParams}:{searchParams:Pr
   // Publicar solo identificadores editoriales: no serializar títulos ni slugs internos de IP.
   const internalCatalog=await getLiryPublicCatalog();
   const approvedThirdPartyCatalog=await getLiryApprovedThirdPartyCatalog();
+  const approvedDnaCatalog=await getApprovedPublicDnaProfiles(approvedThirdPartyCatalog);
   // Hasta existir proveedor de identidad y telemetría autorizado: estado visitante, sin datos fabricados.
   const gamerSnapshot=VISITOR_GAMER_SNAPSHOT;
   const verifiedVisitedWorldIds=gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?new Set(gamerSnapshot.verifiedActivity.visitedWorldIds):null;
@@ -82,7 +84,7 @@ export default async function LiryGamesFrontDesk({searchParams}:{searchParams:Pr
       <p className={styles.kicker}>{copy.discovery.eyebrow}</p>
       <h2>{copy.discovery.title}</h2>
       <p className={styles.sectionIntro}>{copy.discovery.description}</p>
-      <LiryGameDiscovery locale={locale} games={games} approvedExternalGames={approvedThirdPartyCatalog} />
+      <LiryGameDiscovery locale={locale} games={games} approvedExternalGames={approvedThirdPartyCatalog} approvedDnaCatalog={approvedDnaCatalog} />
       <LiryThirdPartyCatalog locale={locale} games={approvedThirdPartyCatalog} />
     </section>
     <section className={`${styles.section} ${styles.gamerSection}`} id="perfil-gamer" aria-label={copy.journey.sectionAria}>
