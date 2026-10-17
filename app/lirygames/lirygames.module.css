@@ -1520,3 +1520,12 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
  .journeyName{min-width:0;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;line-height:1.4}
  .journeyPending{flex:0 0 auto}
 }
+
+/* Subpantalla de mundos: controles táctiles y estados legibles en móvil. */
+@media(max-width:480px){
+ .gamerInfoModalList{max-width:100%;min-width:0}
+ .gamerInfoModalList li{min-width:0;overflow-wrap:anywhere}
+ .gamerWorldChoice{min-height:44px;min-width:0;overflow-wrap:anywhere}
+ .gamerWorldChoice span{flex:0 1 auto;overflow-wrap:anywhere}
+ .gamerWorldStatus{min-width:0;overflow-wrap:anywhere}
+}
