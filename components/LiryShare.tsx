@@ -12,7 +12,7 @@ export function LiryShare({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const previewRef=useRef<HTMLDialogElement>(null);
  const previewTrigger=useRef<HTMLButtonElement|null>(null);
  const[shareNotice,setShareNotice]=useState("");
- function pageUrl(){return resolveLiryShareUrl(process.env.NEXT_PUBLIC_LIRY_PUBLIC_URL,window.location.origin)??new URL("/lirygames",window.location.origin).toString();}
+ function pageUrl(){const base=resolveLiryShareUrl(process.env.NEXT_PUBLIC_LIRY_PUBLIC_URL,window.location.origin)??new URL("/lirygames",window.location.origin).toString();const url=new URL(base);url.searchParams.set("lang",locale);return url.toString();}
  async function nativeShare(){
    const data={title:"LIRYGAMES STUDIOS",text:copy.nativeText,url:pageUrl()};
    if(typeof navigator.share==="function"){
@@ -25,7 +25,7 @@ export function LiryShare({locale="es"}:{locale?:LiryFrontdeskLocale}){
  }
  function shareTo(provider:"whatsapp"|"facebook"|"x"){
    const url=encodeURIComponent(pageUrl());
-   const title=encodeURIComponent("LIRYGAMES STUDIOS · 9 Worlds");
+   const title=encodeURIComponent(copy.socialTitle);
    const dest=provider==="whatsapp"?"https://api.whatsapp.com/send?text="+title+"%20"+url:
      provider==="facebook"?"https://www.facebook.com/sharer/sharer.php?u="+url:
      "https://twitter.com/intent/tweet?text="+title+"&url="+url;
