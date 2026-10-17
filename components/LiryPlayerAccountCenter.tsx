@@ -1,5 +1,5 @@
 "use client";
-import {useState} from "react";
+import {useEffect,useRef,useState} from "react";
 import type {LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 import {LIRY_PLAYER_AUTH_RELEASE,LIRY_ACCOUNT_SECURITY_CHECKLIST} from "../lib/games/liry-player-account-security";
 import styles from "../app/lirygames/mi-liry/mi-liry.module.css";
@@ -17,6 +17,19 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const [notices,setNotices]=useState(false);
  const [reduceMotion,setReduceMotion]=useState(false);
  const [privateProfile,setPrivateProfile]=useState(true);
+ const [avatarUrl,setAvatarUrl]=useState<string|null>(null);
+ const [avatarError,setAvatarError]=useState("");
+ const avatarInput=useRef<HTMLInputElement>(null);
+ const avatarUrlRef=useRef<string|null>(null);
+ useEffect(()=>()=>{if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current)},[]);
+ const removeAvatar=()=>{if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);avatarUrlRef.current=null;setAvatarUrl(null);setAvatarError("");if(avatarInput.current)avatarInput.current.value=""};
+ const chooseAvatar=(file?:File)=>{
+  if(!file)return;
+  if(!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>3*1024*1024||file.size===0){setAvatarError(locale==="es"?"Selecciona JPG, PNG o WebP de hasta 3 MB.":"Choose JPG, PNG or WebP up to 3 MB.");return}
+  const next=URL.createObjectURL(file);
+  if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);
+  avatarUrlRef.current=next;setAvatarUrl(next);setAvatarError("");
+ };
  const resetPreview=()=>{setNotices(false);setReduceMotion(false);setPrivateProfile(true)};
  const active=sections.indexOf(selected);
  return <section aria-labelledby="liry-account-center-heading" className={styles.accountCenter}>
@@ -26,7 +39,13 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
    {sections.map((section,i)=><button key={section} type="button" aria-pressed={selected===section} onClick={()=>setSelected(section)} className={styles.accountTab}>{copy.sections[i]}</button>)}
   </div>
   <div role="region" aria-label={copy.sections[active]} className={styles.accountPanel}>
-   {selected==="perfil"&&<><h3>{copy.sections[0]}</h3><p>{copy.alias}: <strong>{copy.aliasValue}</strong></p><p>{copy.avatar}: ◇</p><small>{copy.pending}</small></>}
+   {selected==="perfil"&&<><h3>{copy.sections[0]}</h3><p>{copy.alias}: <strong>{copy.aliasValue}</strong></p><div className={styles.accountAvatarArea}>
+    <div className={styles.accountAvatarPicture}>{avatarUrl?<img src={avatarUrl} alt={locale==="es"?"Vista previa de tu avatar":"Your avatar preview"}/>:<span aria-hidden="true">◇</span>}</div>
+    <div><p>{copy.avatar}</p><input ref={avatarInput} className={styles.accountAvatarInput} type="file" accept="image/jpeg,image/png,image/webp" aria-label={locale==="es"?"Seleccionar fotografía o avatar":"Choose photo or avatar"} onChange={event=>chooseAvatar(event.currentTarget.files?.[0])}/>
+    <p className={styles.accountIntro}>{locale==="es"?"JPG, PNG o WebP · máximo 3 MB · vista previa temporal":"JPG, PNG or WebP · 3 MB max · temporary preview"}</p>
+    {avatarUrl&&<button type="button" className={styles.accountReset} onClick={removeAvatar}>{locale==="es"?"Quitar fotografía":"Remove photo"}</button>}
+    {avatarError&&<p role="alert">{avatarError}</p>}</div>
+   </div><small>{copy.pending}</small></>}
    {selected==="configuracion"&&<><h3>{copy.sections[1]}</h3><p>{copy.language}: <strong>{locale.toUpperCase()}</strong></p><label className={styles.accountToggle}><input type="checkbox" checked={notices} onChange={e=>setNotices(e.target.checked)}/>{copy.notifications}</label><label className={styles.accountToggle}><input type="checkbox" checked={reduceMotion} onChange={e=>setReduceMotion(e.target.checked)}/>{copy.motion}</label><p aria-live="polite" className={styles.accountSummary}>{locale==="es"?`Avisos: ${notices?"seleccionados":"no seleccionados"} · Animaciones: ${reduceMotion?"reducidas":"normales"}`:`Notices: ${notices?"selected":"not selected"} · Motion: ${reduceMotion?"reduced":"normal"}`}</p><small>{copy.save}</small></>}
    {selected==="seguridad"&&<><h3>{copy.sections[2]}</h3><p>{copy.password} · {copy.reset} · {copy.sessions}</p><p>{copy.disabled}</p><ul style={{paddingLeft:22,lineHeight:1.8}}>{(locale==="es"?LIRY_ACCOUNT_SECURITY_CHECKLIST:["Independent Liry ID authentication","Email verification","Sign-in safeguards and attempt limits","Time-limited password recovery links","Password change with verified session","Server-side session revocation","Security audit trail and personal data protection"]).map(item=><li key={item}>{item}</li>)}</ul><small aria-live="polite">{LIRY_PLAYER_AUTH_RELEASE.enabled?copy.pendingAction:copy.disabled}</small></>}
    {selected==="privacidad"&&<><h3>{copy.privacy}</h3><p>{copy.privacyInfo}</p><label className={styles.accountToggle}><input type="checkbox" checked={privateProfile} onChange={e=>setPrivateProfile(e.target.checked)}/>{locale==="es"?"Mantener el perfil privado (vista preliminar)":"Keep profile private (preview)"}</label><p className={styles.accountSummary} aria-live="polite">{locale==="es"?(privateProfile?"Preferencia temporal: perfil privado":"Preferencia temporal: perfil visible"):(privateProfile?"Temporary preference: private profile":"Temporary preference: visible profile")}</p><small>{copy.save}</small></>}
