@@ -2,9 +2,9 @@
 import {useRef,useState,type KeyboardEvent} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
 import {canShowCommunityActivity} from "../lib/games/liry-community-readiness";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const communityCopy=liryFrontdeskStrings("es").communityTabs;
-const feedCopy=liryFrontdeskStrings("es").communityFeedIntro;
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
+
+
 const categories=[
  {id:"todos",...communityCopy.all},
  {id:"amigos",...communityCopy.friends},
@@ -12,7 +12,10 @@ const categories=[
  {id:"eventos",...communityCopy.events}
 ] as const;
 type Category=(typeof categories)[number]["id"];
-export function LiryCommunityTabs(){
+export function LiryCommunityTabs({locale="es"}:{locale?:LiryFrontdeskLocale}){
+ const communityCopy=liryFrontdeskStrings(locale).communityTabs;
+ const feedCopy=liryFrontdeskStrings(locale).communityFeedIntro;
+
  const [tab,setTab]=useState<Category>("todos");
  const tabButtons=useRef<Record<string,HTMLButtonElement|null>>({});
  const handleTabKeyDown=(event:KeyboardEvent<HTMLButtonElement>,index:number)=>{
