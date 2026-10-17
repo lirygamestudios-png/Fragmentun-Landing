@@ -41,10 +41,10 @@ export function recommendUniversalLiryGames(
  for(const game of games){
   if(!game||typeof game.publicId!=="string"||!game.publicId.trim()||seen.has(game.publicId))continue;
   seen.add(game.publicId);
-  if(game.origin==="first_party"){if(++owned>OWN_GAME_RESERVED_SLOTS)continue;}
-  else if(game.origin==="third_party"){if(++external>THIRD_PARTY_CATALOG_CAPACITY)continue;}
-  else continue;
   if(!game.published||!game.releaseApproved||!game.affinityApproved||!validLiryAffinityVector(game.affinity))continue;
+  if(game.origin==="first_party"){if(owned>=OWN_GAME_RESERVED_SLOTS)continue;owned++;}
+  else if(game.origin==="third_party"){if(external>=THIRD_PARTY_CATALOG_CAPACITY)continue;external++;}
+  else continue;
   const affinity=game.affinity;
   const score=affinity.reduce((sum,weight,index)=>sum+weight*player[index],0);
   eligible.push({publicId:game.publicId,origin:game.origin,score});
