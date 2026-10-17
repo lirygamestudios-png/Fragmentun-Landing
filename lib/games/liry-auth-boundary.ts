@@ -13,7 +13,7 @@ export type LiryValidatedServerIdentity=Readonly<{
 
 /** Únicamente se utilizará con identidades verificadas en el servidor por un proveedor configurado. */
 export function isAuthorizedLiryPlayerIdentity(identity:LiryValidatedServerIdentity|null):boolean{
- return identity!==null&&identity.application===LIRY_AUTH_APPLICATION&&
+ return identity!==null&&typeof identity==="object"&&!Array.isArray(identity)&&identity.application===LIRY_AUTH_APPLICATION&&
  identity.audience===LIRY_AUTH_AUDIENCE&&identity.sessionVerifiedByServer===true&&
  typeof identity.subject==="string"&&/^[a-zA-Z0-9_-]{8,128}$/.test(identity.subject);
 }
