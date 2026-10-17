@@ -1,4 +1,7 @@
 import test from "node:test";import assert from "node:assert/strict";import {readFileSync} from "node:fs";
 test("authorized external game catalog progressively reveals 12 cards",()=>{const source=readFileSync(new URL("../components/LiryThirdPartyCatalog.tsx",import.meta.url),"utf8");assert.match(source,/useState\(12\)/);assert.match(source,/games\.slice\(0,visibleCount\)/);assert.match(source,/Math\.min\(count\+12,games\.length\)/);assert.match(source,/if\(!games\.length\)return null/);});
 
-test("La recomendación de ADN desplaza la vista hacia la tarjeta externa revelada",()=>{const source=readFileSync(new URL("../components/LiryThirdPartyCatalog.tsx",import.meta.url),"utf8");assert.match(source,/index>=visibleCount/);assert.match(source,/scrollIntoView\(\{behavior:"smooth",block:"center"\}\)/);});
+test("La recomendación de ADN desplaza la vista hacia la tarjeta externa revelada",()=>{const source=readFileSync(new URL("../components/LiryThirdPartyCatalog.tsx",import.meta.url),"utf8");assert.match(source,/index>=visibleCount/);assert.match(source,/prefers-reduced-motion: reduce/);
+ assert.match(source,/scrollIntoView\(/);});
+
+test("La navegación de tarjetas externas tolera fragmentos inválidos y movimiento reducido",()=>{const source=readFileSync(new URL("../components/LiryThirdPartyCatalog.tsx",import.meta.url),"utf8");assert.doesNotMatch(source,/decodeURIComponent\(window\.location\.hash/);assert.match(source,/prefers-reduced-motion: reduce/);});
