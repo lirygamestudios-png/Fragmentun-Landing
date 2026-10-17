@@ -3,3 +3,5 @@ import {LIRY_PLAYER_AUTH_RELEASE,LIRY_ACCOUNT_SECURITY_CHECKLIST,canExecuteLiryA
 const ready={authenticated:true,identityProviderConfigured:true,verifiedEmail:true,serverActionAuthorized:true,rateLimitConfigured:true,antiAutomationConfigured:true,sessionProtectionConfigured:true};
 test("Las operaciones sensibles de cuenta permanecen bloqueadas",()=>{assert.equal(LIRY_PLAYER_AUTH_RELEASE.enabled,false);for(const operation of ["register","sign_in","sign_out","reset_password","change_password","verify_email","revoke_session"])assert.equal(canExecuteLiryAccountOperation(operation,ready),false);});
 test("La política contempla recuperación, sesión y protección de credenciales",()=>{assert.ok(LIRY_ACCOUNT_SECURITY_CHECKLIST.length>=7);});
+
+test("La verificación del correo no exige que ya esté verificado",()=>{const source=readFileSync(new URL("../lib/games/liry-player-account-security.ts",import.meta.url),"utf8");assert.match(source,/if\(operation==="verify_email"\)return LIRY_PLAYER_AUTH_RELEASE\.accountChangesEnabled/);});
