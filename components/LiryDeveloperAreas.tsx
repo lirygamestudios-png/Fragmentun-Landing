@@ -5,11 +5,13 @@ import {LiryDeveloperAdmissionPreview} from "./LiryDeveloperAdmissionPreview";
 import {LiryDeveloperGameListingPreview} from "./LiryDeveloperGameListingPreview";
 import {LiryDeveloperReleasePreview} from "./LiryDeveloperReleasePreview";
 import {LiryDeveloperFinancePreview} from "./LiryDeveloperFinancePreview";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const copy=liryFrontdeskStrings("es").developerAreas;
-const areas=copy.areas;
-type AreaId=(typeof areas)[number]["id"];
-export function LiryDeveloperAreas(){
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
+
+
+type AreaId="admission"|"listing"|"release"|"finance";
+export function LiryDeveloperAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
+ const copy=liryFrontdeskStrings(locale).developerAreas;
+ const areas=copy.areas;
  const [selected,setSelected]=useState<AreaId>("admission");
  const [session,setSession]=useState(0);
  const modal=useRef<HTMLDialogElement>(null);
@@ -34,10 +36,10 @@ export function LiryDeveloperAreas(){
     <h2 id="liry-developer-area-heading" className={styles.developerDialogHeading}>{areas.find(area=>area.id===selected)?.label}</h2>
     <p id="liry-developer-area-description" className={styles.developerDialogDescription}>{copy.notice}</p>
     <div key={session}>
-     {selected==="admission"&&<LiryDeveloperAdmissionPreview/>}
-     {selected==="listing"&&<LiryDeveloperGameListingPreview/>}
-     {selected==="release"&&<LiryDeveloperReleasePreview/>}
-     {selected==="finance"&&<LiryDeveloperFinancePreview/>}
+     {selected==="admission"&&<LiryDeveloperAdmissionPreview locale={locale}/>}
+     {selected==="listing"&&<LiryDeveloperGameListingPreview locale={locale}/>}
+     {selected==="release"&&<LiryDeveloperReleasePreview locale={locale}/>}
+     {selected==="finance"&&<LiryDeveloperFinancePreview locale={locale}/>}
     </div>
    </div>
   </dialog>
