@@ -1,10 +1,12 @@
 "use client";
 import {useRef,useState} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const copy=liryFrontdeskStrings("es").store;
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
+
 const collections=copy.categories.map(item=>({...item,tone:item.id}));
-export function LiryStoreCategories(){
+export function LiryStoreCategories({locale="es"}:{locale?:LiryFrontdeskLocale}){
+ const copy=liryFrontdeskStrings(locale).store;
+
  const [selected,setSelected]=useState<(typeof collections)[number]>(collections[0]);
  const dialogRef=useRef<HTMLDialogElement>(null);
  const triggerRef=useRef<HTMLButtonElement|null>(null);
