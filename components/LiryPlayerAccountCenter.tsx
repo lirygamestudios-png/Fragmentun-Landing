@@ -21,19 +21,22 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const [avatarError,setAvatarError]=useState("");
  const avatarInput=useRef<HTMLInputElement>(null);
  const avatarUrlRef=useRef<string|null>(null);
- useEffect(()=>()=>{if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current)},[]);
- const removeAvatar=()=>{if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);avatarUrlRef.current=null;setAvatarUrl(null);setAvatarError("");if(avatarInput.current)avatarInput.current.value=""};
+ const avatarRequestRef=useRef(0);
+ useEffect(()=>()=>{avatarRequestRef.current++;if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current)},[]);
+ const removeAvatar=()=>{avatarRequestRef.current++;if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);avatarUrlRef.current=null;setAvatarUrl(null);setAvatarError("");if(avatarInput.current)avatarInput.current.value=""};
  const chooseAvatar=(file?:File)=>{
   if(!file)return;
+  const request=++avatarRequestRef.current;
   if(!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>3*1024*1024||file.size===0){setAvatarError(locale==="es"?"Selecciona JPG, PNG o WebP de hasta 3 MB.":"Choose JPG, PNG or WebP up to 3 MB.");return}
   const next=URL.createObjectURL(file);
   const image=new Image();
   image.onload=()=>{
+   if(request!==avatarRequestRef.current){URL.revokeObjectURL(next);return}
    if(image.naturalWidth===0||image.naturalHeight===0){URL.revokeObjectURL(next);setAvatarError(locale==="es"?"La imagen no es válida.":"Invalid image.");return}
    if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);
    avatarUrlRef.current=next;setAvatarUrl(next);setAvatarError("");
   };
-  image.onerror=()=>{URL.revokeObjectURL(next);setAvatarError(locale==="es"?"No se pudo abrir la imagen.":"Could not open the image.")};
+  image.onerror=()=>{URL.revokeObjectURL(next);if(request!==avatarRequestRef.current)return;setAvatarError(locale==="es"?"No se pudo abrir la imagen.":"Could not open the image.")};
   image.src=next;
  };
  const resetPreview=()=>{setNotices(false);setReduceMotion(false);setPrivateProfile(true)};
