@@ -5,3 +5,5 @@ test("La recomendación de ADN desplaza la vista hacia la tarjeta externa revela
  assert.match(source,/scrollIntoView\(/);});
 
 test("La navegación de tarjetas externas tolera fragmentos inválidos y movimiento reducido",()=>{const source=readFileSync(new URL("../components/LiryThirdPartyCatalog.tsx",import.meta.url),"utf8");assert.doesNotMatch(source,/decodeURIComponent\(window\.location\.hash/);assert.match(source,/prefers-reduced-motion: reduce/);});
+
+test("Cada cambio de enlace desplaza hasta una tarjeta ya visible",()=>{const source=readFileSync(new URL("../components/LiryThirdPartyCatalog.tsx",import.meta.url),"utf8");assert.match(source,/setLinkedHash\(hash\)/);assert.match(source,/\[games,visibleCount,linkedHash\]/);});
