@@ -14,7 +14,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
  const visibleGames=games.slice(0,visibleCount);
  useEffect(()=>{
   const revealLinkedGame=()=>{
-   const hash=decodeURIComponent(window.location.hash.slice(1));
+   const hash=window.location.hash.slice(1);
    const index=games.findIndex(game=>`liry-third-party-${game.slug}`===hash);
    if(index>=0)setVisibleCount(current=>Math.max(current,Math.ceil((index+1)/12)*12));
   };
@@ -28,7 +28,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
   if(index<0||index>=visibleCount)return;
   const target=document.getElementById(hash);
   if(!target)return;
-  const frame=requestAnimationFrame(()=>target.scrollIntoView({behavior:"smooth",block:"center"}));
+  const frame=requestAnimationFrame(()=>target.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"}));
   return ()=>cancelAnimationFrame(frame);
  },[games,visibleCount]);
  const dialog=useRef<HTMLDialogElement>(null);
