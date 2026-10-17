@@ -3,14 +3,19 @@ import {useRef,useState} from "react";
 import Link from "next/link";
 import styles from "../app/lirygames/mi-liry/mi-liry.module.css";
 import {MiLiryIdentityPreview} from "./MiLiryIdentityPreview";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const copy=liryFrontdeskStrings("es").miLiryAreas;
-const panels=liryFrontdeskStrings("es").miLiryPanels;
-const facts=liryFrontdeskStrings("es").miLiryFacts;
-const identity=liryFrontdeskStrings("es").miLiryIdentity;
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
+
+
+
+
 const links=["/lirygames#perfil-gamer","/lirygames#mundos","/lirygames#perfil-gamer","/lirygames#tienda","/lirygames#comunidad","/lirygames#liryboost"] as const;
-const areas=copy.items.map((item,index)=>({...item,href:links[index]}));
-export function MiLiryAreas(){
+
+export function MiLiryAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
+ const copy=liryFrontdeskStrings(locale).miLiryAreas;
+ const panels=liryFrontdeskStrings(locale).miLiryPanels;
+ const facts=liryFrontdeskStrings(locale).miLiryFacts;
+ const identity=liryFrontdeskStrings(locale).miLiryIdentity;
+ const areas=copy.items.map((item,index)=>({...item,href:`/lirygames?lang=${locale}${links[index].slice("/lirygames".length)}`}));
  const [selected,setSelected]=useState<(typeof areas)[number]>(areas[0]);
  const [previewSession,setPreviewSession]=useState(0);
  const dialog=useRef<HTMLDialogElement>(null);
@@ -42,7 +47,7 @@ export function MiLiryAreas(){
     <div><strong>{identity.preferences}</strong><span>{identity.notConfigured}</span></div>
     <p>{identity.privacyNote}</p>
    </div>}
-   {selected.id==="identidad"&&<MiLiryIdentityPreview key={previewSession} />}
+   {selected.id==="identidad"&&<MiLiryIdentityPreview key={previewSession} locale={locale} />}
    {selected.id==="identidad"&&<section className={styles.identitySecurity} aria-label={copy.securityAria}>
     <h3>{identity.securityTitle}</h3>
     <p>{identity.securityNote}</p>
