@@ -3,13 +3,17 @@ import {useEffect,useRef,useState,type ChangeEvent} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
 import type {PublicGamerSnapshot} from "../lib/games/public-gamer-snapshot";
 import {calculateGamerXpProgress} from "../lib/games/gamer-xp";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const profileCopy=liryFrontdeskStrings("es").gamerProfile;
-const detailCopy=liryFrontdeskStrings("es").gamerProfileDetails;
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
+
+
 import {validateTemporaryGamerAvatar,validateTemporaryGamerAvatarContent} from "../lib/games/liry-avatar-validation";
 
-const VALID_STYLES=liryFrontdeskStrings("es").gamerDna.traits;
-export function LiryGamerIdentity({snapshot}:{snapshot:Readonly<PublicGamerSnapshot>}){
+
+export function LiryGamerIdentity({snapshot,locale="es"}:{snapshot:Readonly<PublicGamerSnapshot>,locale?:LiryFrontdeskLocale}){
+ const profileCopy=liryFrontdeskStrings(locale).gamerProfile;
+ const detailCopy=liryFrontdeskStrings(locale).gamerProfileDetails;
+ const VALID_STYLES=liryFrontdeskStrings(locale).gamerDna.traits;
+
  const verified=snapshot.status==="verified"?snapshot.verifiedActivity:null;
  const xp=verified?calculateGamerXpProgress(verified.experiencePoints):null;
  const [avatar,setAvatar]=useState<string|null>(null);
