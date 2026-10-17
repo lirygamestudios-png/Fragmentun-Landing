@@ -631,3 +631,14 @@ test("sharing LIRYGAMES preserves the selected ES EN language in destination lin
  assert.match(source,/encodeURIComponent\(copy\.socialTitle\)/);
  assert.notEqual(LIRY_FRONTDESK_STRINGS.es.shareCopy.socialTitle,LIRY_FRONTDESK_STRINGS.en.shareCopy.socialTitle);
 });
+
+
+test("LIRYGAMES public interactive sections pass ES EN locale through the FrontDesk",()=>{
+ const front=readFileSync(new URL("../app/lirygames/page.tsx",import.meta.url),"utf8");
+ const components=["LiryGameDiscovery","LiryGamerIdentity","LiryGamerInfoDialog","LiryBoostEnrollment","LiryCommunityTabs","LiryCommunityContact","LiryShare","LiryStoreCategories","LirySecretsInfo","LiryDeveloperAccess"];
+ for(const name of components){
+  const component=readFileSync(new URL("../components/"+name+".tsx",import.meta.url),"utf8");
+  assert.match(front,new RegExp("<"+name+" locale=\\{locale\\}"),name+" receives active locale");
+  assert.ok(component.includes("liryFrontdeskStrings(locale)"),name+" reads active locale");
+ }
+});
