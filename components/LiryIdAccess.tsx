@@ -27,8 +27,8 @@ export function LiryIdAccess({locale="es"}:{locale?:LiryFrontdeskLocale}){
     <p className={styles.liryCompactDescription} aria-live="polite">{current.description}</p>
     <fieldset disabled aria-label={current.heading} className={styles.liryCredentialPreview}>
      <label className={styles.liryCredentialLabel}>{locale==="es"?"Correo electrónico":"Email address"}<input type="email" autoComplete="off" placeholder={locale==="es"?"Correo (próximamente)":"Email (coming soon)"} className={styles.liryCredentialInput} /></label>
-     {mode!=="recuperar"&&<label style={{display:"grid",gap:5}}>{locale==="es"?"Contraseña":"Password"}<input type="password" autoComplete="off" placeholder="••••••••" style={{padding:10,borderRadius:6}} /></label>}
-     <button type="button" disabled style={{padding:10,borderRadius:6}}>{current.label}</button>
+     {mode!=="recuperar"&&<label className={styles.liryCredentialLabel}>{locale==="es"?"Contraseña":"Password"}<input type="password" autoComplete="off" placeholder="••••••••" className={styles.liryCredentialInput} /></label>}
+     <button type="button" disabled className={styles.liryCredentialSubmit}>{current.label}</button>
     </fieldset>
     <div className={styles.liryCompactNotice} role="status" aria-live="polite" data-auth-flow={flow.screen} data-can-submit={String(flow.canSubmit)}>
      <strong style={{color:"#79e6ff"}}>{copy.inactive}</strong>
