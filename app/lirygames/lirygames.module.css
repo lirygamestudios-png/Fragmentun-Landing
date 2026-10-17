@@ -1536,3 +1536,11 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .nav .languagePreview a:hover{color:#eafaff}
 .nav .languagePreview a:focus-visible{outline:2px solid #9aeaff;outline-offset:2px;border-radius:3px}
 @media(prefers-reduced-motion:reduce){.nav .languagePreview a{transition:none}}
+
+/* Liry ID · same navy/cyan illuminated controls as approved FrontDesk dialogs. */
+.liryCredentialPreview{display:grid;gap:11px;margin:12px 0;padding:16px;border:1px solid #356789;border-radius:12px;background:linear-gradient(150deg,#081c33,#0b2940);min-width:0}
+.liryCredentialLabel{display:grid;gap:7px;color:#d7eaff;font-size:12px;font-weight:700;letter-spacing:.02em}
+.liryCredentialInput{width:100%;min-width:0;padding:12px;border:1px solid #416782;border-radius:8px;background:#06182c;color:#b3cbdc;font:inherit}
+.liryCredentialInput:disabled{opacity:.8;cursor:not-allowed}
+.liryCredentialSubmit{padding:12px 16px;border-radius:8px;border:1px solid #416782;background:#15324b;color:#a9c5da;font-size:12px;font-weight:800;cursor:not-allowed}
+@media(max-width:460px){.liryCredentialPreview{padding:12px}.liryCredentialInput{font-size:16px}}
