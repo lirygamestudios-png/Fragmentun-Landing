@@ -23,7 +23,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const avatarUrlRef=useRef<string|null>(null);
  const avatarRequestRef=useRef(0);
  useEffect(()=>()=>{avatarRequestRef.current++;if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current)},[]);
- const removeAvatar=()=>{avatarRequestRef.current++;if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);avatarUrlRef.current=null;setAvatarUrl(null);setAvatarError("");if(avatarInput.current)avatarInput.current.value=""};
+ const removeAvatar=()=>{avatarRequestRef.current++;if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);avatarUrlRef.current=null;setAvatarUrl(null);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:null}}));setAvatarError("");if(avatarInput.current)avatarInput.current.value=""};
  const chooseAvatar=(file?:File)=>{
   if(!file)return;
   const request=++avatarRequestRef.current;
@@ -34,7 +34,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
    if(request!==avatarRequestRef.current){URL.revokeObjectURL(next);return}
    if(image.naturalWidth===0||image.naturalHeight===0){URL.revokeObjectURL(next);setAvatarError(locale==="es"?"La imagen no es válida.":"Invalid image.");return}
    if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);
-   avatarUrlRef.current=next;setAvatarUrl(next);setAvatarError("");
+   avatarUrlRef.current=next;setAvatarUrl(next);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:next}}));setAvatarError("");
   };
   image.onerror=()=>{URL.revokeObjectURL(next);if(request!==avatarRequestRef.current)return;setAvatarError(locale==="es"?"No se pudo abrir la imagen.":"Could not open the image.")};
   image.src=next;
