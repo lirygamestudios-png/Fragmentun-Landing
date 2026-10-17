@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useRef,useState,type CSSProperties} from "react";
 import {type PublicGameCard} from "../lib/games/public-catalog";
+import type {PublicThirdPartyCard} from "../lib/games/liry-developer-publication";
 import {rankApprovedLiryDnaCatalog,type LiryApprovedDnaCatalogRecord} from "../lib/games/liry-dna-catalog-bridge";
 import styles from "../app/lirygames/lirygames.module.css";
 import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
@@ -25,7 +26,7 @@ const gameAffinity:number[][]=[
  [3,1,0,1,1,3],[2,3,2,1,1,1],[2,2,1,1,1,3]
 ];
 
-export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog}:{games:readonly PublicGameCard[],locale?:LiryFrontdeskLocale,approvedDnaCatalog?:readonly LiryApprovedDnaCatalogRecord[]}){
+export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog,approvedExternalGames=[]}:{games:readonly PublicGameCard[],locale?:LiryFrontdeskLocale,approvedDnaCatalog?:readonly LiryApprovedDnaCatalogRecord[],approvedExternalGames?:readonly PublicThirdPartyCard[]}){
  const dnaCopy=liryFrontdeskStrings(locale).gamerDna;
  const detailCopy=liryFrontdeskStrings(locale).dnaDetails;
  const accessibilityCopy=liryFrontdeskStrings(locale).dnaExplorerAccessibility;
@@ -111,6 +112,8 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog}:{games:
   },[dnaStep,dnaAnswers]);
   const hasDnaResults=dnaStep===6&&dnaAnswers.every(answer=>answer!==null)&&dnaAnswers.some(answer=>answer!==0);
   const recommendedIndexes=approvedDnaCatalog?.length?(hasDnaResults?rankApprovedLiryDnaCatalog(approvedDnaCatalog,dnaAnswers.map(n=>n??0),100).map(rank=>games.findIndex(game=>game.slug===rank.publicId)).filter(index=>index>=0).slice(0,3):[]):hasDnaResults?[...games.map((game,i)=>({i,score:gameAffinity[i]?.reduce((sum,weight,j)=>sum+weight*(dnaAnswers[j]??0),0)??0}))].sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3).map(entry=>entry.i):[];
+  const externalBySlug=new Map(approvedExternalGames.map(game=>[game.slug,game]));
+  const externalRecommendations=approvedDnaCatalog?.length&&hasDnaResults?rankApprovedLiryDnaCatalog(approvedDnaCatalog,dnaAnswers.map(n=>n??0),100).filter(item=>item.origin==="third_party"&&externalBySlug.has(item.publicId)).slice(0,3).map(item=>externalBySlug.get(item.publicId)!):[];
   const dnaHeightStyle={"--liry-catalog-height":catalogHeight===null?undefined:`${catalogHeight}px`} as CSSProperties;
   return <div className={styles.worldShowcase}>
     <div className={styles.worldsGrid} ref={catalogRef}>
@@ -148,6 +151,7 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog}:{games:
             <h4>{detailCopy.recommendations}</h4>
             {dnaAnswers.every(answer=>answer===0)?<p>{detailCopy.noPreferences}</p>:<>
             {recommendedIndexes.map(i=>({game:games[i],i})).map(({game,i})=><button type="button" key={game.slug} className={styles.dnaRecommendation} onClick={()=>{setExploringDna(false);resetDnaEvaluation();setSelectedGame(i)}}>{publicCodenames[i]??`LIRY // PROJECT-${String(i+1).padStart(2,"0")}`} <span>{detailCopy.viewCard} →</span></button>)}</>}
+            {externalRecommendations.length>0&&<div aria-label={locale==="es"?"Videojuegos externos afines":"Matching third-party games"}>{externalRecommendations.map(game=><a key={game.slug} className={styles.dnaRecommendation} href={`#liry-third-party-${game.slug}`} onClick={()=>setExploringDna(false)}>{game.title} <span>{detailCopy.viewCard} →</span></a>)}</div>}
             <small>{detailCopy.recommendationNote}</small>
             <button type="button" className={styles.dnaSurveyRestart} onClick={()=>{clearAdvanceTimer();window.dispatchEvent(new CustomEvent("liry:dna-style",{detail:{style:null}}));setDnaAnswers(Array(6).fill(null));setDnaStep(0);requestAnimationFrame(()=>document.querySelector<HTMLInputElement>('input[name="liry-dna-q-0"]')?.focus({preventScroll:true}));}}>{detailCopy.restart}</button>
           </div>:<div className={styles.dnaSurveyProgress} aria-live="polite"><span>{detailCopy.question} {dnaStep+1} {detailCopy.of} 6</span><progress value={dnaStep} max={6} aria-label={accessibilityCopy.progressAria} />{dnaStep>0&&<button type="button" className={styles.dnaSurveyBack} onClick={()=>{clearAdvanceTimer();setDnaStep(step=>Math.max(0,step-1));}}>← {detailCopy.previous}</button>}</div>}
