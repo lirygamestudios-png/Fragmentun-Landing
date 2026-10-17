@@ -251,3 +251,5 @@
 .accountAvatarInput::file-selector-button{background:#0a3352;color:#f2fcff;border:1px solid #5bc6eb;border-radius:8px;padding:10px 14px;margin-right:12px;cursor:pointer}
 .accountAvatarInput::file-selector-button:hover{border-color:#d7bb68}
 @media(max-width:480px){.accountAvatarArea{align-items:flex-start}.accountAvatarPicture{width:88px;height:88px;flex-basis:88px}}
+
+.accountHeaderPhoto{width:100%;height:100%;display:block;object-fit:cover;border-radius:50%}
