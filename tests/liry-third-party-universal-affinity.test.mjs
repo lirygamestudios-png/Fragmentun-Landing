@@ -20,3 +20,9 @@ test("global journey only counts unique verified activity for published games",(
  const games=[item("a"),item("b","first_party",false)];
  assert.deepEqual(universalLiryJourneyProgress(games,[{publicId:"a",origin:"third_party",verified:true},{publicId:"a",origin:"third_party",verified:true},{publicId:"b",origin:"first_party",verified:true}]),{eligible:1,visited:1});
 });
+
+test("an unapproved duplicate cannot suppress the approved DNA profile",()=>{
+ const denied={...item("same"),published:false};
+ const allowed=item("same");
+ assert.equal(recommendUniversalLiryGames([denied,allowed],player).length,1);
+});
