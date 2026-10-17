@@ -1,11 +1,11 @@
 "use client";
 import {useState} from "react";
 import styles from "../app/lirygames/mi-liry/mi-liry.module.css";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const copy=liryFrontdeskStrings("es").developerListing;
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 type Model="premium"|"freemium";
 const textLength=(value:string,max:number)=>value.trim().slice(0,max);
-export function LiryDeveloperGameListingPreview(){
+export function LiryDeveloperGameListingPreview({locale="es"}:{locale?:LiryFrontdeskLocale}){
+ const copy=liryFrontdeskStrings(locale).developerListing;
  const [name,setName]=useState("");
  const [summary,setSummary]=useState("");
  const [model,setModel]=useState<Model>("premium");
