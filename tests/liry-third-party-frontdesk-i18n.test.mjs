@@ -650,3 +650,15 @@ test("DNA explorer headings are translated in ES and EN",()=>{
  assert.match(source,/accessibilityCopy\.titlePrefix/);
  assert.equal(LIRY_FRONTDESK_STRINGS.en.dnaExplorerAccessibility.kicker,"INTERACTIVE EXPERIENCE");
 });
+
+
+test("Freemium disclosures distinguish the first free world from later worlds and in-game purchases",()=>{
+ const es=LIRY_FRONTDESK_STRINGS.es.storeOverview.freemium;
+ const en=LIRY_FRONTDESK_STRINGS.en.storeOverview.freemium;
+ assert.match(es,/primer mundo.*gratuito/i);
+ assert.match(en,/first world.*free access/i);
+ assert.match(es,/skins, armas, herramientas/);
+ assert.match(en,/skins, weapons, tools/);
+ assert.match(es,/No hay artículos digitales ni pagos activos/);
+ assert.match(en,/No digital items or payments are active/);
+});
