@@ -13,3 +13,9 @@ test("invalid questionnaire results produce no game recommendations",()=>{
 });
 
 test("Liry DNA component accepts only opt-in approved catalog profiles",()=>{const source=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");assert.match(source,/approvedDnaCatalog\?/);assert.match(source,/rankApprovedLiryDnaCatalog\(/);});
+
+test("DNA public-card selection considers entire ranked catalog before taking visible three",()=>{
+ const source=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");
+ assert.match(source,/rankApprovedLiryDnaCatalog\(approvedDnaCatalog,dnaAnswers\.map\(n=>n\?\?0\),100\)/);
+ assert.match(source,/filter\(index=>index>=0\)\.slice\(0,3\)/);
+});
