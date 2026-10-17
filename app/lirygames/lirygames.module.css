@@ -1529,3 +1529,10 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
  .gamerWorldChoice span{flex:0 1 auto;overflow-wrap:anywhere}
  .gamerWorldStatus{min-width:0;overflow-wrap:anywhere}
 }
+
+/* Selector de idiomas ES/EN de LIRYGAMES: navegación activa y foco visible. */
+.nav .languagePreview a{color:#839eb7;text-decoration:none;padding:5px 2px;cursor:pointer;transition:color .18s ease}
+.nav .languagePreview a.languageActive{color:#63dcff}
+.nav .languagePreview a:hover{color:#eafaff}
+.nav .languagePreview a:focus-visible{outline:2px solid #9aeaff;outline-offset:2px;border-radius:3px}
+@media(prefers-reduced-motion:reduce){.nav .languagePreview a{transition:none}}
