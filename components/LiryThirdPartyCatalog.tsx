@@ -22,7 +22,8 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
   };
   revealLinkedGame();
   window.addEventListener("hashchange",revealLinkedGame);
-  return ()=>window.removeEventListener("hashchange",revealLinkedGame);
+  window.addEventListener("liry:external-game-link",revealLinkedGame);
+  return ()=>{window.removeEventListener("hashchange",revealLinkedGame);window.removeEventListener("liry:external-game-link",revealLinkedGame)};
  },[games]);
  useEffect(()=>{
   const hash=linkedHash;
