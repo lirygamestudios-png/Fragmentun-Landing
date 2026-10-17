@@ -7,6 +7,7 @@ import {LiryCommunityTabs} from "../../components/LiryCommunityTabs";
 import {LiryBoostTop10} from "../../components/LiryBoostTop10";
 import {LiryBoostEnrollment} from "../../components/LiryBoostEnrollment";
 import {LiryGameDiscovery} from "../../components/LiryGameDiscovery";
+import {liryGlobalJourneySummary} from "../../lib/games/liry-global-journey";
 import {LiryThirdPartyCatalog} from "../../components/LiryThirdPartyCatalog";
 import {LiryGamerInfoDialog} from "../../components/LiryGamerInfoDialog";
 import {LiryGamerIdentity} from "../../components/LiryGamerIdentity";
@@ -58,6 +59,7 @@ export default async function LiryGamesFrontDesk({searchParams}:{searchParams:Pr
     playUrl:null,
     internalWorldCount:game.internalWorldCount
   }));
+  const journey=liryGlobalJourneySummary(games,approvedThirdPartyCatalog,gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?gamerSnapshot.verifiedActivity.visitedWorldIds:null);
   const copy=liryFrontdeskStrings(locale);
   return <main className={styles.page} id="liry-main" lang={locale}>
     <a className={styles.skipToContent} href="#mundos">{copy.navigation.skipCatalog}</a>
@@ -96,7 +98,7 @@ export default async function LiryGamesFrontDesk({searchParams}:{searchParams:Pr
         <article className={styles.gamerCard}>
           <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">⬡</span><div><h3>{copy.journey.title}</h3><p>{copy.journey.subtitle}</p></div></header>
           <div className={styles.journeyContent}>
-            <div className={styles.journeyRing} role="progressbar" aria-label={copy.journey.progressAria} aria-valuemin={0} aria-valuemax={9} aria-valuenow={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?games.filter(game=>verifiedVisitedWorldIds?.has(game.slug)).length:undefined} aria-valuetext={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${games.filter(game=>verifiedVisitedWorldIds?.has(game.slug)).length} ${copy.journey.exploredSuffix}`:copy.journey.noActivity} style={{["--journey-progress" as string]:gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${games.filter(game=>verifiedVisitedWorldIds?.has(game.slug)).length/9*100}%`:"0%"}}><div className={styles.journeyRingCenter}><strong>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${games.filter(game=>verifiedVisitedWorldIds?.has(game.slug)).length} / 9`:"— / 9"}</strong><span>{copy.journey.discovered}</span></div></div>
+            <div className={styles.journeyRing} role="progressbar" aria-label={copy.journey.progressAria} aria-valuemin={0} aria-valuemax={journey.catalogSize} aria-valuenow={journey.verified?journey.visited:undefined} aria-valuetext={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${journey.visited} ${copy.journey.exploredSuffix}`:copy.journey.noActivity} style={{["--journey-progress" as string]:gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${journey.percent}%`:"0%"}}><div className={styles.journeyRingCenter}><strong>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${journey.visited} / ${journey.catalogSize}`:`— / ${journey.catalogSize}`}</strong><span>{copy.journey.discovered}</span></div></div>
             <ol className={styles.journeyWorlds}>{games.map((game,index)=><li key={game.slug}><span className={styles.journeyNumber}>{index+1}</span><span className={styles.journeyName}>{game.title}</span><span className={styles.journeyPending} aria-label={verifiedVisitedWorldIds?.has(game.slug)?copy.journey.visitedAria:copy.journey.noProgressAria}>{verifiedVisitedWorldIds?.has(game.slug)?"✓":"○"}</span></li>)}</ol>
           </div>
           <LiryGamerInfoDialog locale={locale} topic="mundos" />
