@@ -583,3 +583,10 @@ test("Journey information dialog close control uses localized accessible label a
  assert.match(source,/className=\{styles\.gamerInfoClose\} aria-label=\{copy\.close\}/);
  assert.match(source,/onClose=\{\(\)=>\{setSelectedWorld\(null\);triggerRef\.current\?\.focus\(\{preventScroll:true\}\)\}\}/);
 });
+
+
+test("Journey world modal preserves mobile touch targets and wrapping for connection states",()=>{
+ const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");
+ assert.match(css,/\.gamerWorldChoice\{min-height:44px;min-width:0;overflow-wrap:anywhere\}/);
+ assert.match(css,/\.gamerWorldStatus\{min-width:0;overflow-wrap:anywhere\}/);
+});
