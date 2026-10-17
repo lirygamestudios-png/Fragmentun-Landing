@@ -1,12 +1,15 @@
 "use client";
 import {useRef,useState} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const copy=liryFrontdeskStrings("es").social;
-const networkCopy=liryFrontdeskStrings("es").communityDialogs.networks;
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
+
+
 const networks=["Instagram","TikTok","YouTube","Facebook"] as const;
 type Network=(typeof networks)[number];
-export function LiryOfficialNetworks(){
+export function LiryOfficialNetworks({locale="es"}:{locale?:LiryFrontdeskLocale}){
+ const copy=liryFrontdeskStrings(locale).social;
+ const networkCopy=liryFrontdeskStrings(locale).communityDialogs.networks;
+
  const [selected,setSelected]=useState<Network>("Instagram");
  const dialog=useRef<HTMLDialogElement>(null);
  const lastTrigger=useRef<HTMLButtonElement|null>(null);
