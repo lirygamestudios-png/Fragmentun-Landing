@@ -7,3 +7,5 @@ test("La recomendación de ADN desplaza la vista hacia la tarjeta externa revela
 test("La navegación de tarjetas externas tolera fragmentos inválidos y movimiento reducido",()=>{const source=readFileSync(new URL("../components/LiryThirdPartyCatalog.tsx",import.meta.url),"utf8");assert.doesNotMatch(source,/decodeURIComponent\(window\.location\.hash/);assert.match(source,/prefers-reduced-motion: reduce/);});
 
 test("Cada cambio de enlace desplaza hasta una tarjeta ya visible",()=>{const source=readFileSync(new URL("../components/LiryThirdPartyCatalog.tsx",import.meta.url),"utf8");assert.match(source,/setLinkedHash\(hash\)/);assert.match(source,/\[games,visibleCount,linkedHash\]/);});
+
+test("Liry ADN puede reenviar la navegación al catálogo externo",()=>{const catalog=readFileSync(new URL("../components/LiryThirdPartyCatalog.tsx",import.meta.url),"utf8");const dna=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");assert.match(catalog,/addEventListener\("liry:external-game-link"/);assert.match(dna,/CustomEvent\("liry:external-game-link"/);});
