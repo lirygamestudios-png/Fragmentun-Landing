@@ -54,7 +54,7 @@ test("Mi Liry visitor copy is bilingual without suggesting active accounts",()=>
  assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
  assert.match(es.visitorState,/SIN SESIÓN ACTIVA/);
  assert.match(en.notice,/No fictional accounts/i);
- assert.equal(liryFrontdeskStrings("en").miLiry.back,es.back);
+ assert.equal(liryFrontdeskStrings("en").miLiry.back,en.back);
 });
 
 test("Mi Liry six areas preserve identity and matching translations",()=>{
@@ -408,15 +408,15 @@ test("full FrontDesk dictionary maintains recursive ES EN structure and stable p
   if(typeof left==="string")assert.ok(left.trim().length>0&&right.trim().length>0,path+" nonblank translated strings");
  }
  check(es,en,"LIRY_FRONTDESK_STRINGS");
- assert.deepEqual(RELEASED_LIRY_FRONTDESK_LOCALES,["es"]);
+ assert.deepEqual(RELEASED_LIRY_FRONTDESK_LOCALES,["es","en"]);
 });
 
 
-test("Mi Liry landing back-link accessibility is translated and English remains gated",()=>{
+test("Mi Liry landing back-link accessibility supports English independently",()=>{
  const es=LIRY_FRONTDESK_STRINGS.es.miLiry,en=LIRY_FRONTDESK_STRINGS.en.miLiry;
  assert.match(es.backAria,/Volver al FrontDesk/);
  assert.match(en.backAria,/Return to the LIRYGAMES STUDIOS FrontDesk/);
- assert.equal(liryFrontdeskStrings("en").miLiry.backAria,es.backAria);
+ assert.equal(liryFrontdeskStrings("en").miLiry.backAria,en.backAria);
 });
 
 
