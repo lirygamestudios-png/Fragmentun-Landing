@@ -59,7 +59,7 @@ export default async function LiryGamesFrontDesk({searchParams}:{searchParams:Pr
     internalWorldCount:game.internalWorldCount
   }));
   const copy=liryFrontdeskStrings(locale);
-  return <main className={styles.page} id="liry-main">
+  return <main className={styles.page} id="liry-main" lang={locale}>
     <a className={styles.skipToContent} href="#mundos">{copy.navigation.skipCatalog}</a>
     <header className={styles.nav}>
       <a className={styles.brand} href="#inicio" aria-label="LiryGames Studios"><span className={styles.sigil} aria-hidden="true"><i></i><b></b></span><span className={styles.wordmark}><strong>LIRY</strong><span>GAMES STUDIOS</span><small>{copy.heroDetails.brandTagline}</small></span></a>
