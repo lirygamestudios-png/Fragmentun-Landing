@@ -82,7 +82,7 @@ export default async function LiryGamesFrontDesk({searchParams}:{searchParams:Pr
       <p className={styles.kicker}>{copy.discovery.eyebrow}</p>
       <h2>{copy.discovery.title}</h2>
       <p className={styles.sectionIntro}>{copy.discovery.description}</p>
-      <LiryGameDiscovery locale={locale} games={games} />
+      <LiryGameDiscovery locale={locale} games={games} approvedExternalGames={approvedThirdPartyCatalog} />
       <LiryThirdPartyCatalog locale={locale} games={approvedThirdPartyCatalog} />
     </section>
     <section className={`${styles.section} ${styles.gamerSection}`} id="perfil-gamer" aria-label={copy.journey.sectionAria}>
