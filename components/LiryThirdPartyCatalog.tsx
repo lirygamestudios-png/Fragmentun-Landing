@@ -11,10 +11,12 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
 
  const [selected,setSelected]=useState<PublicThirdPartyCard|null>(null);
  const [visibleCount,setVisibleCount]=useState(12);
+ const [linkedHash,setLinkedHash]=useState("");
  const visibleGames=games.slice(0,visibleCount);
  useEffect(()=>{
   const revealLinkedGame=()=>{
    const hash=window.location.hash.slice(1);
+   setLinkedHash(hash);
    const index=games.findIndex(game=>`liry-third-party-${game.slug}`===hash);
    if(index>=0)setVisibleCount(current=>Math.max(current,Math.ceil((index+1)/12)*12));
   };
@@ -23,14 +25,14 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
   return ()=>window.removeEventListener("hashchange",revealLinkedGame);
  },[games]);
  useEffect(()=>{
-  const hash=window.location.hash.slice(1);
+  const hash=linkedHash;
   const index=games.findIndex(game=>`liry-third-party-${game.slug}`===hash);
   if(index<0||index>=visibleCount)return;
   const target=document.getElementById(hash);
   if(!target)return;
   const frame=requestAnimationFrame(()=>target.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"}));
   return ()=>cancelAnimationFrame(frame);
- },[games,visibleCount]);
+ },[games,visibleCount,linkedHash]);
  const dialog=useRef<HTMLDialogElement>(null);
  const opener=useRef<HTMLButtonElement|null>(null);
  if(!games.length)return null;
