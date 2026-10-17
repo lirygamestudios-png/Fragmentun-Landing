@@ -1,5 +1,5 @@
 "use client";
-import {useRef,useState} from "react";
+import {useEffect,useRef,useState} from "react";
 import type {PublicThirdPartyCard} from "../lib/games/liry-developer-publication";
 import styles from "../app/lirygames/lirygames.module.css";
 import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
@@ -12,6 +12,16 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
  const [selected,setSelected]=useState<PublicThirdPartyCard|null>(null);
  const [visibleCount,setVisibleCount]=useState(12);
  const visibleGames=games.slice(0,visibleCount);
+ useEffect(()=>{
+  const revealLinkedGame=()=>{
+   const hash=decodeURIComponent(window.location.hash.slice(1));
+   const index=games.findIndex(game=>`liry-third-party-${game.slug}`===hash);
+   if(index>=0)setVisibleCount(current=>Math.max(current,Math.ceil((index+1)/12)*12));
+  };
+  revealLinkedGame();
+  window.addEventListener("hashchange",revealLinkedGame);
+  return ()=>window.removeEventListener("hashchange",revealLinkedGame);
+ },[games]);
  const dialog=useRef<HTMLDialogElement>(null);
  const opener=useRef<HTMLButtonElement|null>(null);
  if(!games.length)return null;
@@ -27,7 +37,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
   <h3 id="liry-third-party-title">{copy.title}</h3>
   <p>{copy.intro}</p>
   <div className={styles.thirdPartyGrid}>
-   {visibleGames.map(game=><article key={game.slug} className={styles.thirdPartyCard}>
+   {visibleGames.map(game=><article key={game.slug} id={`liry-third-party-${game.slug}`} className={styles.thirdPartyCard}>
     <div className={styles.thirdPartyCardArt} aria-hidden="true"><span>✧</span></div>
     <div className={styles.thirdPartyCardBody}>
      <span className={styles.thirdPartyCardModel}>{game.model==="premium"?"PREMIUM":"FREEMIUM"}</span>
