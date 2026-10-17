@@ -603,3 +603,15 @@ test("LIRYGAMES FrontDesk ES EN links change server-rendered locale independentl
  assert.match(miLiry,/getReleasedLiryFrontdeskLocale\(\(await searchParams\)\.lang\)/);
  assert.match(miLiry,/<MiLiryAreas locale=\{locale\}/);
 });
+
+
+test("LiryBoost and share dialogs use locale-bound labels rather than fixed Spanish",()=>{
+ const boost=readFileSync(new URL("../components/LiryBoostEnrollment.tsx",import.meta.url),"utf8");
+ const share=readFileSync(new URL("../components/LiryShare.tsx",import.meta.url),"utf8");
+ const store=readFileSync(new URL("../components/LiryStoreCategories.tsx",import.meta.url),"utf8");
+ for(const label of ["closeAria","formAria","namePlaceholder","emailPlaceholder","acknowledge"])assert.ok(boost.includes("copy."+label));
+ for(const label of ["actionsAria","whatsappAria","facebookAria","xAria","previewAria","closeAria"])assert.ok(share.includes("copy."+label));
+ for(const label of ["categoriesAria","closeAria","eyebrow"])assert.ok(store.includes("copy."+label));
+ assert.notEqual(LIRY_FRONTDESK_STRINGS.es.liryBoost.formAria,LIRY_FRONTDESK_STRINGS.en.liryBoost.formAria);
+ assert.notEqual(LIRY_FRONTDESK_STRINGS.es.shareCopy.previewAria,LIRY_FRONTDESK_STRINGS.en.shareCopy.previewAria);
+});
