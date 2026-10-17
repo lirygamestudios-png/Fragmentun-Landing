@@ -642,3 +642,11 @@ test("LIRYGAMES public interactive sections pass ES EN locale through the FrontD
   assert.ok(component.includes("liryFrontdeskStrings(locale)"),name+" reads active locale");
  }
 });
+
+
+test("DNA explorer headings are translated in ES and EN",()=>{
+ const source=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");
+ assert.match(source,/accessibilityCopy\.kicker/);
+ assert.match(source,/accessibilityCopy\.titlePrefix/);
+ assert.equal(LIRY_FRONTDESK_STRINGS.en.dnaExplorerAccessibility.kicker,"INTERACTIVE EXPERIENCE");
+});
