@@ -17,6 +17,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const [notices,setNotices]=useState(false);
  const [reduceMotion,setReduceMotion]=useState(false);
  const [privateProfile,setPrivateProfile]=useState(true);
+ const resetPreview=()=>{setNotices(false);setReduceMotion(false);setPrivateProfile(true)};
  const active=sections.indexOf(selected);
  return <section aria-labelledby="liry-account-center-heading" className={styles.accountCenter}>
   <h2 id="liry-account-center-heading" className={styles.accountHeading}>{copy.heading}</h2>
@@ -30,6 +31,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
    {selected==="seguridad"&&<><h3>{copy.sections[2]}</h3><p>{copy.password} · {copy.reset} · {copy.sessions}</p><p>{copy.disabled}</p><ul style={{paddingLeft:22,lineHeight:1.8}}>{(locale==="es"?LIRY_ACCOUNT_SECURITY_CHECKLIST:["Independent Liry ID authentication","Email verification","Sign-in safeguards and attempt limits","Time-limited password recovery links","Password change with verified session","Server-side session revocation","Security audit trail and personal data protection"]).map(item=><li key={item}>{item}</li>)}</ul><small aria-live="polite">{LIRY_PLAYER_AUTH_RELEASE.enabled?copy.pendingAction:copy.disabled}</small></>}
    {selected==="privacidad"&&<><h3>{copy.privacy}</h3><p>{copy.privacyInfo}</p><label className={styles.accountToggle}><input type="checkbox" checked={privateProfile} onChange={e=>setPrivateProfile(e.target.checked)}/>{locale==="es"?"Mantener el perfil privado (vista preliminar)":"Keep profile private (preview)"}</label><p className={styles.accountSummary} aria-live="polite">{locale==="es"?(privateProfile?"Preferencia temporal: perfil privado":"Preferencia temporal: perfil visible"):(privateProfile?"Temporary preference: private profile":"Temporary preference: visible profile")}</p><small>{copy.save}</small></>}
    {selected==="compras"&&<><h3>{copy.purchases}</h3><p>{copy.purchasesInfo}</p></>}
+   {(selected==="configuracion"||selected==="privacidad")&&<button type="button" className={styles.accountReset} onClick={resetPreview}>{locale==="es"?"Restablecer preferencias temporales":"Reset temporary preferences"}</button>}
   </div>
  </section>;
 }
