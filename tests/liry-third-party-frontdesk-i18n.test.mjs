@@ -566,7 +566,9 @@ test("Tu Liry Journey displays complete world labels on narrow phones",()=>{
 test("Liry Journey progress counts unique known worlds only",()=>{
  const source=readFileSync(new URL("../app/lirygames/page.tsx",import.meta.url),"utf8");
  assert.match(source,/new Set\(gamerSnapshot\.verifiedActivity\.visitedWorldIds\)/);
- assert.match(source,/games\.filter\(game=>verifiedVisitedWorldIds\?\.has\(game\.slug\)\)\.length/);
+ assert.match(source,/liryGlobalJourneySummary\(games,approvedThirdPartyCatalog,/);
+ assert.match(source,/aria-valuemax=\{journey\.catalogSize\}/);
+ assert.match(source,/aria-valuenow=\{journey\.verified\?journey\.visited:undefined\}/);
  assert.doesNotMatch(source,/visitedWorldIds\.filter\(id=>games\.some/);
 });
 
