@@ -12,9 +12,9 @@ export type LiryPlayerProfileUpdate=Readonly<{
 export function isValidLiryProfileUpdate(value:LiryPlayerProfileUpdate):boolean{
  if(!value||typeof value.ownerId!=="string"||typeof value.displayName!=="string")return false;
  if(!/^[a-zA-Z0-9_-]{8,128}$/.test(value.ownerId)||value.displayName.trim().length<2||value.displayName.trim().length>40)return false;
- if(/[<>\x00-\x1f]/.test(value.displayName))return false;
+ if(/[<>\x00-\x1f\x7f-\x9f]/.test(value.displayName)||value.displayName!==value.displayName.trim())return false;
  const p=value.preferences;
- if(!p||typeof p.notifications!=="boolean"||typeof p.reduceMotion!=="boolean"||typeof p.privateProfile!=="boolean"||!["es","en"].includes(p.locale))return false;
+ if(!p||typeof p!=="object"||Array.isArray(p)||typeof p.notifications!=="boolean"||typeof p.reduceMotion!=="boolean"||typeof p.privateProfile!=="boolean"||!["es","en"].includes(p.locale))return false;
  if(value.avatarObjectKey===null)return true;
  if(typeof value.avatarObjectKey!=="string")return false;
  const [owner,photo,...rest]=value.avatarObjectKey.split("/");
