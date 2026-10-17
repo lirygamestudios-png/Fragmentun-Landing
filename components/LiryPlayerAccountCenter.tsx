@@ -27,8 +27,14 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
   if(!file)return;
   if(!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>3*1024*1024||file.size===0){setAvatarError(locale==="es"?"Selecciona JPG, PNG o WebP de hasta 3 MB.":"Choose JPG, PNG or WebP up to 3 MB.");return}
   const next=URL.createObjectURL(file);
-  if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);
-  avatarUrlRef.current=next;setAvatarUrl(next);setAvatarError("");
+  const image=new Image();
+  image.onload=()=>{
+   if(image.naturalWidth===0||image.naturalHeight===0){URL.revokeObjectURL(next);setAvatarError(locale==="es"?"La imagen no es válida.":"Invalid image.");return}
+   if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);
+   avatarUrlRef.current=next;setAvatarUrl(next);setAvatarError("");
+  };
+  image.onerror=()=>{URL.revokeObjectURL(next);setAvatarError(locale==="es"?"No se pudo abrir la imagen.":"Could not open the image.")};
+  image.src=next;
  };
  const resetPreview=()=>{setNotices(false);setReduceMotion(false);setPrivateProfile(true)};
  const active=sections.indexOf(selected);
