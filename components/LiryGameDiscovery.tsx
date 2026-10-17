@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useRef,useState,type CSSProperties} from "react";
 import {type PublicGameCard} from "../lib/games/public-catalog";
+import {rankApprovedLiryDnaCatalog,type LiryApprovedDnaCatalogRecord} from "../lib/games/liry-dna-catalog-bridge";
 import styles from "../app/lirygames/lirygames.module.css";
 import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 
@@ -24,7 +25,7 @@ const gameAffinity:number[][]=[
  [3,1,0,1,1,3],[2,3,2,1,1,1],[2,2,1,1,1,3]
 ];
 
-export function LiryGameDiscovery({games,locale="es"}:{games:readonly PublicGameCard[],locale?:LiryFrontdeskLocale}){
+export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog}:{games:readonly PublicGameCard[],locale?:LiryFrontdeskLocale,approvedDnaCatalog?:readonly LiryApprovedDnaCatalogRecord[]}){
  const dnaCopy=liryFrontdeskStrings(locale).gamerDna;
  const detailCopy=liryFrontdeskStrings(locale).dnaDetails;
  const accessibilityCopy=liryFrontdeskStrings(locale).dnaExplorerAccessibility;
@@ -109,7 +110,8 @@ export function LiryGameDiscovery({games,locale="es"}:{games:readonly PublicGame
     if(completed)window.dispatchEvent(new CustomEvent("liry:dna-style",{detail:{style:chosen}}));
   },[dnaStep,dnaAnswers]);
   const hasDnaResults=dnaStep===6&&dnaAnswers.every(answer=>answer!==null)&&dnaAnswers.some(answer=>answer!==0);
-  const recommendedIndexes=hasDnaResults?[...games.map((game,i)=>({i,score:gameAffinity[i]?.reduce((sum,weight,j)=>sum+weight*(dnaAnswers[j]??0),0)??0}))].sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3).map(entry=>entry.i):[];
+  const approvedRankings=hasDnaResults&&approvedDnaCatalog?.length?rankApprovedLiryDnaCatalog(approvedDnaCatalog,dnaAnswers.map(n=>n??0),3):[];
+  const recommendedIndexes=approvedDnaCatalog?.length?(hasDnaResults?approvedRankings.map(rank=>games.findIndex(game=>game.slug===rank.publicId)).filter(index=>index>=0):[]):hasDnaResults?[...games.map((game,i)=>({i,score:gameAffinity[i]?.reduce((sum,weight,j)=>sum+weight*(dnaAnswers[j]??0),0)??0}))].sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3).map(entry=>entry.i):[];
   const dnaHeightStyle={"--liry-catalog-height":catalogHeight===null?undefined:`${catalogHeight}px`} as CSSProperties;
   return <div className={styles.worldShowcase}>
     <div className={styles.worldsGrid} ref={catalogRef}>
