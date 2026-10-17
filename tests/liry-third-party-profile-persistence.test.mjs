@@ -7,3 +7,5 @@ test("No se graban perfiles hasta habilitar almacenamiento y acceso independient
 
 test("Los datos corruptos no provocan errores de validación",()=>{assert.equal(isValidLiryProfileUpdate({...profile,displayName:null}),false);assert.equal(isValidLiryProfileUpdate({...profile,ownerId:null}),false);assert.equal(isValidLiryProfileUpdate({...profile,avatarObjectKey:42}),false);});
 test("Las preferencias sin fotografía pueden usar infraestructura de perfil independiente",()=>{assert.equal(isValidLiryProfileUpdate({...profile,avatarObjectKey:null}),true);});
+
+test("Se rechazan nombres con controles invisibles y preferencias malformadas",()=>{assert.equal(isValidLiryProfileUpdate({...profile,displayName:" Gamer Uno "}),false);assert.equal(isValidLiryProfileUpdate({...profile,displayName:"Gamer\u007fUno"}),false);assert.equal(isValidLiryProfileUpdate({...profile,preferences:"es"}),false);assert.equal(isValidLiryProfileUpdate({...profile,preferences:[]}),false);});
