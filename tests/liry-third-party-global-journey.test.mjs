@@ -1,3 +1,4 @@
+import {readFileSync} from "node:fs";
 import test from "node:test";import assert from "node:assert/strict";import {liryGlobalJourneySummary,liryVisibleJourneyCatalog} from "../lib/games/liry-global-journey.ts";
 const own=Array.from({length:9},(_,i)=>({slug:"owned-"+i}));
 const external=Array.from({length:91},(_,i)=>({slug:"external-"+i}));
@@ -18,3 +19,5 @@ test("La lista visible coincide con el denominador del recorrido",()=>{
  assert.deepEqual(visible.map(x=>x.slug),["a","b","c","d"]);
  assert.equal(visible.length,liryGlobalJourneySummary(own,external,null).catalogSize);
 });
+
+test("La vista Journey muestra solo los registros unificados",()=>{const source=readFileSync(new URL("../app/lirygames/page.tsx",import.meta.url),"utf8");assert.match(source,/visibleOwnJourneyGames\.map/);assert.match(source,/visibleExternalJourneyGames\.map/);assert.doesNotMatch(source,/<ol className=\{styles\.journeyWorlds\}>\{games\.map/);});
