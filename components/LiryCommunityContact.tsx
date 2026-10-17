@@ -18,7 +18,7 @@ export function LiryCommunityContact({locale="es"}:{locale?:LiryFrontdeskLocale}
     <p className={styles.gamerInfoEyebrow}>{copy.eyebrow}</p>
     <h2 id="community-contact-heading">{copy.title}</h2>
     <p className={styles.liryCompactDescription}>{copy.intro}</p>
-    {opened&&<LiryContactForm />}
+    {opened&&<LiryContactForm locale={locale} />}
    </div>
   </dialog>
  </>;
