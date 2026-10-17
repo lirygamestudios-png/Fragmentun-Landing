@@ -8,7 +8,7 @@ export default async function LiryDeveloperPage({searchParams}:{searchParams:Pro
  const copy=liryFrontdeskStrings(locale).developerPage;
  return <main className={styles.page} lang={locale}>
   <header className={styles.header}><Link href={`/lirygames?lang=${locale}`} className={styles.brand} aria-label={copy.backAria}><span className={styles.sigil} aria-hidden="true"><i></i><b></b></span></Link><Link href={`/lirygames?lang=${locale}#perfil-gamer`} className={styles.back}>← {copy.back}</Link></header>
-  <section className={styles.hero} aria-labelledby="developer-title"><span className={styles.eyebrow}>{copy.eyebrow}</span><h1 id="developer-title">LIRY <em>DEVELOPER</em></h1><p>{copy.description}</p><span className={styles.state}>{copy.state}</span></section>
+  <section className={styles.hero} aria-labelledby="developer-title"><span className={styles.eyebrow}>{copy.eyebrow}</span><h1 id="developer-title">LIRY <em>{locale==="es"?"DESARROLLADOR":"DEVELOPER"}</em></h1><p>{copy.description}</p><span className={styles.state}>{copy.state}</span></section>
   <section className={styles.content} aria-label={copy.areasAria}>
   <LiryDeveloperAreas locale={locale} />
   <div className={styles.notice}><strong>{copy.noticeTitle}</strong><p>{copy.notice}</p><Link href="/lirygames">{copy.return} →</Link></div></section>
