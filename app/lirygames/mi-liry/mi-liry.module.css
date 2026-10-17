@@ -223,3 +223,18 @@
 }
 
 .developerDialogDescription{margin:8px 45px 12px 0;padding:10px 12px;border-left:3px solid #58d1f8;border-radius:0 8px 8px 0;background:#091f39;color:#c3d6e8;font-size:12px;line-height:1.6}
+
+/* Centro de Cuenta · diseño aprobado navy, dorado y cian */
+.accountCenter{margin-top:24px;border:1px solid #315678;border-radius:13px;background:linear-gradient(145deg,#091b31,#071627);padding:clamp(16px,3vw,28px)}
+.accountHeading{color:#d7bb68;letter-spacing:.08em}
+.accountIntro{color:#bdcee2;line-height:1.6}
+.accountTabs{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+.accountTab{border:1px solid #315678;border-radius:8px;padding:10px 12px;background:#0b2139;color:#f1f6ff;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s}
+.accountTab[aria-pressed="true"]{background:#193956;border-color:#d7bb68;box-shadow:0 0 14px #45bcef33;color:#fff}
+.accountTab:hover,.accountTab:focus-visible{border-color:#67d7fb;box-shadow:0 0 12px #37b8ea44;outline-offset:3px}
+.accountPanel{border-top:1px solid #315678;padding-top:16px;color:#e6f0fc;min-height:135px}
+.accountToggle{display:flex;align-items:center;gap:10px;margin:12px 0;line-height:1.4}
+.accountToggle input{accent-color:#5ac6ee;width:17px;height:17px}
+.accountSummary{border:1px solid #315678;padding:10px;border-radius:8px;background:#0c2941}
+@media(max-width:560px){.accountTab{flex:1 1 135px;min-height:42px}.accountCenter{padding:16px}}
+@media(prefers-reduced-motion:reduce){.accountTab{transition:none}}
