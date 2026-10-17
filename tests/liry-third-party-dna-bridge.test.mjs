@@ -19,3 +19,9 @@ test("DNA public-card selection considers entire ranked catalog before taking vi
  assert.match(source,/rankApprovedLiryDnaCatalog\(approvedDnaCatalog,dnaAnswers\.map\(n=>n\?\?0\),100\)/);
  assert.match(source,/filter\(index=>index>=0\)\.slice\(0,3\)/);
 });
+
+test("Recomendaciones propias conservadas al agregar perfiles de terceros",()=>{
+ const source=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");
+ assert.match(source,/const recommendedIndexes=hasDnaResults\?/);
+ assert.match(source,/const externalRecommendations=approvedDnaCatalog\?\.length&&hasDnaResults/);
+});
