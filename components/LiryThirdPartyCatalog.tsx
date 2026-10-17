@@ -12,13 +12,17 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
  const [selected,setSelected]=useState<PublicThirdPartyCard|null>(null);
  const [visibleCount,setVisibleCount]=useState(12);
  const [linkedHash,setLinkedHash]=useState("");
+ const [navigationCount,setNavigationCount]=useState(0);
  const visibleGames=games.slice(0,visibleCount);
  useEffect(()=>{
-  const revealLinkedGame=()=>{
-   const hash=window.location.hash.slice(1);
-   setLinkedHash(hash);
+  const revealLinkedGame=(event?:Event)=>{
+   const selectedSlug=event instanceof CustomEvent&&typeof event.detail?.slug==="string"?event.detail.slug:null;
+   const hash=selectedSlug?`liry-third-party-${selectedSlug}`:window.location.hash.slice(1);
    const index=games.findIndex(game=>`liry-third-party-${game.slug}`===hash);
-   if(index>=0)setVisibleCount(current=>Math.max(current,Math.ceil((index+1)/12)*12));
+   if(index<0)return;
+   setLinkedHash(hash);
+   setNavigationCount(count=>count+1);
+   setVisibleCount(current=>Math.max(current,Math.ceil((index+1)/12)*12));
   };
   revealLinkedGame();
   window.addEventListener("hashchange",revealLinkedGame);
@@ -33,7 +37,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
   if(!target)return;
   const frame=requestAnimationFrame(()=>target.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"}));
   return ()=>cancelAnimationFrame(frame);
- },[games,visibleCount,linkedHash]);
+ },[games,visibleCount,linkedHash,navigationCount]);
  const dialog=useRef<HTMLDialogElement>(null);
  const opener=useRef<HTMLButtonElement|null>(null);
  if(!games.length)return null;
