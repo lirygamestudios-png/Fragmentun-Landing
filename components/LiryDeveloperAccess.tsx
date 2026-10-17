@@ -23,7 +23,7 @@ export function LiryDeveloperAccess({locale="es"}:{locale?:LiryFrontdeskLocale})
      <p>{copy.admission}</p>
      <p>{copy.noData}</p>
     </div>
-    <Link href="/lirygames/developer" className={styles.gamerInfoDone}>{copy.panel} →</Link>
+    <Link href={`/lirygames/developer?lang=${locale}`} className={styles.gamerInfoDone}>{copy.panel} →</Link>
     <form method="dialog"><button type="submit" className={styles.gamerInfoDone}>{copy.close}</button></form>
    </div>
   </dialog>
