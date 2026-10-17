@@ -3,7 +3,7 @@ import {useState} from "react";
 import styles from "../app/lirygames/mi-liry/mi-liry.module.css";
 import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 type Model="premium"|"freemium";
-const textLength=(value:string,max:number)=>value.trim().slice(0,max);
+const textLength=(value:string,max:number)=>value.slice(0,max);
 export function LiryDeveloperGameListingPreview({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const copy=liryFrontdeskStrings(locale).developerListing;
  const [name,setName]=useState("");
