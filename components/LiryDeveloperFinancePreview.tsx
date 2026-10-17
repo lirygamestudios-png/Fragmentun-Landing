@@ -1,9 +1,9 @@
 "use client";
 import styles from "../app/lirygames/mi-liry/mi-liry.module.css";
 import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
-const fields=copy.fields;
 export function LiryDeveloperFinancePreview({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const copy=liryFrontdeskStrings(locale).developerFinance;
+ const fields=copy.fields;
  return <section className={`${styles.notice} ${styles.developerFinance}`} aria-labelledby="liry-developer-finance-title">
   <h2 id="liry-developer-finance-title">{copy.title}</h2>
   <p>{copy.intro}</p>
