@@ -2,11 +2,13 @@
 import {useRef,useState} from "react";
 import type {PublicThirdPartyCard} from "../lib/games/liry-developer-publication";
 import styles from "../app/lirygames/lirygames.module.css";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const copy=liryFrontdeskStrings("es").thirdPartyCatalog;
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
+
 
 /** Solo recibe fichas públicas previamente autorizadas. No activa transacciones. */
-export function LiryThirdPartyCatalog({games}:{games:readonly PublicThirdPartyCard[]}){
+export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly PublicThirdPartyCard[],locale?:LiryFrontdeskLocale}){
+ const copy=liryFrontdeskStrings(locale).thirdPartyCatalog;
+
  const [selected,setSelected]=useState<PublicThirdPartyCard|null>(null);
  const dialog=useRef<HTMLDialogElement>(null);
  const opener=useRef<HTMLButtonElement|null>(null);
