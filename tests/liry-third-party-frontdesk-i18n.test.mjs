@@ -615,3 +615,11 @@ test("LiryBoost and share dialogs use locale-bound labels rather than fixed Span
  assert.notEqual(LIRY_FRONTDESK_STRINGS.es.liryBoost.formAria,LIRY_FRONTDESK_STRINGS.en.liryBoost.formAria);
  assert.notEqual(LIRY_FRONTDESK_STRINGS.es.shareCopy.previewAria,LIRY_FRONTDESK_STRINGS.en.shareCopy.previewAria);
 });
+
+
+test("LIRYGAMES bilingual pages identify active content language for screen readers",()=>{
+ const front=readFileSync(new URL("../app/lirygames/page.tsx",import.meta.url),"utf8");
+ const profile=readFileSync(new URL("../app/lirygames/mi-liry/page.tsx",import.meta.url),"utf8");
+ assert.match(front,/<main className=\{styles\.page\} id="liry-main" lang=\{locale\}>/);
+ assert.match(profile,/<main className=\{styles\.page\} lang=\{locale\}>/);
+});
