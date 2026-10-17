@@ -2,9 +2,10 @@
 import {useState} from "react";
 import {LIRY_AVATAR_OPTIONS,LIRY_INTERFACE_THEMES,type LiryAvatarOption,type LiryInterfaceTheme} from "../lib/games/liry-gamer-profile-preferences";
 import styles from "../app/lirygames/mi-liry/mi-liry.module.css";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const copy=liryFrontdeskStrings("es").miLiryIdentity;
-export function MiLiryIdentityPreview(){
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
+
+export function MiLiryIdentityPreview({locale="es"}:{locale?:LiryFrontdeskLocale}){
+ const copy=liryFrontdeskStrings(locale).miLiryIdentity;
  const [avatar,setAvatar]=useState<LiryAvatarOption>("orb");
  const [theme,setTheme]=useState<LiryInterfaceTheme>("navy");
  const [notifications,setNotifications]=useState(false);
