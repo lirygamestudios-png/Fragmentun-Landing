@@ -2,10 +2,12 @@
 import {useRef,useState} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
 import {resolveLiryShareUrl} from "../lib/games/liry-share-url";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const copy=liryFrontdeskStrings("es").shareCopy;
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 
-export function LiryShare(){
+
+export function LiryShare({locale="es"}:{locale?:LiryFrontdeskLocale}){
+ const copy=liryFrontdeskStrings(locale).shareCopy;
+
  const[copied,setCopied]=useState(false);
  const previewRef=useRef<HTMLDialogElement>(null);
  const previewTrigger=useRef<HTMLButtonElement|null>(null);
