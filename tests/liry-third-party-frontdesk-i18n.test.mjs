@@ -576,3 +576,10 @@ test("Journey world visited icons share verified identity with ring calculation"
  assert.match(source,/journeyPending\} aria-label=\{verifiedVisitedWorldIds\?\.has\(game\.slug\)/);
  assert.match(source,/\{verifiedVisitedWorldIds\?\.has\(game\.slug\)\?"✓":"○"\}/);
 });
+
+
+test("Journey information dialog close control uses localized accessible label and restores focus",()=>{
+ const source=readFileSync(new URL("../components/LiryGamerInfoDialog.tsx",import.meta.url),"utf8");
+ assert.match(source,/className=\{styles\.gamerInfoClose\} aria-label=\{copy\.close\}/);
+ assert.match(source,/onClose=\{\(\)=>\{setSelectedWorld\(null\);triggerRef\.current\?\.focus\(\{preventScroll:true\}\)\}\}/);
+});
