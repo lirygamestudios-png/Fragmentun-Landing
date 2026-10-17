@@ -1,10 +1,9 @@
-/** LIRYGAMES FrontDesk i18n foundation. Spanish remains the only released locale
- * until all visitor-facing components have verified English translations.
+/** LIRYGAMES FrontDesk i18n foundation. Both locales are available to LIRYGAMES visitors; FRAGMENTUN has a separate release policy.
  * No automatic redirect, cookies or external translation services.
  */
 export const LIRY_FRONTDESK_LOCALES=["es","en"] as const;
 export type LiryFrontdeskLocale=(typeof LIRY_FRONTDESK_LOCALES)[number];
-export const RELEASED_LIRY_FRONTDESK_LOCALES:readonly LiryFrontdeskLocale[]=["es"];
+export const RELEASED_LIRY_FRONTDESK_LOCALES:readonly LiryFrontdeskLocale[]=["es","en"];
 export const LIRY_FRONTDESK_STRINGS={
  es:{
   navigation:{skipCatalog:"Saltar al catálogo de mundos",navAria:"Navegación LIRYGAMES",searchAria:"Explorar los videojuegos",searchTitle:"Explorar videojuegos",socialAria:"Ver la sección social",socialTitle:"Redes sociales y compartir",menuAria:"Abrir menú de navegación",home:"Inicio",worlds:"Mundos",dna:"Liry ADN",journey:"Tu viaje",community:"Comunidad",boost:"LiryBoost",store:"Tienda",social:"Redes sociales"},
