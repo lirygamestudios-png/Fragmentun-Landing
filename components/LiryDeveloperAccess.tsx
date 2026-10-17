@@ -2,10 +2,12 @@
 import {useRef} from "react";
 import Link from "next/link";
 import styles from "../app/lirygames/lirygames.module.css";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const copy=liryFrontdeskStrings("es").developerDialog;
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
+
 /** Entrada diferenciada de desarrolladores. No solicita contraseñas ni acepta archivos. */
-export function LiryDeveloperAccess(){
+export function LiryDeveloperAccess({locale="es"}:{locale?:LiryFrontdeskLocale}){
+ const copy=liryFrontdeskStrings(locale).developerDialog;
+
  const dialog=useRef<HTMLDialogElement>(null);
  const trigger=useRef<HTMLButtonElement>(null);
  return <>
