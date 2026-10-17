@@ -238,3 +238,7 @@
 .accountSummary{border:1px solid #315678;padding:10px;border-radius:8px;background:#0c2941}
 @media(max-width:560px){.accountTab{flex:1 1 135px;min-height:42px}.accountCenter{padding:16px}}
 @media(prefers-reduced-motion:reduce){.accountTab{transition:none}}
+
+.accountReset{margin-top:18px;padding:11px 15px;border:1px solid #5bc6eb;border-radius:8px;color:#eaf8ff;background:#0a3352;font-weight:700;cursor:pointer;transition:box-shadow .2s,border-color .2s}
+.accountReset:hover,.accountReset:focus-visible{border-color:#d7bb68;box-shadow:0 0 14px #5bc6eb55;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.accountReset{transition:none}}
