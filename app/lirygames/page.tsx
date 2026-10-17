@@ -17,7 +17,7 @@ import {LiryPrivacyPreview} from "../../components/LiryPrivacyPreview";
 import {getLiryPublicCatalog,getLiryApprovedThirdPartyCatalog} from "../../lib/games/public-catalog-server";
 import {VISITOR_GAMER_SNAPSHOT} from "../../lib/games/public-gamer-snapshot";
 import styles from "./lirygames.module.css";
-import {liryFrontdeskStrings} from "../../lib/games/liry-frontdesk-i18n";
+import {liryFrontdeskStrings,getReleasedLiryFrontdeskLocale} from "../../lib/games/liry-frontdesk-i18n";
 
 export const metadata={
   title:{absolute:"LIRYGAMES STUDIOS — Cientos de mundos. Infinitas formas de jugar"},
@@ -40,7 +40,8 @@ export const metadata={
   robots:{index:false,follow:false}
 };
 
-export default async function LiryGamesFrontDesk(){
+export default async function LiryGamesFrontDesk({searchParams}:{searchParams:Promise<{lang?:string}>}){
+  const locale=getReleasedLiryFrontdeskLocale((await searchParams).lang);
   // Publicar solo identificadores editoriales: no serializar títulos ni slugs internos de IP.
   const internalCatalog=await getLiryPublicCatalog();
   const approvedThirdPartyCatalog=await getLiryApprovedThirdPartyCatalog();
@@ -57,12 +58,12 @@ export default async function LiryGamesFrontDesk(){
     playUrl:null,
     internalWorldCount:game.internalWorldCount
   }));
-  const copy=liryFrontdeskStrings("es");
+  const copy=liryFrontdeskStrings(locale);
   return <main className={styles.page} id="liry-main">
     <a className={styles.skipToContent} href="#mundos">{copy.navigation.skipCatalog}</a>
     <header className={styles.nav}>
       <a className={styles.brand} href="#inicio" aria-label="LiryGames Studios"><span className={styles.sigil} aria-hidden="true"><i></i><b></b></span><span className={styles.wordmark}><strong>LIRY</strong><span>GAMES STUDIOS</span><small>{copy.heroDetails.brandTagline}</small></span></a>
-      <nav aria-label={copy.navigation.navAria}><a href="#inicio">{copy.navigation.home}</a><a href="#mundos">{copy.navigation.worlds}</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">{copy.navigation.journey}</a><a href="#comunidad">{copy.navigation.community}</a><a href="#liryboost">LiryBoost</a><a href="#tienda">{copy.navigation.store}</a></nav><div className={styles.navUtilities}><a className={styles.navSearch} href="#mundos" aria-label={copy.navigation.searchAria} title={copy.navigation.searchTitle}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m16 16 5 5"/></svg></a><a className={styles.navNotice} href="#social" aria-label={copy.navigation.socialAria} title={copy.navigation.socialTitle}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></a><LiryDeveloperAccess /><a className={styles.profileAccess} href="/lirygames/mi-liry" aria-label={copy.heroDetails.profileAria} title={copy.heroDetails.profileTitle}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 3-6 7-6s6.5 2 7 6"/></svg><span>{copy.visitor.label}</span></a><span className={styles.languagePreview} aria-label={copy.heroDetails.languageAria} title={copy.heroDetails.languageTitle}><span className={styles.languageActive}>ES</span><span className={styles.languageDivider}>/</span><span className={styles.languageInactive}>EN</span></span><details className={styles.navMenu}><summary aria-label={copy.navigation.menuAria}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary><div className={styles.navMenuPanel}><a href="#inicio">{copy.navigation.home}</a><a href="#mundos">{copy.discovery.title}</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">{copy.navigation.journey}</a><a href="#comunidad">{copy.navigation.community}</a><a href="#liryboost">LiryBoost</a><a href="#social">{copy.navigation.social}</a><a href="#tienda">{copy.navigation.store}</a></div></details></div>
+      <nav aria-label={copy.navigation.navAria}><a href="#inicio">{copy.navigation.home}</a><a href="#mundos">{copy.navigation.worlds}</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">{copy.navigation.journey}</a><a href="#comunidad">{copy.navigation.community}</a><a href="#liryboost">LiryBoost</a><a href="#tienda">{copy.navigation.store}</a></nav><div className={styles.navUtilities}><a className={styles.navSearch} href="#mundos" aria-label={copy.navigation.searchAria} title={copy.navigation.searchTitle}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m16 16 5 5"/></svg></a><a className={styles.navNotice} href="#social" aria-label={copy.navigation.socialAria} title={copy.navigation.socialTitle}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></a><LiryDeveloperAccess locale={locale} /><a className={styles.profileAccess} href="/lirygames/mi-liry" aria-label={copy.heroDetails.profileAria} title={copy.heroDetails.profileTitle}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.5-4 3-6 7-6s6.5 2 7 6"/></svg><span>{copy.visitor.label}</span></a><span className={styles.languagePreview} role="group" aria-label={copy.heroDetails.languageAria}><a href="/lirygames?lang=es" hrefLang="es" aria-current={locale==="es"?"page":undefined} className={locale==="es"?styles.languageActive:styles.languageInactive}>ES</a><span className={styles.languageDivider}>/</span><a href="/lirygames?lang=en" hrefLang="en" aria-current={locale==="en"?"page":undefined} className={locale==="en"?styles.languageActive:styles.languageInactive}>EN</a></span><details className={styles.navMenu}><summary aria-label={copy.navigation.menuAria}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></summary><div className={styles.navMenuPanel}><a href="#inicio">{copy.navigation.home}</a><a href="#mundos">{copy.discovery.title}</a><a href="#liry-dna">Liry DNA</a><a href="#perfil-gamer">{copy.navigation.journey}</a><a href="#comunidad">{copy.navigation.community}</a><a href="#liryboost">LiryBoost</a><a href="#social">{copy.navigation.social}</a><a href="#tienda">{copy.navigation.store}</a></div></details></div>
     </header>
     <section className={styles.hero} id="inicio">
       <div className={styles.heroUniverse} aria-hidden="true"><span className={styles.heroOrbitOne}></span><span className={styles.heroOrbitTwo}></span><span className={styles.heroPlanet}></span><span className={styles.heroSatellite}></span><span className={styles.heroStardust}></span></div>
@@ -79,17 +80,17 @@ export default async function LiryGamesFrontDesk(){
       <p className={styles.kicker}>{copy.discovery.eyebrow}</p>
       <h2>{copy.discovery.title}</h2>
       <p className={styles.sectionIntro}>{copy.discovery.description}</p>
-      <LiryGameDiscovery games={games} />
-      <LiryThirdPartyCatalog games={approvedThirdPartyCatalog} />
+      <LiryGameDiscovery locale={locale} games={games} />
+      <LiryThirdPartyCatalog locale={locale} games={approvedThirdPartyCatalog} />
     </section>
     <section className={`${styles.section} ${styles.gamerSection}`} id="perfil-gamer" aria-label={copy.journey.sectionAria}>
       <div className={styles.gamerGrid}>
         <article className={styles.gamerCard}>
           <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">♙</span><h3>{copy.gamerProfile.title}</h3></header>
-          <LiryGamerIdentity snapshot={gamerSnapshot} />
-          <LiryIdAccess />
-          <LiryPrivacyPreview />
-          <LiryGamerInfoDialog topic="perfil" />
+          <LiryGamerIdentity locale={locale} snapshot={gamerSnapshot} />
+          <LiryIdAccess locale={locale} />
+          <LiryPrivacyPreview locale={locale} />
+          <LiryGamerInfoDialog locale={locale} topic="perfil" />
           <small className={styles.gamerDataNote}>Estado visitante · sin sesión gamer</small>
         </article>
         <article className={styles.gamerCard}>
@@ -98,8 +99,8 @@ export default async function LiryGamesFrontDesk(){
             <div className={styles.journeyRing} role="progressbar" aria-label={copy.journey.progressAria} aria-valuemin={0} aria-valuemax={9} aria-valuenow={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?games.filter(game=>verifiedVisitedWorldIds?.has(game.slug)).length:undefined} aria-valuetext={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${games.filter(game=>verifiedVisitedWorldIds?.has(game.slug)).length} ${copy.journey.exploredSuffix}`:copy.journey.noActivity} style={{["--journey-progress" as string]:gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${games.filter(game=>verifiedVisitedWorldIds?.has(game.slug)).length/9*100}%`:"0%"}}><div className={styles.journeyRingCenter}><strong>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${games.filter(game=>verifiedVisitedWorldIds?.has(game.slug)).length} / 9`:"— / 9"}</strong><span>{copy.journey.discovered}</span></div></div>
             <ol className={styles.journeyWorlds}>{games.map((game,index)=><li key={game.slug}><span className={styles.journeyNumber}>{index+1}</span><span className={styles.journeyName}>{game.title}</span><span className={styles.journeyPending} aria-label={verifiedVisitedWorldIds?.has(game.slug)?copy.journey.visitedAria:copy.journey.noProgressAria}>{verifiedVisitedWorldIds?.has(game.slug)?"✓":"○"}</span></li>)}</ol>
           </div>
-          <LiryGamerInfoDialog topic="mundos" />
-          <LiryGamerInfoDialog topic="journey" />
+          <LiryGamerInfoDialog locale={locale} topic="mundos" />
+          <LiryGamerInfoDialog locale={locale} topic="journey" />
           <small className={styles.gamerDataNote}>{copy.journey.pendingNote}</small>
         </article>
         <article className={styles.gamerCard}>
@@ -111,8 +112,8 @@ export default async function LiryGamesFrontDesk(){
               return <div className={`${styles.achievementRow} ${earned?styles.achievementEarned:""}`} key={item.id} aria-label={`${item.title}: ${earned?copy.achievementsPreview.earned:copy.achievementsPreview.pending}`}><span className={styles.achievementMedal} aria-hidden="true">{icons[index]}</span><div><strong>{item.title}</strong><span>{item.detail}</span><small>{earned?copy.achievementsPreview.earnedLabel:copy.achievementsPreview.pendingLabel}</small></div></div>;
             })}
           </div>
-          <LiryGamerInfoDialog topic="logros-lista" />
-          <LiryGamerInfoDialog topic="logros" />
+          <LiryGamerInfoDialog locale={locale} topic="logros-lista" />
+          <LiryGamerInfoDialog locale={locale} topic="logros" />
           <small className={styles.gamerDataNote}>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${gamerSnapshot.verifiedActivity.achievementIds.length} ${copy.achievementsPreview.verifiedSuffix}`:copy.achievementsPreview.empty}</small>
         </article>
       </div>
@@ -128,9 +129,9 @@ export default async function LiryGamesFrontDesk(){
           <p className={styles.liryBoostDetail}>{step.detail}</p>
         </article>)}
       </div>
-      <LiryBoostTop10 />
+      <LiryBoostTop10 locale={locale} />
       <div className={styles.liryBoostActions}>
-        <LiryBoostEnrollment />
+        <LiryBoostEnrollment locale={locale} />
         <a href="#social" className={styles.liryBoostSecondary}>{copy.liryBoostSection.share} →</a>
         <a href="#contacto" className={styles.liryBoostSecondary}>{copy.liryBoostSection.contact} →</a>
       </div>
@@ -139,8 +140,8 @@ export default async function LiryGamesFrontDesk(){
     <div className={styles.socialTrio} aria-label={copy.communityOverview.trioAria}>
       <section className={styles.section} id="comunidad">
         <div className={styles.socialPanelHeader}><h2>{copy.communityOverview.communityTitle}</h2><p className={styles.socialIntro}>{copy.communityOverview.communityIntro}</p></div>
-        <LiryCommunityTabs />
-        <LiryCommunityContact />
+        <LiryCommunityTabs locale={locale} />
+        <LiryCommunityContact locale={locale} />
         <div className={styles.communityCompose}><span>{copy.communityOverview.postsPending}</span><span aria-hidden="true">➤</span></div>
       </section>
       <section className={styles.section} id="social">
@@ -152,11 +153,11 @@ export default async function LiryGamesFrontDesk(){
           <p>{copy.communityOverview.shareIntro}</p>
         </div>
         <p className={styles.socialChannelsTitle}>{copy.communityOverview.shareNetworks}</p>
-        <LiryShare />
+        <LiryShare locale={locale} />
         <div className={styles.socialChannels}>
           <strong>{copy.communityOverview.follow}</strong>
           <p>{copy.communityOverview.officialPending}</p>
-          <LiryOfficialNetworks />
+          <LiryOfficialNetworks locale={locale} />
         </div>
         <small className={styles.socialPending}>{copy.communityOverview.linksPending}</small>
       </section>
@@ -176,7 +177,7 @@ export default async function LiryGamesFrontDesk(){
         <small>{copy.storeOverview.intro}</small>
         <span className={styles.storeComingSoon}>{copy.storeOverview.comingSoon}</span>
       </div>
-      <LiryStoreCategories />
+      <LiryStoreCategories locale={locale} />
       <p className={styles.storeLegal}>{copy.storeOverview.freemium}</p>
     </section>
     <div className={styles.finalDiscover} aria-label={copy.finalSections.groupAria}>
@@ -221,7 +222,7 @@ export default async function LiryGamesFrontDesk(){
           <p>{copy.finalSections.secretsDescription}</p>
           <div className={styles.secretsTrack} role="img" aria-label={copy.finalSections.secretsTrackAria}><span /></div>
           <small>{copy.finalSections.secretsNotice}</small>
-          <LirySecretsInfo />
+          <LirySecretsInfo locale={locale} />
         </div>
         
       </section>
