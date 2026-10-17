@@ -242,3 +242,12 @@
 .accountReset{margin-top:18px;padding:11px 15px;border:1px solid #5bc6eb;border-radius:8px;color:#eaf8ff;background:#0a3352;font-weight:700;cursor:pointer;transition:box-shadow .2s,border-color .2s}
 .accountReset:hover,.accountReset:focus-visible{border-color:#d7bb68;box-shadow:0 0 14px #5bc6eb55;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.accountReset{transition:none}}
+
+/* Foto/avatar personal: vista previa local; misma estética del centro del jugador. */
+.accountAvatarArea{display:flex;align-items:center;flex-wrap:wrap;gap:20px;margin:16px 0}
+.accountAvatarPicture{height:104px;width:104px;flex:0 0 104px;display:grid;place-items:center;overflow:hidden;border-radius:50%;border:2px solid #65d0ee;box-shadow:0 0 20px #43d2f044;background:linear-gradient(145deg,#112b4b,#07172b);font-size:42px;color:#cbaa62}
+.accountAvatarPicture img{width:100%;height:100%;object-fit:cover}
+.accountAvatarInput{display:block;max-width:100%;margin:10px 0;color:#def4ff;font-size:13px}
+.accountAvatarInput::file-selector-button{background:#0a3352;color:#f2fcff;border:1px solid #5bc6eb;border-radius:8px;padding:10px 14px;margin-right:12px;cursor:pointer}
+.accountAvatarInput::file-selector-button:hover{border-color:#d7bb68}
+@media(max-width:480px){.accountAvatarArea{align-items:flex-start}.accountAvatarPicture{width:88px;height:88px;flex-basis:88px}}
