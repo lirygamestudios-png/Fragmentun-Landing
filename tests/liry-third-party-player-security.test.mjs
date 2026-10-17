@@ -1,3 +1,4 @@
+import {readFileSync} from "node:fs";
 import test from "node:test";import assert from "node:assert/strict";
 import {LIRY_PLAYER_AUTH_RELEASE,LIRY_ACCOUNT_SECURITY_CHECKLIST,canExecuteLiryAccountOperation} from "../lib/games/liry-player-account-security.ts";
 const ready={authenticated:true,identityProviderConfigured:true,verifiedEmail:true,serverActionAuthorized:true,rateLimitConfigured:true,antiAutomationConfigured:true,sessionProtectionConfigured:true};
