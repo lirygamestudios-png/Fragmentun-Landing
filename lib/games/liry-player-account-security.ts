@@ -23,8 +23,10 @@ export function canExecuteLiryAccountOperation(operation:LiryAccountOperation,re
  if(operation==="register")return LIRY_PLAYER_AUTH_RELEASE.registrationEnabled;
  if(operation==="reset_password")return LIRY_PLAYER_AUTH_RELEASE.recoveryEnabled;
  if(operation==="sign_in")return true;
+ if(operation==="verify_email"&&!readiness.authenticated)return false;
  if(!readiness.authenticated)return false;
  if(operation==="sign_out")return true;
+ if(operation==="verify_email")return LIRY_PLAYER_AUTH_RELEASE.accountChangesEnabled;
  return LIRY_PLAYER_AUTH_RELEASE.accountChangesEnabled&&readiness.verifiedEmail;
 }
 export const LIRY_ACCOUNT_SECURITY_CHECKLIST=Object.freeze([
