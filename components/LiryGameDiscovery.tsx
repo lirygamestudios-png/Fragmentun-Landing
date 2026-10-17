@@ -110,8 +110,7 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog}:{games:
     if(completed)window.dispatchEvent(new CustomEvent("liry:dna-style",{detail:{style:chosen}}));
   },[dnaStep,dnaAnswers]);
   const hasDnaResults=dnaStep===6&&dnaAnswers.every(answer=>answer!==null)&&dnaAnswers.some(answer=>answer!==0);
-  const approvedRankings=hasDnaResults&&approvedDnaCatalog?.length?rankApprovedLiryDnaCatalog(approvedDnaCatalog,dnaAnswers.map(n=>n??0),3):[];
-  const recommendedIndexes=approvedDnaCatalog?.length?(hasDnaResults?approvedRankings.map(rank=>games.findIndex(game=>game.slug===rank.publicId)).filter(index=>index>=0):[]):hasDnaResults?[...games.map((game,i)=>({i,score:gameAffinity[i]?.reduce((sum,weight,j)=>sum+weight*(dnaAnswers[j]??0),0)??0}))].sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3).map(entry=>entry.i):[];
+  const recommendedIndexes=approvedDnaCatalog?.length?(hasDnaResults?rankApprovedLiryDnaCatalog(approvedDnaCatalog,dnaAnswers.map(n=>n??0),100).map(rank=>games.findIndex(game=>game.slug===rank.publicId)).filter(index=>index>=0).slice(0,3):[]):hasDnaResults?[...games.map((game,i)=>({i,score:gameAffinity[i]?.reduce((sum,weight,j)=>sum+weight*(dnaAnswers[j]??0),0)??0}))].sort((a,b)=>b.score-a.score||a.i-b.i).slice(0,3).map(entry=>entry.i):[];
   const dnaHeightStyle={"--liry-catalog-height":catalogHeight===null?undefined:`${catalogHeight}px`} as CSSProperties;
   return <div className={styles.worldShowcase}>
     <div className={styles.worldsGrid} ref={catalogRef}>
