@@ -25,6 +25,11 @@ export function LiryIdAccess({locale="es"}:{locale?:LiryFrontdeskLocale}){
      {copy.modes.map(x=><button type="button" key={x.id} aria-pressed={mode===x.id} onClick={()=>setMode(x.id)} className={styles.liryAccessTab}>{x.label}</button>)}
     </div>
     <p className={styles.liryCompactDescription} aria-live="polite">{current.description}</p>
+    <fieldset disabled aria-label={current.heading} style={{border:"1px solid #315678",borderRadius:8,padding:12,margin:"12px 0",display:"grid",gap:10}}>
+     <label style={{display:"grid",gap:5}}>{locale==="es"?"Correo electrónico":"Email address"}<input type="email" autoComplete="off" placeholder={locale==="es"?"Correo (próximamente)":"Email (coming soon)"} style={{padding:10,borderRadius:6}} /></label>
+     {mode!=="recuperar"&&<label style={{display:"grid",gap:5}}>{locale==="es"?"Contraseña":"Password"}<input type="password" autoComplete="off" placeholder="••••••••" style={{padding:10,borderRadius:6}} /></label>}
+     <button type="button" disabled style={{padding:10,borderRadius:6}}>{current.label}</button>
+    </fieldset>
     <div className={styles.liryCompactNotice} role="status" aria-live="polite" data-auth-flow={flow.screen} data-can-submit={String(flow.canSubmit)}>
      <strong style={{color:"#79e6ff"}}>{copy.inactive}</strong>
      <p>{copy.availabilityMessage} {copy.noData}</p>
