@@ -23,7 +23,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
   return ()=>window.removeEventListener("hashchange",revealLinkedGame);
  },[games]);
  useEffect(()=>{
-  const hash=decodeURIComponent(window.location.hash.slice(1));
+  const hash=window.location.hash.slice(1);
   const index=games.findIndex(game=>`liry-third-party-${game.slug}`===hash);
   if(index<0||index>=visibleCount)return;
   const target=document.getElementById(hash);
