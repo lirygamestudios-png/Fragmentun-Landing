@@ -10,3 +10,5 @@ test("Modificar contraseña y sesiones requiere identidad autenticada",()=>{
  assert.equal(getLiryAuthFlow("sessions").requiresAuthenticatedSession,true);
  assert.equal(getLiryAuthFlow("recover").requiresAuthenticatedSession,false);
 });
+
+test("La ventana Liry ID muestra estados de flujo y evita envío de credenciales",async()=>{const {readFileSync}=await import("node:fs");const source=readFileSync(new URL("../components/LiryIdAccess.tsx",import.meta.url),"utf8");assert.match(source,/getLiryAuthFlow\(/);assert.match(source,/data-can-submit=\{String\(flow\.canSubmit\)\}/);assert.doesNotMatch(source,/signInWithPassword|signUp\(|resetPasswordForEmail/);});
