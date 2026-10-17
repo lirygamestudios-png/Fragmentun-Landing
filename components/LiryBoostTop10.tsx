@@ -1,12 +1,14 @@
 "use client";
 import {useEffect,useState} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const copy=liryFrontdeskStrings("es").liryBoostBoard;
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
+
 type Row={publicName:string;verifiedInvitations:number};
 type ResponseShape={programActive:boolean;leaderboard:Row[]};
 const EMPTY:Row[]=[];
-export function LiryBoostTop10(){
+export function LiryBoostTop10({locale="es"}:{locale?:LiryFrontdeskLocale}){
+ const copy=liryFrontdeskStrings(locale).liryBoostBoard;
+
  const [entries,setEntries]=useState<Row[]>(EMPTY);
  const [active,setActive]=useState(false);
  const [unavailable,setUnavailable]=useState(false);
