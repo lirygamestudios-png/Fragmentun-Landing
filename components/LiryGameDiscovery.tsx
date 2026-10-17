@@ -2,20 +2,20 @@
 import {useEffect,useRef,useState,type CSSProperties} from "react";
 import {type PublicGameCard} from "../lib/games/public-catalog";
 import styles from "../app/lirygames/lirygames.module.css";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const dnaCopy=liryFrontdeskStrings("es").gamerDna;
-const detailCopy=liryFrontdeskStrings("es").dnaDetails;
-const accessibilityCopy=liryFrontdeskStrings("es").dnaExplorerAccessibility;
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 
-const cardCopy=liryFrontdeskStrings("es").gameCards;
-const themes=cardCopy.themes;
+
+
+
+
+
 const publicCodenames=["LIRY // ARENA-01","LIRY // BOT-02","LIRY // ECON-03","LIRY // EARTH-04","LIRY // LINK-05","LIRY // REALM-06","LIRY // EMOTION-07","LIRY // TITAN-08","LIRY // CODE-09"];
 const catalogArt=["/liry-assets/world-01.webp","/liry-assets/world-02.webp","/liry-assets/world-03.webp","/liry-assets/world-04.webp","/liry-assets/world-05.webp","/liry-assets/world-06.webp","/liry-assets/world-07.webp","/liry-assets/world-08.webp","/liry-assets/world-09.webp"];
-const traits=dnaCopy.traits;
-const traitDescriptions=detailCopy.descriptions
 
-const dnaQuestions=dnaCopy.questions;
-const dnaOptions=dnaCopy.answers.map((label,value)=>({label,value}));
+
+
+
+
 /* Afinidades editoriales orientativas (exploración, estrategia, competencia, social, acción, creatividad).
    No son telemetría ni resultados de gameplay; solo correspondencia declarada por catálogo. */
 const gameAffinity:number[][]=[
@@ -24,7 +24,17 @@ const gameAffinity:number[][]=[
  [3,1,0,1,1,3],[2,3,2,1,1,1],[2,2,1,1,1,3]
 ];
 
-export function LiryGameDiscovery({games}:{games:readonly PublicGameCard[]}){
+export function LiryGameDiscovery({games,locale="es"}:{games:readonly PublicGameCard[],locale?:LiryFrontdeskLocale}){
+ const dnaCopy=liryFrontdeskStrings(locale).gamerDna;
+ const detailCopy=liryFrontdeskStrings(locale).dnaDetails;
+ const accessibilityCopy=liryFrontdeskStrings(locale).dnaExplorerAccessibility;
+ const cardCopy=liryFrontdeskStrings(locale).gameCards;
+ const themes=cardCopy.themes;
+ const traits=dnaCopy.traits;
+ const traitDescriptions=detailCopy.descriptions
+ const dnaQuestions=dnaCopy.questions;
+ const dnaOptions=dnaCopy.answers.map((label,value)=>({label,value}));
+
   const catalogRef=useRef<HTMLDivElement>(null);
   const advanceTimerRef=useRef<ReturnType<typeof setTimeout>|null>(null);
   const clearAdvanceTimer=()=>{if(advanceTimerRef.current!==null){clearTimeout(advanceTimerRef.current);advanceTimerRef.current=null;}};
