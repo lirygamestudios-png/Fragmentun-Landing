@@ -269,8 +269,8 @@ test("recommendations preserve three public codenames and translated description
 test("store overview preserves freemium disclosure and no active payments in ES and EN",()=>{
  const es=LIRY_FRONTDESK_STRINGS.es.storeOverview,en=LIRY_FRONTDESK_STRINGS.en.storeOverview;
  assert.deepEqual(Object.keys(es).sort(),Object.keys(en).sort());
- assert.match(es.freemium,/No hay pagos activos/);
- assert.match(en.freemium,/No payments are active/);
+ assert.match(es.freemium,/No hay artículos digitales ni pagos activos/);
+ assert.match(en.freemium,/No digital items or payments are active/);
  assert.match(en.intro,/suppliers have been confirmed/);
 });
 
