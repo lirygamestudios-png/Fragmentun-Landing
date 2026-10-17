@@ -2,9 +2,9 @@
 import {useState} from "react";
 import styles from "../app/lirygames/mi-liry/mi-liry.module.css";
 import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
-const checkpoints=copy.checkpoints;
 export function LiryDeveloperReleasePreview({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const copy=liryFrontdeskStrings(locale).developerRelease;
+ const checkpoints=copy.checkpoints;
  const [selected,setSelected]=useState(0);
  return <section className={`${styles.notice} ${styles.developerForm}`} aria-labelledby="liry-release-title">
   <h2 id="liry-release-title">{copy.title}</h2>
