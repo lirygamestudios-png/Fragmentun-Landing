@@ -5,16 +5,12 @@ import {canShowCommunityActivity} from "../lib/games/liry-community-readiness";
 import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 
 
-const categories=[
- {id:"todos",...communityCopy.all},
- {id:"amigos",...communityCopy.friends},
- {id:"logros",...communityCopy.achievements},
- {id:"eventos",...communityCopy.events}
-] as const;
-type Category=(typeof categories)[number]["id"];
+const categoryIds=["todos","amigos","logros","eventos"] as const;
+type Category=(typeof categoryIds)[number];
 export function LiryCommunityTabs({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const communityCopy=liryFrontdeskStrings(locale).communityTabs;
  const feedCopy=liryFrontdeskStrings(locale).communityFeedIntro;
+ const categories=[{id:"todos",...communityCopy.all},{id:"amigos",...communityCopy.friends},{id:"logros",...communityCopy.achievements},{id:"eventos",...communityCopy.events}] as const;
 
  const [tab,setTab]=useState<Category>("todos");
  const tabButtons=useRef<Record<string,HTMLButtonElement|null>>({});
