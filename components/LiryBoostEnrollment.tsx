@@ -1,9 +1,11 @@
 "use client";
 import {useRef} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const copy=liryFrontdeskStrings("es").liryBoost;
-export function LiryBoostEnrollment(){
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
+
+export function LiryBoostEnrollment({locale="es"}:{locale?:LiryFrontdeskLocale}){
+ const copy=liryFrontdeskStrings(locale).liryBoost;
+
  const dialogRef=useRef<HTMLDialogElement>(null);
  const triggerRef=useRef<HTMLButtonElement>(null);
  return <>
