@@ -91,7 +91,7 @@ export default async function LiryGamesFrontDesk({searchParams}:{searchParams:Pr
           <LiryIdAccess locale={locale} />
           <LiryPrivacyPreview locale={locale} />
           <LiryGamerInfoDialog locale={locale} topic="perfil" />
-          <small className={styles.gamerDataNote}>Estado visitante · sin sesión gamer</small>
+          <small className={styles.gamerDataNote}>{copy.journey.noActivity}</small>
         </article>
         <article className={styles.gamerCard}>
           <header className={styles.gamerCardHeader}><span className={styles.gamerHeaderIcon} aria-hidden="true">⬡</span><div><h3>{copy.journey.title}</h3><p>{copy.journey.subtitle}</p></div></header>
