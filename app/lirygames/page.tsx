@@ -8,7 +8,7 @@ import {LiryBoostTop10} from "../../components/LiryBoostTop10";
 import {LiryBoostEnrollment} from "../../components/LiryBoostEnrollment";
 import {LiryGameDiscovery} from "../../components/LiryGameDiscovery";
 import {getApprovedPublicDnaProfiles} from "../../lib/games/liry-public-dna-projection";
-import {liryGlobalJourneySummary} from "../../lib/games/liry-global-journey";
+import {liryGlobalJourneySummary,liryVisibleJourneyCatalog} from "../../lib/games/liry-global-journey";
 import {LiryThirdPartyCatalog} from "../../components/LiryThirdPartyCatalog";
 import {LiryGamerInfoDialog} from "../../components/LiryGamerInfoDialog";
 import {LiryGamerIdentity} from "../../components/LiryGamerIdentity";
@@ -61,6 +61,8 @@ export default async function LiryGamesFrontDesk({searchParams}:{searchParams:Pr
     playUrl:null,
     internalWorldCount:game.internalWorldCount
   }));
+  const visibleJourneyGames=liryVisibleJourneyCatalog(games,approvedThirdPartyCatalog);
+  const visibleExternalJourneyGames=visibleJourneyGames.filter(game=>approvedThirdPartyCatalog.some(external=>external.slug===game.slug));
   const journey=liryGlobalJourneySummary(games,approvedThirdPartyCatalog,gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?gamerSnapshot.verifiedActivity.visitedWorldIds:null);
   const copy=liryFrontdeskStrings(locale);
   return <main className={styles.page} id="liry-main" lang={locale}>
@@ -102,7 +104,7 @@ export default async function LiryGamesFrontDesk({searchParams}:{searchParams:Pr
           <div className={styles.journeyContent}>
             <div className={styles.journeyRing} role="progressbar" aria-label={copy.journey.progressAria} aria-valuemin={0} aria-valuemax={journey.catalogSize} aria-valuenow={journey.verified?journey.visited:undefined} aria-valuetext={gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${journey.visited} ${copy.journey.exploredSuffix}`:copy.journey.noActivity} style={{["--journey-progress" as string]:gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${journey.percent}%`:"0%"}}><div className={styles.journeyRingCenter}><strong>{gamerSnapshot.status==="verified"&&gamerSnapshot.verifiedActivity?`${journey.visited} / ${journey.catalogSize}`:`— / ${journey.catalogSize}`}</strong><span>{copy.journey.discovered}</span></div></div>
             <ol className={styles.journeyWorlds}>{games.map((game,index)=><li key={game.slug}><span className={styles.journeyNumber}>{index+1}</span><span className={styles.journeyName}>{game.title}</span><span className={styles.journeyPending} aria-label={verifiedVisitedWorldIds?.has(game.slug)?copy.journey.visitedAria:copy.journey.noProgressAria}>{verifiedVisitedWorldIds?.has(game.slug)?"✓":"○"}</span></li>)}</ol>
-            {approvedThirdPartyCatalog.length>0&&<ol className={styles.journeyWorlds} start={games.length+1} style={{maxHeight:240,overflowY:"auto"}} aria-label={locale==="es"?"Videojuegos externos aprobados":"Approved third-party games"}>{approvedThirdPartyCatalog.map((game,index)=><li key={game.slug}><span className={styles.journeyNumber}>{games.length+index+1}</span><span className={styles.journeyName}>{game.title}</span><span className={styles.journeyPending} aria-label={verifiedVisitedWorldIds?.has(game.slug)?copy.journey.visitedAria:copy.journey.noProgressAria}>{verifiedVisitedWorldIds?.has(game.slug)?"✓":"○"}</span></li>)}</ol>}
+            {visibleExternalJourneyGames.length>0&&<ol className={styles.journeyWorlds} start={games.length+1} style={{maxHeight:240,overflowY:"auto"}} aria-label={locale==="es"?"Videojuegos externos aprobados":"Approved third-party games"}>{visibleExternalJourneyGames.map((game,index)=><li key={game.slug}><span className={styles.journeyNumber}>{games.length+index+1}</span><span className={styles.journeyName}>{game.title}</span><span className={styles.journeyPending} aria-label={verifiedVisitedWorldIds?.has(game.slug)?copy.journey.visitedAria:copy.journey.noProgressAria}>{verifiedVisitedWorldIds?.has(game.slug)?"✓":"○"}</span></li>)}</ol>}
           </div>
           <LiryGamerInfoDialog locale={locale} topic="mundos" />
           <LiryGamerInfoDialog locale={locale} topic="journey" />
