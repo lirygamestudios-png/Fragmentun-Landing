@@ -33,18 +33,18 @@ export function LiryShare({locale="es"}:{locale?:LiryFrontdeskLocale}){
    window.open(dest,"_blank","noopener,noreferrer");
    setShareNotice(copy.socialNotice);
  }
- return <><div className={styles.liryShareActions} aria-label="Compartir LIRYGAMES">
+ return <><div className={styles.liryShareActions} aria-label={copy.actionsAria}>
    <button type="button" onClick={nativeShare} className={styles.liryShareButton}>{copy.share} ↗</button>
    <button type="button" onClick={copyLink} className={styles.liryShareButton}>{copied?`${copy.copied} ✓`:copy.copyLink}</button>
-   <button type="button" onClick={()=>shareTo("whatsapp")} className={`${styles.liryShareButton} ${styles.liryShareIconButton}`} title="WhatsApp" aria-label="Compartir en WhatsApp"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><path d="M20.5 11.6a8.5 8.5 0 0 1-12.6 7.5L3 20.4l1.3-4.8A8.5 8.5 0 1 1 20.5 11.6Z"/><path d="M8.3 7.8c-.5.4-.7 1.1-.4 2 .7 2.1 3.2 4.6 5.3 5.4.9.3 1.7.1 2-.4l.6-1.2-2.4-1.2-1 1c-1.3-.6-2.3-1.6-2.9-2.9l.9-1-1.2-2.3Z"/></svg></button>
-   <button type="button" onClick={()=>shareTo("facebook")} className={`${styles.liryShareButton} ${styles.liryShareIconButton}`} title="Facebook" aria-label="Compartir en Facebook"><span aria-hidden="true">f</span></button>
-   <button type="button" onClick={()=>shareTo("x")} className={`${styles.liryShareButton} ${styles.liryShareIconButton}`} title="X" aria-label="Compartir en X"><span aria-hidden="true">𝕏</span></button>
+   <button type="button" onClick={()=>shareTo("whatsapp")} className={`${styles.liryShareButton} ${styles.liryShareIconButton}`} title="WhatsApp" aria-label={copy.whatsappAria}><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden="true"><path d="M20.5 11.6a8.5 8.5 0 0 1-12.6 7.5L3 20.4l1.3-4.8A8.5 8.5 0 1 1 20.5 11.6Z"/><path d="M8.3 7.8c-.5.4-.7 1.1-.4 2 .7 2.1 3.2 4.6 5.3 5.4.9.3 1.7.1 2-.4l.6-1.2-2.4-1.2-1 1c-1.3-.6-2.3-1.6-2.9-2.9l.9-1-1.2-2.3Z"/></svg></button>
+   <button type="button" onClick={()=>shareTo("facebook")} className={`${styles.liryShareButton} ${styles.liryShareIconButton}`} title="Facebook" aria-label={copy.facebookAria}><span aria-hidden="true">f</span></button>
+   <button type="button" onClick={()=>shareTo("x")} className={`${styles.liryShareButton} ${styles.liryShareIconButton}`} title="X" aria-label={copy.xAria}><span aria-hidden="true">𝕏</span></button>
   <button type="button" className={styles.liryShareButton} aria-haspopup="dialog" onClick={event=>{previewTrigger.current=event.currentTarget;previewRef.current?.showModal()}}>{copy.preview} ↗</button>
   <span role="status" aria-live="polite" className={styles.socialPending}>{shareNotice}</span>
  </div>
- <dialog ref={previewRef} className={styles.gamerInfoDialog} aria-label="Vista previa de tarjeta para compartir LIRYGAMES" onClose={()=>previewTrigger.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===previewRef.current)previewRef.current.close()}}>
+ <dialog ref={previewRef} className={styles.gamerInfoDialog} aria-label={copy.previewAria} onClose={()=>previewTrigger.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===previewRef.current)previewRef.current.close()}}>
   <div className={styles.gamerInfoDialogInside}>
-   <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label="Cerrar vista previa">×</button></form>
+   <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label={copy.closeAria}>×</button></form>
    <p className={styles.gamerInfoEyebrow}>LIRYGAMES STUDIOS · COMPARTIR</p>
    <h3>{copy.previewTitle}</h3>
    <img src="/lirygames/opengraph-image" width={1200} height={630} loading="lazy" alt="LIRYGAMES STUDIOS: 9 mundos, infinitas formas de jugar" style={{display:"block",width:"100%",height:"auto",borderRadius:8,border:"1px solid #286e98"}}/>
