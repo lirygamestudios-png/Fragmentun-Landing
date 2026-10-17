@@ -1,10 +1,12 @@
 "use client";
 import {useRef,useState} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
-import {liryFrontdeskStrings} from "../lib/games/liry-frontdesk-i18n";
-const copy=liryFrontdeskStrings("es").privacyPreview;
+import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
+
 type Visibility="private"|"friends"|"public";
-export function LiryPrivacyPreview(){
+export function LiryPrivacyPreview({locale="es"}:{locale?:LiryFrontdeskLocale}){
+ const copy=liryFrontdeskStrings(locale).privacyPreview;
+
  const ref=useRef<HTMLDialogElement>(null);
  const trigger=useRef<HTMLButtonElement>(null);
  const [visibility,setVisibility]=useState<Visibility>("private");
