@@ -62,3 +62,16 @@ test('capture group selection requires exact numeric ID and never guesses group 
   assert.ok(!route.includes('normalizeGroupName('));
   assert.ok(!route.includes('languageMatched'));
 });
+
+test('signup only accepts the official locale-specific MailerLite group', () => {
+  assert.ok(route.includes('"200513144673534994"'));
+  assert.ok(route.includes('"200513164367889456"'));
+  assert.ok(route.includes('configuredId!==officialId'));
+  assert.ok(route.includes('configured group ID is not the official capture group for locale'));
+});
+
+test('numeric group ID matcher uses digit class without an extra escape', () => {
+  const line = route.split('\n').find(l => l.includes('.test(configuredId)'));
+  assert.ok(line);
+  assert.ok(line.includes(String.raw`/^\d+$/`));
+});
