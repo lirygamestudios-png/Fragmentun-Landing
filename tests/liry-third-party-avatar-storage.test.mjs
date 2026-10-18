@@ -3,3 +3,5 @@ const identity={application:"lirygames",audience:"lirygames-player",subject:"pla
 const request={identity,ownerId:"player_00001",mimeType:"image/png",bytes:12000,independentlyConfigured:true,privateBucketVerified:true,serverFileValidationPassed:true};
 test("No se guardan avatares mientras no exista proyecto independiente activado",()=>{assert.equal(LIRY_AVATAR_STORAGE.enabled,false);assert.equal(LIRY_AVATAR_STORAGE.publicBucket,false);assert.equal(canStoreLiryPlayerAvatar(request),false);});
 test("La ruta privada no acepta nombres de carpeta arbitrarios",()=>{assert.equal(liryPrivateAvatarObjectKey("player_00001","avatar_00001"),"player_00001/avatar_00001");assert.equal(liryPrivateAvatarObjectKey("../fragmentun","pic_00000001"),null);assert.equal(liryPrivateAvatarObjectKey("player_00001","../secret"),null);});
+
+test("El límite privado coincide con la vista previa de 2 MB",()=>{assert.equal(LIRY_AVATAR_STORAGE.maxBytes,2*1024*1024);});
