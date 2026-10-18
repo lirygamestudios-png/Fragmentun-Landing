@@ -165,3 +165,14 @@ test("Ficha de desarrollador distingue clasificación y plataforma declaradas",(
 test("FrontDesk evita alineaciones end con soporte CSS desigual",()=>{const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");assert.doesNotMatch(css,/(?:align-items|align-self):end(?=[;}])/);assert.match(css,/\.liryCatalogFilters\{display:flex;align-items:flex-end/);});
 
 test("QA visual exige contenido y espera fuentes antes de capturar",()=>{const src=readFileSync(new URL("../scripts/liry-frontdesk-browser-qa.mjs",import.meta.url),"utf8");assert.match(src,/document\.fonts\.ready/);assert.match(src,/missingMain/);assert.match(src,/mainPresent/);assert.match(src,/bodyTextLength<20/);});
+
+test("Tienda limita a doce productos y conserva navegación compacta accesible",()=>{
+ const src=readFileSync(new URL("../components/LiryStoreCategories.tsx",import.meta.url),"utf8");
+ assert.match(src,/Math\.ceil\(filtered\.length\/12\)/);
+ assert.match(src,/filtered\.slice\(\(currentPage-1\)\*12,currentPage\*12\)/);
+ assert.match(src,/Array\.from\(new Set\(\[1,pages,currentPage-1,currentPage,currentPage\+1\]/);
+ assert.match(src,/n-visible\[i-1\]>1/);
+ assert.match(src,/aria-current=\{currentPage===n\?"page":undefined\}/);
+ assert.match(src,/setTerm\(e\.target\.value\);setPage\(1\)/);
+ assert.match(src,/setSortBy\(e\.target\.value\);setPage\(1\)/);
+});
