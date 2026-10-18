@@ -105,3 +105,6 @@ El runner ahora responde localmente las seis preguntas, espera resultados, reini
 
 ## Evidencia de fallo para QA en navegador
 Commit `c5725a12`: si una interacción automatizada falla, el runner intenta guardar captura `*-failure.png` y añade su nombre al registro JSON. Si no puede capturar, mantiene el error sin inventar evidencia. Sigue sin ejecutarse el E2E real en entorno accesible; se requiere revisión de capturas y resultados antes de cierre.
+
+## Alternativa para ejecutar QA sin Preview remoto
+El runner permite `LIRY_QA_URL=http://localhost:3000` o `http://127.0.0.1:3000` además de HTTPS, exclusivamente en loopback local. Procedimiento en equipo con navegador: iniciar `npm run dev` en una terminal; instalar Playwright si fuese necesario y ejecutar `LIRY_QA_URL=http://localhost:3000 node scripts/liry-frontdesk-browser-qa.mjs` en otra. La ejecución **aún está pendiente**; un build READY de Vercel no implica que las pruebas E2E hayan pasado. Cambio del runner: commit `661f79bc`.
