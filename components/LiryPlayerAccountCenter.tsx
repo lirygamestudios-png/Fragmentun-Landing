@@ -35,7 +35,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
   const request=++avatarRequestRef.current;
   const validation=validateTemporaryGamerAvatar(file);
   if(!validation.ok){setAvatarError(locale==="es"?"Selecciona JPG, PNG o WebP de hasta 2 MB.":"Choose JPG, PNG or WebP up to 2 MB.");if(avatarInput.current)avatarInput.current.value="";return}
-  if(!await validateTemporaryGamerAvatarContent(file)){if(request===avatarRequestRef.current){setAvatarError(locale==="es"?"El contenido del archivo no es una imagen válida.":"The file content is not a valid image.");if(avatarInput.current)avatarInput.current.value=""}return}
+  if(!await validateTemporaryGamerAvatarContent(file).catch(()=>false)){if(request===avatarRequestRef.current){setAvatarError(locale==="es"?"El contenido del archivo no es una imagen válida.":"The file content is not a valid image.");if(avatarInput.current)avatarInput.current.value=""}return}
   if(request!==avatarRequestRef.current)return;
   const next=URL.createObjectURL(file);
   const image=new Image();
