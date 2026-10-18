@@ -9,9 +9,11 @@ export function LiryMobileNav({ariaLabel,items}:{ariaLabel:string;items:Item[]})
   if(!open)return;
   const closeOutside=(event:PointerEvent)=>{if(!root.current?.contains(event.target as Node))setOpen(false)};
   const closeEscape=(event:KeyboardEvent)=>{if(event.key==="Escape")setOpen(false)};
+  const closeOnNavigation=()=>setOpen(false);
   document.addEventListener("pointerdown",closeOutside);
   document.addEventListener("keydown",closeEscape);
-  return ()=>{document.removeEventListener("pointerdown",closeOutside);document.removeEventListener("keydown",closeEscape)};
+  window.addEventListener("hashchange",closeOnNavigation);
+  return ()=>{document.removeEventListener("pointerdown",closeOutside);document.removeEventListener("keydown",closeEscape);window.removeEventListener("hashchange",closeOnNavigation)};
  },[open]);
  return <div className={styles.navMenu} ref={root}>
   <button type="button" className={styles.navMenuToggle} aria-label={open?"Cerrar menú / Close menu":ariaLabel} aria-expanded={open} aria-controls="liry-mobile-nav" onClick={()=>setOpen(value=>!value)}>
