@@ -1593,3 +1593,17 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .liryCatalogPagination button[aria-current="page"]{background:#123e65;border-color:#7bdaf8;box-shadow:0 0 12px #35b9fa4d}
 .liryCatalogPagination button:disabled{opacity:.5;cursor:default}
 @media(max-width:560px){.liryCatalogFilters label{flex-basis:100%}}
+
+/* Tienda: catálogo publicado sin artículos ficticios, paginación 12 por página. */
+.liryStoreListing{margin:24px 0;color:#e7f7ff}
+.liryStoreFilters{display:flex;gap:12px;flex-wrap:wrap;align-items:end;margin:18px 0}
+.liryStoreFilters label{display:flex;flex-direction:column;gap:7px;flex:1 1 170px}
+.liryStoreFilters input,.liryStoreFilters select{box-sizing:border-box;width:100%;min-height:44px;padding:10px;border:1px solid #3dadd4;border-radius:9px;background:#08172d;color:#e7f7ff}
+.liryStoreFilters button,.liryStorePages button{min-height:44px;padding:10px 14px;border:1px solid #3dadd4;border-radius:9px;background:#0b2643;color:#d9f5ff;cursor:pointer}
+.liryStoreProducts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
+.liryStoreProduct{min-width:0;padding:15px;border:1px solid #3dadd4;border-radius:12px;background:#0a1c34}
+.liryStorePages{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:20px 0}
+.liryStorePages button[aria-current="page"]{border-color:#7bdaf8;background:#123e65;box-shadow:0 0 12px #35b9fa4d}
+.liryStorePages button:disabled{opacity:.5;cursor:default}
+@media(max-width:850px){.liryStoreProducts{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:560px){.liryStoreProducts{grid-template-columns:repeat(2,minmax(0,1fr))}.liryStoreFilters label{flex-basis:100%}}
