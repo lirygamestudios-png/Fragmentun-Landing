@@ -81,3 +81,6 @@ Auditoría funcional y visual end-to-end de navegación y componentes, no añadi
 
 ## Runner de validación en navegador
 Se añadió `scripts/liry-frontdesk-browser-qa.mjs`. Ejecutar desde un equipo con acceso al Preview y Playwright instalado: `LIRY_QA_URL=https://<preview-autorizado>.vercel.app node scripts/liry-frontdesk-browser-qa.mjs`. Captura pantallas ES/EN en 320, 375, 768 y 1024 px, desbordes horizontales y errores JavaScript en `qa-evidence/lirygames/`. No ejecuta pagos ni envía formularios. **Este runner es una prueba visual preliminar, no equivale al E2E completo de ADN, avatar ni contacto.** El entorno de ejecución actual devuelve `net::ERR_BLOCKED_BY_ADMINISTRATOR`; estado externo BLOQUEADO hasta recibir evidencia real.
+
+## Ampliación de QA por rutas
+El runner ahora incluye también `/lirygames/mi-liry` y `/lirygames/developer`, además de `/lirygames`, con idiomas ES/EN y anchuras 320/375/768/1024. Total previsto: **24 capturas**, siempre que la ejecución externa cuente con acceso y Playwright instalado. La ampliación no autoriza cerrar los recorridos funcionales: no pulsa botones ni envía formularios. Pendiente comprobar ejecución real.
