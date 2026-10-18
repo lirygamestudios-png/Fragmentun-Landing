@@ -52,6 +52,13 @@ test('only active subscribers can complete capture', () => {
 test('signup group lookup supports pagination and rejects unsafe links', () => {
   assert.ok(route.includes('visited.has(requestUrl.href)'));
   assert.ok(route.includes('hostname!=="connect.mailerlite.com"'));
-  assert.ok(route.includes('groups.push(...data.data)'));
+  assert.ok(route.includes('data.data.some('));
   assert.ok(route.includes('groups pagination limit exceeded'));
+});
+
+test('capture group selection requires exact numeric ID and never guesses group names', () => {
+  assert.ok(route.includes('configured group ID invalid; refusing fallback'));
+  assert.ok(route.includes('if(!/^\\d+$/.test(configuredId))'));
+  assert.ok(!route.includes('normalizeGroupName('));
+  assert.ok(!route.includes('languageMatched'));
 });
