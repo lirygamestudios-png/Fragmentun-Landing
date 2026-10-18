@@ -68,8 +68,23 @@ for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/l
      playerDraftCheck={accepted,cleared,passed:accepted&&cleared};
     }else playerDraftCheck={passed:false,reason:"Missing player alias preview"};
    }
+   // Avatar de prueba generado en memoria: no se usa una fotografía personal.
+   let avatarCheck=null;
+   if(route.name==="player"&&!wrongRoute&&!missingMain&&status<400){
+    const fileInput=page.locator('input[type="file"][accept*="image/png"]').first();
+    if(await fileInput.count()){
+     const png=Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScL/nwAAAABJRU5ErkJggg==","base64");
+     await fileInput.setInputFiles({name:"liry-qa.png",mimeType:"image/png",buffer:png});
+     const picture=page.locator('[class*="accountAvatarPicture"] img').first();
+     const displayed=await picture.waitFor({state:"visible",timeout:6000}).then(()=>true).catch(()=>false);
+     const remove=page.getByRole("button",{name:locale==="es"?"Quitar fotografía":"Remove photo"});
+     if(await remove.count())await remove.click();
+     const cleared=await picture.count()===0;
+     avatarCheck={displayed,cleared,passed:displayed&&cleared};
+    }else avatarCheck={passed:false,reason:"Missing avatar file input"};
+   }
    await page.screenshot({path:path.join(out,`${route.name}-${locale}-${width}.png`),fullPage:true});
-   const entry={route:route.path,locale,width,status,finalUrl:page.url(),wrongRoute,missingMain,developerDialogCheck,dnaExplorerCheck,playerDraftCheck,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`${route.name}-${locale}-${width}.png`};
+   const entry={route:route.path,locale,width,status,finalUrl:page.url(),wrongRoute,missingMain,developerDialogCheck,dnaExplorerCheck,playerDraftCheck,avatarCheck,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`${route.name}-${locale}-${width}.png`};
    results.push(entry);console.log(JSON.stringify(entry));
   }catch(e){const entry={route:route.path,locale,width,error:String(e)};results.push(entry);console.error(JSON.stringify(entry));}
   await page.close();
@@ -78,4 +93,4 @@ for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/l
 }
 await browser.close();
 await writeFile(path.join(out,"results.json"),JSON.stringify({base,checkedAt:new Date().toISOString(),results},null,2));
-if(results.some(r=>r.error||!r.status||r.status>=400||r.wrongRoute||r.missingMain||r.developerDialogCheck?.passed===false||r.dnaExplorerCheck?.passed===false||r.playerDraftCheck?.passed===false||r.overflow||r.errors?.length))process.exitCode=1;
+if(results.some(r=>r.error||!r.status||r.status>=400||r.wrongRoute||r.missingMain||r.developerDialogCheck?.passed===false||r.dnaExplorerCheck?.passed===false||r.playerDraftCheck?.passed===false||r.avatarCheck?.passed===false||r.overflow||r.errors?.length))process.exitCode=1;
