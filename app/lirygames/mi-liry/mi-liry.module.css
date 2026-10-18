@@ -291,3 +291,7 @@
 .accountNameInput,.accountNameInput:hover,.accountNameInput:focus,.accountNameInput:active{background-color:#07192c;color:#f1faff;caret-color:#8be9ff;color-scheme:dark}
 .accountNameInput:-webkit-autofill,.accountNameInput:-webkit-autofill:hover,.accountNameInput:-webkit-autofill:focus{-webkit-text-fill-color:#f1faff!important;-webkit-box-shadow:0 0 0 1000px #07192c inset!important;box-shadow:0 0 0 1000px #07192c inset!important;caret-color:#8be9ff;transition:background-color 9999s ease-out 0s}
 .accountNameInput::selection{background:#215a87;color:#fff}
+
+/* Compatibilidad con autocompletado estándar y Firefox, sin cambio de fondo en Mi Liry. */
+.accountNameInput:autofill{background-color:#07192c!important;color:#f1faff!important;caret-color:#8be9ff;box-shadow:0 0 0 1000px #07192c inset!important}
+.accountNameInput:focus-visible{background-color:#07192c;color:#f1faff;outline:2px solid #7bdaf8;outline-offset:2px}
