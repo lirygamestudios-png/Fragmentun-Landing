@@ -11,7 +11,7 @@ export default async function MiLiryPage({searchParams}:{searchParams:Promise<{l
  const gamer=VISITOR_GAMER_SNAPSHOT;
  const copy=liryFrontdeskStrings(locale).miLiry;
  return <main className={styles.page} lang={locale}>
-  <header className={styles.header}><Link href={`/lirygames?lang=${locale}`} className={styles.brand} aria-label={copy.backAria}><span className={styles.sigil} aria-hidden="true"><i></i><b></b></span></Link><Link href={`/lirygames?lang=${locale}#perfil-gamer`} className={styles.back}>← {copy.back}</Link></header>
+  <header className={styles.header}><Link href={`/lirygames?lang=${locale}`} className={styles.brand} aria-label={copy.backAria}><img className={styles.sigil} src="/lirygames-brand-icon.svg" width={40} height={40} alt="" aria-hidden="true" /></Link><Link href={`/lirygames?lang=${locale}#perfil-gamer`} className={styles.back}>← {copy.back}</Link></header>
   <section className={styles.hero} aria-labelledby="mi-liry-title"><span className={styles.eyebrow}>{copy.eyebrow}</span><h1 id="mi-liry-title">MI <em>LIRY</em></h1><p>{copy.intro}</p><span className={styles.state}>{copy.visitorState}</span></section>
   <section className={styles.content} aria-label={copy.accountSummary}><LiryPlayerIdentityHeader locale={locale} displayName={gamer.displayName} eyebrow={copy.profile} note={copy.pendingIdentity}/>
   <MiLiryAreas locale={locale} />
