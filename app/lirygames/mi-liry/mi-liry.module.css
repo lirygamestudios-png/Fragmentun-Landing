@@ -275,3 +275,7 @@
 
 /* Área táctil adecuada para ajustes y privacidad, sin cambiar bordes cian aprobados. */
 @media(max-width:560px){.accountToggle{min-height:44px;padding:7px 0;cursor:pointer}.accountToggle input{flex:0 0 20px;width:20px;height:20px}.accountTabs{gap:10px}.accountTab{touch-action:manipulation}}
+
+/* Datos de facturación en modo demostración: sin almacenamiento o transacciones. */
+.accountBillingGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0}
+@media(max-width:560px){.accountBillingGrid{grid-template-columns:1fr}}
