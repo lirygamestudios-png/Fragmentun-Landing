@@ -22,7 +22,7 @@ async function rateLimit(supabase:any,req:Request,email:string){
 async function verifySignedLead(req:Request, rawBody:string, secret:string):Promise<boolean>{
   const stamp=req.headers.get("x-fragmentun-timestamp")??"";
   const provided=req.headers.get("x-fragmentun-signature")??"";
-  if(!/^\\d{10}$/.test(stamp)||!/^[a-f0-9]{64}$/.test(provided))return false;
+  if(!/^\d{10}$/.test(stamp)||!/^[a-f0-9]{64}$/.test(provided))return false;
   if(Math.abs(Math.floor(Date.now()/1000)-Number(stamp))>300)return false;
   const encoder=new TextEncoder();
   const key=await crypto.subtle.importKey("raw",encoder.encode(secret),{name:"HMAC",hash:"SHA-256"},false,["sign"]);
