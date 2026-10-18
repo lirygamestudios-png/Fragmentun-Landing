@@ -114,7 +114,7 @@ for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/l
    await page.screenshot({path:path.join(out,`${route.name}-${locale}-${width}.png`),fullPage:true});
    const entry={route:route.path,locale,width,status,finalUrl:page.url(),wrongRoute,missingMain,developerDialogCheck,dnaExplorerCheck,dnaSurveyCheck,playerDraftCheck,avatarCheck,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`${route.name}-${locale}-${width}.png`};
    results.push(entry);console.log(JSON.stringify(entry));
-  }catch(e){const entry={route:route.path,locale,width,error:String(e)};results.push(entry);console.error(JSON.stringify(entry));}
+  }catch(e){const failureScreenshot=`${route.name}-${locale}-${width}-failure.png`;let screenshot=null;try{await page.screenshot({path:path.join(out,failureScreenshot),fullPage:true,timeout:5000});screenshot=failureScreenshot;}catch{}const entry={route:route.path,locale,width,error:String(e),screenshot};results.push(entry);console.error(JSON.stringify(entry));}
   await page.close();
  }
  }
