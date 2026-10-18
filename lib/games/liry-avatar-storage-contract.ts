@@ -7,7 +7,7 @@ export const LIRY_AVATAR_STORAGE=Object.freeze({
  project:"lirygames",
  bucket:"liry-player-avatars",
  publicBucket:false,
- maxBytes:3*1024*1024,
+ maxBytes:2*1024*1024,
  allowedMimeTypes:["image/jpeg","image/png","image/webp"] as const,
 } as const);
 export type LiryAvatarUploadRequest=Readonly<{
