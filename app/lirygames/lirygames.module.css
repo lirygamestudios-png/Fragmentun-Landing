@@ -1623,3 +1623,18 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 /* Auditoría móvil: navegación horizontal alcanzable y foco visible en cian. */
 @media(max-width:760px){.nav nav{overscroll-behavior-inline:contain;scroll-padding-inline:12px;-webkit-overflow-scrolling:touch}.nav nav a{scroll-margin-inline:12px;min-height:44px;display:inline-flex;align-items:center}}
 .nav nav a:focus-visible,.liryCatalogFilters input:focus-visible,.liryCatalogFilters select:focus-visible,.liryCatalogFilters button:focus-visible,.thirdPartyFilters input:focus-visible,.thirdPartyFilters select:focus-visible,.thirdPartyFilters button:focus-visible,.liryStoreFilters input:focus-visible,.liryStoreFilters select:focus-visible,.liryStoreFilters button:focus-visible,.liryCatalogPagination button:focus-visible,.thirdPartyPagination button:focus-visible,.liryStorePages button:focus-visible{outline:2px solid #7bdaf8;outline-offset:3px}
+
+/* Mobile header: approved cyan/blue interaction, explicit close affordance. */
+.navMenuToggle{appearance:none;cursor:pointer;display:grid;place-items:center;width:35px;height:38px;border:1px solid transparent;border-radius:6px;background:transparent;color:#e0f2ff}
+.navMenuToggle svg{width:20px;height:20px}
+.navMenuToggle:hover,.navMenuToggle:focus-visible,.navMenuToggle[aria-expanded="true"]{border-color:#65c7e7;background:#0e3e62a6;outline-offset:2px}
+.navMenuX{font-size:27px;line-height:1;font-weight:400;color:#86e7ff}
+.navMenuPanel{max-height:min(70dvh,520px);overflow-y:auto;overscroll-behavior:contain}
+.navMenuPanel a{background:transparent;color:#deefff}
+.navMenuPanel a:hover,.navMenuPanel a:focus-visible{background:#143a5e;color:#fff}
+@media(max-width:750px){.navMenuPanel{width:min(235px,calc(100vw - 20px));right:0}}
+
+/* Native popup choices follow the approved FrontDesk navy/cyan treatment. */
+.page select,.page select option,.page select optgroup{color:#eaf6ff;background-color:#0b1e37;color-scheme:dark}
+.page select{border-color:#397aab;background-color:#101f3a;accent-color:#4ad5ff}
+.page select:focus-visible{outline:2px solid #67dfff;outline-offset:2px;border-color:#65c7e7}
