@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run test:fragmentun-mailerlite-preflight && npm run test:fragmentun-subscribe-safety && next build",
+    "test:fragmentun-mailerlite-preflight": "node --test tests/fragmentun-mailerlite-preflight.test.mjs",
+    "test:fragmentun-subscribe-safety": "node --test tests/fragmentun-subscribe-safety.test.mjs",
     "start": "next start"
   },
   "dependencies": {
