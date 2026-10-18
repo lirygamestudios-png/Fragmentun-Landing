@@ -256,3 +256,7 @@
 
 /* Preferencia temporal: reducir movimiento en Centro de Cuenta. */
 .accountReducedMotion *,.accountReducedMotion *::before,.accountReducedMotion *::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;scroll-behavior:auto!important}
+
+/* Accesibilidad: tamaño de lectura temporal sin alterar otras secciones. */
+.accountLargeText .accountPanel,.accountLargeText .accountIntro,.accountLargeText .accountSummary,.accountLargeText .accountToggle{font-size:1.08rem;line-height:1.75}
+.accountLargeText .accountTab{font-size:1rem;line-height:1.5}
