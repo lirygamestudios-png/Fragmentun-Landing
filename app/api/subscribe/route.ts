@@ -14,26 +14,6 @@ function isLikelySecret(value:string){
   return value.startsWith("eyJ") || value.split(".").length===3 || value.length>80;
 }
 
-async function createMailerLiteGroup(token:string,name:string){
-  const res=await fetch(ML_GROUPS,{
-    method:"POST",
-    headers:{Authorization:`Bearer ${token}`,"Content-Type":"application/json",Accept:"application/json"},
-    body:JSON.stringify({name}),
-    cache:"no-store",
-    signal:AbortSignal.timeout(8000)
-  }).catch(()=>null);
-
-  if(!res?.ok){
-    const detail=await res?.json().catch(()=>null);
-    const message=detail?.message?String(detail.message):"";
-    return {id:null as string|null,debug:res?`create group HTTP ${res.status}${message?` — ${message}`:""}`:"create group request failed"};
-  }
-
-  const data=await res.json().catch(()=>({}));
-  const id=String(data?.data?.id||"").trim();
-  return /^\d+$/.test(id)?{id,debug:null}:{id:null,debug:"created group returned invalid id"};
-}
-
 async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
   const value=String(raw||"").trim();
 
@@ -57,12 +37,14 @@ async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
   if(configuredId){
     const byId=groups.find((g:any)=>String(g?.id||"")===configuredId);
     if(byId?.id)return {id:String(byId.id),debug:null};
+    return {id:null as string|null,debug:"configured group ID not found; refusing fallback"};
   }
 
   if(value && !isLikelySecret(value) && !configuredId){
     const normalizedConfigured=normalizeGroupName(value);
     const exact=groups.find((g:any)=>normalizeGroupName(String(g?.name||""))===normalizedConfigured);
     if(exact?.id) return {id:String(exact.id),debug:null};
+    return {id:null as string|null,debug:"configured group name not found; refusing fallback"};
   }
 
   const desiredName=locale==="es"?"FRAGMENTUN CAP1 ES":"FRAGMENTUN CAP1 EN";
@@ -82,12 +64,12 @@ async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
     return {id:String(languageMatched[0].id),debug:null};
   }
 
-  return await createMailerLiteGroup(token,desiredName);
+  return {id:null as string|null,debug:"no verified capture group; automatic creation disabled"};
 }
 
 function mailerLiteSubscriberBody(email:string,name:string,groupId:string){
   const fields=name?`,"fields":${JSON.stringify({name})}`:"";
-  return `{"email":${JSON.stringify(email)}${fields},"groups":[${groupId}],"status":"active"}`;
+  return `{"email":${JSON.stringify(email)}${fields},"groups":[${JSON.stringify(groupId)}],"status":"active"}`;
 }
 
 function clean(value:FormDataEntryValue|null,max=200){
@@ -153,6 +135,15 @@ export async function POST(request:NextRequest){
   let mailerliteSubscriberId:string|null=null;
   let lastError:string|null=null;
 
+  if(!token || !configuredGroup){
+    // Configuration diagnostics only: never log token values or subscriber PII.
+    lastError = !token && !configuredGroup
+      ? "MailerLite configuration missing: API token and capture group"
+      : !token
+        ? "MailerLite configuration missing: API token"
+        : `MailerLite configuration missing: ${locale.toUpperCase()} capture group`;
+  }
+
   if(token&&configuredGroup){
     const resolvedGroup=await resolveMailerLiteGroup(token,configuredGroup,locale);
     const group=resolvedGroup.id;
@@ -169,9 +160,31 @@ export async function POST(request:NextRequest){
     }).catch(()=>null);
 
     if(ml?.ok){
-      const data=await ml.json().catch(()=>({}));
-      mailerliteStatus="synced";
-      mailerliteSubscriberId=data?.data?.id??null;
+      // Use the documented lookup-by-email endpoint to avoid long numeric ID precision loss.
+      // POST success alone does not establish group membership.
+      const verification=await fetch(`${ML}/${encodeURIComponent(email)}`,{
+        headers:{Authorization:`Bearer ${token}`,Accept:"application/json"},
+        cache:"no-store",
+        signal:AbortSignal.timeout(8000)
+      }).catch(()=>null);
+      const verifiedData=verification?.ok?await verification.json().catch(()=>null):null;
+      const verifiedEmail=String(verifiedData?.data?.email??"").trim().toLowerCase();
+      const verifiedId=String(verifiedData?.data?.id??"").trim();
+      const verifiedGroups=Array.isArray(verifiedData?.data?.groups)?verifiedData.data.groups:[];
+      const inTargetGroup=verifiedGroups.some((item:any)=>String(item?.id??item)===group);
+      if(verifiedEmail===email && /^\\d+$/.test(verifiedId) && inTargetGroup){
+        mailerliteStatus="synced";
+        mailerliteSubscriberId=verifiedId;
+      }else{
+        mailerliteStatus="error";
+        lastError=!verification?.ok
+          ?`MailerLite subscriber lookup failed: HTTP ${verification?.status??"unavailable"}`
+          : verifiedEmail!==email
+            ?"MailerLite subscriber email verification failed"
+            : !inTargetGroup
+              ?"MailerLite subscriber missing target capture group"
+              :"MailerLite subscriber identifier missing or invalid";
+      }
     }else{
       mailerliteStatus="error";
       if(ml){
@@ -196,10 +209,7 @@ export async function POST(request:NextRequest){
   if(url&&key){
     const headers={"Content-Type":"application/json","apikey":key,"Authorization":`Bearer ${key}`};
 
-    const leadResponse=await fetch(`${url}/functions/v1/collect-lead`,{
-      method:"POST",
-      headers,
-      body:JSON.stringify({
+    const leadBody=JSON.stringify({
         email,name,locale,source,medium,campaign,content,session_id:sessionId,
         mailerlite_subscriber_id:mailerliteSubscriberId,
         mailerlite_status:mailerliteStatus,
@@ -208,10 +218,21 @@ export async function POST(request:NextRequest){
         consent_version:consentVersion,
         emotional_profile:["vorax","umbral","ethelis","nara","balance"].includes(emotionalProfile)?emotionalProfile:null,
         emotional_scores:emotionalScores
-      }),
-      cache:"no-store"
+      });
+    const leadHeaders:Record<string,string>={...headers};
+    // Staged HMAC support: inert until both services share FRAGMENTUN_LEAD_AUTH_SECRET.
+    const secret=process.env.FRAGMENTUN_LEAD_AUTH_SECRET;
+    if(secret){
+      const encoder=new TextEncoder();
+      const stamp=String(Math.floor(Date.now()/1000));
+      const key=await crypto.subtle.importKey("raw",encoder.encode(secret),{name:"HMAC",hash:"SHA-256"},false,["sign"]);
+      const signed=await crypto.subtle.sign("HMAC",key,encoder.encode(stamp+"."+leadBody));
+      leadHeaders["x-fragmentun-timestamp"]=stamp;
+      leadHeaders["x-fragmentun-signature"]=Array.from(new Uint8Array(signed)).map(x=>x.toString(16).padStart(2,"0")).join("");
+    }
+    const leadResponse=await fetch(`${url}/functions/v1/collect-lead`,{
+      method:"POST",headers:leadHeaders,body:leadBody,cache:"no-store"
     }).catch(()=>null);
-
     leadStored=!!leadResponse?.ok;
 
     await fetch(`${url}/functions/v1/collect-analytics`,{
@@ -234,6 +255,12 @@ export async function POST(request:NextRequest){
   }
 
   if(!leadStored){
+    return NextResponse.redirect(new URL(`/${locale}?signup=error#capitulo`,request.url),303);
+  }
+
+  // Do not signal a completed signup if MailerLite has not verified group membership.
+  // The lead remains stored for a controlled administrative retry.
+  if(mailerliteStatus!=="synced"){
     return NextResponse.redirect(new URL(`/${locale}?signup=error#capitulo`,request.url),303);
   }
 
