@@ -230,7 +230,7 @@
 .accountIntro{color:#bdcee2;line-height:1.6}
 .accountTabs{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
 .accountTab{border:1px solid #315678;border-radius:8px;padding:10px 12px;background:#0b2139;color:#f1f6ff;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s}
-.accountTab[aria-pressed="true"]{background:#193956;border-color:#d7bb68;box-shadow:0 0 14px #45bcef33;color:#fff}
+.accountTab[aria-pressed="true"]{background:#155177;border-color:#69d9ff;box-shadow:0 0 14px #45bcef55;color:#e5fbff;font-weight:800}
 .accountTab:hover,.accountTab:focus-visible{border-color:#67d7fb;box-shadow:0 0 12px #37b8ea44;outline-offset:3px}
 .accountPanel{border-top:1px solid #315678;padding-top:16px;color:#e6f0fc;min-height:135px}
 .accountToggle{display:flex;align-items:center;gap:10px;margin:12px 0;line-height:1.4}
@@ -240,7 +240,7 @@
 @media(prefers-reduced-motion:reduce){.accountTab{transition:none}}
 
 .accountReset{margin-top:18px;padding:11px 15px;border:1px solid #5bc6eb;border-radius:8px;color:#eaf8ff;background:#0a3352;font-weight:700;cursor:pointer;transition:box-shadow .2s,border-color .2s}
-.accountReset:hover,.accountReset:focus-visible{border-color:#d7bb68;box-shadow:0 0 14px #5bc6eb55;outline-offset:3px}
+.accountReset:hover,.accountReset:focus-visible{border-color:#69d9ff;box-shadow:0 0 14px #5bc6eb55;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.accountReset{transition:none}}
 
 /* Foto/avatar personal: vista previa local; misma estética del centro del jugador. */
