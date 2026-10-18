@@ -42,6 +42,22 @@ Deno.serve(async (req) => {
   if(authSecret&&!await verifySignedLead(req,rawBody,authSecret)){
     return Response.json({ok:false,error:"unauthorized_lead_request"},{status:401});
   }
+  // Reject replays only after the shared secret is activated and the SQL migration is installed.
+  if(authSecret){
+    const signature=req.headers.get("x-fragmentun-signature")??"";
+    const supabaseReplay=createClient(
+      Deno.env.get("SUPABASE_URL")??"",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")??"",
+      {auth:{persistSession:false}}
+    );
+    const {data:accepted,error:replayError}=await supabaseReplay.rpc("fragmentun_accept_lead_signature",{p_signature:signature});
+    if(replayError){
+      return Response.json({ok:false,error:"lead_replay_guard_unavailable"},{status:503});
+    }
+    if(accepted!==true){
+      return Response.json({ok:false,error:"duplicate_lead_request"},{status:409});
+    }
+  }
   const body = (()=>{try{return JSON.parse(rawBody)}catch{return null}})();
   const email = String(body?.email ?? "").trim().toLowerCase();
   const consentMarketing = body?.consent_marketing === true;
