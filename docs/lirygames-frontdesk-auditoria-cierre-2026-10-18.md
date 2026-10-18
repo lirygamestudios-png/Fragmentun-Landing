@@ -96,3 +96,6 @@ El runner incluye una comprobación de apertura y cierre por Escape del explorad
 
 ## Smoke Mi Liry, sin datos reales
 El runner ahora escribe el alias temporal `Liry QA` en la vista previa y acciona el restablecimiento de nombre/foto; verifica que el alias quede vacío. No usa ninguna imagen, no crea una cuenta y no envía formularios. Pendiente ejecución real en navegador externo accesible; el recorrido de carga de avatar sigue separado y PENDIENTE.
+
+## Avatar de prueba sintético preparado
+El runner comprueba una selección de PNG de 1 píxel generado en memoria, su aparición como vista previa y su eliminación. No utiliza datos ni fotografías del usuario, ni envía el archivo al servidor. Estado: preparado en commit `88654b54`, **no ejecutado en navegador accesible**. Si fallase la decodificación del PNG, registrará FAIL y se corregirá según evidencia.
