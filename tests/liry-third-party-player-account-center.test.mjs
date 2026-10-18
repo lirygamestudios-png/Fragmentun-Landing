@@ -222,3 +222,13 @@ test("El avatar local actualiza el icono del FrontDesk sin subir imágenes",()=>
  assert.match(header,/window\.addEventListener\("liry:avatar-changed",refresh\)/);
  assert.match(header,/window\.removeEventListener\("liry:avatar-changed",refresh\)/);
 });
+
+test("Mi Liry recupera avatar temporal al volver desde FrontDesk",()=>{
+ const profile=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
+ const header=readFileSync(new URL("../components/LiryFrontdeskProfileAccess.tsx",import.meta.url),"utf8");
+ assert.match(profile,/sessionStorage\.getItem\("liry:temporary-avatar-thumbnail"\)/);
+ assert.match(profile,/saved\?\.startsWith\("data:image\/"\)/);
+ assert.match(profile,/setAvatarUrl\(saved\)/);
+ assert.match(profile,/sessionStorage\.removeItem\("liry:temporary-avatar-thumbnail"\)/);
+ assert.match(header,/sessionStorage\.getItem\(key\)/);
+});
