@@ -1,3 +1,4 @@
+import {LIRY_AVATAR_STORAGE} from "./liry-avatar-storage-contract";
 /** Validación local de avatar. Es una prevalidación; cualquier almacenamiento
  * futuro debe volver a validar contenido real, dimensiones y propietario en servidor.
  */
@@ -10,7 +11,7 @@ export function validateTemporaryGamerAvatar(file:{name:string;type:string;size:
  };
  if(typeof file.name!=="string"||typeof file.type!=="string"||
   !Object.hasOwn(types,file.type)||!types[file.type].test(file.name)||
-  !Number.isSafeInteger(file.size)||file.size<=0||file.size>2*1024*1024)
+  !Number.isSafeInteger(file.size)||file.size<=0||file.size>LIRY_AVATAR_STORAGE.maxBytes)
   return {ok:false,message:"Usa JPG, PNG o WebP de hasta 2 MB."};
  return {ok:true,message:""};
 }
