@@ -53,3 +53,28 @@ Auditoría funcional y visual end-to-end de navegación y componentes, no añadi
 - Corregidas alineaciones CSS de soporte desigual (`align-items` y `align-self`), con prueba regresiva.
 - QA móvil visual 320/375/768/1024, ES/EN en interfaz, Liry DNA, avatar y formularios: **aún pendientes de verificación interactiva**.
 - Fase siguiente: ejecutar recorrido humano o navegador automatizado real y capturar resultado por pantalla; no declararlo PASS por inspección estática.
+
+## Bloque QA navegador — resultado del 2026-10-18
+- Se intentó abrir el preview READY desde Chromium headless en el entorno de pruebas; el navegador devolvió `net::ERR_BLOCKED_BY_ADMINISTRATOR`. Esto es una restricción de acceso del entorno, **no evidencia de que el sitio esté caído**.
+- Resultado: **BLOQUEADO**, no PASS ni FAIL funcional. No se han ejecutado recorridos visuales.
+- No se activaron cuentas, transacciones, KYC ni solicitudes de publicación.
+
+### Matriz reproducible para validación interactiva
+| Ruta o función | ES escritorio | EN escritorio | Móvil 375px | Teclado | Estado |
+|---|---|---|---|---|---|
+| /lirygames encabezado, menú y favicon | pendiente | pendiente | pendiente | pendiente | BLOQUEADO |
+| Catálogo propio, búsqueda y paginación | pendiente | pendiente | pendiente | pendiente | BLOQUEADO |
+| Liry DNA iniciar, completar, cerrar, reabrir y resetear | pendiente | pendiente | pendiente | pendiente | BLOQUEADO |
+| Mi Liry avatar temporal, retirar y reset | pendiente | pendiente | pendiente | pendiente | BLOQUEADO |
+| Catálogo externo, filtros y acceso a tarjeta | pendiente | pendiente | pendiente | pendiente | BLOQUEADO |
+| Tienda, filtros y estado vacío sin artículos publicados | pendiente | pendiente | pendiente | pendiente | BLOQUEADO |
+| Liry Developers: modales, formulario y retorno idioma | pendiente | pendiente | pendiente | pendiente | BLOQUEADO |
+| Contacto y legal: abrir/cerrar sin enviar datos | pendiente | pendiente | pendiente | pendiente | BLOQUEADO |
+
+### Criterios de aceptación
+- Anchos 320, 375, 768 y 1024 px sin desplazamientos horizontales no intencionados.
+- Cierre por Escape o X y devolución de foco donde corresponda.
+- Liry DNA no conserva resultados antiguos al cerrar y reabrir.
+- Borradores de desarrolladores permanecen locales y no generan publicaciones.
+- No mostrar montos ni usuarios inventados; si no hay datos, mostrar estado vacío.
+- Registrar capturas y consola por ruta e idioma antes de cerrar QA.
