@@ -11,7 +11,7 @@ export default async function LiryDeveloperPage({searchParams}:{searchParams:Pro
   <section className={styles.hero} aria-labelledby="developer-title"><span className={styles.eyebrow}>{copy.eyebrow}</span><h1 id="developer-title">LIRY <em>{locale==="es"?"DESARROLLADOR":"DEVELOPER"}</em></h1><p>{copy.description}</p><span className={styles.state}>{copy.state}</span></section>
   <section className={styles.content} aria-label={copy.areasAria}>
   <LiryDeveloperAreas locale={locale} />
-  <div className={styles.notice}><strong>{copy.noticeTitle}</strong><p>{copy.notice}</p><Link href="/lirygames">{copy.return} →</Link></div></section>
+  <div className={styles.notice}><strong>{copy.noticeTitle}</strong><p>{copy.notice}</p><Link href={`/lirygames?lang=${locale}`}>{copy.return} →</Link></div></section>
   <footer className={styles.footer}>© {new Date().getFullYear()} LIRYGAMES STUDIOS · {copy.rights}</footer>
  </main>;
 }
