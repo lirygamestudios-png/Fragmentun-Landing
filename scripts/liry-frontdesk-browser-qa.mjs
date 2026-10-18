@@ -30,6 +30,9 @@ for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/l
    const wrongRoute=finalUrl.pathname!==route.path;
    const geometry=await page.evaluate(()=>({scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,mainPresent:Boolean(document.querySelector("main")),bodyTextLength:document.body?.innerText?.trim().length??0}));
    const missingMain=!geometry.mainPresent||geometry.bodyTextLength<20;
+   // Captura de referencia antes de alterar temporalmente controles de la página.
+   const initialScreenshot=`${route.name}-${locale}-${width}-initial.png`;
+   await page.screenshot({path:path.join(out,initialScreenshot),fullPage:true});
    // Smoke interactivo inocuo: abrir y cerrar solo la primera subpantalla del portal.
    let developerDialogCheck=null;
    if(route.name==="developer"&&!wrongRoute&&!missingMain&&status<400){
@@ -112,7 +115,7 @@ for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/l
     }else dnaSurveyCheck={passed:false,reason:"Missing DNA explorer"};
    }
    await page.screenshot({path:path.join(out,`${route.name}-${locale}-${width}.png`),fullPage:true});
-   const entry={route:route.path,locale,width,status,finalUrl:page.url(),wrongRoute,missingMain,developerDialogCheck,dnaExplorerCheck,dnaSurveyCheck,playerDraftCheck,avatarCheck,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`${route.name}-${locale}-${width}.png`};
+   const entry={route:route.path,locale,width,status,finalUrl:page.url(),wrongRoute,missingMain,developerDialogCheck,dnaExplorerCheck,dnaSurveyCheck,playerDraftCheck,avatarCheck,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`${route.name}-${locale}-${width}.png`,initialScreenshot};
    results.push(entry);console.log(JSON.stringify(entry));
   }catch(e){const failureScreenshot=`${route.name}-${locale}-${width}-failure.png`;let screenshot=null;try{await page.screenshot({path:path.join(out,failureScreenshot),fullPage:true,timeout:5000});screenshot=failureScreenshot;}catch{}const entry={route:route.path,locale,width,error:String(e),screenshot};results.push(entry);console.error(JSON.stringify(entry));}
   await page.close();
