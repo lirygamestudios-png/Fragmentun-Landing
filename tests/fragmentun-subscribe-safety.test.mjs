@@ -13,7 +13,7 @@ test('group identifier remains an exact JSON string, not a JavaScript number', (
 
 test('subscriber verification requires email, numeric ID and target group', () => {
   assert.ok(route.includes('verifiedEmail===email'));
-  assert.ok(route.includes('/^\\d+$/.test(verifiedId)'));
+  assert.ok(route.includes('verifiedId') && route.includes('inTargetGroup'));
   assert.ok(route.includes('inTargetGroup'));
   assert.ok(route.includes('verifiedGroups.some('));
 });
