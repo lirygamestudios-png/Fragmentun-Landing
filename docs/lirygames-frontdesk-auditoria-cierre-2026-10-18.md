@@ -102,3 +102,6 @@ El runner comprueba una selección de PNG de 1 píxel generado en memoria, su ap
 
 ## Prueba de cuestionario ADN completa preparada
 El runner ahora responde localmente las seis preguntas, espera resultados, reinicia, cierra y vuelve a abrir el explorador para comprobar ausencia de resultado anterior. No crea perfiles reales ni transmite respuestas como cuentas. Estado: **preparado, pendiente de ejecución en navegador accesible**; posibles fallos del script deben distinguirse de defectos de la web con logs y capturas. Commit `e5b016a0`.
+
+## Evidencia de fallo para QA en navegador
+Commit `c5725a12`: si una interacción automatizada falla, el runner intenta guardar captura `*-failure.png` y añade su nombre al registro JSON. Si no puede capturar, mantiene el error sin inventar evidencia. Sigue sin ejecutarse el E2E real en entorno accesible; se requiere revisión de capturas y resultados antes de cierre.
