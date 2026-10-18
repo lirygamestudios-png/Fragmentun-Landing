@@ -34,3 +34,12 @@ test('configured capture group mismatch never creates a fallback group', () => {
   assert.ok(route.includes('configured group ID not found; refusing fallback'));
   assert.ok(!route.includes('async function createMailerLiteGroup('));
 });
+
+test('subscriber ID regex accepts numeric IDs rather than a literal backslash', () => {
+  const validationLine = route.split('\n').find(line => line.includes('test(verifiedId)'));
+  assert.ok(validationLine, 'missing subscriber ID validation');
+  const pattern = validationLine.match(/\/\^.*?\$\//)?.[0];
+  assert.ok(pattern, 'missing anchored ID regex');
+  assert.equal(pattern, String.raw`/^\d+$/`);
+  assert.ok(/^\d+$/.test('200513144673534994'));
+});
