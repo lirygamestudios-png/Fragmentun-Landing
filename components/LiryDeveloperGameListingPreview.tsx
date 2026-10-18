@@ -14,6 +14,7 @@ export function LiryDeveloperGameListingPreview({locale="es"}:{locale?:LiryFront
  const [platform,setPlatform]=useState("");
  const priceValid=model==="freemium"||(/^\d{1,4}(?:\.\d{1,2})?$/.test(price)&&Number(price)>0);
  const ready=name.trim().length>=2&&summary.trim().length>=20&&priceValid&&age!==""&&platform!=="";
+ const missing=[name.trim().length<2?(locale==="es"?"nombre (mínimo 2 caracteres)":"title (minimum 2 characters)"):null,summary.trim().length<20?(locale==="es"?"descripción (mínimo 20 caracteres)":"description (minimum 20 characters)"):null,!priceValid?(locale==="es"?"precio válido":"valid price"):null,age===""?(locale==="es"?"clasificación de edad":"age rating"):null,platform===""?(locale==="es"?"plataforma":"platform"):null].filter(Boolean);
  return <section className={`${styles.notice} ${styles.developerForm}`} aria-labelledby="developer-listing-preview-title">
   <h2 id="developer-listing-preview-title">{copy.title}</h2>
   <p>{copy.intro}</p>
@@ -28,6 +29,8 @@ export function LiryDeveloperGameListingPreview({locale="es"}:{locale?:LiryFront
   <div><label htmlFor="developer-game-age">{copy.age}</label><select id="developer-game-age" value={age} onChange={event=>setAge(event.target.value)}><option value="">{copy.select}</option><option value="pending">{copy.agePending}</option><option value="classified">{copy.ageClassified}</option></select></div>
   <div><label htmlFor="developer-game-platform">{copy.platform}</label><select id="developer-game-platform" value={platform} onChange={event=>setPlatform(event.target.value)}><option value="">{copy.select}</option><option value="browser">{copy.browser}</option><option value="windows">Windows</option><option value="macos">macOS</option><option value="linux">Linux</option></select></div>
   <p role="status" aria-live="polite">{ready?copy.ready:copy.pending}</p>
+  {!ready&&<p className={styles.accountIntro}>{locale==="es"?"Faltan datos para completar la vista previa: ":"Complete the preview fields: "}{missing.join(", ")}.</p>}
+  {ready&&<p className={styles.accountIntro}>{locale==="es"?"Ficha completa únicamente como borrador; todavía requiere revisión de derechos, seguridad y aprobación de LIRYGAMES.":"Draft fields complete only; IP, security and LIRYGAMES approval are still required."}</p>}
   <button type="button" className={styles.previewReset} onClick={()=>{setName("");setSummary("");setModel("premium");setPrice("");setAge("");setPlatform("")}}>{copy.reset}</button>
   <p>{copy.inactive}</p>
  </section>;
