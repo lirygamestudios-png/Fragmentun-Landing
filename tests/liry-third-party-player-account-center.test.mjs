@@ -176,3 +176,19 @@ test("Tienda limita a doce productos y conserva navegación compacta accesible",
  assert.match(src,/setTerm\(e\.target\.value\);setPage\(1\)/);
  assert.match(src,/setSortBy\(e\.target\.value\);setPage\(1\)/);
 });
+
+test("Compartir juegos y productos usa exclusivamente el FrontDesk",()=>{
+ const read=p=>readFileSync(new URL(p,import.meta.url),"utf8");
+ const share=read("../components/LiryShareEntry.tsx");
+ const resolver=read("../lib/games/liry-share-url.ts");
+ assert.match(share,/resolveLiryShareUrl\(process\.env\.NEXT_PUBLIC_LIRY_PUBLIC_URL,window\.location\.origin\)/);
+ assert.match(share,/navigator\.share\(\{title,text,url\}\)/);
+ assert.match(share,/navigator\.clipboard\.writeText\(url\)/);
+ assert.match(resolver,/new URL\("\/lirygames",parsed\.origin\)/);
+ assert.doesNotMatch(share,/new URL\([^\n]*name/);
+ for(const path of ["../components/LiryStoreCategories.tsx","../components/LiryGameDiscovery.tsx","../components/LiryThirdPartyCatalog.tsx"]){
+  assert.match(read(path),/<LiryShareEntry name=/);
+ }
+ assert.match(share,/aria-label=\{locale==="es"/);
+ assert.match(share,/<svg viewBox=/);
+});
