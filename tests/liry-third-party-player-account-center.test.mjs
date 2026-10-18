@@ -40,3 +40,5 @@ test("El contador bilingüe del alias respeta el límite de la vista previa",()=
 test("El selector de avatar se limpia tras carga válida para permitir elegir la misma imagen",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/avatarUrlRef\.current=next;setAvatarUrl\(next\);[\s\S]*?setAvatarError\("".*?\);if\(avatarInput\.current\)avatarInput\.current\.value=""/);});
 
 test("La cabecera anuncia los cambios temporales del nombre público",()=>{const header=readFileSync(new URL("../components/LiryPlayerIdentityHeader.tsx",import.meta.url),"utf8");assert.match(header,/aria-live="polite" aria-atomic="true"/);assert.match(header,/previewName\|\|displayName/);assert.match(header,/liry:display-name-preview/);});
+
+test("El avatar comunica validación en curso sin guardar archivos",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/avatarLoading/);assert.match(src,/Comprobando imagen/);assert.match(src,/Checking image/);assert.match(src,/setAvatarLoading\(false\)/);assert.doesNotMatch(src,/uploadAvatar\(|storage\.from\(/);});
