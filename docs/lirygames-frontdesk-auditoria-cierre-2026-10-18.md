@@ -93,3 +93,6 @@ Se añadió al runner una comprobación del portal `/lirygames/developer` que ab
 
 ## Verificación preparada: explorador ADN
 El runner incluye una comprobación de apertura y cierre por Escape del explorador ADN desde `/lirygames`, en 320/375/768/1024 px y ES/EN. La prueba no selecciona respuestas ni altera identidades. Debe ejecutarse en navegador accesible antes de marcarse aprobada. El recorrido completo del cuestionario sigue pendiente.
+
+## Smoke Mi Liry, sin datos reales
+El runner ahora escribe el alias temporal `Liry QA` en la vista previa y acciona el restablecimiento de nombre/foto; verifica que el alias quede vacío. No usa ninguna imagen, no crea una cuenta y no envía formularios. Pendiente ejecución real en navegador externo accesible; el recorrido de carga de avatar sigue separado y PENDIENTE.
