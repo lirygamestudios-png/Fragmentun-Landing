@@ -1676,3 +1676,9 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
  .liryStoreFilters button{min-height:42px;align-self:flex-end;border-color:#4a9fc9;background:#0b2643;color:#d9f5ff}
 }
 @media(max-width:360px){.liryStoreFilters{grid-template-columns:minmax(0,1fr)}.liryStoreFilters label:first-child{grid-column:auto}}
+
+/* Game/product sharing always targets FrontDesk, not individual detail routes. */
+.liryShareEntry{position:relative;z-index:4;display:inline-flex;align-items:center;flex-wrap:wrap;gap:6px;max-width:100%}
+.liryShareEntry button{min-height:38px;padding:7px 12px;border:1px solid #4a9fc9;border-radius:8px;background:#0b2643;color:#d9f5ff;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.liryShareEntry button:hover,.liryShareEntry button:focus-visible{border-color:#7bdaf8;background:#143a5e;color:#fff;outline-offset:2px}
+.liryShareEntry [role="status"]{font-size:11px;color:#a9eafc;overflow-wrap:anywhere}
