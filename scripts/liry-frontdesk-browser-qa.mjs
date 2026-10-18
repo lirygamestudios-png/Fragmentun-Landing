@@ -42,8 +42,14 @@ for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/l
      await trigger.click();
      const opened=await page.locator('dialog[open]').count()>0;
      await page.keyboard.press("Escape");
-     const closed=await page.locator('dialog[open]').count()===0;
-     const focusRestored=await trigger.evaluate(el=>document.activeElement===el);
+     const closed=await page.locator('dialog[open]').waitFor({state:"hidden",timeout:2500}).then(()=>true).catch(()=>false);
+     const focusRestored=await trigger.evaluate(async el=>{
+      for(let n=0;n<20;n++){
+       if(document.activeElement===el)return true;
+       await new Promise(resolve=>setTimeout(resolve,50));
+      }
+      return false;
+     });
      developerDialogCheck={opened,closed,focusRestored,passed:opened&&closed&&focusRestored};
     }else developerDialogCheck={passed:false,reason:"Missing developer modal trigger"};
    }
