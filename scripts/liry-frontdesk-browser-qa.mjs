@@ -23,13 +23,15 @@ for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/l
   const url=new URL(route.path,base);url.searchParams.set("lang",locale);
   try{
    const res=await page.goto(url.toString(),{waitUntil:"domcontentloaded",timeout:30000});
-   await page.waitForTimeout(700);
+   await page.evaluate(async()=>{await Promise.race([document.fonts.ready,new Promise(resolve=>setTimeout(resolve,2500))]);});
+   await page.waitForTimeout(500);
    const status=res?.status()??0;
    const finalUrl=new URL(page.url());
    const wrongRoute=finalUrl.pathname!==route.path;
-   const geometry=await page.evaluate(()=>({scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth}));
+   const geometry=await page.evaluate(()=>({scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,mainPresent:Boolean(document.querySelector("main")),bodyTextLength:document.body?.innerText?.trim().length??0}));
+   const missingMain=!geometry.mainPresent||geometry.bodyTextLength<20;
    await page.screenshot({path:path.join(out,`${route.name}-${locale}-${width}.png`),fullPage:true});
-   const entry={route:route.path,locale,width,status,finalUrl:page.url(),wrongRoute,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`${route.name}-${locale}-${width}.png`};
+   const entry={route:route.path,locale,width,status,finalUrl:page.url(),wrongRoute,missingMain,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`${route.name}-${locale}-${width}.png`};
    results.push(entry);console.log(JSON.stringify(entry));
   }catch(e){const entry={route:route.path,locale,width,error:String(e)};results.push(entry);console.error(JSON.stringify(entry));}
   await page.close();
@@ -38,4 +40,4 @@ for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/l
 }
 await browser.close();
 await writeFile(path.join(out,"results.json"),JSON.stringify({base,checkedAt:new Date().toISOString(),results},null,2));
-if(results.some(r=>r.error||!r.status||r.status>=400||r.wrongRoute||r.overflow||r.errors?.length))process.exitCode=1;
+if(results.some(r=>r.error||!r.status||r.status>=400||r.wrongRoute||r.missingMain||r.overflow||r.errors?.length))process.exitCode=1;
