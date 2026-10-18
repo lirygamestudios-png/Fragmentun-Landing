@@ -286,3 +286,8 @@
 
 .accountSaveArea{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin-top:20px;padding-top:16px;border-top:1px solid #29729b55}
 .accountSaveArea .accountReset{min-height:44px;border-color:#3dadd4;color:#d9f5ff}
+
+/* Mantener fondo y texto navy/cian en campos normales, completados o autocompletados. */
+.accountNameInput,.accountNameInput:hover,.accountNameInput:focus,.accountNameInput:active{background-color:#07192c;color:#f1faff;caret-color:#8be9ff;color-scheme:dark}
+.accountNameInput:-webkit-autofill,.accountNameInput:-webkit-autofill:hover,.accountNameInput:-webkit-autofill:focus{-webkit-text-fill-color:#f1faff!important;-webkit-box-shadow:0 0 0 1000px #07192c inset!important;box-shadow:0 0 0 1000px #07192c inset!important;caret-color:#8be9ff;transition:background-color 9999s ease-out 0s}
+.accountNameInput::selection{background:#215a87;color:#fff}
