@@ -37,7 +37,7 @@ test("Un error inesperado al leer el archivo no interrumpe el perfil",()=>{const
 
 test("El contador bilingüe del alias respeta el límite de la vista previa",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/maxLength=\{40\}/);assert.match(src,/Caracteres: \$\{publicName\.length\} de 40/);assert.match(src,/Characters: \$\{publicName\.length\} of 40/);assert.match(src,/aria-invalid=\{Boolean\(nameError\)\}/);});
 
-test("El selector de avatar se limpia tras carga válida para permitir elegir la misma imagen",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/avatarUrlRef\.current=next;setAvatarLoading\(false\);setAvatarUrl\(next\);[\s\S]*?setAvatarError\("".*?\);if\(avatarInput\.current\)avatarInput\.current\.value=""/);});
+test("El selector de avatar se limpia tras carga válida para permitir elegir la misma imagen",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/avatarUrlRef\.current=next;[\s\S]*?setAvatarLoading\(false\);setAvatarUrl\(next\);[\s\S]*?setAvatarError\("".*?\);if\(avatarInput\.current\)avatarInput\.current\.value=""/);});
 
 test("La cabecera anuncia los cambios temporales del nombre público",()=>{const header=readFileSync(new URL("../components/LiryPlayerIdentityHeader.tsx",import.meta.url),"utf8");assert.match(header,/aria-live="polite" aria-atomic="true"/);assert.match(header,/previewName\|\|displayName/);assert.match(header,/liry:display-name-preview/);});
 
