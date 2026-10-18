@@ -54,3 +54,5 @@ test("Mi Liry evita desbordamientos y facilita enfocar avatar en móvil",()=>{co
 test("La comprobación temporal del avatar expone estado ocupado",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/className=\{styles\.accountAvatarArea\} aria-busy=\{avatarLoading\}/);});
 
 test("Una validación obsoleta del avatar no restaura errores tras restablecer",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/if\(!validation\.ok\)\{if\(request!==avatarRequestRef\.current\)return;setAvatarLoading\(false\)/);assert.match(src,/removeAvatar=\(\)=>\{avatarRequestRef\.current\+\+/);});
+
+test("Permite cancelar la comprobación de fotografía antes de finalizar",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/\(avatarUrl\|\|avatarLoading\)\&\&<button/);assert.match(src,/Cancelar carga de fotografía/);assert.match(src,/Cancel photo selection/);assert.match(src,/onClick=\{removeAvatar\}/);assert.match(src,/removeAvatar=\(\)=>\{avatarRequestRef\.current\+\+/);});
