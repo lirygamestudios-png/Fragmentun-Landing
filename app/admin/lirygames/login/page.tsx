@@ -55,7 +55,7 @@ export default function LiryGamesLoginPage(){
     <section className="authExperience">
       <div className="authStoryPanel">
         <div className="authBrandLockup">
-          <span className="authLirySigil" aria-hidden="true"><i></i></span>
+          <img src="/lirygames-brand-icon.svg" width={44} height={44} alt="" aria-hidden="true" style={{display:"block",objectFit:"contain",flexShrink:0}} />
           <div><strong>LIRYGAMES</strong><span>COMMANDER CENTER</span></div>
         </div>
         <div className="authStoryCopy">
@@ -72,7 +72,7 @@ export default function LiryGamesLoginPage(){
       </div>
 
       <section className="authCard authCardPremium">
-        <div className="authCardMark"><span className="authLirySigil" aria-hidden="true"><i></i></span></div>
+        <div className="authCardMark"><img src="/lirygames-brand-icon.svg" width={44} height={44} alt="" aria-hidden="true" style={{display:"block",objectFit:"contain",flexShrink:0}} /></div>
         <div className="kicker">ACCESO SEGURO</div>
         <h2>Acceso LIRYGAMES</h2>
         <p className="lead">Ingresa con tus credenciales administrativas autorizadas.</p>
