@@ -106,28 +106,27 @@ Deno.serve(async (req) => {
     emotional_scores: Object.keys(requestedScores).length ? requestedScores : (existing?.emotional_scores || {})
   };
 
-  // Consume verified signatures immediately before the database upsert; validation failures never consume a signature.
+  // The signed path claims the signature and stores the lead in ONE DB transaction.
+  // An upsert failure rolls back the claim; a replay cannot write the lead twice.
+  let lead: {id:string}|null = null;
+  let error: {message:string}|null = null;
   if(authSecret){
     const signature=req.headers.get("x-fragmentun-signature")??"";
-    const supabaseReplay=createClient(
-      Deno.env.get("SUPABASE_URL")??"",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")??"",
-      {auth:{persistSession:false}}
-    );
-    const {data:accepted,error:replayError}=await supabaseReplay.rpc("fragmentun_accept_lead_signature",{p_signature:signature});
-    if(replayError){
-      return Response.json({ok:false,error:"lead_replay_guard_unavailable"},{status:503});
-    }
-    if(accepted!==true){
+    const result=await supabase.rpc("fragmentun_store_signed_lead",{
+      p_signature:signature,p_lead:payload
+    });
+    if(result.error){
+      error={message:result.error.message};
+    }else if(result.data?.[0]?.accepted!==true){
       return Response.json({ok:false,error:"duplicate_lead_request"},{status:409});
+    }else{
+      lead={id:String(result.data[0].lead_id)};
     }
+  }else{
+    const result=await supabase.from("leads").upsert(payload,{onConflict:"email"}).select("id").single();
+    lead=result.data;
+    error=result.error;
   }
-
-  const { data:lead,error } = await supabase
-    .from("leads")
-    .upsert(payload,{onConflict:"email"})
-    .select("id")
-    .single();
 
   if(!error){
     await supabase.from("integration_logs").insert({
