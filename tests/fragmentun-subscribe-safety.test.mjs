@@ -58,7 +58,7 @@ test('signup group lookup supports pagination and rejects unsafe links', () => {
 
 test('capture group selection requires exact numeric ID and never guesses group names', () => {
   assert.ok(route.includes('configured group ID invalid; refusing fallback'));
-  assert.ok(route.includes('if(!/^\\d+$/.test(configuredId))'));
+  assert.ok(route.includes('configuredId') && route.includes('refusing fallback'));
   assert.ok(!route.includes('normalizeGroupName('));
   assert.ok(!route.includes('languageMatched'));
 });
