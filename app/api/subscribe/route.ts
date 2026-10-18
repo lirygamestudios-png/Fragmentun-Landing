@@ -6,24 +6,15 @@ const ML="https://connect.mailerlite.com/api/subscribers";
 const ML_GROUPS="https://connect.mailerlite.com/api/groups";
 // MailerLite routing uses production environment group IDs configured in Vercel.
 
-function normalizeGroupName(value:string){
-  return value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
-}
-
-function isLikelySecret(value:string){
-  return value.startsWith("eyJ") || value.split(".").length===3 || value.length>80;
-}
-
-async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
-  const value=String(raw||"").trim();
-
-  const configuredId=value && !isLikelySecret(value)
-    ?(/^\d+$/.test(value)?value:(value.match(/(?:^|\D)(\d{8,})(?:\D|$)/)?.[1]||""))
-    :"";
-
-  const groups:any[]=[];
+async function resolveMailerLiteGroup(token:string,raw:string,_locale:"es"|"en"){
+  // Fail closed. Never infer, guess, or create a capture group.
+  const configuredId=String(raw||"").trim();
+  if(!/^\\d+$/.test(configuredId)){
+    return {id:null as string|null,debug:"configured group ID invalid; refusing fallback"};
+  }
   const visited=new Set<string>();
   let nextUrl:string|null=`${ML_GROUPS}?limit=100`;
+  let found=false;
   for(let page=0;nextUrl && page<20;page++){
     const requestUrl:URL=new URL(nextUrl);
     if(requestUrl.protocol!=="https:" || requestUrl.hostname!=="connect.mailerlite.com" || visited.has(requestUrl.href)){
@@ -43,42 +34,12 @@ async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
     if(!Array.isArray(data?.data)){
       return {id:null as string|null,debug:"invalid groups response"};
     }
-    groups.push(...data.data);
+    if(data.data.some((g:any)=>String(g?.id??"")===configuredId))found=true;
     nextUrl=data?.links?.next?String(new URL(String(data.links.next),requestUrl)):null;
   }
   if(nextUrl)return {id:null as string|null,debug:"groups pagination limit exceeded"};
-
-  if(configuredId){
-    const byId=groups.find((g:any)=>String(g?.id||"")===configuredId);
-    if(byId?.id)return {id:String(byId.id),debug:null};
-    return {id:null as string|null,debug:"configured group ID not found; refusing fallback"};
-  }
-
-  if(value && !isLikelySecret(value) && !configuredId){
-    const normalizedConfigured=normalizeGroupName(value);
-    const exact=groups.find((g:any)=>normalizeGroupName(String(g?.name||""))===normalizedConfigured);
-    if(exact?.id) return {id:String(exact.id),debug:null};
-    return {id:null as string|null,debug:"configured group name not found; refusing fallback"};
-  }
-
-  const desiredName=locale==="es"?"FRAGMENTUN CAP1 ES":"FRAGMENTUN CAP1 EN";
-  const desiredNormalized=normalizeGroupName(desiredName);
-  const exactDesired=groups.find((g:any)=>normalizeGroupName(String(g?.name||""))===desiredNormalized);
-  if(exactDesired?.id) return {id:String(exactDesired.id),debug:null};
-
-  const fragmentunGroups=groups.filter((g:any)=>normalizeGroupName(String(g?.name||"")).includes("fragmentun"));
-  const languageMatched=fragmentunGroups.filter((g:any)=>{
-    const n=` ${normalizeGroupName(String(g?.name||""))} `;
-    return locale==="es"
-      ? / (es|esp|espanol|spanish) /.test(n)
-      : / (en|eng|english|ingles) /.test(n);
-  });
-
-  if(languageMatched.length===1 && languageMatched[0]?.id){
-    return {id:String(languageMatched[0].id),debug:null};
-  }
-
-  return {id:null as string|null,debug:"no verified capture group; automatic creation disabled"};
+  if(found)return {id:configuredId,debug:null};
+  return {id:null as string|null,debug:"configured group ID not found; refusing fallback"};
 }
 
 function mailerLiteSubscriberBody(email:string,name:string,groupId:string){
