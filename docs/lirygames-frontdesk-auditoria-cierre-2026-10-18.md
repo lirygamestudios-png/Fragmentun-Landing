@@ -90,3 +90,6 @@ Se reforzó `scripts/liry-frontdesk-browser-qa.mjs` para registrar la URL final 
 
 ## QA interactiva inocua preparada
 Se añadió al runner una comprobación del portal `/lirygames/developer` que abre la primera subpantalla, la cierra con Escape y comprueba el retorno del foco al botón de origen. Se ejecuta en ES/EN y cuatro anchuras, **sin enviar formularios ni registrar datos**. Estado: implementado, no ejecutado en navegador por restricción de acceso. No cuenta como prueba PASS hasta contar con salida y capturas.
+
+## Verificación preparada: explorador ADN
+El runner incluye una comprobación de apertura y cierre por Escape del explorador ADN desde `/lirygames`, en 320/375/768/1024 px y ES/EN. La prueba no selecciona respuestas ni altera identidades. Debe ejecutarse en navegador accesible antes de marcarse aprobada. El recorrido completo del cuestionario sigue pendiente.
