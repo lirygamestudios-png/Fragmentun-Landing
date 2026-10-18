@@ -9,8 +9,12 @@ const ML_GROUPS="https://connect.mailerlite.com/api/groups";
 async function resolveMailerLiteGroup(token:string,raw:string,_locale:"es"|"en"){
   // Fail closed. Never infer, guess, or create a capture group.
   const configuredId=String(raw||"").trim();
-  if(!/^\\d+$/.test(configuredId)){
+  if(!/^\d+$/.test(configuredId)){
     return {id:null as string|null,debug:"configured group ID invalid; refusing fallback"};
+  }
+  const officialId=_locale==="es"?"200513144673534994":"200513164367889456";
+  if(configuredId!==officialId){
+    return {id:null as string|null,debug:"configured group ID is not the official capture group for locale"};
   }
   const visited=new Set<string>();
   let nextUrl:string|null=`${ML_GROUPS}?limit=100`;
