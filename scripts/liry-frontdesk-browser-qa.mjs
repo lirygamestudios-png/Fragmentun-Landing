@@ -30,8 +30,22 @@ for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/l
    const wrongRoute=finalUrl.pathname!==route.path;
    const geometry=await page.evaluate(()=>({scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,mainPresent:Boolean(document.querySelector("main")),bodyTextLength:document.body?.innerText?.trim().length??0}));
    const missingMain=!geometry.mainPresent||geometry.bodyTextLength<20;
+   // Smoke interactivo inocuo: abrir y cerrar solo la primera subpantalla del portal.
+   let developerDialogCheck=null;
+   if(route.name==="developer"&&!wrongRoute&&!missingMain&&status<400){
+    const trigger=page.locator('button[aria-haspopup="dialog"]').first();
+    const count=await trigger.count();
+    if(count){
+     await trigger.click();
+     const opened=await page.locator('dialog[open]').count()>0;
+     await page.keyboard.press("Escape");
+     const closed=await page.locator('dialog[open]').count()===0;
+     const focusRestored=await trigger.evaluate(el=>document.activeElement===el);
+     developerDialogCheck={opened,closed,focusRestored,passed:opened&&closed&&focusRestored};
+    }else developerDialogCheck={passed:false,reason:"Missing developer modal trigger"};
+   }
    await page.screenshot({path:path.join(out,`${route.name}-${locale}-${width}.png`),fullPage:true});
-   const entry={route:route.path,locale,width,status,finalUrl:page.url(),wrongRoute,missingMain,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`${route.name}-${locale}-${width}.png`};
+   const entry={route:route.path,locale,width,status,finalUrl:page.url(),wrongRoute,missingMain,developerDialogCheck,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`${route.name}-${locale}-${width}.png`};
    results.push(entry);console.log(JSON.stringify(entry));
   }catch(e){const entry={route:route.path,locale,width,error:String(e)};results.push(entry);console.error(JSON.stringify(entry));}
   await page.close();
@@ -40,4 +54,4 @@ for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/l
 }
 await browser.close();
 await writeFile(path.join(out,"results.json"),JSON.stringify({base,checkedAt:new Date().toISOString(),results},null,2));
-if(results.some(r=>r.error||!r.status||r.status>=400||r.wrongRoute||r.missingMain||r.overflow||r.errors?.length))process.exitCode=1;
+if(results.some(r=>r.error||!r.status||r.status>=400||r.wrongRoute||r.missingMain||r.developerDialogCheck?.passed===false||r.overflow||r.errors?.length))process.exitCode=1;
