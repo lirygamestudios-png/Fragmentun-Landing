@@ -203,3 +203,22 @@ test("Icono de compartir permanece accesible sobre la apertura de fichas",()=>{
  assert.match(share,/<button type="button" onClick=\{share\}/);
  assert.match(share,/width="17" height="17"/);
 });
+
+test("Mi Liry mantiene el tratamiento oscuro al escribir o autocompletar datos",()=>{
+ const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");
+ assert.match(css,/\.accountNameInput:-webkit-autofill/);
+ assert.match(css,/\.accountNameInput:autofill/);
+ assert.match(css,/\.accountNameInput:focus-visible/);
+ assert.match(css,/background-color:#07192c/);
+ assert.match(css,/color-scheme:dark/);
+});
+
+test("El avatar local actualiza el icono del FrontDesk sin subir imágenes",()=>{
+ const identity=readFileSync(new URL("../components/LiryGamerIdentity.tsx",import.meta.url),"utf8");
+ const header=readFileSync(new URL("../components/LiryFrontdeskProfileAccess.tsx",import.meta.url),"utf8");
+ assert.match(identity,/sessionStorage\.setItem\(thumbnailKey,thumbnail\)/);
+ assert.match(identity,/sessionStorage\.removeItem\(thumbnailKey\)/);
+ assert.match(identity,/window\.dispatchEvent\(new Event\("liry:avatar-changed"\)\)/);
+ assert.match(header,/window\.addEventListener\("liry:avatar-changed",refresh\)/);
+ assert.match(header,/window\.removeEventListener\("liry:avatar-changed",refresh\)/);
+});
