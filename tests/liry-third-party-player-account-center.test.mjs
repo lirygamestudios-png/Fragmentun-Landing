@@ -52,3 +52,5 @@ test("Botones de Mi Liry presentan estado deshabilitado y tamaño táctil móvil
 test("Mi Liry evita desbordamientos y facilita enfocar avatar en móvil",()=>{const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");assert.match(css,/\.accountPanel\{overflow-wrap:anywhere\}/);assert.match(css,/\.accountAvatarInput:focus-visible\{outline:2px solid #8be9ff/);assert.match(css,/\.accountAvatarInput::file-selector-button\{min-height:44px/);});
 
 test("La comprobación temporal del avatar expone estado ocupado",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/className=\{styles\.accountAvatarArea\} aria-busy=\{avatarLoading\}/);});
+
+test("Una validación obsoleta del avatar no restaura errores tras restablecer",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/if\(!validation\.ok\)\{if\(request!==avatarRequestRef\.current\)return;setAvatarLoading\(false\)/);assert.match(src,/removeAvatar=\(\)=>\{avatarRequestRef\.current\+\+/);});
