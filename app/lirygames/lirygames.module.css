@@ -1570,3 +1570,14 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .nav button.navNotice{color:#cbefff}
 .nav button.navSearch:hover,.nav button.navSearch:focus-visible{background:rgba(21,69,110,.5);border-color:#67cde9}
 .nav button.navNotice:hover,.nav button.navNotice:focus-visible{background:rgba(20,71,110,.54);border-color:#69bddd}
+
+/* Catálogo externo: filtros y paginación sin alterar la landing. */
+.thirdPartyFilters{display:flex;align-items:end;gap:12px;flex-wrap:wrap;margin:20px 0 12px}
+.thirdPartyFilters label{display:flex;flex-direction:column;gap:6px;flex:1 1 170px;color:#d9f5ff}
+.thirdPartyFilters input,.thirdPartyFilters select{width:100%;min-height:44px;box-sizing:border-box;padding:9px 12px;border-radius:9px;border:1px solid #3dadd4;background:#08172d;color:#f0faff}
+.thirdPartyFilters button,.thirdPartyPagination button{min-height:44px;padding:9px 13px;border-radius:9px;border:1px solid #3dadd4;background:#0b2643;color:#d9f5ff;cursor:pointer}
+.thirdPartyPagination{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:22px 0}
+.thirdPartyPagination button[aria-current="page"]{border-color:#7bdaf8;background:#123e65;color:#fff;box-shadow:0 0 12px #35b9fa4d}
+.thirdPartyPagination button:disabled{opacity:.5;cursor:default}
+.thirdPartyFilters button:hover,.thirdPartyPagination button:not(:disabled):hover{border-color:#7bdaf8}
+@media(max-width:560px){.thirdPartyFilters{align-items:stretch}.thirdPartyFilters label{flex-basis:100%}}
