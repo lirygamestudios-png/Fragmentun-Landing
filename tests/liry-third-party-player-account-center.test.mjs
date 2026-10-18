@@ -192,3 +192,14 @@ test("Compartir juegos y productos usa exclusivamente el FrontDesk",()=>{
  assert.match(share,/aria-label=\{locale==="es"/);
  assert.match(share,/<svg viewBox=/);
 });
+
+test("Icono de compartir permanece accesible sobre la apertura de fichas",()=>{
+ const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");
+ const game=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");
+ const share=readFileSync(new URL("../components/LiryShareEntry.tsx",import.meta.url),"utf8");
+ assert.match(css,/\.worldCardOpen\{position:absolute;inset:0;z-index:2/);
+ assert.match(css,/\.liryShareEntry\{position:relative;z-index:4/);
+ assert.match(game,/<LiryShareEntry name=/);
+ assert.match(share,/<button type="button" onClick=\{share\}/);
+ assert.match(share,/width="17" height="17"/);
+});
