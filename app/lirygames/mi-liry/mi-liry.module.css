@@ -249,7 +249,7 @@
 .accountAvatarPicture img{width:100%;height:100%;object-fit:cover}
 .accountAvatarInput{display:block;max-width:100%;margin:10px 0;color:#def4ff;font-size:13px}
 .accountAvatarInput::file-selector-button{background:#0a3352;color:#f2fcff;border:1px solid #5bc6eb;border-radius:8px;padding:10px 14px;margin-right:12px;cursor:pointer}
-.accountAvatarInput::file-selector-button:hover{border-color:#d7bb68}
+.accountAvatarInput::file-selector-button:hover{border-color:#69d9ff;background:#155177;color:#fff;box-shadow:0 0 12px #45bcef55}
 @media(max-width:480px){.accountAvatarArea{align-items:flex-start}.accountAvatarPicture{width:88px;height:88px;flex-basis:88px}}
 
 .accountHeaderPhoto{width:100%;height:100%;display:block;object-fit:cover;border-radius:50%}
