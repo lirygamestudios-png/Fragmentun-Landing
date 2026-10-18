@@ -28,7 +28,7 @@ test("El botón activo identifica su sección con texto sin bordes amarillos",()
 
 test("El nombre público temporal se valida y aparece en el encabezado",()=>{const center=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");const header=readFileSync(new URL("../components/LiryPlayerIdentityHeader.tsx",import.meta.url),"utf8");assert.match(center,/liry:display-name-preview/);assert.match(center,/maxLength=\{40\}/);assert.match(header,/previewName\|\|displayName/);});
 
-test("El nombre se puede restablecer sin eliminar el avatar",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/Restablecer nombre/);assert.match(src,/onClick=\{\(\)=>updatePublicName\(""\)\}/);});
+test("El nombre se puede restablecer sin eliminar el avatar",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/Restablecer nombre/);assert.match(src,/onClick=\{\(\)=>\{updatePublicName\("".*?\);nameInput\.current\?\.focus\(\)\}\}/);});
 
 
 test("Los errores de fotografía se anuncian y permiten reintentar el mismo archivo",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/role=\{avatarError\?"alert":"status"\}/);assert.match(src,/aria-live=\{avatarError\?"assertive":"polite"\}/);assert.match(src,/if\(avatarInput\.current\)avatarInput\.current\.value=""/);assert.match(src,/Photo loaded for this preview only/);assert.match(src,/Fotografía cargada solo para esta vista previa/);assert.doesNotMatch(src,/storage\.from\(|uploadAvatar\(/);});
@@ -68,3 +68,5 @@ test("El error del nombre público se anuncia de forma accesible",()=>{const src
 test("Tras restablecer la identidad temporal se recupera el foco en nombre",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/nameInput=useRef<HTMLInputElement>\(null\)/);assert.match(src,/ref=\{nameInput\} className=\{styles\.accountNameInput\}/);assert.match(src,/resetIdentityPreview=\(\)=>\{updatePublicName\("".*?\);removeAvatar\(\);nameInput\.current\?\.focus\(\)\}/);});
 
 test("Restablecer solo el nombre devuelve foco al campo editable",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/onClick=\{\(\)=>\{updatePublicName\("".*?\);nameInput\.current\?\.focus\(\)\}\}/);assert.match(src,/ref=\{nameInput\} className=\{styles\.accountNameInput\}/);});
+
+test("Mis compras muestra estado vacío veraz bilingüe sin activar pagos",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/Sin historial de compras/);assert.match(src,/No purchase history/);assert.match(src,/Esta pantalla no procesa pagos/);assert.match(src,/This screen does not process payments/);});
