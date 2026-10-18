@@ -1613,3 +1613,9 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 
 /* Marca única: imagen del emblema aprobado, sin decoraciones CSS duplicadas. */
 .nav img.sigil{display:block;object-fit:contain;flex:0 0 40px;width:40px;height:40px;padding:0;background:none;border:0;border-radius:0;box-shadow:none}
+
+/* Filtros extendidos de tienda: cuatro controles compactos, mismo lenguaje visual. */
+.liryStoreFilters{max-width:1000px}
+.liryStoreFilters label:nth-child(3),.liryStoreFilters label:nth-child(4){flex:0 1 155px;max-width:180px}
+@media(max-width:760px){.liryStoreFilters label:nth-child(3),.liryStoreFilters label:nth-child(4){flex:1 1 160px;max-width:none}}
+@media(max-width:560px){.liryStoreFilters label:nth-child(3),.liryStoreFilters label:nth-child(4){flex:1 1 100%;max-width:100%}}
