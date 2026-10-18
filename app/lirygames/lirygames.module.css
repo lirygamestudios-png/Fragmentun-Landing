@@ -1560,3 +1560,7 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .headerUtilityResults a{min-width:0;padding:12px;border:1px solid #3dadd4;border-radius:9px;background:#0b2643;color:#d9f5ff;text-decoration:none}
 .headerUtilityResults a:hover,.headerUtilityResults a:focus-visible,.headerUtilityClose:focus-visible{border-color:#7bdaf8;outline:2px solid #7bdaf8;outline-offset:2px}
 @media(max-width:560px){.headerUtilityResults{grid-template-columns:1fr}}
+
+.headerUtilityCount{margin:10px 0;color:#7bdaf8;font-weight:600}
+.headerUtilityClear{min-height:44px;cursor:pointer;border:1px solid #3dadd4;border-radius:9px;background:#0b2643;color:#d9f5ff;padding:9px 14px}
+.headerUtilityClear:focus-visible{outline:2px solid #7bdaf8;outline-offset:2px}
