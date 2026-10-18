@@ -170,9 +170,10 @@ export async function POST(request:NextRequest){
       const verifiedData=verification?.ok?await verification.json().catch(()=>null):null;
       const verifiedEmail=String(verifiedData?.data?.email??"").trim().toLowerCase();
       const verifiedId=String(verifiedData?.data?.id??"").trim();
+      const verifiedStatus=String(verifiedData?.data?.status??"").trim().toLowerCase();
       const verifiedGroups=Array.isArray(verifiedData?.data?.groups)?verifiedData.data.groups:[];
       const inTargetGroup=verifiedGroups.some((item:any)=>String(item?.id??item)===group);
-      if(verifiedEmail===email && /^\d+$/.test(verifiedId) && inTargetGroup){
+      if(verifiedEmail===email && /^\d+$/.test(verifiedId) && verifiedStatus==="active" && inTargetGroup){
         mailerliteStatus="synced";
         mailerliteSubscriberId=verifiedId;
       }else{
@@ -181,6 +182,8 @@ export async function POST(request:NextRequest){
           ?`MailerLite subscriber lookup failed: HTTP ${verification?.status??"unavailable"}`
           : verifiedEmail!==email
             ?"MailerLite subscriber email verification failed"
+            : verifiedStatus!=="active"
+              ?"MailerLite subscriber is not active"
             : !inTargetGroup
               ?"MailerLite subscriber missing target capture group"
               :"MailerLite subscriber identifier missing or invalid";
