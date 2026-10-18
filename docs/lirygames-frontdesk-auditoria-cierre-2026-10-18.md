@@ -46,3 +46,10 @@ El FrontDesk solo se marca como cerrado cuando el despliegue final esté READY, 
 
 ## Próximo bloque
 Auditoría funcional y visual end-to-end de navegación y componentes, no añadir más controles aislados sin una incidencia demostrable. Commander Center permanece en pausa.
+
+## Evidencia verificada el 2026-10-18 (cierre parcial)
+- Deploy READY confirmado: `3d1afff0` (`dpl_DTcYHhSKkemSj4u3ET9XMZc1yb3m`).
+- Registro de pruebas Vercel: un bloque `tests 167`, `pass 167`, `fail 0`. No interpretar como todas las pruebas ni como recorrido interactivo E2E completo.
+- Corregidas alineaciones CSS de soporte desigual (`align-items` y `align-self`), con prueba regresiva.
+- QA móvil visual 320/375/768/1024, ES/EN en interfaz, Liry DNA, avatar y formularios: **aún pendientes de verificación interactiva**.
+- Fase siguiente: ejecutar recorrido humano o navegador automatizado real y capturar resultado por pantalla; no declararlo PASS por inspección estática.
