@@ -153,3 +153,5 @@ test("Subpantallas Liry Developers admiten viewport móvil y foco teclado",()=>{
 test("Acceso Liry Developers anuncia estado del diálogo",()=>{const src=readFileSync(new URL("../components/LiryDeveloperAccess.tsx",import.meta.url),"utf8");assert.match(src,/aria-expanded=\{isOpen\}/);assert.match(src,/setIsOpen\(true\)/);assert.match(src,/setIsOpen\(false\)/);});
 
 test("Subpantallas de desarrolladores comunican apertura y cierre",()=>{const src=readFileSync(new URL("../components/LiryDeveloperAreas.tsx",import.meta.url),"utf8");assert.match(src,/aria-expanded=\{dialogOpen&&selected===area\.id\}/);assert.match(src,/setDialogOpen\(true\)/);assert.match(src,/setDialogOpen\(false\)/);});
+
+test("Ficha Liry Developer explica requisitos pendientes sin aprobar publicación",()=>{const src=readFileSync(new URL("../components/LiryDeveloperGameListingPreview.tsx",import.meta.url),"utf8");assert.match(src,/const missing=\[/);assert.match(src,/missing\.join\(", "\)/);assert.match(src,/todavía requiere revisión de derechos, seguridad y aprobación de LIRYGAMES/);});
