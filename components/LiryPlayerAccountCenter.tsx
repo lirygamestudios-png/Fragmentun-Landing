@@ -15,6 +15,9 @@ const sections:readonly Section[]=["perfil","configuracion","seguridad","privaci
 export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const copy=labels[locale];
  const [selected,setSelected]=useState<Section>("perfil");
+ const [publicName,setPublicName]=useState("");
+ const [nameError,setNameError]=useState("");
+ const updatePublicName=(name:string)=>{setPublicName(name);const valid=name===""||(name===name.trim()&&name.length>=2&&name.length<=40&&!/[<>\\x00-\\x1f\\x7f-\\x9f]/.test(name));setNameError(valid?"":locale==="es"?"Usa de 2 a 40 caracteres, sin espacios al inicio o final.":"Use 2 to 40 characters without leading or trailing spaces.");window.dispatchEvent(new CustomEvent("liry:display-name-preview",{detail:{name:valid?name:""}}))};
  const [notices,setNotices]=useState(false);
  const [reduceMotion,setReduceMotion]=useState(false);
  const [largeText,setLargeText]=useState(false);
@@ -53,7 +56,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
    {sections.map((section,i)=><button key={section} type="button" aria-pressed={selected===section} onClick={()=>setSelected(section)} onKeyDown={event=>{const keys=["ArrowRight","ArrowDown","ArrowLeft","ArrowUp","Home","End"];if(!keys.includes(event.key))return;event.preventDefault();const next=event.key==="Home"?0:event.key==="End"?sections.length-1:(i+(event.key==="ArrowRight"||event.key==="ArrowDown"?1:-1)+sections.length)%sections.length;setSelected(sections[next]);const buttons=event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>("button");buttons?.[next]?.focus();}} className={styles.accountTab}>{selected===section?(locale==="es"?`Viendo: ${copy.sections[i]}`:`Viewing: ${copy.sections[i]}`):copy.sections[i]}</button>)}
   </div>
   <div role="region" aria-label={copy.sections[active]} className={styles.accountPanel}>
-   {selected==="perfil"&&<><h3>{copy.sections[0]}</h3><p>{copy.alias}: <strong>{copy.aliasValue}</strong></p><div className={styles.accountAvatarArea}>
+   {selected==="perfil"&&<><h3>{copy.sections[0]}</h3><label className={styles.accountNameLabel}>{copy.alias}<input className={styles.accountNameInput} type="text" maxLength={40} value={publicName} onChange={e=>updatePublicName(e.target.value)} placeholder={copy.aliasValue} aria-invalid={Boolean(nameError)} aria-describedby="liry-name-note"/></label><p id="liry-name-note" className={styles.accountIntro}>{nameError|| (locale==="es"?"Nombre provisional. No se guarda en una cuenta.":"Temporary name. Not saved to an account.")}</p><div className={styles.accountAvatarArea}>
     <div className={styles.accountAvatarPicture}>{avatarUrl?<img src={avatarUrl} alt={locale==="es"?"Vista previa de tu avatar":"Your avatar preview"}/>:<span aria-hidden="true">◇</span>}</div>
     <div><p>{copy.avatar}</p><input ref={avatarInput} className={styles.accountAvatarInput} type="file" accept="image/jpeg,image/png,image/webp" aria-label={locale==="es"?"Seleccionar fotografía o avatar":"Choose photo or avatar"} onChange={event=>chooseAvatar(event.currentTarget.files?.[0])}/>
     <p className={styles.accountIntro}>{locale==="es"?"JPG, PNG o WebP · máximo 2 MB · vista previa temporal":"JPG, PNG or WebP · 2 MB max · temporary preview"}</p>
