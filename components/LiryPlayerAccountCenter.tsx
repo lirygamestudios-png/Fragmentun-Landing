@@ -3,6 +3,7 @@ import {useEffect,useRef,useState} from "react";
 import type {LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 import {LIRY_PLAYER_AUTH_RELEASE,LIRY_ACCOUNT_SECURITY_CHECKLIST} from "../lib/games/liry-player-account-security";
 import styles from "../app/lirygames/mi-liry/mi-liry.module.css";
+import {LiryBrandLoader} from "./LiryBrandLoader";
 import {validateTemporaryGamerAvatar,validateTemporaryGamerAvatarContent} from "../lib/games/liry-avatar-validation";
 import {isValidLiryDisplayName} from "../lib/games/liry-display-name-validation";
 
@@ -66,7 +67,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
   </div>
   <div id="liry-account-active-panel" role="region" aria-label={copy.sections[active]} className={styles.accountPanel}>
    {selected==="perfil"&&<><h3>{copy.sections[0]}</h3><label className={styles.accountNameLabel}>{copy.alias}<input ref={nameInput} className={styles.accountNameInput} type="text" maxLength={40} value={publicName} onChange={e=>updatePublicName(e.target.value)} placeholder={copy.aliasValue} aria-invalid={Boolean(nameError)} aria-describedby="liry-name-note" autoComplete="off"/></label><p className={styles.accountIntro} aria-live="off">{locale==="es"?`Caracteres: ${publicName.length} de 40`:`Characters: ${publicName.length} of 40`}</p>{publicName!==""&&<button type="button" className={styles.accountReset} onClick={()=>{updatePublicName("");nameInput.current?.focus()}}>{locale==="es"?"Restablecer nombre":"Reset name"}</button>}<p id="liry-name-note" role={nameError?"alert":"status"} aria-live={nameError?"assertive":"polite"} className={styles.accountIntro}>{nameError|| (locale==="es"?"Nombre provisional. No se guarda en una cuenta.":"Temporary name. Not saved to an account.")}</p><div className={styles.accountAvatarArea} aria-busy={avatarLoading}>
-    <div className={styles.accountAvatarPicture}>{avatarUrl?<img src={avatarUrl} alt={locale==="es"?"Vista previa de tu avatar":"Your avatar preview"}/>:<span aria-hidden="true">◇</span>}</div>
+    <div className={styles.accountAvatarPicture}>{avatarLoading?<LiryBrandLoader mode="inline" label={locale==="es"?"Procesando imagen…":"Processing image…"} />:avatarUrl?<img src={avatarUrl} alt={locale==="es"?"Vista previa de tu avatar":"Your avatar preview"}/>:<span aria-hidden="true">◇</span>}</div>
     <div><p>{copy.avatar}</p><input ref={avatarInput} className={styles.accountAvatarInput} type="file" accept="image/jpeg,image/png,image/webp" aria-label={locale==="es"?"Seleccionar fotografía o avatar":"Choose photo or avatar"} aria-describedby="liry-avatar-help liry-avatar-status" onChange={event=>chooseAvatar(event.currentTarget.files?.[0])}/>
     <p id="liry-avatar-help" className={styles.accountIntro}>{locale==="es"?"JPG, PNG o WebP · máximo 2 MB · vista previa temporal":"JPG, PNG or WebP · 2 MB max · temporary preview"}</p>
     {(avatarUrl||avatarLoading)&&<button type="button" className={styles.accountReset} onClick={avatarLoading?cancelAvatarSelection:removeAvatar}>{avatarLoading?(locale==="es"?"Cancelar carga de fotografía":"Cancel photo selection"):(locale==="es"?"Quitar fotografía":"Remove photo")}</button>}
