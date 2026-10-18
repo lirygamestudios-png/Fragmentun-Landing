@@ -154,8 +154,22 @@ export async function POST(request:NextRequest){
       const data=await ml.json().catch(()=>({}));
       const confirmedSubscriberId=String(data?.data?.id??"").trim();
       if(/^\d+$/.test(confirmedSubscriberId)){
-        mailerliteStatus="synced";
-        mailerliteSubscriberId=confirmedSubscriberId;
+        const verification=await fetch(`${ML}/${confirmedSubscriberId}`,{
+          headers:{Authorization:`Bearer ${token}`,Accept:"application/json"},
+          cache:"no-store",
+          signal:AbortSignal.timeout(8000)
+        }).catch(()=>null);
+        const verifiedData=verification?.ok?await verification.json().catch(()=>null):null;
+        const verifiedEmail=String(verifiedData?.data?.email??"").trim().toLowerCase();
+        const verifiedGroups=Array.isArray(verifiedData?.data?.groups)?verifiedData.data.groups:[];
+        const inTargetGroup=verifiedGroups.some((item:any)=>String(item?.id??item)===group);
+        if(verifiedEmail===email&&inTargetGroup){
+          mailerliteStatus="synced";
+          mailerliteSubscriberId=confirmedSubscriberId;
+        }else{
+          mailerliteStatus="error";
+          lastError=verification?.ok?"MailerLite subscriber email/group verification failed":`MailerLite verification request failed: HTTP ${verification?.status??"unavailable"}`;
+        }
       }else{
         mailerliteStatus="error";
         lastError="MailerLite returned HTTP success without a valid subscriber ID";
