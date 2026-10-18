@@ -6,8 +6,13 @@ const groupIds = {
   EN: process.env.MAILERLITE_GROUP_FRAGMENTUN_CAP1_EN,
 };
 
+const officialGroups = { ES: '200513144673534994', EN: '200513164367889456' };
+
 if (!token || Object.values(groupIds).some(id => !id || !/^\d+$/.test(id)) || groupIds.ES === groupIds.EN) {
   console.error('MailerLite preflight: missing or invalid configuration');
+  process.exitCode = 1;
+} else if (groupIds.ES !== officialGroups.ES || groupIds.EN !== officialGroups.EN) {
+  console.error('MailerLite preflight: configured IDs do not match official FRAGMENTUN groups');
   process.exitCode = 1;
 } else {
   const allowedHost = 'connect.mailerlite.com';
