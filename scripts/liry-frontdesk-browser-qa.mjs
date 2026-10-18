@@ -83,8 +83,36 @@ for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/l
      avatarCheck={displayed,cleared,passed:displayed&&cleared};
     }else avatarCheck={passed:false,reason:"Missing avatar file input"};
    }
+   // Cuestionario ADN temporal: seis respuestas, resultados, reinicio y cierre.
+   let dnaSurveyCheck=null;
+   if(route.name==="frontdesk"&&!wrongRoute&&!missingMain&&status<400){
+    const explorer=page.locator('button[class*="dnaSideButton"]').first();
+    if(await explorer.count()){
+     await explorer.click();
+     const surveyToggle=page.locator('button[class*="dnaSurveyToggle"]').first();
+     await surveyToggle.click();
+     let answered=0;
+     for(let question=0;question<6;question++){
+      const radio=page.locator(`input[name="liry-dna-q-${question}"]`).first();
+      await radio.waitFor({state:"attached",timeout:6000});
+      await radio.check();
+      answered++;
+     }
+     const result=page.locator('[class*="dnaSurveyResult"]').first();
+     const resultVisible=await result.waitFor({state:"visible",timeout:7000}).then(()=>true).catch(()=>false);
+     const restart=page.locator('button[class*="dnaSurveyRestart"]').first();
+     if(resultVisible)await restart.click();
+     const resetToFirst=await page.locator('input[name="liry-dna-q-0"]').count()>0;
+     await page.locator('button[class*="dnaExplorerClose"]').first().click();
+     const closed=await explorer.getAttribute("aria-expanded")==="false";
+     await explorer.click();
+     const oldResultAbsent=await page.locator('[class*="dnaSurveyResult"]').count()===0;
+     await page.locator('button[class*="dnaExplorerClose"]').first().click();
+     dnaSurveyCheck={answered,resultVisible,resetToFirst,closed,oldResultAbsent,passed:answered===6&&resultVisible&&resetToFirst&&closed&&oldResultAbsent};
+    }else dnaSurveyCheck={passed:false,reason:"Missing DNA explorer"};
+   }
    await page.screenshot({path:path.join(out,`${route.name}-${locale}-${width}.png`),fullPage:true});
-   const entry={route:route.path,locale,width,status,finalUrl:page.url(),wrongRoute,missingMain,developerDialogCheck,dnaExplorerCheck,playerDraftCheck,avatarCheck,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`${route.name}-${locale}-${width}.png`};
+   const entry={route:route.path,locale,width,status,finalUrl:page.url(),wrongRoute,missingMain,developerDialogCheck,dnaExplorerCheck,dnaSurveyCheck,playerDraftCheck,avatarCheck,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`${route.name}-${locale}-${width}.png`};
    results.push(entry);console.log(JSON.stringify(entry));
   }catch(e){const entry={route:route.path,locale,width,error:String(e)};results.push(entry);console.error(JSON.stringify(entry));}
   await page.close();
@@ -93,4 +121,4 @@ for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/l
 }
 await browser.close();
 await writeFile(path.join(out,"results.json"),JSON.stringify({base,checkedAt:new Date().toISOString(),results},null,2));
-if(results.some(r=>r.error||!r.status||r.status>=400||r.wrongRoute||r.missingMain||r.developerDialogCheck?.passed===false||r.dnaExplorerCheck?.passed===false||r.playerDraftCheck?.passed===false||r.avatarCheck?.passed===false||r.overflow||r.errors?.length))process.exitCode=1;
+if(results.some(r=>r.error||!r.status||r.status>=400||r.wrongRoute||r.missingMain||r.developerDialogCheck?.passed===false||r.dnaExplorerCheck?.passed===false||r.dnaSurveyCheck?.passed===false||r.playerDraftCheck?.passed===false||r.avatarCheck?.passed===false||r.overflow||r.errors?.length))process.exitCode=1;
