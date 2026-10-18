@@ -5,6 +5,7 @@ import styles from "../app/lirygames/lirygames.module.css";
 import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 
 
+const normalizePublicSearch=(value:string)=>value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase().trim();
 /** Solo recibe fichas públicas previamente autorizadas. No activa transacciones. */
 export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly PublicThirdPartyCard[],locale?:LiryFrontdeskLocale}){
  const copy=liryFrontdeskStrings(locale).thirdPartyCatalog;
@@ -15,7 +16,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
  const [model,setModel]=useState("all");
  const [linkedHash,setLinkedHash]=useState("");
  const [navigationCount,setNavigationCount]=useState(0);
- const filtered=games.filter(game=>(model==="all"||game.model===model)&&(`${game.title} ${game.description}`).toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
+ const filtered=games.filter(game=>(model==="all"||game.model===model)&&normalizePublicSearch(`${game.title} ${game.description}`).includes(normalizePublicSearch(query)));
  const totalPages=Math.max(1,Math.ceil(filtered.length/12));
  const currentPage=Math.min(page,totalPages);
  const visibleGames=filtered.slice((currentPage-1)*12,currentPage*12);
@@ -71,7 +72,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
    </article>)}
   </div>
   {filtered.length===0&&<p role="status">{locale==="es"?"No hay videojuegos públicos que coincidan con estos filtros.":"No public games match these filters."}</p>}
-  {totalPages>1&&<nav className={styles.thirdPartyPagination} aria-label={locale==="es"?"Páginas del catálogo externo":"External catalog pages"}><button type="button" disabled={currentPage===1} onClick={()=>setPage(p=>Math.max(1,p-1))}>{locale==="es"?"Anterior":"Previous"}</button>{Array.from({length:totalPages},(_,i)=><button type="button" key={i} aria-current={currentPage===i+1?"page":undefined} onClick={()=>setPage(i+1)}>{i+1}</button>)}<button type="button" disabled={currentPage===totalPages} onClick={()=>setPage(p=>Math.min(totalPages,p+1))}>{locale==="es"?"Siguiente":"Next"}</button></nav>}
+  {totalPages>1&&<nav className={styles.thirdPartyPagination} aria-label={locale==="es"?"Páginas del catálogo externo":"External catalog pages"}><button type="button" disabled={currentPage===1} onClick={()=>setPage(p=>Math.max(1,p-1))}>{locale==="es"?"Anterior":"Previous"}</button>{Array.from({length:totalPages},(_,i)=><button type="button" key={i} aria-current={currentPage===i+1?"page":undefined} aria-label={locale==="es"?`Página ${i+1} de ${totalPages}`:`Page ${i+1} of ${totalPages}`} onClick={()=>setPage(i+1)}>{i+1}</button>)}<button type="button" disabled={currentPage===totalPages} onClick={()=>setPage(p=>Math.min(totalPages,p+1))}>{locale==="es"?"Siguiente":"Next"}</button></nav>}
   <dialog ref={dialog} className={styles.thirdPartyDialog} aria-modal="true" aria-labelledby="third-party-dialog-title" onClose={()=>{setSelected(null);opener.current?.focus({preventScroll:true});opener.current=null}} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
    <div className={styles.thirdPartyDialogBody}>
     <form method="dialog"><button type="submit" className={styles.thirdPartyClose} aria-label={copy.closeAria}>×</button></form>
