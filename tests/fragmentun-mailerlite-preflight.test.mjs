@@ -69,3 +69,21 @@ test('reject invalid or duplicate group IDs before any request', async () => {
     assert.equal(result.requests.length, 0);
   }
 });
+
+test('reject unauthorized group API responses', async () => {
+  const result = await run({ pages: [{ status: 401, body: { message: 'Unauthorized' } }] });
+  assert.equal(result.exitCode, 1);
+  assert.equal(result.requests.length, 1);
+});
+
+test('reject malformed group response', async () => {
+  const result = await run({ pages: [{ body: { data: null } }] });
+  assert.equal(result.exitCode, 1);
+});
+
+test('fail when one configured group does not exist', async () => {
+  const result = await run({ pages: [{ body: { data: [{ id: ES }], links: { next: null } } }] });
+  assert.equal(result.exitCode, 1);
+  assert.ok(result.messages.some(m => m.includes('ES capture group: VERIFIED')));
+  assert.ok(result.messages.some(m => m.includes('EN capture group: NOT FOUND')));
+});
