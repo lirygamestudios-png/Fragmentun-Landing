@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useRef,useState} from "react";
 import type {PublicThirdPartyCard} from "../lib/games/liry-developer-publication";
+import {LiryShareEntry} from "./LiryShareEntry";
 import styles from "../app/lirygames/lirygames.module.css";
 import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 
@@ -64,7 +65,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
     <div className={styles.thirdPartyCardArt} aria-hidden="true"><span>✧</span></div>
     <div className={styles.thirdPartyCardBody}>
      <span className={styles.thirdPartyCardModel}>{game.model==="premium"?"PREMIUM":"FREEMIUM"}</span>
-     <h4>{game.title}</h4>
+     <h4>{game.title}</h4><LiryShareEntry name={game.title} locale={locale} />
      <span className={styles.thirdPartyAvailability}>{copy.listingNotice}</span>
      <p>{game.description}</p>
      <button type="button" className={styles.thirdPartyDetailButton} aria-haspopup="dialog" aria-label={`${copy.detailAria} ${game.title}`} onClick={event=>open(game,event.currentTarget)}>{copy.detailButton} →</button>
