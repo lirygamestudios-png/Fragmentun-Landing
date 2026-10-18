@@ -17,7 +17,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const [selected,setSelected]=useState<Section>("perfil");
  const [publicName,setPublicName]=useState("");
  const [nameError,setNameError]=useState("");
- const updatePublicName=(name:string)=>{setPublicName(name);const valid=name===""||(name===name.trim()&&name.length>=2&&name.length<=40&&!/[<>\\x00-\\x1f\\x7f-\\x9f]/.test(name));setNameError(valid?"":locale==="es"?"Usa de 2 a 40 caracteres, sin espacios al inicio o final.":"Use 2 to 40 characters without leading or trailing spaces.");window.dispatchEvent(new CustomEvent("liry:display-name-preview",{detail:{name:valid?name:""}}))};
+ const updatePublicName=(name:string)=>{setPublicName(name);const valid=name===""||(name===name.trim()&&name.length>=2&&name.length<=40&&!/[<>\u0000-\u001f\u007f-\u009f]/.test(name));setNameError(valid?"":locale==="es"?"Usa de 2 a 40 caracteres, sin espacios al inicio o final.":"Use 2 to 40 characters without leading or trailing spaces.");window.dispatchEvent(new CustomEvent("liry:display-name-preview",{detail:{name:valid?name:""}}))};
  const [notices,setNotices]=useState(false);
  const [reduceMotion,setReduceMotion]=useState(false);
  const [largeText,setLargeText]=useState(false);
