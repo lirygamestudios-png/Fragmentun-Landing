@@ -1615,3 +1615,6 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .liryStoreFilters input,.liryStoreFilters select{padding:8px 10px;border-radius:8px;font-size:14px;color-scheme:dark}
 .liryStoreFilters button{padding:8px 12px;font-size:13px;white-space:nowrap}
 @media(max-width:560px){.liryStoreFilters{max-width:100%;gap:9px}.liryStoreFilters label,.liryStoreFilters label:nth-child(2){flex:1 1 100%;max-width:100%}.liryStoreFilters button{align-self:flex-start}}
+
+/* Marca única: imagen del emblema aprobado, sin decoraciones CSS duplicadas. */
+.nav img.sigil{display:block;object-fit:contain;flex:0 0 40px;width:40px;height:40px;padding:0;background:none;border:0;border-radius:0;box-shadow:none}
