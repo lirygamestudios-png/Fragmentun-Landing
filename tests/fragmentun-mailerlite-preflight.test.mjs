@@ -87,3 +87,10 @@ test('fail when one configured group does not exist', async () => {
   assert.ok(result.messages.some(m => m.includes('ES capture group: VERIFIED')));
   assert.ok(result.messages.some(m => m.includes('EN capture group: NOT FOUND')));
 });
+
+test('reject noncanonical configured group identifiers before network request', async () => {
+  const result = await run({ pages: [], es: '123456789012345678' });
+  assert.equal(result.exitCode, 1);
+  assert.equal(result.requests.length, 0);
+  assert.ok(result.messages.some(message => message.includes('official FRAGMENTUN groups')));
+});
