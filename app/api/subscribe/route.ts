@@ -69,7 +69,7 @@ async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
 
 function mailerLiteSubscriberBody(email:string,name:string,groupId:string){
   const fields=name?`,"fields":${JSON.stringify({name})}`:"";
-  return `{"email":${JSON.stringify(email)}${fields},"groups":[${groupId}],"status":"active"}`;
+  return `{"email":${JSON.stringify(email)}${fields},"groups":[${JSON.stringify(groupId)}],"status":"active"}`;
 }
 
 function clean(value:FormDataEntryValue|null,max=200){
