@@ -87,3 +87,6 @@ El runner ahora incluye también `/lirygames/mi-liry` y `/lirygames/developer`, 
 
 ## Control de falsos positivos — navegador
 Se reforzó `scripts/liry-frontdesk-browser-qa.mjs` para registrar la URL final de cada recorrido y marcar error si hubo redirección a otra ruta o respuesta vacía. Esto evita considerar PASS una pantalla de login/error abierta en lugar de FrontDesk, Mi Liry o Liry Developers. **Pendiente:** ejecutar con navegador conectado y revisar capturas, comportamiento de botones, ADN, avatar y formularios; el simple estado READY no sustituye dichas pruebas.
+
+## QA interactiva inocua preparada
+Se añadió al runner una comprobación del portal `/lirygames/developer` que abre la primera subpantalla, la cierra con Escape y comprueba el retorno del foco al botón de origen. Se ejecuta en ES/EN y cuatro anchuras, **sin enviar formularios ni registrar datos**. Estado: implementado, no ejecutado en navegador por restricción de acceso. No cuenta como prueba PASS hasta contar con salida y capturas.
