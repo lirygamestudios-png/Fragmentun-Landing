@@ -26,6 +26,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const [avatarUrl,setAvatarUrl]=useState<string|null>(null);
  const [avatarError,setAvatarError]=useState("");
  const [avatarLoading,setAvatarLoading]=useState(false);
+ const nameInput=useRef<HTMLInputElement>(null);
  const avatarInput=useRef<HTMLInputElement>(null);
  const avatarUrlRef=useRef<string|null>(null);
  const avatarRequestRef=useRef(0);
@@ -52,7 +53,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
   image.onerror=()=>{URL.revokeObjectURL(next);if(request!==avatarRequestRef.current)return;setAvatarLoading(false);setAvatarError(locale==="es"?"No se pudo abrir la imagen.":"Could not open the image.");if(avatarInput.current)avatarInput.current.value=""};
   image.src=next;
  };
- const resetIdentityPreview=()=>{updatePublicName("");removeAvatar()};
+ const resetIdentityPreview=()=>{updatePublicName("");removeAvatar();nameInput.current?.focus()};
  const resetPreview=()=>{setNotices(false);setReduceMotion(false);setLargeText(false);setPrivateProfile(true)};
  const active=sections.indexOf(selected);
  return <section aria-labelledby="liry-account-center-heading" className={`${styles.accountCenter} ${reduceMotion?styles.accountReducedMotion:""} ${largeText?styles.accountLargeText:""}`}>
@@ -62,7 +63,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
    {sections.map((section,i)=><button key={section} type="button" aria-pressed={selected===section} aria-controls="liry-account-active-panel" onClick={()=>setSelected(section)} onKeyDown={event=>{const keys=["ArrowRight","ArrowDown","ArrowLeft","ArrowUp","Home","End"];if(!keys.includes(event.key))return;event.preventDefault();const next=event.key==="Home"?0:event.key==="End"?sections.length-1:(i+(event.key==="ArrowRight"||event.key==="ArrowDown"?1:-1)+sections.length)%sections.length;setSelected(sections[next]);const buttons=event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>("button");buttons?.[next]?.focus();}} className={styles.accountTab}>{selected===section?(locale==="es"?`Viendo: ${copy.sections[i]}`:`Viewing: ${copy.sections[i]}`):copy.sections[i]}</button>)}
   </div>
   <div id="liry-account-active-panel" role="region" aria-label={copy.sections[active]} className={styles.accountPanel}>
-   {selected==="perfil"&&<><h3>{copy.sections[0]}</h3><label className={styles.accountNameLabel}>{copy.alias}<input className={styles.accountNameInput} type="text" maxLength={40} value={publicName} onChange={e=>updatePublicName(e.target.value)} placeholder={copy.aliasValue} aria-invalid={Boolean(nameError)} aria-describedby="liry-name-note" autoComplete="off"/></label><p className={styles.accountIntro} aria-live="off">{locale==="es"?`Caracteres: ${publicName.length} de 40`:`Characters: ${publicName.length} of 40`}</p>{publicName!==""&&<button type="button" className={styles.accountReset} onClick={()=>updatePublicName("")}>{locale==="es"?"Restablecer nombre":"Reset name"}</button>}<p id="liry-name-note" role={nameError?"alert":"status"} aria-live={nameError?"assertive":"polite"} className={styles.accountIntro}>{nameError|| (locale==="es"?"Nombre provisional. No se guarda en una cuenta.":"Temporary name. Not saved to an account.")}</p><div className={styles.accountAvatarArea} aria-busy={avatarLoading}>
+   {selected==="perfil"&&<><h3>{copy.sections[0]}</h3><label className={styles.accountNameLabel}>{copy.alias}<input ref={nameInput} className={styles.accountNameInput} type="text" maxLength={40} value={publicName} onChange={e=>updatePublicName(e.target.value)} placeholder={copy.aliasValue} aria-invalid={Boolean(nameError)} aria-describedby="liry-name-note" autoComplete="off"/></label><p className={styles.accountIntro} aria-live="off">{locale==="es"?`Caracteres: ${publicName.length} de 40`:`Characters: ${publicName.length} of 40`}</p>{publicName!==""&&<button type="button" className={styles.accountReset} onClick={()=>updatePublicName("")}>{locale==="es"?"Restablecer nombre":"Reset name"}</button>}<p id="liry-name-note" role={nameError?"alert":"status"} aria-live={nameError?"assertive":"polite"} className={styles.accountIntro}>{nameError|| (locale==="es"?"Nombre provisional. No se guarda en una cuenta.":"Temporary name. Not saved to an account.")}</p><div className={styles.accountAvatarArea} aria-busy={avatarLoading}>
     <div className={styles.accountAvatarPicture}>{avatarUrl?<img src={avatarUrl} alt={locale==="es"?"Vista previa de tu avatar":"Your avatar preview"}/>:<span aria-hidden="true">◇</span>}</div>
     <div><p>{copy.avatar}</p><input ref={avatarInput} className={styles.accountAvatarInput} type="file" accept="image/jpeg,image/png,image/webp" aria-label={locale==="es"?"Seleccionar fotografía o avatar":"Choose photo or avatar"} onChange={event=>chooseAvatar(event.currentTarget.files?.[0])}/>
     <p className={styles.accountIntro}>{locale==="es"?"JPG, PNG o WebP · máximo 2 MB · vista previa temporal":"JPG, PNG or WebP · 2 MB max · temporary preview"}</p>
