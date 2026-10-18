@@ -1544,3 +1544,19 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .liryCredentialInput:disabled{opacity:.8;cursor:not-allowed}
 .liryCredentialSubmit{padding:12px 16px;border-radius:8px;border:1px solid #416782;background:#15324b;color:#a9c5da;font-size:12px;font-weight:800;cursor:not-allowed}
 @media(max-width:460px){.liryCredentialPreview{padding:12px}.liryCredentialInput{font-size:16px}}
+
+/* Subpantallas de búsqueda y avisos del header, diseño navy/cian. */
+.navSearch,.navNotice{cursor:pointer}
+.headerUtilityDialog{width:min(92vw,620px);max-height:85vh;overflow:auto;padding:0;background:#08172d;color:#edf8ff;border:1px solid #3dadd4;border-radius:14px;box-shadow:0 0 42px #000a,0 0 24px #35b9fa40}
+.headerUtilityDialog::backdrop{background:#020817cc;backdrop-filter:blur(5px)}
+.headerUtilityBody{padding:clamp(20px,4vw,32px)}
+.headerUtilityTop{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.headerUtilityTop h2{font-size:clamp(19px,4vw,26px);margin:0;color:#f0faff}
+.headerUtilityClose{cursor:pointer;min-width:44px;min-height:44px;border:1px solid #3dadd4;border-radius:9px;background:#0b2643;color:#d9f5ff;font-size:25px}
+.headerUtilityLabel{display:flex;flex-direction:column;gap:8px;margin-top:16px;color:#d9f5ff}
+.headerUtilityLabel input{box-sizing:border-box;width:100%;min-width:0;min-height:44px;padding:10px 12px;background:#061429;color:#fff;border:1px solid #3dadd4;border-radius:9px}
+.headerUtilityBody p{color:#c3d6e8;line-height:1.6}
+.headerUtilityResults{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.headerUtilityResults a{min-width:0;padding:12px;border:1px solid #3dadd4;border-radius:9px;background:#0b2643;color:#d9f5ff;text-decoration:none}
+.headerUtilityResults a:hover,.headerUtilityResults a:focus-visible,.headerUtilityClose:focus-visible{border-color:#7bdaf8;outline:2px solid #7bdaf8;outline-offset:2px}
+@media(max-width:560px){.headerUtilityResults{grid-template-columns:1fr}}
