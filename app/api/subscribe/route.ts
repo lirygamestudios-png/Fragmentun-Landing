@@ -135,6 +135,15 @@ export async function POST(request:NextRequest){
   let mailerliteSubscriberId:string|null=null;
   let lastError:string|null=null;
 
+  if(!token || !configuredGroup){
+    // Configuration diagnostics only: never log token values or subscriber PII.
+    lastError = !token && !configuredGroup
+      ? "MailerLite configuration missing: API token and capture group"
+      : !token
+        ? "MailerLite configuration missing: API token"
+        : `MailerLite configuration missing: ${locale.toUpperCase()} capture group`;
+  }
+
   if(token&&configuredGroup){
     const resolvedGroup=await resolveMailerLiteGroup(token,configuredGroup,locale);
     const group=resolvedGroup.id;
