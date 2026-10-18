@@ -247,6 +247,12 @@ export async function POST(request:NextRequest){
     return NextResponse.redirect(new URL(`/${locale}?signup=error#capitulo`,request.url),303);
   }
 
+  // Do not signal a completed signup if MailerLite has not verified group membership.
+  // The lead remains stored for a controlled administrative retry.
+  if(mailerliteStatus!=="synced"){
+    return NextResponse.redirect(new URL(`/${locale}?signup=error#capitulo`,request.url),303);
+  }
+
   const delivery=mailerliteStatus==="synced"?"email":"pending";
   const next=emotionalProfile? `/${locale}/gracias?delivery=${delivery}&profile=${encodeURIComponent(emotionalProfile)}` : `/${locale}/gracias?delivery=${delivery}`;
   const response=NextResponse.redirect(new URL(next,request.url),303);
