@@ -55,8 +55,21 @@ for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/l
      dnaExplorerCheck={opened,closed,passed:opened&&closed};
     }else dnaExplorerCheck={passed:false,reason:"Missing DNA explorer button"};
    }
+   // Mi Liry: prueba efímera de alias, sin subir fotos ni persistir información.
+   let playerDraftCheck=null;
+   if(route.name==="player"&&!wrongRoute&&!missingMain&&status<400){
+    const alias=page.locator('input[aria-describedby="liry-name-note"]').first();
+    if(await alias.count()){
+     await alias.fill("Liry QA");
+     const accepted=await alias.inputValue()==="Liry QA";
+     const reset=page.getByRole("button",{name:locale==="es"?"Restablecer nombre y fotografía":"Reset name and photo"});
+     if(await reset.count())await reset.click();
+     const cleared=await alias.inputValue()==="";
+     playerDraftCheck={accepted,cleared,passed:accepted&&cleared};
+    }else playerDraftCheck={passed:false,reason:"Missing player alias preview"};
+   }
    await page.screenshot({path:path.join(out,`${route.name}-${locale}-${width}.png`),fullPage:true});
-   const entry={route:route.path,locale,width,status,finalUrl:page.url(),wrongRoute,missingMain,developerDialogCheck,dnaExplorerCheck,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`${route.name}-${locale}-${width}.png`};
+   const entry={route:route.path,locale,width,status,finalUrl:page.url(),wrongRoute,missingMain,developerDialogCheck,dnaExplorerCheck,playerDraftCheck,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`${route.name}-${locale}-${width}.png`};
    results.push(entry);console.log(JSON.stringify(entry));
   }catch(e){const entry={route:route.path,locale,width,error:String(e)};results.push(entry);console.error(JSON.stringify(entry));}
   await page.close();
@@ -65,4 +78,4 @@ for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/l
 }
 await browser.close();
 await writeFile(path.join(out,"results.json"),JSON.stringify({base,checkedAt:new Date().toISOString(),results},null,2));
-if(results.some(r=>r.error||!r.status||r.status>=400||r.wrongRoute||r.missingMain||r.developerDialogCheck?.passed===false||r.dnaExplorerCheck?.passed===false||r.overflow||r.errors?.length))process.exitCode=1;
+if(results.some(r=>r.error||!r.status||r.status>=400||r.wrongRoute||r.missingMain||r.developerDialogCheck?.passed===false||r.dnaExplorerCheck?.passed===false||r.playerDraftCheck?.passed===false||r.overflow||r.errors?.length))process.exitCode=1;
