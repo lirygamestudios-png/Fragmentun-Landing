@@ -4,12 +4,7 @@
 
 /* Identidad gráfica del Master Admin: emblema y degradado compartidos. */
 .brand{display:flex;align-items:center;gap:12px;letter-spacing:normal}
-.sigil{position:relative;width:40px;height:40px;flex:0 0 40px;border-radius:12px;background:linear-gradient(145deg,rgba(124,77,255,.22),rgba(79,216,255,.09));border:1px solid rgba(101,206,255,.38);box-shadow:0 0 24px rgba(124,77,255,.22),inset 0 0 18px rgba(79,216,255,.06)}
-.sigil::before,.sigil::after,.sigil i,.sigil b{content:"";position:absolute;display:block}
-.sigil::before{left:9px;top:8px;width:8px;height:23px;border:2px solid #4fd8ff;border-right:0;border-radius:3px 0 0 3px;box-shadow:0 0 10px rgba(79,216,255,.58)}
-.sigil::after{right:8px;top:8px;width:12px;height:2px;background:linear-gradient(90deg,#7c4dff,#e04cff);box-shadow:0 8px 0 #4fd8ff,0 16px 0 #7c4dff}
-.sigil i{left:17px;top:8px;width:2px;height:23px;background:linear-gradient(#e04cff,#4fd8ff);transform:skew(-13deg);box-shadow:0 0 9px rgba(224,76,255,.5)}
-.sigil b{display:none}
+/* Insignia antigua trazada con CSS retirada: usar solo lirygames-brand-icon.svg. */
 .wordmark strong{display:block;font-size:1.06rem;line-height:1;letter-spacing:.22em;font-weight:900;background:linear-gradient(90deg,#fff 0%,#a8ebff 30%,#9f72ff 68%,#ed7dff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .wordmark span{display:block;margin-top:4px;color:#a7b6d7;font-size:.53rem;letter-spacing:.20em;font-weight:700}
 .wordmark small{display:block;margin-top:5px;color:#596784;font-size:.49rem;letter-spacing:.18em}
