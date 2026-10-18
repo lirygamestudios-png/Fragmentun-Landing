@@ -137,3 +137,5 @@ test("Buscadores de videojuegos admiten acentos y paginación accesible",()=>{fo
 test("Navegación móvil conserva foco cian y acceso a controles",()=>{const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");assert.match(css,/overscroll-behavior-inline:contain/);assert.match(css,/\.liryStoreFilters input:focus-visible/);assert.match(css,/outline:2px solid #7bdaf8/);});
 
 test("La vista previa del perfil invalida aviso de guardado al editar datos",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/const updatePublicName=\(name:string\)=>\{setSaveNotice\(null\);setPublicName\(name\)/);assert.match(src,/setSaveNotice\(null\);setBillingDraft/);});
+
+test("ADN mantiene la alineación visual sin ResizeObserver",()=>{const src=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");assert.match(src,/typeof ResizeObserver!=="undefined"/);assert.match(src,/window\.addEventListener\("resize",measure\)/);assert.match(src,/window\.removeEventListener\("resize",measure\)/);});
