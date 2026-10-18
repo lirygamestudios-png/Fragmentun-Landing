@@ -48,3 +48,10 @@ test('only active subscribers can complete capture', () => {
   assert.ok(route.includes('verifiedStatus==="active"'));
   assert.ok(route.includes('MailerLite subscriber is not active'));
 });
+
+test('signup group lookup supports pagination and rejects unsafe links', () => {
+  assert.ok(route.includes('visited.has(requestUrl.href)'));
+  assert.ok(route.includes('hostname!=="connect.mailerlite.com"'));
+  assert.ok(route.includes('groups.push(...data.data)'));
+  assert.ok(route.includes('groups pagination limit exceeded'));
+});
