@@ -9,7 +9,7 @@ const require=createRequire(import.meta.url);
 let chromium;
 try{({chromium}=require("playwright"));}catch{console.error("Playwright no está instalado. Ejecuta: npm install --no-save playwright");process.exit(2);}
 const base=process.env.LIRY_QA_URL;
-if(!base||!/^https:\/\//.test(base)){console.error("Define LIRY_QA_URL con la URL HTTPS del Preview autorizado.");process.exit(2);}
+if(!base||!/^https:\/\//.test(base)&&!/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?(?:\/|$)/.test(base)){console.error("Define LIRY_QA_URL con el Preview HTTPS autorizado o un servidor local HTTP en localhost/127.0.0.1.");process.exit(2);}
 const out=path.resolve("qa-evidence","lirygames");
 await mkdir(out,{recursive:true});
 const browser=await chromium.launch({headless:true});
