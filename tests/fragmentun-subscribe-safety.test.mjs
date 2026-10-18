@@ -43,3 +43,8 @@ test('subscriber ID regex accepts numeric IDs rather than a literal backslash', 
   assert.equal(pattern, String.raw`/^\d+$/`);
   assert.ok(/^\d+$/.test('200513144673534994'));
 });
+
+test('only active subscribers can complete capture', () => {
+  assert.ok(route.includes('verifiedStatus==="active"'));
+  assert.ok(route.includes('MailerLite subscriber is not active'));
+});
