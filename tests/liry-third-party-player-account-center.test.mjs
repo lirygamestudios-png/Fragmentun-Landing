@@ -94,3 +94,5 @@ test("Facturación provisional valida el formato del correo y anuncia errores",(
 test("Los nombres de facturación se distinguen del alias público",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/Nombre y apellidos de facturación son distintos del alias público/);assert.match(src,/Billing first and last names are separate from your public gamer alias/);});
 
 test("El código postal de prueba admite formatos internacionales sin longitud excesiva",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/maxLength=\{field==="email"\?120:field==="postalCode"\?20:80\}/);assert.match(src,/field==="postalCode"\?"text"/);});
+
+test("Datos de prueba de facturación identifican cada campo en español e inglés",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/Nombre\(s\) de facturación/);assert.match(src,/Billing last name\(s\)/);assert.match(src,/País de facturación/);assert.match(src,/Billing postal code/);assert.match(src,/spellCheck=\{false\}/);});
