@@ -3,6 +3,7 @@ import {useEffect,useRef,useState,type CSSProperties} from "react";
 import {type PublicGameCard} from "../lib/games/public-catalog";
 import type {PublicThirdPartyCard} from "../lib/games/liry-developer-publication";
 import {rankApprovedLiryDnaCatalog,type LiryApprovedDnaCatalogRecord} from "../lib/games/liry-dna-catalog-bridge";
+import {LiryShareEntry} from "./LiryShareEntry";
 import styles from "../app/lirygames/lirygames.module.css";
 import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 
@@ -136,7 +137,7 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog,approved
             <p>{themes[index]??game.tagline}</p>
             <span className={styles.worldAvailability}>{game.state==="available"?cardCopy.available:game.state==="beta"?cardCopy.beta:cardCopy.comingSoon}</span>
           </div>
-          <span className={styles.worldArrow} aria-hidden="true">→</span>
+          <span className={styles.worldArrow} aria-hidden="true">→</span><LiryShareEntry name={publicCodenames[index]??`LIRY // PROJECT-${String(index+1).padStart(2,"0")}`} locale={locale} />
           <button type="button" ref={node=>{gameTriggersRef.current[index]=node}} className={styles.worldCardOpen} aria-label={`${cardCopy.detailsAria} ${publicCodenames[index]??game.title}`} onClick={()=>setSelectedGame(index)} />
         </div>
       </article>)}
