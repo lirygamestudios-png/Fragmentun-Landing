@@ -160,28 +160,30 @@ export async function POST(request:NextRequest){
     }).catch(()=>null);
 
     if(ml?.ok){
-      const data=await ml.json().catch(()=>({}));
-      const confirmedSubscriberId=String(data?.data?.id??"").trim();
-      if(/^\d+$/.test(confirmedSubscriberId)){
-        const verification=await fetch(`${ML}/${confirmedSubscriberId}`,{
-          headers:{Authorization:`Bearer ${token}`,Accept:"application/json"},
-          cache:"no-store",
-          signal:AbortSignal.timeout(8000)
-        }).catch(()=>null);
-        const verifiedData=verification?.ok?await verification.json().catch(()=>null):null;
-        const verifiedEmail=String(verifiedData?.data?.email??"").trim().toLowerCase();
-        const verifiedGroups=Array.isArray(verifiedData?.data?.groups)?verifiedData.data.groups:[];
-        const inTargetGroup=verifiedGroups.some((item:any)=>String(item?.id??item)===group);
-        if(verifiedEmail===email&&inTargetGroup){
-          mailerliteStatus="synced";
-          mailerliteSubscriberId=confirmedSubscriberId;
-        }else{
-          mailerliteStatus="error";
-          lastError=verification?.ok?"MailerLite subscriber email/group verification failed":`MailerLite verification request failed: HTTP ${verification?.status??"unavailable"}`;
-        }
+      // Use the documented lookup-by-email endpoint to avoid long numeric ID precision loss.
+      // POST success alone does not establish group membership.
+      const verification=await fetch(`${ML}/${encodeURIComponent(email)}`,{
+        headers:{Authorization:`Bearer ${token}`,Accept:"application/json"},
+        cache:"no-store",
+        signal:AbortSignal.timeout(8000)
+      }).catch(()=>null);
+      const verifiedData=verification?.ok?await verification.json().catch(()=>null):null;
+      const verifiedEmail=String(verifiedData?.data?.email??"").trim().toLowerCase();
+      const verifiedId=String(verifiedData?.data?.id??"").trim();
+      const verifiedGroups=Array.isArray(verifiedData?.data?.groups)?verifiedData.data.groups:[];
+      const inTargetGroup=verifiedGroups.some((item:any)=>String(item?.id??item)===group);
+      if(verifiedEmail===email && /^\\d+$/.test(verifiedId) && inTargetGroup){
+        mailerliteStatus="synced";
+        mailerliteSubscriberId=verifiedId;
       }else{
         mailerliteStatus="error";
-        lastError="MailerLite returned HTTP success without a valid subscriber ID";
+        lastError=!verification?.ok
+          ?`MailerLite subscriber lookup failed: HTTP ${verification?.status??"unavailable"}`
+          : verifiedEmail!==email
+            ?"MailerLite subscriber email verification failed"
+            : !inTargetGroup
+              ?"MailerLite subscriber missing target capture group"
+              :"MailerLite subscriber identifier missing or invalid";
       }
     }else{
       mailerliteStatus="error";
