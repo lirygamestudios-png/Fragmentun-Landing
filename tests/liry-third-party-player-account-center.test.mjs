@@ -163,3 +163,5 @@ test("Ficha desarrollador no presenta clasificación preliminar como verificada"
 test("Ficha de desarrollador distingue clasificación y plataforma declaradas",()=>{const src=readFileSync(new URL("../components/LiryDeveloperGameListingPreview.tsx",import.meta.url),"utf8");assert.match(src,/developer-game-age-help/);assert.match(src,/developer-game-platform-help/);assert.match(src,/no certifica ninguna clasificación de edad/);assert.match(src,/technical compatibility is not verified/);});
 
 test("FrontDesk evita alineaciones end con soporte CSS desigual",()=>{const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");assert.doesNotMatch(css,/(?:align-items|align-self):end(?=[;}])/);assert.match(css,/\.liryCatalogFilters\{display:flex;align-items:flex-end/);});
+
+test("QA visual exige contenido y espera fuentes antes de capturar",()=>{const src=readFileSync(new URL("../scripts/liry-frontdesk-browser-qa.mjs",import.meta.url),"utf8");assert.match(src,/document\.fonts\.ready/);assert.match(src,/missingMain/);assert.match(src,/mainPresent/);assert.match(src,/bodyTextLength<20/);});
