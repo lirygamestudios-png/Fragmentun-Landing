@@ -33,7 +33,13 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const avatarInput=useRef<HTMLInputElement>(null);
  const avatarUrlRef=useRef<string|null>(null);
  const avatarRequestRef=useRef(0);
- useEffect(()=>()=>{avatarRequestRef.current++;if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current)},[]);
+ useEffect(()=>{
+  try{
+   const saved=sessionStorage.getItem("liry:temporary-avatar-thumbnail");
+   if(saved?.startsWith("data:image/")&&saved.length<180000)setAvatarUrl(saved);
+  }catch{}
+  return ()=>{avatarRequestRef.current++;if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current)};
+ },[]);
  const cancelAvatarSelection=()=>{avatarRequestRef.current++;setAvatarLoading(false);setAvatarError("");if(avatarInput.current){avatarInput.current.value="";avatarInput.current.focus()}};
  const removeAvatar=()=>{avatarRequestRef.current++;setAvatarLoading(false);if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);avatarUrlRef.current=null;try{sessionStorage.removeItem("liry:temporary-avatar-thumbnail");window.dispatchEvent(new Event("liry:avatar-changed"))}catch{}setAvatarUrl(null);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:null}}));setAvatarError("");if(avatarInput.current){avatarInput.current.value="";avatarInput.current.focus()}};
  const chooseAvatar=async(file?:File)=>{
