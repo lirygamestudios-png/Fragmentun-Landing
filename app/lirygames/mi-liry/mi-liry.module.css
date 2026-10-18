@@ -253,3 +253,6 @@
 @media(max-width:480px){.accountAvatarArea{align-items:flex-start}.accountAvatarPicture{width:88px;height:88px;flex-basis:88px}}
 
 .accountHeaderPhoto{width:100%;height:100%;display:block;object-fit:cover;border-radius:50%}
+
+/* Preferencia temporal: reducir movimiento en Centro de Cuenta. */
+.accountReducedMotion *,.accountReducedMotion *::before,.accountReducedMotion *::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;scroll-behavior:auto!important}
