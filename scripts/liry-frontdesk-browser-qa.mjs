@@ -44,8 +44,19 @@ for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/l
      developerDialogCheck={opened,closed,focusRestored,passed:opened&&closed&&focusRestored};
     }else developerDialogCheck={passed:false,reason:"Missing developer modal trigger"};
    }
+   let dnaExplorerCheck=null;
+   if(route.name==="frontdesk"&&!wrongRoute&&!missingMain&&status<400){
+    const toggle=page.locator('button[class*="dnaSideButton"]').first();
+    if(await toggle.count()){
+     await toggle.click();
+     const opened=await toggle.getAttribute("aria-expanded")==="true";
+     await page.keyboard.press("Escape");
+     const closed=await toggle.getAttribute("aria-expanded")==="false";
+     dnaExplorerCheck={opened,closed,passed:opened&&closed};
+    }else dnaExplorerCheck={passed:false,reason:"Missing DNA explorer button"};
+   }
    await page.screenshot({path:path.join(out,`${route.name}-${locale}-${width}.png`),fullPage:true});
-   const entry={route:route.path,locale,width,status,finalUrl:page.url(),wrongRoute,missingMain,developerDialogCheck,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`${route.name}-${locale}-${width}.png`};
+   const entry={route:route.path,locale,width,status,finalUrl:page.url(),wrongRoute,missingMain,developerDialogCheck,dnaExplorerCheck,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`${route.name}-${locale}-${width}.png`};
    results.push(entry);console.log(JSON.stringify(entry));
   }catch(e){const entry={route:route.path,locale,width,error:String(e)};results.push(entry);console.error(JSON.stringify(entry));}
   await page.close();
@@ -54,4 +65,4 @@ for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/l
 }
 await browser.close();
 await writeFile(path.join(out,"results.json"),JSON.stringify({base,checkedAt:new Date().toISOString(),results},null,2));
-if(results.some(r=>r.error||!r.status||r.status>=400||r.wrongRoute||r.missingMain||r.developerDialogCheck?.passed===false||r.overflow||r.errors?.length))process.exitCode=1;
+if(results.some(r=>r.error||!r.status||r.status>=400||r.wrongRoute||r.missingMain||r.developerDialogCheck?.passed===false||r.dnaExplorerCheck?.passed===false||r.overflow||r.errors?.length))process.exitCode=1;
