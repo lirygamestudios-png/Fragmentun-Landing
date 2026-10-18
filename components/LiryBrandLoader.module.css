@@ -1,0 +1,8 @@
+.loader{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:100px;padding:20px;border:1px solid #3dadd455;border-radius:14px;background:#08172dd9;color:#d9f5ff;text-align:center}
+.emblem{width:52px;height:52px;animation:liryBrandPulse 1.6s ease-in-out infinite;filter:drop-shadow(0 0 10px #4fd8ff77)}
+.label{font-size:12px;font-weight:700;letter-spacing:.1em}
+.loader[data-mode="page"]{min-height:45vh;border:0;background:#060f20}
+.loader[data-mode="inline"]{min-height:0;flex-direction:row;padding:8px 12px;border:0;background:transparent}
+.loader[data-mode="inline"] .emblem{width:24px;height:24px}
+@keyframes liryBrandPulse{0%,100%{transform:scale(.94);opacity:.75;filter:drop-shadow(0 0 5px #4fd8ff55)}50%{transform:scale(1.05);opacity:1;filter:drop-shadow(0 0 16px #4fd8ffaa)}}
+@media(prefers-reduced-motion:reduce){.emblem{animation:none}}
