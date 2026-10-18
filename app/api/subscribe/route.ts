@@ -172,7 +172,7 @@ export async function POST(request:NextRequest){
       const verifiedId=String(verifiedData?.data?.id??"").trim();
       const verifiedGroups=Array.isArray(verifiedData?.data?.groups)?verifiedData.data.groups:[];
       const inTargetGroup=verifiedGroups.some((item:any)=>String(item?.id??item)===group);
-      if(verifiedEmail===email && /^\\d+$/.test(verifiedId) && inTargetGroup){
+      if(verifiedEmail===email && /^\d+$/.test(verifiedId) && inTargetGroup){
         mailerliteStatus="synced";
         mailerliteSubscriberId=verifiedId;
       }else{
