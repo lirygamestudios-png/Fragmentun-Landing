@@ -34,6 +34,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const chooseAvatar=async(file?:File)=>{
   if(!file)return;
   const request=++avatarRequestRef.current;
+  setAvatarError("");
   setAvatarLoading(true);
   const validation=validateTemporaryGamerAvatar(file);
   if(!validation.ok){setAvatarLoading(false);setAvatarError(locale==="es"?"Selecciona JPG, PNG o WebP de hasta 2 MB.":"Choose JPG, PNG or WebP up to 2 MB.");if(avatarInput.current)avatarInput.current.value="";return}
