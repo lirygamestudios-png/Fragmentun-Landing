@@ -279,3 +279,7 @@
 /* Datos de facturación en modo demostración: sin almacenamiento o transacciones. */
 .accountBillingGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0}
 @media(max-width:560px){.accountBillingGrid{grid-template-columns:1fr}}
+
+/* Evita desbordamientos de los cinco campos de facturación en pantallas pequeñas. */
+.accountBillingGrid .accountNameLabel{min-width:0;max-width:none}
+.accountBillingGrid .accountNameInput{display:block;width:100%;min-width:0;box-sizing:border-box}
