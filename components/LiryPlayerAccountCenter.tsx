@@ -33,7 +33,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const avatarRequestRef=useRef(0);
  useEffect(()=>()=>{avatarRequestRef.current++;if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current)},[]);
  const cancelAvatarSelection=()=>{avatarRequestRef.current++;setAvatarLoading(false);setAvatarError("");if(avatarInput.current){avatarInput.current.value="";avatarInput.current.focus()}};
- const removeAvatar=()=>{avatarRequestRef.current++;setAvatarLoading(false);if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);avatarUrlRef.current=null;setAvatarUrl(null);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:null}}));setAvatarError("");if(avatarInput.current){avatarInput.current.value="";avatarInput.current.focus()}};
+ const removeAvatar=()=>{avatarRequestRef.current++;setAvatarLoading(false);if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);avatarUrlRef.current=null;try{sessionStorage.removeItem("liry:temporary-avatar-thumbnail")}catch{}setAvatarUrl(null);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:null}}));setAvatarError("");if(avatarInput.current){avatarInput.current.value="";avatarInput.current.focus()}};
  const chooseAvatar=async(file?:File)=>{
   if(!file)return;
   const request=++avatarRequestRef.current;
@@ -49,7 +49,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
    if(request!==avatarRequestRef.current){URL.revokeObjectURL(next);return}
    if(image.naturalWidth===0||image.naturalHeight===0){URL.revokeObjectURL(next);setAvatarLoading(false);setAvatarError(locale==="es"?"La imagen no es válida.":"Invalid image.");if(avatarInput.current)avatarInput.current.value="";return}
    if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);
-   avatarUrlRef.current=next;setAvatarLoading(false);setAvatarUrl(next);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:next}}));setAvatarError("");if(avatarInput.current)avatarInput.current.value="";
+   avatarUrlRef.current=next;try{const canvas=document.createElement("canvas");canvas.width=96;canvas.height=96;const context=canvas.getContext("2d");if(context){const scale=Math.max(96/image.naturalWidth,96/image.naturalHeight);const width=image.naturalWidth*scale,height=image.naturalHeight*scale;context.drawImage(image,(96-width)/2,(96-height)/2,width,height);sessionStorage.setItem("liry:temporary-avatar-thumbnail",canvas.toDataURL("image/jpeg",0.72))}}catch{}setAvatarLoading(false);setAvatarUrl(next);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:next}}));setAvatarError("");if(avatarInput.current)avatarInput.current.value="";
   };
   image.onerror=()=>{URL.revokeObjectURL(next);if(request!==avatarRequestRef.current)return;setAvatarLoading(false);setAvatarError(locale==="es"?"No se pudo abrir la imagen.":"Could not open the image.");if(avatarInput.current)avatarInput.current.value=""};
   image.src=next;
