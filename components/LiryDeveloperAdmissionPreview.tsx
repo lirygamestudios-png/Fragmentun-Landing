@@ -11,7 +11,8 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
  const [disclosure,setDisclosure]=useState(false);
  const [content,setContent]=useState(false);
  const [review,setReview]=useState(false);
- const ready=model!==null&&rights&&executable&&disclosure&&content&&review;
+ const confirmed=[rights,executable,disclosure,content,review].filter(Boolean).length;
+ const ready=model!==null&&confirmed===5;
  return <section className={`${styles.notice} ${styles.developerForm}`} aria-labelledby="admission-preview-title">
   <h2 id="admission-preview-title">{copy.title}</h2>
   <p>{copy.intro}</p>
@@ -27,6 +28,7 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
    <label><input type="checkbox" checked={review} onChange={event=>setReview(event.target.checked)}/> {copy.requirements[4]}</label>
   </fieldset>
   <p role="status" aria-live="polite">{ready?copy.ready:copy.pending}</p>
+  <p className={styles.accountIntro} aria-live="polite">{locale==="es"?`Requisitos declarados: ${confirmed} de 5. ${model===null?"Selecciona el modelo comercial.":"Modelo comercial seleccionado."} Las declaraciones no verifican identidad ni propiedad intelectual.`:`Declared requirements: ${confirmed} of 5. ${model===null?"Choose a business model.":"Business model selected."} These declarations do not verify identity or intellectual property ownership.`}</p>
   <button type="button" className={styles.previewReset} onClick={()=>{setModel(null);setRights(false);setExecutable(false);setDisclosure(false);setContent(false);setReview(false)}}>{copy.reset}</button>
   <p>{copy.inactive}</p>
  </section>;
