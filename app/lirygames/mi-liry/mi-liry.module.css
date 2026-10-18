@@ -294,3 +294,10 @@
 
 .header img.sigil{display:block;width:40px;height:40px;object-fit:contain;border:0;border-radius:0;background:none;box-shadow:none}
 .header .brand:hover img.sigil,.header .brand:focus-visible img.sigil{border:0;filter:drop-shadow(0 0 8px #4fd8ff88);box-shadow:none}
+
+/* Liry Developers: subpantalla cómoda en móvil, sin desplazar la landing. */
+.developerDialog{max-width:min(92vw,820px);max-height:min(90dvh,900px);overflow-y:auto;overscroll-behavior:contain}
+.developerDialogBody{min-width:0;overflow-wrap:anywhere}
+.developerDialogBody :is(button,input,select,textarea):focus-visible{outline:2px solid #69d7ff;outline-offset:3px}
+@media(max-width:560px){.developerDialog{width:calc(100vw - 20px);max-width:calc(100vw - 20px);max-height:calc(100dvh - 24px);margin:auto}.developerDialogBody{padding-inline:clamp(12px,4vw,20px)}.developerDialogBody .developerFinanceGrid{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.developerDialogBody *{scroll-behavior:auto}}
