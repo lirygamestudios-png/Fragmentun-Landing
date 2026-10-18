@@ -84,3 +84,6 @@ Se añadió `scripts/liry-frontdesk-browser-qa.mjs`. Ejecutar desde un equipo co
 
 ## Ampliación de QA por rutas
 El runner ahora incluye también `/lirygames/mi-liry` y `/lirygames/developer`, además de `/lirygames`, con idiomas ES/EN y anchuras 320/375/768/1024. Total previsto: **24 capturas**, siempre que la ejecución externa cuente con acceso y Playwright instalado. La ampliación no autoriza cerrar los recorridos funcionales: no pulsa botones ni envía formularios. Pendiente comprobar ejecución real.
+
+## Control de falsos positivos — navegador
+Se reforzó `scripts/liry-frontdesk-browser-qa.mjs` para registrar la URL final de cada recorrido y marcar error si hubo redirección a otra ruta o respuesta vacía. Esto evita considerar PASS una pantalla de login/error abierta en lugar de FrontDesk, Mi Liry o Liry Developers. **Pendiente:** ejecutar con navegador conectado y revisar capturas, comportamiento de botones, ADN, avatar y formularios; el simple estado READY no sustituye dichas pruebas.
