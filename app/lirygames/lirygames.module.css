@@ -1619,3 +1619,7 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .liryStoreFilters label:nth-child(3),.liryStoreFilters label:nth-child(4){flex:0 1 155px;max-width:180px}
 @media(max-width:760px){.liryStoreFilters label:nth-child(3),.liryStoreFilters label:nth-child(4){flex:1 1 160px;max-width:none}}
 @media(max-width:560px){.liryStoreFilters label:nth-child(3),.liryStoreFilters label:nth-child(4){flex:1 1 100%;max-width:100%}}
+
+/* Auditoría móvil: navegación horizontal alcanzable y foco visible en cian. */
+@media(max-width:760px){.nav nav{overscroll-behavior-inline:contain;scroll-padding-inline:12px;-webkit-overflow-scrolling:touch}.nav nav a{scroll-margin-inline:12px;min-height:44px;display:inline-flex;align-items:center}}
+.nav nav a:focus-visible,.liryCatalogFilters input:focus-visible,.liryCatalogFilters select:focus-visible,.liryCatalogFilters button:focus-visible,.thirdPartyFilters input:focus-visible,.thirdPartyFilters select:focus-visible,.thirdPartyFilters button:focus-visible,.liryStoreFilters input:focus-visible,.liryStoreFilters select:focus-visible,.liryStoreFilters button:focus-visible,.liryCatalogPagination button:focus-visible,.thirdPartyPagination button:focus-visible,.liryStorePages button:focus-visible{outline:2px solid #7bdaf8;outline-offset:3px}
