@@ -99,3 +99,6 @@ El runner ahora escribe el alias temporal `Liry QA` en la vista previa y acciona
 
 ## Avatar de prueba sintético preparado
 El runner comprueba una selección de PNG de 1 píxel generado en memoria, su aparición como vista previa y su eliminación. No utiliza datos ni fotografías del usuario, ni envía el archivo al servidor. Estado: preparado en commit `88654b54`, **no ejecutado en navegador accesible**. Si fallase la decodificación del PNG, registrará FAIL y se corregirá según evidencia.
+
+## Prueba de cuestionario ADN completa preparada
+El runner ahora responde localmente las seis preguntas, espera resultados, reinicia, cierra y vuelve a abrir el explorador para comprobar ausencia de resultado anterior. No crea perfiles reales ni transmite respuestas como cuentas. Estado: **preparado, pendiente de ejecución en navegador accesible**; posibles fallos del script deben distinguirse de defectos de la web con logs y capturas. Commit `e5b016a0`.
