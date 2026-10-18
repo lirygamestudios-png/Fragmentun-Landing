@@ -9,7 +9,6 @@ const targets=[
  {es:"Comunidad",en:"Community",href:"#comunidad",tags:"social comunidad community"},
  {es:"Liryboost",en:"Liryboost",href:"#liryboost",tags:"beta compartir ranking"},
  {es:"Tienda",en:"Store",href:"#tienda",tags:"tienda skins shop store"},
- {es:"Liry Developers",en:"Liry Developers",href:"#comunidad",tags:"desarrolladores developers"}
 ] as const;
 export function LiryHeaderUtilities({locale,searchLabel,noticeLabel}:{locale:Locale;searchLabel:string;noticeLabel:string}){
  const [section,setSection]=useState<"search"|"notice">("search");
@@ -17,9 +16,10 @@ export function LiryHeaderUtilities({locale,searchLabel,noticeLabel}:{locale:Loc
  const dialog=useRef<HTMLDialogElement>(null);
  const origin=useRef<HTMLButtonElement|null>(null);
  const input=useRef<HTMLInputElement>(null);
- const open=(kind:"search"|"notice",button:HTMLButtonElement)=>{origin.current=button;setSection(kind);dialog.current?.showModal();if(kind==="search")requestAnimationFrame(()=>input.current?.focus({preventScroll:true}))};
+ const open=(kind:"search"|"notice",button:HTMLButtonElement)=>{origin.current=button;if(kind==="search")setTerm("");setSection(kind);dialog.current?.showModal();if(kind==="search")requestAnimationFrame(()=>input.current?.focus({preventScroll:true}))};
  const close=()=>dialog.current?.close();
- const results=targets.filter(t=>!term.trim()||(`${t.es} ${t.en} ${t.tags}`).toLocaleLowerCase().includes(term.trim().toLocaleLowerCase()));
+ const normalize=(value:string)=>value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase();
+ const results=targets.filter(t=>!term.trim()||normalize(`${t.es} ${t.en} ${t.tags}`).includes(normalize(term.trim())));
  return <>
  <button className={styles.navSearch} type="button" aria-label={searchLabel} title={searchLabel} aria-haspopup="dialog" onClick={e=>open("search",e.currentTarget)}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m16 16 5 5"/></svg></button>
  <button className={styles.navNotice} type="button" aria-label={noticeLabel} title={noticeLabel} aria-haspopup="dialog" onClick={e=>open("notice",e.currentTarget)}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button>
