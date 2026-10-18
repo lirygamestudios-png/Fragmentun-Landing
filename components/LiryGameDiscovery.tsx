@@ -11,6 +11,7 @@ import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-f
 
 
 
+const normalizePublicSearch=(value:string)=>value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase().trim();
 const publicCodenames=["LIRY // ARENA-01","LIRY // BOT-02","LIRY // ECON-03","LIRY // EARTH-04","LIRY // LINK-05","LIRY // REALM-06","LIRY // EMOTION-07","LIRY // TITAN-08","LIRY // CODE-09"];
 const catalogArt=["/liry-assets/world-01.webp","/liry-assets/world-02.webp","/liry-assets/world-03.webp","/liry-assets/world-04.webp","/liry-assets/world-05.webp","/liry-assets/world-06.webp","/liry-assets/world-07.webp","/liry-assets/world-08.webp","/liry-assets/world-09.webp"];
 
@@ -118,7 +119,7 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog,approved
   const externalBySlug=new Map(approvedExternalGames.map(game=>[game.slug,game]));
   const externalRecommendations=approvedDnaCatalog?.length&&hasDnaResults?rankApprovedLiryDnaCatalog(approvedDnaCatalog,dnaAnswers.map(n=>n??0),100).filter(item=>item.origin==="third_party"&&externalBySlug.has(item.publicId)).slice(0,3).map(item=>externalBySlug.get(item.publicId)!):[];
   const dnaHeightStyle={"--liry-catalog-height":catalogHeight===null?undefined:`${catalogHeight}px`} as CSSProperties;
-  const publicGameEntries=games.map((game,index)=>({game,index})).filter(({game,index})=>(catalogStatus==="all"||game.state===catalogStatus)&&(`${publicCodenames[index]??""} ${themes[index]??""} ${game.state}`).toLocaleLowerCase().includes(catalogSearch.trim().toLocaleLowerCase()));
+  const publicGameEntries=games.map((game,index)=>({game,index})).filter(({game,index})=>(catalogStatus==="all"||game.state===catalogStatus)&&normalizePublicSearch(`${publicCodenames[index]??""} ${themes[index]??""} ${game.state}`).includes(normalizePublicSearch(catalogSearch)));
   const catalogPages=Math.max(1,Math.ceil(publicGameEntries.length/9));
   const currentCatalogPage=Math.min(catalogPage,catalogPages);
   const paginatedGames=publicGameEntries.slice((currentCatalogPage-1)*9,currentCatalogPage*9);
@@ -140,7 +141,7 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog,approved
       </article>)}
     </div>
     {publicGameEntries.length===0&&<p role="status">{locale==="es"?"No se encontraron videojuegos públicos con estos criterios.":"No public games match these criteria."}</p>}
-    {catalogPages>1&&<nav className={styles.liryCatalogPagination} aria-label={locale==="es"?"Paginación del catálogo":"Catalog pagination"}><button type="button" disabled={currentCatalogPage===1} onClick={()=>setCatalogPage(p=>Math.max(1,p-1))}>{locale==="es"?"Anterior":"Previous"}</button>{Array.from({length:catalogPages},(_,i)=><button type="button" key={i} aria-current={currentCatalogPage===i+1?"page":undefined} onClick={()=>setCatalogPage(i+1)}>{i+1}</button>)}<button type="button" disabled={currentCatalogPage===catalogPages} onClick={()=>setCatalogPage(p=>Math.min(catalogPages,p+1))}>{locale==="es"?"Siguiente":"Next"}</button></nav>}
+    {catalogPages>1&&<nav className={styles.liryCatalogPagination} aria-label={locale==="es"?"Paginación del catálogo":"Catalog pagination"}><button type="button" disabled={currentCatalogPage===1} onClick={()=>setCatalogPage(p=>Math.max(1,p-1))}>{locale==="es"?"Anterior":"Previous"}</button>{Array.from({length:catalogPages},(_,i)=><button type="button" key={i} aria-current={currentCatalogPage===i+1?"page":undefined} aria-label={locale==="es"?`Página ${i+1} de ${catalogPages}`:`Page ${i+1} of ${catalogPages}`} onClick={()=>setCatalogPage(i+1)}>{i+1}</button>)}<button type="button" disabled={currentCatalogPage===catalogPages} onClick={()=>setCatalogPage(p=>Math.min(catalogPages,p+1))}>{locale==="es"?"Siguiente":"Next"}</button></nav>}
     {selectedGame!==null&&<div className={styles.worldDetailBackdrop} onClick={closeGameDetails}><section className={styles.worldDetailDialog} role="dialog" aria-modal="true" aria-labelledby="liry-world-dialog-title" onClick={e=>e.stopPropagation()}><button type="button" ref={gameCloseRef} className={styles.worldDetailClose} onClick={closeGameDetails} aria-label={cardCopy.closeAria}>×</button><img src={catalogArt[selectedGame]} alt="" /><div className={styles.worldDetailBody}><p className={styles.kicker}>{cardCopy.universe}</p><h3 id="liry-world-dialog-title">{publicCodenames[selectedGame]}</h3><p>{themes[selectedGame]}</p><strong>{games[selectedGame].state==="available"?cardCopy.available:games[selectedGame].state==="beta"?cardCopy.beta:cardCopy.comingSoon}</strong><p>{cardCopy.preparing}</p><a href="#contacto" onClick={()=>setSelectedGame(null)}>{cardCopy.contact} →</a></div></section></div>}
     <aside className={styles.dnaSide} style={dnaHeightStyle} id="liry-dna" aria-labelledby="dna-side-title">
       <p className={styles.kicker}>{accessibilityCopy.kicker}</p>
