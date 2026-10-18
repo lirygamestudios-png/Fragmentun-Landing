@@ -42,3 +42,5 @@ test("El selector de avatar se limpia tras carga válida para permitir elegir la
 test("La cabecera anuncia los cambios temporales del nombre público",()=>{const header=readFileSync(new URL("../components/LiryPlayerIdentityHeader.tsx",import.meta.url),"utf8");assert.match(header,/aria-live="polite" aria-atomic="true"/);assert.match(header,/previewName\|\|displayName/);assert.match(header,/liry:display-name-preview/);});
 
 test("El avatar comunica validación en curso sin guardar archivos",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/avatarLoading/);assert.match(src,/Comprobando imagen/);assert.match(src,/Checking image/);assert.match(src,/setAvatarLoading\(false\)/);assert.doesNotMatch(src,/uploadAvatar\(|storage\.from\(/);});
+
+test("Nueva selección de avatar limpia primero el error anterior",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/const request=\+\+avatarRequestRef\.current;\s*setAvatarError\("".*?\);\s*setAvatarLoading\(true\)/);});
