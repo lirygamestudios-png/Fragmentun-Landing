@@ -17,6 +17,7 @@ export function LiryGamerIdentity({snapshot,locale="es"}:{snapshot:Readonly<Publ
  const verified=snapshot.status==="verified"?snapshot.verifiedActivity:null;
  const xp=verified?calculateGamerXpProgress(verified.experiencePoints):null;
  const [avatar,setAvatar]=useState<string|null>(null);
+ const thumbnailKey="liry:temporary-avatar-thumbnail";
  const [style,setStyle]=useState<string|null>(null);
  const [highlight,setHighlight]=useState(false);
  const avatarUrl=useRef<string|null>(null);
@@ -58,11 +59,25 @@ export function LiryGamerIdentity({snapshot,locale="es"}:{snapshot:Readonly<Publ
   if(!validContent){setAvatarError(detailCopy.invalidFormat);return;}
   if(avatarUrl.current)URL.revokeObjectURL(avatarUrl.current);
   const url=URL.createObjectURL(file);avatarUrl.current=url;setAvatar(url);
+  // Compact session-only preview for the public header; never upload the avatar.
+  try{
+   const bitmap=await createImageBitmap(file);
+   if(selection!==avatarSelection.current){bitmap.close();return;}
+   const canvas=document.createElement("canvas");canvas.width=64;canvas.height=64;
+   const context=canvas.getContext("2d");if(context){
+    context.drawImage(bitmap,0,0,64,64);
+    const thumbnail=canvas.toDataURL("image/webp",0.72);
+    if(thumbnail.length<180000){sessionStorage.setItem(thumbnailKey,thumbnail);window.dispatchEvent(new Event("liry:avatar-changed"));}
+   }
+   bitmap.close();
+  }catch{}
+
  }
  function removeAvatar(){
   avatarSelection.current++;
   if(avatarUrl.current)URL.revokeObjectURL(avatarUrl.current);
   avatarUrl.current=null;setAvatar(null);setAvatarError(null);
+  try{sessionStorage.removeItem(thumbnailKey);window.dispatchEvent(new Event("liry:avatar-changed"))}catch{}
  }
  return <>
   <div className={styles.gamerIdentity}>
