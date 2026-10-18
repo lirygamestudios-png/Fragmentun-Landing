@@ -14,22 +14,24 @@ const out=path.resolve("qa-evidence","lirygames");
 await mkdir(out,{recursive:true});
 const browser=await chromium.launch({headless:true});
 const results=[];
-for(const locale of ["es","en"]){
+for(const route of [{name:"frontdesk",path:"/lirygames"},{name:"player",path:"/lirygames/mi-liry"},{name:"developer",path:"/lirygames/developer"}]){
+ for(const locale of ["es","en"]){
  for(const width of [320,375,768,1024]){
   const page=await browser.newPage({viewport:{width,height:900},reducedMotion:"reduce"});
   const errors=[];
   page.on("pageerror",e=>errors.push(e.message));
-  const url=new URL("/lirygames",base);url.searchParams.set("lang",locale);
+  const url=new URL(route.path,base);url.searchParams.set("lang",locale);
   try{
    const res=await page.goto(url.toString(),{waitUntil:"domcontentloaded",timeout:30000});
    await page.waitForTimeout(700);
    const status=res?.status()??0;
    const geometry=await page.evaluate(()=>({scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth}));
-   const snapshot=await page.screenshot({path:path.join(out,`frontdesk-${locale}-${width}.png`),fullPage:true});
-   const entry={locale,width,status,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`frontdesk-${locale}-${width}.png`};
+   await page.screenshot({path:path.join(out,`${route.name}-${locale}-${width}.png`),fullPage:true});
+   const entry={route:route.path,locale,width,status,overflow:geometry.scrollWidth>geometry.clientWidth+2,errors,title:await page.title(),screenshot:`${route.name}-${locale}-${width}.png`};
    results.push(entry);console.log(JSON.stringify(entry));
-  }catch(e){const entry={locale,width,error:String(e)};results.push(entry);console.error(JSON.stringify(entry));}
+  }catch(e){const entry={route:route.path,locale,width,error:String(e)};results.push(entry);console.error(JSON.stringify(entry));}
   await page.close();
+ }
  }
 }
 await browser.close();
