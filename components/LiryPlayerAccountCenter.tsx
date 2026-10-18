@@ -58,7 +58,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const active=sections.indexOf(selected);
  return <section aria-labelledby="liry-account-center-heading" className={`${styles.accountCenter} ${reduceMotion?styles.accountReducedMotion:""} ${largeText?styles.accountLargeText:""}`}>
   <h2 id="liry-account-center-heading" className={styles.accountHeading}>{copy.heading}</h2>
-  <p className={styles.accountIntro}>{copy.intro}</p>
+  <p className={styles.accountIntro}>{copy.intro}</p><p className={styles.accountSummary} role="status">{locale==="es"?"Estado del perfil: nombre, avatar y preferencias disponibles como vista previa. Seguridad y compras requieren una cuenta verificada y permanecen desactivadas.":"Profile status: name, avatar, and preferences are available as previews. Security and purchases require a verified account and remain disabled."}</p>
   <div role="group" aria-label={copy.heading} className={styles.accountTabs}>
    {sections.map((section,i)=><button key={section} type="button" aria-pressed={selected===section} aria-controls="liry-account-active-panel" onClick={()=>setSelected(section)} onKeyDown={event=>{const keys=["ArrowRight","ArrowDown","ArrowLeft","ArrowUp","Home","End"];if(!keys.includes(event.key))return;event.preventDefault();const next=event.key==="Home"?0:event.key==="End"?sections.length-1:(i+(event.key==="ArrowRight"||event.key==="ArrowDown"?1:-1)+sections.length)%sections.length;setSelected(sections[next]);const buttons=event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>("button");buttons?.[next]?.focus();}} className={styles.accountTab}>{selected===section?(locale==="es"?`Viendo: ${copy.sections[i]}`:`Viewing: ${copy.sections[i]}`):copy.sections[i]}</button>)}
   </div>
