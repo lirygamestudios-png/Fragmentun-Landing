@@ -283,3 +283,6 @@
 /* Evita desbordamientos de los cinco campos de facturación en pantallas pequeñas. */
 .accountBillingGrid .accountNameLabel{min-width:0;max-width:none}
 .accountBillingGrid .accountNameInput{display:block;width:100%;min-width:0;box-sizing:border-box}
+
+.accountSaveArea{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin-top:20px;padding-top:16px;border-top:1px solid #29729b55}
+.accountSaveArea .accountReset{min-height:44px;border-color:#3dadd4;color:#d9f5ff}
