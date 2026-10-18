@@ -108,3 +108,5 @@ test("Botones guardar informan que no hay persistencia en las cuatro secciones e
 test("Buscador de cabecera reinicia texto y reconoce acentos sin resultados engañosos",()=>{const src=readFileSync(new URL("../components/LiryHeaderUtilities.tsx",import.meta.url),"utf8");assert.match(src,/if\(kind==="search"\)setTerm\("".*?\)/);assert.match(src,/\.normalize\("NFD"\)/);assert.doesNotMatch(src,/href:"#comunidad",tags:"desarrolladores developers"/);assert.match(src,/onClose=\{\(\)=>origin\.current\?\.focus/);});
 
 test("La búsqueda del header utiliza teclado de búsqueda móvil",()=>{const src=readFileSync(new URL("../components/LiryHeaderUtilities.tsx",import.meta.url),"utf8");assert.match(src,/type="search" enterKeyHint="search" autoComplete="off"/);});
+
+test("Buscador informa resultados reales y permite limpiar el término",()=>{const src=readFileSync(new URL("../components/LiryHeaderUtilities.tsx",import.meta.url),"utf8");assert.match(src,/results\.length\} secciones encontradas/);assert.match(src,/Clear search/);assert.match(src,/setTerm\("".*?\);input\.current\?\.focus/);});
