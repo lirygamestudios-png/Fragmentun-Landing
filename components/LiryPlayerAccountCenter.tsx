@@ -25,27 +25,29 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const [privateProfile,setPrivateProfile]=useState(true);
  const [avatarUrl,setAvatarUrl]=useState<string|null>(null);
  const [avatarError,setAvatarError]=useState("");
+ const [avatarLoading,setAvatarLoading]=useState(false);
  const avatarInput=useRef<HTMLInputElement>(null);
  const avatarUrlRef=useRef<string|null>(null);
  const avatarRequestRef=useRef(0);
  useEffect(()=>()=>{avatarRequestRef.current++;if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current)},[]);
- const removeAvatar=()=>{avatarRequestRef.current++;if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);avatarUrlRef.current=null;setAvatarUrl(null);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:null}}));setAvatarError("");if(avatarInput.current)avatarInput.current.value=""};
+ const removeAvatar=()=>{avatarRequestRef.current++;setAvatarLoading(false);if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);avatarUrlRef.current=null;setAvatarUrl(null);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:null}}));setAvatarError("");if(avatarInput.current)avatarInput.current.value=""};
  const chooseAvatar=async(file?:File)=>{
   if(!file)return;
   const request=++avatarRequestRef.current;
+  setAvatarLoading(true);
   const validation=validateTemporaryGamerAvatar(file);
-  if(!validation.ok){setAvatarError(locale==="es"?"Selecciona JPG, PNG o WebP de hasta 2 MB.":"Choose JPG, PNG or WebP up to 2 MB.");if(avatarInput.current)avatarInput.current.value="";return}
-  if(!await validateTemporaryGamerAvatarContent(file).catch(()=>false)){if(request===avatarRequestRef.current){setAvatarError(locale==="es"?"El contenido del archivo no es una imagen válida.":"The file content is not a valid image.");if(avatarInput.current)avatarInput.current.value=""}return}
+  if(!validation.ok){setAvatarLoading(false);setAvatarError(locale==="es"?"Selecciona JPG, PNG o WebP de hasta 2 MB.":"Choose JPG, PNG or WebP up to 2 MB.");if(avatarInput.current)avatarInput.current.value="";return}
+  if(!await validateTemporaryGamerAvatarContent(file).catch(()=>false)){if(request===avatarRequestRef.current){setAvatarLoading(false);setAvatarError(locale==="es"?"El contenido del archivo no es una imagen válida.":"The file content is not a valid image.");if(avatarInput.current)avatarInput.current.value=""}return}
   if(request!==avatarRequestRef.current)return;
   const next=URL.createObjectURL(file);
   const image=new Image();
   image.onload=()=>{
    if(request!==avatarRequestRef.current){URL.revokeObjectURL(next);return}
-   if(image.naturalWidth===0||image.naturalHeight===0){URL.revokeObjectURL(next);setAvatarError(locale==="es"?"La imagen no es válida.":"Invalid image.");if(avatarInput.current)avatarInput.current.value="";return}
+   if(image.naturalWidth===0||image.naturalHeight===0){URL.revokeObjectURL(next);setAvatarLoading(false);setAvatarError(locale==="es"?"La imagen no es válida.":"Invalid image.");if(avatarInput.current)avatarInput.current.value="";return}
    if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);
-   avatarUrlRef.current=next;setAvatarUrl(next);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:next}}));setAvatarError("");if(avatarInput.current)avatarInput.current.value="";
+   avatarUrlRef.current=next;setAvatarLoading(false);setAvatarUrl(next);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:next}}));setAvatarError("");if(avatarInput.current)avatarInput.current.value="";
   };
-  image.onerror=()=>{URL.revokeObjectURL(next);if(request!==avatarRequestRef.current)return;setAvatarError(locale==="es"?"No se pudo abrir la imagen.":"Could not open the image.");if(avatarInput.current)avatarInput.current.value=""};
+  image.onerror=()=>{URL.revokeObjectURL(next);if(request!==avatarRequestRef.current)return;setAvatarLoading(false);setAvatarError(locale==="es"?"No se pudo abrir la imagen.":"Could not open the image.");if(avatarInput.current)avatarInput.current.value=""};
   image.src=next;
  };
  const resetPreview=()=>{setNotices(false);setReduceMotion(false);setLargeText(false);setPrivateProfile(true)};
@@ -62,7 +64,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
     <div><p>{copy.avatar}</p><input ref={avatarInput} className={styles.accountAvatarInput} type="file" accept="image/jpeg,image/png,image/webp" aria-label={locale==="es"?"Seleccionar fotografía o avatar":"Choose photo or avatar"} onChange={event=>chooseAvatar(event.currentTarget.files?.[0])}/>
     <p className={styles.accountIntro}>{locale==="es"?"JPG, PNG o WebP · máximo 2 MB · vista previa temporal":"JPG, PNG or WebP · 2 MB max · temporary preview"}</p>
     {avatarUrl&&<button type="button" className={styles.accountReset} onClick={removeAvatar}>{locale==="es"?"Quitar fotografía":"Remove photo"}</button>}
-    <p role={avatarError?"alert":"status"} aria-live={avatarError?"assertive":"polite"} className={styles.accountIntro}>{avatarError|| (avatarUrl?(locale==="es"?"Fotografía cargada solo para esta vista previa.":"Photo loaded for this preview only."):(locale==="es"?"No has seleccionado una fotografía.":"No photo selected."))}</p></div>
+    <p role={avatarError?"alert":"status"} aria-live={avatarError?"assertive":"polite"} className={styles.accountIntro}>{avatarLoading?(locale==="es"?"Comprobando imagen…":"Checking image…"):avatarError|| (avatarUrl?(locale==="es"?"Fotografía cargada solo para esta vista previa.":"Photo loaded for this preview only."):(locale==="es"?"No has seleccionado una fotografía.":"No photo selected."))}</p></div>
    </div><small>{copy.pending}</small></>}
    {selected==="configuracion"&&<><h3>{copy.sections[1]}</h3><p>{copy.language}: <strong>{locale.toUpperCase()}</strong></p><label className={styles.accountToggle}><input type="checkbox" checked={notices} onChange={e=>setNotices(e.target.checked)}/>{copy.notifications}</label><label className={styles.accountToggle}><input type="checkbox" checked={reduceMotion} onChange={e=>setReduceMotion(e.target.checked)}/>{copy.motion}</label><label className={styles.accountToggle}><input type="checkbox" checked={largeText} onChange={e=>setLargeText(e.target.checked)}/>{copy.largeText}</label><p aria-live="polite" className={styles.accountSummary}>{locale==="es"?`Avisos: ${notices?"seleccionados":"no seleccionados"} · Animaciones: ${reduceMotion?"reducidas":"normales"} · Texto: ${largeText?"ampliado":"normal"}`:`Notices: ${notices?"selected":"not selected"} · Motion: ${reduceMotion?"reduced":"normal"} · Text: ${largeText?"larger":"normal"}`}</p><small>{copy.save}</small></>}
    {selected==="seguridad"&&<><h3>{copy.sections[2]}</h3><p>{copy.password} · {copy.reset} · {copy.sessions}</p><p>{copy.disabled}</p><ul style={{paddingLeft:22,lineHeight:1.8}}>{(locale==="es"?LIRY_ACCOUNT_SECURITY_CHECKLIST:["Independent Liry ID authentication","Email verification","Sign-in safeguards and attempt limits","Time-limited password recovery links","Password change with verified session","Server-side session revocation","Security audit trail and personal data protection"]).map(item=><li key={item}>{item}</li>)}</ul><small aria-live="polite">{LIRY_PLAYER_AUTH_RELEASE.enabled?copy.pendingAction:copy.disabled}</small></>}
