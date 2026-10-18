@@ -31,8 +31,8 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const avatarUrlRef=useRef<string|null>(null);
  const avatarRequestRef=useRef(0);
  useEffect(()=>()=>{avatarRequestRef.current++;if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current)},[]);
- const cancelAvatarSelection=()=>{avatarRequestRef.current++;setAvatarLoading(false);setAvatarError("");if(avatarInput.current)avatarInput.current.value=""};
- const removeAvatar=()=>{avatarRequestRef.current++;setAvatarLoading(false);if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);avatarUrlRef.current=null;setAvatarUrl(null);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:null}}));setAvatarError("");if(avatarInput.current)avatarInput.current.value=""};
+ const cancelAvatarSelection=()=>{avatarRequestRef.current++;setAvatarLoading(false);setAvatarError("");if(avatarInput.current){avatarInput.current.value="";avatarInput.current.focus()}};
+ const removeAvatar=()=>{avatarRequestRef.current++;setAvatarLoading(false);if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);avatarUrlRef.current=null;setAvatarUrl(null);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:null}}));setAvatarError("");if(avatarInput.current){avatarInput.current.value="";avatarInput.current.focus()}};
  const chooseAvatar=async(file?:File)=>{
   if(!file)return;
   const request=++avatarRequestRef.current;
