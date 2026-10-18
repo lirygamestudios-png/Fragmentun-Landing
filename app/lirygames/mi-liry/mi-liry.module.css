@@ -265,3 +265,10 @@
 .accountLargeText .accountTab{font-size:1rem;line-height:1.5}
 
 .accountNameLabel{display:grid;gap:8px;max-width:420px;color:#dcf2ff;font-size:13px;font-weight:700}.accountNameInput{background:#07192c;color:#f1faff;border:1px solid #4bbce7;border-radius:8px;padding:12px;font-size:16px;outline-offset:3px}.accountNameInput:focus-visible{border-color:#8be9ff;box-shadow:0 0 13px #48c5ef66}
+
+/* Mi Liry: textos largos legibles y selección de avatar accesible en móvil. */
+.accountCenter,.accountPanel,.accountAvatarArea{min-width:0}
+.accountPanel{overflow-wrap:anywhere}
+.accountAvatarArea>div{min-width:0;max-width:100%}
+.accountAvatarInput:focus-visible{outline:2px solid #8be9ff;outline-offset:4px;border-radius:6px}
+@media(max-width:480px){.accountAvatarInput{width:100%;font-size:14px}.accountAvatarInput::file-selector-button{min-height:44px;max-width:100%;white-space:normal}}
