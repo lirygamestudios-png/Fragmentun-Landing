@@ -3,6 +3,7 @@ import {useEffect,useRef,useState} from "react";
 import type {LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 import {LIRY_PLAYER_AUTH_RELEASE,LIRY_ACCOUNT_SECURITY_CHECKLIST} from "../lib/games/liry-player-account-security";
 import styles from "../app/lirygames/mi-liry/mi-liry.module.css";
+import {validateTemporaryGamerAvatar,validateTemporaryGamerAvatarContent} from "../lib/games/liry-avatar-validation";
 
 type Section="perfil"|"configuracion"|"seguridad"|"privacidad"|"compras";
 const labels={
@@ -24,10 +25,13 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const avatarRequestRef=useRef(0);
  useEffect(()=>()=>{avatarRequestRef.current++;if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current)},[]);
  const removeAvatar=()=>{avatarRequestRef.current++;if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);avatarUrlRef.current=null;setAvatarUrl(null);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:null}}));setAvatarError("");if(avatarInput.current)avatarInput.current.value=""};
- const chooseAvatar=(file?:File)=>{
+ const chooseAvatar=async(file?:File)=>{
   if(!file)return;
   const request=++avatarRequestRef.current;
-  if(!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>3*1024*1024||file.size===0){setAvatarError(locale==="es"?"Selecciona JPG, PNG o WebP de hasta 3 MB.":"Choose JPG, PNG or WebP up to 3 MB.");return}
+  const validation=validateTemporaryGamerAvatar(file);
+  if(!validation.ok){setAvatarError(locale==="es"?"Selecciona JPG, PNG o WebP de hasta 2 MB.":"Choose JPG, PNG or WebP up to 2 MB.");return}
+  if(!await validateTemporaryGamerAvatarContent(file)){if(request===avatarRequestRef.current)setAvatarError(locale==="es"?"El contenido del archivo no es una imagen válida.":"The file content is not a valid image.");return}
+  if(request!==avatarRequestRef.current)return;
   const next=URL.createObjectURL(file);
   const image=new Image();
   image.onload=()=>{
@@ -41,7 +45,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  };
  const resetPreview=()=>{setNotices(false);setReduceMotion(false);setPrivateProfile(true)};
  const active=sections.indexOf(selected);
- return <section aria-labelledby="liry-account-center-heading" className={styles.accountCenter}>
+ return <section aria-labelledby="liry-account-center-heading" className={`${styles.accountCenter} ${reduceMotion?styles.accountReducedMotion:""}`}>
   <h2 id="liry-account-center-heading" className={styles.accountHeading}>{copy.heading}</h2>
   <p className={styles.accountIntro}>{copy.intro}</p>
   <div role="group" aria-label={copy.heading} className={styles.accountTabs}>
@@ -51,7 +55,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
    {selected==="perfil"&&<><h3>{copy.sections[0]}</h3><p>{copy.alias}: <strong>{copy.aliasValue}</strong></p><div className={styles.accountAvatarArea}>
     <div className={styles.accountAvatarPicture}>{avatarUrl?<img src={avatarUrl} alt={locale==="es"?"Vista previa de tu avatar":"Your avatar preview"}/>:<span aria-hidden="true">◇</span>}</div>
     <div><p>{copy.avatar}</p><input ref={avatarInput} className={styles.accountAvatarInput} type="file" accept="image/jpeg,image/png,image/webp" aria-label={locale==="es"?"Seleccionar fotografía o avatar":"Choose photo or avatar"} onChange={event=>chooseAvatar(event.currentTarget.files?.[0])}/>
-    <p className={styles.accountIntro}>{locale==="es"?"JPG, PNG o WebP · máximo 3 MB · vista previa temporal":"JPG, PNG or WebP · 3 MB max · temporary preview"}</p>
+    <p className={styles.accountIntro}>{locale==="es"?"JPG, PNG o WebP · máximo 2 MB · vista previa temporal":"JPG, PNG or WebP · 2 MB max · temporary preview"}</p>
     {avatarUrl&&<button type="button" className={styles.accountReset} onClick={removeAvatar}>{locale==="es"?"Quitar fotografía":"Remove photo"}</button>}
     {avatarError&&<p role="alert">{avatarError}</p>}</div>
    </div><small>{copy.pending}</small></>}
