@@ -21,18 +21,32 @@ async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
     ?(/^\d+$/.test(value)?value:(value.match(/(?:^|\D)(\d{8,})(?:\D|$)/)?.[1]||""))
     :"";
 
-  const res=await fetch(`${ML_GROUPS}?limit=100`,{
-    headers:{Authorization:`Bearer ${token}`,Accept:"application/json"},
-    cache:"no-store",
-    signal:AbortSignal.timeout(8000)
-  }).catch(()=>null);
-
-  if(!res?.ok){
-    return {id:null as string|null,debug:res?`groups endpoint HTTP ${res.status}`:"groups endpoint request failed"};
+  const groups:any[]=[];
+  const visited=new Set<string>();
+  let nextUrl:string|null=`${ML_GROUPS}?limit=100`;
+  for(let page=0;nextUrl && page<20;page++){
+    const requestUrl:URL=new URL(nextUrl);
+    if(requestUrl.protocol!=="https:" || requestUrl.hostname!=="connect.mailerlite.com" || visited.has(requestUrl.href)){
+      return {id:null as string|null,debug:"unsafe or repeated groups pagination"};
+    }
+    visited.add(requestUrl.href);
+    const res=await fetch(requestUrl,{
+      headers:{Authorization:`Bearer ${token}`,Accept:"application/json"},
+      cache:"no-store",
+      redirect:"error",
+      signal:AbortSignal.timeout(8000)
+    }).catch(()=>null);
+    if(!res?.ok){
+      return {id:null as string|null,debug:res?`groups endpoint HTTP ${res.status}`:"groups endpoint request failed"};
+    }
+    const data=await res.json().catch(()=>null);
+    if(!Array.isArray(data?.data)){
+      return {id:null as string|null,debug:"invalid groups response"};
+    }
+    groups.push(...data.data);
+    nextUrl=data?.links?.next?String(new URL(String(data.links.next),requestUrl)):null;
   }
-
-  const data=await res.json().catch(()=>({}));
-  const groups=Array.isArray(data?.data)?data.data:[];
+  if(nextUrl)return {id:null as string|null,debug:"groups pagination limit exceeded"};
 
   if(configuredId){
     const byId=groups.find((g:any)=>String(g?.id||"")===configuredId);
