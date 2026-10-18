@@ -50,3 +50,5 @@ test("Restablecimiento conjunto de identidad temporal conserva preferencias",()=
 test("Botones de Mi Liry presentan estado deshabilitado y tamaño táctil móvil",()=>{const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");assert.match(css,/\.accountReset:disabled\{[^}]*cursor:not-allowed/);assert.match(css,/@media\(max-width:560px\)\{\.accountReset\{min-height:44px/);assert.match(css,/\.accountTab\{min-height:44px/);});
 
 test("Mi Liry evita desbordamientos y facilita enfocar avatar en móvil",()=>{const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");assert.match(css,/\.accountPanel\{overflow-wrap:anywhere\}/);assert.match(css,/\.accountAvatarInput:focus-visible\{outline:2px solid #8be9ff/);assert.match(css,/\.accountAvatarInput::file-selector-button\{min-height:44px/);});
+
+test("La comprobación temporal del avatar expone estado ocupado",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/className=\{styles\.accountAvatarArea\} aria-busy=\{avatarLoading\}/);});
