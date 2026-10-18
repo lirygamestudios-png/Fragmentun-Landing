@@ -74,9 +74,10 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog,approved
     if(!catalog)return;
     const measure=()=>setCatalogHeight(Math.ceil(catalog.getBoundingClientRect().height));
     measure();
-    const observer=new ResizeObserver(measure);
-    observer.observe(catalog);
-    return ()=>observer.disconnect();
+    window.addEventListener("resize",measure);
+    const observer=typeof ResizeObserver!=="undefined"?new ResizeObserver(measure):null;
+    observer?.observe(catalog);
+    return ()=>{observer?.disconnect();window.removeEventListener("resize",measure)};
   },[]);
   // Enfocar el cierre solo cuando se abre: responder preguntas no debe robar el foco.
   useEffect(()=>{
