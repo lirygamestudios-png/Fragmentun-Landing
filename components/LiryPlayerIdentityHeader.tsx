@@ -12,5 +12,5 @@ export function LiryPlayerIdentityHeader({locale,displayName,eyebrow,note}:{loca
   window.addEventListener("liry:display-name-preview",onName);
   return ()=>{window.removeEventListener("liry:avatar-preview",onAvatar);window.removeEventListener("liry:display-name-preview",onName)};
  },[]);
- return <div className={styles.identity}><div className={styles.avatar} aria-label={locale==="es"?"Avatar temporal":"Temporary avatar"}>{photo?<img src={photo} alt={locale==="es"?"Fotografía del jugador":"Player photo"} className={styles.accountHeaderPhoto}/>:"◇"}</div><div><span className={styles.eyebrow}>{eyebrow}</span><h2>{previewName||displayName}</h2><p>{note}</p></div></div>;
+ return <div className={styles.identity}><div className={styles.avatar} aria-label={locale==="es"?"Avatar temporal":"Temporary avatar"}>{photo?<img src={photo} alt={locale==="es"?"Fotografía del jugador":"Player photo"} className={styles.accountHeaderPhoto}/>:"◇"}</div><div><span className={styles.eyebrow}>{eyebrow}</span><h2 aria-live="polite" aria-atomic="true">{previewName||displayName}</h2><p>{note}</p></div></div>;
 }
