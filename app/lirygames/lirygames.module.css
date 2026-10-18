@@ -1638,3 +1638,31 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .page select,.page select option,.page select optgroup{color:#eaf6ff;background-color:#0b1e37;color-scheme:dark}
 .page select{border-color:#397aab;background-color:#101f3a;accent-color:#4ad5ff}
 .page select:focus-visible{outline:2px solid #67dfff;outline-offset:2px;border-color:#65c7e7}
+
+/* Mobile header menu: readable full-width vertical list, not compressed header links. */
+@media(max-width:750px){
+ .nav .navMenuPanel{
+  display:flex;
+  flex-direction:column;
+  flex-wrap:nowrap;
+  align-items:stretch;
+  gap:0;
+  right:0;
+  width:min(292px,calc(100vw - 24px));
+  min-width:min(292px,calc(100vw - 24px));
+  max-width:calc(100vw - 24px);
+  padding:10px;
+  background:#06142af5;
+ }
+ .nav .navMenuPanel a{
+  display:block;
+  flex:none;
+  width:100%;
+  min-height:44px;
+  padding:12px 13px;
+  font-size:13px;
+  line-height:1.4;
+  white-space:normal;
+  overflow-wrap:break-word;
+ }
+}
