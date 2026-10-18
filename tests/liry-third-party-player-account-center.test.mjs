@@ -135,3 +135,5 @@ test("Tienda encuentra nombres con o sin acentos y anuncia página activa",()=>{
 test("Buscadores de videojuegos admiten acentos y paginación accesible",()=>{for(const p of ["../components/LiryGameDiscovery.tsx","../components/LiryThirdPartyCatalog.tsx"]){const src=readFileSync(new URL(p,import.meta.url),"utf8");assert.match(src,/normalizePublicSearch/);assert.match(src,/normalize\("NFD"\)/);assert.match(src,/aria-label=\{locale==="es"\?`Página \$\{i\+1\} de/);}});
 
 test("Navegación móvil conserva foco cian y acceso a controles",()=>{const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");assert.match(css,/overscroll-behavior-inline:contain/);assert.match(css,/\.liryStoreFilters input:focus-visible/);assert.match(css,/outline:2px solid #7bdaf8/);});
+
+test("La vista previa del perfil invalida aviso de guardado al editar datos",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/const updatePublicName=\(name:string\)=>\{setSaveNotice\(null\);setPublicName\(name\)/);assert.match(src,/setSaveNotice\(null\);setBillingDraft/);});
