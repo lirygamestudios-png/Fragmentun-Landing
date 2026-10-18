@@ -14,26 +14,6 @@ function isLikelySecret(value:string){
   return value.startsWith("eyJ") || value.split(".").length===3 || value.length>80;
 }
 
-async function createMailerLiteGroup(token:string,name:string){
-  const res=await fetch(ML_GROUPS,{
-    method:"POST",
-    headers:{Authorization:`Bearer ${token}`,"Content-Type":"application/json",Accept:"application/json"},
-    body:JSON.stringify({name}),
-    cache:"no-store",
-    signal:AbortSignal.timeout(8000)
-  }).catch(()=>null);
-
-  if(!res?.ok){
-    const detail=await res?.json().catch(()=>null);
-    const message=detail?.message?String(detail.message):"";
-    return {id:null as string|null,debug:res?`create group HTTP ${res.status}${message?` — ${message}`:""}`:"create group request failed"};
-  }
-
-  const data=await res.json().catch(()=>({}));
-  const id=String(data?.data?.id||"").trim();
-  return /^\d+$/.test(id)?{id,debug:null}:{id:null,debug:"created group returned invalid id"};
-}
-
 async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
   const value=String(raw||"").trim();
 
@@ -57,12 +37,14 @@ async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
   if(configuredId){
     const byId=groups.find((g:any)=>String(g?.id||"")===configuredId);
     if(byId?.id)return {id:String(byId.id),debug:null};
+    return {id:null as string|null,debug:"configured group ID not found; refusing fallback"};
   }
 
   if(value && !isLikelySecret(value) && !configuredId){
     const normalizedConfigured=normalizeGroupName(value);
     const exact=groups.find((g:any)=>normalizeGroupName(String(g?.name||""))===normalizedConfigured);
     if(exact?.id) return {id:String(exact.id),debug:null};
+    return {id:null as string|null,debug:"configured group name not found; refusing fallback"};
   }
 
   const desiredName=locale==="es"?"FRAGMENTUN CAP1 ES":"FRAGMENTUN CAP1 EN";
@@ -82,7 +64,7 @@ async function resolveMailerLiteGroup(token:string,raw:string,locale:"es"|"en"){
     return {id:String(languageMatched[0].id),debug:null};
   }
 
-  return await createMailerLiteGroup(token,desiredName);
+  return {id:null as string|null,debug:"no verified capture group; automatic creation disabled"};
 }
 
 function mailerLiteSubscriberBody(email:string,name:string,groupId:string){
@@ -170,8 +152,14 @@ export async function POST(request:NextRequest){
 
     if(ml?.ok){
       const data=await ml.json().catch(()=>({}));
-      mailerliteStatus="synced";
-      mailerliteSubscriberId=data?.data?.id??null;
+      const confirmedSubscriberId=String(data?.data?.id??"").trim();
+      if(/^\d+$/.test(confirmedSubscriberId)){
+        mailerliteStatus="synced";
+        mailerliteSubscriberId=confirmedSubscriberId;
+      }else{
+        mailerliteStatus="error";
+        lastError="MailerLite returned HTTP success without a valid subscriber ID";
+      }
     }else{
       mailerliteStatus="error";
       if(ml){
