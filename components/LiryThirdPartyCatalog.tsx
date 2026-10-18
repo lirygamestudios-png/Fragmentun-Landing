@@ -42,7 +42,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
   if(!target)return;
   const frame=requestAnimationFrame(()=>target.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"}));
   return ()=>cancelAnimationFrame(frame);
- },[games,visibleGames,linkedHash,navigationCount]);
+ },[games,currentPage,query,model,linkedHash,navigationCount]);
  const dialog=useRef<HTMLDialogElement>(null);
  const opener=useRef<HTMLButtonElement|null>(null);
  if(!games.length)return null;
