@@ -32,6 +32,14 @@ begin
     from public.fragmentun_store_signed_lead(sig,lead);
   if accepted_again then raise exception 'Replay accepted unexpectedly'; end if;
 
+  -- The duplicate must not change the original contact or create a second row.
+  if (select count(*) from public.leads where email=test_email) <> 1 then
+    raise exception 'Unexpected duplicate lead row';
+  end if;
+  if (select name from public.leads where id=stored_id) <> 'QA transaction' then
+    raise exception 'Replay modified an existing lead';
+  end if;
+
   -- Invalid records must not consume signatures after a DB exception.
   begin
     perform public.fragmentun_store_signed_lead(bad_sig,lead || '{"locale":"xx"}'::jsonb);
