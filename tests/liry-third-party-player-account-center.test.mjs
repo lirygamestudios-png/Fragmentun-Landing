@@ -32,3 +32,5 @@ test("El nombre se puede restablecer sin eliminar el avatar",()=>{const src=read
 
 
 test("Los errores de fotografía se anuncian y permiten reintentar el mismo archivo",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/role=\{avatarError\?"alert":"status"\}/);assert.match(src,/aria-live=\{avatarError\?"assertive":"polite"\}/);assert.match(src,/if\(avatarInput\.current\)avatarInput\.current\.value=""/);assert.match(src,/Photo loaded for this preview only/);assert.match(src,/Fotografía cargada solo para esta vista previa/);assert.doesNotMatch(src,/storage\.from\(|uploadAvatar\(/);});
+
+test("Un error inesperado al leer el archivo no interrumpe el perfil",()=>{const source=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(source,/validateTemporaryGamerAvatarContent\(file\)\.catch\(\(\)=>false\)/);assert.match(source,/El contenido del archivo no es una imagen válida/);});
