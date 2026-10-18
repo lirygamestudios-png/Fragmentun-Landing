@@ -43,7 +43,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
    if(request!==avatarRequestRef.current){URL.revokeObjectURL(next);return}
    if(image.naturalWidth===0||image.naturalHeight===0){URL.revokeObjectURL(next);setAvatarError(locale==="es"?"La imagen no es válida.":"Invalid image.");if(avatarInput.current)avatarInput.current.value="";return}
    if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);
-   avatarUrlRef.current=next;setAvatarUrl(next);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:next}}));setAvatarError("");
+   avatarUrlRef.current=next;setAvatarUrl(next);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:next}}));setAvatarError("");if(avatarInput.current)avatarInput.current.value="";
   };
   image.onerror=()=>{URL.revokeObjectURL(next);if(request!==avatarRequestRef.current)return;setAvatarError(locale==="es"?"No se pudo abrir la imagen.":"Could not open the image.");if(avatarInput.current)avatarInput.current.value=""};
   image.src=next;
