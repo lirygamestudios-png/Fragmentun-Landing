@@ -106,11 +106,7 @@
 /* Emblema oficial vectorial del FrontDesk, sin duplicar el nombre. */
 .header .brand{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;padding:2px;border-radius:9px}
 .header .sigil{position:relative;display:block;width:40px;height:40px;flex:none;border-radius:12px;background:linear-gradient(145deg,#7c4dff38,#4fd8ff17);border:1px solid #65ceff61;box-shadow:0 0 24px #7c4dff38,inset 0 0 18px #4fd8ff10}
-.header .sigil::before,.header .sigil::after,.header .sigil i,.header .sigil b{content:"";position:absolute;display:block}
-.header .sigil::before{left:9px;top:8px;width:8px;height:23px;border:2px solid #4fd8ff;border-right:0;border-radius:3px 0 0 3px;box-shadow:0 0 10px #4fd8ff95}
-.header .sigil::after{right:8px;top:8px;width:12px;height:2px;background:linear-gradient(90deg,#7c4dff,#e04cff);box-shadow:0 8px 0 #4fd8ff,0 16px 0 #7c4dff}
-.header .sigil i{left:17px;top:8px;width:2px;height:23px;background:linear-gradient(#e04cff,#4fd8ff);transform:skew(-13deg);box-shadow:0 0 9px #e04cff75}
-.header .sigil b{left:22px;top:12px;width:8px;height:16px;border-left:2px solid #a27aff;transform:skew(-13deg)}
+/* Icono oficial enlazado como imagen, sin trazos antiguos sobrepuestos. */
 .header .brand:hover .sigil,.header .brand:focus-visible .sigil{border-color:#9cebff;box-shadow:0 0 13px #4fd8ff99,0 0 25px #7c4dff55}
 
 .identitySecurity{margin-top:16px;padding:16px;border:1px solid #2e7293;border-radius:10px;background:#081b33}
@@ -295,3 +291,6 @@
 /* Compatibilidad con autocompletado estándar y Firefox, sin cambio de fondo en Mi Liry. */
 .accountNameInput:autofill{background-color:#07192c!important;color:#f1faff!important;caret-color:#8be9ff;box-shadow:0 0 0 1000px #07192c inset!important}
 .accountNameInput:focus-visible{background-color:#07192c;color:#f1faff;outline:2px solid #7bdaf8;outline-offset:2px}
+
+.header img.sigil{display:block;width:40px;height:40px;object-fit:contain;border:0;border-radius:0;background:none;box-shadow:none}
+.header .brand:hover img.sigil,.header .brand:focus-visible img.sigil{border:0;filter:drop-shadow(0 0 8px #4fd8ff88);box-shadow:none}
