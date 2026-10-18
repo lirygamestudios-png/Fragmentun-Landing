@@ -4,11 +4,19 @@ import styles from "../app/lirygames/lirygames.module.css";
 import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 
 
-export function LiryStoreCategories({locale="es"}:{locale?:LiryFrontdeskLocale}){
+type PublicStoreItem={id:string;name:string;category:string;price:number;currency:string;available:boolean};
+export function LiryStoreCategories({locale="es",products=[]}:{locale?:LiryFrontdeskLocale;products?:readonly PublicStoreItem[]}){
  const copy=liryFrontdeskStrings(locale).store;
  const collections=copy.categories.map(item=>({...item,tone:item.id}));
 
  const [selected,setSelected]=useState<(typeof collections)[number]>(collections[0]);
+ const [term,setTerm]=useState("");
+ const [category,setCategory]=useState("all");
+ const [page,setPage]=useState(1);
+ const filtered=products.filter(item=>(category==="all"||item.category===category)&&item.name.toLocaleLowerCase().includes(term.trim().toLocaleLowerCase()));
+ const pages=Math.max(1,Math.ceil(filtered.length/12));
+ const currentPage=Math.min(page,pages);
+ const pageItems=filtered.slice((currentPage-1)*12,currentPage*12);
  const dialogRef=useRef<HTMLDialogElement>(null);
  const triggerRef=useRef<HTMLButtonElement|null>(null);
  return <>
@@ -17,7 +25,8 @@ export function LiryStoreCategories({locale="es"}:{locale?:LiryFrontdeskLocale})
      <span className={`${styles.storeCategoryVisual} ${styles[`storeTone_${item.tone}` ]}`} aria-hidden="true"><svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{item.tone==="wear"?<path d="m8 4 4 2 4-2 5 4-3 4-2-1v9H8v-9l-2 1-3-4 5-4Z"/>:item.tone==="accessories"?<><circle cx="12" cy="12" r="7"/><path d="M8 5V3h8v2M9 12l3 4 3-4-3-4-3 4Z"/></>:item.tone==="collectibles"?<><path d="m12 2 8 5v10l-8 5-8-5V7l8-5Z"/><path d="m4 7 8 5 8-5M12 12v10"/></>:item.tone==="art"?<><rect x="4" y="3" width="16" height="18" rx="2"/><path d="m7 16 4-5 3 3 2-2 2 4M8 7h.01"/></>:<><rect x="3" y="7" width="18" height="11" rx="5"/><path d="M8 10v5M5.5 12.5h5M16 11h.01M18 14h.01"/></>}</svg></span><strong>{item.name}</strong><span className={styles.storeCategoryLine}/>
    </button>)}
   </div>
-  <dialog ref={dialogRef} className={styles.gamerInfoDialog} aria-labelledby="liry-store-detail-title" onClose={()=>triggerRef.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
+  <section className={styles.liryStoreListing} aria-label={locale==="es"?"Productos publicados":"Published products"}><h3>{locale==="es"?"Productos de la tienda":"Store products"}</h3><div className={styles.liryStoreFilters}><label>{locale==="es"?"Buscar producto":"Search product"}<input type="search" value={term} onChange={e=>{setTerm(e.target.value);setPage(1)}} /></label><label>{locale==="es"?"Categoría":"Category"}<select value={category} onChange={e=>{setCategory(e.target.value);setPage(1)}}><option value="all">{locale==="es"?"Todas":"All"}</option>{collections.map(item=><option key={item.id} value={item.id}>{item.name}</option>)}</select></label><button type="button" onClick={()=>{setTerm("");setCategory("all");setPage(1)}}>{locale==="es"?"Limpiar filtros":"Clear filters"}</button></div><p aria-live="polite">{locale==="es"?`${filtered.length} productos publicados`:`${filtered.length} published products`}</p>{pageItems.length?<div className={styles.liryStoreProducts}>{pageItems.map(item=><article key={item.id} className={styles.liryStoreProduct}><h4>{item.name}</h4><p>{item.available?(locale==="es"?"Disponible":"Available"):(locale==="es"?"No disponible":"Unavailable")}</p><p>{new Intl.NumberFormat(locale==="es"?"es-US":"en-US",{style:"currency",currency:item.currency}).format(item.price)}</p></article>)}</div>:<p role="status">{locale==="es"?"Todavía no hay productos publicados que coincidan con estos filtros.":"No published products match these filters yet."}</p>}{pages>1&&<nav className={styles.liryStorePages} aria-label={locale==="es"?"Páginas de productos":"Product pages"}><button type="button" disabled={currentPage===1} onClick={()=>setPage(p=>Math.max(1,p-1))}>{locale==="es"?"Anterior":"Previous"}</button>{Array.from({length:pages},(_,i)=><button key={i} type="button" aria-current={currentPage===i+1?"page":undefined} onClick={()=>setPage(i+1)}>{i+1}</button>)}<button type="button" disabled={currentPage===pages} onClick={()=>setPage(p=>Math.min(pages,p+1))}>{locale==="es"?"Siguiente":"Next"}</button></nav>}</section>
+    <dialog ref={dialogRef} className={styles.gamerInfoDialog} aria-labelledby="liry-store-detail-title" onClose={()=>triggerRef.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
    <div className={styles.gamerInfoDialogInside}>
     <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label={copy.closeAria}>×</button></form>
     <p className={styles.gamerInfoEyebrow}>{copy.eyebrow}</p>
