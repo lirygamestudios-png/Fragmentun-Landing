@@ -272,3 +272,6 @@
 .accountAvatarArea>div{min-width:0;max-width:100%}
 .accountAvatarInput:focus-visible{outline:2px solid #8be9ff;outline-offset:4px;border-radius:6px}
 @media(max-width:480px){.accountAvatarInput{width:100%;font-size:14px}.accountAvatarInput::file-selector-button{min-height:44px;max-width:100%;white-space:normal}}
+
+/* Área táctil adecuada para ajustes y privacidad, sin cambiar bordes cian aprobados. */
+@media(max-width:560px){.accountToggle{min-height:44px;padding:7px 0;cursor:pointer}.accountToggle input{flex:0 0 20px;width:20px;height:20px}.accountTabs{gap:10px}.accountTab{touch-action:manipulation}}
