@@ -62,7 +62,7 @@ export function MasterSidebar({displayName,role}:{displayName:string;role:string
 
   return <aside className={styles.sidebar}>
     <div className={styles.brand}>
-      <span className={styles.sigil} aria-hidden="true"><i></i><b></b></span>
+      <img className={styles.sigilImage} src="/lirygames-brand-icon.svg" width={40} height={40} alt="" aria-hidden="true" />
       <div className={styles.wordmark}>
         <strong>LIRY</strong>
         <span>GAMES STUDIOS</span>
