@@ -13,6 +13,7 @@ export function LiryDeveloperReleasePreview({locale="es"}:{locale?:LiryFrontdesk
    {checkpoints.map((step,index)=><label key={step.id}><input type="radio" name="developer-release-step-preview" checked={selected===index} onChange={()=>setSelected(index)}/>{index+1}. {step.name}</label>)}
   </fieldset>
   <div role="status" aria-live="polite"><strong>{checkpoints[selected].name}</strong><p>{checkpoints[selected].detail}</p></div>
+  <p className={styles.accountIntro}>{locale==="es"?"Esta selección solo muestra una etapa del proceso. No modifica el estado de ningún videojuego, no aprueba su publicación y no ejecuta verificaciones de IP, seguridad o clasificación.":"This selection only previews a workflow stage. It does not change any game status, approve publication, or perform IP, security or age-rating checks."}</p>
   <p>{copy.security}</p>
   <p>{copy.inactive}</p>
  </section>;
