@@ -14,7 +14,7 @@ test("MailerLite group IDs remain exact JSON strings",()=>{
 test("MailerLite requires verified email and capture-group membership",()=>{
  const source=readFileSync(new URL("../app/api/subscribe/route.ts",import.meta.url),"utf8");
  assert.match(source,/encodeURIComponent\(email\)/);
- assert.match(source,/verifiedEmail===email\s*&&\s*\/\^\\d\+\$\/\.test\(verifiedId\)\s*&&\s*inTargetGroup/);
+ assert.ok(source.includes('verifiedEmail===email && /^\\d+$/.test(verifiedId) && inTargetGroup'));
  assert.match(source,/mailerliteStatus!=="synced"/);
 });
 
