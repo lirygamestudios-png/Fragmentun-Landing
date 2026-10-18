@@ -207,7 +207,7 @@ export async function POST(request:NextRequest){
         consent_version:consentVersion,
         emotional_profile:["vorax","umbral","ethelis","nara","balance"].includes(emotionalProfile)?emotionalProfile:null,
         emotional_scores:emotionalScores
-      }));
+      });
     const leadHeaders:Record<string,string>={...headers};
     // Staged HMAC support: inert until both services share FRAGMENTUN_LEAD_AUTH_SECRET.
     const secret=process.env.FRAGMENTUN_LEAD_AUTH_SECRET;
