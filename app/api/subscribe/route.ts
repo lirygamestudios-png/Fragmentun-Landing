@@ -198,10 +198,7 @@ export async function POST(request:NextRequest){
   if(url&&key){
     const headers={"Content-Type":"application/json","apikey":key,"Authorization":`Bearer ${key}`};
 
-    const leadResponse=await fetch(`${url}/functions/v1/collect-lead`,{
-      method:"POST",
-      headers,
-      body:JSON.stringify({
+    const leadBody=JSON.stringify({
         email,name,locale,source,medium,campaign,content,session_id:sessionId,
         mailerlite_subscriber_id:mailerliteSubscriberId,
         mailerlite_status:mailerliteStatus,
@@ -210,10 +207,21 @@ export async function POST(request:NextRequest){
         consent_version:consentVersion,
         emotional_profile:["vorax","umbral","ethelis","nara","balance"].includes(emotionalProfile)?emotionalProfile:null,
         emotional_scores:emotionalScores
-      }),
-      cache:"no-store"
+      }));
+    const leadHeaders:Record<string,string>={...headers};
+    // Staged HMAC support: inert until both services share FRAGMENTUN_LEAD_AUTH_SECRET.
+    const secret=process.env.FRAGMENTUN_LEAD_AUTH_SECRET;
+    if(secret){
+      const encoder=new TextEncoder();
+      const stamp=String(Math.floor(Date.now()/1000));
+      const key=await crypto.subtle.importKey("raw",encoder.encode(secret),{name:"HMAC",hash:"SHA-256"},false,["sign"]);
+      const signed=await crypto.subtle.sign("HMAC",key,encoder.encode(stamp+"."+leadBody));
+      leadHeaders["x-fragmentun-timestamp"]=stamp;
+      leadHeaders["x-fragmentun-signature"]=Array.from(new Uint8Array(signed)).map(x=>x.toString(16).padStart(2,"0")).join("");
+    }
+    const leadResponse=await fetch(`${url}/functions/v1/collect-lead`,{
+      method:"POST",headers:leadHeaders,body:leadBody,cache:"no-store"
     }).catch(()=>null);
-
     leadStored=!!leadResponse?.ok;
 
     await fetch(`${url}/functions/v1/collect-analytics`,{
