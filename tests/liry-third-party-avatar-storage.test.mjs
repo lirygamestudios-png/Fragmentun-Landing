@@ -5,3 +5,4 @@ test("No se guardan avatares mientras no exista proyecto independiente activado"
 test("La ruta privada no acepta nombres de carpeta arbitrarios",()=>{assert.equal(liryPrivateAvatarObjectKey("player_00001","avatar_00001"),"player_00001/avatar_00001");assert.equal(liryPrivateAvatarObjectKey("../fragmentun","pic_00000001"),null);assert.equal(liryPrivateAvatarObjectKey("player_00001","../secret"),null);});
 
 test("El límite privado coincide con la vista previa de 2 MB",()=>{assert.equal(LIRY_AVATAR_STORAGE.maxBytes,2*1024*1024);});
+\ntest("La validación local utiliza el límite centralizado",async()=>{const {readFileSync}=await import("node:fs");const source=readFileSync(new URL("../lib/games/liry-avatar-validation.ts",import.meta.url),"utf8");assert.match(source,/file\.size>LIRY_AVATAR_STORAGE\.maxBytes/);});\n
