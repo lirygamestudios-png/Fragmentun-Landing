@@ -8,7 +8,7 @@ export function LiryFrontdeskProfileAccess({locale,label,aria,title}:{locale:"es
   const refresh=()=>{
    try{
     const saved=sessionStorage.getItem(key);
-    setPhoto(saved?.startsWith("data:image/")&&saved.length<180000?saved:null);
+    setPhoto(saved?.startsWith("data:image/webp;base64,")&&saved.length<180000?saved:null);
    }catch{setPhoto(null)}
   };
   refresh();
