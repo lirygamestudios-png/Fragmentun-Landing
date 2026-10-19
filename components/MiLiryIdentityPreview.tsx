@@ -9,6 +9,7 @@ export function MiLiryIdentityPreview({locale="es"}:{locale?:LiryFrontdeskLocale
  const [avatar,setAvatar]=useState<LiryAvatarOption>("orb");
  const [theme,setTheme]=useState<LiryInterfaceTheme>("navy");
  const [notifications,setNotifications]=useState(false);
+ const canReset=avatar!=="orb"||theme!=="navy"||notifications;
  return <section className={styles.identityPreview} aria-label={copy.previewAria}>
   <h3>{copy.previewTitle}</h3>
   <p>{copy.previewIntro}</p>
@@ -18,7 +19,7 @@ export function MiLiryIdentityPreview({locale="es"}:{locale?:LiryFrontdeskLocale
   <p className={styles.previewLabel}>{copy.visualAccent}</p>
   <div className={styles.previewChoices}>{LIRY_INTERFACE_THEMES.map(item=><button key={item} type="button" aria-pressed={theme===item} onClick={()=>setTheme(item)}>{item==="navy"?copy.themes[0]:item==="cyan"?copy.themes[1]:copy.themes[2]}</button>)}</div>
   <label className={styles.previewOption}><input type="checkbox" checked={notifications} onChange={e=>setNotifications(e.target.checked)}/> {copy.notifications}</label>
-  <button type="button" className={styles.previewReset} onClick={()=>{setAvatar("orb");setTheme("navy");setNotifications(false);}}>{copy.reset}</button>
+  <button type="button" className={styles.previewReset} disabled={!canReset} onClick={()=>{setAvatar("orb");setTheme("navy");setNotifications(false);}}>{copy.reset}</button>
   <p className={styles.previewNote}>{copy.styleOnly}: {theme.toUpperCase()}. {copy.previewNote}</p>
  </section>;
 }
