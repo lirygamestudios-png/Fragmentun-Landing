@@ -316,3 +316,11 @@ test("Tienda y catálogo permiten recuperar resultados vacíos sin perder pagina
   assert.match(src,/tabIndex=\{-1\} aria-live="polite"/);
  }
 });
+
+test("El captcha de contacto renueva sus textos cuando cambia el idioma",()=>{
+ const src=readFileSync(new URL("../components/LiryContactForm.tsx",import.meta.url),"utf8");
+ assert.match(src,/script\.onload=/);
+ assert.match(src,/setTurnstileError\(copy\.captchaExpired\)/);
+ assert.match(src,/setTurnstileError\(copy\.captchaFailed\)/);
+ assert.match(src,/\},\[locale\]\);/);
+});
