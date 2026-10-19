@@ -20,6 +20,7 @@ export function MiLiryIdentityPreview({locale="es"}:{locale?:LiryFrontdeskLocale
   <div className={styles.previewChoices} role="group" aria-labelledby="liry-preview-theme-label">{LIRY_INTERFACE_THEMES.map(item=><button key={item} type="button" aria-pressed={theme===item} onClick={()=>setTheme(item)}>{item==="navy"?copy.themes[0]:item==="cyan"?copy.themes[1]:copy.themes[2]}</button>)}</div>
   <label className={styles.previewOption}><input type="checkbox" checked={notifications} onChange={e=>setNotifications(e.target.checked)}/> {copy.notifications}</label>
   <button type="button" className={styles.previewReset} disabled={!canReset} onClick={()=>{setAvatar("orb");setTheme("navy");setNotifications(false);}}>{copy.reset}</button>
-  <p className={styles.previewNote} role="status" aria-live="polite" aria-atomic="true">{copy.styleOnly}: {theme.toUpperCase()}. {copy.previewNote}</p>
+  <p className={styles.previewNote}>{copy.previewNote}</p>
+  <p className={styles.previewNote} role="status" aria-live="polite" aria-atomic="true">{copy.styleOnly}: {theme.toUpperCase()}.</p>
  </section>;
 }
