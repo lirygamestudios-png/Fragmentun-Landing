@@ -260,3 +260,12 @@ test("Los campos de facturación mantienen medidas táctiles en móvil",()=>{
  assert.match(css,/\.accountBillingGrid \.accountNameInput\{min-height:46px;font-size:16px/);
  assert.match(css,/\.accountBillingGrid\{grid-template-columns:1fr\}/);
 });
+
+test("Las fichas de terceros no quedan completas con clasificación por edad pendiente",()=>{
+ const src=readFileSync(new URL("../components/LiryDeveloperGameListingPreview.tsx",import.meta.url),"utf8");
+ assert.match(src,/age==="classified"&&platform!==""/);
+ assert.match(src,/age!=="classified"/);
+ assert.match(src,/<option value="pending">/);
+ assert.match(src,/<option value="classified">/);
+ assert.match(src,/aprobación de LIRYGAMES/);
+});
