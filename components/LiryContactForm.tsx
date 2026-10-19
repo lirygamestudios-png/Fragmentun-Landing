@@ -36,8 +36,8 @@ export function LiryContactForm({locale="es"}:{locale?:LiryFrontdeskLocale}){
   e.preventDefault();if(!turnstileToken){setResult(copy.captchaRequired);return;}setBusy(true);setDone(false);setResult("");
   try{
    const r=await fetch("/api/lirygames/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,subject,gameSlug,message,privacyAcknowledged:ack,website,turnstileToken})});
-   const j=await r.json();
-   if(!r.ok||!j.ok)throw Error(j.message||copy.submitFailed);
+   const j=await r.json().catch(()=>null);
+   if(!r.ok||!j?.ok)throw Error(typeof j?.message==="string"?j.message:copy.submitFailed);
    setName("");setEmail("");setSubject("opinion");setGameSlug("");setMessage("");setAck(false);setWebsite("");
    setDone(true);setResult(j.message||copy.success);
   }catch(error){setResult(error instanceof Error?error.message :copy.submitError);}
@@ -48,7 +48,7 @@ export function LiryContactForm({locale="es"}:{locale?:LiryFrontdeskLocale}){
  return <form onSubmit={submit} style={{display:"grid",gap:11,maxWidth:700}} aria-label={copy.formLabel}>
   <>
    <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,210px),1fr))",gap:10}}>
-    <input style={field} type="text" value={name} onChange={e=>{setName(e.target.value);if(done){setDone(false);setResult("");}}} placeholder={copy.name} aria-label={copy.name} required minLength={2} maxLength={100}/>
+    <input style={field} type="text" value={name} onChange={e=>{setName(e.target.value);resetFeedback()}} placeholder={copy.name} aria-label={copy.name} required minLength={2} maxLength={100}/>
     <input style={field} type="email" value={email} onChange={e=>{setEmail(e.target.value);resetFeedback()}} placeholder={copy.email} aria-label={copy.email} required maxLength={254}/>
    </div>
    <select style={field} aria-label={copy.subjectLabel} value={subject} onChange={e=>{setSubject(e.target.value);resetFeedback()}} required>
