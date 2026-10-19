@@ -286,3 +286,12 @@ test("La admisión y publicación siguen sujetas a aprobación humana",()=>{
   assert.match(src,/aprobación expresa de LIRYGAMES/);
  }
 });
+
+test("El menú móvil anuncia su cierre en el idioma activo del FrontDesk",()=>{
+ const nav=readFileSync(new URL("../components/LiryMobileNav.tsx",import.meta.url),"utf8");
+ const page=readFileSync(new URL("../app/lirygames/page.tsx",import.meta.url),"utf8");
+ assert.match(nav,/locale==="es"\?"Cerrar menú":"Close menu"/);
+ assert.match(nav,/aria-expanded=\{open\}/);
+ assert.match(page,/<LiryMobileNav locale=\{locale\}/);
+ assert.match(nav,/window\.addEventListener\("hashchange",closeOnNavigation\)/);
+});
