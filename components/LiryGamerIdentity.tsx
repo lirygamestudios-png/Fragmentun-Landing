@@ -24,6 +24,12 @@ export function LiryGamerIdentity({snapshot,locale="es"}:{snapshot:Readonly<Publ
  const avatarSelection=useRef(0);
  const [avatarError,setAvatarError]=useState<string|null>(null);
  const styleTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
+ useEffect(()=>{
+  try{
+   const stored=sessionStorage.getItem(thumbnailKey);
+   if(stored?.startsWith("data:image/webp;base64,")&&stored.length<180000)setAvatar(stored);
+  }catch{}
+ },[]);
  const fileRef=useRef<HTMLInputElement>(null);
  const dialogRef=useRef<HTMLDialogElement>(null);
  const triggerRef=useRef<HTMLButtonElement>(null);
