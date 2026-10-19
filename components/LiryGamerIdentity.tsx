@@ -65,7 +65,8 @@ export function LiryGamerIdentity({snapshot,locale="es"}:{snapshot:Readonly<Publ
    if(selection!==avatarSelection.current){bitmap.close();return;}
    const canvas=document.createElement("canvas");canvas.width=64;canvas.height=64;
    const context=canvas.getContext("2d");if(context){
-    context.drawImage(bitmap,0,0,64,64);
+    const edge=Math.min(bitmap.width,bitmap.height);
+    context.drawImage(bitmap,(bitmap.width-edge)/2,(bitmap.height-edge)/2,edge,edge,0,0,64,64);
     const thumbnail=canvas.toDataURL("image/webp",0.72);
     if(thumbnail.length<180000){sessionStorage.setItem(thumbnailKey,thumbnail);window.dispatchEvent(new Event("liry:avatar-changed"));}
    }
