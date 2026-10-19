@@ -324,3 +324,15 @@ test("El captcha de contacto renueva sus textos cuando cambia el idioma",()=>{
  assert.match(src,/setTurnstileError\(copy\.captchaFailed\)/);
  assert.match(src,/\},\[locale\]\);/);
 });
+
+test("Contacto conserva datos ante errores y limpia los campos solo tras éxito",()=>{
+ const src=readFileSync(new URL("../components/LiryContactForm.tsx",import.meta.url),"utf8");
+ assert.match(src,/if\(busy\)return/);
+ assert.match(src,/if\(!turnstileToken\)\{setDone\(false\);setResult\(copy\.captchaRequired\)/);
+ assert.match(src,/const j=await r\.json\(\)\.catch\(\(\)=>null\)/);
+ assert.match(src,/if\(!r\.ok\|\|!j\?\.ok\)throw Error/);
+ assert.match(src,/setName\(""\);setEmail\(""\);setSubject\("opinion"\)/);
+ assert.match(src,/setDone\(true\);setResult\(j\.message\|\|copy\.success\)/);
+ assert.match(src,/catch\(error\)\{setResult\(/);
+ assert.match(src,/finally\{setBusy\(false\);setTurnstileToken\(""\)/);
+});
