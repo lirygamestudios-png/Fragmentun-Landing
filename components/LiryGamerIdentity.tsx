@@ -65,6 +65,8 @@ export function LiryGamerIdentity({snapshot,locale="es"}:{snapshot:Readonly<Publ
   if(!validContent){setAvatarError(detailCopy.invalidFormat);return;}
   if(avatarUrl.current)URL.revokeObjectURL(avatarUrl.current);
   const url=URL.createObjectURL(file);avatarUrl.current=url;setAvatar(url);
+  // Remove any previous thumbnail before asynchronously preparing the new one.
+  try{sessionStorage.removeItem(thumbnailKey);window.dispatchEvent(new Event("liry:avatar-changed"))}catch{}
   // Compact session-only preview for the public header; never upload the avatar.
   try{
    const bitmap=await createImageBitmap(file);
