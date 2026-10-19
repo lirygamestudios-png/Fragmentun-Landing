@@ -29,7 +29,7 @@ export function LiryContactForm({locale="es"}:{locale?:LiryFrontdeskLocale}){
   script.onerror=()=>setTurnstileError(copy.captchaLoadFailed);
   document.head.appendChild(script);
   return ()=>{cancelled=true;if(turnstileWidgetId.current&&window.turnstile)window.turnstile.remove(turnstileWidgetId.current);script.remove();};
- },[]);
+ },[locale]);
  const[result,setResult]=useState("");
  const[done,setDone]=useState(false);
  async function submit(e:FormEvent<HTMLFormElement>){
