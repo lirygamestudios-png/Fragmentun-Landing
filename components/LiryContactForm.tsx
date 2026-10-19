@@ -30,7 +30,7 @@ export function LiryContactForm({locale="es"}:{locale?:LiryFrontdeskLocale}){
   };
   script.onerror=()=>setTurnstileError(copy.captchaLoadFailed);
   document.head.appendChild(script);
-  return ()=>{cancelled=true;setTurnstileToken("");if(turnstileWidgetId.current&&window.turnstile)window.turnstile.remove(turnstileWidgetId.current);turnstileWidgetId.current=null;script.remove();};
+  return ()=>{cancelled=true;if(turnstileWidgetId.current&&window.turnstile)window.turnstile.remove(turnstileWidgetId.current);turnstileWidgetId.current=null;script.remove();};
  },[locale]);
  const[result,setResult]=useState("");
  const[done,setDone]=useState(false);
