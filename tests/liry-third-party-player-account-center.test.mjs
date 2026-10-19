@@ -306,3 +306,13 @@ test("Las pestañas de Comunidad admiten cuatro flechas, Inicio y Fin",()=>{
  assert.match(src,/aria-selected=\{tab===item\.id\}/);
  assert.match(src,/role="tabpanel"/);
 });
+
+test("Tienda y catálogo permiten recuperar resultados vacíos sin perder paginación accesible",()=>{
+ for(const [path,resetLabel] of [["../components/LiryStoreCategories.tsx","Mostrar todos los productos"],["../components/LiryThirdPartyCatalog.tsx","Mostrar todos los videojuegos"]]){
+  const src=readFileSync(new URL(path,import.meta.url),"utf8");
+  assert.ok(src.includes(resetLabel));
+  assert.match(src,/aria-current=\{currentPage===n\?"page":undefined\}/);
+  assert.match(src,/resultStatus\.current\?\.focus\(\{preventScroll:true\}\)/);
+  assert.match(src,/tabIndex=\{-1\} aria-live="polite"/);
+ }
+});
