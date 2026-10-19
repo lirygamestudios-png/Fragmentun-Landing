@@ -348,3 +348,15 @@ test("Menú de cabecera móvil muestra ocho enlaces en cuadrícula compacta",()=
  assert.ok(menu);
  assert.equal((menu[0].match(/\{href:"#/g)||[]).length,8);
 });
+
+test("El menú del header en escritorio muestra ocho enlaces sin scroll interno y respeta móvil",()=>{
+ const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");
+ const desktop=css.slice(css.lastIndexOf("/* Desktop: mostrar los ocho accesos del menú superior en una sola vista. */"));
+ assert.match(desktop,/@media\(min-width:751px\)/);
+ assert.match(desktop,/\.nav \.navMenuPanel\{[\s\S]*?display:grid/);
+ assert.match(desktop,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+ assert.match(desktop,/max-height:none/);
+ assert.match(desktop,/overflow:visible/);
+ assert.match(desktop,/width:340px/);
+ assert.doesNotMatch(desktop,/@media\(max-width:750px\)/);
+});
