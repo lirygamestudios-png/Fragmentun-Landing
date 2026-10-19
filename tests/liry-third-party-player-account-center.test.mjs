@@ -132,7 +132,7 @@ test("Tienda permite combinar disponibilidad, precio y categoría sin productos 
 
 test("Tienda encuentra nombres con o sin acentos y anuncia página activa",()=>{const src=readFileSync(new URL("../components/LiryStoreCategories.tsx",import.meta.url),"utf8");assert.match(src,/normalize\("NFD"\)/);assert.match(src,/normalizeSearch\(item\.name\)\.includes\(normalizeSearch\(term\)\)/);assert.match(src,/aria-label=\{locale==="es"\?`Página \$\{n\} de \$\{pages\}`/);assert.match(src,/Array.from\(new Set\(/);});
 
-test("Buscadores de videojuegos admiten acentos y paginación accesible",()=>{for(const p of ["../components/LiryGameDiscovery.tsx","../components/LiryThirdPartyCatalog.tsx"]){const src=readFileSync(new URL(p,import.meta.url),"utf8");assert.match(src,/normalizePublicSearch/);assert.match(src,/normalize\("NFD"\)/);assert.match(src,/aria-label=\{locale==="es"\?`Página \$\{i\+1\} de/);}});
+test("Buscadores de videojuegos admiten acentos y paginación accesible",()=>{for(const p of ["../components/LiryGameDiscovery.tsx","../components/LiryThirdPartyCatalog.tsx"]){const src=readFileSync(new URL(p,import.meta.url),"utf8");assert.match(src,/normalizePublicSearch/);assert.match(src,/normalize\("NFD"\)/);assert.match(src,/aria-label=\{locale==="es"\?`Página \$\{(?:i\+1|n)\} de/);}});
 
 test("Navegación móvil conserva foco cian y acceso a controles",()=>{const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");assert.match(css,/overscroll-behavior-inline:contain/);assert.match(css,/\.liryStoreFilters input:focus-visible/);assert.match(css,/outline:2px solid #7bdaf8/);});
 
