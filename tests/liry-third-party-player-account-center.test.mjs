@@ -371,3 +371,15 @@ test("Avatar temporal evita restaurar miniaturas eliminadas y comunica errores",
  assert.match(gamer,/setAvatarError\(locale==="es"\?/);
  assert.match(header,/window\.addEventListener\("liry:avatar-changed",refresh\)/);
 });
+
+test("Cabecera y perfil aceptan solo la miniatura WebP temporal de la misma sesión",()=>{
+ const header=readFileSync(new URL("../components/LiryFrontdeskProfileAccess.tsx",import.meta.url),"utf8");
+ const gamer=readFileSync(new URL("../components/LiryGamerIdentity.tsx",import.meta.url),"utf8");
+ for(const source of [header,gamer]){
+  assert.match(source,/liry:temporary-avatar-thumbnail/);
+  assert.match(source,/startsWith\("data:image\/webp;base64,"\)/);
+  assert.match(source,/length<180000/);
+ }
+ assert.match(gamer,/sessionStorage\.removeItem\(thumbnailKey\)/);
+ assert.match(header,/window\.addEventListener\("pageshow",refresh\)/);
+});
