@@ -310,3 +310,10 @@
  .accountSaveArea .accountReset{max-width:100%;white-space:normal}
 }
 @media(max-width:350px){.accountTabs{grid-template-columns:minmax(0,1fr)}}
+
+/* En pantallas pequeñas, los campos de facturación conservan un tamaño táctil y evitan zoom de iOS. */
+@media(max-width:560px){
+ .accountBillingGrid{gap:14px}
+ .accountBillingGrid .accountNameInput{min-height:46px;font-size:16px;line-height:1.4}
+ .accountBillingGrid .accountNameLabel{overflow-wrap:break-word}
+}
