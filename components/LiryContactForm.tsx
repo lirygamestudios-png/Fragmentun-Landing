@@ -20,6 +20,8 @@ export function LiryContactForm({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const turnstileWidgetId=useRef<string|null>(null);
  useEffect(()=>{
   if(!turnstileSiteKey)return;
+  setTurnstileToken("");
+  setTurnstileError("");
   let cancelled=false;
   const script=document.createElement("script");
   script.src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";script.async=true;
@@ -28,7 +30,7 @@ export function LiryContactForm({locale="es"}:{locale?:LiryFrontdeskLocale}){
   };
   script.onerror=()=>setTurnstileError(copy.captchaLoadFailed);
   document.head.appendChild(script);
-  return ()=>{cancelled=true;if(turnstileWidgetId.current&&window.turnstile)window.turnstile.remove(turnstileWidgetId.current);script.remove();};
+  return ()=>{cancelled=true;setTurnstileToken("");if(turnstileWidgetId.current&&window.turnstile)window.turnstile.remove(turnstileWidgetId.current);turnstileWidgetId.current=null;script.remove();};
  },[locale]);
  const[result,setResult]=useState("");
  const[done,setDone]=useState(false);
