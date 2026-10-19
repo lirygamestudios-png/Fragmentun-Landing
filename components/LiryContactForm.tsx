@@ -33,7 +33,7 @@ export function LiryContactForm({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const[result,setResult]=useState("");
  const[done,setDone]=useState(false);
  async function submit(e:FormEvent<HTMLFormElement>){
-  e.preventDefault();if(!turnstileToken){setResult(copy.captchaRequired);return;}setBusy(true);setDone(false);setResult("");
+  e.preventDefault();if(busy)return;if(!turnstileToken){setDone(false);setResult(copy.captchaRequired);return;}setBusy(true);setDone(false);setResult("");
   try{
    const r=await fetch("/api/lirygames/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,subject,gameSlug,message,privacyAcknowledged:ack,website,turnstileToken})});
    const j=await r.json().catch(()=>null);
