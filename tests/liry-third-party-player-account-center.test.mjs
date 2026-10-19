@@ -240,3 +240,10 @@ test("Las seis pestañas limpian avisos tanto por clic como por teclado",()=>{
  assert.match(source,/setSelected\(sections\[next\]\);setSaveNotice\(null\)/);
  assert.match(source,/\["ArrowRight","ArrowDown","ArrowLeft","ArrowUp","Home","End"\]/);
 });
+
+test("Editar preferencias invalida el aviso anterior de guardado de demostración",()=>{
+ const source=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
+ for(const setter of ["Notices","ReduceMotion","LargeText","PrivateProfile"]){
+  assert.ok(source.includes(`onChange={e=>{setSaveNotice(null);set${setter}(e.target.checked)}}`),`El ajuste ${setter} debe limpiar el aviso anterior`);
+ }
+});
