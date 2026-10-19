@@ -44,10 +44,10 @@ export function LiryContactForm({locale="es"}:{locale?:LiryFrontdeskLocale}){
   finally{setBusy(false);setTurnstileToken("");if(turnstileWidgetId.current)window.turnstile?.reset(turnstileWidgetId.current)}
  }
  function resetFeedback(){setDone(false);setResult("");}
- const field={width:"100%",minWidth:0,padding:"11px 12px",border:"1px solid #286e98",borderRadius:6,background:"#061429",color:"#f2fbff",fontSize:12};
+ const field={width:"100%",minWidth:0,padding:"11px 12px",border:"1px solid #286e98",borderRadius:6,background:"#061429",color:"#f2fbff",fontSize:16,colorScheme:"dark" as const};
  return <form onSubmit={submit} style={{display:"grid",gap:11,maxWidth:700}} aria-label={copy.formLabel}>
   <>
-   <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(210px,1fr))",gap:10}}>
+   <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(min(100%,210px),1fr))",gap:10}}>
     <input style={field} type="text" value={name} onChange={e=>{setName(e.target.value);if(done){setDone(false);setResult("");}}} placeholder={copy.name} aria-label={copy.name} required minLength={2} maxLength={100}/>
     <input style={field} type="email" value={email} onChange={e=>{setEmail(e.target.value);resetFeedback()}} placeholder={copy.email} aria-label={copy.email} required maxLength={254}/>
    </div>
