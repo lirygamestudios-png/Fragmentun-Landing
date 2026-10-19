@@ -79,7 +79,9 @@ export function LiryGamerIdentity({snapshot,locale="es"}:{snapshot:Readonly<Publ
     if(selection===avatarSelection.current&&thumbnail.length<180000){sessionStorage.setItem(thumbnailKey,thumbnail);window.dispatchEvent(new Event("liry:avatar-changed"));}
    }
    bitmap.close();
-  }catch{}
+  }catch{
+   if(selection===avatarSelection.current)setAvatarError(locale==="es"?"No se pudo preparar la miniatura del encabezado. La imagen sigue visible en este perfil durante esta visita.":"The header thumbnail could not be prepared. Your image remains visible in this profile during this visit.");
+  }
 
  }
  function removeAvatar(){
