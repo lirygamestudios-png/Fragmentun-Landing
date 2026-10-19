@@ -360,3 +360,14 @@ test("El menú del header en escritorio muestra ocho enlaces sin scroll interno 
  assert.match(desktop,/width:340px/);
  assert.doesNotMatch(desktop,/@media\(max-width:750px\)/);
 });
+
+test("Avatar temporal evita restaurar miniaturas eliminadas y comunica errores",()=>{
+ const gamer=readFileSync(new URL("../components/LiryGamerIdentity.tsx",import.meta.url),"utf8");
+ const header=readFileSync(new URL("../components/LiryFrontdeskProfileAccess.tsx",import.meta.url),"utf8");
+ assert.match(gamer,/const selection=\+\+avatarSelection\.current/);
+ assert.match(gamer,/if\(selection!==avatarSelection\.current\)\{bitmap\.close\(\);return;\}/);
+ assert.match(gamer,/if\(selection===avatarSelection\.current&&thumbnail\.length<180000\)/);
+ assert.match(gamer,/sessionStorage\.removeItem\(thumbnailKey\)/);
+ assert.match(gamer,/setAvatarError\(locale==="es"\?/);
+ assert.match(header,/window\.addEventListener\("liry:avatar-changed",refresh\)/);
+});
