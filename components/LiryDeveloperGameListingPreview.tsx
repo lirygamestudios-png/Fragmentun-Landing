@@ -34,6 +34,7 @@ export function LiryDeveloperGameListingPreview({locale="es"}:{locale?:LiryFront
   {!ready&&<p className={styles.accountIntro}>{locale==="es"?"Faltan datos para completar la vista previa: ":"Complete the preview fields: "}{missing.join(", ")}.</p>}
   {ready&&<p className={styles.accountIntro}>{locale==="es"?"Ficha completa únicamente como borrador; todavía requiere revisión de derechos, seguridad y aprobación de LIRYGAMES.":"Draft fields complete only; IP, security and LIRYGAMES approval are still required."}</p>}
   <button type="button" className={styles.previewReset} disabled={!canReset} onClick={()=>{setName("");setSummary("");setModel("premium");setPrice("");setAge("");setPlatform("")}}>{copy.reset}</button>
+  <p className={styles.accountIntro} role="note">{locale==="es"?"IMPORTANTE: declarar la titularidad de los derechos, aportar información de seguridad y completar esta ficha no autoriza su publicación. Cada videojuego deberá superar la verificación de propiedad intelectual, seguridad, clasificación de edad y la aprobación expresa de LIRYGAMES antes de mostrarse en el catálogo público.":"IMPORTANT: declaring rights ownership, providing security information and completing this listing does not authorize publication. Each game must pass intellectual-property, security and age-rating verification and receive explicit LIRYGAMES approval before appearing in the public catalog."}</p>
   <p>{copy.inactive}</p>
  </section>;
 }
