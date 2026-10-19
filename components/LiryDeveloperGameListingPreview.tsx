@@ -12,6 +12,7 @@ export function LiryDeveloperGameListingPreview({locale="es"}:{locale?:LiryFront
  const [price,setPrice]=useState("");
  const [age,setAge]=useState("");
  const [platform,setPlatform]=useState("");
+ const canReset=name!==""||summary!==""||model!=="premium"||price!==""||age!==""||platform!=="";
  const priceValid=model==="freemium"||(/^\d{1,4}(?:\.\d{1,2})?$/.test(price)&&Number(price)>0);
  const ready=name.trim().length>=2&&summary.trim().length>=20&&priceValid&&age!==""&&platform!=="";
  const missing=[name.trim().length<2?(locale==="es"?"nombre (mínimo 2 caracteres)":"title (minimum 2 characters)"):null,summary.trim().length<20?(locale==="es"?"descripción (mínimo 20 caracteres)":"description (minimum 20 characters)"):null,!priceValid?(locale==="es"?"precio válido":"valid price"):null,age===""?(locale==="es"?"clasificación de edad":"age rating"):null,platform===""?(locale==="es"?"plataforma":"platform"):null].filter(Boolean);
@@ -32,7 +33,7 @@ export function LiryDeveloperGameListingPreview({locale="es"}:{locale?:LiryFront
   <p className={styles.accountIntro}>{locale==="es"?"La clasificación indicada es una declaración preliminar: debe verificarse antes de publicar. La ficha no se envía ni se guarda en un servidor.":"The selected age classification is preliminary and must be verified before publication. This listing is not submitted or stored on a server."}</p>
   {!ready&&<p className={styles.accountIntro}>{locale==="es"?"Faltan datos para completar la vista previa: ":"Complete the preview fields: "}{missing.join(", ")}.</p>}
   {ready&&<p className={styles.accountIntro}>{locale==="es"?"Ficha completa únicamente como borrador; todavía requiere revisión de derechos, seguridad y aprobación de LIRYGAMES.":"Draft fields complete only; IP, security and LIRYGAMES approval are still required."}</p>}
-  <button type="button" className={styles.previewReset} onClick={()=>{setName("");setSummary("");setModel("premium");setPrice("");setAge("");setPlatform("")}}>{copy.reset}</button>
+  <button type="button" className={styles.previewReset} disabled={!canReset} onClick={()=>{setName("");setSummary("");setModel("premium");setPrice("");setAge("");setPlatform("")}}>{copy.reset}</button>
   <p>{copy.inactive}</p>
  </section>;
 }
