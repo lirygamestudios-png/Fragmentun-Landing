@@ -336,3 +336,15 @@ test("Contacto conserva datos ante errores y limpia los campos solo tras éxito"
  assert.match(src,/catch\(error\)\{setResult\(/);
  assert.match(src,/finally\{setBusy\(false\);setTurnstileToken\(""\)/);
 });
+
+test("Menú de cabecera móvil muestra ocho enlaces en cuadrícula compacta",()=>{
+ const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");
+ const page=readFileSync(new URL("../app/lirygames/page.tsx",import.meta.url),"utf8");
+ assert.match(css,/Header móvil: ocho enlaces visibles en una vista/);
+ assert.match(css,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+ assert.match(css,/max-height:calc\(100dvh - 86px\)/);
+ assert.match(css,/max-height:calc\(100dvh - 75px\)/);
+ const menu=page.match(/<LiryMobileNav[\s\S]*?\/>/);
+ assert.ok(menu);
+ assert.equal((menu[0].match(/\{href:"#/g)||[]).length,8);
+});
