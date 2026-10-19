@@ -295,3 +295,14 @@ test("El menú móvil anuncia su cierre en el idioma activo del FrontDesk",()=>{
  assert.match(page,/<LiryMobileNav locale=\{locale\}/);
  assert.match(nav,/window\.addEventListener\("hashchange",closeOnNavigation\)/);
 });
+
+test("Las pestañas de Comunidad admiten cuatro flechas, Inicio y Fin",()=>{
+ const src=readFileSync(new URL("../components/LiryCommunityTabs.tsx",import.meta.url),"utf8");
+ assert.match(src,/event\.key==="ArrowRight"\|\|event\.key==="ArrowDown"/);
+ assert.match(src,/event\.key==="ArrowLeft"\|\|event\.key==="ArrowUp"/);
+ assert.match(src,/event\.key==="Home"/);
+ assert.match(src,/event\.key==="End"/);
+ assert.match(src,/role="tablist"/);
+ assert.match(src,/aria-selected=\{tab===item\.id\}/);
+ assert.match(src,/role="tabpanel"/);
+});
