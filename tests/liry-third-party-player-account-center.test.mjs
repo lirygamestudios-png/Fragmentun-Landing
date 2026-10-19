@@ -269,3 +269,20 @@ test("Las fichas de terceros no quedan completas con clasificación por edad pen
  assert.match(src,/<option value="classified">/);
  assert.match(src,/aprobación de LIRYGAMES/);
 });
+
+test("Liry Developers presenta cuatro áreas preliminares aisladas en subpantallas",()=>{
+ const src=readFileSync(new URL("../components/LiryDeveloperAreas.tsx",import.meta.url),"utf8");
+ for(const area of ["admission","listing","release","finance"]){
+  assert.ok(src.includes(`selected==="${area}"&&<LiryDeveloper`),`Falta área ${area}`);
+ }
+ assert.match(src,/modal\.current\?\.showModal\(\)/);
+ assert.match(src,/onClose=\{\(\)=>\{setDialogOpen\(false\);setSession\(value=>value\+1\)/);
+ assert.match(src,/key=\{session\}/);
+ assert.match(src,/if\(event\.target===modal\.current\)modal\.current\.close\(\)/);
+});
+test("La admisión y publicación siguen sujetas a aprobación humana",()=>{
+ for(const path of ["../components/LiryDeveloperAdmissionPreview.tsx","../components/LiryDeveloperGameListingPreview.tsx","../components/LiryDeveloperReleasePreview.tsx"]){
+  const src=readFileSync(new URL(path,import.meta.url),"utf8");
+  assert.match(src,/aprobación expresa de LIRYGAMES/);
+ }
+});
