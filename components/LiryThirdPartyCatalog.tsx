@@ -1,5 +1,5 @@
 "use client";
-import {useEffect,useRef,useState} from "react";
+import {Fragment,useEffect,useRef,useState} from "react";
 import type {PublicThirdPartyCard} from "../lib/games/liry-developer-publication";
 import {LiryShareEntry} from "./LiryShareEntry";
 import styles from "../app/lirygames/lirygames.module.css";
@@ -73,7 +73,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
    </article>)}
   </div>
   {filtered.length===0&&<p role="status">{locale==="es"?"No hay videojuegos públicos que coincidan con estos filtros.":"No public games match these filters."}</p>}
-  {totalPages>1&&<nav className={styles.thirdPartyPagination} aria-label={locale==="es"?"Páginas del catálogo externo":"External catalog pages"}><button type="button" disabled={currentPage===1} onClick={()=>setPage(p=>Math.max(1,p-1))}>{locale==="es"?"Anterior":"Previous"}</button>{Array.from({length:totalPages},(_,i)=><button type="button" key={i} aria-current={currentPage===i+1?"page":undefined} aria-label={locale==="es"?`Página ${i+1} de ${totalPages}`:`Page ${i+1} of ${totalPages}`} onClick={()=>setPage(i+1)}>{i+1}</button>)}<button type="button" disabled={currentPage===totalPages} onClick={()=>setPage(p=>Math.min(totalPages,p+1))}>{locale==="es"?"Siguiente":"Next"}</button></nav>}
+  {totalPages>1&&<nav className={styles.thirdPartyPagination} aria-label={locale==="es"?"Páginas del catálogo externo":"External catalog pages"}><button type="button" disabled={currentPage===1} onClick={()=>setPage(p=>Math.max(1,p-1))}>{locale==="es"?"Anterior":"Previous"}</button>{Array.from(new Set([1,totalPages,currentPage-1,currentPage,currentPage+1].filter(n=>n>=1&&n<=totalPages))).sort((a,b)=>a-b).map((n,i,visible)=><Fragment key={n}>{i>0&&n-visible[i-1]>1&&<span aria-hidden="true">…</span>}<button type="button" aria-current={currentPage===n?"page":undefined} aria-label={locale==="es"?`Página ${n} de ${totalPages}`:`Page ${n} of ${totalPages}`} onClick={()=>setPage(n)}>{n}</button></Fragment>)}<button type="button" disabled={currentPage===totalPages} onClick={()=>setPage(p=>Math.min(totalPages,p+1))}>{locale==="es"?"Siguiente":"Next"}</button></nav>}
   <dialog ref={dialog} className={styles.thirdPartyDialog} aria-modal="true" aria-labelledby="third-party-dialog-title" onClose={()=>{setSelected(null);opener.current?.focus({preventScroll:true});opener.current=null}} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
    <div className={styles.thirdPartyDialogBody}>
     <form method="dialog"><button type="submit" className={styles.thirdPartyClose} aria-label={copy.closeAria}>×</button></form>
