@@ -14,8 +14,8 @@ export function LiryDeveloperGameListingPreview({locale="es"}:{locale?:LiryFront
  const [platform,setPlatform]=useState("");
  const canReset=name!==""||summary!==""||model!=="premium"||price!==""||age!==""||platform!=="";
  const priceValid=model==="freemium"||(/^\d{1,4}(?:\.\d{1,2})?$/.test(price)&&Number(price)>0);
- const ready=name.trim().length>=2&&summary.trim().length>=20&&priceValid&&age!==""&&platform!=="";
- const missing=[name.trim().length<2?(locale==="es"?"nombre (mínimo 2 caracteres)":"title (minimum 2 characters)"):null,summary.trim().length<20?(locale==="es"?"descripción (mínimo 20 caracteres)":"description (minimum 20 characters)"):null,!priceValid?(locale==="es"?"precio válido":"valid price"):null,age===""?(locale==="es"?"clasificación de edad":"age rating"):null,platform===""?(locale==="es"?"plataforma":"platform"):null].filter(Boolean);
+ const ready=name.trim().length>=2&&summary.trim().length>=20&&priceValid&&age==="classified"&&platform!=="";
+ const missing=[name.trim().length<2?(locale==="es"?"nombre (mínimo 2 caracteres)":"title (minimum 2 characters)"):null,summary.trim().length<20?(locale==="es"?"descripción (mínimo 20 caracteres)":"description (minimum 20 characters)"):null,!priceValid?(locale==="es"?"precio válido":"valid price"):null,age!=="classified"?(locale==="es"?"clasificación de edad declarada (no pendiente)":"declared age rating (not pending)"):null,platform===""?(locale==="es"?"plataforma":"platform"):null].filter(Boolean);
  return <section className={`${styles.notice} ${styles.developerForm}`} aria-labelledby="developer-listing-preview-title">
   <h2 id="developer-listing-preview-title">{copy.title}</h2>
   <p>{copy.intro}</p>
