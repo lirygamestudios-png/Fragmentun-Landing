@@ -16,8 +16,8 @@ export function LiryCommunityTabs({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const tabButtons=useRef<Record<string,HTMLButtonElement|null>>({});
  const handleTabKeyDown=(event:KeyboardEvent<HTMLButtonElement>,index:number)=>{
   let next=index;
-  if(event.key==="ArrowRight")next=(index+1)%categories.length;
-  else if(event.key==="ArrowLeft")next=(index-1+categories.length)%categories.length;
+  if(event.key==="ArrowRight"||event.key==="ArrowDown")next=(index+1)%categories.length;
+  else if(event.key==="ArrowLeft"||event.key==="ArrowUp")next=(index-1+categories.length)%categories.length;
   else if(event.key==="Home")next=0;
   else if(event.key==="End")next=categories.length-1;
   else return;
