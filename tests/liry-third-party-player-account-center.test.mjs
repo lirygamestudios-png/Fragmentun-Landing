@@ -429,3 +429,14 @@ test("La facturación preliminar valida sus cinco campos sin guardar datos reale
  assert.match(src,/selected==="facturacion"&&Object\.entries\(billingDraft\)\.some/);
  assert.doesNotMatch(src,/fetch\(/);
 });
+
+test("La navegación de Mi Liry conserva sección activa y acceso por teclado",()=>{
+ const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
+ assert.match(src,/aria-pressed=\{selected===section\}/);
+ assert.match(src,/aria-controls="liry-account-active-panel"/);
+ assert.match(src,/role="region" aria-label=\{copy\.sections\[active\]\}/);
+ assert.match(src,/const keys=\["ArrowRight","ArrowDown","ArrowLeft","ArrowUp","Home","End"\]/);
+ assert.match(src,/buttons\?\.\[next\]\?\.focus\(\)/);
+ assert.match(src,/setSelected\(sections\[next\]\);setSaveNotice\(null\)/);
+ assert.match(src,/onClick=\{\(\)=>\{setSelected\(section\);setSaveNotice\(null\)\}\}/);
+});
