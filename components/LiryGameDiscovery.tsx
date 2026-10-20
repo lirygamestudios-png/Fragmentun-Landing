@@ -58,7 +58,7 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog,approved
   const catalogResultRef=useRef<HTMLParagraphElement>(null);
   const focusAfterCatalogPageChange=useRef(false);
   useEffect(()=>{if(focusAfterCatalogPageChange.current){focusAfterCatalogPageChange.current=false;catalogResultRef.current?.focus({preventScroll:true})}},[catalogPage]);
-  const navigateCatalogPage=(next:number)=>{focusAfterCatalogPageChange.current=true;setCatalogPage(next)};
+  const navigateCatalogPage=(next:number)=>{if(next===catalogPage)return;focusAfterCatalogPageChange.current=true;setCatalogPage(next)};
   const [catalogHeight,setCatalogHeight]=useState<number|null>(null);
   const resetDnaEvaluation=(preserveStyle=false)=>{
     clearAdvanceTimer();
