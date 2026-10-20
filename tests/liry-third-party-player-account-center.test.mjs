@@ -406,3 +406,15 @@ test("Centro de Cuenta cancela cargas obsoletas del avatar",()=>{
  assert.match(src,/thumbnail\.startsWith\("data:image\/webp;base64,"\)&&thumbnail\.length<180000/);
  assert.match(src,/window\.dispatchEvent\(new Event\("liry:avatar-changed"\)\)/);
 });
+
+test("Mi Liry mantiene los borradores de identidad y facturación sin persistencia de cuenta",()=>{
+ const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
+ assert.match(src,/const \[publicName,setPublicName\]=useState\(""\)/);
+ assert.match(src,/const \[billingDraft,setBillingDraft\]=useState\(\{firstName:"",lastName:"",email:"",country:"",postalCode:""\}\)/);
+ assert.match(src,/setBillingDraft\(\{firstName:"",lastName:"",email:"",country:"",postalCode:""\}\)/);
+ assert.match(src,/const \[notices,setNotices\]=useState\(false\)/);
+ assert.match(src,/const \[privateProfile,setPrivateProfile\]=useState\(true\)/);
+ assert.match(src,/sessionStorage\.getItem\("liry:temporary-avatar-thumbnail"\)/);
+ assert.doesNotMatch(src,/localStorage\.(?:setItem|getItem)/);
+ assert.doesNotMatch(src,/fetch\(/);
+});
