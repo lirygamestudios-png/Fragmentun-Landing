@@ -383,3 +383,15 @@ test("Cabecera y perfil aceptan solo la miniatura WebP temporal de la misma sesi
  assert.match(gamer,/sessionStorage\.removeItem\(thumbnailKey\)/);
  assert.match(header,/window\.addEventListener\("pageshow",refresh\)/);
 });
+
+test("Las preferencias de Mi Liry mantienen grupos y mensajes accesibles",()=>{
+ const src=readFileSync(new URL("../components/MiLiryIdentityPreview.tsx",import.meta.url),"utf8");
+ assert.match(src,/const canReset=avatar!=="orb"\|\|theme!=="navy"\|\|notifications/);
+ assert.match(src,/disabled=\{!canReset\}/);
+ assert.match(src,/role="group" aria-labelledby="liry-preview-avatar-label"/);
+ assert.match(src,/role="group" aria-labelledby="liry-preview-theme-label"/);
+ assert.match(src,/aria-pressed=\{avatar===item\}/);
+ assert.match(src,/aria-pressed=\{theme===item\}/);
+ assert.match(src,/role="status" aria-live="polite" aria-atomic="true"/);
+ assert.match(src,/<p className=\{styles\.previewNote\}>\{copy\.previewNote\}<\/p>/);
+});
