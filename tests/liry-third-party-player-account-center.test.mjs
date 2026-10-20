@@ -440,3 +440,12 @@ test("La navegación de Mi Liry conserva sección activa y acceso por teclado",(
  assert.match(src,/setSelected\(sections\[next\]\);setSaveNotice\(null\)/);
  assert.match(src,/onClick=\{\(\)=>\{setSelected\(section\);setSaveNotice\(null\)\}\}/);
 });
+
+test("Nombres y país de facturación no aceptan dígitos; código postal internacional sí",()=>{
+ const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
+ assert.match(src,/const billingTextValid=/);
+ assert.match(src,/field==="postalCode"/);
+ assert.ok(src.includes(String.raw`/^[\p{L}\p{N} -]{2,20}$/u`));
+ assert.ok(src.includes(String.raw`/^[\p{L}\p{M} .'-]{2,80}$/u`));
+ assert.ok(!src.includes(String.raw`/^[\p{L}\p{M}\p{N} .'-]{2,80}$/u`));
+});
