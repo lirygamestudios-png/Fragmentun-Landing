@@ -253,7 +253,7 @@ test("Mi Liry deshabilita confirmación con nombre público o correo de prueba i
  assert.match(source,/disabled=\{\(selected==="perfil"&&Boolean\(nameError\)\)/);
  assert.match(source,/selected==="facturacion"&&Object\.entries\(billingDraft\)\.some/);
  assert.match(source,/aria-invalid=\{billingDraft\[field\]\.trim\(\)!==""&&!billingFieldValid\(field,billingDraft\[field\]\)\}/);
- assert.match(source,/role=\{!billingEmailValid\?"alert":"status"\}/);
+ assert.match(source,/role=\{billingDraft\[field\]\.trim\(\)!==""&&!billingFieldValid\(field,billingDraft\[field\]\)\?"alert":undefined\}/);
 });
 test("Los campos de facturación mantienen medidas táctiles en móvil",()=>{
  const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");
