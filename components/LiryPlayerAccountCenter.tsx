@@ -23,7 +23,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const updatePublicName=(name:string)=>{setSaveNotice(null);setPublicName(name);const valid=name===""||isValidLiryDisplayName(name);setNameError(valid?"":locale==="es"?"Usa de 2 a 40 caracteres, sin espacios al inicio o final.":"Use 2 to 40 characters without leading or trailing spaces.");window.dispatchEvent(new CustomEvent("liry:display-name-preview",{detail:{name:valid?name:""}}))};
  const [billingDraft,setBillingDraft]=useState({firstName:"",lastName:"",email:"",country:"",postalCode:""});
  const billingEmailValid=billingDraft.email===""||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(billingDraft.email);
- const billingTextValid=(field:string,value:string)=>value.trim()===""||((field==="postalCode"?/^[\p{L}\p{N} -]{2,20}$/u:/^[\p{L}\p{M}\p{N} .'-]{2,80}$/u).test(value.trim()));
+ const billingTextValid=(field:string,value:string)=>value.trim()===""||((field==="postalCode"?/^[\p{L}\p{N} -]{2,20}$/u:/^[\p{L}\p{M} .'-]{2,80}$/u).test(value.trim()));
  const billingFieldValid=(field:string,value:string)=>field==="email"?billingEmailValid:billingTextValid(field,value);
  const billingCompleted=Object.entries(billingDraft).filter(([field,value])=>value.trim()!==""&&billingFieldValid(field,value)).length;
  const [notices,setNotices]=useState(false);
