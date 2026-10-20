@@ -46,7 +46,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
   if(index<0||!visibleGames.some(game=>`liry-third-party-${game.slug}`===hash))return;
   const target=document.getElementById(hash);
   if(!target)return;
-  const frame=requestAnimationFrame(()=>target.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"}));
+  const frame=requestAnimationFrame(()=>{target.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});target.focus({preventScroll:true})});
   return ()=>cancelAnimationFrame(frame);
  },[games,currentPage,query,model,linkedHash,navigationCount]);
  const dialog=useRef<HTMLDialogElement>(null);
@@ -65,7 +65,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
   <p>{copy.intro}</p>
   <div className={styles.thirdPartyFilters}><label>{locale==="es"?"Buscar videojuegos públicos":"Search public games"}<input type="search" value={query} onChange={e=>{setQuery(e.target.value);setPage(1)}} placeholder={locale==="es"?"Nombre o descripción":"Name or description"}/></label><label>{locale==="es"?"Modalidad":"Model"}<select value={model} onChange={e=>{setModel(e.target.value);setPage(1)}}><option value="all">{locale==="es"?"Todas":"All"}</option><option value="freemium">Freemium</option><option value="premium">Premium</option></select></label><button type="button" disabled={query===""&&model==="all"} onClick={()=>{setQuery("");setModel("all");setPage(1)}}>{locale==="es"?"Limpiar filtros":"Clear filters"}</button></div><p ref={resultStatus} tabIndex={-1} aria-live="polite">{locale==="es"?`${filtered.length} videojuegos públicos encontrados · Página ${currentPage} de ${totalPages}`:`${filtered.length} public games found · Page ${currentPage} of ${totalPages}`}</p>
   <div className={styles.thirdPartyGrid}>
-   {visibleGames.map(game=><article key={game.slug} id={`liry-third-party-${game.slug}`} className={styles.thirdPartyCard}>
+   {visibleGames.map(game=><article key={game.slug} id={`liry-third-party-${game.slug}`} tabIndex={-1} className={styles.thirdPartyCard}>
     <div className={styles.thirdPartyCardArt} aria-hidden="true"><span>✧</span></div>
     <div className={styles.thirdPartyCardBody}>
      <span className={styles.thirdPartyCardModel}>{game.model==="premium"?"PREMIUM":"FREEMIUM"}</span>
