@@ -1768,3 +1768,7 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
   border-radius:5px;
  }
 }
+
+/* Accesibilidad móvil de filtros del catálogo y la tienda. */
+.liryCatalogFilters label,.liryStoreFilters label,.thirdPartyFilters label{min-width:0}
+@media(max-width:560px){.liryCatalogFilters button,.liryStoreFilters button,.thirdPartyFilters button{width:100%;box-sizing:border-box}}
