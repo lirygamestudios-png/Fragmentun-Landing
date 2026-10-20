@@ -18,4 +18,6 @@ test("Filtros de catálogo y tienda respetan ancho móvil",()=>{const css=readFi
 
 test("Limpiar filtros del catálogo principal se desactiva sin filtros activos",()=>{const src=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");assert.match(src,/disabled=\{catalogSearch===""&&catalogStatus==="all"\}/);});
 
-test("La búsqueda de tienda orienta en ambos idiomas",()=>{const src=readFileSync(new URL("../components/LiryStoreCategories.tsx",import.meta.url),"utf8");assert.match(src,/placeholder=\{locale==="es"\?"Nombre del producto":"Product name"\}/);assert.match(src,/maxLength=\{100\}/);});
+test("La búsqueda de tienda orienta en ambos idiomas",()=>{const src=readFileSync(new URL("../components/LiryStoreCategories.tsx",import.meta.url),"utf8");assert.match(src,/placeholder=\{locale==="es"\?"Nombre o categoría":"Name or category"\}/);assert.match(src,/maxLength=\{100\}/);});
+
+test("La tienda permite buscar también por categoría visible",()=>{const src=readFileSync(new URL("../components/LiryStoreCategories.tsx",import.meta.url),"utf8");assert.match(src,/collections\.find\(entry=>entry\.id===item\.category\)/);assert.match(src,/Nombre o categoría/);assert.match(src,/Name or category/);});
