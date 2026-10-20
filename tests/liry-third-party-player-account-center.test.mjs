@@ -449,3 +449,5 @@ test("Nombres y país de facturación no aceptan dígitos; código postal intern
  assert.ok(src.includes(String.raw`/^[\p{L}\p{M} .'-]{2,80}$/u`));
  assert.ok(!src.includes(String.raw`/^[\p{L}\p{M}\p{N} .'-]{2,80}$/u`));
 });
+
+test("Los campos de facturación no aceptan signos sin letras ni números",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/field==="postalCode"\?\/\[\\p\{L\}\\p\{N\}\]\/u:\/\\p\{L\}\/u/);assert.match(src,/billingFieldValid\(field,value\)/);});
