@@ -17,3 +17,5 @@ test("Paginación del catálogo principal devuelve foco al resumen",()=>{const s
 test("Filtros de catálogo y tienda respetan ancho móvil",()=>{const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");assert.match(css,/\.liryCatalogFilters label,\.liryStoreFilters label,\.thirdPartyFilters label\{min-width:0\}/);assert.match(css,/@media\(max-width:560px\)\{\.liryCatalogFilters button,\.liryStoreFilters button,\.thirdPartyFilters button\{width:100%;box-sizing:border-box\}\}/);});
 
 test("Limpiar filtros del catálogo principal se desactiva sin filtros activos",()=>{const src=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");assert.match(src,/disabled=\{catalogSearch===""&&catalogStatus==="all"\}/);});
+
+test("La búsqueda de tienda orienta en ambos idiomas",()=>{const src=readFileSync(new URL("../components/LiryStoreCategories.tsx",import.meta.url),"utf8");assert.match(src,/placeholder=\{locale==="es"\?"Nombre del producto":"Product name"\}/);assert.match(src,/maxLength=\{100\}/);});
