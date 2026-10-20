@@ -11,3 +11,5 @@ test("Catálogo principal permite limpiar filtros cuando no hay resultados",()=>
  assert.match(src,/Show all games/);
  assert.match(src,/onClick=\{\(\)=>\{setCatalogSearch\(""\);setCatalogStatus\("all"\);setCatalogPage\(1\)\}\}/);
 });
+
+test("Paginación del catálogo principal devuelve foco al resumen",()=>{const src=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");assert.match(src,/catalogResultRef=useRef/);assert.match(src,/catalogResultRef\.current\?\.focus\(\{preventScroll:true\}\)/);assert.match(src,/ref=\{catalogResultRef\} tabIndex=\{-1\}/);assert.match(src,/navigateCatalogPage\(i\+1\)/);});
