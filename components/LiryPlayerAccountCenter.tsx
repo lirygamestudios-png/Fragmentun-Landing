@@ -36,7 +36,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  useEffect(()=>{
   try{
    const saved=sessionStorage.getItem("liry:temporary-avatar-thumbnail");
-   if(saved?.startsWith("data:image/")&&saved.length<180000)setAvatarUrl(saved);
+   if(saved?.startsWith("data:image/webp;base64,")&&saved.length<180000)setAvatarUrl(saved);
   }catch{}
   return ()=>{avatarRequestRef.current++;if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current)};
  },[]);
