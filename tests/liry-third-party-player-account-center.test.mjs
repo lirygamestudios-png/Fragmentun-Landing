@@ -251,9 +251,9 @@ test("Editar preferencias invalida el aviso anterior de guardado de demostració
 test("Mi Liry deshabilita confirmación con nombre público o correo de prueba inválidos",()=>{
  const source=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
  assert.match(source,/disabled=\{\(selected==="perfil"&&Boolean\(nameError\)\)/);
- assert.match(source,/selected==="facturacion"&&billingDraft\.email!==""/);
+ assert.match(source,/selected==="facturacion"&&!billingEmailValid/);
  assert.match(source,/aria-invalid=\{field==="email"/);
- assert.match(source,/role=\{billingDraft\.email!==""/);
+ assert.match(source,/role=\{!billingEmailValid\?"alert":"status"\}/);
 });
 test("Los campos de facturación mantienen medidas táctiles en móvil",()=>{
  const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");
