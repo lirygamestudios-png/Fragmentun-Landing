@@ -252,7 +252,7 @@ test("Mi Liry deshabilita confirmación con nombre público o correo de prueba i
  const source=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
  assert.match(source,/disabled=\{\(selected==="perfil"&&Boolean\(nameError\)\)/);
  assert.match(source,/selected==="facturacion"&&Object\.entries\(billingDraft\)\.some/);
- assert.match(source,/aria-invalid=\{field==="email"/);
+ assert.match(source,/aria-invalid=\{billingDraft\[field\]\.trim\(\)!==""&&!billingFieldValid\(field,billingDraft\[field\]\)\}/);
  assert.match(source,/role=\{!billingEmailValid\?"alert":"status"\}/);
 });
 test("Los campos de facturación mantienen medidas táctiles en móvil",()=>{
