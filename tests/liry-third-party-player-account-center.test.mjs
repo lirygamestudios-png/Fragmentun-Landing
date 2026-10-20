@@ -395,3 +395,14 @@ test("Las preferencias de Mi Liry mantienen grupos y mensajes accesibles",()=>{
  assert.match(src,/role="status" aria-live="polite" aria-atomic="true"/);
  assert.match(src,/<p className=\{styles\.previewNote\}>\{copy\.previewNote\}<\/p>/);
 });
+
+test("Centro de Cuenta cancela cargas obsoletas del avatar",()=>{
+ const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
+ assert.match(src,/const request=\+\+avatarRequestRef\.current/);
+ assert.match(src,/const removeAvatar=\(\)=>\{avatarRequestRef\.current\+\+/);
+ assert.match(src,/if\(request!==avatarRequestRef\.current\)\{URL\.revokeObjectURL\(next\);return\}/);
+ assert.match(src,/if\(request!==avatarRequestRef\.current\)return/);
+ assert.match(src,/sessionStorage\.removeItem\("liry:temporary-avatar-thumbnail"\)/);
+ assert.match(src,/thumbnail\.startsWith\("data:image\/webp;base64,"\)&&thumbnail\.length<180000/);
+ assert.match(src,/window\.dispatchEvent\(new Event\("liry:avatar-changed"\)\)/);
+});
