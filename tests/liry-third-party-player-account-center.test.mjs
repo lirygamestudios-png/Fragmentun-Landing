@@ -228,7 +228,7 @@ test("Mi Liry recupera avatar temporal al volver desde FrontDesk",()=>{
  const header=readFileSync(new URL("../components/LiryFrontdeskProfileAccess.tsx",import.meta.url),"utf8");
  assert.match(profile,/sessionStorage\.getItem\("liry:temporary-avatar-thumbnail"\)/);
  assert.match(profile,/saved\?\.startsWith\("data:image\/webp;base64,"\)/);
- assert.match(profile,/setAvatarUrl\(saved\)/);
+ assert.match(profile,/setAvatarUrl\(saved\?\.startsWith\("data:image\/webp;base64,"\)&&saved\.length<180000\?saved:null\)/);
  assert.match(profile,/sessionStorage\.removeItem\("liry:temporary-avatar-thumbnail"\)/);
  assert.match(header,/sessionStorage\.getItem\(key\)/);
 });
