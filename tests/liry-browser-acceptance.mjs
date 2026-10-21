@@ -14,7 +14,7 @@ import assert from "node:assert/strict";
 import {mkdir} from "node:fs/promises";
 import {join} from "node:path";
 
-const base = process.env.BASE_URL || "https://fragmentunweblandingoficial01-qx0ucmw1t-lirygamestudios-7579.vercel.app";
+const base = (process.env.BASE_URL || "https://fragmentunweblandingoficial01-ia3k1mthn-lirygamestudios-7579.vercel.app").replace(/\/$/, "");
 const out = process.env.LIRY_EVIDENCE_DIR || "/tmp/liry-browser-acceptance";
 await mkdir(out,{recursive:true});
 let chromium;
@@ -25,9 +25,11 @@ const browser=await chromium.launch({headless:true});
 let failures=0;
 const cases=[
  {label:"desktop-es-1440",width:1440,height:900,locale:"es",mobile:false},
+ {label:"desktop-es-1280",width:1280,height:800,locale:"es",mobile:false},
  {label:"desktop-en-1024",width:1024,height:768,locale:"en",mobile:false},
  {label:"mobile-es-320",width:320,height:720,locale:"es",mobile:true},
  {label:"mobile-es-360",width:360,height:780,locale:"es",mobile:true},
+ {label:"mobile-es-375",width:375,height:812,locale:"es",mobile:true},
  {label:"mobile-en-390",width:390,height:844,locale:"en",mobile:true},
  {label:"mobile-es-430",width:430,height:932,locale:"es",mobile:true}
 ];
@@ -49,7 +51,7 @@ try {
     await toggle.click();
     assert.equal(await toggle.getAttribute("aria-expanded"),"true");
     await page.keyboard.press("Escape");
-    assert.equal(await toggle.getAttribute("aria-expanded"),"false");
+    await page.waitForFunction(()=>document.querySelector('button[aria-controls="liry-mobile-nav"]')?.getAttribute("aria-expanded")==="false");
    }
    const mi=await page.goto(base+"/lirygames/mi-liry?lang="+item.locale,{waitUntil:"domcontentloaded",timeout:30000});
    assert.equal(mi?.status(),200,"Mi Liry debe responder 200");
@@ -57,15 +59,13 @@ try {
    await first.click();
    const dialog=page.locator("#mi-liry-area-dialog");
    assert.equal(await dialog.evaluate(el=>el.open),true,"Subpantalla debe abrirse");
-   assert.equal(await first.getAttribute("aria-expanded"),"true","Botón comunica estado abierto");
+   await page.waitForFunction(()=>document.querySelector('button[aria-controls="mi-liry-area-dialog"]')?.getAttribute("aria-expanded")==="true");
    await page.screenshot({path:join(out,item.label+"-mi-liry-modal.png")});
    await page.keyboard.press("Escape");
-   assert.equal(await dialog.evaluate(el=>el.open),false,"Escape cierra subpantalla");
-   assert.equal(await first.getAttribute("aria-expanded"),"false","Botón comunica estado cerrado");
-   assert.equal(await first.evaluate(el=>document.activeElement===el),true,"Foco retorna a activador");
+   await page.waitForFunction(()=>{const d=document.querySelector("#mi-liry-area-dialog");const b=document.querySelector('button[aria-controls="mi-liry-area-dialog"]');return d&&!d.open&&b?.getAttribute("aria-expanded")==="false"&&document.activeElement===b});
    assert.deepEqual(errors,[],"Sin errores JavaScript no capturados");
    console.log("PASS",item.label);
-  }catch(e){failures++;console.error("FAIL",item.label,e.message);}
+  }catch(e){failures++;console.error("FAIL",item.label,e.message);try{await page.screenshot({path:join(out,item.label+"-failed.png"),fullPage:true,timeout:5000})}catch{}}
   finally {await context.close();}
  }
 }finally{await browser.close();}
