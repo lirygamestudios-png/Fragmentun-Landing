@@ -532,3 +532,13 @@ test("Facturación provisional conserva mensajes de validación en ambos idiomas
  assert.ok(source.includes("aria-invalid={billingDraft[field]"));
  assert.ok(source.includes("liry-billing-${field}-help"));
 });
+
+
+test("Los errores de avatar se actualizan al cambiar idioma sin reabrir archivo",()=>{
+ const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
+ const start=src.indexOf("const pairs=[[");
+ assert.ok(start>=0,"Falta la tabla bilingüe de errores de avatar");
+ const pairs=src.slice(start,src.indexOf("},[locale]);",start));
+ for(const message of ["Selecciona JPG, PNG o WebP de hasta 2 MB.","Choose JPG, PNG or WebP up to 2 MB.","El contenido del archivo no es una imagen válida.","The file content is not a valid image.","No se pudo abrir la imagen.","Could not open the image."])assert.ok(pairs.includes(message),message);
+ assert.ok(pairs.includes("locale===\"es\"?pair[0]:pair[1]"));
+});
