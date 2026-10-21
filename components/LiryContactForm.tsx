@@ -39,9 +39,9 @@ export function LiryContactForm({locale="es"}:{locale?:LiryFrontdeskLocale}){
   try{
    const r=await fetch("/api/lirygames/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,subject,gameSlug,message,privacyAcknowledged:ack,website,turnstileToken})});
    const j=await r.json().catch(()=>null);
-   if(!r.ok||!j?.ok)throw Error(typeof j?.message==="string"?j.message:copy.submitFailed);
+   if(!r.ok||!j?.ok)throw Error(r.status===429?(locale==="es"?"Demasiados envíos. Inténtalo más tarde.":"Too many submissions. Please try again later."):copy.submitFailed);
    setName("");setEmail("");setSubject("opinion");setGameSlug("");setMessage("");setAck(false);setWebsite("");
-   setDone(true);setResult(j.message||copy.success);
+   setDone(true);setResult(copy.success);
   }catch(error){setResult(error instanceof Error?error.message :copy.submitError);}
   finally{setBusy(false);setTurnstileToken("");if(turnstileWidgetId.current){try{window.turnstile?.reset(turnstileWidgetId.current)}catch{setTurnstileError(copy.captchaFailed)}}}
  }
@@ -69,6 +69,6 @@ export function LiryContactForm({locale="es"}:{locale?:LiryFrontdeskLocale}){
    {turnstileError&&<p role="alert" style={{color:"#ffb2b2",fontSize:12}}>{turnstileError}</p>}
    <button className="liryContactSubmit" disabled={busy||!turnstileToken} type="submit">{busy?copy.sending:`${copy.submit} →`}</button>
   </>
-  {result&&<p role="status" style={{fontSize:12,color:done?"#89ebd0":"#ffb2b2",margin:0}}>{result}</p>}
+  {result&&<p role={done?"status":"alert"} style={{fontSize:12,color:done?"#89ebd0":"#ffb2b2",margin:0}}>{result}</p>}
  </form>;
 }
