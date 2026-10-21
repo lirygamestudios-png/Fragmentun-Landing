@@ -30,7 +30,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
    const selectedSlug=event instanceof CustomEvent&&typeof event.detail?.slug==="string"?event.detail.slug:null;
    const hash=selectedSlug?`liry-third-party-${selectedSlug}`:window.location.hash.slice(1);
    const index=games.findIndex(game=>`liry-third-party-${game.slug}`===hash);
-   if(index<0)return;
+   if(index<0){if(!selectedSlug)setLinkedHash("");return;}
    setLinkedHash(hash);
    setNavigationCount(count=>count+1);
    setQuery("");setModel("all");setPage(Math.ceil((index+1)/12));
