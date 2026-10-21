@@ -46,7 +46,8 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
   };
   refreshAvatar();
   window.addEventListener("pageshow",refreshAvatar);
-  return ()=>{window.removeEventListener("pageshow",refreshAvatar);avatarRequestRef.current++;if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current)};
+  window.addEventListener("liry:avatar-changed",refreshAvatar);
+  return ()=>{window.removeEventListener("pageshow",refreshAvatar);window.removeEventListener("liry:avatar-changed",refreshAvatar);avatarRequestRef.current++;if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current)};
  },[]);
  const cancelAvatarSelection=()=>{avatarRequestRef.current++;setAvatarLoading(false);setAvatarError("");if(avatarInput.current){avatarInput.current.value="";avatarInput.current.focus()}};
  const removeAvatar=()=>{avatarRequestRef.current++;setAvatarLoading(false);if(avatarUrlRef.current)URL.revokeObjectURL(avatarUrlRef.current);avatarUrlRef.current=null;try{sessionStorage.removeItem("liry:temporary-avatar-thumbnail");window.dispatchEvent(new Event("liry:avatar-changed"))}catch{}setAvatarUrl(null);window.dispatchEvent(new CustomEvent("liry:avatar-preview",{detail:{url:null}}));setAvatarError("");if(avatarInput.current){avatarInput.current.value="";avatarInput.current.focus()}};
