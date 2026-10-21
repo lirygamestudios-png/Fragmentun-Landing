@@ -25,7 +25,7 @@ export function LiryStoreCategories({locale="es",products=[]}:{locale?:LiryFront
  const resultStatus=useRef<HTMLParagraphElement>(null);
  const focusAfterPageChange=useRef(false);
  useEffect(()=>{if(focusAfterPageChange.current){focusAfterPageChange.current=false;resultStatus.current?.focus({preventScroll:true})}},[currentPage]);
- const navigatePage=(next:number)=>{if(next===currentPage)return;focusAfterPageChange.current=true;setPage(next);resultStatus.current?.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"})};
+ const navigatePage=(next:number)=>{if(next===currentPage)return;focusAfterPageChange.current=true;setPage(next);const reduceMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)").matches??false;resultStatus.current?.scrollIntoView({behavior:reduceMotion?"auto":"smooth",block:"start"})};
  const dialogRef=useRef<HTMLDialogElement>(null);
  const triggerRef=useRef<HTMLButtonElement|null>(null);
  const [dialogOpen,setDialogOpen]=useState(false);
