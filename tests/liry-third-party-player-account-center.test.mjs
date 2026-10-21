@@ -515,3 +515,12 @@ test("Tienda no presenta compra activa sin productos y Mi Liry informa cuenta no
  assert.match(account,/there is no authenticated account yet/);
  assert.match(account,/Seguridad y compras requieren una cuenta verificada y permanecen desactivadas/);
 });
+
+
+test("La categoría seleccionada de Tienda se vuelve a traducir al cambiar ES/EN",()=>{
+ const src=readFileSync(new URL("../components/LiryStoreCategories.tsx",import.meta.url),"utf8");
+ assert.match(src,/const \[selectedId,setSelectedId\]=useState\(collections\[0\]\.id\)/);
+ assert.match(src,/const selected=collections\.find\(item=>item\.id===selectedId\)\?\?collections\[0\]/);
+ assert.match(src,/setSelectedId\(item\.id\)/);
+ assert.doesNotMatch(src,/setSelected\(item\)/);
+});
