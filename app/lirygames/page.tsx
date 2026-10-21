@@ -144,7 +144,7 @@ export default async function LiryGamesFrontDesk({searchParams}:{searchParams:Pr
       <div className={styles.liryBoostActions}>
         <LiryBoostEnrollment locale={locale} />
         <a href="#social" className={styles.liryBoostSecondary}>{copy.liryBoostSection.share} →</a>
-        <a href="#contacto" className={styles.liryBoostSecondary}>{copy.liryBoostSection.contact} →</a>
+        <a href="#comunidad" className={styles.liryBoostSecondary}>{copy.liryBoostSection.contact} →</a>
       </div>
       <p className={styles.liryBoostNotice}>{copy.liryBoostSection.notice}</p>
     </section>
