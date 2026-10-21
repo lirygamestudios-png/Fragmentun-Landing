@@ -33,6 +33,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const [privateProfile,setPrivateProfile]=useState(true);
  const [avatarUrl,setAvatarUrl]=useState<string|null>(null);
  const [avatarError,setAvatarError]=useState("");
+ useEffect(()=>{const pairs=[["Selecciona JPG, PNG o WebP de hasta 2 MB.","Choose JPG, PNG or WebP up to 2 MB."],["El contenido del archivo no es una imagen válida.","The file content is not a valid image."],["La imagen no es válida.","Invalid image."],["No se pudo abrir la imagen.","Could not open the image."]];setAvatarError(previous=>{const pair=pairs.find(([es,en])=>previous===es||previous===en);return pair?(locale==="es"?pair[0]:pair[1]):previous})},[locale]);
  const [avatarLoading,setAvatarLoading]=useState(false);
  const nameInput=useRef<HTMLInputElement>(null);
  const avatarInput=useRef<HTMLInputElement>(null);
