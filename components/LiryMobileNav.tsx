@@ -23,7 +23,7 @@ export function LiryMobileNav({ariaLabel,items,locale="es"}:{ariaLabel:string;it
    {open?<span aria-hidden="true" className={styles.navMenuX}>×</span>:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>}
   </button>
   <nav id="liry-mobile-nav" className={styles.navMenuPanel} aria-label={ariaLabel} hidden={!open} style={!open?{display:"none"}:undefined}>
-    {items.map(item=><a key={item.href} href={item.href} aria-current={activeHash===item.href?"location":undefined} onClick={()=>{setActiveHash(item.href);setOpen(false)}}>{item.label}</a>)}
+    {items.map(item=><a key={item.href} href={item.href} aria-current={activeHash===item.href?"location":undefined} onClick={()=>{setActiveHash(item.href);setOpen(false);requestAnimationFrame(()=>{const target=document.getElementById(item.href.slice(1));if(!target)return;if(!target.hasAttribute("tabindex"))target.setAttribute("tabindex","-1");target.focus({preventScroll:true})})}}>{item.label}</a>)}
    </nav>
  </div>;
 }
