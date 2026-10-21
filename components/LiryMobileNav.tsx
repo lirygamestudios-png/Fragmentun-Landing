@@ -4,6 +4,8 @@ import styles from "../app/lirygames/lirygames.module.css";
 type Item={label:string;href:string};
 export function LiryMobileNav({ariaLabel,items,locale="es"}:{ariaLabel:string;items:Item[];locale?:"es"|"en"}){
  const [open,setOpen]=useState(false);
+ const [activeHash,setActiveHash]=useState("");
+ useEffect(()=>{const update=()=>setActiveHash(window.location.hash);update();window.addEventListener("hashchange",update);return ()=>window.removeEventListener("hashchange",update)},[]);
  const root=useRef<HTMLDivElement>(null);
  const toggle=useRef<HTMLButtonElement>(null);
  useEffect(()=>{
@@ -21,7 +23,7 @@ export function LiryMobileNav({ariaLabel,items,locale="es"}:{ariaLabel:string;it
    {open?<span aria-hidden="true" className={styles.navMenuX}>×</span>:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>}
   </button>
   {open&&<nav id="liry-mobile-nav" className={styles.navMenuPanel} aria-label={ariaLabel}>
-    {items.map(item=><a key={item.href} href={item.href} onClick={()=>setOpen(false)}>{item.label}</a>)}
+    {items.map(item=><a key={item.href} href={item.href} aria-current={activeHash===item.href?"location":undefined} onClick={()=>{setActiveHash(item.href);setOpen(false)}}>{item.label}</a>)}
    </nav>}
  </div>;
 }
