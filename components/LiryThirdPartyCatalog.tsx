@@ -46,7 +46,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
   if(index<0||!visibleGames.some(game=>`liry-third-party-${game.slug}`===hash))return;
   const target=document.getElementById(hash);
   if(!target)return;
-  const frame=requestAnimationFrame(()=>{target.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});target.focus({preventScroll:true})});
+  const frame=requestAnimationFrame(()=>{target.scrollIntoView({behavior:window.matchMedia?.("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});target.focus({preventScroll:true})});
   return ()=>cancelAnimationFrame(frame);
  },[games,currentPage,query,model,linkedHash,navigationCount]);
  const dialog=useRef<HTMLDialogElement>(null);
