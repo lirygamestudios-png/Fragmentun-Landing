@@ -46,7 +46,8 @@ export function LiryGamerIdentity({snapshot,locale="es"}:{snapshot:Readonly<Publ
     if(styleTimer.current)clearTimeout(styleTimer.current);
     setStyle(detail.style);
     setHighlight(true);
-    styleTimer.current=setTimeout(()=>{setStyle(null);setHighlight(false);styleTimer.current=null;},10000);
+    const durationMs=Number.isFinite(detail.durationMs)?Math.min(10000,Math.max(5000,detail.durationMs)):10000;
+    styleTimer.current=setTimeout(()=>{setStyle(null);setHighlight(false);styleTimer.current=null;},durationMs);
   };
   window.addEventListener("liry:dna-style",handler);
   window.addEventListener("liry:dna-closed",onDnaClosed);
