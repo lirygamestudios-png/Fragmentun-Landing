@@ -11,7 +11,8 @@ export function LiryStoreCategories({locale="es",products=[]}:{locale?:LiryFront
  const copy=liryFrontdeskStrings(locale).store;
  const collections=copy.categories.map(item=>({...item,tone:item.id}));
 
- const [selected,setSelected]=useState<(typeof collections)[number]>(collections[0]);
+ const [selectedId,setSelectedId]=useState(collections[0].id);
+ const selected=collections.find(item=>item.id===selectedId)??collections[0];
  const [term,setTerm]=useState("");
  const [category,setCategory]=useState("all");
  const [availability,setAvailability]=useState("all");
@@ -30,7 +31,7 @@ export function LiryStoreCategories({locale="es",products=[]}:{locale?:LiryFront
  const [dialogOpen,setDialogOpen]=useState(false);
  return <>
   <div className={styles.storeCategories} aria-label={copy.categoriesAria}>
-   {collections.map(item=><button type="button" key={item.name} className={styles.storeCategory} aria-haspopup="dialog" aria-expanded={dialogOpen&&selected.id===item.id} aria-controls="liry-store-category-dialog" onClick={event=>{if(dialogRef.current&&!dialogRef.current.open){setSelected(item);triggerRef.current=event.currentTarget;dialogRef.current.showModal();setDialogOpen(true)}}}>
+   {collections.map(item=><button type="button" key={item.name} className={styles.storeCategory} aria-haspopup="dialog" aria-expanded={dialogOpen&&selected.id===item.id} aria-controls="liry-store-category-dialog" onClick={event=>{if(dialogRef.current&&!dialogRef.current.open){setSelectedId(item.id);triggerRef.current=event.currentTarget;dialogRef.current.showModal();setDialogOpen(true)}}}>
      <span className={`${styles.storeCategoryVisual} ${styles[`storeTone_${item.tone}` ]}`} aria-hidden="true"><svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">{item.tone==="wear"?<path d="m8 4 4 2 4-2 5 4-3 4-2-1v9H8v-9l-2 1-3-4 5-4Z"/>:item.tone==="accessories"?<><circle cx="12" cy="12" r="7"/><path d="M8 5V3h8v2M9 12l3 4 3-4-3-4-3 4Z"/></>:item.tone==="collectibles"?<><path d="m12 2 8 5v10l-8 5-8-5V7l8-5Z"/><path d="m4 7 8 5 8-5M12 12v10"/></>:item.tone==="art"?<><rect x="4" y="3" width="16" height="18" rx="2"/><path d="m7 16 4-5 3 3 2-2 2 4M8 7h.01"/></>:<><rect x="3" y="7" width="18" height="11" rx="5"/><path d="M8 10v5M5.5 12.5h5M16 11h.01M18 14h.01"/></>}</svg></span><strong>{item.name}</strong><span className={styles.storeCategoryLine}/>
    </button>)}
   </div>
