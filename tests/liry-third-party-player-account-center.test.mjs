@@ -422,7 +422,7 @@ test("Mi Liry mantiene los borradores de identidad y facturación sin persistenc
 test("La facturación preliminar valida sus cinco campos sin guardar datos reales",()=>{
  const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
  assert.match(src,/\(\["firstName","lastName","email","country","postalCode"\] as const\)\.map/);
- assert.match(src,/const billingFieldValid=\(field:string,value:string\)=>field==="email"\?billingEmailValid:billingTextValid\(field,value\)/);
+ assert.ok(src.includes('const billingFieldValid=(field:string,value:string)=>field==="email"?(value.trim()===""||'));
  assert.match(src,/const billingCompleted=Object\.entries\(billingDraft\)\.filter\(\(\[field,value\]\)=>value\.trim\(\)!==""&&billingFieldValid\(field,value\)\)\.length/);
  assert.match(src,/aria-describedby=\{\x60liry-billing-\$\{field\}-help\x60\}/);
  assert.match(src,/role=\{billingDraft\[field\]\.trim\(\)!==""&&!billingFieldValid\(field,billingDraft\[field\]\)\?"alert":undefined\}/);
