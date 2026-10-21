@@ -472,3 +472,13 @@ test("Menú móvil mantiene panel accesible y cierra al navegar",()=>{
  assert.match(nav,/aria-current=\{activeHash===item\.href\?"location":undefined\}/);
  assert.match(nav,/onClick=\{\(\)=>\{setActiveHash\(item\.href\);setOpen\(false\)\}\}/);
 });
+
+
+test("Todos los enlaces de secciones principales del FrontDesk tienen destino",()=>{
+ const page=readFileSync(new URL("../app/lirygames/page.tsx",import.meta.url),"utf8");
+ const discovery=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");
+ const ids=new Set([...page.matchAll(/\bid="([^"]+)"/g),...discovery.matchAll(/\bid="([^"]+)"/g)].map(match=>match[1]));
+ const links=[...page.matchAll(/href="#([^"]+)"/g),...discovery.matchAll(/href="#([^"]+)"/g)].map(match=>match[1]);
+ assert.ok(links.length>0);
+ for(const target of links)assert.ok(ids.has(target),`Falta destino interno #${target}`);
+});
