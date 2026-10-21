@@ -24,26 +24,18 @@ import {VISITOR_GAMER_SNAPSHOT} from "../../lib/games/public-gamer-snapshot";
 import styles from "./lirygames.module.css";
 import {liryFrontdeskStrings,getReleasedLiryFrontdeskLocale} from "../../lib/games/liry-frontdesk-i18n";
 
-export const metadata={
-  title:{absolute:"LIRYGAMES STUDIOS — Cientos de mundos. Infinitas formas de jugar"},
-  description:"Descubre los videojuegos de LIRYGAMES STUDIOS, un ecosistema de experiencias y comunidades gamer. Próximamente.",
-  applicationName:"LIRYGAMES STUDIOS",
-  category:"Games",
-  openGraph:{
-    type:"website" as const,
-    siteName:"LIRYGAMES STUDIOS",
-    title:"LIRYGAMES STUDIOS — Cientos de mundos. Infinitas formas de jugar",
-    description:"Cientos de mundos por descubrir. Explora los próximos lanzamientos y únete a la comunidad LIRYGAMES.",
-    images:[{url:"/lirygames/opengraph-image",width:1200,height:630,alt:"LIRYGAMES STUDIOS — Cientos de mundos. Infinitas formas de jugar"}]
-  },
-  twitter:{
-    card:"summary" as const,
-    title:"LIRYGAMES STUDIOS — Cientos de mundos. Infinitas formas de jugar",
-    description:"Descubre los videojuegos y la comunidad de LIRYGAMES STUDIOS.",
-    images:["/lirygames/opengraph-image"]
-  },
-  robots:{index:false,follow:false}
-};
+export async function generateMetadata({searchParams}:{searchParams:Promise<{lang?:string}>}) {
+  const locale=getReleasedLiryFrontdeskLocale((await searchParams).lang);
+  const english=locale==="en";
+  const title=english?"LIRYGAMES STUDIOS — Hundreds of worlds. Infinite ways to play":"LIRYGAMES STUDIOS — Cientos de mundos. Infinitas formas de jugar";
+  const description=english?"Discover LIRYGAMES STUDIOS video games, experiences, and gamer communities. Coming soon.":"Descubre los videojuegos de LIRYGAMES STUDIOS, un ecosistema de experiencias y comunidades gamer. Próximamente.";
+  return {
+    title:{absolute:title},description,applicationName:"LIRYGAMES STUDIOS",category:"Games",
+    openGraph:{type:"website" as const,siteName:"LIRYGAMES STUDIOS",title,description,images:[{url:"/lirygames/opengraph-image",width:1200,height:630,alt:title}]},
+    twitter:{card:"summary" as const,title,description,images:["/lirygames/opengraph-image"]},
+    robots:{index:false,follow:false}
+  };
+}
 
 export default async function LiryGamesFrontDesk({searchParams}:{searchParams:Promise<{lang?:string}>}){
   const locale=getReleasedLiryFrontdeskLocale((await searchParams).lang);
