@@ -461,3 +461,14 @@ test("Mi Liry muestra un único control para borrar el borrador de facturación"
  assert.match(source,/disabled=\{!Object\.values\(billingDraft\)\.some\(Boolean\)\}/);
  assert.match(source,/setBillingDraft\(\{firstName:"",lastName:"",email:"",country:"",postalCode:""\}\)/);
 });
+
+
+test("Menú móvil mantiene panel accesible y cierra al navegar",()=>{
+ const nav=readFileSync(new URL("../components/LiryMobileNav.tsx",import.meta.url),"utf8");
+ assert.match(nav,/aria-controls="liry-mobile-nav"/);
+ assert.match(nav,/id="liry-mobile-nav"/);
+ assert.match(nav,/hidden=\{!open\}/);
+ assert.match(nav,/aria-expanded=\{open\}/);
+ assert.match(nav,/aria-current=\{activeHash===item\.href\?"location":undefined\}/);
+ assert.match(nav,/onClick=\{\(\)=>\{setActiveHash\(item\.href\);setOpen\(false\)\}\}/);
+});
