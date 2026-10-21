@@ -1,5 +1,5 @@
 "use client";
-import {useRef} from "react";
+import {useRef,useState} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
 import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 
@@ -7,10 +7,11 @@ export function LiryBoostEnrollment({locale="es"}:{locale?:LiryFrontdeskLocale})
  const copy=liryFrontdeskStrings(locale).liryBoost;
 
  const dialogRef=useRef<HTMLDialogElement>(null);
+ const [opened,setOpened]=useState(false);
  const triggerRef=useRef<HTMLButtonElement>(null);
  return <>
-  <button ref={triggerRef} type="button" className={styles.liryBoostOpen} onClick={()=>dialogRef.current?.showModal()} aria-haspopup="dialog" aria-controls="liryboost-inscripcion">{copy.open} →</button>
-  <dialog ref={dialogRef} id="liryboost-inscripcion" className={styles.gamerInfoDialog} aria-labelledby="liryboost-enrollment-title" onClose={()=>triggerRef.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
+  <button ref={triggerRef} type="button" className={styles.liryBoostOpen} onClick={()=>{if(dialogRef.current&&!dialogRef.current.open){dialogRef.current.showModal();setOpened(true)}}} aria-haspopup="dialog" aria-expanded={opened} aria-controls="liryboost-inscripcion">{copy.open} →</button>
+  <dialog ref={dialogRef} id="liryboost-inscripcion" className={styles.gamerInfoDialog} aria-labelledby="liryboost-enrollment-title" onClose={()=>{setOpened(false);triggerRef.current?.focus({preventScroll:true})}} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
    <div className={styles.gamerInfoDialogInside}>
     <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label={copy.closeAria}>×</button></form>
     <p className={styles.gamerInfoEyebrow}>{copy.eyebrow}</p>
