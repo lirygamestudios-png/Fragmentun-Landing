@@ -552,3 +552,14 @@ test("Mi Liry conserva navegación de secciones por teclado y foco",()=>{
  assert.ok(src.includes("aria-pressed={selected===section}"));
  assert.ok(src.includes("role=\"region\""));
 });
+
+
+test("Validación del correo de facturación usa el valor del campo y no otro borrador",()=>{
+ const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
+ const validator=src.split("\n").find(line=>line.includes("const billingFieldValid="));
+ assert.ok(validator);
+ assert.ok(validator.includes("value.trim()"));
+ assert.ok(!validator.includes("billingDraft.email"));
+ assert.ok(!validator.includes("field===\"email\"?billingEmailValid"));
+ assert.ok(src.includes("billingFieldValid(field,value)"));
+});
