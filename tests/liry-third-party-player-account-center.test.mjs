@@ -583,3 +583,15 @@ test("Catálogo externo restaura foco al cerrar ficha modal",()=>{
  assert.ok(src.includes("opener.current=null"));
  assert.ok(src.includes("if(event.target===dialog.current)dialog.current.close()"));
 });
+
+
+test("Catálogo externo restaura foco al salir del estado sin resultados",()=>{
+ const src=readFileSync(new URL("../components/LiryThirdPartyCatalog.tsx",import.meta.url),"utf8");
+ const empty=src.slice(src.indexOf("filtered.length===0&&"));
+ assert.ok(empty.includes("Mostrar todos los videojuegos"));
+ assert.ok(empty.includes("Show all games"));
+ assert.ok(empty.includes("setLinkedHash(\"\")"));
+ assert.ok(empty.includes("setQuery(\"\")"));
+ assert.ok(empty.includes("setModel(\"all\")"));
+ assert.ok(empty.includes("resultStatus.current?.focus({preventScroll:true})"));
+});
