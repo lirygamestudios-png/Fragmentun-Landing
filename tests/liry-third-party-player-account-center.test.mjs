@@ -332,7 +332,8 @@ test("Contacto conserva datos ante errores y limpia los campos solo tras éxito"
  assert.match(src,/const j=await r\.json\(\)\.catch\(\(\)=>null\)/);
  assert.match(src,/if\(!r\.ok\|\|!j\?\.ok\)throw Error/);
  assert.match(src,/setName\(""\);setEmail\(""\);setSubject\("opinion"\)/);
- assert.match(src,/setDone\(true\);setResult\(j\.message\|\|copy\.success\)/);
+ assert.match(src,/setDone\(true\);setResult\(copy\.success\)/);
+ assert.ok(src.includes('role={done?"status":"alert"}'));
  assert.match(src,/catch\(error\)\{setResult\(/);
  assert.match(src,/finally\{setBusy\(false\);setTurnstileToken\(""\)/);
 });
