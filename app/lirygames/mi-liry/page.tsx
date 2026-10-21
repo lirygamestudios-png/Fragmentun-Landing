@@ -5,7 +5,7 @@ import {MiLiryAreas} from "../../../components/MiLiryAreas";
 import {LiryPlayerIdentityHeader} from "../../../components/LiryPlayerIdentityHeader";
 import {LiryPlayerAccountCenter} from "../../../components/LiryPlayerAccountCenter";
 import {liryFrontdeskStrings,getReleasedLiryFrontdeskLocale} from "../../../lib/games/liry-frontdesk-i18n";
-export const metadata={title:"MI LIRY | LIRYGAMES STUDIOS",description:"Espacio personal del jugador en preparación.",robots:{index:false,follow:false}};
+export async function generateMetadata({searchParams}:{searchParams:Promise<{lang?:string}>}){const locale=getReleasedLiryFrontdeskLocale((await searchParams).lang);return {title:{absolute:"MI LIRY | LIRYGAMES STUDIOS"},description:locale==="es"?"Espacio personal del jugador en preparación.":"Personal gamer space in development.",robots:{index:false,follow:false}};}
 export default async function MiLiryPage({searchParams}:{searchParams:Promise<{lang?:string}>}){
  const locale=getReleasedLiryFrontdeskLocale((await searchParams).lang);
  const gamer=VISITOR_GAMER_SNAPSHOT;
