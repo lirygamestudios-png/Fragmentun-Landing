@@ -470,7 +470,8 @@ test("Menú móvil mantiene panel accesible y cierra al navegar",()=>{
  assert.match(nav,/hidden=\{!open\}/);
  assert.match(nav,/aria-expanded=\{open\}/);
  assert.match(nav,/aria-current=\{activeHash===item\.href\?"location":undefined\}/);
- assert.match(nav,/onClick=\{\(\)=>\{setActiveHash\(item\.href\);setOpen\(false\)\}\}/);
+ assert.ok(nav.includes("setActiveHash(item.href);setOpen(false);requestAnimationFrame("));
+ assert.ok(nav.includes("target.focus({preventScroll:true})"));
 });
 
 
