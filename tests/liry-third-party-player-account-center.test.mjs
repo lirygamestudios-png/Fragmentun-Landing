@@ -491,3 +491,14 @@ test("Contacto consume el token antirrobot antes de enviar y gestiona fallos de 
  assert.match(src,/try\{window\.turnstile\?\.reset\(turnstileWidgetId\.current\)\}catch\{setTurnstileError\(copy\.captchaFailed\)\}/);
  assert.match(src,/disabled=\{busy\|\|!turnstileToken\}/);
 });
+
+
+test("Liryboost mantiene inscripción comercial desactivada durante la vista previa",()=>{
+ const src=readFileSync(new URL("../components/LiryBoostEnrollment.tsx",import.meta.url),"utf8");
+ assert.match(src,/id="liryboost-form-status"[^>]*role="status"/);
+ assert.match(src,/onSubmit=\{event=>event\.preventDefault\(\)\}/);
+ assert.match(src,/<input type="text" name="displayName"[^>]*disabled/);
+ assert.match(src,/<input type="email" name="email"[^>]*disabled/);
+ assert.match(src,/<input type="checkbox" name="consent" disabled/);
+ assert.match(src,/<button type="button" disabled>\{copy\.upcoming\}<\/button>/);
+});
