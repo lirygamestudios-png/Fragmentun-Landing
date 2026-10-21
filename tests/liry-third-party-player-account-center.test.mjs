@@ -524,3 +524,11 @@ test("La categoría seleccionada de Tienda se vuelve a traducir al cambiar ES/EN
  assert.match(src,/setSelectedId\(item\.id\)/);
  assert.doesNotMatch(src,/setSelected\(item\)/);
 });
+
+
+test("Facturación provisional conserva mensajes de validación en ambos idiomas",()=>{
+ const source=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
+ for(const label of ["Introduce un correo válido.","Enter a valid email.","Solo datos ficticios; no se enviarán recibos.","Fictional details only; no receipts will be sent."])assert.ok(source.includes(label),label);
+ assert.ok(source.includes("aria-invalid={billingDraft[field]"));
+ assert.ok(source.includes("liry-billing-${field}-help"));
+});
