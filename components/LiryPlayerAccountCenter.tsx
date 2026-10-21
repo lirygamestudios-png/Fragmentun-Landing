@@ -25,7 +25,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const [billingDraft,setBillingDraft]=useState({firstName:"",lastName:"",email:"",country:"",postalCode:""});
  const billingEmailValid=billingDraft.email.trim()===""||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(billingDraft.email.trim());
  const billingTextValid=(field:string,value:string)=>value.trim()===""||((field==="postalCode"?/^[\p{L}\p{N} -]{2,20}$/u:/^[\p{L}\p{M} .'-]{2,80}$/u).test(value.trim())&&(field==="postalCode"?/[\p{L}\p{N}]/u:/\p{L}/u).test(value.trim()));
- const billingFieldValid=(field:string,value:string)=>field==="email"?billingEmailValid:billingTextValid(field,value);
+ const billingFieldValid=(field:string,value:string)=>field==="email"?(value.trim()===""||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())):billingTextValid(field,value);
  const billingCompleted=Object.entries(billingDraft).filter(([field,value])=>value.trim()!==""&&billingFieldValid(field,value)).length;
  const [notices,setNotices]=useState(false);
  const [reduceMotion,setReduceMotion]=useState(false);
