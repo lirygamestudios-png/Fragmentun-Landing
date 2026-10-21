@@ -1,37 +1,28 @@
 import "server-only";
-import {createSupabaseServerClient} from "../supabase/server";
 import {plannedLiryGames,type PublicGameCard} from "./public-catalog";
-
-/**
- * Read-only FrontDesk adapter. Never infer playability from game_titles.lifecycle_stage:
- * it is a production workflow stage, not a release authorization.
- *
- * game_titles is currently admin-only under RLS. Public visitors will receive the
- * editorial nine-title catalog until a reviewed public publishing projection exists.
- */
-export async function getLiryPublicCatalog():Promise<readonly PublicGameCard[]>{
-  try {
-    const supabase=await createSupabaseServerClient();
-    const{error}=await supabase.from("game_titles")
-      .select("slug,lifecycle_stage")
-      .limit(9);
-    if(error)return plannedLiryGames;
-    // Deliberately fail-closed. No available/beta status is inferred from this read.
-    // Future integration requires a per-game, human-approved publishing record,
-    // verified HTTPS executable and a matching production Release Gate.
-    return plannedLiryGames;
-  } catch {
-    return plannedLiryGames;
-  }
-}
-
-/** Canal preparatorio de terceros. Sin fuente de registros autorizados,
- * devuelve una colección vacía; jamás inventa títulos ni consulta tablas privadas.
- */
 import type {PublicThirdPartyCard} from "./liry-developer-publication";
 import {readAuthorizedExternalCatalog} from "./liry-external-catalog-read-port";
+
+/**
+ * Read-only, fail-closed FrontDesk catalog.
+ * Until a human-reviewed public release projection exists, always render the
+ * editorial nine-game preview. Do not query the private game_titles table:
+ * its lifecycle_stage does not authorize publication, and the former query
+ * never affected the returned result.
+ */
+export async function getLiryPublicCatalog():Promise<readonly PublicGameCard[]>{
+  return plannedLiryGames;
+}
+
+/**
+ * Third-party public channel is not authorized/configured yet.
+ * Never publish fictional entries or read private developer records.
+ */
 export async function getLiryApprovedThirdPartyCatalog():Promise<readonly PublicThirdPartyCard[]>{
-  // No real approved read source is configured or authorized yet.
-  // Passing an empty value with approval disabled cannot publish any title.
-  return readAuthorizedExternalCatalog(null, {sourceApproved:false,publicReadEnabled:false,humanReleaseGateEnabled:false,independentCustodyEnabled:false});
+  return readAuthorizedExternalCatalog(null, {
+    sourceApproved:false,
+    publicReadEnabled:false,
+    humanReleaseGateEnabled:false,
+    independentCustodyEnabled:false
+  });
 }
