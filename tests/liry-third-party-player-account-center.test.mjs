@@ -609,3 +609,13 @@ test("Menú móvil conserva cierre Escape, foco y estado de navegación",()=>{
  assert.ok(src.includes("aria-current={activeHash===item.href?\"location\":undefined}"));
  assert.ok(src.includes("hidden={!open}"));
 });
+
+
+test("Mi Liry restaura el foco tras cancelar avatar y restablecer identidad",()=>{
+ const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
+ assert.ok(src.includes("const cancelAvatarSelection=()=>{avatarRequestRef.current++;setAvatarLoading(false);setAvatarError(\"\")"));
+ assert.ok(src.includes("avatarInput.current.focus()"));
+ assert.ok(src.includes("const resetIdentityPreview=()=>{updatePublicName(\"\");removeAvatar();nameInput.current?.focus()}"));
+ assert.ok(src.includes("sessionStorage.removeItem(\"liry:temporary-avatar-thumbnail\")"));
+ assert.ok(src.includes("request!==avatarRequestRef.current"));
+});
