@@ -26,7 +26,7 @@ export function LiryContactForm({locale="es"}:{locale?:LiryFrontdeskLocale}){
   const script=document.createElement("script");
   script.src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";script.async=true;
   script.onload=()=>{if(cancelled)return;if(!turnstileContainer.current||!window.turnstile){setTurnstileError(copy.captchaLoadFailed);return;}
-   turnstileWidgetId.current=window.turnstile.render(turnstileContainer.current,{sitekey:turnstileSiteKey,callback:token=>{setTurnstileToken(token);setTurnstileError("");},"expired-callback":()=>{setTurnstileToken("");setTurnstileError(copy.captchaExpired);},"error-callback":()=>{setTurnstileToken("");setTurnstileError(copy.captchaFailed);}});
+   try{turnstileWidgetId.current=window.turnstile.render(turnstileContainer.current,{sitekey:turnstileSiteKey,callback:token=>{setTurnstileToken(token);setTurnstileError("");},"expired-callback":()=>{setTurnstileToken("");setTurnstileError(copy.captchaExpired);},"error-callback":()=>{setTurnstileToken("");setTurnstileError(copy.captchaFailed);}});}catch{if(!cancelled){setTurnstileToken("");setTurnstileError(copy.captchaLoadFailed)}}
   };
   script.onerror=()=>{if(!cancelled)setTurnstileError(copy.captchaLoadFailed)};
   document.head.appendChild(script);
