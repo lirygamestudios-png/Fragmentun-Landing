@@ -542,3 +542,13 @@ test("Los errores de avatar se actualizan al cambiar idioma sin reabrir archivo"
  for(const message of ["Selecciona JPG, PNG o WebP de hasta 2 MB.","Choose JPG, PNG or WebP up to 2 MB.","El contenido del archivo no es una imagen válida.","The file content is not a valid image.","No se pudo abrir la imagen.","Could not open the image."])assert.ok(pairs.includes(message),message);
  assert.ok(pairs.includes("locale===\"es\"?pair[0]:pair[1]"));
 });
+
+
+test("Mi Liry conserva navegación de secciones por teclado y foco",()=>{
+ const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
+ for(const key of ["ArrowRight","ArrowDown","ArrowLeft","ArrowUp","Home","End"])assert.ok(src.includes(`"${key}"`),key);
+ assert.ok(src.includes("event.preventDefault()"));
+ assert.ok(src.includes("buttons?.[next]?.focus()"));
+ assert.ok(src.includes("aria-pressed={selected===section}"));
+ assert.ok(src.includes("role=\"region\""));
+});
