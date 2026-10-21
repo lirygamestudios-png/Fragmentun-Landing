@@ -27,6 +27,13 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // Sin afectar FRAGMENTUN: reflejar el idioma público de LIRYGAMES en <html lang>.
+  if (pathname === "/lirygames" || pathname.startsWith("/lirygames/")) {
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-fragmentun-locale",request.nextUrl.searchParams.get("lang")==="en"?"en":"es");
+    return NextResponse.next({request:{headers:requestHeaders}});
+  }
+
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
