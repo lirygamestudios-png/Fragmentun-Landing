@@ -1772,3 +1772,6 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 /* Accesibilidad móvil de filtros del catálogo y la tienda. */
 .liryCatalogFilters label,.liryStoreFilters label,.thirdPartyFilters label{min-width:0}
 @media(max-width:560px){.liryCatalogFilters button,.liryStoreFilters button,.thirdPartyFilters button{width:100%;box-sizing:border-box}}
+
+/* Evitar tarjetas de producto demasiado estrechas en móviles compactos. */
+@media(max-width:360px){.liryStoreProducts{grid-template-columns:minmax(0,1fr)}}
