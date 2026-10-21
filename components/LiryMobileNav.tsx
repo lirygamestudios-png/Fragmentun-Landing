@@ -22,8 +22,8 @@ export function LiryMobileNav({ariaLabel,items,locale="es"}:{ariaLabel:string;it
   <button ref={toggle} type="button" className={styles.navMenuToggle} aria-label={open?(locale==="es"?"Cerrar menú":"Close menu"):ariaLabel} aria-expanded={open} aria-controls="liry-mobile-nav" onClick={()=>setOpen(value=>!value)}>
    {open?<span aria-hidden="true" className={styles.navMenuX}>×</span>:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>}
   </button>
-  {open&&<nav id="liry-mobile-nav" className={styles.navMenuPanel} aria-label={ariaLabel}>
+  <nav id="liry-mobile-nav" className={styles.navMenuPanel} aria-label={ariaLabel} hidden={!open} style={!open?{display:"none"}:undefined}>
     {items.map(item=><a key={item.href} href={item.href} aria-current={activeHash===item.href?"location":undefined} onClick={()=>{setActiveHash(item.href);setOpen(false)}}>{item.label}</a>)}
-   </nav>}
+   </nav>
  </div>;
 }
