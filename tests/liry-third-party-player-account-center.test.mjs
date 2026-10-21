@@ -595,3 +595,15 @@ test("Catálogo externo restaura foco al salir del estado sin resultados",()=>{
  assert.ok(empty.includes("setModel(\"all\")"));
  assert.ok(empty.includes("resultStatus.current?.focus({preventScroll:true})"));
 });
+
+
+test("Menú móvil conserva cierre Escape, foco y estado de navegación",()=>{
+ const src=readFileSync(new URL("../components/LiryMobileNav.tsx",import.meta.url),"utf8");
+ assert.ok(src.includes("event.key===\"Escape\""));
+ assert.ok(src.includes("toggle.current?.focus({preventScroll:true})"));
+ assert.ok(src.includes("document.addEventListener(\"pointerdown\",closeOutside)"));
+ assert.ok(src.includes("aria-expanded={open}"));
+ assert.ok(src.includes("aria-controls=\"liry-mobile-nav\""));
+ assert.ok(src.includes("aria-current={activeHash===item.href?\"location\":undefined}"));
+ assert.ok(src.includes("hidden={!open}"));
+});
