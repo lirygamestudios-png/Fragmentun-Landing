@@ -25,10 +25,10 @@ export function LiryContactForm({locale="es"}:{locale?:LiryFrontdeskLocale}){
   let cancelled=false;
   const script=document.createElement("script");
   script.src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";script.async=true;
-  script.onload=()=>{if(cancelled||!turnstileContainer.current||!window.turnstile)return;
+  script.onload=()=>{if(cancelled)return;if(!turnstileContainer.current||!window.turnstile){setTurnstileError(copy.captchaLoadFailed);return;}
    turnstileWidgetId.current=window.turnstile.render(turnstileContainer.current,{sitekey:turnstileSiteKey,callback:token=>{setTurnstileToken(token);setTurnstileError("");},"expired-callback":()=>{setTurnstileToken("");setTurnstileError(copy.captchaExpired);},"error-callback":()=>{setTurnstileToken("");setTurnstileError(copy.captchaFailed);}});
   };
-  script.onerror=()=>setTurnstileError(copy.captchaLoadFailed);
+  script.onerror=()=>{if(!cancelled)setTurnstileError(copy.captchaLoadFailed)};
   document.head.appendChild(script);
   return ()=>{cancelled=true;if(turnstileWidgetId.current&&window.turnstile)window.turnstile.remove(turnstileWidgetId.current);turnstileWidgetId.current=null;script.remove();};
  },[locale]);
