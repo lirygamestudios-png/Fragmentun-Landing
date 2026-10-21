@@ -43,7 +43,7 @@ export function LiryContactForm({locale="es"}:{locale?:LiryFrontdeskLocale}){
    setName("");setEmail("");setSubject("opinion");setGameSlug("");setMessage("");setAck(false);setWebsite("");
    setDone(true);setResult(j.message||copy.success);
   }catch(error){setResult(error instanceof Error?error.message :copy.submitError);}
-  finally{setBusy(false);setTurnstileToken("");if(turnstileWidgetId.current)window.turnstile?.reset(turnstileWidgetId.current)}
+  finally{setBusy(false);setTurnstileToken("");if(turnstileWidgetId.current){try{window.turnstile?.reset(turnstileWidgetId.current)}catch{setTurnstileError(copy.captchaFailed)}}}
  }
  function resetFeedback(){setDone(false);setResult("");}
  const field={width:"100%",minWidth:0,padding:"11px 12px",border:"1px solid #286e98",borderRadius:6,background:"#061429",color:"#f2fbff",fontSize:16,colorScheme:"dark" as const};
