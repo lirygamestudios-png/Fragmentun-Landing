@@ -502,3 +502,16 @@ test("Liryboost mantiene inscripción comercial desactivada durante la vista pre
  assert.match(src,/<input type="checkbox" name="consent" disabled/);
  assert.match(src,/<button type="button" disabled>\{copy\.upcoming\}<\/button>/);
 });
+
+
+test("Tienda no presenta compra activa sin productos y Mi Liry informa cuenta no autenticada",()=>{
+ const store=readFileSync(new URL("../components/LiryStoreCategories.tsx",import.meta.url),"utf8");
+ const account=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
+ assert.match(store,/products=\[\]/);
+ assert.match(store,/pageItems\.length\?/);
+ assert.match(store,/copy\.unavailable/);
+ assert.doesNotMatch(store,/<button[^>]*>\s*(?:Comprar|Buy now|Checkout)\s*<\/button>/i);
+ assert.match(account,/aún no existe una cuenta autenticada/);
+ assert.match(account,/there is no authenticated account yet/);
+ assert.match(account,/Seguridad y compras requieren una cuenta verificada y permanecen desactivadas/);
+});
