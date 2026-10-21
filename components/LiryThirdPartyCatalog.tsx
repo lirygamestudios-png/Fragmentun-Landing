@@ -24,7 +24,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
  const resultStatus=useRef<HTMLParagraphElement>(null);
  const focusAfterPageChange=useRef(false);
  useEffect(()=>{if(focusAfterPageChange.current){focusAfterPageChange.current=false;resultStatus.current?.focus({preventScroll:true})}},[currentPage]);
- const navigatePage=(next:number)=>{if(next===currentPage)return;focusAfterPageChange.current=true;setPage(next);const reduceMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)").matches??false;resultStatus.current?.scrollIntoView({behavior:reduceMotion?"auto":"smooth",block:"start"})};
+ const navigatePage=(next:number)=>{if(next===currentPage)return;setLinkedHash("");focusAfterPageChange.current=true;setPage(next);const reduceMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)").matches??false;resultStatus.current?.scrollIntoView({behavior:reduceMotion?"auto":"smooth",block:"start"})};
  useEffect(()=>{
   const revealLinkedGame=(event?:Event)=>{
    const selectedSlug=event instanceof CustomEvent&&typeof event.detail?.slug==="string"?event.detail.slug:null;
