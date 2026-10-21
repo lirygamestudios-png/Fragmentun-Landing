@@ -20,6 +20,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const [saveNotice,setSaveNotice]=useState<Section|null>(null);
  const [publicName,setPublicName]=useState("");
  const [nameError,setNameError]=useState("");
+ useEffect(()=>{if(publicName!==""&&!isValidLiryDisplayName(publicName))setNameError(locale==="es"?"Usa de 2 a 40 caracteres, sin espacios al inicio o final.":"Use 2 to 40 characters without leading or trailing spaces.");else setNameError("")},[locale,publicName]);
  const updatePublicName=(name:string)=>{setSaveNotice(null);setPublicName(name);const valid=name===""||isValidLiryDisplayName(name);setNameError(valid?"":locale==="es"?"Usa de 2 a 40 caracteres, sin espacios al inicio o final.":"Use 2 to 40 characters without leading or trailing spaces.");window.dispatchEvent(new CustomEvent("liry:display-name-preview",{detail:{name:valid?name:""}}))};
  const [billingDraft,setBillingDraft]=useState({firstName:"",lastName:"",email:"",country:"",postalCode:""});
  const billingEmailValid=billingDraft.email.trim()===""||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(billingDraft.email.trim());
