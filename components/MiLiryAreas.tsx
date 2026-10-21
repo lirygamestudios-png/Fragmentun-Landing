@@ -18,6 +18,7 @@ export function MiLiryAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const areas=copy.items.map((item,index)=>({...item,href:`/lirygames?lang=${locale}${links[index].slice("/lirygames".length)}`}));
  const [selected,setSelected]=useState<(typeof areas)[number]>(areas[0]);
  const [previewSession,setPreviewSession]=useState(0);
+ const [openedAreaId,setOpenedAreaId]=useState<string|null>(null);
  const dialog=useRef<HTMLDialogElement>(null);
  const trigger=useRef<HTMLButtonElement|null>(null);
  const closeButton=useRef<HTMLButtonElement>(null);
@@ -28,14 +29,15 @@ export function MiLiryAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
   if(!modal)return;
   if(modal.open)return;
   modal.showModal();
+  setOpenedAreaId(area.id);
   modal.scrollTop=0;
   requestAnimationFrame(()=>{if(modal.open)closeButton.current?.focus({preventScroll:true});});
  };
  return <><div className={styles.grid}>{areas.map(area=><article className={styles.card} key={area.id}>
   <h3>{area.title}</h3><p>{area.desc}</p><small>{area.status}</small>
-  <button className={styles.areaLink} type="button" aria-haspopup="dialog" aria-controls="mi-liry-area-dialog" aria-expanded={dialog.current?.open===true&&selected.id===area.id} aria-label={`${copy.openAria} ${area.title}`} onClick={event=>openArea(area,event.currentTarget)}>{copy.open} →</button>
+  <button className={styles.areaLink} type="button" aria-haspopup="dialog" aria-controls="mi-liry-area-dialog" aria-expanded={openedAreaId===area.id} aria-label={`${copy.openAria} ${area.title}`} onClick={event=>openArea(area,event.currentTarget)}>{copy.open} →</button>
  </article>)}</div>
- <dialog id="mi-liry-area-dialog" ref={dialog} aria-modal="true" className={styles.areaDialog} aria-labelledby="mi-liry-area-title" onClose={()=>{setPreviewSession(value=>value+1);trigger.current?.focus({preventScroll:true});trigger.current=null;}} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
+ <dialog id="mi-liry-area-dialog" ref={dialog} aria-modal="true" className={styles.areaDialog} aria-labelledby="mi-liry-area-title" onClose={()=>{setOpenedAreaId(null);setPreviewSession(value=>value+1);trigger.current?.focus({preventScroll:true});trigger.current=null;}} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
   <div className={styles.areaDialogContent}>
    <form method="dialog"><button ref={closeButton} className={styles.areaClose} aria-label={copy.closeAria} type="submit">×</button></form>
    <span className={styles.eyebrow}>{copy.eyebrow}</span>
