@@ -482,3 +482,12 @@ test("Todos los enlaces de secciones principales del FrontDesk tienen destino",(
  assert.ok(links.length>0);
  for(const target of links)assert.ok(ids.has(target),`Falta destino interno #${target}`);
 });
+
+
+test("Contacto consume el token antirrobot antes de enviar y gestiona fallos de reinicio",()=>{
+ const src=readFileSync(new URL("../components/LiryContactForm.tsx",import.meta.url),"utf8");
+ assert.match(src,/setTurnstileToken\(""\);setBusy\(true\)/);
+ assert.match(src,/body:JSON\.stringify\(\{name,email,subject,gameSlug,message,privacyAcknowledged:ack,website,turnstileToken\}\)/);
+ assert.match(src,/try\{window\.turnstile\?\.reset\(turnstileWidgetId\.current\)\}catch\{setTurnstileError\(copy\.captchaFailed\)\}/);
+ assert.match(src,/disabled=\{busy\|\|!turnstileToken\}/);
+});
