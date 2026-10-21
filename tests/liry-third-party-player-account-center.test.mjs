@@ -619,3 +619,14 @@ test("Mi Liry restaura el foco tras cancelar avatar y restablecer identidad",()=
  assert.ok(src.includes("sessionStorage.removeItem(\"liry:temporary-avatar-thumbnail\")"));
  assert.ok(src.includes("request!==avatarRequestRef.current"));
 });
+
+
+test("Mi Liry sincroniza estado accesible de área con apertura y cierre de diálogo",()=>{
+ const src=readFileSync(new URL("../components/MiLiryAreas.tsx",import.meta.url),"utf8");
+ assert.ok(src.includes("const [openedAreaId,setOpenedAreaId]=useState<string|null>(null)"));
+ assert.ok(src.includes("setOpenedAreaId(area.id)"));
+ assert.ok(src.includes("setOpenedAreaId(null)"));
+ assert.ok(src.includes("aria-expanded={openedAreaId===area.id}"));
+ assert.ok(src.includes('aria-controls="mi-liry-area-dialog"'));
+ assert.ok(src.includes('id="mi-liry-area-dialog" ref={dialog} aria-modal="true"'));
+});
