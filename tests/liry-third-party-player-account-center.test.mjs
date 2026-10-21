@@ -563,3 +563,13 @@ test("Validación del correo de facturación usa el valor del campo y no otro bo
  assert.ok(!validator.includes("field===\"email\"?billingEmailValid"));
  assert.ok(src.includes("billingFieldValid(field,value)"));
 });
+
+
+test("Tienda conserva el botón de categoría y devuelve el foco al cerrar diálogo",()=>{
+ const src=readFileSync(new URL("../components/LiryStoreCategories.tsx",import.meta.url),"utf8");
+ assert.ok(src.includes("key={item.id}"));
+ assert.ok(src.includes("triggerRef.current=event.currentTarget"));
+ assert.ok(src.includes("triggerRef.current?.focus({preventScroll:true})"));
+ assert.ok(src.includes("aria-expanded={dialogOpen&&selected.id===item.id}"));
+ assert.ok(src.includes("onClose={()=>{setDialogOpen(false)"));
+});
