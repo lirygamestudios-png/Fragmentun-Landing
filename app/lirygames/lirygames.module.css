@@ -1775,3 +1775,7 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 
 /* Evitar tarjetas de producto demasiado estrechas en móviles compactos. */
 @media(max-width:360px){.liryStoreProducts{grid-template-columns:minmax(0,1fr)}}
+
+/* Las fichas modales externas deben permitir palabras largas sin desbordar el móvil. */
+.thirdPartyDialog{box-sizing:border-box;max-width:calc(100vw - 16px);overflow-x:hidden}
+.thirdPartyDialogBody{min-width:0;overflow-wrap:anywhere}
