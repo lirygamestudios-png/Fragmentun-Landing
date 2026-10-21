@@ -1779,3 +1779,7 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 /* Las fichas modales externas deben permitir palabras largas sin desbordar el móvil. */
 .thirdPartyDialog{box-sizing:border-box;max-width:calc(100vw - 16px);overflow-x:hidden}
 .thirdPartyDialogBody{min-width:0;overflow-wrap:anywhere}
+
+/* Lectura de nombres de artículos largos sin desplazar tarjetas en móviles. */
+.liryStoreProduct,.thirdPartyCardBody{overflow-wrap:anywhere}
+.thirdPartyCardBody{min-width:0}
