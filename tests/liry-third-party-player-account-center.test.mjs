@@ -573,3 +573,13 @@ test("Tienda conserva el botón de categoría y devuelve el foco al cerrar diál
  assert.ok(src.includes("aria-expanded={dialogOpen&&selected.id===item.id}"));
  assert.ok(src.includes("onClose={()=>{setDialogOpen(false)"));
 });
+
+
+test("Catálogo externo restaura foco al cerrar ficha modal",()=>{
+ const src=readFileSync(new URL("../components/LiryThirdPartyCatalog.tsx",import.meta.url),"utf8");
+ assert.ok(src.includes("opener.current=button"));
+ assert.ok(src.includes("if(dialog.current?.open)return"));
+ assert.ok(src.includes("opener.current?.focus({preventScroll:true})"));
+ assert.ok(src.includes("opener.current=null"));
+ assert.ok(src.includes("if(event.target===dialog.current)dialog.current.close()"));
+});
