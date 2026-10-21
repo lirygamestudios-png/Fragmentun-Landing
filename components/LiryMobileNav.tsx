@@ -16,7 +16,7 @@ export function LiryMobileNav({ariaLabel,items,locale="es"}:{ariaLabel:string;it
   window.addEventListener("hashchange",closeOnNavigation);
   return ()=>{document.removeEventListener("pointerdown",closeOutside);document.removeEventListener("keydown",closeEscape);window.removeEventListener("hashchange",closeOnNavigation)};
  },[open]);
- return <div className={styles.navMenu} ref={root}>
+ return <div className={styles.navMenu} ref={root} onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))setOpen(false)}}>
   <button ref={toggle} type="button" className={styles.navMenuToggle} aria-label={open?(locale==="es"?"Cerrar menú":"Close menu"):ariaLabel} aria-expanded={open} aria-controls="liry-mobile-nav" onClick={()=>setOpen(value=>!value)}>
    {open?<span aria-hidden="true" className={styles.navMenuX}>×</span>:<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>}
   </button>
