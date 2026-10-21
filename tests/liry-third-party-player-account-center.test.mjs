@@ -453,3 +453,11 @@ test("Nombres y país de facturación no aceptan dígitos; código postal intern
 test("Los campos de facturación no aceptan signos sin letras ni números",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/field==="postalCode"\?\/\[\\p\{L\}\\p\{N\}\]\/u:\/\\p\{L\}\/u/);assert.match(src,/billingFieldValid\(field,value\)/);});
 
 test("Mis compras aclara que no se asignan artículos digitales desde la vista previa",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/No hay artículos asignados desde esta vista previa/);assert.match(src,/No items are granted by this preview/);assert.match(src,/cuenta verificada y registros reales/);assert.match(src,/verified account and real records/);});
+
+
+test("Mi Liry muestra un único control para borrar el borrador de facturación",()=>{
+ const source=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
+ assert.equal((source.match(/Borrar datos de prueba/g)||[]).length,1);
+ assert.match(source,/disabled=\{!Object\.values\(billingDraft\)\.some\(Boolean\)\}/);
+ assert.match(source,/setBillingDraft\(\{firstName:"",lastName:"",email:"",country:"",postalCode:""\}\)/);
+});
