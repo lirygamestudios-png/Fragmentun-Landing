@@ -18,3 +18,5 @@ test("legal detail keeps locale in return navigation and distinguishes untransla
  assert.match(detail,/lirygames\?lang=\$\{locale\}#contacto/);
  assert.match(detail,/draft clauses below are currently available in Spanish only/);
 });
+
+test("untranslated legal clauses are correctly marked as Spanish for screen readers",()=>{assert.match(detail,/<section lang="es" style=\{\{maxWidth:850/);assert.match(detail,/<p lang="es" style=\{\{maxWidth:760/);});
