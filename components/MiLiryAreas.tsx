@@ -61,31 +61,31 @@ export function MiLiryAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
    {selected.id==="mundos"&&<section className={styles.worldsPanel} aria-label={copy.worldsAria}>
     <h3>{panels.mundos.title}</h3>
     <p className={styles.worldsEmpty}>{panels.mundos.empty}</p>
-    <div className={styles.worldsFacts}>{facts.mundos.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div>
+    <details className={styles.developerWizardDisclosure}><summary>{locale==="es"?"Ver detalles":"View details"}</summary><div className={styles.worldsFacts}>{facts.mundos.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div></details>
     <p>{panels.mundos.note}</p>
    </section>}
    {selected.id==="logros"&&<section className={styles.worldsPanel} aria-label={copy.achievementsAria}>
     <h3>{panels.logros.title}</h3>
     <p className={styles.worldsEmpty}>{panels.logros.empty}</p>
-    <div className={styles.worldsFacts}>{facts.logros.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div>
+    <details className={styles.developerWizardDisclosure}><summary>{locale==="es"?"Ver detalles":"View details"}</summary><div className={styles.worldsFacts}>{facts.logros.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div></details>
     <p>{panels.logros.note}</p>
    </section>}
    {selected.id==="inventario"&&<section className={styles.worldsPanel} aria-label={copy.inventoryAria}>
     <h3>{panels.inventario.title}</h3>
     <p className={styles.worldsEmpty}>{panels.inventario.empty}</p>
-    <div className={styles.worldsFacts}>{facts.inventario.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div>
+    <details className={styles.developerWizardDisclosure}><summary>{locale==="es"?"Ver detalles":"View details"}</summary><div className={styles.worldsFacts}>{facts.inventario.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div></details>
     <p>{panels.inventario.note}</p>
    </section>}
    {selected.id==="comunidad"&&<section className={styles.worldsPanel} aria-label={copy.communityAria}>
     <h3>{panels.comunidad.title}</h3>
     <p className={styles.worldsEmpty}>{panels.comunidad.empty}</p>
-    <div className={styles.worldsFacts}>{facts.comunidad.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div>
+    <details className={styles.developerWizardDisclosure}><summary>{locale==="es"?"Ver detalles":"View details"}</summary><div className={styles.worldsFacts}>{facts.comunidad.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div></details>
     <p>{panels.comunidad.note}</p>
    </section>}
    {selected.id==="liryboost"&&<section className={styles.worldsPanel} aria-label={copy.boostAria}>
     <h3>{panels.liryboost.title}</h3>
     <p className={styles.worldsEmpty}>{panels.liryboost.empty}</p>
-    <div className={styles.worldsFacts}>{facts.liryboost.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div>
+    <details className={styles.developerWizardDisclosure}><summary>{locale==="es"?"Ver detalles":"View details"}</summary><div className={styles.worldsFacts}>{facts.liryboost.map(([label,value])=><div key={label}><strong>{label}</strong><span>{value}</span></div>)}</div></details>
     <p>{panels.liryboost.note}</p>
    </section>}
    <div className={styles.areaDialogActions}><Link className={styles.areaLink} href={selected.href}>{copy.explore} →</Link><form method="dialog"><button type="submit" className={styles.areaLink}>{copy.back}</button></form></div>
