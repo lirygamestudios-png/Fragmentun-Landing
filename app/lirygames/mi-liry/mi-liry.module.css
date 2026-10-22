@@ -348,3 +348,6 @@
  .developerWizardActions button{min-width:0;max-width:100%;padding:10px 6px;font-size:12px}
  .developerWizardStepCount{font-size:11px;overflow-wrap:anywhere}
 }
+
+/* Billing step isolation: author-level grid styles must not override the HTML hidden attribute. */
+.accountBillingGrid .accountNameLabel[hidden]{display:none!important}
