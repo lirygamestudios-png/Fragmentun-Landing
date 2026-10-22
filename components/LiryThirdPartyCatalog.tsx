@@ -69,7 +69,7 @@ export function LiryThirdPartyCatalog({games,locale="es"}:{games:readonly Public
     <div className={styles.thirdPartyCardArt} aria-hidden="true"><span>✧</span></div>
     <div className={styles.thirdPartyCardBody}>
      <span className={styles.thirdPartyCardModel}>{game.model==="premium"?"PREMIUM":"FREEMIUM"}</span>
-     <h4>{game.title}</h4><LiryShareEntry name={game.title} locale={locale} />
+     <h4>{game.title}</h4><LiryShareEntry name={game.title} locale={locale} targetId={`liry-third-party-${game.slug}`} />
      <span className={styles.thirdPartyAvailability}>{copy.listingNotice}</span>
      <p>{game.description}</p>
      <button type="button" className={styles.thirdPartyDetailButton} aria-haspopup="dialog" aria-controls="liry-third-party-detail-dialog" aria-expanded={selected?.slug===game.slug} aria-label={`${copy.detailAria} ${game.title}`} onClick={event=>open(game,event.currentTarget)}>{copy.detailButton} →</button>
