@@ -98,7 +98,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
   <p className={styles.accountIntro}>{copy.intro}</p><p className={styles.accountSummary} role="status">{locale==="es"?"Estado del perfil: nombre, avatar y preferencias disponibles como vista previa. Seguridad y compras requieren una cuenta verificada y permanecen desactivadas.":"Profile status: name, avatar, and preferences are available as previews. Security and purchases require a verified account and remain disabled."}</p>
   <nav className={styles.developerWizardActions} aria-label={copy.heading}>
    <button type="button" disabled={active===0} onClick={()=>switchAccountSection(Math.max(0,active-1))}>{locale==="es"?"← ANTERIOR":"← PREVIOUS"}</button>
-   <span className={styles.developerWizardStepCount}>{active+1} / {sections.length} · {copy.sections[active]}</span>
+   <span className={styles.developerWizardStepCount} aria-live="polite" aria-atomic="true">{active+1} / {sections.length} · {copy.sections[active]}</span>
    <button type="button" disabled={active===sections.length-1} onClick={()=>switchAccountSection(Math.min(sections.length-1,active+1))}>{locale==="es"?"PRÓXIMO →":"NEXT →"}</button>
   </nav>
   <div ref={stepPanel} tabIndex={-1} id="liry-account-active-panel" role="region" aria-label={copy.sections[active]} className={styles.accountPanel}>
