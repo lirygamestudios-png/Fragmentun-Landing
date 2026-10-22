@@ -546,7 +546,7 @@ test("Los errores de avatar se actualizan al cambiar idioma sin reabrir archivo"
 });
 
 
-test("Mi Liry conserva navegación secuencial y foco accesible",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/switchAccountSection/);assert.match(src,/stepPanel.current?.focus/);assert.match(src,/role="region"/);});
+test("Mi Liry conserva navegación secuencial y foco accesible",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/switchAccountSection/);assert.match(src,/stepPanel\.current\?\.focus/);assert.match(src,/role="region"/);});
 
 
 test("Validación del correo de facturación usa el valor del campo y no otro borrador",()=>{
