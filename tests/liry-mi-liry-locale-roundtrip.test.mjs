@@ -23,3 +23,5 @@ test("desktop and mobile navigation use one localized dictionary",()=>{const fro
 test("header search uses approved DNA and LiryBoost labels in both languages",()=>{const source=readFileSync(new URL("../components/LiryHeaderUtilities.tsx",import.meta.url),"utf8");assert.match(source,/es:"Liry ADN",en:"Liry DNA"/);assert.match(source,/es:"LiryBoost",en:"LiryBoost"/);});
 
 test("header utility dialog ignores repeated open while preserving keyboard focus origin",()=>{const source=readFileSync(new URL("../components/LiryHeaderUtilities.tsx",import.meta.url),"utf8");assert.match(source,/if\(!dialog\.current\|\|dialog\.current\.open\)return/);assert.match(source,/origin\.current=button/);assert.match(source,/origin\.current\?\.isConnected/);assert.match(source,/origin\.current=null/);});
+
+test("header result count uses correct singular and plural translations",()=>{const source=readFileSync(new URL("../components/LiryHeaderUtilities.tsx",import.meta.url),"utf8");for(const phrase of ["sección encontrada","secciones encontradas","section found","sections found"])assert.ok(source.includes(phrase));assert.match(source,/results\.length===1/);});
