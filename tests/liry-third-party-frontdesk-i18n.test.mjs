@@ -304,7 +304,7 @@ test("hero title, navigation descriptions and English preview notice are paired 
  assert.equal(en.headlineLines.length,3);
  assert.equal(es.startLines.length,2);
  assert.equal(en.startLines.length,2);
- assert.match(en.languageAria,/English translation coming soon/);
+ assert.match(en.languageAria,/Platform language: English/);
  assert.match(en.description,/Which one will be yours/);
 });
 
