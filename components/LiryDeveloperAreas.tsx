@@ -20,7 +20,7 @@ export function LiryDeveloperAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const close=useRef<HTMLButtonElement>(null);
  const areaHeading=useRef<HTMLHeadingElement>(null);
  const currentIndex=areas.findIndex(area=>area.id===selected);
- const switchArea=(direction:-1|1)=>{const next=areas[currentIndex+direction];if(next){setSelected(next.id as AreaId);setSession(v=>v+1);requestAnimationFrame(()=>areaHeading.current?.focus({preventScroll:true}));}};
+ const switchArea=(direction:-1|1)=>{const next=areas[currentIndex+direction];if(next){setSelected(next.id as AreaId);setSession(v=>v+1);if(modal.current)modal.current.scrollTop=0;requestAnimationFrame(()=>areaHeading.current?.focus({preventScroll:true}));}};
  const open=(id:AreaId,trigger:HTMLButtonElement)=>{
   if(modal.current?.open)return;
   setSelected(id);opener.current=trigger;setDialogOpen(true);
