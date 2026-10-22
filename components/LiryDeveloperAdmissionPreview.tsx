@@ -48,6 +48,8 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
     <p>{locale==="es"?"Avisos: sin enviar ni programar":"Notices: none sent or scheduled"}</p>
     <p>{locale==="es"?"Vencimiento: política pendiente":"Expiry: policy pending"} · {workflowPreview.expiry==="policy_missing"?(locale==="es"?"Sin plazo establecido":"No deadline established"):""}</p>
     <small>{locale==="es"?"No hay solicitud registrada ni revisiones reales.":"No application is registered and no real reviews have started."}</small>
+    <p><strong>{locale==="es"?"Tu siguiente acción":"Your next action"}:</strong> {model===null?(locale==="es"?"Selecciona Premium o Freemium.":"Select Premium or Freemium."):!ready?(locale==="es"?"Completa las cinco declaraciones disponibles.":"Complete the five available declarations."):(locale==="es"?"Has terminado la preparación. La verificación de identidad sigue inactiva hasta habilitar un proveedor seguro.":"Preparation is complete. Identity verification remains inactive until a secure provider is enabled.")}</p>
+    <small>{locale==="es"?"No envíes documentos ni datos bancarios desde esta vista.":"Do not send documents or banking details from this preview."}</small>
    </div>
    <small>{locale==="es"?"Las etapas iniciales son declaraciones temporales, no una solicitud presentada ni identidad verificada.":"Initial steps are temporary declarations, not a submitted application or verified identity."}</small>
   </div>
