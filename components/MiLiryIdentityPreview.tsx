@@ -25,7 +25,7 @@ export function MiLiryIdentityPreview({locale="es"}:{locale?:LiryFrontdeskLocale
   {stage===1&&<><p className={styles.previewLabel} id="liry-preview-theme-label">{copy.visualAccent}</p>
   <div className={styles.previewChoices} role="group" aria-labelledby="liry-preview-theme-label">{LIRY_INTERFACE_THEMES.map(item=><button key={item} type="button" aria-pressed={theme===item} onClick={()=>setTheme(item)}>{item==="navy"?copy.themes[0]:item==="cyan"?copy.themes[1]:copy.themes[2]}</button>)}</div>
   </>}
-  {stage===2&&<label className={styles.previewOption}><input type="checkbox" checked={notifications} onChange={e=>setNotifications(e.target.checked)}/> {copy.notifications}</label>
+  {stage===2&&<label className={styles.previewOption}><input type="checkbox" checked={notifications} onChange={e=>setNotifications(e.target.checked)}/> {copy.notifications}</label>}
   </div>
   <nav className={styles.developerWizardActions} aria-label={locale==="es"?"Navegación de preferencias":"Preference navigation"}><button type="button" disabled={stage===0} onClick={()=>navigate(Math.max(0,stage-1))}>{locale==="es"?"← ANTERIOR":"← PREVIOUS"}</button><span className={styles.developerWizardStepCount}>{stage+1} / 3</span><button type="button" disabled={stage===2} onClick={()=>navigate(Math.min(2,stage+1))}>{locale==="es"?"PRÓXIMO →":"NEXT →"}</button></nav>
   <button type="button" className={styles.previewReset} disabled={!canReset} onClick={()=>{setAvatar("orb");setTheme("navy");setNotifications(false);}}>{copy.reset}</button>
