@@ -20,3 +20,5 @@ test("legal detail keeps locale in return navigation and distinguishes untransla
 });
 
 test("untranslated legal clauses are correctly marked as Spanish for screen readers",()=>{assert.match(detail,/<section lang="es" style=\{\{maxWidth:850/);assert.match(detail,/<p lang="es" style=\{\{maxWidth:760/);});
+
+test("legal contact action displays translated labels",()=>{assert.match(detail,/IR A CONTACTO →/);assert.match(detail,/GO TO CONTACT →/);});
