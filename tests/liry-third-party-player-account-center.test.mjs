@@ -189,7 +189,7 @@ test("Compartir juegos y productos usa exclusivamente el FrontDesk",()=>{
  for(const path of ["../components/LiryStoreCategories.tsx","../components/LiryGameDiscovery.tsx","../components/LiryThirdPartyCatalog.tsx"]){
   assert.match(read(path),/<LiryShareEntry name=/);
  }
- assert.match(share,/aria-label=\{locale==="es"/);
+ assert.match(share,/aria-label=\{es\?/);
  assert.match(share,/<svg viewBox=/);
 });
 
