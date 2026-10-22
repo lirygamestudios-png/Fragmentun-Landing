@@ -1601,7 +1601,7 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .liryStorePages button[aria-current="page"]{border-color:#7bdaf8;background:#123e65;box-shadow:0 0 12px #35b9fa4d}
 .liryStorePages button:disabled{opacity:.5;cursor:default}
 @media(max-width:850px){.liryStoreProducts{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:560px){.liryStoreProducts{grid-template-columns:repeat(2,minmax(0,1fr))}.liryStoreFilters label{flex-basis:100%}}
+@media(max-width:560px){.liryStoreProducts{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}.liryStoreFilters label{flex-basis:100%}.liryStoreProduct{display:flex;flex-direction:column;align-items:stretch;gap:10px;padding:12px;min-width:0;text-align:left}.liryStoreProduct h4{margin:0;line-height:1.4;min-height:2.8em;overflow-wrap:anywhere}.liryStoreProduct>.liryShareEntry{align-self:flex-start;margin:0}.liryStoreProduct>p{margin:0;line-height:1.45;overflow-wrap:anywhere}.liryStoreProduct>p:last-child{margin-top:auto;font-weight:700}}
 
 /* Filtros compactos de tienda: proporciones equilibradas y controles de 44px. */
 .liryStoreFilters{gap:9px;margin:12px 0 10px;max-width:730px}
