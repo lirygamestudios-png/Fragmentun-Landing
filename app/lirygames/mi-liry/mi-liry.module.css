@@ -372,3 +372,10 @@
 .areaDialog .developerWizardDisclosure[open] summary{margin-bottom:8px}
 .areaDialog .developerWizardDisclosure :is(.worldsFacts,.identityDetails,.identitySecurity){max-width:100%;min-width:0;box-sizing:border-box;overflow-wrap:anywhere}
 @media(prefers-reduced-motion:reduce){.areaDialog .developerWizardDisclosure *{scroll-behavior:auto;transition:none}}
+
+/* Mi Liry: keep dialog contents inside narrow touch viewports without changing the approved palette. */
+.areaDialog{max-width:calc(100vw - 24px)}
+.areaDialogContent{min-width:0;overflow-wrap:break-word}
+.areaDialog .developerWizardActions{min-width:0;max-width:100%;flex-wrap:wrap}
+.areaDialog .developerWizardActions button{touch-action:manipulation;min-height:44px}
+@media(max-width:560px){.areaDialog .developerWizardActions button{min-width:0;flex:1 1 110px;white-space:normal}.areaDialog .developerWizardActions small{flex:0 0 100%;text-align:center;order:-1}}
