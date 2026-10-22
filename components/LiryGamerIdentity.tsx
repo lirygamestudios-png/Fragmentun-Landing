@@ -25,10 +25,19 @@ export function LiryGamerIdentity({snapshot,locale="es"}:{snapshot:Readonly<Publ
  const [avatarError,setAvatarError]=useState<string|null>(null);
  const styleTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
  useEffect(()=>{
-  try{
-   const stored=sessionStorage.getItem(thumbnailKey);
-   if(stored?.startsWith("data:image/webp;base64,")&&stored.length<180000)setAvatar(stored);
-  }catch{}
+  const syncAvatar=()=>{
+   // Keep the main profile portrait in sync with the account center and header.
+   // Do not replace an unsaved full-resolution local preview on an unrelated event.
+   if(avatarUrl.current)return;
+   try{
+    const stored=sessionStorage.getItem(thumbnailKey);
+    setAvatar(stored?.startsWith("data:image/webp;base64,")&&stored.length<180000?stored:null);
+   }catch{setAvatar(null)}
+  };
+  syncAvatar();
+  window.addEventListener("liry:avatar-changed",syncAvatar);
+  window.addEventListener("pageshow",syncAvatar);
+  return ()=>{window.removeEventListener("liry:avatar-changed",syncAvatar);window.removeEventListener("pageshow",syncAvatar)};
  },[]);
  const fileRef=useRef<HTMLInputElement>(null);
  const dialogRef=useRef<HTMLDialogElement>(null);
