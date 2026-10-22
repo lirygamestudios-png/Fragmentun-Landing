@@ -15,14 +15,34 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
  const confirmed=[rights,executable,disclosure,content,review].filter(Boolean).length;
  const ready=model!==null&&confirmed===5;
  const canReset=model!==null||confirmed>0;
+ const steps=[
+  {title:locale==="es"?"Modelo comercial":"Business model",done:model!==null,enabled:true},
+  {title:locale==="es"?"Declaraciones obligatorias":"Required declarations",done:ready,enabled:model!==null},
+  {title:locale==="es"?"Verificación de identidad":"Identity verification",done:false,enabled:ready},
+  {title:locale==="es"?"Revisión documental y de derechos":"Document and IP review",done:false,enabled:false},
+  {title:locale==="es"?"Aprobación LIRYGAMES":"LIRYGAMES approval",done:false,enabled:false}
+ ];
+ const completed=steps.filter(step=>step.done).length;
  return <section className={`${styles.notice} ${styles.developerForm}`} aria-labelledby="admission-preview-title">
   <h2 id="admission-preview-title">{copy.title}</h2>
   <p>{copy.intro}</p>
+  <div role="group" aria-label={locale==="es"?"Progreso de solicitud":"Application progress"} style={{border:"1px solid #286e98",borderRadius:12,background:"#061429",padding:16,margin:"16px 0"}}>
+   <p role="status" aria-live="polite">{locale==="es"?"Preparación: "+completed+" de 5 etapas completadas":"Preparation: "+completed+" of 5 steps completed"}</p>
+   <progress value={completed} max={5} aria-label={locale==="es"?"Etapas completadas":"Completed steps"} style={{width:"100%",accentColor:"#50cbf5"}} />
+   <ol style={{listStyle:"none",padding:0,display:"grid",gap:9}}>
+    {steps.map((step,index)=><li key={step.title} aria-current={step.enabled&&!step.done?"step":undefined} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",borderRadius:8,border:"1px solid #286e98",background:step.done?"#0b2b42":"#08182c",color:step.enabled?"#eaf9ff":"#9caec3"}}>
+     <span aria-hidden="true" style={{width:24,textAlign:"center",color:step.done?"#79e3c8":"#67cfff"}}>{step.done?"✓":step.enabled?String(index+1):"🔒"}</span>
+     <span style={{flex:1}}>{step.title}</span>
+     <small>{step.done?(locale==="es"?"Completado":"Completed"):step.enabled?(locale==="es"?"Disponible":"Available"):(locale==="es"?"Bloqueado":"Locked")}</small>
+    </li>)}
+   </ol>
+   <small>{locale==="es"?"Las etapas iniciales son declaraciones temporales, no una solicitud presentada ni identidad verificada.":"Initial steps are temporary declarations, not a submitted application or verified identity."}</small>
+  </div>
   <fieldset><legend>{copy.modelLegend}</legend>
    <label><input type="radio" name="liry-developer-model-preview" checked={model==="premium"} onChange={()=>setModel("premium")}/> {copy.models[0]}</label>
    <label><input type="radio" name="liry-developer-model-preview" checked={model==="freemium"} onChange={()=>setModel("freemium")}/> {copy.models[1]}</label>
   </fieldset>
-  <fieldset><legend>{copy.requirementsLegend}</legend>
+  <fieldset disabled={model===null}><legend>{copy.requirementsLegend}</legend>
    <label><input type="checkbox" checked={rights} onChange={event=>setRights(event.target.checked)}/> {copy.requirements[0]}</label>
    <label><input type="checkbox" checked={executable} onChange={event=>setExecutable(event.target.checked)}/> {copy.requirements[1]}</label>
    <label><input type="checkbox" checked={disclosure} onChange={event=>setDisclosure(event.target.checked)}/> {copy.requirements[2]}</label>
@@ -34,7 +54,7 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
   <button type="button" className={styles.previewReset} disabled={!canReset} onClick={()=>{setModel(null);setRights(false);setExecutable(false);setDisclosure(false);setContent(false);setReview(false)}}>{copy.reset}</button>
   {!ready&&<p className={styles.accountIntro}>{locale==="es"?`Pendiente: ${model===null?"seleccionar modalidad comercial; ":""}${5-confirmed} declaraciones por confirmar.`:`Pending: ${model===null?"choose a commercial model; ":""}${5-confirmed} declarations to confirm.`}</p>}
   <p className={styles.accountIntro} role="note">{locale==="es"?"Estas declaraciones son únicamente una preparación de la solicitud. La admisión y la publicación requieren revisión de derechos de propiedad intelectual, seguridad, clasificación de edad y aprobación expresa de LIRYGAMES. No se envía ninguna solicitud real.":"These declarations only prepare a preliminary application. Admission and publication require intellectual-property, security and age-rating reviews, plus explicit LIRYGAMES approval. No actual application is submitted."}</p>
-  <LiryDeveloperIdentityPreview locale={locale} />
+  {ready?<LiryDeveloperIdentityPreview locale={locale} />:<p className={styles.accountIntro} role="note">{locale==="es"?"La información sobre identidad se desbloqueará tras completar las declaraciones. No existe verificación biométrica activa.":"Identity guidance unlocks after completing the declarations. No biometric verification is active."}</p>}
   <p>{copy.inactive}</p>
  </section>;
 }
