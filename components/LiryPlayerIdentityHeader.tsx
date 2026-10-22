@@ -8,9 +8,17 @@ export function LiryPlayerIdentityHeader({locale,displayName,eyebrow,note}:{loca
  useEffect(()=>{
   const onAvatar=(event:Event)=>{if(!(event instanceof CustomEvent))return;setPhoto(typeof event.detail?.url==="string"?event.detail.url:null)};
   const onName=(event:Event)=>{if(event instanceof CustomEvent)setPreviewName(typeof event.detail?.name==="string"?event.detail.name:"")};
+  const restoreName=()=>{
+   try{
+    const name=sessionStorage.getItem("liry:temporary-display-name");
+    setPreviewName(name&&name.length>=2&&name.length<=40&&name.trim()===name?name:"");
+   }catch{setPreviewName("")}
+  };
+  restoreName();
+  window.addEventListener("pageshow",restoreName);
   window.addEventListener("liry:avatar-preview",onAvatar);
   window.addEventListener("liry:display-name-preview",onName);
-  return ()=>{window.removeEventListener("liry:avatar-preview",onAvatar);window.removeEventListener("liry:display-name-preview",onName)};
+  return ()=>{window.removeEventListener("pageshow",restoreName);window.removeEventListener("liry:avatar-preview",onAvatar);window.removeEventListener("liry:display-name-preview",onName)};
  },[]);
  return <div className={styles.identity}><div className={styles.avatar} aria-label={locale==="es"?"Avatar temporal":"Temporary avatar"}>{photo?<img src={photo} alt={locale==="es"?"Fotografía del jugador":"Player photo"} className={styles.accountHeaderPhoto}/>:"◇"}</div><div><span className={styles.eyebrow}>{eyebrow}</span><h2 aria-live="polite" aria-atomic="true">{previewName||displayName}</h2><p>{note}</p></div></div>;
 }
