@@ -109,7 +109,7 @@ test("Buscador de cabecera reinicia texto y reconoce acentos sin resultados enga
 
 test("La búsqueda del header utiliza teclado de búsqueda móvil",()=>{const src=readFileSync(new URL("../components/LiryHeaderUtilities.tsx",import.meta.url),"utf8");assert.match(src,/type="search" enterKeyHint="search" autoComplete="off"/);});
 
-test("Buscador informa resultados reales y permite limpiar el término",()=>{const src=readFileSync(new URL("../components/LiryHeaderUtilities.tsx",import.meta.url),"utf8");assert.match(src,/results\.length\} secciones encontradas/);assert.match(src,/Clear search/);assert.match(src,/setTerm\("".*?\);input\.current\?\.focus/);});
+test("Buscador informa resultados reales y permite limpiar el término",()=>{const src=readFileSync(new URL("../components/LiryHeaderUtilities.tsx",import.meta.url),"utf8");assert.match(src,/results\.length===1\?"sección encontrada":"secciones encontradas"/);assert.match(src,/Clear search/);assert.match(src,/setTerm\("".*?\);input\.current\?\.focus/);});
 
 test("Los botones de búsqueda y campana conservan los estilos azul/cian aprobados",()=>{const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");assert.match(css,/\.nav button\.navSearch,\.nav button\.navNotice\{appearance:none/);assert.match(css,/background:transparent/);assert.match(css,/\.nav button\.navSearch:hover/);assert.match(css,/\.nav button\.navNotice:hover/);});
 
