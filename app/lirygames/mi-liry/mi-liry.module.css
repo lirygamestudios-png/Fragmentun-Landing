@@ -317,3 +317,11 @@
  .accountBillingGrid .accountNameInput{min-height:46px;font-size:16px;line-height:1.4}
  .accountBillingGrid .accountNameLabel{overflow-wrap:break-word}
 }
+
+/* Liry Developers: compact step-by-step application in approved navy/cyan palette. */
+.developerWizardStage{min-height:190px;padding:16px;margin:12px 0;border:1px solid #27628b;border-radius:12px;background:#07172d}
+.developerWizardActions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0}
+.developerWizardActions button{min-width:118px;min-height:44px;border:1px solid #47bde7;background:#08223b;color:#e5f8ff;border-radius:9px;cursor:pointer}
+.developerWizardActions button:not(:disabled):hover,.developerWizardActions button:not(:disabled):focus-visible{border-color:#86e5ff;box-shadow:0 0 13px #47bde755}
+.developerWizardActions button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:480px){.developerWizardStage{padding:12px}.developerWizardActions{gap:8px}.developerWizardActions button{min-width:0;flex:1}}
