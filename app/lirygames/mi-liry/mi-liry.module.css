@@ -366,3 +366,9 @@
  .areaDialog .developerWizardDisclosure summary{min-height:38px;font-size:13px;line-height:1.35}
  .areaDialog .developerWizardDisclosure .worldsFacts{grid-template-columns:minmax(0,1fr)}
 }
+
+/* Gamer disclosure: keyboard navigation and expanded content remain usable on narrow screens. */
+.areaDialog .developerWizardDisclosure{min-width:0;max-width:100%;box-sizing:border-box}
+.areaDialog .developerWizardDisclosure[open] summary{margin-bottom:8px}
+.areaDialog .developerWizardDisclosure :is(.worldsFacts,.identityDetails,.identitySecurity){max-width:100%;min-width:0;box-sizing:border-box;overflow-wrap:anywhere}
+@media(prefers-reduced-motion:reduce){.areaDialog .developerWizardDisclosure *{scroll-behavior:auto;transition:none}}
