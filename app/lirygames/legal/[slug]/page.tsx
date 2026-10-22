@@ -2,7 +2,7 @@ import Link from "next/link";
 import {notFound} from "next/navigation";
 import {legalClauses} from "../../../../lib/lirygames-legal-clauses";
 import {liryFrontdeskStrings,getReleasedLiryFrontdeskLocale} from "../../../../lib/games/liry-frontdesk-i18n";
-export const metadata={robots:{index:false,follow:false}};
+export async function generateMetadata({params,searchParams}:{params:Promise<{slug:string}>,searchParams:Promise<{lang?:string}>}){const {slug}=await params;const locale=getReleasedLiryFrontdeskLocale((await searchParams).lang);if(!(slug in legal))return {robots:{index:false,follow:false}};const title=liryFrontdeskStrings(locale).legalCenter.documents.find(([key])=>key===slug)?.[1]??legal[slug as Key].title;return {title:`${title} | LIRYGAMES STUDIOS`,robots:{index:false,follow:false}};}
 const legal={
  privacidad:{title:"Política de privacidad",summary:"Describe los tratamientos de datos previstos para cuentas, comunicaciones, LiryBoost y videojuegos.",check:["Identificación del responsable y datos de contacto","Categorías de datos realmente recopilados y finalidades","Bases legales, destinatarios y transferencias","Plazos de conservación y derechos de los usuarios","Tratamiento de datos de menores y solicitudes de privacidad"]},
  terminos:{title:"Términos y condiciones",summary:"Regulará el uso del sitio, cuentas, videojuegos y contenidos.",check:["Identidad y domicilio de la empresa","Reglas de acceso y uso aceptable","Condiciones de cuentas, suspensiones y reclamaciones","Limitaciones, garantías y jurisdicción aplicable","Actualizaciones y mecanismo de aceptación"]},
