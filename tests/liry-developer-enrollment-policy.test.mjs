@@ -1,0 +1,5 @@
+import test from "node:test";import assert from "node:assert/strict";import {canBindDeveloperApplication,describeDeveloperEnrollmentRequirements,LIRY_DEVELOPER_ENROLLMENT_ENABLED} from "../lib/games/liry-developer-enrollment-policy.ts";
+const valid={authenticatedUserId:"user_123456",applicationId:"application_123456",ownerUserId:"user_123456",sessionVerified:true,serverOwnershipVerified:true,emailVerified:true};
+test("applicant enrollment remains disabled even with full prerequisites",()=>{assert.equal(LIRY_DEVELOPER_ENROLLMENT_ENABLED,false);assert.equal(canBindDeveloperApplication(valid),false);});
+test("cross-account or unverified credentials cannot bind a dossier",()=>{assert.equal(canBindDeveloperApplication({...valid,ownerUserId:"other_user"}),false);assert.equal(canBindDeveloperApplication({...valid,emailVerified:false}),false);assert.equal(canBindDeveloperApplication({...valid,sessionVerified:false}),false);});
+test("enrollment requirements are bilingual and distinguish identity and banking",()=>{assert.equal(describeDeveloperEnrollmentRequirements("es").length,4);assert.match(describeDeveloperEnrollmentRequirements("en")[3],/Identity and banking/);});
