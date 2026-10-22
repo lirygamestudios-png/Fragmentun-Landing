@@ -8,7 +8,7 @@ test("developer application shows six sequential steps with completed and locked
  assert.match(src,/step\.done\?"✓"/);
  assert.match(src,/Completado/);
  assert.match(src,/Bloqueado/);
- assert.match(src,/aria-current=\{step\.enabled&&!step\.done\?"step":undefined\}/);
+ assert.match(src,/aria-current=\{index===activeStep\?"step":undefined\}/);
 });
 test("required declarations only unlock after business model is selected",()=>{
  assert.match(src,/enabled:model!==null/);
