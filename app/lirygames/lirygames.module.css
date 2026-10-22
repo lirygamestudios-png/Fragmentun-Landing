@@ -1788,7 +1788,7 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .liryShareEntry{position:relative}
 .liryShareEntry>button{display:inline-flex;align-items:center;justify-content:center;gap:7px}
 .liryWhatsappLabel{font-size:12px;font-weight:700}
-.liryWhatsappDialog{width:min(92vw,470px);max-height:88dvh;overflow:auto;border:1px solid #47bde7;border-radius:14px;background:#07172d;color:#eaf8ff;padding:0;box-shadow:0 0 32px #1689be40}
+.liryWhatsappDialog{width:min(96vw,620px);max-width:calc(100vw - 16px);box-sizing:border-box;max-height:88dvh;overflow:auto;border:1px solid #47bde7;border-radius:14px;background:#07172d;color:#eaf8ff;padding:0;box-shadow:0 0 32px #1689be40}
 .liryWhatsappDialog::backdrop{background:#020817c9}
 .liryWhatsappCard{padding:clamp(18px,4vw,28px);position:relative}
 .liryWhatsappClose{float:right;border:1px solid #47bde7;color:#eaf8ff;background:#08223b;border-radius:8px;min-width:44px;min-height:44px;font-size:24px;cursor:pointer}
@@ -1802,6 +1802,7 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .liryWhatsappSend{display:flex;align-items:center;justify-content:center;width:100%;min-width:0;max-width:100%;min-height:48px;box-sizing:border-box;border:1px solid #47bde7;border-radius:9px;background:#0b3353;color:#effaff;padding:12px 16px;font-weight:700;font-size:clamp(13px,3.2vw,15px);line-height:1.45;text-align:center;white-space:normal;overflow-wrap:anywhere;word-break:normal;cursor:pointer}
 .liryWhatsappSend:hover,.liryWhatsappSend:focus-visible{box-shadow:0 0 14px #47bde766;border-color:#8ce5ff}
 @media(max-width:480px){.liryWhatsappBrand{gap:8px}.liryWhatsappBrand img{width:42px;height:42px}.liryWhatsappBrand strong{font-size:13px}}
+@media(max-width:480px){.liryWhatsappDialog{width:calc(100vw - 16px);max-width:calc(100vw - 16px)}.liryWhatsappCard{padding:16px 12px}.liryWhatsappSend{min-height:52px;padding:12px 10px;font-size:15px;line-height:1.5}}
 
 /* Approved icon-only WhatsApp action: bigger glyph, proportionate cyan border, touch-friendly. */
 .liryShareEntry>button.liryWhatsappIconOnly{width:46px;height:46px;min-width:46px;min-height:46px;padding:7px;gap:0;box-sizing:border-box;border:1px solid #47bde7;border-radius:11px;background:#08223b;color:#e8faff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
