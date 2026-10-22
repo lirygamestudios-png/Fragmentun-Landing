@@ -43,6 +43,7 @@ export default async function LegalDocument({params,searchParams}:{params:Promis
    {legalClauses[slug]?.map((clause,index)=><section key={index} style={{marginTop:19,paddingTop:14,borderTop:"1px solid #254760"}}><h3 style={{fontSize:16,color:"#8deaff",margin:"0 0 9px"}}>{clause.heading}</h3><p style={{lineHeight:1.75,margin:0,color:"#d5e6f0"}}>{clause.text}</p></section>)}
    <h2 style={{fontSize:19,marginTop:26}}>Validaciones pendientes antes de aprobar</h2>
    <ul style={{lineHeight:1.8,paddingLeft:23}}>{doc.check.map(x=><li key={x}>{x}</li>)}</ul>
+   </div>
   </section>
   <p lang="es" style={{color:"#9bbbcf",fontSize:13,marginTop:30}}>Para consultas generales puedes utilizar el formulario de contacto del FrontDesk. Este borrador no sustituye asesoramiento jurídico.</p>
   <Link href={`/lirygames?lang=${locale}#contacto` } style={{color:"#68eaff"}}>{locale==="es"?"IR A CONTACTO →":"GO TO CONTACT →"}</Link>
