@@ -26,3 +26,5 @@ test("legal contact action displays translated labels",()=>{assert.match(detail,
 test("legal index declares its selected document language",()=>assert.match(legal,/<main lang=\{locale\}/));
 
 test("legal center browser title is localized",()=>{assert.match(legal,/export async function generateMetadata/);assert.match(legal,/liryFrontdeskStrings\(locale\)\.legalCenter\.title/);});
+
+test("individual legal browser titles respect selected locale",()=>{assert.match(detail,/export async function generateMetadata/);assert.match(detail,/liryFrontdeskStrings\(locale\)\.legalCenter\.documents\.find/);assert.match(detail,/title:`\$\{title\} \| LIRYGAMES STUDIOS`/);});
