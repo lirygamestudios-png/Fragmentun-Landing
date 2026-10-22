@@ -3,3 +3,5 @@ test("gamer expanded submenu state follows the visible panel",()=>{const src=rea
 
 test("moving between developer submenus starts at the top of the dialog",()=>{const src=readFileSync(new URL("../components/LiryDeveloperAreas.tsx",import.meta.url),"utf8");assert.match(src,/requestAnimationFrame\(\(\)=>\{if\(modal\.current\?\.open\)\{modal\.current\.scrollTop=0/);});
 test("moving between gamer submenus starts at the top of the dialog",()=>{const src=readFileSync(new URL("../components/MiLiryAreas.tsx",import.meta.url),"utf8");assert.match(src,/requestAnimationFrame\(\(\)=>\{if\(dialog\.current\?\.open\)\{dialog\.current\.scrollTop=0/);});
+
+test("submenu navigation announces the destination in both languages",()=>{for(const path of ["../components/LiryDeveloperAreas.tsx","../components/MiLiryAreas.tsx"]){const src=readFileSync(new URL(path,import.meta.url),"utf8");assert.match(src,/aria-label=\{locale==="es"\?\x60Anterior:/);assert.match(src,/aria-label=\{locale==="es"\?\x60Próximo:/);assert.match(src,/Previous:/);assert.match(src,/Next:/);}});
