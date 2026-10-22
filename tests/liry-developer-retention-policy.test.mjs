@@ -1,0 +1,6 @@
+import test from "node:test";import assert from "node:assert/strict";import {evaluateDeveloperRetention,LIRY_DEVELOPER_RETENTION_AUTOMATION_ENABLED} from "../lib/games/liry-developer-retention-policy.ts";
+const base={category:"bank_statement",createdAt:"2026-01-01T00:00:00Z",now:"2026-10-21T00:00:00Z",requestedDeletion:false,legalHold:false,approvedRetentionDays:null};
+test("retention actions remain inactive without approved policy",()=>{assert.equal(LIRY_DEVELOPER_RETENTION_AUTOMATION_ENABLED,false);assert.equal(evaluateDeveloperRetention(base),"policy_review_required");});
+test("legal hold takes precedence over deletion requests",()=>{assert.equal(evaluateDeveloperRetention({...base,legalHold:true,requestedDeletion:true,approvedRetentionDays:1}),"legal_hold");});
+test("expiry and requested deletion only mark as eligible, never delete",()=>{assert.equal(evaluateDeveloperRetention({...base,approvedRetentionDays:30}),"eligible_for_deletion");assert.equal(evaluateDeveloperRetention({...base,approvedRetentionDays:365}),"retain");});
+test("invalid dates and periods fail closed",()=>{assert.equal(evaluateDeveloperRetention({...base,now:"invalid",approvedRetentionDays:5}),"policy_review_required");assert.equal(evaluateDeveloperRetention({...base,approvedRetentionDays:-1}),"policy_review_required");});
