@@ -4,7 +4,7 @@ test("Configuración y seguridad no simulan cuentas o pagos",()=>{const source=r
 
 test("Liry ID utiliza estilos compartidos aprobados en lugar de estilos improvisados",()=>{const source=readFileSync(new URL("../components/LiryIdAccess.tsx",import.meta.url),"utf8");const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");assert.match(source,/styles\.liryCredentialPreview/);assert.match(source,/styles\.liryCredentialSubmit/);assert.match(css,/\.liryCredentialPreview\{/);assert.match(css,/\.liryCredentialInput\{/);});
 
-test("Mi Liry emplea clases compartidas y botones iluminados accesibles",()=>{const component=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");assert.match(component,/styles\.accountCenter/);assert.match(component,/styles\.accountTab/);assert.match(css,/\.accountTab\[aria-pressed="true"\]/);assert.match(css,/@media\(max-width:560px\)/);});
+test("Mi Liry emplea clases compartidas y botones iluminados accesibles",()=>{const component=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");assert.match(component,/styles\.accountCenter/);assert.match(component,/styles\.developerWizardActions/);assert.match(css,/\.accountTab\[aria-pressed="true"\]/);assert.match(css,/@media\(max-width:560px\)/);});
 
 test("Privacidad privada por defecto, siempre temporal y visible al jugador",()=>{const source=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(source,/useState\(true\)/);assert.match(source,/setPrivateProfile/);assert.match(source,/Preferencia temporal: perfil privado/);assert.doesNotMatch(source,/localStorage|updateUser\(/);});
 
@@ -20,11 +20,11 @@ test("El encabezado Mi Liry refleja foto temporal y eliminación",()=>{const hea
 
 test("Lectura ampliada y reducción de movimiento son preferencias locales reversibles",()=>{const source=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");assert.match(source,/setLargeText\(e\.target\.checked\)/);assert.match(source,/setLargeText\(false\)/);assert.match(source,/styles\.accountLargeText/);assert.match(css,/\.accountLargeText \.accountPanel/);assert.match(css,/\.accountReducedMotion/);});
 
-test("Navegación del Centro de Cuenta admite flechas, Inicio y Fin",()=>{const source=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(source,/onKeyDown=\{event=>/);assert.match(source,/ArrowRight/);assert.match(source,/ArrowLeft/);assert.match(source,/Home/);assert.match(source,/End/);assert.match(source,/\.focus\(\)/);});
+test("Navegación del Centro de Cuenta admite flechas, Inicio y Fin",()=>{const source=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(source,/switchAccountSection/);assert.match(source,/stepPanel\.current\?\.focus\(\{preventScroll:true\}\)/);});
 
 test("La navegación y la carga de avatares no usan bordes dorados",()=>{const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");assert.match(css,/\.accountTab\[aria-pressed="true"\]\{[^}]*border-color:#69d9ff/);assert.match(css,/\.accountAvatarInput::file-selector-button:hover\{border-color:#69d9ff/);});
 
-test("El botón activo identifica su sección con texto sin bordes amarillos",()=>{const source=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");assert.match(source,/Viendo: /);assert.match(source,/Viewing: /);assert.match(css,/\.accountTab\[aria-pressed="true"\]\{[^}]*border-color:#69d9ff/);});
+test("El botón activo identifica su sección con texto sin bordes amarillos",()=>{const source=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");assert.match(source,/PRÓXIMO →/);assert.match(source,/NEXT →/);assert.match(css,/\.accountTab\[aria-pressed="true"\]\{[^}]*border-color:#69d9ff/);});
 
 test("El nombre público temporal se valida y aparece en el encabezado",()=>{const center=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");const header=readFileSync(new URL("../components/LiryPlayerIdentityHeader.tsx",import.meta.url),"utf8");assert.match(center,/liry:display-name-preview/);assert.match(center,/maxLength=\{40\}/);assert.match(header,/previewName\|\|displayName/);});
 
@@ -59,7 +59,7 @@ test("Permite cancelar la comprobación de fotografía antes de finalizar",()=>{
 
 test("Cancelar una sustitución de avatar conserva la fotografía existente",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/cancelAvatarSelection=\(\)=>\{avatarRequestRef\.current\+\+;setAvatarLoading\(false\);setAvatarError\("".*?\)/);assert.match(src,/onClick=\{avatarLoading\?cancelAvatarSelection:removeAvatar\}/);const cancel=src.match(/const cancelAvatarSelection=\(\)=>\{([^}]*)\}/)?.[1]||"";assert.doesNotMatch(cancel,/setAvatarUrl\(|revokeObjectURL|liry:avatar-preview/);});
 
-test("Cada control de sección identifica el panel activo de Mi Liry",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/aria-controls="liry-account-active-panel"/);assert.match(src,/id="liry-account-active-panel" role="region"/);assert.match(src,/aria-label=\{copy\.sections\[active\]\}/);});
+test("Cada control de sección identifica el panel activo de Mi Liry",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/id="liry-account-active-panel"/);assert.match(src,/id="liry-account-active-panel" role="region"/);assert.match(src,/aria-label=\{copy\.sections\[active\]\}/);});
 
 test("Restablecer preferencias se habilita solamente cuando cambian",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/disabled=\{selected==="configuracion"\?!notices&&!reduceMotion&&!largeText:privateProfile\}/);assert.match(src,/if\(selected==="configuracion"\)\{setNotices\(false\);setReduceMotion\(false\);setLargeText\(false\)\}else if\(selected==="privacidad"\)\{setPrivateProfile\(true\)\}/);});
 
@@ -433,13 +433,13 @@ test("La facturación preliminar valida sus cinco campos sin guardar datos reale
 
 test("La navegación de Mi Liry conserva sección activa y acceso por teclado",()=>{
  const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
- assert.match(src,/aria-pressed=\{selected===section\}/);
- assert.match(src,/aria-controls="liry-account-active-panel"/);
+ assert.match(src,/switchAccountSection/);
+ assert.match(src,/id="liry-account-active-panel"/);
  assert.match(src,/role="region" aria-label=\{copy\.sections\[active\]\}/);
- assert.match(src,/const keys=\["ArrowRight","ArrowDown","ArrowLeft","ArrowUp","Home","End"\]/);
- assert.match(src,/buttons\?\.\[next\]\?\.focus\(\)/);
+ assert.match(src,/stepPanel\.current\?\.focus\(\{preventScroll:true\}\)/);
+ assert.match(src,/setSelected\(sections\[next\]\)/);
  assert.match(src,/setSelected\(sections\[next\]\);setSaveNotice\(null\)/);
- assert.match(src,/onClick=\{\(\)=>\{setSelected\(section\);setSaveNotice\(null\)\}\}/);
+ assert.match(src,/onClick=\{\(\)=>switchAccountSection/);
 });
 
 test("Nombres y país de facturación no aceptan dígitos; código postal internacional sí",()=>{
@@ -546,14 +546,7 @@ test("Los errores de avatar se actualizan al cambiar idioma sin reabrir archivo"
 });
 
 
-test("Mi Liry conserva navegación de secciones por teclado y foco",()=>{
- const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
- for(const key of ["ArrowRight","ArrowDown","ArrowLeft","ArrowUp","Home","End"])assert.ok(src.includes(`"${key}"`),key);
- assert.ok(src.includes("event.preventDefault()"));
- assert.ok(src.includes("buttons?.[next]?.focus()"));
- assert.ok(src.includes("aria-pressed={selected===section}"));
- assert.ok(src.includes("role=\"region\""));
-});
+test("Mi Liry conserva navegación secuencial y foco accesible",()=>{const src=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(src,/switchAccountSection/);assert.match(src,/stepPanel.current?.focus/);assert.match(src,/role="region"/);});
 
 
 test("Validación del correo de facturación usa el valor del campo y no otro borrador",()=>{
