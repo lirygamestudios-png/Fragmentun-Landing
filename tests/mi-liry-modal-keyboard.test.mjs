@@ -10,3 +10,5 @@ test("Mi Liry resets visitor preview on close",()=>assert.match(src,/setPreviewS
 test("identity secondary material is available in accessible disclosures",()=>{const src=readFileSync(new URL("../components/MiLiryAreas.tsx",import.meta.url),"utf8");assert.match(src,/View identity summary/);assert.match(src,/developerWizardDisclosure/);assert.match(src,/<\/section><\/details>/);});
 
 test("identity task appears before secondary disclosures",()=>{const src=readFileSync(new URL("../components/MiLiryAreas.tsx",import.meta.url),"utf8");assert.ok(src.indexOf('<MiLiryIdentityPreview key={previewSession}')<src.indexOf('View identity summary'));});
+
+test("secondary gamer area facts are collapsible in all five informational submenus",()=>{const src=readFileSync(new URL("../components/MiLiryAreas.tsx",import.meta.url),"utf8");for(const id of ["mundos","logros","inventario","comunidad","liryboost"])assert.match(src,new RegExp('View details"[\\s\\S]*?facts\\.'+id+'\\.map'));});
