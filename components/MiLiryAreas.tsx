@@ -40,7 +40,7 @@ export function MiLiryAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
   <h3>{area.title}</h3><p>{area.desc}</p><small>{area.status}</small>
   <button className={styles.areaLink} type="button" aria-haspopup="dialog" aria-controls="mi-liry-area-dialog" aria-expanded={openedAreaId===area.id} aria-label={`${copy.openAria} ${area.title}`} onClick={event=>openArea(area,event.currentTarget)}>{copy.open} →</button>
  </article>)}</div>
- <dialog id="mi-liry-area-dialog" ref={dialog} aria-modal="true" className={styles.areaDialog} aria-labelledby="mi-liry-area-title" onClose={()=>{setOpenedAreaId(null);setPreviewSession(value=>value+1);trigger.current?.focus({preventScroll:true});trigger.current=null;}} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
+ <dialog id="mi-liry-area-dialog" ref={dialog} aria-modal="true" className={styles.areaDialog} aria-labelledby="mi-liry-area-title" onClose={()=>{setOpenedAreaId(null);setPreviewSession(value=>value+1);if(trigger.current?.isConnected)trigger.current.focus({preventScroll:true});trigger.current=null;}} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
   <div className={styles.areaDialogContent}>
    <form method="dialog"><button ref={closeButton} className={styles.areaClose} aria-label={copy.closeAria} type="submit">×</button></form>
    <span className={styles.eyebrow}>{copy.eyebrow}</span>
