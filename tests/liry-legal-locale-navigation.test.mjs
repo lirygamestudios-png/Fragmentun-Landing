@@ -24,3 +24,5 @@ test("untranslated legal clauses are correctly marked as Spanish for screen read
 test("legal contact action displays translated labels",()=>{assert.match(detail,/IR A CONTACTO →/);assert.match(detail,/GO TO CONTACT →/);});
 
 test("legal index declares its selected document language",()=>assert.match(legal,/<main lang=\{locale\}/));
+
+test("legal center browser title is localized",()=>{assert.match(legal,/export async function generateMetadata/);assert.match(legal,/liryFrontdeskStrings\(locale\)\.legalCenter\.title/);});
