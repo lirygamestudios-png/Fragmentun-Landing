@@ -236,7 +236,7 @@ export default async function LiryGamesFrontDesk({searchParams}:{searchParams:Pr
       <div className={styles.footerIdentity}><strong>LIRY<span>GAMES</span></strong><small>STUDIOS</small></div>
       <div className={styles.footerTagline}>{copy.footerCopy.tagline[0]}<br/>{copy.footerCopy.tagline[1]}</div>
       <nav className={styles.footerNav} aria-label={copy.footerCopy.navigationAria}>{(["#inicio","#mundos","#liry-dna","#perfil-gamer","#comunidad","#liryboost","#tienda","#social","#comunidad"] as const).map((href,index)=><a href={href} key={index}>{copy.footerCopy.links[index]}</a>)}</nav>
-      <nav className={styles.footerLegalNav} aria-label={copy.footerCopy.legalAria}><a href="/lirygames/legal">{copy.footerCopy.legal}</a></nav>
+      <nav className={styles.footerLegalNav} aria-label={copy.footerCopy.legalAria}><a href={`/lirygames/legal?lang=${locale}`}>{copy.footerCopy.legal}</a></nav>
       <div className={styles.footerCopyright}>© {new Date().getFullYear()} LIRYGAMES STUDIOS. {copy.footerCopy.rights}</div>
     </footer>
   </main>;
