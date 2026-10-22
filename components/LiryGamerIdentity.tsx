@@ -16,6 +16,17 @@ export function LiryGamerIdentity({snapshot,locale="es"}:{snapshot:Readonly<Publ
 
  const verified=snapshot.status==="verified"?snapshot.verifiedActivity:null;
  const xp=verified?calculateGamerXpProgress(verified.experiencePoints):null;
+ const [displayNamePreview,setDisplayNamePreview]=useState<string|null>(null);
+ useEffect(()=>{
+  const syncDisplayName=()=>{
+   try{const saved=sessionStorage.getItem("liry:temporary-display-name");setDisplayNamePreview(saved&&saved.length<=40?saved:null)}catch{setDisplayNamePreview(null)}
+  };
+  const onDisplayName=(event:Event)=>{const name=(event as CustomEvent<{name?:string}>).detail?.name;setDisplayNamePreview(typeof name==="string"&&name.length<=40&&name.trim()===name&&name.length>=2?name:null)};
+  syncDisplayName();
+  window.addEventListener("liry:display-name-preview",onDisplayName);
+  window.addEventListener("pageshow",syncDisplayName);
+  return ()=>{window.removeEventListener("liry:display-name-preview",onDisplayName);window.removeEventListener("pageshow",syncDisplayName)};
+ },[]);
  const [avatar,setAvatar]=useState<string|null>(null);
  const thumbnailKey="liry:temporary-avatar-thumbnail";
  const [style,setStyle]=useState<string|null>(null);
@@ -105,7 +116,7 @@ export function LiryGamerIdentity({snapshot,locale="es"}:{snapshot:Readonly<Publ
    <button type="button" ref={triggerRef} className={styles.gamerPortrait} aria-label={profileCopy.avatar} title={detailCopy.chooseTitle} onClick={()=>{setAvatarError(null);dialogRef.current?.showModal()}} style={{cursor:"pointer",padding:0,overflow:"hidden"}}>
     {avatar?<img src={avatar} alt={detailCopy.previewAlt} style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<span>?</span>}
    </button>
-   <div className={styles.gamerIdentityText}><strong>{snapshot.displayName}</strong><span>{xp?`${detailCopy.level} ${xp.level}`:`${detailCopy.level} —`}</span><div className={styles.gamerXpTrack} role="progressbar" aria-label={xp?detailCopy.xpProgress:detailCopy.xpPending} aria-valuemin={xp?0:undefined} aria-valuemax={xp?100:undefined} aria-valuenow={xp?xp.progressPercent:undefined} aria-valuetext={xp?`${xp.currentLevelXp}/${xp.nextLevelXp} XP · ${detailCopy.xpTowardNextLevel}`:detailCopy.noVerifiedActivity}><span style={xp?{width:`${xp.progressPercent}%`,transition:"width .5s ease"}:undefined}/></div><small>{xp?`${xp.currentLevelXp}/${xp.nextLevelXp} XP · ${detailCopy.xpTotal}: ${xp.totalXp}`:profileCopy.noActivity}</small></div>
+   <div className={styles.gamerIdentityText}><strong>{displayNamePreview??snapshot.displayName}</strong><span>{xp?`${detailCopy.level} ${xp.level}`:`${detailCopy.level} —`}</span><div className={styles.gamerXpTrack} role="progressbar" aria-label={xp?detailCopy.xpProgress:detailCopy.xpPending} aria-valuemin={xp?0:undefined} aria-valuemax={xp?100:undefined} aria-valuenow={xp?xp.progressPercent:undefined} aria-valuetext={xp?`${xp.currentLevelXp}/${xp.nextLevelXp} XP · ${detailCopy.xpTowardNextLevel}`:detailCopy.noVerifiedActivity}><span style={xp?{width:`${xp.progressPercent}%`,transition:"width .5s ease"}:undefined}/></div><small>{xp?`${xp.currentLevelXp}/${xp.nextLevelXp} XP · ${detailCopy.xpTotal}: ${xp.totalXp}`:profileCopy.noActivity}</small></div>
   </div>
   <p className={styles.gamerMicroLabel}>{detailCopy.playStyle}</p>
   <div className={`${styles.gamerStyles} ${highlight?styles.gamerStylesHighlighted:""}`} aria-live="polite" aria-atomic="true"><span>◇ <b>{style??detailCopy.undiscovered}</b></span></div>
