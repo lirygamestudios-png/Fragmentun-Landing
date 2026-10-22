@@ -10,3 +10,11 @@ test("legal index uses locale strings and keeps it in navigation",()=>{
  assert.match(legal,/lirygames\?lang=\$\{locale\}/);
  assert.match(legal,/lirygames\/legal\/\$\{d\.slug\}\?lang=\$\{locale\}/);
 });
+
+const detail=readFileSync(new URL("../app/lirygames/legal/[slug]/page.tsx",import.meta.url),"utf8");
+test("legal detail keeps locale in return navigation and distinguishes untranslated clauses",()=>{
+ assert.match(detail,/getReleasedLiryFrontdeskLocale\(\(await searchParams\)\.lang\)/);
+ assert.match(detail,/lirygames\/legal\?lang=\$\{locale\}/);
+ assert.match(detail,/lirygames\?lang=\$\{locale\}#contacto/);
+ assert.match(detail,/draft clauses below are currently available in Spanish only/);
+});
