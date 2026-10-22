@@ -20,6 +20,7 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
   {title:locale==="es"?"Declaraciones obligatorias":"Required declarations",done:ready,enabled:model!==null},
   {title:locale==="es"?"Verificación de identidad":"Identity verification",done:false,enabled:ready},
   {title:locale==="es"?"Revisión documental y de derechos":"Document and IP review",done:false,enabled:false},
+  {title:locale==="es"?"Validación bancaria para pagos":"Bank payout verification",done:false,enabled:false},
   {title:locale==="es"?"Aprobación LIRYGAMES":"LIRYGAMES approval",done:false,enabled:false}
  ];
  const completed=steps.filter(step=>step.done).length;
@@ -27,8 +28,8 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
   <h2 id="admission-preview-title">{copy.title}</h2>
   <p>{copy.intro}</p>
   <div role="group" aria-label={locale==="es"?"Progreso de solicitud":"Application progress"} style={{border:"1px solid #286e98",borderRadius:12,background:"#061429",padding:16,margin:"16px 0"}}>
-   <p role="status" aria-live="polite">{locale==="es"?"Preparación: "+completed+" de 5 etapas completadas":"Preparation: "+completed+" of 5 steps completed"}</p>
-   <progress value={completed} max={5} aria-label={locale==="es"?"Etapas completadas":"Completed steps"} style={{width:"100%",accentColor:"#50cbf5"}} />
+   <p role="status" aria-live="polite">{locale==="es"?"Preparación: "+completed+" de 6 etapas completadas":"Preparation: "+completed+" of 6 steps completed"}</p>
+   <progress value={completed} max={6} aria-label={locale==="es"?"Etapas completadas":"Completed steps"} style={{width:"100%",accentColor:"#50cbf5"}} />
    <ol style={{listStyle:"none",padding:0,display:"grid",gap:9}}>
     {steps.map((step,index)=><li key={step.title} aria-current={step.enabled&&!step.done?"step":undefined} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",borderRadius:8,border:"1px solid #286e98",background:step.done?"#0b2b42":"#08182c",color:step.enabled?"#eaf9ff":"#9caec3"}}>
      <span aria-hidden="true" style={{width:24,textAlign:"center",color:step.done?"#79e3c8":"#67cfff"}}>{step.done?"✓":step.enabled?String(index+1):"🔒"}</span>
@@ -36,6 +37,8 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
      <small>{step.done?(locale==="es"?"Completado":"Completed"):step.enabled?(locale==="es"?"Disponible":"Available"):(locale==="es"?"Bloqueado":"Locked")}</small>
     </li>)}
    </ol>
+   <small>{locale==="es"?"La verificación bancaria exigirá el estado de cuenta más reciente y cotejo del titular por un canal seguro. No se pueden subir documentos aquí.":"Bank verification will require a recent statement and beneficiary matching via a secure channel. Do not upload documents here."}</small>
+   <p />
    <small>{locale==="es"?"Las etapas iniciales son declaraciones temporales, no una solicitud presentada ni identidad verificada.":"Initial steps are temporary declarations, not a submitted application or verified identity."}</small>
   </div>
   <fieldset><legend>{copy.modelLegend}</legend>
