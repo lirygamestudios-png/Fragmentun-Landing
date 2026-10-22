@@ -15,3 +15,5 @@ test("Mi Liry detail links preserve locale and section anchor",()=>{
 });
 
 test("primary FrontDesk uses locale-specific DNA navigation label",()=>{const front=readFileSync(new URL("../app/lirygames/page.tsx",import.meta.url),"utf8");assert.match(front,/<a href="#liry-dna">\{copy\.navigation\.dna\}<\/a>/);});
+
+test("mobile FrontDesk DNA menu uses released locale label",()=>{const front=readFileSync(new URL("../app/lirygames/page.tsx",import.meta.url),"utf8");assert.match(front,/href:"#liry-dna",label:copy\.navigation\.dna/);});
