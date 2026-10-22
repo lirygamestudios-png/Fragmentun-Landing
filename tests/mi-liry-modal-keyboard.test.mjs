@@ -27,3 +27,5 @@ test("all close paths restore focus and reset temporary modal state",()=>{
  assert.match(src,/onClose=\{\(\)=>\{setOpenedAreaId\(null\);setPreviewSession\(value=>value\+1\);trigger\.current\?\.focus\(\{preventScroll:true\}\);trigger\.current=null;/);
  assert.match(src,/if\(event\.target===dialog\.current\)dialog\.current\.close\(\)/);
 });
+
+test("mobile dialogs preserve touch targets and avoid overflow",()=>{const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");assert.match(css,/\.areaDialog\{max-width:calc\(100vw - 24px\)\}/);assert.match(css,/\.areaDialog \.developerWizardActions button\{touch-action:manipulation;min-height:44px\}/);});
