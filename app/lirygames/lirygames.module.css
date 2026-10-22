@@ -1783,3 +1783,22 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 /* Lectura de nombres de artículos largos sin desplazar tarjetas en móviles. */
 .liryStoreProduct,.thirdPartyCardBody{overflow-wrap:anywhere}
 .thirdPartyCardBody{min-width:0}
+
+/* Approved navy/cyan WhatsApp product-sharing preview. */
+.liryShareEntry{position:relative}
+.liryShareEntry>button{display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.liryWhatsappLabel{font-size:12px;font-weight:700}
+.liryWhatsappDialog{width:min(92vw,470px);max-height:88dvh;overflow:auto;border:1px solid #47bde7;border-radius:14px;background:#07172d;color:#eaf8ff;padding:0;box-shadow:0 0 32px #1689be40}
+.liryWhatsappDialog::backdrop{background:#020817c9}
+.liryWhatsappCard{padding:clamp(18px,4vw,28px);position:relative}
+.liryWhatsappClose{float:right;border:1px solid #47bde7;color:#eaf8ff;background:#08223b;border-radius:8px;min-width:44px;min-height:44px;font-size:24px;cursor:pointer}
+.liryWhatsappBrand{display:flex;align-items:center;gap:12px;padding-right:46px;margin-bottom:15px}
+.liryWhatsappBrand img{width:52px;height:52px;object-fit:contain;flex-shrink:0}
+.liryWhatsappBrand strong{font-size:15px;letter-spacing:.07em}
+.liryWhatsappBrand p{font-size:10px;letter-spacing:.04em;line-height:1.5;color:#bce8fc;margin:5px 0}
+.liryWhatsappEyebrow{font-size:11px;color:#73d9ff;letter-spacing:.12em}
+.liryWhatsappCard h3{font-size:clamp(19px,4vw,25px);overflow-wrap:anywhere}
+.liryWhatsappFootnote{font-size:12px;color:#b4cfe1;line-height:1.5}
+.liryWhatsappSend{display:block;width:100%;min-height:44px;border:1px solid #47bde7;border-radius:9px;background:#0b3353;color:#effaff;padding:12px;font-weight:700;cursor:pointer}
+.liryWhatsappSend:hover,.liryWhatsappSend:focus-visible{box-shadow:0 0 14px #47bde766;border-color:#8ce5ff}
+@media(max-width:480px){.liryWhatsappBrand{gap:8px}.liryWhatsappBrand img{width:42px;height:42px}.liryWhatsappBrand strong{font-size:13px}}
