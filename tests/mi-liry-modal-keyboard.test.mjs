@@ -12,3 +12,5 @@ test("identity secondary material is available in accessible disclosures",()=>{c
 test("identity task appears before secondary disclosures",()=>{const src=readFileSync(new URL("../components/MiLiryAreas.tsx",import.meta.url),"utf8");assert.ok(src.indexOf('<MiLiryIdentityPreview key={previewSession}')<src.indexOf('View identity summary'));});
 
 test("secondary gamer area facts are collapsible in all five informational submenus",()=>{const src=readFileSync(new URL("../components/MiLiryAreas.tsx",import.meta.url),"utf8");for(const id of ["mundos","logros","inventario","comunidad","liryboost"])assert.match(src,new RegExp('View details"[\\s\\S]*?facts\\.'+id+'\\.map'));});
+
+test("expanded gamer details respect narrow viewports and reduced-motion settings",()=>{const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");assert.match(css,/\.areaDialog \.developerWizardDisclosure\{min-width:0;max-width:100%;box-sizing:border-box\}/);assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);});
