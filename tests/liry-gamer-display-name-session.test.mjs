@@ -21,3 +21,10 @@ test("Mi Liry header restores temporary name after page navigation",()=>{
  assert.match(header,/window\.addEventListener\("pageshow",restoreName\)/);
  assert.match(header,/window\.removeEventListener\("pageshow",restoreName\)/);
 });
+
+test("Mi Liry header restores session avatar and unregisters events",()=>{
+ const header=readFileSync(new URL("../components/LiryPlayerIdentityHeader.tsx",import.meta.url),"utf8");
+ assert.match(header,/sessionStorage\.getItem\("liry:temporary-avatar-thumbnail"\)/);
+ assert.match(header,/window\.addEventListener\("liry:avatar-changed",restoreAvatar\)/);
+ assert.match(header,/window\.removeEventListener\("liry:avatar-changed",restoreAvatar\)/);
+});
