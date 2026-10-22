@@ -23,7 +23,15 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  useEffect(()=>{if(publicName!==""&&!isValidLiryDisplayName(publicName))setNameError(locale==="es"?"Usa de 2 a 40 caracteres, sin espacios al inicio o final.":"Use 2 to 40 characters without leading or trailing spaces.");else setNameError("")},[locale,publicName]);
  const displayNamePreviewKey="liry:temporary-display-name";
  useEffect(()=>{
-  try{const saved=sessionStorage.getItem(displayNamePreviewKey);if(saved&&isValidLiryDisplayName(saved))setPublicName(saved)}catch{}
+  const restoreTemporaryName=()=>{
+   try{
+    const saved=sessionStorage.getItem(displayNamePreviewKey);
+    setPublicName(saved&&isValidLiryDisplayName(saved)?saved:"");
+   }catch{setPublicName("")}
+  };
+  restoreTemporaryName();
+  window.addEventListener("pageshow",restoreTemporaryName);
+  return ()=>window.removeEventListener("pageshow",restoreTemporaryName);
  },[]);
  const updatePublicName=(name:string)=>{
   setSaveNotice(null);setPublicName(name);
