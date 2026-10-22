@@ -1802,3 +1802,8 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .liryWhatsappSend{display:block;width:100%;min-height:44px;border:1px solid #47bde7;border-radius:9px;background:#0b3353;color:#effaff;padding:12px;font-weight:700;cursor:pointer}
 .liryWhatsappSend:hover,.liryWhatsappSend:focus-visible{box-shadow:0 0 14px #47bde766;border-color:#8ce5ff}
 @media(max-width:480px){.liryWhatsappBrand{gap:8px}.liryWhatsappBrand img{width:42px;height:42px}.liryWhatsappBrand strong{font-size:13px}}
+
+/* Approved icon-only WhatsApp action: bigger glyph, proportionate cyan border, touch-friendly. */
+.liryShareEntry>button.liryWhatsappIconOnly{width:46px;height:46px;min-width:46px;min-height:46px;padding:7px;gap:0;box-sizing:border-box;border:1px solid #47bde7;border-radius:11px;background:#08223b;color:#e8faff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.liryShareEntry>button.liryWhatsappIconOnly svg{width:28px;height:28px;flex-shrink:0}
+.liryShareEntry>button.liryWhatsappIconOnly:hover,.liryShareEntry>button.liryWhatsappIconOnly:focus-visible{border-color:#8ce5ff;box-shadow:0 0 13px #47bde766;outline-offset:3px}
