@@ -4,10 +4,10 @@ import styles from "../app/lirygames/lirygames.module.css";
 type Locale="es"|"en";
 const targets=[
  {es:"Catálogo de videojuegos",en:"Game catalog",href:"#mundos",tags:"juegos videojuegos games worlds mundos catálogo"},
- {es:"Liry DNA",en:"Liry DNA",href:"#liry-dna",tags:"adn dna afinidad personality"},
+ {es:"Liry ADN",en:"Liry DNA",href:"#liry-dna",tags:"adn dna afinidad personality"},
  {es:"Mi perfil de jugador",en:"My gamer profile",href:"#perfil-gamer",tags:"perfil jugador avatar gamer"},
  {es:"Comunidad",en:"Community",href:"#comunidad",tags:"social comunidad community"},
- {es:"Liryboost",en:"Liryboost",href:"#liryboost",tags:"beta compartir ranking"},
+ {es:"LiryBoost",en:"LiryBoost",href:"#liryboost",tags:"beta compartir ranking"},
  {es:"Tienda",en:"Store",href:"#tienda",tags:"tienda skins shop store"},
 ] as const;
 export function LiryHeaderUtilities({locale,searchLabel,noticeLabel}:{locale:Locale;searchLabel:string;noticeLabel:string}){
