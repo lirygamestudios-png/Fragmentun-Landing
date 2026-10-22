@@ -26,11 +26,11 @@ export function MiLiryAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const currentIndex=areas.findIndex(area=>area.id===selected.id);
  const switchArea=(direction:-1|1)=>{const next=areas[currentIndex+direction];if(next){setSelected(next);requestAnimationFrame(()=>{if(dialog.current?.open){dialog.current.scrollTop=0;areaHeading.current?.focus({preventScroll:true});}});}};
  const openArea=(area:(typeof areas)[number],button:HTMLButtonElement)=>{
-  setSelected(area);
-  trigger.current=button;
   const modal=dialog.current;
   if(!modal)return;
   if(modal.open)return;
+  setSelected(area);
+  trigger.current=button;
   modal.showModal();
   setOpenedAreaId(area.id);
   modal.scrollTop=0;
