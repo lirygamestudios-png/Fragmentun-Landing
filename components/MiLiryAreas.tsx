@@ -47,18 +47,18 @@ export function MiLiryAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
    <h2 ref={areaHeading} tabIndex={-1} id="mi-liry-area-title">{selected.title}</h2><p>{selected.detail}</p>
    <span className={styles.areaStatus}>{selected.status}</span>
    <nav className={styles.developerWizardActions} aria-label={locale==="es"?"Menús del jugador":"Player menus"}><button type="button" disabled={currentIndex===0} onClick={()=>switchArea(-1)}>{locale==="es"?"← ANTERIOR":"← PREVIOUS"}</button><small>{currentIndex+1} / {areas.length}</small><button type="button" disabled={currentIndex===areas.length-1} onClick={()=>switchArea(1)}>{locale==="es"?"PRÓXIMO →":"NEXT →"}</button></nav>
-   {selected.id==="identidad"&&<div className={styles.identityDetails} aria-label={copy.identityAria}>
+   {selected.id==="identidad"&&<details className={styles.developerWizardDisclosure}><summary>{locale==="es"?"Ver resumen de identidad":"View identity summary"}</summary><div className={styles.identityDetails} aria-label={copy.identityAria}>
     <div><strong>{identity.publicName}</strong><span>{identity.unverified}</span></div>
     <div><strong>{identity.avatar}</strong><span>{identity.avatarPending}</span></div>
     <div><strong>{identity.preferences}</strong><span>{identity.notConfigured}</span></div>
     <p>{identity.privacyNote}</p>
-   </div>}
+   </div></details>}
    {selected.id==="identidad"&&<MiLiryIdentityPreview key={previewSession} locale={locale} />}
-   {selected.id==="identidad"&&<section className={styles.identitySecurity} aria-label={copy.securityAria}>
+   {selected.id==="identidad"&&<details className={styles.developerWizardDisclosure}><summary>{identity.securityTitle}</summary><section className={styles.identitySecurity} aria-label={copy.securityAria}>
     <h3>{identity.securityTitle}</h3>
     <p>{identity.securityNote}</p>
     <ul><li>{identity.securityRules[0]}</li><li>{identity.securityRules[1]}</li><li>{identity.securityRules[2]}</li></ul>
-   </section>}
+   </section></details>}
    {selected.id==="mundos"&&<section className={styles.worldsPanel} aria-label={copy.worldsAria}>
     <h3>{panels.mundos.title}</h3>
     <p className={styles.worldsEmpty}>{panels.mundos.empty}</p>
