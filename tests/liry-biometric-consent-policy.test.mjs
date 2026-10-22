@@ -1,0 +1,4 @@
+import test from "node:test";import assert from "node:assert/strict";import {readFileSync} from "node:fs";
+const s=readFileSync(new URL("../lib/games/liry-biometric-consent-policy.ts",import.meta.url),"utf8");
+test("biometric consent cannot activate capture or admission",()=>{assert.match(s,/biometricProviderStatus==="disabled"/);assert.match(s,/eligible:false/);assert.doesNotMatch(s,/eligible:true|fetch\(|getUserMedia|localStorage|sessionStorage/);});
+test("consent model documents application, policy, purpose, provider, retention and alternatives",()=>{for(const k of ["applicationId","policyVersion","acceptedAt","expiresAt","identityPurposeAccepted","providerDisclosureAccepted","retentionDisclosureAccepted","alternativeRouteDisclosed","voluntaryChoiceRecorded"])assert.ok(s.includes(k),k);});
