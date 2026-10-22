@@ -1,8 +1,6 @@
 "use client";
 import {useRef,useState} from "react";
 import {LiryDeveloperIdentityPreview} from "./LiryDeveloperIdentityPreview";
-import {developerProgressNotice} from "../lib/games/liry-developer-progress-notice";
-import {assessDeveloperWorkflow} from "../lib/games/liry-developer-workflow-assessment";
 import styles from "../app/lirygames/mi-liry/mi-liry.module.css";
 import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 type Model="premium"|"freemium";
@@ -30,9 +28,6 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
  ];
  const completed=steps.filter(step=>step.done).length;
  const nextAllowed=activeStep===0?model!==null:activeStep===1?ready:false;
- // No dossier is saved or submitted: the safe initial state is always pending.
- const dossierNotice=developerProgressNotice("not_submitted","pending",locale);
- const workflowPreview=assessDeveloperWorkflow({documentStatus:"not_submitted",reminderStatus:"pending",expiresAt:null,now:"2026-10-21T00:00:00Z",warningDays:null,legalHold:false,lastReminderAt:null,reminderCount:0});
  return <section className={`${styles.notice} ${styles.developerForm}`} aria-labelledby="admission-preview-title">
   <h2 id="admission-preview-title" className={styles.developerWizardTitle}>{copy.title}</h2>
   <div className={styles.developerWizardCompact} role="group" aria-label={locale==="es"?"Progreso de solicitud":"Application progress"}>
