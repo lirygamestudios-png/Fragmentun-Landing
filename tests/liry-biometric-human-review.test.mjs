@@ -1,0 +1,4 @@
+import test from "node:test";import assert from "node:assert/strict";import {readFileSync} from "node:fs";
+const source=readFileSync(new URL("../lib/games/liry-biometric-human-review.ts",import.meta.url),"utf8");
+test("human-review workflow remains offline and fail closed",()=>{assert.match(source,/biometricProviderStatus==="disabled"/);assert.match(source,/allowed:false/);assert.doesNotMatch(source,/allowed:true|fetch\(|getUserMedia|createClient\(/);});
+test("appeal, document requests and independent reviewer role are specified",()=>{for(const key of ["applicant_appeal","accessibility_alternative","request_information","information_received","authorized_reviewer","confirm_rejected","confirm_verified","requires_separate_identity_and_admission_review"])assert.ok(source.includes(key),key);});
