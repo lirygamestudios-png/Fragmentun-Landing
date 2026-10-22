@@ -1,5 +1,5 @@
 "use client";
-import {useState} from "react";
+import {useRef,useState} from "react";
 import {LiryDeveloperIdentityPreview} from "./LiryDeveloperIdentityPreview";
 import {developerProgressNotice} from "../lib/games/liry-developer-progress-notice";
 import {assessDeveloperWorkflow} from "../lib/games/liry-developer-workflow-assessment";
@@ -10,6 +10,8 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
  const copy=liryFrontdeskStrings(locale).developerAdmission;
  const [model,setModel]=useState<Model|null>(null);
  const [activeStep,setActiveStep]=useState(0);
+ const stepHeading=useRef<HTMLHeadingElement>(null);
+ const navigateStep=(next:number)=>{setActiveStep(next);requestAnimationFrame(()=>stepHeading.current?.focus({preventScroll:true}));};
  const [rights,setRights]=useState(false);
  const [executable,setExecutable]=useState(false);
  const [disclosure,setDisclosure]=useState(false);
@@ -38,7 +40,7 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
    <p role="status" aria-live="polite">{locale==="es"?"Preparación: "+completed+" de 6 etapas completadas":"Preparation: "+completed+" of 6 steps completed"}</p>
    <progress value={completed} max={6} aria-label={locale==="es"?"Etapas completadas":"Completed steps"} style={{width:"100%",accentColor:"#50cbf5"}} />
    <ol style={{listStyle:"none",padding:0,display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:6}}>
-    {steps.map((step,index)=><li key={step.title} aria-current={step.enabled&&!step.done?"step":undefined} style={{display:"flex",alignItems:"center",gap:6,padding:"8px",fontSize:12,minWidth:0,borderRadius:8,border:"1px solid #286e98",background:step.done?"#0b2b42":"#08182c",color:step.enabled?"#eaf9ff":"#9caec3"}}>
+    {steps.map((step,index)=><li key={step.title} aria-current={index===activeStep?"step":undefined} style={{display:"flex",alignItems:"center",gap:6,padding:"8px",fontSize:12,minWidth:0,borderRadius:8,border:"1px solid #286e98",background:step.done?"#0b2b42":"#08182c",color:step.enabled?"#eaf9ff":"#9caec3"}}>
      <span aria-hidden="true" style={{width:24,textAlign:"center",color:step.done?"#79e3c8":"#67cfff"}}>{step.done?"✓":step.enabled?String(index+1):"🔒"}</span>
      <span style={{flex:1}}>{step.title}</span>
      <small>{step.done?(locale==="es"?"Completado":"Completed"):step.enabled?(locale==="es"?"Disponible":"Available"):(locale==="es"?"Bloqueado":"Locked")}</small>
@@ -55,7 +57,8 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
    </div>
    <small>{locale==="es"?"Las etapas iniciales son declaraciones temporales, no una solicitud presentada ni identidad verificada.":"Initial steps are temporary declarations, not a submitted application or verified identity."}</small>
   </div>
-  <div className={styles.developerWizardStage} aria-label={steps[activeStep].title}>
+  <div className={styles.developerWizardStage} aria-labelledby="liry-developer-wizard-step-title">
+   <h3 ref={stepHeading} tabIndex={-1} id="liry-developer-wizard-step-title">{steps[activeStep].title}</h3>
   {activeStep===0&&<fieldset><legend>{copy.modelLegend}</legend>
    <label><input type="radio" name="liry-developer-model-preview" checked={model==="premium"} onChange={()=>setModel("premium")}/> {copy.models[0]}</label>
    <label><input type="radio" name="liry-developer-model-preview" checked={model==="freemium"} onChange={()=>setModel("freemium")}/> {copy.models[1]}</label>
@@ -76,8 +79,8 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
   {activeStep>=3&&<p className={styles.accountIntro} role="note">{activeStep===3?(locale==="es"?"La revisión documental y de derechos requiere personal autorizado.":"Document and rights review requires authorized staff."):activeStep===4?(locale==="es"?"La validación de cuenta bancaria requiere el estado de cuenta más reciente y revisión segura.":"Bank validation requires the most recent bank statement and secure review."):(locale==="es"?"La aprobación final corresponde exclusivamente a LIRYGAMES.":"Final approval belongs exclusively to LIRYGAMES.")}</p>}
   </div>
   <div className={styles.developerWizardActions}>
-   <button type="button" className={styles.previewReset} disabled={activeStep===0} onClick={()=>setActiveStep(value=>Math.max(0,value-1))}>{locale==="es"?"← ANTERIOR":"← PREVIOUS"}</button>
-   <button type="button" className={styles.previewReset} disabled={!nextAllowed} onClick={()=>setActiveStep(value=>Math.min(2,value+1))}>{locale==="es"?"PRÓXIMO →":"NEXT →"}</button>
+   <button type="button" className={styles.previewReset} disabled={activeStep===0} onClick={()=>navigateStep(Math.max(0,activeStep-1))}>{locale==="es"?"← ANTERIOR":"← PREVIOUS"}</button>
+   <button type="button" className={styles.previewReset} disabled={!nextAllowed} onClick={()=>navigateStep(Math.min(2,activeStep+1))}>{locale==="es"?"PRÓXIMO →":"NEXT →"}</button>
   </div>
   <p>{copy.inactive}</p>
  </section>;
