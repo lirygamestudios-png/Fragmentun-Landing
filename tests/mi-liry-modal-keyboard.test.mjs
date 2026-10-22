@@ -24,7 +24,7 @@ test("native modal supports Escape and both close buttons use dialog semantics",
  assert.match(src,/<form method="dialog"><button type="submit" className=\{styles\.areaLink\}>\{copy\.back\}/);
 });
 test("all close paths restore focus and reset temporary modal state",()=>{
- assert.match(src,/onClose=\{\(\)=>\{setOpenedAreaId\(null\);setPreviewSession\(value=>value\+1\);trigger\.current\?\.focus\(\{preventScroll:true\}\);trigger\.current=null;/);
+ assert.match(src,/onClose=\{\(\)=>\{setOpenedAreaId\(null\);setPreviewSession\(value=>value\+1\);if\(trigger\.current\?\.isConnected\)trigger\.current\.focus\(\{preventScroll:true\}\);trigger\.current=null;/);
  assert.match(src,/if\(event\.target===dialog\.current\)dialog\.current\.close\(\)/);
 });
 
