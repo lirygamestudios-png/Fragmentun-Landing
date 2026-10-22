@@ -21,7 +21,17 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const [publicName,setPublicName]=useState("");
  const [nameError,setNameError]=useState("");
  useEffect(()=>{if(publicName!==""&&!isValidLiryDisplayName(publicName))setNameError(locale==="es"?"Usa de 2 a 40 caracteres, sin espacios al inicio o final.":"Use 2 to 40 characters without leading or trailing spaces.");else setNameError("")},[locale,publicName]);
- const updatePublicName=(name:string)=>{setSaveNotice(null);setPublicName(name);const valid=name===""||isValidLiryDisplayName(name);setNameError(valid?"":locale==="es"?"Usa de 2 a 40 caracteres, sin espacios al inicio o final.":"Use 2 to 40 characters without leading or trailing spaces.");window.dispatchEvent(new CustomEvent("liry:display-name-preview",{detail:{name:valid?name:""}}))};
+ const displayNamePreviewKey="liry:temporary-display-name";
+ useEffect(()=>{
+  try{const saved=sessionStorage.getItem(displayNamePreviewKey);if(saved&&isValidLiryDisplayName(saved))setPublicName(saved)}catch{}
+ },[]);
+ const updatePublicName=(name:string)=>{
+  setSaveNotice(null);setPublicName(name);
+  const valid=name===""||isValidLiryDisplayName(name);
+  setNameError(valid?"":locale==="es"?"Usa de 2 a 40 caracteres, sin espacios al inicio o final.":"Use 2 to 40 characters without leading or trailing spaces.");
+  try{if(valid&&name)sessionStorage.setItem(displayNamePreviewKey,name);else sessionStorage.removeItem(displayNamePreviewKey)}catch{}
+  window.dispatchEvent(new CustomEvent("liry:display-name-preview",{detail:{name:valid?name:""}}));
+ };
  const billingFirstNameRef=useRef<HTMLInputElement>(null);
  const [billingStep,setBillingStep]=useState(0);
  const [settingsStep,setSettingsStep]=useState(0);
