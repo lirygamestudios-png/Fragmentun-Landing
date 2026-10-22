@@ -9,3 +9,5 @@ test("share action uses responsive button in product selection preview",()=>{ass
 test("share preview frame expands on desktop and mobile",()=>{assert.match(css,/\.liryWhatsappDialog\{width:min\(96vw,620px\)/);assert.match(css,/@media\(max-width:480px\)\{\.liryWhatsappDialog\{width:calc\(100vw - 16px\)/);assert.match(css,/\.liryWhatsappSend\{min-height:52px;padding:12px 10px;font-size:15px/);});
 
 test("share icon sizing cannot apply to buttons inside modal",()=>{assert.doesNotMatch(css,/\.liryShareEntry button\{display:inline-grid;place-items:center;flex:0 0 34px/);assert.match(css,/\.liryShareEntry>button\{display:inline-grid;place-items:center;flex:0 0 34px/);});
+
+test("mobile product cards have an ordered vertical layout without changing the share modal",()=>{assert.match(css,/@media\(max-width:560px\)\{\.liryStoreProducts\{[^}]*align-items:stretch/);assert.match(css,/\.liryStoreProduct\{display:flex;flex-direction:column;align-items:stretch;gap:10px/);assert.match(css,/\.liryStoreProduct h4\{margin:0;line-height:1\.4;min-height:2\.8em/);assert.match(css,/\.liryStoreProduct>\.liryShareEntry\{align-self:flex-start;margin:0/);});
