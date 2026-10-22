@@ -20,7 +20,7 @@ export function LiryDeveloperAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const close=useRef<HTMLButtonElement>(null);
  const areaHeading=useRef<HTMLHeadingElement>(null);
  const currentIndex=areas.findIndex(area=>area.id===selected);
- const switchArea=(direction:-1|1)=>{const next=areas[(currentIndex+direction+areas.length)%areas.length];if(next){setSelected(next.id as AreaId);setSession(v=>v+1);requestAnimationFrame(()=>areaHeading.current?.focus({preventScroll:true}));}};
+ const switchArea=(direction:-1|1)=>{const next=areas[currentIndex+direction];if(next){setSelected(next.id as AreaId);setSession(v=>v+1);requestAnimationFrame(()=>areaHeading.current?.focus({preventScroll:true}));}};
  const open=(id:AreaId,trigger:HTMLButtonElement)=>{
   if(modal.current?.open)return;
   setSelected(id);opener.current=trigger;setDialogOpen(true);
@@ -39,7 +39,7 @@ export function LiryDeveloperAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
     <span className={styles.eyebrow}>{copy.eyebrow}</span>
     <h2 ref={areaHeading} tabIndex={-1} id="liry-developer-area-heading" className={styles.developerDialogHeading}>{areas.find(area=>area.id===selected)?.label}</h2>
     <p id="liry-developer-area-description" className={styles.developerDialogDescription}>{copy.notice}</p>
-    <nav className={styles.developerWizardActions} aria-label={locale==="es"?"Áreas de Developers":"Developer areas"}><button type="button" onClick={()=>switchArea(-1)}>{locale==="es"?"← ANTERIOR":"← PREVIOUS"}</button><small>{currentIndex+1} / {areas.length}</small><button type="button" onClick={()=>switchArea(1)}>{locale==="es"?"PRÓXIMO →":"NEXT →"}</button></nav>
+    <nav className={styles.developerWizardActions} aria-label={locale==="es"?"Áreas de Developers":"Developer areas"}><button type="button" disabled={currentIndex===0} onClick={()=>switchArea(-1)}>{locale==="es"?"← ANTERIOR":"← PREVIOUS"}</button><small>{currentIndex+1} / {areas.length}</small><button type="button" disabled={currentIndex===areas.length-1} onClick={()=>switchArea(1)}>{locale==="es"?"PRÓXIMO →":"NEXT →"}</button></nav>
     <div key={session}>
      {selected==="admission"&&<LiryDeveloperAdmissionPreview locale={locale}/>}
      {selected==="listing"&&<LiryDeveloperGameListingPreview locale={locale}/>}
