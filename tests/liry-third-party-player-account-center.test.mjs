@@ -200,8 +200,8 @@ test("Icono de compartir permanece accesible sobre la apertura de fichas",()=>{
  assert.match(css,/\.worldCardOpen\{position:absolute;inset:0;z-index:2/);
  assert.match(css,/\.liryShareEntry\{position:relative;z-index:4/);
  assert.match(game,/<LiryShareEntry name=/);
- assert.match(share,/<button type="button" onClick=\{share\}/);
- assert.match(share,/width="17" height="17"/);
+ assert.match(share,/aria-haspopup="dialog"/);
+ assert.match(share,/width="19" height="19"/);
 });
 
 test("Mi Liry mantiene el tratamiento oscuro al escribir o autocompletar datos",()=>{
