@@ -1,4 +1,4 @@
-import {classifyDeveloperException,type DeveloperExceptionKind} from "./liry-developer-exception-routing";
+import {classifyDeveloperException,type DeveloperExceptionKind} from "./liry-developer-exception-routing.ts";
 import type {DeveloperDocumentStatus} from "./liry-developer-document-lifecycle";
 export type DeveloperNotificationDraft={
  key:string;locale:"es"|"en";audience:"applicant"|"internal_review";
