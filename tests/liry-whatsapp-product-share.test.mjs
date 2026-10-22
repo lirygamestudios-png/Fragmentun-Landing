@@ -5,3 +5,5 @@ test("store shares target store and catalog defaults to worlds",()=>{assert.matc
 test("social multi-platform share remains untouched",()=>{const s=file("../components/LiryShare.tsx");assert.match(s,/nativeShare/);assert.match(s,/facebook/);assert.match(s,/whatsapp/);});
 
 test("product WhatsApp button shows only an enlarged icon with accessible label",()=>{const s=file("../components/LiryShareEntry.tsx");const css=file("../app/lirygames/lirygames.module.css");assert.doesNotMatch(s,/<span className=\{styles\.liryWhatsappLabel\}>WhatsApp<\/span>/);assert.match(s,/className=\{styles\.liryWhatsappIconOnly\}/);assert.match(s,/aria-label=\{es\?/);assert.match(css,/\.liryShareEntry>button\.liryWhatsappIconOnly\{width:46px;height:46px/);assert.match(css,/svg\{width:28px;height:28px/);});
+
+test("store WhatsApp links preserve the public product identifier and page",()=>{const share=file("../components/LiryShareEntry.tsx");const store=file("../components/LiryStoreCategories.tsx");assert.match(share,/url.searchParams.set\("product",productId\)/);assert.match(store,/productId=\{item.id\}/);assert.match(store,/setPage\(Math.floor\(targetIndex\/12\)\+1\)/);});
