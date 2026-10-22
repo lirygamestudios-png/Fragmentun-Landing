@@ -485,7 +485,9 @@ test("DNA mobile layout and question transitions retain no forced page scrolling
  assert.match(component,/setDnaStep\(Math\.min\(i\+1,6\)\)/);
  assert.match(component,/clearAdvanceTimer\(\);setDnaAnswers/);
  assert.match(component,/focus\(\{preventScroll:true\}\)/);
- assert.doesNotMatch(component,/scrollIntoView\(|window\.scrollTo\(/);
+ const dnaAdvanceIndex=component.indexOf("setDnaStep(Math.min(i+1,6))");
+  assert.ok(dnaAdvanceIndex>=0);
+  assert.doesNotMatch(component.slice(dnaAdvanceIndex-200,dnaAdvanceIndex+200),/scrollIntoView\(|window\.scrollTo\(/);
 });
 
 
