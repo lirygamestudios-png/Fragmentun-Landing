@@ -14,3 +14,10 @@ test("frontdesk identity follows preview and page restore",()=>{
  assert.match(identity,/window\.addEventListener\("pageshow",syncDisplayName\)/);
  assert.match(identity,/displayNamePreview\?\?snapshot\.displayName/);
 });
+
+test("Mi Liry header restores temporary name after page navigation",()=>{
+ const header=readFileSync(new URL("../components/LiryPlayerIdentityHeader.tsx",import.meta.url),"utf8");
+ assert.match(header,/sessionStorage\.getItem\("liry:temporary-display-name"\)/);
+ assert.match(header,/window\.addEventListener\("pageshow",restoreName\)/);
+ assert.match(header,/window\.removeEventListener\("pageshow",restoreName\)/);
+});
