@@ -24,7 +24,7 @@ export function MiLiryAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const closeButton=useRef<HTMLButtonElement>(null);
  const areaHeading=useRef<HTMLHeadingElement>(null);
  const currentIndex=areas.findIndex(area=>area.id===selected.id);
- const switchArea=(direction:-1|1)=>{const next=areas[currentIndex+direction];if(next){setSelected(next);setOpenedAreaId(next.id);setPreviewSession(v=>v+1);requestAnimationFrame(()=>{if(dialog.current?.open){dialog.current.scrollTop=0;areaHeading.current?.focus({preventScroll:true});}});}};
+ const switchArea=(direction:-1|1)=>{const next=areas[currentIndex+direction];if(next){setSelected(next);setOpenedAreaId(next.id);requestAnimationFrame(()=>{if(dialog.current?.open){dialog.current.scrollTop=0;areaHeading.current?.focus({preventScroll:true});}});}};
  const openArea=(area:(typeof areas)[number],button:HTMLButtonElement)=>{
   setSelected(area);
   trigger.current=button;
@@ -47,7 +47,7 @@ export function MiLiryAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
    <h2 ref={areaHeading} tabIndex={-1} id="mi-liry-area-title">{selected.title}</h2><p>{selected.detail}</p>
    <span className={styles.areaStatus}>{selected.status}</span>
    <nav className={styles.developerWizardActions} aria-label={locale==="es"?"Menús del jugador":"Player menus"}><button type="button" disabled={currentIndex===0} aria-label={locale==="es"?`Anterior: ${areas[currentIndex-1]?.title??""}`:`Previous: ${areas[currentIndex-1]?.title??""}`} onClick={()=>switchArea(-1)}>{locale==="es"?"← ANTERIOR":"← PREVIOUS"}</button><small>{currentIndex+1} / {areas.length}</small><button type="button" disabled={currentIndex===areas.length-1} aria-label={locale==="es"?`Próximo: ${areas[currentIndex+1]?.title??""}`:`Next: ${areas[currentIndex+1]?.title??""}`} onClick={()=>switchArea(1)}>{locale==="es"?"PRÓXIMO →":"NEXT →"}</button></nav>
-   {selected.id==="identidad"&&<MiLiryIdentityPreview key={previewSession} locale={locale} />}
+   <div hidden={selected.id!=="identidad"}><MiLiryIdentityPreview key={previewSession} locale={locale} /></div>
    {selected.id==="identidad"&&<details className={styles.developerWizardDisclosure}><summary>{locale==="es"?"Ver resumen de identidad":"View identity summary"}</summary><div className={styles.identityDetails} aria-label={copy.identityAria}>
     <div><strong>{identity.publicName}</strong><span>{identity.unverified}</span></div>
     <div><strong>{identity.avatar}</strong><span>{identity.avatarPending}</span></div>
