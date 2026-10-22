@@ -2,6 +2,7 @@
 import {useState} from "react";
 import {LiryDeveloperIdentityPreview} from "./LiryDeveloperIdentityPreview";
 import {developerProgressNotice} from "../lib/games/liry-developer-progress-notice";
+import {assessDeveloperWorkflow} from "../lib/games/liry-developer-workflow-assessment";
 import styles from "../app/lirygames/mi-liry/mi-liry.module.css";
 import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 type Model="premium"|"freemium";
@@ -27,6 +28,7 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
  const completed=steps.filter(step=>step.done).length;
  // No dossier is saved or submitted: the safe initial state is always pending.
  const dossierNotice=developerProgressNotice("not_submitted","pending",locale);
+ const workflowPreview=assessDeveloperWorkflow({documentStatus:"not_submitted",reminderStatus:"pending",expiresAt:null,now:"2026-10-21T00:00:00Z",warningDays:null,legalHold:false,lastReminderAt:null,reminderCount:0});
  return <section className={`${styles.notice} ${styles.developerForm}`} aria-labelledby="admission-preview-title">
   <h2 id="admission-preview-title">{copy.title}</h2>
   <p>{copy.intro}</p>
@@ -41,7 +43,12 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
     </li>)}
    </ol>
    <small>{locale==="es"?"La verificación bancaria exigirá el estado de cuenta más reciente y cotejo del titular por un canal seguro. No se pueden subir documentos aquí.":"Bank verification will require a recent statement and beneficiary matching via a secure channel. Do not upload documents here."}</small>
-   <p role="note" className={styles.accountIntro}>{locale==="es"?"Estado del expediente (vista previa): ":"Dossier status (preview): "}{dossierNotice.message}</p>
+   <div className={styles.accountIntro} role="group" aria-label={locale==="es"?"Estado documental informativo":"Informational document status"}>
+    <p role="note">{locale==="es"?"Estado del expediente (vista previa): ":"Dossier status (preview): "}{dossierNotice.message}</p>
+    <p>{locale==="es"?"Avisos: sin enviar ni programar":"Notices: none sent or scheduled"}</p>
+    <p>{locale==="es"?"Vencimiento: política pendiente":"Expiry: policy pending"} · {workflowPreview.expiry==="policy_missing"?(locale==="es"?"Sin plazo establecido":"No deadline established"):""}</p>
+    <small>{locale==="es"?"No hay solicitud registrada ni revisiones reales.":"No application is registered and no real reviews have started."}</small>
+   </div>
    <small>{locale==="es"?"Las etapas iniciales son declaraciones temporales, no una solicitud presentada ni identidad verificada.":"Initial steps are temporary declarations, not a submitted application or verified identity."}</small>
   </div>
   <fieldset><legend>{copy.modelLegend}</legend>
