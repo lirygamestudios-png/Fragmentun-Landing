@@ -141,7 +141,7 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog,approved
             <p>{themes[index]??game.tagline}</p>
             <span className={styles.worldAvailability}>{game.state==="available"?cardCopy.available:game.state==="beta"?cardCopy.beta:cardCopy.comingSoon}</span>
           </div>
-          <span className={styles.worldArrow} aria-hidden="true">→</span><LiryShareEntry name={publicCodenames[index]??`LIRY // PROJECT-${String(index+1).padStart(2,"0")}`} locale={locale} />
+          <span className={styles.worldArrow} aria-hidden="true">→</span><LiryShareEntry name={publicCodenames[index]??`LIRY // PROJECT-${String(index+1).padStart(2,"0")}`} locale={locale} targetId={`liry-world-${String(index+1).padStart(2,"0")}`} />
           <button type="button" ref={node=>{gameTriggersRef.current[index]=node}} className={styles.worldCardOpen} aria-label={`${cardCopy.detailsAria} ${publicCodenames[index]??game.title}`} onClick={()=>setSelectedGame(index)} />
         </div>
       </article>)}
