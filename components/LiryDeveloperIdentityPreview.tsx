@@ -6,6 +6,7 @@ import type {LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 /** Informational only: no document uploads, camera access, provider calls or biometrics. */
 export function LiryDeveloperIdentityPreview({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const [details,setDetails]=useState(false);
+ const [showSafety,setShowSafety]=useState(false);
  const es=locale==="es";
  const stages=es?[
   ["1. Documento oficial","Proveedor especializado valida autenticidad y vigencia del documento."],
@@ -24,6 +25,17 @@ export function LiryDeveloperIdentityPreview({locale="es"}:{locale?:LiryFrontdes
   <h3 id="liry-developer-identity-preview-title">{es?"Verificación de identidad del desarrollador":"Developer identity verification"}</h3>
   <p role="status" aria-live="polite"><strong>{es?"No disponible todavía · Solo presentación informativa":"Not available yet · Informational preview only"}</strong></p>
   <p>{es?"La futura validación utilizará un proveedor especializado para verificar documento y rostro con consentimiento previo. LIRYGAMES no recibirá imágenes biométricas desde esta pantalla.":"Future verification will use a specialized provider for ID and face verification with prior consent. LIRYGAMES does not receive biometric images from this screen."}</p>
+  <div className={styles.developerWizardCompact} aria-label={es?"Preparación de verificación biométrica":"Biometric verification preparation"}>
+   <strong>{es?"Estado de integración: BLOQUEADO":"Integration status: BLOCKED"}</strong>
+   <p>{es?"La captura biométrica únicamente podrá abrirse después de la aprobación del proveedor, la revisión legal y el consentimiento explícito del solicitante. Este panel no guarda consentimientos ni datos personales.":"Biometric capture can only be enabled after provider approval, legal review and the applicant's explicit consent. This panel stores neither consent nor personal information."}</p>
+   <button type="button" className={styles.previewReset} aria-expanded={showSafety} aria-controls="liry-developer-biometrics-safeguards" onClick={()=>setShowSafety(v=>!v)}>{showSafety?(es?"Ocultar controles previos":"Hide prerequisites"):(es?"Ver controles obligatorios":"View required safeguards")}</button>
+   {showSafety&&<div id="liry-developer-biometrics-safeguards">
+    <ol style={{paddingLeft:22,lineHeight:1.65}}>
+     {(es?["Proveedor contratado y verificado; integración segura del lado del servidor.","Aviso de privacidad y consentimiento granular, explícito y revocable antes de iniciar la cámara.","Verificación de documento y prueba de vida mediante el proveedor; sin almacenamiento de fotografías biométricas en LIRYGAMES.","Resultado mínimo firmado y asociado a la solicitud con expiración y prevención de reutilización.","Alternativa no biométrica, revisión humana y procedimiento de apelación.","Política de retención, eliminación, acceso limitado y evaluación legal por jurisdicción."]:["Approved verification provider; secure server-side integration.","Privacy notice and granular explicit, revocable consent before camera access.","Provider-handled ID and liveness checks; no biometric photo storage by LIRYGAMES.","Minimal signed result tied to the application, with expiry and replay prevention.","Non-biometric alternative, human review and appeals process.","Retention, deletion, restricted access and jurisdiction-specific legal review."]).map(item=><li key={item}>{item}</li>)}
+    </ol>
+    <p role="note">{es?"Ningún paso está activado: aprobación de identidad, revisión de propiedad intelectual y verificación bancaria siguen siendo procesos separados.":"No step is active: identity approval, intellectual-property review and bank verification remain separate processes."}</p>
+   </div>}
+  </div>
   <button type="button" className={styles.previewReset} aria-expanded={details} aria-controls="liry-developer-identity-stages" onClick={()=>setDetails(value=>!value)}>{details?(es?"Ocultar proceso":"Hide process"):(es?"Conocer el proceso previsto":"View planned process")}</button>
   {details&&<div id="liry-developer-identity-stages">
    <ol style={{paddingLeft:22,lineHeight:1.7}}>{stages.map(([heading,description])=><li key={heading}><strong>{heading}</strong><p>{description}</p></li>)}</ol>
