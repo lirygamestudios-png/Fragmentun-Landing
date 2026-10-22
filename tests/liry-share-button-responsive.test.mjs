@@ -7,3 +7,5 @@ test("product WhatsApp share dialog button wraps text without crowding",()=>{con
 test("share action uses responsive button in product selection preview",()=>{assert.match(share,/className=\{styles\.liryWhatsappSend\}/);assert.match(share,/Share on WhatsApp/);});
 
 test("share preview frame expands on desktop and mobile",()=>{assert.match(css,/\.liryWhatsappDialog\{width:min\(96vw,620px\)/);assert.match(css,/@media\(max-width:480px\)\{\.liryWhatsappDialog\{width:calc\(100vw - 16px\)/);assert.match(css,/\.liryWhatsappSend\{min-height:52px;padding:12px 10px;font-size:15px/);});
+
+test("share icon sizing cannot apply to buttons inside modal",()=>{assert.doesNotMatch(css,/\.liryShareEntry button\{display:inline-grid;place-items:center;flex:0 0 34px/);assert.match(css,/\.liryShareEntry>button\{display:inline-grid;place-items:center;flex:0 0 34px/);});
