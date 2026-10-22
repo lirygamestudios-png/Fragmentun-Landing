@@ -233,13 +233,7 @@ test("Mi Liry recupera avatar temporal al volver desde FrontDesk",()=>{
  assert.match(header,/sessionStorage\.getItem\(key\)/);
 });
 
-test("Las seis pestañas limpian avisos tanto por clic como por teclado",()=>{
- const source=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
- assert.match(source,/sections\.map\(\(section,i\)=>/);
- assert.match(source,/onClick=\{\(\)=>\{setSelected\(section\);setSaveNotice\(null\)\}\}/);
- assert.match(source,/setSelected\(sections\[next\]\);setSaveNotice\(null\)/);
- assert.match(source,/\["ArrowRight","ArrowDown","ArrowLeft","ArrowUp","Home","End"\]/);
-});
+test("Las seis secciones limpian avisos al navegar en el mismo panel",()=>{const source=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");assert.match(source,/switchAccountSection/);assert.match(source,/setSelected\(sections\[next\]\);setSaveNotice\(null\)/);assert.match(source,/stepPanel\.current\?\.focus/);});
 
 test("Editar preferencias invalida el aviso anterior de guardado de demostración",()=>{
  const source=readFileSync(new URL("../components/LiryPlayerAccountCenter.tsx",import.meta.url),"utf8");
