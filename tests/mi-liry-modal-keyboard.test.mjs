@@ -8,3 +8,5 @@ test("Mi Liry returns focus to the opening control",()=>assert.match(src,/trigge
 test("Mi Liry resets visitor preview on close",()=>assert.match(src,/setPreviewSession\(value=>value\+1\)/));
 
 test("identity secondary material is available in accessible disclosures",()=>{const src=readFileSync(new URL("../components/MiLiryAreas.tsx",import.meta.url),"utf8");assert.match(src,/View identity summary/);assert.match(src,/developerWizardDisclosure/);assert.match(src,/<\/section><\/details>/);});
+
+test("identity task appears before secondary disclosures",()=>{const src=readFileSync(new URL("../components/MiLiryAreas.tsx",import.meta.url),"utf8");assert.ok(src.indexOf('<MiLiryIdentityPreview key={previewSession}')<src.indexOf('View identity summary'));});
