@@ -21,3 +21,5 @@ test("mobile FrontDesk DNA menu uses released locale label",()=>{const front=rea
 test("desktop and mobile navigation use one localized dictionary",()=>{const front=readFileSync(new URL("../app/lirygames/page.tsx",import.meta.url),"utf8");assert.match(front,/<a href="#liryboost">\{copy\.navigation\.boost\}<\/a>/);assert.match(front,/href:"#liryboost",label:copy\.navigation\.boost/);assert.match(front,/href:"#mundos",label:copy\.navigation\.worlds/);});
 
 test("header search uses approved DNA and LiryBoost labels in both languages",()=>{const source=readFileSync(new URL("../components/LiryHeaderUtilities.tsx",import.meta.url),"utf8");assert.match(source,/es:"Liry ADN",en:"Liry DNA"/);assert.match(source,/es:"LiryBoost",en:"LiryBoost"/);});
+
+test("header utility dialog ignores repeated open while preserving keyboard focus origin",()=>{const source=readFileSync(new URL("../components/LiryHeaderUtilities.tsx",import.meta.url),"utf8");assert.match(source,/if\(!dialog\.current\|\|dialog\.current\.open\)return/);assert.match(source,/origin\.current=button/);assert.match(source,/onClose=\{\(\)=>origin\.current\?\.focus/);});
