@@ -18,7 +18,7 @@ export function LiryHeaderUtilities({locale,searchLabel,noticeLabel}:{locale:Loc
  const input=useRef<HTMLInputElement>(null);
  const firstResult=useRef<HTMLAnchorElement>(null);
  const closeButton=useRef<HTMLButtonElement>(null);
- const open=(kind:"search"|"notice",button:HTMLButtonElement)=>{origin.current=button;if(kind==="search")setTerm("");setSection(kind);dialog.current?.showModal();requestAnimationFrame(()=>(kind==="search"?input.current:closeButton.current)?.focus({preventScroll:true}))};
+ const open=(kind:"search"|"notice",button:HTMLButtonElement)=>{if(!dialog.current||dialog.current.open)return;origin.current=button;if(kind==="search")setTerm("");setSection(kind);dialog.current.showModal();requestAnimationFrame(()=>(kind==="search"?input.current:closeButton.current)?.focus({preventScroll:true}))};
  const close=()=>dialog.current?.close();
  const normalize=(value:string)=>value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLocaleLowerCase();
  const results=targets.filter(t=>!term.trim()||normalize(`${t.es} ${t.en} ${t.tags}`).includes(normalize(term.trim())));
