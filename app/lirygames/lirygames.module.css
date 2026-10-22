@@ -1807,3 +1807,6 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .liryShareEntry>button.liryWhatsappIconOnly{width:46px;height:46px;min-width:46px;min-height:46px;padding:7px;gap:0;box-sizing:border-box;border:1px solid #47bde7;border-radius:11px;background:#08223b;color:#e8faff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
 .liryShareEntry>button.liryWhatsappIconOnly svg{width:28px;height:28px;flex-shrink:0}
 .liryShareEntry>button.liryWhatsappIconOnly:hover,.liryShareEntry>button.liryWhatsappIconOnly:focus-visible{border-color:#8ce5ff;box-shadow:0 0 13px #47bde766;outline-offset:3px}
+
+/* Visible keyboard focus for a store card reached through a shared WhatsApp link. */
+.liryStoreProduct:focus{outline:2px solid #79dfff;outline-offset:3px;box-shadow:0 0 0 4px #0a2239,0 0 16px #47bde755;scroll-margin-top:90px}
