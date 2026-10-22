@@ -28,3 +28,9 @@ test("Mi Liry header restores session avatar and unregisters events",()=>{
  assert.match(header,/window\.addEventListener\("liry:avatar-changed",restoreAvatar\)/);
  assert.match(header,/window\.removeEventListener\("liry:avatar-changed",restoreAvatar\)/);
 });
+
+test("account center refreshes temporary name when returning to Mi Liry",()=>{
+ assert.match(account,/window\.addEventListener\("pageshow",restoreTemporaryName\)/);
+ assert.match(account,/window\.removeEventListener\("pageshow",restoreTemporaryName\)/);
+ assert.match(account,/setPublicName\(saved&&isValidLiryDisplayName\(saved\)\?saved:""\)/);
+});
