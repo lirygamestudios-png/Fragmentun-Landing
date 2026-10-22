@@ -29,3 +29,5 @@ test("all close paths restore focus and reset temporary modal state",()=>{
 });
 
 test("mobile dialogs preserve touch targets and avoid overflow",()=>{const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");assert.match(css,/\.areaDialog\{max-width:calc\(100vw - 24px\)\}/);assert.match(css,/\.areaDialog \.developerWizardActions button\{touch-action:manipulation;min-height:44px\}/);});
+
+test("mobile previous-next modal controls use flex wrapping instead of three-column grid",()=>{const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");assert.match(css,/@media\(max-width:560px\)\{\.areaDialog \.developerWizardActions\{display:flex;align-items:stretch\}/);});
