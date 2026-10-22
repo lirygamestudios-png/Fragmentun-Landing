@@ -14,11 +14,20 @@ export function LiryPlayerIdentityHeader({locale,displayName,eyebrow,note}:{loca
     setPreviewName(name&&name.length>=2&&name.length<=40&&name.trim()===name?name:"");
    }catch{setPreviewName("")}
   };
+  const restoreAvatar=()=>{
+   try{
+    const saved=sessionStorage.getItem("liry:temporary-avatar-thumbnail");
+    setPhoto(saved?.startsWith("data:image/webp;base64,")&&saved.length<180000?saved:null);
+   }catch{setPhoto(null)}
+  };
   restoreName();
+  restoreAvatar();
   window.addEventListener("pageshow",restoreName);
+  window.addEventListener("pageshow",restoreAvatar);
+  window.addEventListener("liry:avatar-changed",restoreAvatar);
   window.addEventListener("liry:avatar-preview",onAvatar);
   window.addEventListener("liry:display-name-preview",onName);
-  return ()=>{window.removeEventListener("pageshow",restoreName);window.removeEventListener("liry:avatar-preview",onAvatar);window.removeEventListener("liry:display-name-preview",onName)};
+  return ()=>{window.removeEventListener("pageshow",restoreName);window.removeEventListener("pageshow",restoreAvatar);window.removeEventListener("liry:avatar-changed",restoreAvatar);window.removeEventListener("liry:avatar-preview",onAvatar);window.removeEventListener("liry:display-name-preview",onName)};
  },[]);
  return <div className={styles.identity}><div className={styles.avatar} aria-label={locale==="es"?"Avatar temporal":"Temporary avatar"}>{photo?<img src={photo} alt={locale==="es"?"Fotografía del jugador":"Player photo"} className={styles.accountHeaderPhoto}/>:"◇"}</div><div><span className={styles.eyebrow}>{eyebrow}</span><h2 aria-live="polite" aria-atomic="true">{previewName||displayName}</h2><p>{note}</p></div></div>;
 }
