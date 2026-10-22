@@ -379,3 +379,6 @@
 .areaDialog .developerWizardActions{min-width:0;max-width:100%;flex-wrap:wrap}
 .areaDialog .developerWizardActions button{touch-action:manipulation;min-height:44px}
 @media(max-width:560px){.areaDialog .developerWizardActions button{min-width:0;flex:1 1 110px;white-space:normal}.areaDialog .developerWizardActions small{flex:0 0 100%;text-align:center;order:-1}}
+
+/* Mobile modal uses flex so its wrap rules take effect instead of the shared three-column grid. */
+@media(max-width:560px){.areaDialog .developerWizardActions{display:flex;align-items:stretch}.areaDialog .developerWizardActions button{flex:1 1 110px}}
