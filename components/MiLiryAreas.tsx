@@ -24,7 +24,7 @@ export function MiLiryAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const closeButton=useRef<HTMLButtonElement>(null);
  const areaHeading=useRef<HTMLHeadingElement>(null);
  const currentIndex=areas.findIndex(area=>area.id===selected.id);
- const switchArea=(direction:-1|1)=>{const next=areas[currentIndex+direction];if(next){setSelected(next);setOpenedAreaId(next.id);setPreviewSession(v=>v+1);requestAnimationFrame(()=>areaHeading.current?.focus({preventScroll:true}));}};
+ const switchArea=(direction:-1|1)=>{const next=areas[currentIndex+direction];if(next){setSelected(next);setOpenedAreaId(next.id);setPreviewSession(v=>v+1);if(dialog.current)dialog.current.scrollTop=0;requestAnimationFrame(()=>areaHeading.current?.focus({preventScroll:true}));}};
  const openArea=(area:(typeof areas)[number],button:HTMLButtonElement)=>{
   setSelected(area);
   trigger.current=button;
