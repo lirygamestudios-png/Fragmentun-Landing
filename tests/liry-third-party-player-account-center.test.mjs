@@ -267,7 +267,7 @@ test("Las fichas de terceros no quedan completas con clasificación por edad pen
 test("Liry Developers presenta cuatro áreas preliminares aisladas en subpantallas",()=>{
  const src=readFileSync(new URL("../components/LiryDeveloperAreas.tsx",import.meta.url),"utf8");
  for(const area of ["admission","listing","release","finance"]){
-  assert.ok(src.includes(`selected==="${area}"&&<LiryDeveloper`),`Falta área ${area}`);
+  assert.ok(src.includes(`hidden={selected!=="${area}"}`),`Falta área ${area}`);
  }
  assert.match(src,/modal\.current\?\.showModal\(\)/);
  assert.match(src,/onClose=\{\(\)=>\{setDialogOpen\(false\);setSession\(value=>value\+1\)/);
