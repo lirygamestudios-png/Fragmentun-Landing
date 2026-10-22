@@ -351,3 +351,9 @@
 
 /* Billing step isolation: author-level grid styles must not override the HTML hidden attribute. */
 .accountBillingGrid .accountNameLabel[hidden]{display:none!important}
+
+/* Gamer identity: secondary information is available on demand, keeping the main task in view. */
+.developerWizardDisclosure{margin:8px 0;border:1px solid #286e98;border-radius:9px;background:#07192c;color:#d9f4ff;padding:8px 11px}
+.developerWizardDisclosure summary{cursor:pointer;font-size:13px;font-weight:600;min-height:30px;display:list-item;align-content:center}
+.developerWizardDisclosure summary:focus-visible{outline:2px solid #69d7ff;outline-offset:3px}
+.developerWizardDisclosure[open]{border-color:#4bbce7;box-shadow:0 0 9px #47bde72a}
