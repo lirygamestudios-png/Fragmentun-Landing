@@ -16,3 +16,14 @@ test("secondary gamer area facts are collapsible in all five informational subme
 test("expanded gamer details respect narrow viewports and reduced-motion settings",()=>{const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");assert.match(css,/\.areaDialog \.developerWizardDisclosure\{min-width:0;max-width:100%;box-sizing:border-box\}/);assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);});
 
 test("dialog opener is recorded only after checking the modal is closed",()=>{assert.match(src,/if\(modal\.open\)return;\s*setSelected\(area\);\s*trigger\.current=button;/);});
+
+test("native modal supports Escape and both close buttons use dialog semantics",()=>{
+ assert.match(src,/<dialog id="mi-liry-area-dialog"[^>]*aria-modal="true"/);
+ assert.doesNotMatch(src,/onCancel=\{[^}]*preventDefault/);
+ assert.match(src,/<form method="dialog"><button ref=\{closeButton\}/);
+ assert.match(src,/<form method="dialog"><button type="submit" className=\{styles\.areaLink\}>\{copy\.back\}/);
+});
+test("all close paths restore focus and reset temporary modal state",()=>{
+ assert.match(src,/onClose=\{\(\)=>\{setOpenedAreaId\(null\);setPreviewSession\(value=>value\+1\);trigger\.current\?\.focus\(\{preventScroll:true\}\);trigger\.current=null;/);
+ assert.match(src,/if\(event\.target===dialog\.current\)dialog\.current\.close\(\)/);
+});
