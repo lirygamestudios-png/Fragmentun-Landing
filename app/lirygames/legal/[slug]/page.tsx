@@ -1,8 +1,7 @@
 import Link from "next/link";
 import {notFound} from "next/navigation";
 import {legalClauses} from "../../../../lib/lirygames-legal-clauses";
-import {liryFrontdeskStrings} from "../../../../lib/games/liry-frontdesk-i18n";
-const legalUi=liryFrontdeskStrings("es").legalCenter;
+import {liryFrontdeskStrings,getReleasedLiryFrontdeskLocale} from "../../../../lib/games/liry-frontdesk-i18n";
 export const metadata={robots:{index:false,follow:false}};
 const legal={
  privacidad:{title:"Política de privacidad",summary:"Describe los tratamientos de datos previstos para cuentas, comunicaciones, LiryBoost y videojuegos.",check:["Identificación del responsable y datos de contacto","Categorías de datos realmente recopilados y finalidades","Bases legales, destinatarios y transferencias","Plazos de conservación y derechos de los usuarios","Tratamiento de datos de menores y solicitudes de privacidad"]},
@@ -16,18 +15,21 @@ const legal={
 } as const;
 type Key=keyof typeof legal;
 export function generateStaticParams(){return Object.keys(legal).map(slug=>({slug}))}
-export default async function LegalDocument({params}:{params:Promise<{slug:string}>}){
+export default async function LegalDocument({params,searchParams}:{params:Promise<{slug:string}>,searchParams:Promise<{lang?:string}>}){
  const {slug}=await params;
+ const locale=getReleasedLiryFrontdeskLocale((await searchParams).lang);
+ const legalUi=liryFrontdeskStrings(locale).legalCenter;
  if(!(slug in legal))notFound();
  const doc=legal[slug as Key];
  const translatedTitle=legalUi.documents.find(([key])=>key===slug)?.[1]??doc.title;
- return <main style={{minHeight:"100vh",background:"#041222",color:"#e8f7ff",fontFamily:"Arial,sans-serif",padding:"clamp(24px,5vw,72px)"}}>
-  <nav style={{display:"flex",gap:18,flexWrap:"wrap",fontSize:13}}><Link href="/lirygames" style={{color:"#5de4ff"}}>← FRONTDESK</Link><Link href="/lirygames/legal" style={{color:"#5de4ff"}}>{legalUi.title}</Link></nav>
-  <p style={{color:"#5de4ff",marginTop:36,letterSpacing:2,fontSize:12}}>LIRYGAMES STUDIOS · BORRADOR</p>
+ return <main lang={locale} style={{minHeight:"100vh",background:"#041222",color:"#e8f7ff",fontFamily:"Arial,sans-serif",padding:"clamp(24px,5vw,72px)"}}>
+  <nav style={{display:"flex",gap:18,flexWrap:"wrap",fontSize:13}}><Link href={`/lirygames?lang=${locale}` } style={{color:"#5de4ff"}}>← FRONTDESK</Link><Link href={`/lirygames/legal?lang=${locale}` } style={{color:"#5de4ff"}}>{legalUi.title}</Link></nav>
+  <p style={{color:"#5de4ff",marginTop:36,letterSpacing:2,fontSize:12}}>LIRYGAMES STUDIOS · {locale==="es"?"BORRADOR":"DRAFT"}</p>
   <h1 style={{fontSize:"clamp(25px,4vw,43px)",maxWidth:850}}>{translatedTitle}</h1>
+  {locale==="en"&&<p role="note" style={{color:"#a6d9ef",lineHeight:1.6}}>The draft clauses below are currently available in Spanish only and are not legally effective. This English interface does not represent an approved translation.</p>}
   <p style={{maxWidth:760,lineHeight:1.7,color:"#c0d6e4"}}>{doc.summary}</p>
   <section style={{maxWidth:850,background:"#0a2036",border:"1px solid #287597",borderRadius:12,padding:"clamp(18px,3vw,28px)",marginTop:28}}>
-   <strong style={{color:"#65e5ff"}}>{legalUi.draft} · NO VIGENTE</strong>
+   <strong style={{color:"#65e5ff"}}>{legalUi.draft} · {locale==="es"?"NO VIGENTE":"NOT IN EFFECT"}</strong>
    <p style={{lineHeight:1.7}}>Este texto contiene cláusulas propuestas y protecciones contractuales sujetas a revisión profesional, comprobación del funcionamiento real y aprobación formal. No es una política vigente ni sustituye derechos legales de usuarios o consumidores.</p>
    {slug==="privacidad"&&<div style={{borderTop:"1px solid #244e68",marginTop:24,paddingTop:16,lineHeight:1.7}}>
     <h2 style={{fontSize:19}}>Información del formulario de contacto</h2>
@@ -42,6 +44,6 @@ export default async function LegalDocument({params}:{params:Promise<{slug:strin
    <ul style={{lineHeight:1.8,paddingLeft:23}}>{doc.check.map(x=><li key={x}>{x}</li>)}</ul>
   </section>
   <p style={{color:"#9bbbcf",fontSize:13,marginTop:30}}>Para consultas generales puedes utilizar el formulario de contacto del FrontDesk. Este borrador no sustituye asesoramiento jurídico.</p>
-  <Link href="/lirygames#contacto" style={{color:"#68eaff"}}>IR A CONTACTO →</Link>
+  <Link href={`/lirygames?lang=${locale}#contacto` } style={{color:"#68eaff"}}>IR A CONTACTO →</Link>
  </main>;
 }
