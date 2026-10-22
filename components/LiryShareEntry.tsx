@@ -3,7 +3,7 @@ import {useRef,useState} from "react";
 import {resolveLiryShareUrl} from "../lib/games/liry-share-url";
 import styles from "../app/lirygames/lirygames.module.css";
 type ShareSection="catalog"|"store";
-export function LiryShareEntry({name,locale="es",section="catalog",targetId}:{name:string;locale?:"es"|"en";section?:ShareSection;targetId?:string}){
+export function LiryShareEntry({name,locale="es",section="catalog",targetId,productId}:{name:string;locale?:"es"|"en";section?:ShareSection;targetId?:string;productId?:string}){
  const [notice,setNotice]=useState("");
  const dialog=useRef<HTMLDialogElement>(null);
  const opener=useRef<HTMLButtonElement|null>(null);
@@ -14,6 +14,7 @@ export function LiryShareEntry({name,locale="es",section="catalog",targetId}:{na
   if(!base)return null;
   const url=new URL(base);
   url.searchParams.set("lang",locale);
+  if(section==="store"&&productId)url.searchParams.set("product",productId);
   url.hash=targetId&&/^[a-zA-Z0-9_-]{1,100}$/.test(targetId)?targetId:(section==="store"?"tienda":"mundos");
   return url.toString();
  }
