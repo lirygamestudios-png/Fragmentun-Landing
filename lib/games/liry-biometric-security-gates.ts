@@ -17,5 +17,5 @@ export function canAcceptBiometricResult(gates:ProviderSecurityGates):ProviderAc
  const approved=Object.values(gates).every(value=>value===true);
  return approved?{accepted:false,reason:"integration_disabled"}:{accepted:false,reason:"missing_security_gate"};
 }
-/** Design guard only; no accepted:true path may be added without explicit activation,
+/** Design guard only; no positive acceptance path may be added without explicit activation,
  * vetted provider signatures, server authorization and audited persistence. */
