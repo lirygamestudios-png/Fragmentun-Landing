@@ -34,28 +34,16 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
  const dossierNotice=developerProgressNotice("not_submitted","pending",locale);
  const workflowPreview=assessDeveloperWorkflow({documentStatus:"not_submitted",reminderStatus:"pending",expiresAt:null,now:"2026-10-21T00:00:00Z",warningDays:null,legalHold:false,lastReminderAt:null,reminderCount:0});
  return <section className={`${styles.notice} ${styles.developerForm}`} aria-labelledby="admission-preview-title">
-  <h2 id="admission-preview-title">{copy.title}</h2>
-  <p>{copy.intro}</p>
-  <div role="group" aria-label={locale==="es"?"Progreso de solicitud":"Application progress"} style={{border:"1px solid #286e98",borderRadius:12,background:"#061429",padding:16,margin:"16px 0"}}>
-   <p role="status" aria-live="polite">{locale==="es"?"Preparación: "+completed+" de 6 etapas completadas":"Preparation: "+completed+" of 6 steps completed"}</p>
-   <progress value={completed} max={6} aria-label={locale==="es"?"Etapas completadas":"Completed steps"} style={{width:"100%",accentColor:"#50cbf5"}} />
-   <ol style={{listStyle:"none",padding:0,display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:6}}>
-    {steps.map((step,index)=><li key={step.title} aria-current={index===activeStep?"step":undefined} style={{display:"flex",alignItems:"center",gap:6,padding:"8px",fontSize:12,minWidth:0,borderRadius:8,border:"1px solid #286e98",background:step.done?"#0b2b42":"#08182c",color:step.enabled?"#eaf9ff":"#9caec3"}}>
-     <span aria-hidden="true" style={{width:24,textAlign:"center",color:step.done?"#79e3c8":"#67cfff"}}>{step.done?"✓":step.enabled?String(index+1):"🔒"}</span>
-     <span style={{flex:1}}>{step.title}</span>
-     <small>{step.done?(locale==="es"?"Completado":"Completed"):step.enabled?(locale==="es"?"Disponible":"Available"):(locale==="es"?"Bloqueado":"Locked")}</small>
-    </li>)}
-   </ol>
-   <small>{locale==="es"?"La verificación bancaria exigirá el estado de cuenta más reciente y cotejo del titular por un canal seguro. No se pueden subir documentos aquí.":"Bank verification will require a recent statement and beneficiary matching via a secure channel. Do not upload documents here."}</small>
-   <div className={styles.accountIntro} role="group" aria-label={locale==="es"?"Estado documental informativo":"Informational document status"}>
-    <p role="note">{locale==="es"?"Estado del expediente (vista previa): ":"Dossier status (preview): "}{dossierNotice.message}</p>
-    <p>{locale==="es"?"Avisos: sin enviar ni programar":"Notices: none sent or scheduled"}</p>
-    <p>{locale==="es"?"Vencimiento: política pendiente":"Expiry: policy pending"} · {workflowPreview.expiry==="policy_missing"?(locale==="es"?"Sin plazo establecido":"No deadline established"):""}</p>
-    <small>{locale==="es"?"No hay solicitud registrada ni revisiones reales.":"No application is registered and no real reviews have started."}</small>
-    <p><strong>{locale==="es"?"Tu siguiente acción":"Your next action"}:</strong> {model===null?(locale==="es"?"Selecciona Premium o Freemium.":"Select Premium or Freemium."):!ready?(locale==="es"?"Completa las cinco declaraciones disponibles.":"Complete the five available declarations."):(locale==="es"?"Has terminado la preparación. La verificación de identidad sigue inactiva hasta habilitar un proveedor seguro.":"Preparation is complete. Identity verification remains inactive until a secure provider is enabled.")}</p>
-    <small>{locale==="es"?"No envíes documentos ni datos bancarios desde esta vista.":"Do not send documents or banking details from this preview."}</small>
+  <h2 id="admission-preview-title" className={styles.developerWizardTitle}>{copy.title}</h2>
+  <div className={styles.developerWizardCompact} role="group" aria-label={locale==="es"?"Progreso de solicitud":"Application progress"}>
+   <div className={styles.developerWizardTopline}>
+    <span>{locale==="es"?"PASO":"STEP"} {activeStep+1} / 6</span>
+    <span role="status" aria-live="polite">{locale==="es"?"Preparación: "+completed+" de 6 etapas completadas":"Preparation: "+completed+" of 6 steps completed"}</span>
    </div>
-   <small>{locale==="es"?"Las etapas iniciales son declaraciones temporales, no una solicitud presentada ni identidad verificada.":"Initial steps are temporary declarations, not a submitted application or verified identity."}</small>
+   <progress value={completed} max={6} aria-label={locale==="es"?"Etapas completadas":"Completed steps"} />
+   <ol className={styles.developerWizardDots} aria-label={locale==="es"?"Seis etapas":"Six stages"}>
+    {steps.map((step,index)=><li key={step.title} title={step.title} aria-current={index===activeStep?"step":undefined} aria-label={step.title} className={index===activeStep?styles.developerWizardDotActive:step.done?styles.developerWizardDotDone:styles.developerWizardDotLocked}><span aria-hidden="true">{step.done?"✓":index+1}</span></li>)}
+   </ol>
   </div>
   <div className={styles.developerWizardStage} aria-labelledby="liry-developer-wizard-step-title">
    <h3 ref={stepHeading} tabIndex={-1} id="liry-developer-wizard-step-title">{steps[activeStep].title}</h3>
@@ -82,6 +70,6 @@ export function LiryDeveloperAdmissionPreview({locale="es"}:{locale?:LiryFrontde
    <button type="button" className={styles.previewReset} disabled={activeStep===0} onClick={()=>navigateStep(Math.max(0,activeStep-1))}>{locale==="es"?"← ANTERIOR":"← PREVIOUS"}</button>
    <button type="button" className={styles.previewReset} disabled={!nextAllowed} onClick={()=>navigateStep(Math.min(2,activeStep+1))}>{locale==="es"?"PRÓXIMO →":"NEXT →"}</button>
   </div>
-  <p>{copy.inactive}</p>
+  <small className={styles.developerWizardFootnote}>{locale==="es"?"Vista previa: documentación pendiente; sin solicitud registrada, avisos enviados ni verificación biométrica activa.":"Preview only: documentation pending; no registered application, sent notices, or live biometric verification."} {copy.inactive}</small>
  </section>;
 }
