@@ -357,3 +357,12 @@
 .developerWizardDisclosure summary{cursor:pointer;font-size:13px;font-weight:600;min-height:30px;display:list-item;align-content:center}
 .developerWizardDisclosure summary:focus-visible{outline:2px solid #69d7ff;outline-offset:3px}
 .developerWizardDisclosure[open]{border-color:#4bbce7;box-shadow:0 0 9px #47bde72a}
+
+/* Compact Mi Liry dialog details: readable data in expanded mode without horizontal scroll. */
+.areaDialog .developerWizardDisclosure .worldsFacts{min-width:0;max-width:100%;overflow-wrap:anywhere}
+.areaDialog .developerWizardDisclosure .worldsFacts>div{min-width:0}
+@media(max-width:560px){
+ .areaDialog .developerWizardDisclosure{margin:7px 0;padding:7px 10px}
+ .areaDialog .developerWizardDisclosure summary{min-height:38px;font-size:13px;line-height:1.35}
+ .areaDialog .developerWizardDisclosure .worldsFacts{grid-template-columns:minmax(0,1fr)}
+}
