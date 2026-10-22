@@ -325,3 +325,18 @@
 .developerWizardActions button:not(:disabled):hover,.developerWizardActions button:not(:disabled):focus-visible{border-color:#86e5ff;box-shadow:0 0 13px #47bde755}
 .developerWizardActions button:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:480px){.developerWizardStage{padding:12px}.developerWizardActions{gap:8px}.developerWizardActions button{min-width:0;flex:1}}
+
+/* Developer admission: one-task wizard with minimal vertical footprint. */
+.developerWizardTitle{font-size:clamp(18px,2.5vw,24px);margin:0 0 10px}
+.developerWizardCompact{padding:9px 12px;border:1px solid #286e98;border-radius:11px;background:#061429}
+.developerWizardTopline{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:#b5ddf4;flex-wrap:wrap}
+.developerWizardCompact progress{display:block;width:100%;height:6px;margin:8px 0;accent-color:#50cbf5}
+.developerWizardDots{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;list-style:none;margin:0;padding:0}
+.developerWizardDots li{text-align:center;font-size:11px;line-height:23px;border:1px solid #345474;border-radius:7px;color:#aac3dc;background:#08182c;min-width:0}
+.developerWizardDots .developerWizardDotActive{border-color:#6cdaff;color:#ecfaff;box-shadow:0 0 8px #47bde755}
+.developerWizardDots .developerWizardDotDone{border-color:#3ba9a7;color:#86f4d5;background:#0b2b42}
+.developerWizardFootnote{display:block;color:#a6c3d9;font-size:11px;line-height:1.35;margin-top:8px}
+.developerWizardStage{min-height:0;margin:9px 0;padding:12px}
+.developerWizardStage h3{margin:0 0 10px}
+.developerWizardActions{margin:8px 0 0}
+@media(max-width:560px){.developerWizardCompact{padding:8px}.developerWizardTopline{font-size:10px}.developerWizardDots{gap:4px}.developerWizardStage{padding:10px}.developerWizardFootnote{font-size:10px}}
