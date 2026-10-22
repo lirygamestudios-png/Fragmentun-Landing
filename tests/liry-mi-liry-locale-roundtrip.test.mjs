@@ -19,3 +19,5 @@ test("primary FrontDesk uses locale-specific DNA navigation label",()=>{const fr
 test("mobile FrontDesk DNA menu uses released locale label",()=>{const front=readFileSync(new URL("../app/lirygames/page.tsx",import.meta.url),"utf8");assert.match(front,/href:"#liry-dna",label:copy\.navigation\.dna/);});
 
 test("desktop and mobile navigation use one localized dictionary",()=>{const front=readFileSync(new URL("../app/lirygames/page.tsx",import.meta.url),"utf8");assert.match(front,/<a href="#liryboost">\{copy\.navigation\.boost\}<\/a>/);assert.match(front,/href:"#liryboost",label:copy\.navigation\.boost/);assert.match(front,/href:"#mundos",label:copy\.navigation\.worlds/);});
+
+test("header search uses approved DNA and LiryBoost labels in both languages",()=>{const source=readFileSync(new URL("../components/LiryHeaderUtilities.tsx",import.meta.url),"utf8");assert.match(source,/es:"Liry ADN",en:"Liry DNA"/);assert.match(source,/es:"LiryBoost",en:"LiryBoost"/);});
