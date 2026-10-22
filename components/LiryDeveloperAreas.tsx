@@ -20,7 +20,7 @@ export function LiryDeveloperAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
  const close=useRef<HTMLButtonElement>(null);
  const areaHeading=useRef<HTMLHeadingElement>(null);
  const currentIndex=areas.findIndex(area=>area.id===selected);
- const switchArea=(direction:-1|1)=>{const next=areas[currentIndex+direction];if(next){setSelected(next.id as AreaId);setSession(v=>v+1);requestAnimationFrame(()=>{if(modal.current?.open){modal.current.scrollTop=0;areaHeading.current?.focus({preventScroll:true});}});}};
+ const switchArea=(direction:-1|1)=>{const next=areas[currentIndex+direction];if(next){setSelected(next.id as AreaId);requestAnimationFrame(()=>{if(modal.current?.open){modal.current.scrollTop=0;areaHeading.current?.focus({preventScroll:true});}});}};
  const open=(id:AreaId,trigger:HTMLButtonElement)=>{
   if(modal.current?.open)return;
   setSelected(id);opener.current=trigger;setDialogOpen(true);
@@ -41,10 +41,10 @@ export function LiryDeveloperAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
     <p id="liry-developer-area-description" className={styles.developerDialogDescription}>{copy.notice}</p>
     <nav className={styles.developerWizardActions} aria-label={locale==="es"?"Áreas de Developers":"Developer areas"}><button type="button" disabled={currentIndex===0} aria-label={locale==="es"?`Anterior: ${areas[currentIndex-1]?.label??""}`:`Previous: ${areas[currentIndex-1]?.label??""}`} onClick={()=>switchArea(-1)}>{locale==="es"?"← ANTERIOR":"← PREVIOUS"}</button><small>{currentIndex+1} / {areas.length}</small><button type="button" disabled={currentIndex===areas.length-1} aria-label={locale==="es"?`Próximo: ${areas[currentIndex+1]?.label??""}`:`Next: ${areas[currentIndex+1]?.label??""}`} onClick={()=>switchArea(1)}>{locale==="es"?"PRÓXIMO →":"NEXT →"}</button></nav>
     <div key={session}>
-     {selected==="admission"&&<LiryDeveloperAdmissionPreview locale={locale}/>}
-     {selected==="listing"&&<LiryDeveloperGameListingPreview locale={locale}/>}
-     {selected==="release"&&<LiryDeveloperReleasePreview locale={locale}/>}
-     {selected==="finance"&&<LiryDeveloperFinancePreview locale={locale}/>}
+     <div hidden={selected!=="admission"}><LiryDeveloperAdmissionPreview locale={locale}/></div>
+     <div hidden={selected!=="listing"}><LiryDeveloperGameListingPreview locale={locale}/></div>
+     <div hidden={selected!=="release"}><LiryDeveloperReleasePreview locale={locale}/></div>
+     <div hidden={selected!=="finance"}><LiryDeveloperFinancePreview locale={locale}/></div>
     </div>
    </div>
   </dialog>
