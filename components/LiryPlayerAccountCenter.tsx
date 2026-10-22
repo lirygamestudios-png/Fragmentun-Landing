@@ -36,7 +36,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const [billingStep,setBillingStep]=useState(0);
  const [settingsStep,setSettingsStep]=useState(0);
  const [securityStep,setSecurityStep]=useState(0);
- const goInnerStep=(target:"billing"|"settings"|"security",next:number)=>{if(target==="billing")setBillingStep(next);else if(target==="settings")setSettingsStep(next);else setSecurityStep(next);requestAnimationFrame(()=>stepPanel.current?.focus({preventScroll:true}));};
+ const goInnerStep=(target:"billing"|"settings"|"security",next:number)=>{if(target==="billing")setBillingStep(next);else if(target==="settings")setSettingsStep(next);else setSecurityStep(next);requestAnimationFrame(()=>{stepPanel.current?.focus({preventScroll:true});});};
  const [billingDraft,setBillingDraft]=useState({firstName:"",lastName:"",email:"",country:"",postalCode:""});
  const billingEmailValid=billingDraft.email.trim()===""||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(billingDraft.email.trim());
  const billingTextValid=(field:string,value:string)=>value.trim()===""||((field==="postalCode"?/^[\p{L}\p{N} -]{2,20}$/u:/^[\p{L}\p{M} .'-]{2,80}$/u).test(value.trim())&&(field==="postalCode"?/[\p{L}\p{N}]/u:/\p{L}/u).test(value.trim()));
@@ -92,7 +92,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
  const resetPreview=()=>{setSaveNotice(null);if(selected==="configuracion"){setNotices(false);setReduceMotion(false);setLargeText(false)}else if(selected==="privacidad"){setPrivateProfile(true)}};
  const active=sections.indexOf(selected);
  const stepPanel=useRef<HTMLDivElement>(null);
- const switchAccountSection=(next:number)=>{setSelected(sections[next]);setSaveNotice(null);requestAnimationFrame(()=>stepPanel.current?.focus({preventScroll:true}));};
+ const switchAccountSection=(next:number)=>{setSelected(sections[next]);setSaveNotice(null);requestAnimationFrame(()=>{stepPanel.current?.focus({preventScroll:true});});};
  return <section aria-labelledby="liry-account-center-heading" className={`${styles.accountCenter} ${reduceMotion?styles.accountReducedMotion:""} ${largeText?styles.accountLargeText:""}`}>
   <h2 id="liry-account-center-heading" className={styles.accountHeading}>{copy.heading}</h2>
   <p className={styles.accountIntro}>{copy.intro}</p><p className={styles.accountSummary} role="status">{locale==="es"?"Estado del perfil: nombre, avatar y preferencias disponibles como vista previa. Seguridad y compras requieren una cuenta verificada y permanecen desactivadas.":"Profile status: name, avatar, and preferences are available as previews. Security and purchases require a verified account and remain disabled."}</p>
