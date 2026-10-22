@@ -28,8 +28,8 @@ export default async function LegalDocument({params,searchParams}:{params:Promis
   <h1 style={{fontSize:"clamp(25px,4vw,43px)",maxWidth:850}}>{translatedTitle}</h1>
   {locale==="en"&&<p role="note" style={{color:"#a6d9ef",lineHeight:1.6}}>The draft clauses below are currently available in Spanish only and are not legally effective. This English interface does not represent an approved translation.</p>}
   <p lang="es" style={{maxWidth:760,lineHeight:1.7,color:"#c0d6e4"}}>{doc.summary}</p>
-  <section lang="es" style={{maxWidth:850,background:"#0a2036",border:"1px solid #287597",borderRadius:12,padding:"clamp(18px,3vw,28px)",marginTop:28}}>
-   <strong style={{color:"#65e5ff"}}>{legalUi.draft} · {locale==="es"?"NO VIGENTE":"NOT IN EFFECT"}</strong>
+  <section style={{maxWidth:850,background:"#0a2036",border:"1px solid #287597",borderRadius:12,padding:"clamp(18px,3vw,28px)",marginTop:28}}>
+   <strong style={{color:"#65e5ff"}}>{legalUi.draft} · {locale==="es"?"NO VIGENTE":"NOT IN EFFECT"}</strong>\n   <div lang="es">
    <p style={{lineHeight:1.7}}>Este texto contiene cláusulas propuestas y protecciones contractuales sujetas a revisión profesional, comprobación del funcionamiento real y aprobación formal. No es una política vigente ni sustituye derechos legales de usuarios o consumidores.</p>
    {slug==="privacidad"&&<div style={{borderTop:"1px solid #244e68",marginTop:24,paddingTop:16,lineHeight:1.7}}>
     <h2 style={{fontSize:19}}>Información del formulario de contacto</h2>
