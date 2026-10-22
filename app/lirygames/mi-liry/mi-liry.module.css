@@ -340,3 +340,11 @@
 .developerWizardStage h3{margin:0 0 10px}
 .developerWizardActions{margin:8px 0 0}
 @media(max-width:560px){.developerWizardCompact{padding:8px}.developerWizardTopline{font-size:10px}.developerWizardDots{gap:4px}.developerWizardStage{padding:10px}.developerWizardFootnote{font-size:10px}}
+
+/* Shared single-panel navigation for Developers and Gamer; navy/cyan styling. */
+.developerWizardStepCount{flex:1;text-align:center;color:#a5dbf5;font-size:12px;line-height:1.4;min-width:0}
+@media(max-width:560px){
+ .developerWizardActions{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:7px}
+ .developerWizardActions button{min-width:0;max-width:100%;padding:10px 6px;font-size:12px}
+ .developerWizardStepCount{font-size:11px;overflow-wrap:anywhere}
+}
