@@ -5,7 +5,7 @@ import {MiLiryAreas} from "../../../components/MiLiryAreas";
 import {LiryPlayerIdentityHeader} from "../../../components/LiryPlayerIdentityHeader";
 import {LiryPlayerAccountCenter} from "../../../components/LiryPlayerAccountCenter";
 import {liryFrontdeskStrings,getReleasedLiryFrontdeskLocale} from "../../../lib/games/liry-frontdesk-i18n";
-export async function generateMetadata({searchParams}:{searchParams:Promise<{lang?:string}>}){const locale=getReleasedLiryFrontdeskLocale((await searchParams).lang);return {title:{absolute:"MI LIRY | LIRYGAMES STUDIOS"},description:locale==="es"?"Espacio personal del jugador en preparación.":"Personal gamer space in development.",robots:{index:false,follow:false}};}
+export async function generateMetadata({searchParams}:{searchParams:Promise<{lang?:string}>}){const locale=getReleasedLiryFrontdeskLocale((await searchParams).lang);return {title:{absolute:"MI LIRY | LIRYGAMES STUDIOS"},description:locale==="es"?"Espacio personal del jugador en preparación.":"Personal gamer space in development.",openGraph:{type:"website" as const,siteName:"LIRYGAMES STUDIOS",title:"MI LIRY | LIRYGAMES STUDIOS",description:locale==="es"?"Cientos de mundos, infinitas formas de jugar.":"Hundreds of worlds, infinite ways to play.",images:[{url:"/lirygames/opengraph-image",width:1200,height:630,alt:"LIRYGAMES STUDIOS"}]},twitter:{card:"summary_large_image" as const,images:["/lirygames/opengraph-image"]},robots:{index:false,follow:false}};}
 export default async function MiLiryPage({searchParams}:{searchParams:Promise<{lang?:string}>}){
  const locale=getReleasedLiryFrontdeskLocale((await searchParams).lang);
  const gamer=VISITOR_GAMER_SNAPSHOT;
