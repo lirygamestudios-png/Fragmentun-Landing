@@ -52,7 +52,7 @@ export default async function LiryGamesFrontDesk({searchParams}:{searchParams:Pr
     slug:`liry-public-${String(index+1).padStart(2,"0")}`,
     title:publicCodenames[index]??`LIRY // PROJECT-${String(index+1).padStart(2,"0")}`,
     state:game.state,
-    tagline:"Experiencia LIRYGAMES en preparación",
+    tagline:locale==="en"?"LIRYGAMES experience in development":"Experiencia LIRYGAMES en preparación",
     playUrl:null,
     internalWorldCount:game.internalWorldCount
   }));
