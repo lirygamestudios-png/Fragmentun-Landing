@@ -1811,3 +1811,12 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 
 /* Visible keyboard focus for a store card reached through a shared WhatsApp link. */
 .liryStoreProduct:focus{outline:2px solid #79dfff;outline-offset:3px;box-shadow:0 0 0 4px #0a2239,0 0 16px #47bde755;scroll-margin-top:90px}
+
+/* Mobile catalog: give product titles full card width; place share separately below. */
+@media(max-width:520px){
+ .page :global(#mundos) .worldsGrid>.gameCard>.cardContent{display:grid;grid-template-columns:minmax(0,1fr) 46px;grid-template-rows:minmax(0,1fr) auto;align-items:end;gap:4px 6px}
+ .page :global(#mundos) .worldsGrid>.gameCard .worldCardText{grid-column:1/-1;grid-row:1;align-self:end;min-width:0;width:100%;max-width:100%;overflow:hidden;overflow-wrap:normal;word-break:normal}
+ .page :global(#mundos) .worldsGrid>.gameCard .worldCardText h3,.page :global(#mundos) .worldsGrid>.gameCard .worldCardText p{overflow-wrap:break-word;word-break:normal;white-space:normal}
+ .page :global(#mundos) .worldsGrid>.gameCard .worldArrow{display:none}
+ .page :global(#mundos) .worldsGrid>.gameCard .liryShareEntry{grid-column:2;grid-row:2;justify-self:end;align-self:end;min-width:46px}
+}
