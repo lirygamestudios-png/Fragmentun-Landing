@@ -40,6 +40,7 @@ const groups=[
     ["/admin/master/maintenance","◆","Mantenimiento"],
     ["/admin/master/releases","✓","Revisión para publicar"],
     ["/admin/master/observability","◉","Estado y Pruebas"],
+    ["/admin/master/frontdesk-pending","☷","Pendientes FrontDesk"],
     ["/admin/master/checklist","☑","Revisión visual"],
     ["/admin/master/qa","✓","Pruebas finales"]
   ]}
