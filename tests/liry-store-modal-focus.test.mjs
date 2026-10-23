@@ -27,3 +27,5 @@ test("MI LIRY groups five preliminary account panels in one accessible disclosur
 test("MI LIRY header offers explicit ES/EN links with current language",()=>{const page=readFileSync(new URL("../app/lirygames/mi-liry/page.tsx",import.meta.url),"utf8");assert.match(page,/className=\{styles\.accountLanguageNav\}/);assert.match(page,/href="\/lirygames\/mi-liry\?lang=es"/);assert.match(page,/href="\/lirygames\/mi-liry\?lang=en"/);assert.match(page,/aria-current=\{locale==="en"\?"page":undefined\}/);});
 
 test("developer portal has direct ES/EN header navigation",()=>{const page=readFileSync(new URL("../app/lirygames/developer/page.tsx",import.meta.url),"utf8");assert.match(page,/className=\{styles\.accountLanguageNav\}/);assert.match(page,/href="\/lirygames\/developer\?lang=es"/);assert.match(page,/href="\/lirygames\/developer\?lang=en"/);});
+
+test("developer modal restores focus only when opener remains connected",()=>{const src=readFileSync(new URL("../components/LiryDeveloperAreas.tsx",import.meta.url),"utf8");assert.match(src,/if\(opener\.current\?\.isConnected\)opener\.current\.focus/);});
