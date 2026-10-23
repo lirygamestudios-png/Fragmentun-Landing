@@ -19,3 +19,15 @@ export const LIRY_AGE_POLICY_PREVIEW=Object.freeze({
  teen:"Age-appropriate restrictions and safeguards required before account activation",
  adult:"Standard age bracket; identity verification may still be required for regulated features"
 } as const);
+
+/** Default safeguards for future accounts. Policy descriptions, not active permissions. */
+export const LIRY_AGE_SAFEGUARDS_PREVIEW=Object.freeze({
+ child:Object.freeze({registrationAllowed:false,publicProfile:false,directMessages:false,personalizedAds:false,purchases:false,requiresPolicyReview:true}),
+ teen:Object.freeze({registrationAllowed:false,publicProfile:false,directMessages:false,personalizedAds:false,purchases:false,requiresPolicyReview:true}),
+ adult:Object.freeze({registrationAllowed:false,publicProfile:false,directMessages:false,personalizedAds:false,purchases:false,requiresPolicyReview:true}),
+ invalid:Object.freeze({registrationAllowed:false,publicProfile:false,directMessages:false,personalizedAds:false,purchases:false,requiresPolicyReview:true})
+} as const);
+/** No account can be opened from a preview; defaults remain deny-by-default until approved. */
+export function getLiryAgeSafeguardsPreview(bracket:LiryAgeBracket){
+ return LIRY_AGE_SAFEGUARDS_PREVIEW[bracket];
+}
