@@ -38,7 +38,7 @@ export default async function LiryContactAdmin({
  const {data:owners}=await db.from("admin_profiles").select("user_id,display_name").order("display_name");
  let query=db.from("lirygames_contact_messages")
   .select("id,name,email,subject,game_slug,message,status,created_at,updated_at,internal_note,assigned_to,response_draft",{count:"exact"})
-  .order("created_at",{ascending:false}).range((pageNumber-1)*pageSize,pageNumber*pageSize-1);
+  .order("created_at",{ascending:pending}).range((pageNumber-1)*pageSize,pageNumber*pageSize-1);
  if(selected)query=query.eq("status",selected);
  if(subject)query=query.eq("subject",subject);
  if(search)query=query.or(`name.ilike.%${search}%,email.ilike.%${search}%`);
@@ -52,13 +52,7 @@ export default async function LiryContactAdmin({
  const totalPages=Math.max(1,Math.ceil((filteredCount??0)/pageSize));
  const pageLink=(n:number)=>{const base=queryString(selected);return base+(base==="?"?"":"&")+"page="+n;};
  if(!error&&filteredCount!==null&&pageNumber>totalPages)redirect("/admin/master/community/messages"+pageLink(totalPages));
- const now=Date.now();
- const ageDays=(date:string)=>Math.max(0,Math.floor((now-new Date(date).getTime())/86400000));
- const isPending=(item:ContactMessage)=>item.status==="new"||item.status==="reviewing";
- const messages=((data||[]) as ContactMessage[]).sort((a,b)=>{
-  if(pending){const aPriority=ageDays(a.created_at)+(a.status==="new"?2:0)+(a.assigned_to?0:4);const bPriority=ageDays(b.created_at)+(b.status==="new"?2:0)+(b.assigned_to?0:4);return bPriority-aPriority;}
-  return new Date(b.created_at).getTime()-new Date(a.created_at).getTime();
- });
+ const messages=(data||[]) as ContactMessage[];
  const ids=messages.map(item=>item.id);
  const {data:history,error:historyError}=ids.length
   ?await db.from("lirygames_contact_history").select("id,contact_id,actor_user_id,action,details,created_at").in("contact_id",ids).order("created_at",{ascending:false}).limit(500)
@@ -114,7 +108,7 @@ export default async function LiryContactAdmin({
   </form>
   <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap",marginBottom:14}}>
    <a href={pending?queryString(selected).replace(/([?&])pending=1(&|$)/,"$1").replace(/[?&]$/,"")||"?":queryString(selected)+(queryString(selected)==="?"?"":"&")+"pending=1"} className={`${visual.pendingButton} ${pending?visual.pendingButtonActive:""}`}>{pending?"✓ MOSTRANDO PENDIENTES · QUITAR FILTRO":"VER SOLO PENDIENTES →"}</a>
-   <span style={{color:"#92b1ca",fontSize:11}}>Los pendientes se ordenan por antigüedad y necesidad de asignación.</span>
+   <span style={{color:"#92b1ca",fontSize:11}}>Los pendientes se ordenan por antigüedad en todas las páginas; filtra por responsable para revisar los no asignados.</span>
   </div>
   <div className={visual.drafts} style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap",marginBottom:14}}>
    <span style={{color:"#94b6cc",fontSize:11,marginRight:3}}>PREPARACIÓN DE RESPUESTAS</span>
