@@ -14,3 +14,5 @@ test("developer dialog has an accessible title and focus target",()=>{
  assert.match(src,/id="liry-developer-area-heading"/);
  assert.match(src,/close\.current\?\.focus\(\{preventScroll:true\}\)/);
 });
+
+test("developer dialog navigation aria label is properly translated",()=>{assert.match(src,/locale==="es"\?"Áreas del Desarrollador":"Developer areas"/);});
