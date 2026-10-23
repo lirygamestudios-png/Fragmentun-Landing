@@ -388,3 +388,13 @@
 .signOutPreview button{min-height:44px;padding:9px 12px;border-radius:7px;border:1px solid #39799b;background:#09243d;color:#a9c8de;font:inherit;font-weight:700;white-space:nowrap;cursor:not-allowed;opacity:.8}
 .signOutPreview span{flex:1 1 140px}
 @media(max-width:650px){.signOutPreview{width:100%;max-width:100%;margin-left:0}.signOutPreview span{flex:1 1 160px}}
+
+/* Password recovery preparatory UI: non-operational and no credential collection. */
+.recoveryPreview{margin:22px 0;padding:22px;border:1px solid #2d7497;border-radius:12px;background:#09192c;color:#d8ecff}
+.recoveryPreview h2{margin:0 0 12px;font-size:clamp(18px,2vw,23px);letter-spacing:.06em;color:#87dcff}
+.recoveryPreview p{font-size:13px;line-height:1.6;color:#bdd5ed}
+.recoveryFields{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:12px}
+.recoveryFields label{display:flex;flex-direction:column;min-width:0;gap:7px;font-size:12px;color:#d5e8fa}
+.recoveryFields input{width:100%;min-height:44px;box-sizing:border-box;border:1px solid #315775;border-radius:7px;background:#0b2037;color:#a5c6dc;padding:10px 12px;opacity:.8}
+.recoveryFields button{min-height:44px;padding:10px 15px;border:1px solid #367eaa;border-radius:7px;background:#092944;color:#bad6e8;font-weight:700;cursor:not-allowed;opacity:.78}
+@media(max-width:620px){.recoveryPreview{padding:16px}.recoveryFields{grid-template-columns:minmax(0,1fr)}}
