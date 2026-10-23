@@ -53,3 +53,15 @@ export const LIRY_PLAYER_AGE_GATE_CHECKLIST=Object.freeze([
  "Probar límites de edad y evitar que regresar o recargar el flujo permita omitir el control",
  "Mantener desactivado el registro hasta completar revisión jurídica, seguridad y autorización expresa"
 ] as const);
+
+/** Requisitos previos a registro: documentación solamente, sin envío de correos ni aceptación real. */
+export const LIRY_PLAYER_SIGNUP_VERIFICATION_CHECKLIST=Object.freeze([
+ "Verificar la titularidad del correo con token o código temporal de un solo uso",
+ "Guardar solo un hash del secreto de verificación y establecer expiración e intentos máximos",
+ "Limitar solicitudes y reenvíos sin revelar si una dirección ya está registrada",
+ "Confirmar los términos vigentes mediante una acción afirmativa explícita, sin casillas premarcadas",
+ "Mantener separadas las aceptaciones contractuales de los consentimientos opcionales",
+ "Registrar de forma segura versión, fecha y alcance de cada aceptación legal obligatoria",
+ "Aplicar medidas de edad y consentimiento parental cuando la ley lo requiera, antes de crear una cuenta",
+ "No crear cuentas ni enviar mensajes desde la vista preliminar sin autorización explícita"
+] as const);
