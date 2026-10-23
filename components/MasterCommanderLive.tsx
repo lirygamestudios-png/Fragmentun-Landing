@@ -51,6 +51,8 @@ export function MasterCommanderLive({initial}:{initial:MasterLiveSnapshot}){
       <div><span>Última lectura</span><strong>{updated}</strong></div>
     </section>
 
+    {snapshot.sourceWarnings?.length>0&&<section role="alert" aria-label="Fuentes de datos no disponibles" className={styles.commandStatusBar}><div><i className={styles.signalOffline} aria-hidden="true"></i><strong>DATOS INCOMPLETOS</strong><span>No interpretar los valores en cero como confirmados: {snapshot.sourceWarnings.join(", ")}.</span></div></section>}
+
     <section className={styles.commandKpis}>
       <article className={styles.commandKpiPrimary}><small>Usuarios activos ahora</small><strong>{snapshot.activeUsers.toLocaleString()}</strong><span>Sesiones con presencia en los últimos 5 minutos</span></article>
       <article><small>Jugadores activos hoy</small><strong>{snapshot.gamePlayersToday.toLocaleString()}</strong><span>Telemetría diaria de videojuegos</span></article>
