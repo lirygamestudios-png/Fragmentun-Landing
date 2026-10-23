@@ -22,3 +22,5 @@ test("Liry DNA retains public percentages and explicit explorer close",()=>{
 });
 
 test("Liry DNA cancels pending automatic advance before resetting or changing answers",()=>{assert.match(src,/const resetDnaEvaluation=\(preserveStyle=false\)=>\{\s*clearAdvanceTimer\(\)/);assert.match(src,/onChange=\{\(\)=>\{clearAdvanceTimer\(\);setDnaAnswers/);assert.match(src,/useEffect\(\(\)=>\(\)=>clearAdvanceTimer\(\),\[\]\)/);});
+
+test("DNA-to-player style handoff is temporary and resettable",()=>{const identity=readFileSync(new URL("../components/LiryGamerIdentity.tsx",import.meta.url),"utf8");assert.match(src,/CustomEvent\("liry:dna-closed",\{detail:\{style:chosen,durationMs:10000\}\}\)/);assert.match(src,/CustomEvent\("liry:dna-style",\{detail:\{style:null\}\}\)/);assert.match(identity,/addEventListener\("liry:dna-closed",onDnaClosed\)/);assert.match(identity,/addEventListener\("liry:dna-style",handler\)/);assert.match(identity,/Math\.min\(10000,Math\.max\(5000,detail\.durationMs\)\)/);assert.match(identity,/setTimeout\(\(\)=>\{setStyle\(null\);setHighlight\(false\)/);});
