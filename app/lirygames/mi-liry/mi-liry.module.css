@@ -448,3 +448,7 @@
 .accountLanguageNav a:hover{color:#eafaff}
 .accountLanguageNav a:focus-visible{outline:2px solid #9aeaff;outline-offset:2px}
 @media(max-width:560px){.accountLanguageNav{align-self:flex-start}}
+
+/* Accessible mobile language targets and compact account header shared by both portals. */
+.accountLanguageNav a{min-height:44px;min-width:30px;justify-content:center}
+@media(max-width:560px){.header{gap:10px}.accountLanguageNav{align-self:flex-start}.header .back{min-height:44px;display:inline-flex;align-items:center}.accountAccessDisclosure>summary{min-height:48px}}
