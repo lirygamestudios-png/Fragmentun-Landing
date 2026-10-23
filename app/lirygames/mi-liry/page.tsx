@@ -1,3 +1,4 @@
+import {LiryPlayerVerificationConsentPreview} from "../../../components/LiryPlayerVerificationConsentPreview";
 import {LiryPlayerRegistrationPreview} from "../../../components/LiryPlayerRegistrationPreview";
 import {LiryPlayerAgeGatePreview} from "../../../components/LiryPlayerAgeGatePreview";
 import {LirySignInOptionsPreview} from "../../../components/LirySignInOptionsPreview";
@@ -22,6 +23,7 @@ export default async function MiLiryPage({searchParams}:{searchParams:Promise<{l
   <LiryPlayerAccountCenter locale={locale} />
   <LiryPlayerRegistrationPreview locale={locale} />
   <LiryPlayerAgeGatePreview locale={locale} />
+  <LiryPlayerVerificationConsentPreview locale={locale} />
   <LirySignInOptionsPreview locale={locale} role="player" />
   <LiryPasswordRecoveryPreview locale={locale} role="player" />
   <div className={styles.notice}><strong>{copy.comingSoon}</strong><p>{copy.notice}</p><Link href={`/lirygames?lang=${locale}#perfil-gamer`}>{copy.exploreProfile} →</Link></div></section>
