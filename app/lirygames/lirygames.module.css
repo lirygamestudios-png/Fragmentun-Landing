@@ -1821,3 +1821,6 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
  .page :global(#mundos) .worldsGrid>.gameCard .worldArrow{display:none}
  .page :global(#mundos) .worldsGrid>.gameCard .liryShareEntry{grid-column:2;grid-row:2;justify-self:end;align-self:flex-end;min-width:46px}
 }
+
+/* Keep every mobile navigation destination comfortably touch-sized. */
+@media(max-width:750px){.nav .navMenuPanel a{min-height:44px;padding:9px 8px;line-height:1.3}}
