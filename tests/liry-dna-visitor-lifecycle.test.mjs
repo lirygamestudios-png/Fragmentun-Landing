@@ -20,3 +20,5 @@ test("Liry DNA retains public percentages and explicit explorer close",()=>{
  assert.match(src,/onClick=\{closeDnaExplorer\}/);
  assert.match(src,/publicCodenames\[i\]/);
 });
+
+test("Liry DNA cancels pending automatic advance before resetting or changing answers",()=>{assert.match(src,/const resetDnaEvaluation=\(preserveStyle=false\)=>\{\s*clearAdvanceTimer\(\)/);assert.match(src,/onChange=\{\(\)=>\{clearAdvanceTimer\(\);setDnaAnswers/);assert.match(src,/useEffect\(\(\)=>\(\)=>clearAdvanceTimer\(\),\[\]\)/);});
