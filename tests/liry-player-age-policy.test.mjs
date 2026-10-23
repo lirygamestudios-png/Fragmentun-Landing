@@ -11,3 +11,5 @@ test("Liry age policy handles exact age boundaries and invalid dates without sto
  assert.match(source,/parental-consent/);
  assert.doesNotMatch(source,/localStorage|sessionStorage|fetch\(|supabase|setCookie/);
 });
+
+test("all age groups deny registration and sensitive features while preview-only",()=>{for(const key of ["child","teen","adult","invalid"])assert.match(source,new RegExp(key+":Object\\.freeze\\(\\{registrationAllowed:false,publicProfile:false,directMessages:false,personalizedAds:false,purchases:false,requiresPolicyReview:true\\}\\)"));});
