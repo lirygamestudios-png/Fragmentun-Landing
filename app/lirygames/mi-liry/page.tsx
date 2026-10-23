@@ -21,11 +21,14 @@ export default async function MiLiryPage({searchParams}:{searchParams:Promise<{l
   <section className={styles.content} aria-label={copy.accountSummary}><LiryPlayerIdentityHeader locale={locale} displayName={gamer.displayName} eyebrow={copy.profile} note={copy.pendingIdentity}/>
   <MiLiryAreas locale={locale} />
   <LiryPlayerAccountCenter locale={locale} />
+  <details className={styles.accountAccessDisclosure}><summary>{locale==="es"?"Registro y acceso Liry ID (en preparación)":"Liry ID registration and access (in preparation)"}</summary>
+  <div className={styles.accountAccessDisclosureContent}>
   <LiryPlayerRegistrationPreview locale={locale} />
   <LiryPlayerAgeGatePreview locale={locale} />
   <LiryPlayerVerificationConsentPreview locale={locale} />
   <LirySignInOptionsPreview locale={locale} role="player" />
   <LiryPasswordRecoveryPreview locale={locale} role="player" />
+  </div></details>
   <div className={styles.notice}><strong>{copy.comingSoon}</strong><p>{copy.notice}</p><Link href={`/lirygames?lang=${locale}#perfil-gamer`}>{copy.exploreProfile} →</Link></div></section>
   <footer className={styles.footer}>© {new Date().getFullYear()} LIRYGAMES STUDIOS · {copy.rights}</footer>
  </main>;
