@@ -33,7 +33,7 @@ export function LiryDeveloperAreas({locale="es"}:{locale?:LiryFrontdeskLocale}){
    <h3>{area.label}</h3><p>{area.description}</p><small>{copy.preparing}</small>
    <button type="button" className={styles.areaLink} aria-haspopup="dialog" aria-expanded={dialogOpen&&selected===area.id} aria-label={`${copy.openAria} ${area.label}`} onClick={event=>open(area.id,event.currentTarget)}>{copy.open} →</button>
   </article>)}</div>
-  <dialog className={styles.developerDialog} ref={modal} aria-modal="true" aria-describedby="liry-developer-area-description" aria-labelledby="liry-developer-area-heading" onClose={()=>{setDialogOpen(false);setSession(value=>value+1);opener.current?.focus({preventScroll:true});opener.current=null}} onClick={event=>{if(event.target===modal.current)modal.current.close()}}>
+  <dialog className={styles.developerDialog} ref={modal} aria-modal="true" aria-describedby="liry-developer-area-description" aria-labelledby="liry-developer-area-heading" onClose={()=>{setDialogOpen(false);setSession(value=>value+1);if(opener.current?.isConnected)opener.current.focus({preventScroll:true});opener.current=null}} onClick={event=>{if(event.target===modal.current)modal.current.close()}}>
    <div className={styles.developerDialogBody}>
     <form method="dialog"><button ref={close} className={styles.areaClose} type="submit" aria-label={copy.closeAria}>×</button></form>
     <span className={styles.eyebrow}>{copy.eyebrow}</span>
