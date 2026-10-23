@@ -41,3 +41,15 @@ export const LIRY_ACCOUNT_SECURITY_CHECKLIST=Object.freeze([
  "Revocación de sesiones mediante servidor",
  "Registro seguro de eventos y protección de datos personales"
 ] as const);
+
+/** Requisitos de control de edad: documentación de producto, no ejecución ni recopilación. */
+export const LIRY_PLAYER_AGE_GATE_CHECKLIST=Object.freeze([
+ "Solicitar fecha de nacimiento de forma neutral antes de recabar otros datos personales en el registro",
+ "Permitir declaraciones de todas las edades sin valores predeterminados que incentiven falsear la edad",
+ "No activar cuentas infantiles sin determinar la clasificación legal del servicio y las obligaciones de consentimiento parental",
+ "Aplicar protecciones adicionales a adolescentes, incluyendo privacidad, comunicación, contenido y compras",
+ "Usar la categoría de edad mínima necesaria y limitar el almacenamiento de la fecha completa conforme a la finalidad",
+ "No considerar la fecha autodeclarada una prueba de identidad ni una verificación fiable de mayoría de edad",
+ "Probar límites de edad y evitar que regresar o recargar el flujo permita omitir el control",
+ "Mantener desactivado el registro hasta completar revisión jurídica, seguridad y autorización expresa"
+] as const);
