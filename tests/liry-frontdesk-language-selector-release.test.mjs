@@ -7,3 +7,5 @@ test("both locales are released and selector labels do not claim English is pend
  assert.doesNotMatch(src,/English translation coming soon|traducción al inglés próximamente|translation coming soon|traducción próximamente/i);
  assert.match(src,/Language selector · English and Spanish/);
 });
+
+test("proprietary catalog preparation tagline follows ES/EN locale",()=>{const page=readFileSync(new URL("../app/lirygames/page.tsx",import.meta.url),"utf8");assert.match(page,/tagline:locale==="en"\?"LIRYGAMES experience in development":"Experiencia LIRYGAMES en preparación"/);});
