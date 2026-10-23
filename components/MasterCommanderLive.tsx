@@ -20,7 +20,7 @@ function stageLabel(value:string){
 
 export function MasterCommanderLive({initial}:{initial:MasterLiveSnapshot}){
   const[snapshot,setSnapshot]=useState(initial);
-  const[connected,setConnected]=useState(true);
+  const[connected,setConnected]=useState<boolean|null>(null);
 
   useEffect(()=>{
     let alive=true;
@@ -38,6 +38,7 @@ export function MasterCommanderLive({initial}:{initial:MasterLiveSnapshot}){
         if(alive)setConnected(false);
       }
     };
+    void refresh();
     const timer=window.setInterval(refresh,15000);
     return()=>{alive=false;window.clearInterval(timer);};
   },[]);
@@ -46,7 +47,7 @@ export function MasterCommanderLive({initial}:{initial:MasterLiveSnapshot}){
 
   return <>
     <section className={styles.commandStatusBar}>
-      <div><i className={connected?styles.signalLive:styles.signalOffline}></i><strong>{connected?"DATOS EN VIVO":"CONEXIÓN INTERRUMPIDA"}</strong><span>Actualización automática cada 15 segundos</span></div>
+      <div><i className={connected===true?styles.signalLive:styles.signalOffline}></i><strong>{connected===null?"COMPROBANDO CONEXIÓN":connected?"DATOS EN VIVO":"CONEXIÓN INTERRUMPIDA"}</strong><span>Actualización automática cada 15 segundos</span></div>
       <div><span>Última lectura</span><strong>{updated}</strong></div>
     </section>
 
