@@ -398,3 +398,8 @@
 .recoveryFields input{width:100%;min-height:44px;box-sizing:border-box;border:1px solid #315775;border-radius:7px;background:#0b2037;color:#a5c6dc;padding:10px 12px;opacity:.8}
 .recoveryFields button{min-height:44px;padding:10px 15px;border:1px solid #367eaa;border-radius:7px;background:#092944;color:#bad6e8;font-weight:700;cursor:not-allowed;opacity:.78}
 @media(max-width:620px){.recoveryPreview{padding:16px}.recoveryFields{grid-template-columns:minmax(0,1fr)}}
+
+/* Inactive sign-in choices share the approved account palette. */
+.signInOptionsPreview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+.signInOptionsPreview button{min-height:44px;padding:10px 14px;border:1px solid #367eaa;border-radius:7px;background:#092944;color:#bad6e8;font-weight:700;opacity:.78;cursor:not-allowed;text-align:center}
+@media(max-width:620px){.signInOptionsPreview{grid-template-columns:minmax(0,1fr)}}
