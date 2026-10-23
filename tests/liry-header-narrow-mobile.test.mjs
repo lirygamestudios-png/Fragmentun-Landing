@@ -28,3 +28,5 @@ test("mobile menu closes when navigating or clicking outside",()=>{
 test("mobile menu links retain 44px touch targets after compact header rules",()=>{assert.match(css,/@media\(max-width:749px\)\{\.nav \.navMenuPanel a\{min-height:44px;padding:9px 8px;line-height:1\.3\}/);});
 
 test("mobile menu toggle has 44px touch target",()=>{assert.match(css,/\.nav \.navMenuToggle\{width:44px;height:44px;min-width:44px;min-height:44px\}/);});
+
+test("desktop primary navigation keeps Store on a single header row",()=>{assert.match(css,/@media\(min-width:751px\)\{\.nav>nav\{flex-wrap:nowrap;white-space:nowrap/);assert.match(css, /@media\(min-width:751px\) and \(max-width:1200px\)/);});
