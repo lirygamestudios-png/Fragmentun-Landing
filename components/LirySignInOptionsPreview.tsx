@@ -15,9 +15,9 @@ export function LirySignInOptionsPreview({locale,role}:{locale:"es"|"en";role:"p
  return <section className={styles.recoveryPreview} aria-labelledby={`liry-signin-${role}-title`}>
   <h2 id={`liry-signin-${role}-title`}>{title} · {roleName}</h2>
   <p>{es?"Elige cómo acceder cuando las cuentas verificadas estén disponibles. Tener abierto el correo no concede acceso automático.":"Choose how to sign in when verified accounts become available. Being signed in to email does not grant automatic access."}</p>
-  <div className={styles.signInOptionsPreview}>
+  <details className={styles.authPreviewDisclosure}><summary>{es?"Ver modalidades de acceso":"View sign-in methods"}</summary><div className={styles.signInOptionsPreview}>
    {choices.map(choice=><button type="button" key={choice.id} disabled>{es?choice.es:choice.en}</button>)}
-  </div>
+  </div></details>
   <p role="status">{es?"Vista preliminar: ninguna opción está activa, no se solicitan credenciales ni se crean sesiones.":"Preview only: all options are inactive, no credentials are collected and no sessions are created."}</p>
  </section>;
 }
