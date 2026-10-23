@@ -115,6 +115,10 @@ export async function getMasterLiveSnapshot(supabase:any):Promise<MasterLiveSnap
   const paidRows=(paidOrders||[]) as any[];
   const gamePurchaseRows=(gamePurchases||[]) as any[];
   const engagementRows=(engagementToday||[]) as any[];
+  if(presenceRows.length>=5000)sourceWarnings.push("Sesiones activas: límite de lectura alcanzado");
+  if(paidRows.length>=5000)sourceWarnings.push("Ventas de tienda: límite de lectura alcanzado");
+  if(gamePurchaseRows.length>=10000)sourceWarnings.push("Compras dentro de juegos: límite de lectura alcanzado");
+  if(engagementRows.length>=5000)sourceWarnings.push("Jugadores por juego: límite de lectura alcanzado");
 
   const activeSessionIds=new Set(
     presenceRows.map(x=>String(x.session_id||"").trim()).filter(Boolean)
