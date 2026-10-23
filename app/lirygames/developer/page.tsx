@@ -1,3 +1,4 @@
+import {LirySignInOptionsPreview} from "../../../components/LirySignInOptionsPreview";
 import {LiryPasswordRecoveryPreview} from "../../../components/LiryPasswordRecoveryPreview";
 import Link from "next/link";
 import styles from "../mi-liry/mi-liry.module.css";
@@ -12,6 +13,7 @@ export default async function LiryDeveloperPage({searchParams}:{searchParams:Pro
   <section className={styles.hero} aria-labelledby="developer-title"><span className={styles.eyebrow}>{copy.eyebrow}</span><h1 id="developer-title">LIRY <em>{locale==="es"?"DESARROLLADOR":"DEVELOPER"}</em></h1><p>{copy.description}</p><span className={styles.state}>{copy.state}</span></section>
   <section className={styles.content} aria-label={copy.areasAria}>
   <LiryDeveloperAreas locale={locale} />
+  <LirySignInOptionsPreview locale={locale} role="developer" />
   <LiryPasswordRecoveryPreview locale={locale} role="developer" />
   <div className={styles.notice}><strong>{copy.noticeTitle}</strong><p>{copy.notice}</p><Link href={`/lirygames?lang=${locale}`}>{copy.return} →</Link></div></section>
   <footer className={styles.footer}>© {new Date().getFullYear()} LIRYGAMES STUDIOS · {copy.rights}</footer>
