@@ -20,3 +20,5 @@ test("developer dialog navigation aria label is properly translated",()=>{assert
 test("developer wizard announces current step accessibly",()=>{assert.match(src,/<small aria-live="polite" aria-atomic="true">\{currentIndex\+1\} \/ \{areas\.length\}<\/small>/);});
 
 test("developer dialog opener identifies its controlled dialog",()=>{assert.match(src,/aria-controls="liry-developer-area-dialog"/);assert.match(src,/<dialog id="liry-developer-area-dialog"/);});
+
+test("developer and player modal navigation preserves mobile touch targets",()=>{const css=readFileSync(new URL("../app/lirygames/mi-liry/mi-liry.module.css",import.meta.url),"utf8");assert.match(css,/\.areaClose\{min-width:44px;min-height:44px/);assert.match(css,/\.areaLink\{min-height:44px/);assert.match(css,/\.developerWizardActions button\{touch-action:manipulation;min-height:44px\}/);assert.match(css,/\.accountLanguageNav a\{min-height:44px/);});
