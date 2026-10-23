@@ -30,3 +30,5 @@ test("mobile menu links retain 44px touch targets after compact header rules",()
 test("mobile menu toggle has 44px touch target",()=>{assert.match(css,/\.nav \.navMenuToggle\{width:44px;height:44px;min-width:44px;min-height:44px\}/);});
 
 test("desktop primary navigation keeps Store on a single header row",()=>{assert.match(css,/@media\(min-width:751px\)\{\.nav>nav\{flex-wrap:nowrap;white-space:nowrap/);assert.match(css, /@media\(min-width:751px\) and \(max-width:1200px\)/);});
+
+test("desktop header keeps primary navigation on one row without moving utilities",()=>{assert.match(css,/Desktop header: reserve an independent single-line lane/);assert.match(css,/\.nav>nav\{display:flex;flex:1 1 auto;min-width:0;max-width:100%;flex-wrap:nowrap/);assert.match(css,/\.nav>nav>a\{display:inline-flex;align-items:center;flex-shrink:0;white-space:nowrap/);});
