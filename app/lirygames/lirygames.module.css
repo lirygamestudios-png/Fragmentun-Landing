@@ -1824,3 +1824,7 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 
 /* Keep every mobile navigation destination comfortably touch-sized. */
 @media(max-width:749px){.nav .navMenuPanel a{min-height:44px;padding:9px 8px;line-height:1.3}.nav .navMenuToggle{width:44px;height:44px;min-width:44px;min-height:44px}}
+
+/* Desktop primary navigation: keep Store on the same line as the other links. */
+@media(min-width:751px){.nav>nav{flex-wrap:nowrap;white-space:nowrap;gap:clamp(8px,1.1vw,17px);flex:1 1 auto;justify-content:center}.nav>nav>a{flex:0 0 auto}}
+@media(min-width:751px) and (max-width:1200px){.nav{padding-inline:clamp(12px,2vw,24px);gap:clamp(8px,1vw,14px)}.nav>nav{gap:clamp(6px,.75vw,11px)}.nav>nav>a{font-size:11px}}
