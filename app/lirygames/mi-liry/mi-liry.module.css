@@ -419,3 +419,9 @@
 .ageGateContinue{margin:4px 12px 12px;min-height:44px;padding:10px 14px;border:1px solid #367eaa;border-radius:7px;background:#092944;color:#bad6e8;font-weight:700;cursor:not-allowed;opacity:.78}
 .authPreviewDisclosure>p{margin:10px 12px}
 @media(max-width:380px){.ageGateFields{gap:6px}.ageGateFields input{padding:8px}}
+
+/* Liry ID registration: compact informational sequence without data collection. */
+.registrationPreviewSteps{margin:12px;padding:0 12px 0 32px;display:grid;gap:11px;color:#dbedff}
+.registrationPreviewSteps li{padding-left:4px;font-size:13px;line-height:1.5}
+.registrationPreviewSteps li strong{display:block;color:#83dcff}
+.registrationPreviewSteps li span{display:block;color:#bed5e9}
