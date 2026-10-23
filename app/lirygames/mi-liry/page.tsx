@@ -1,3 +1,4 @@
+import {LiryPasswordRecoveryPreview} from "../../../components/LiryPasswordRecoveryPreview";
 import Link from "next/link";
 import {VISITOR_GAMER_SNAPSHOT} from "../../../lib/games/public-gamer-snapshot";
 import styles from "./mi-liry.module.css";
@@ -16,6 +17,7 @@ export default async function MiLiryPage({searchParams}:{searchParams:Promise<{l
   <section className={styles.content} aria-label={copy.accountSummary}><LiryPlayerIdentityHeader locale={locale} displayName={gamer.displayName} eyebrow={copy.profile} note={copy.pendingIdentity}/>
   <MiLiryAreas locale={locale} />
   <LiryPlayerAccountCenter locale={locale} />
+  <LiryPasswordRecoveryPreview locale={locale} role="player" />
   <div className={styles.notice}><strong>{copy.comingSoon}</strong><p>{copy.notice}</p><Link href={`/lirygames?lang=${locale}#perfil-gamer`}>{copy.exploreProfile} →</Link></div></section>
   <footer className={styles.footer}>© {new Date().getFullYear()} LIRYGAMES STUDIOS · {copy.rights}</footer>
  </main>;
