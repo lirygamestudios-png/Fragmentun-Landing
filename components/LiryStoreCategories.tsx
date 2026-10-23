@@ -26,12 +26,12 @@ export function LiryStoreCategories({locale="es",products=[]}:{locale?:LiryFront
  const linkedProductId=useRef<string|null>(null);
  useEffect(()=>{
   if(deepLinkHandled.current)return;
-  deepLinkHandled.current=true;
   const selectedProduct=new URLSearchParams(window.location.search).get("product");
-  if(!selectedProduct)return;
+  if(!selectedProduct){deepLinkHandled.current=true;return;}
   const sorted=[...products].sort((a,b)=>a.name.localeCompare(b.name,locale)||a.id.localeCompare(b.id));
   const targetIndex=sorted.findIndex(item=>item.id===selectedProduct);
   if(targetIndex<0)return;
+  deepLinkHandled.current=true;
   linkedProductId.current=selectedProduct;
   setTerm("");setCategory("all");setAvailability("all");setSortBy("name");
   setPage(Math.floor(targetIndex/12)+1);
