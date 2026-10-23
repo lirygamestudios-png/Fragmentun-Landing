@@ -440,3 +440,11 @@
 .accountAccessDisclosure[open]>summary{border-bottom:1px solid #315d80}
 .accountAccessDisclosureContent{padding:0 14px 8px;min-width:0}
 @media(max-width:560px){.accountAccessDisclosure>summary{padding:12px}.accountAccessDisclosureContent{padding:0 8px 6px}}
+
+/* MI LIRY bilingual header switch consistent with approved navigation. */
+.accountLanguageNav{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid #367da880;border-radius:6px;background:#071a32;color:#a1c2db;font-size:11px;font-weight:800;white-space:nowrap}
+.accountLanguageNav a{padding:8px 3px;min-height:34px;display:inline-flex;align-items:center;color:#9fb9cd;text-decoration:none}
+.accountLanguageNav a[aria-current="page"]{color:#63dcff}
+.accountLanguageNav a:hover{color:#eafaff}
+.accountLanguageNav a:focus-visible{outline:2px solid #9aeaff;outline-offset:2px}
+@media(max-width:560px){.accountLanguageNav{align-self:flex-start}}
