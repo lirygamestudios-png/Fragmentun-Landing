@@ -31,7 +31,7 @@ export function LiryShareEntry({name,locale="es",section="catalog",targetId,prod
    <svg viewBox="0 0 24 24" width="27" height="27" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><path d="M20.5 11.6a8.5 8.5 0 0 1-12.6 7.5L3 20.4l1.3-4.8A8.5 8.5 0 1 1 20.5 11.6Z"/><path d="M8.3 7.8c-.5.4-.7 1.1-.4 2 .7 2.1 3.2 4.6 5.3 5.4.9.3 1.7.1 2-.4l.6-1.2-2.4-1.2-1 1c-1.3-.6-2.3-1.6-2.9-2.9l.9-1-1.2-2.3Z"/></svg>
   </button>
   <span role="status" aria-live="polite">{notice}</span>
-  <dialog ref={dialog} className={styles.liryWhatsappDialog} aria-label={es?"Vista previa para compartir por WhatsApp":"WhatsApp share preview"} onClose={()=>opener.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
+  <dialog ref={dialog} className={styles.liryWhatsappDialog} aria-label={es?"Vista previa para compartir por WhatsApp":"WhatsApp share preview"} onClose={()=>{if(opener.current?.isConnected)opener.current.focus({preventScroll:true});opener.current=null}} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
    <div className={styles.liryWhatsappCard}>
     <form method="dialog"><button type="submit" className={styles.liryWhatsappClose} aria-label={es?"Cerrar":"Close"}>×</button></form>
     <div className={styles.liryWhatsappBrand}><img src="/lirygames-brand-icon.svg" width={56} height={56} alt={es?"Logotipo oficial de LIRYGAMES STUDIOS":"Official LIRYGAMES STUDIOS logo"}/><div><strong>LIRYGAMES STUDIOS</strong><p>{slogan}</p></div></div>
