@@ -11,3 +11,5 @@ test("share preview frame expands on desktop and mobile",()=>{assert.match(css,/
 test("share icon sizing cannot apply to buttons inside modal",()=>{assert.doesNotMatch(css,/\.liryShareEntry button\{display:inline-grid;place-items:center;flex:0 0 34px/);assert.match(css,/\.liryShareEntry>button\{display:inline-grid;place-items:center;flex:0 0 34px/);});
 
 test("mobile product cards have an ordered vertical layout without changing the share modal",()=>{assert.match(css,/@media\(max-width:560px\)\{\.liryStoreProducts\{[^}]*align-items:stretch/);assert.match(css,/\.liryStoreProduct\{display:flex;flex-direction:column;align-items:stretch;gap:10px/);assert.match(css,/\.liryStoreProduct h4\{margin:0;line-height:1\.4;min-height:2\.8em/);assert.match(css,/\.liryStoreProduct>\.liryShareEntry\{align-self:flex-start;margin:0/);});
+
+test("WhatsApp share dialog only restores focus to mounted product icon",()=>{assert.match(share,/if\(opener\.current\?\.isConnected\)opener\.current\.focus/);assert.match(share,/opener\.current=null/);});
