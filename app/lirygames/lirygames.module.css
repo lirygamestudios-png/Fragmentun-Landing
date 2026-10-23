@@ -1823,4 +1823,4 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 }
 
 /* Keep every mobile navigation destination comfortably touch-sized. */
-@media(max-width:750px){.nav .navMenuPanel a{min-height:44px;padding:9px 8px;line-height:1.3}}
+@media(max-width:749px){.nav .navMenuPanel a{min-height:44px;padding:9px 8px;line-height:1.3}}
