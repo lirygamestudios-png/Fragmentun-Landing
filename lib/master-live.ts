@@ -15,6 +15,7 @@ export type MasterGameLiveMetric={
 export type MasterLiveSnapshot={
   generatedAt:string;
   timeZone:string;
+  sourceWarnings:string[];
   activeUsers:number;
   gamePlayersToday:number;
   salesTodayCents:number;
@@ -79,14 +80,14 @@ export async function getMasterLiveSnapshot(supabase:any):Promise<MasterLiveSnap
   const todayDate=`${zp.year}-${String(zp.month).padStart(2,"0")}-${String(zp.day).padStart(2,"0")}`;
 
   const[
-    {data:games},
-    {data:presence},
-    {data:paidOrders},
-    {data:gamePurchases},
-    {data:engagementToday},
-    {count:failedWebPaymentsToday},
-    {count:failedGamePaymentsToday},
-    {count:leadsToday}
+    {data:games,error:gamesError},
+    {data:presence,error:presenceError},
+    {data:paidOrders,error:paidOrdersError},
+    {data:gamePurchases,error:gamePurchasesError},
+    {data:engagementToday,error:engagementTodayError},
+    {count:failedWebPaymentsToday,error:failedWebPaymentsTodayError},
+    {count:failedGamePaymentsToday,error:failedGamePaymentsTodayError},
+    {count:leadsToday,error:leadsTodayError}
   ]=await Promise.all([
     supabase.from("game_titles").select("id,slug,name,lifecycle_stage,health_status,metadata").order("created_at",{ascending:true}),
     supabase.from("analytics_events").select("session_id,metadata,created_at").eq("event_name","presence_ping").gte("created_at",since5).limit(5000),
@@ -97,6 +98,17 @@ export async function getMasterLiveSnapshot(supabase:any):Promise<MasterLiveSnap
     supabase.from("game_purchase_events").select("*",{count:"exact",head:true}).in("status",["failed","chargeback"]).gte("purchased_at",todayStart),
     supabase.from("leads").select("*",{count:"exact",head:true}).gte("created_at",todayStart)
   ]);
+
+  const sourceWarnings=[
+    gamesError?"Catálogo de juegos":null,
+    presenceError?"Sesiones activas":null,
+    paidOrdersError?"Ventas de tienda":null,
+    gamePurchasesError?"Compras dentro de juegos":null,
+    engagementTodayError?"Jugadores por juego":null,
+    failedWebPaymentsTodayError?"Pagos fallidos de tienda":null,
+    failedGamePaymentsTodayError?"Pagos fallidos de videojuegos":null,
+    leadsTodayError?"Contactos nuevos":null,
+  ].filter((value):value is string=>value!==null);
 
   const gameRows=(games||[]) as any[];
   const presenceRows=(presence||[]) as any[];
@@ -196,6 +208,7 @@ export async function getMasterLiveSnapshot(supabase:any):Promise<MasterLiveSnap
 
   return{
     generatedAt:now.toISOString(),
+    sourceWarnings,
     timeZone:TIME_ZONE,
     activeUsers:activeSessionIds.size,
     gamePlayersToday,
