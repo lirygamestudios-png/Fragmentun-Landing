@@ -1828,3 +1828,6 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 /* Desktop primary navigation: keep Store on the same line as the other links. */
 @media(min-width:751px){.nav>nav{flex-wrap:nowrap;white-space:nowrap;gap:clamp(8px,1.1vw,17px);flex:1 1 auto;justify-content:center}.nav>nav>a{flex:0 0 auto}}
 @media(min-width:751px) and (max-width:1200px){.nav{padding-inline:clamp(12px,2vw,24px);gap:clamp(8px,1vw,14px)}.nav>nav{gap:clamp(6px,.75vw,11px)}.nav>nav>a{font-size:11px}}
+
+/* Desktop header: reserve an independent single-line lane for primary links. */
+@media(min-width:751px){.nav{justify-content:space-between;gap:8px;padding-inline:clamp(10px,1.7vw,28px)}.nav>nav{display:flex;flex:1 1 auto;min-width:0;max-width:100%;flex-wrap:nowrap;align-items:center;justify-content:flex-start;gap:clamp(5px,.8vw,12px);overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;white-space:nowrap}.nav>nav>a{display:inline-flex;align-items:center;flex-shrink:0;white-space:nowrap;font-size:clamp(10px,.82vw,13px)}.navUtilities{flex:0 0 auto;gap:clamp(2px,.55vw,8px)}}
