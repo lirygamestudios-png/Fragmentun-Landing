@@ -52,6 +52,7 @@ export default async function LiryContactAdmin({
  const totalPages=Math.max(1,Math.ceil((filteredCount??0)/pageSize));
  const pageLink=(n:number)=>{const base=queryString(selected);return base+(base==="?"?"":"&")+"page="+n;};
  if(!error&&filteredCount!==null&&pageNumber>totalPages)redirect("/admin/master/community/messages"+pageLink(totalPages));
+ const isPending=(item:ContactMessage)=>item.status==="new"||item.status==="reviewing";
  const messages=(data||[]) as ContactMessage[];
  const ids=messages.map(item=>item.id);
  const {data:history,error:historyError}=ids.length
