@@ -18,3 +18,5 @@ test("developer dialog has an accessible title and focus target",()=>{
 test("developer dialog navigation aria label is properly translated",()=>{assert.match(src,/locale==="es"\?"Áreas del Desarrollador":"Developer areas"/);});
 
 test("developer wizard announces current step accessibly",()=>{assert.match(src,/<small aria-live="polite" aria-atomic="true">\{currentIndex\+1\} \/ \{areas\.length\}<\/small>/);});
+
+test("developer dialog opener identifies its controlled dialog",()=>{assert.match(src,/aria-controls="liry-developer-area-dialog"/);assert.match(src,/<dialog id="liry-developer-area-dialog"/);});
