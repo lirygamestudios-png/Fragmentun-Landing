@@ -32,7 +32,11 @@ export const LIRY_ACCOUNT_SECURITY_CHECKLIST=Object.freeze([
  "Configuración aislada de autenticación Liry ID",
  "Verificación de correo electrónico",
  "Protección del inicio de sesión y límites de intentos",
- "Recuperación de contraseña con enlace temporal",
+ "Recuperación de contraseña mediante código de seis dígitos, temporal y de un solo uso",
+ "Caducidad de recuperación a los 10 minutos; códigos protegidos mediante hash, intentos y reenvíos limitados",
+ "Respuesta neutral a solicitudes de recuperación, sin confirmar la existencia del correo",
+ "Separación de identidades y permisos de Jugador y Desarrollador durante la recuperación",
+ "Revocación de sesiones anteriores y aviso por correo al completar el cambio",
  "Cambio de contraseña solo en sesión verificada",
  "Revocación de sesiones mediante servidor",
  "Registro seguro de eventos y protección de datos personales"
