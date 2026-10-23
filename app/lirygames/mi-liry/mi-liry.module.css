@@ -411,3 +411,11 @@
 .authPreviewDisclosure[open] summary{border-bottom:1px solid #315d80}
 .authPreviewDisclosure .signInOptionsPreview,.authPreviewDisclosure .recoveryFields{margin:12px;padding:0}
 @media(max-width:620px){.authPreviewDisclosure .signInOptionsPreview,.authPreviewDisclosure .recoveryFields{margin:10px}}
+
+/* Registration age declaration preview: no birthdate is collected. */
+.ageGateFields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px}
+.ageGateFields label{min-width:0;display:flex;flex-direction:column;gap:6px;color:#d5e8fa;font-size:12px}
+.ageGateFields input{box-sizing:border-box;width:100%;min-height:44px;padding:10px;border:1px solid #315775;border-radius:7px;background:#0b2037;color:#a5c6dc;opacity:.8}
+.ageGateContinue{margin:4px 12px 12px;min-height:44px;padding:10px 14px;border:1px solid #367eaa;border-radius:7px;background:#092944;color:#bad6e8;font-weight:700;cursor:not-allowed;opacity:.78}
+.authPreviewDisclosure>p{margin:10px 12px}
+@media(max-width:380px){.ageGateFields{gap:6px}.ageGateFields input{padding:8px}}
