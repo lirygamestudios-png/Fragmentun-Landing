@@ -1,3 +1,4 @@
+import {LiryPlayerRegistrationPreview} from "../../../components/LiryPlayerRegistrationPreview";
 import {LiryPlayerAgeGatePreview} from "../../../components/LiryPlayerAgeGatePreview";
 import {LirySignInOptionsPreview} from "../../../components/LirySignInOptionsPreview";
 import {LiryPasswordRecoveryPreview} from "../../../components/LiryPasswordRecoveryPreview";
@@ -19,6 +20,7 @@ export default async function MiLiryPage({searchParams}:{searchParams:Promise<{l
   <section className={styles.content} aria-label={copy.accountSummary}><LiryPlayerIdentityHeader locale={locale} displayName={gamer.displayName} eyebrow={copy.profile} note={copy.pendingIdentity}/>
   <MiLiryAreas locale={locale} />
   <LiryPlayerAccountCenter locale={locale} />
+  <LiryPlayerRegistrationPreview locale={locale} />
   <LiryPlayerAgeGatePreview locale={locale} />
   <LirySignInOptionsPreview locale={locale} role="player" />
   <LiryPasswordRecoveryPreview locale={locale} role="player" />
