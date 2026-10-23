@@ -25,4 +25,4 @@ test("mobile menu closes when navigating or clicking outside",()=>{
  assert.match(mobile,/setOpen\(false\)/);
 });
 
-test("mobile menu links retain 44px touch targets after compact header rules",()=>{assert.match(css,/@media\(max-width:750px\)\{\.nav \.navMenuPanel a\{min-height:44px;padding:9px 8px;line-height:1\.3\}\}/);});
+test("mobile menu links retain 44px touch targets after compact header rules",()=>{assert.match(css,/@media\(max-width:749px\)\{\.nav \.navMenuPanel a\{min-height:44px;padding:9px 8px;line-height:1\.3\}\}/);});
