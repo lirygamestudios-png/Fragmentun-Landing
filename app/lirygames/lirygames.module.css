@@ -1583,7 +1583,7 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .liryCatalogFilters input,.liryCatalogFilters select{width:100%;min-height:44px;box-sizing:border-box;padding:9px 12px;border:1px solid #3dadd4;border-radius:9px;background:#08172d;color:#f0faff}
 .liryCatalogFilters button,.liryCatalogPagination button{min-height:44px;padding:9px 13px;border:1px solid #3dadd4;border-radius:9px;background:#0b2643;color:#d9f5ff;cursor:pointer}
 .liryCatalogFilters button:hover,.liryCatalogPagination button:not(:disabled):hover{border-color:#7bdaf8}
-.liryCatalogCount{color:#9bdcf7}
+.liryCatalogCount{color:#9bdcf7;scroll-margin-top:100px}
 .liryCatalogPagination{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:18px 0}
 .liryCatalogPagination button[aria-current="page"]{background:#123e65;border-color:#7bdaf8;box-shadow:0 0 12px #35b9fa4d}
 .liryCatalogPagination button:disabled{opacity:.5;cursor:default}
@@ -1591,6 +1591,7 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 
 /* Tienda: catálogo publicado sin artículos ficticios, paginación 12 por página. */
 .liryStoreListing{margin:24px 0;color:#e7f7ff}
+.liryStoreListing>p[tabindex]{scroll-margin-top:100px}
 .liryStoreFilters{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin:18px 0}
 .liryStoreFilters label{display:flex;flex-direction:column;gap:7px;flex:1 1 170px}
 .liryStoreFilters input,.liryStoreFilters select{box-sizing:border-box;width:100%;min-height:44px;padding:10px;border:1px solid #3dadd4;border-radius:9px;background:#08172d;color:#e7f7ff}
