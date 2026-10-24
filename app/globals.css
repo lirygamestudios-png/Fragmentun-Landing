@@ -5538,3 +5538,11 @@ button,.btn,.menuButton,.characterModalNav button,.reviewCarouselNav button{
 .adminMain .adminSaleModeChoices button:not(:disabled):active{
   transform:scale(.985);
 }
+
+
+/* Lumen WhatsApp sharing: compact, accessible and consistent with FRAGMENTUN */
+.lumenShareActions{display:flex;align-items:center;flex-wrap:wrap;gap:12px}
+.lumenWhatsappShare{display:inline-flex;align-items:center;justify-content:center;flex:0 0 49px;width:49px;height:49px;color:#e8f3ff;background:linear-gradient(135deg,rgba(16,43,66,.92),rgba(7,22,42,.98));border:1px solid rgba(74,144,217,.75);border-radius:999px;text-decoration:none;box-shadow:inset 0 0 0 1px rgba(201,168,76,.15),0 0 17px rgba(74,144,217,.19);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.lumenWhatsappShare:hover{transform:translateY(-2px);border-color:#c9a84c;box-shadow:0 0 20px rgba(74,144,217,.42)}
+.lumenWhatsappShare:focus-visible{outline:3px solid #c9a84c;outline-offset:3px}
+@media(max-width:480px){.lumenShareActions{gap:9px}.lumenShareActions .btn{max-width:calc(100% - 62px);font-size:.88rem;padding:12px 14px}}
