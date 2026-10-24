@@ -237,3 +237,14 @@ test("Developer dossier and review offer labeled reciprocal navigation",()=>{
  assert.ok(dossier.includes('href="/admin/master/developers/review"'));
  assert.ok(review.includes('href="/admin/master/developers/dossier"'));
 });
+
+test("Developer cross-navigation remains keyboard accessible and mobile responsive",()=>{
+ const css=text("app/admin/master/master-admin.module.css");
+ for(const section of ["dossier","review"]){
+  const src=text("app/admin/master/developers/"+section+"/page.tsx");
+  assert.ok(src.includes('className={styles.developerSubnav}'));
+  assert.ok(src.includes('aria-label="Navegación de Liry Developers"'));
+ }
+ assert.ok(css.includes(".developerSubnav a:focus-visible"));
+ assert.ok(css.includes("@media(max-width:600px){.developerSubnav"));
+});
