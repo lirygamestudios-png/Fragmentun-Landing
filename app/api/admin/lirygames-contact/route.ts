@@ -5,6 +5,10 @@ import {createSupabaseServerClient} from "../../../../lib/supabase/server";
 import {consumePublicRateLimit} from "../../../../lib/rate-limit";
 export const runtime="nodejs";
 export async function PATCH(req:NextRequest){
+ // Deny cross-project writes until the LIRYGAMES backend is independently verified.
+ const endpoint=process.env.NEXT_PUBLIC_SUPABASE_URL||"";
+ if(process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED!=="true"||!endpoint||endpoint.includes("pasoapugmsazziflaomp"))
+  return NextResponse.json({ok:false,error:"lirygames_data_isolation_pending"},{status:503,headers:{"Cache-Control":"no-store"}});
  const supabase=await createSupabaseServerClient();
  const {data:{user}}=await supabase.auth.getUser();
  if(!user)return NextResponse.json({ok:false,message:"Inicia sesión."},{status:401});
