@@ -8,7 +8,8 @@ const groups=[
   {label:"OPERACIÓN",items:[
     ["/admin/master/operations","◆","Operaciones"],
     ["/admin/master/games","◈","Juegos"],
-    ["/admin/master/publishing","↗","Publicación"]
+    ["/admin/master/publishing","↗","Publicación"],
+    ["/admin/master/developers","◇","Liry Developers"]
   ]},
   {label:"NEGOCIO",items:[
     ["/admin/master/growth","↗","Crecimiento"],
