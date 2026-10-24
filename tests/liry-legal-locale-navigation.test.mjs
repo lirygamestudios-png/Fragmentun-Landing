@@ -15,7 +15,7 @@ const detail=readFileSync(new URL("../app/lirygames/legal/[slug]/page.tsx",impor
 test("legal detail keeps locale in return navigation and distinguishes untranslated clauses",()=>{
  assert.match(detail,/getReleasedLiryFrontdeskLocale\(\(await searchParams\)\.lang\)/);
  assert.match(detail,/lirygames\/legal\?lang=\$\{locale\}/);
- assert.match(detail,/lirygames\?lang=\$\{locale\}#contacto/);
+ assert.match(detail,/lirygames\?lang=\$\{locale\}#comunidad/);
  assert.match(detail,/draft clauses below are currently available in Spanish only/);
 });
 
