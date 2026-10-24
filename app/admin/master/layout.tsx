@@ -2,6 +2,7 @@ import {createHash} from "crypto";
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
 import {createSupabaseServerClient} from "../../../lib/supabase/server";
+import {hasSatisfiedMfa} from "../../../lib/supabase/mfa";
 import {MasterSidebar} from "../../../components/MasterSidebar";
 import styles from "./master-admin.module.css";
 
@@ -19,6 +20,7 @@ export default async function MasterAdminLayout({children}:{children:React.React
     .maybeSingle();
 
   if(!profile)redirect("/admin/lirygames/login?unauthorized=1");
+  if(!(await hasSatisfiedMfa(supabase)))redirect("/admin/lirygames/mfa");
 
   const cookieStore=await cookies();
   const contextToken=cookieStore.get("liry_mfa_context")?.value;
