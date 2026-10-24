@@ -26,9 +26,9 @@ const providers = [
   {
     name:"Didit",
     category:"Verificación de identidad",
-    status:"APERTURA PENDIENTE",
-    detail:"Proveedor seleccionado para evaluación. No se ha abierto sesión de verificación ni se han enviado documentos o biometría.",
-    checklist:["Abrir cuenta y revisar plan vigente","Verificar disponibilidad por país y políticas","Definir consentimiento y conservación de datos","Diseñar callback firmado e idempotencia","Mantener revisión humana y aprobación final"],
+    status:"CUENTA ABIERTA · CONEXIÓN NO VERIFICADA",
+    detail:"El propietario confirma que la cuenta de Didit está abierta. La declaración de actividad, el flujo KYC y la conexión técnica siguen pendientes. No se ha realizado ninguna verificación desde LIRYGAMES.",
+    checklist:["Declarar actividad empresarial y revisar plan vigente","Verificar disponibilidad por país y políticas","Definir consentimiento y conservación de datos","Diseñar callback firmado e idempotencia","Mantener revisión humana y aprobación final"],
   },
 ] as const;
 
@@ -50,7 +50,7 @@ export default async function ProvidersReadinessPage(){
     </section>
     <section className={styles.grid} aria-label="Proveedores previstos">
       {providers.map(provider=><article className={styles.card} key={provider.name}>
-        <div className={styles.cardTop}><span>{provider.category}</span><em>PENDIENTE</em></div>
+        <div className={styles.cardTop}><span>{provider.category}</span><em>INTEGRACIÓN PENDIENTE</em></div>
         <h3>{provider.name}</h3>
         <p><strong>{provider.status}</strong></p>
         <p>{provider.detail}</p>
