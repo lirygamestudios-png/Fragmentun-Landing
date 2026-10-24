@@ -84,7 +84,6 @@ export default function LiryGamesLoginPage(){
         </form>
         <div className="authLinks">
           <Link href="/admin/lirygames/forgot-password">¿Olvidaste tu contraseña?</Link>
-          <Link href="/admin/login">Acceso FRAGMENTUN</Link>
         </div>
         {status&&<p className={`note authStatus ${statusType}`} role="status" aria-live="polite">{status}</p>}
       </section>
