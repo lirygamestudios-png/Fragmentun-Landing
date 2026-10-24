@@ -248,3 +248,17 @@ test("Developer cross-navigation remains keyboard accessible and mobile responsi
  assert.ok(css.includes(".developerSubnav a:focus-visible"));
  assert.ok(css.includes("@media(max-width:600px){.developerSubnav"));
 });
+
+test("Developer administrative screens keep explicit no-live-data notices and return paths",()=>{
+ const screens=[
+  ["app/admin/master/developers/page.tsx","/admin/master"],
+  ["app/admin/master/developers/dossier/page.tsx","/admin/master/developers"],
+  ["app/admin/master/developers/review/page.tsx","/admin/master/developers"]
+ ];
+ for(const [path,back] of screens){
+  const source=text(path);
+  assert.match(source,/<h1>[^<]+<\/h1>/,path);
+  assert.ok(source.includes('href="'+back+'"'),path);
+  assert.match(source,/Sin solicitudes reales|sin datos personales|no tramita solicitudes reales/i,path);
+ }
+});
