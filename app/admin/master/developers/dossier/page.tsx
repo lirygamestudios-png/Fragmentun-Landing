@@ -30,7 +30,7 @@ export default async function DeveloperDossierReadiness(){
  if(!(await hasSatisfiedMfa(supabase)))redirect("/admin/lirygames/mfa");
  return <main className={`${styles.workspace} ${styles.modulePage}`}>
   <header className={styles.topbar}><div><span className={styles.eyebrow}>LIRYGAMES · LIRY DEVELOPERS</span><h1>Expediente de desarrollador</h1><p>Estructura de expediente y controles de acceso. No hay expedientes reales cargados ni consultas de datos personales.</p></div><a className={styles.publicSite} href="/admin/master/developers">← Admisión</a></header>
-  <nav aria-label="Navegación de Liry Developers"><a className={styles.publicSite} href="/admin/master/developers/review">Continuar a revisión →</a></nav>
+  <nav className={styles.developerSubnav} aria-label="Navegación de Liry Developers"><a className={styles.publicSite} href="/admin/master/developers/review">Continuar a revisión →</a></nav>
   <section className={styles.moduleStrip} aria-label="Estado de expediente">
    <span className={styles.moduleGlyph} aria-hidden="true">ED</span>
    <div className={styles.moduleStripCopy}><small>MODELO DE EXPEDIENTE</small><strong>Sin solicitudes reales · Sin almacenamiento documental</strong><p>La visualización describe los controles futuros, no confirma que exista un desarrollador aprobado.</p></div>
