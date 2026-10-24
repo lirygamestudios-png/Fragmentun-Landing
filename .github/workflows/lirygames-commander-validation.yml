@@ -1,5 +1,16 @@
 name: LIRYGAMES Commander — validación manual
 on:
+  push:
+    branches:
+      - work/master-admin-implementation
+    paths:
+      - 'app/admin/master/**'
+      - 'app/api/admin/lirygames/**'
+      - 'app/api/admin/master/**'
+      - 'app/api/admin/lirygames-contact/**'
+      - 'components/MasterSidebar.tsx'
+      - 'tests/liry-commander-developer-pages.test.mjs'
+      - '.github/workflows/lirygames-commander-validation.yml'
   workflow_dispatch:
 
 permissions:
