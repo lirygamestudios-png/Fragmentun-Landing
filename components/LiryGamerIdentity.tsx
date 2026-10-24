@@ -3,6 +3,7 @@ import {useEffect,useRef,useState,type ChangeEvent} from "react";
 import styles from "../app/lirygames/lirygames.module.css";
 import type {PublicGamerSnapshot} from "../lib/games/public-gamer-snapshot";
 import {calculateGamerXpProgress} from "../lib/games/gamer-xp";
+import {isValidLiryDisplayName} from "../lib/games/liry-display-name-validation";
 import {liryFrontdeskStrings,type LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
 
 
@@ -19,9 +20,9 @@ export function LiryGamerIdentity({snapshot,locale="es"}:{snapshot:Readonly<Publ
  const [displayNamePreview,setDisplayNamePreview]=useState<string|null>(null);
  useEffect(()=>{
   const syncDisplayName=()=>{
-   try{const saved=sessionStorage.getItem("liry:temporary-display-name");setDisplayNamePreview(saved&&saved.length<=40?saved:null)}catch{setDisplayNamePreview(null)}
+   try{const saved=sessionStorage.getItem("liry:temporary-display-name");setDisplayNamePreview(saved&&isValidLiryDisplayName(saved)?saved:null)}catch{setDisplayNamePreview(null)}
   };
-  const onDisplayName=(event:Event)=>{const name=(event as CustomEvent<{name?:string}>).detail?.name;setDisplayNamePreview(typeof name==="string"&&name.length<=40&&name.trim()===name&&name.length>=2?name:null)};
+  const onDisplayName=(event:Event)=>{const name=(event as CustomEvent<{name?:string}>).detail?.name;setDisplayNamePreview(typeof name==="string"&&isValidLiryDisplayName(name)?name:null)};
   syncDisplayName();
   window.addEventListener("liry:display-name-preview",onDisplayName);
   window.addEventListener("pageshow",syncDisplayName);
