@@ -74,6 +74,15 @@ export default async function MasterIntegrationsPage(){
       </div>
     </section>
 
+    <section className={styles.grid} aria-label="Preparación de pagos e identidad">
+      <a className={styles.card} href="/admin/master/integrations/providers">
+        <div className={styles.cardTop}><span className={styles.badgePlanned}>SIN ACTIVAR</span><em>IDENTIDAD Y PAGOS</em></div>
+        <h3>Stripe Connect · PayPal · Didit</h3>
+        <p>Revisar requisitos, controles y etapas de preparación. Cuentas declaradas no equivalen a conexiones verificadas.</p>
+        <span className={styles.cardLink}>Abrir preparación de proveedores →</span>
+      </a>
+    </section>
+
     <section className={styles.kpis}>
       <article><small>Servicios detectados</small><strong>{providers.length}</strong><span>Con actividad registrada</span></article>
       <article><small>Eventos correctos</small><strong>{ok}</strong><span>Últimos 100 registros</span></article>
