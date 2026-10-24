@@ -17,7 +17,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ loc
           </div>
         </div>
         <div style={{ display:"flex",flexDirection:"column",justifyContent:"center",padding:"66px 80px",zIndex:2,maxWidth:850 }}>
-          <div style={{ fontSize:27,letterSpacing:11,color:"#d7b96e",marginBottom:25 }}>LIRYGAMES STUDIOS</div>
+          <div style={{ fontSize:27,letterSpacing:11,color:"#d7b96e",marginBottom:25 }}>JOSÉ LIRANZO  ·  AUTOR</div>
           <div style={{ fontSize:88,fontWeight:700,letterSpacing:3,lineHeight:1.05,color:"#f4dfaa",marginBottom:18 }}>FRAGMENTUN</div>
           <div style={{ height:3,width:220,background:"#d7b96e",marginBottom:29 }}/>
           <div style={{ fontSize:34,lineHeight:1.25,maxWidth:660 }}>{isEs ? "LUMEN: DONDE SENTIR ES REBELARSE" : "LUMEN: WHERE FEELING IS REBELLION"}</div>
