@@ -114,3 +114,18 @@ test("Operations, Games and Publishing block shared data reads and server mutati
   assert.ok(page>=0&&gate>page&&query>gate,domain+" read guard precedes domain queries");
  }
 });
+
+test("Sensitive Commander modules deny shared backend reads and mutations",()=>{
+ for(const domain of ["automation","people","legal","security"]){
+  const source=text("app/admin/master/"+domain+"/page.tsx");
+  assert.match(source,/function requireIsolatedCommanderData\(\)/);
+  assert.match(source,/LIRYGAMES_COMMANDER_DATA_NOT_ISOLATED/);
+  const editor=source.indexOf("requireIsolatedCommanderData();");
+  const editorAuth=source.indexOf("const supabase=await createSupabaseServerClient();",editor);
+  assert.ok(editor>=0 && editorAuth>editor,"server action must deny shared backend: "+domain);
+  const page=source.indexOf("export default async function");
+  const gate=source.indexOf('process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED!=="true"',page);
+  const businessQuery=source.indexOf('supabase.from(',source.indexOf('if(!profile) redirect(',page)+1);
+  assert.ok(page>=0 && gate>page && businessQuery>gate,"page must gate domain queries: "+domain);
+ }
+});
