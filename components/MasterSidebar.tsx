@@ -56,9 +56,16 @@ export function MasterSidebar({displayName,role}:{displayName:string;role:string
     if(signingOut)return;
     setSigningOut(true);
     try{
-      await fetch("/api/admin/lirygames/logout",{method:"POST"});
-    }finally{
+      const response=await fetch("/api/admin/lirygames/logout",{method:"POST",cache:"no-store"});
+      if(!response.ok){
+        setSigningOut(false);
+        window.alert("No fue posible confirmar el cierre de sesión. Vuelve a intentarlo.");
+        return;
+      }
       window.location.assign("/admin/lirygames/login");
+    }catch{
+      setSigningOut(false);
+      window.alert("No fue posible conectar para cerrar sesión. Vuelve a intentarlo.");
     }
   }
 
