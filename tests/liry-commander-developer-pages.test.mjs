@@ -72,3 +72,17 @@ test("integration overview prevents reading shared FRAGMENTUN datasets",()=>{
  assert.ok(source.includes('endpoint.includes("pasoapugmsazziflaomp")'));
  assert.ok(source.includes('Consultas a integraciones suspendidas'));
 });
+
+test("Growth and Data reject shared database access for reads and mutations",()=>{
+ for(const route of ["growth","data"]){
+  const source=text("app/admin/master/"+route+"/page.tsx");
+  assert.match(source,/function requireIsolatedLirygamesData\(\)/);
+  assert.match(source,/requireIsolatedLirygamesData\(\);\s*const supabase=await createSupabaseServerClient\(\)/);
+  assert.match(source,/LIRYGAMES_COMMUNITY_DATA_ISOLATED/);
+  assert.match(source,/endpoint\.includes\("pasoapugmsazziflaomp"\)/);
+  const fn=source.indexOf("export default async function");
+  const gate=source.indexOf('process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED!=="true"',fn);
+  const data=source.indexOf('supabase.from("analytics_events")',fn);
+  assert.ok(gate>=0 && data>gate,"isolation gate precedes analytics reads");
+ }
+});
