@@ -2,3 +2,5 @@ import test from "node:test";import assert from "node:assert/strict";import {rea
 test("account navigation announces active section progress",()=>{assert.match(src,/aria-live="polite" aria-atomic="true">\{active\+1\}/);assert.match(src,/role="region" aria-label=\{copy.sections\[active\]\}/);});
 
 test("account inner and outer navigation restore panel focus without scrolling",()=>{assert.match(src,/const goInnerStep=.*?requestAnimationFrame\(\(\)=>\{stepPanel\.current\?\.focus\(\{preventScroll:true\}\)/);assert.match(src,/const switchAccountSection=.*?requestAnimationFrame\(\(\)=>\{stepPanel\.current\?\.focus\(\{preventScroll:true\}\)/);});
+
+test("resetting temporary preferences restores focus to the active account panel",()=>{assert.match(src,/const resetPreview=\(\)=>\{[\s\S]*?requestAnimationFrame\(\(\)=>stepPanel\.current\?\.focus\(\{preventScroll:true\}\)\)/);});
