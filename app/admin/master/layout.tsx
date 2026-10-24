@@ -19,7 +19,7 @@ export default async function MasterAdminLayout({children}:{children:React.React
     .eq("user_id",user.id)
     .maybeSingle();
 
-  if(!profile)redirect("/admin/lirygames/login?unauthorized=1");
+  if(!profile||profile.role!=="admin")redirect("/admin/lirygames/login?unauthorized=1");
   if(!(await hasSatisfiedMfa(supabase)))redirect("/admin/lirygames/mfa");
 
   const cookieStore=await cookies();
