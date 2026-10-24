@@ -28,6 +28,7 @@ export default async function DeveloperReviewPage(){
  if(!(await hasSatisfiedMfa(supabase)))redirect("/admin/lirygames/mfa");
  return <main className={`${styles.workspace} ${styles.modulePage}`}>
   <header className={styles.topbar}><div><span className={styles.eyebrow}>LIRYGAMES · DESARROLLADORES</span><h1>Revisión administrativa</h1><p>Preparación de permisos y estados de aprobación. Sin solicitudes reales, sin acciones de aprobación y sin conexión a proveedores.</p></div><a className={styles.publicSite} href="/admin/master/developers">← Admisión</a></header>
+  <nav aria-label="Navegación de Liry Developers"><a className={styles.publicSite} href="/admin/master/developers/dossier">Consultar expediente →</a></nav>
   <section className={styles.moduleStrip} aria-label="Control de seguridad">
    <span className={styles.moduleGlyph} aria-hidden="true">RV</span>
    <div className={styles.moduleStripCopy}><small>VERIFICACIÓN DE POLÍTICAS</small><strong>Autorizaciones cerradas por defecto</strong><p>Una señal de identidad no firmada o sin función habilitada no puede aprobar solicitudes.</p></div>
