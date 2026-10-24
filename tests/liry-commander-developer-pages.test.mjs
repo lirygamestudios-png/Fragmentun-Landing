@@ -192,3 +192,11 @@ test("LIRYGAMES logout never returns success on auth sign-out error",()=>{
  assert.match(source,/liry_mfa_context/);
  assert.match(source,/Cache-Control/);
 });
+
+test("Commander logout UI handles API failures without claiming success",()=>{
+ const src=text("components/MasterSidebar.tsx");
+ assert.match(src,/if\(!response\.ok\)/);
+ assert.match(src,/setSigningOut\(false\)/);
+ assert.match(src,/window\.location\.assign\("\/admin\/lirygames\/login"\)/);
+ assert.ok(!src.includes("finally{\n      window.location.assign"));
+});
