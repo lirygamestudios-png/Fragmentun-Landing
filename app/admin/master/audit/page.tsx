@@ -40,6 +40,10 @@ export default async function MasterAuditPage(){
     .maybeSingle();
 
   if(!profile||!["admin","editor"].includes(profile.role)) redirect("/admin/master");
+  if(process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED!=="true"||!process.env.NEXT_PUBLIC_SUPABASE_URL||process.env.NEXT_PUBLIC_SUPABASE_URL.includes("pasoapugmsazziflaomp")){
+    return <main className={styles.workspace}><header className={styles.topbar}><div><span className={styles.eyebrow}>LIRYGAMES · COMMANDER CENTER</span><h1>Auditoría</h1><p>Información suspendida hasta confirmar el aislamiento de datos de LIRYGAMES respecto a FRAGMENTUN.</p></div></header><section className={styles.moduleStrip}><span className={styles.moduleGlyph} aria-hidden="true">LG</span><div className={styles.moduleStripCopy}><small>DATOS NO AISLADOS</small><strong>Consultas administrativas suspendidas</strong><p>No se muestran registros de otros proyectos ni copias de seguridad compartidas.</p></div></section></main>;
+  }
+
 
   const[
     {data:events},
