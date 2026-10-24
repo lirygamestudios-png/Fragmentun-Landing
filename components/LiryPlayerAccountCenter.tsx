@@ -97,7 +97,7 @@ export function LiryPlayerAccountCenter({locale="es"}:{locale?:LiryFrontdeskLoca
   image.src=next;
  };
  const resetIdentityPreview=()=>{updatePublicName("");removeAvatar();nameInput.current?.focus()};
- const resetPreview=()=>{setSaveNotice(null);if(selected==="configuracion"){setNotices(false);setReduceMotion(false);setLargeText(false)}else if(selected==="privacidad"){setPrivateProfile(true)}};
+ const resetPreview=()=>{setSaveNotice(null);if(selected==="configuracion"){setNotices(false);setReduceMotion(false);setLargeText(false)}else if(selected==="privacidad"){setPrivateProfile(true)}requestAnimationFrame(()=>stepPanel.current?.focus({preventScroll:true}))};
  const active=sections.indexOf(selected);
  const stepPanel=useRef<HTMLDivElement>(null);
  const switchAccountSection=(next:number)=>{setSelected(sections[next]);setSaveNotice(null);requestAnimationFrame(()=>{stepPanel.current?.focus({preventScroll:true});});};
