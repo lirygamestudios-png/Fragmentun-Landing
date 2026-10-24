@@ -25,8 +25,14 @@ function campaignTypeLabel(value:string){
   return map[value]||String(value||"").toUpperCase();
 }
 
+function requireIsolatedCommanderData(){
+ const endpoint=process.env.NEXT_PUBLIC_SUPABASE_URL||"";
+ if(process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED!=="true"||!endpoint||endpoint.includes("pasoapugmsazziflaomp")) throw new Error("LIRYGAMES_COMMANDER_DATA_NOT_ISOLATED");
+}
+
 async function requireBrandEditor(){
   "use server";
+  requireIsolatedCommanderData();
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user) redirect("/admin/lirygames/login");
@@ -124,6 +130,10 @@ export default async function MasterBrandPage(){
   if(!user) redirect("/admin/lirygames/login");
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile) redirect("/admin/lirygames/login?unauthorized=1");
+  if(process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED!=="true"||!process.env.NEXT_PUBLIC_SUPABASE_URL||process.env.NEXT_PUBLIC_SUPABASE_URL.includes("pasoapugmsazziflaomp")){
+    return <main className={styles.workspace}><header className={styles.topbar}><div><span className={styles.eyebrow}>LIRYGAMES · COMMANDER CENTER</span><h1>Marca</h1><p>Consulta y edición suspendidas hasta verificar el aislamiento respecto a FRAGMENTUN.</p></div></header><section className={styles.moduleStrip}><span className={styles.moduleGlyph} aria-hidden="true">LG</span><div className={styles.moduleStripCopy}><small>DATOS NO AISLADOS</small><strong>Operaciones bloqueadas</strong><p>No se consultan ni modifican registros compartidos.</p></div></section></main>;
+  }
+
 
   const[
     {data:narratives},
