@@ -46,6 +46,6 @@ export default async function LegalDocument({params,searchParams}:{params:Promis
    </div>
   </section>
   <p lang="es" style={{color:"#9bbbcf",fontSize:13,marginTop:30}}>Para consultas generales puedes utilizar el formulario de contacto del FrontDesk. Este borrador no sustituye asesoramiento jurídico.</p>
-  <Link href={`/lirygames?lang=${locale}#contacto` } style={{color:"#68eaff"}}>{locale==="es"?"IR A CONTACTO →":"GO TO CONTACT →"}</Link>
+  <Link href={`/lirygames?lang=${locale}#comunidad` } style={{color:"#68eaff"}}>{locale==="es"?"IR A CONTACTO →":"GO TO CONTACT →"}</Link>
  </main>;
 }
