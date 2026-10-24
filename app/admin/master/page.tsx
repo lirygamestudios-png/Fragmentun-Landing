@@ -15,6 +15,7 @@ type Domain={
 const domains:Domain[]=[
   {title:"Inicio",subtitle:"Resumen general, alertas y decisiones pendientes",href:"/admin/master",phase:"60",status:"active"},
   {title:"Operaciones",subtitle:"Trabajo diario, continuidad y estado general",href:"/admin/master/operations",phase:"60",status:"active"},
+  {title:"Liry Developers",subtitle:"Admisión, KYC/KYB, contratos y puertas de publicación (sin activar)",href:"/admin/master/developers",phase:"Preparación",status:"planned"},
   {title:"Juegos",subtitle:"Desarrollo, lanzamientos y operación por título",href:"/admin/master/games",phase:"57",status:"active"},
   {title:"Publicación",subtitle:"Plataformas, lanzamientos, catálogo y franquicias",href:"/admin/master/publishing",phase:"59",status:"active"},
   {title:"Crecimiento",subtitle:"Captación, conversión, contactos y retención",href:"/admin/master/growth",phase:"53",status:"active"},
