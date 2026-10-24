@@ -32,6 +32,17 @@ export default async function MasterIntegrationsPage(){
   const{data:profile}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(!profile)redirect("/admin/lirygames/login?unauthorized=1");
 
+  // Fail closed: do not read shared FRAGMENTUN data as LIRYGAMES integrations.
+  const isolated=process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED==="true";
+  const endpoint=process.env.NEXT_PUBLIC_SUPABASE_URL||"";
+  if(!isolated||!endpoint||endpoint.includes("pasoapugmsazziflaomp")){
+    return <main className={`${styles.workspace} ${styles.modulePage} ${styles.moduleIntegrations}`}>
+      <header className={styles.topbar}><div><span className={styles.eyebrow}>LIRYGAMES · INTEGRACIONES</span><h1>Integraciones</h1><p>Los indicadores y registros permanecen suspendidos hasta confirmar el aislamiento de datos respecto a FRAGMENTUN.</p></div><a className={styles.publicSite} href="/admin/master">← Inicio</a></header>
+      <section className={styles.moduleStrip} aria-label="Protección de datos"><span className={styles.moduleGlyph} aria-hidden="true">IN</span><div className={styles.moduleStripCopy}><small>DATOS NO AISLADOS</small><strong>Consultas a integraciones suspendidas</strong><p>Esta pantalla no presenta contactos, registros ni compras procedentes de infraestructura compartida.</p></div></section>
+      <section className={styles.grid}><a className={styles.card} href="/admin/master/integrations/providers"><h3>Didit · Stripe Connect · PayPal</h3><p>Consultar únicamente el plan de preparación; ninguna API ni operación real está activada.</p><span className={styles.cardLink}>Ver preparación de proveedores →</span></a></section>
+    </main>;
+  }
+
   const[{data:logs},{count:leads},{data:gamePurchases},{data:gameMetrics}]=await Promise.all([
     supabase.from("integration_logs").select("id,integration,event_type,status,message,created_at").order("created_at",{ascending:false}).limit(100),
     supabase.from("leads").select("*",{count:"exact",head:true}),
