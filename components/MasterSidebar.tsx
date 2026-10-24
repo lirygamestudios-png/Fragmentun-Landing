@@ -106,8 +106,7 @@ export function MasterSidebar({displayName,role}:{displayName:string;role:string
         <span>{initials}</span>
         <div><strong>{displayName}</strong><small>{role||"admin"}</small></div>
       </div>
-      <a className={styles.publicSite} href="/admin">FRAGMENTUN Admin ↗</a>
-      <a className={styles.publicSiteSecondary} href="/es" target="_blank" rel="noreferrer">Ver web pública ↗</a>
+      <a className={styles.publicSite} href="/lirygames" target="_blank" rel="noreferrer">Ver LIRYGAMES ↗</a>
       <button className={styles.publicSiteSecondary} type="button" onClick={signOut} disabled={signingOut}>
         {signingOut?"Cerrando sesión…":"Cerrar sesión"}
       </button>
