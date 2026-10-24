@@ -183,3 +183,12 @@ test("Commander MFA validates factor ownership before challenging",()=>{
  assert.ok(src.includes('error:"wrong_factor"'));
  assert.ok(src.includes('const CONTEXT="lirygames_commander"'));
 });
+
+test("LIRYGAMES logout never returns success on auth sign-out error",()=>{
+ const source=text("app/api/admin/lirygames/logout/route.ts");
+ assert.match(source,/const\{error:signOutError\}=await supabase\.auth\.signOut\(\)/);
+ assert.match(source,/error:"logout_failed"/);
+ assert.match(source,/status:signOutError\?500:200/);
+ assert.match(source,/liry_mfa_context/);
+ assert.match(source,/Cache-Control/);
+});
