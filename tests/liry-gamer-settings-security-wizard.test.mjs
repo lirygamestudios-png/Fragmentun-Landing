@@ -4,3 +4,5 @@ test("account navigation announces active section progress",()=>{assert.match(sr
 test("account inner and outer navigation restore panel focus without scrolling",()=>{assert.match(src,/const goInnerStep=.*?requestAnimationFrame\(\(\)=>\{stepPanel\.current\?\.focus\(\{preventScroll:true\}\)/);assert.match(src,/const switchAccountSection=.*?requestAnimationFrame\(\(\)=>\{stepPanel\.current\?\.focus\(\{preventScroll:true\}\)/);});
 
 test("resetting temporary preferences restores focus to the active account panel",()=>{assert.match(src,/const resetPreview=\(\)=>\{[\s\S]*?requestAnimationFrame\(\(\)=>stepPanel\.current\?\.focus\(\{preventScroll:true\}\)\)/);});
+
+test("clearing billing draft returns to visible first step before focusing first field",()=>{assert.match(src,/setBillingDraft\(\{firstName:"",lastName:"",email:"",country:"",postalCode:""\}\);setBillingStep\(0\);requestAnimationFrame\(\(\)=>billingFirstNameRef\.current\?\.focus\(\{preventScroll:true\}\)\)/);});
