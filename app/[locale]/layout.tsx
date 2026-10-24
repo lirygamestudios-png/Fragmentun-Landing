@@ -43,9 +43,9 @@ export async function generateMetadata({
       title,
       description,
       images:[{
-        url:"/lumen-frontdesk.webp",
+        url:`${site}/${locale}/opengraph-image`,
         width:1200,
-        height:1800,
+        height:630,
         alt:isEs
           ?"Ciudad de Lumen — universo FRAGMENTUN de José Liranzo"
           :"Lumen City — the FRAGMENTUN universe by José Liranzo"
@@ -55,7 +55,7 @@ export async function generateMetadata({
       card:"summary_large_image",
       title,
       description,
-      images:["/lumen-frontdesk.webp"]
+      images:[`${site}/${locale}/opengraph-image`]
     }
   };
 }
