@@ -14,7 +14,7 @@ export default async function LiryGamesMfaPage(){
     .eq("user_id",user.id)
     .maybeSingle();
 
-  if(!profile)redirect("/admin/lirygames/login?unauthorized=1");
+  if(!profile||profile.role!=="admin")redirect("/admin/lirygames/login?unauthorized=1");
 
   const factors=await supabase.auth.mfa.listFactors();
   const factor=(factors.data?.totp||[]).find((f:any)=>
