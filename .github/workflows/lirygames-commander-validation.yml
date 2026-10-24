@@ -1,0 +1,35 @@
+name: LIRYGAMES Commander — validación manual
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  developer-admin:
+    name: Liry Developers — pruebas y compilación
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co"
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_placeholder"
+      NEXT_PUBLIC_SITE_URL: "http://localhost:3000"
+    steps:
+      - name: Checkout de rama solicitada
+        uses: actions/checkout@v4
+      - name: Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Instalar dependencias sin scripts externos
+        run: npm ci --ignore-scripts
+      - name: Comprobar protecciones del Commander
+        run: node --test tests/liry-commander-developer-pages.test.mjs
+      - name: Ejecutar suite de pruebas existente de FrontDesk
+        run: npm run test:liry-frontdesk
+      - name: Comprobar TypeScript
+        run: npx tsc --noEmit
+      - name: Construir Next.js sin desplegar
+        run: npx next build
