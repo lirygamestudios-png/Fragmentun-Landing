@@ -174,3 +174,12 @@ test("LIRYGAMES contact API refuses writes before isolation gate",()=>{
  assert.match(src,/lirygames_data_isolation_pending/);
  assert.match(src,/liry_mfa_context/);
 });
+
+test("Commander MFA validates factor ownership before challenging",()=>{
+ const src=text("app/api/admin/lirygames/mfa/verify/route.ts");
+ const factor=src.indexOf("const factor=(factors.data?.totp||[])");
+ const challenge=src.indexOf("const challenge=await supabase.auth.mfa.challenge");
+ assert.ok(factor>=0&&challenge>factor);
+ assert.ok(src.includes('error:"wrong_factor"'));
+ assert.ok(src.includes('const CONTEXT="lirygames_commander"'));
+});
