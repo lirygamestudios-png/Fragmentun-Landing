@@ -63,3 +63,12 @@ test("sensitive provider screens remain informational and links stay in LIRYGAME
  assert.match(source,/Ninguna operación real autorizada/);
  assert.ok(!source.includes('href="/admin"'));
 });
+
+test("integration overview prevents reading shared FRAGMENTUN datasets",()=>{
+ const source=text("app/admin/master/integrations/page.tsx");
+ const gate=source.indexOf('const isolated=process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED==="true"');
+ const read=source.indexOf('supabase.from("integration_logs")');
+ assert.ok(gate>=0 && read>gate,"isolation gate must precede integrations queries");
+ assert.ok(source.includes('endpoint.includes("pasoapugmsazziflaomp")'));
+ assert.ok(source.includes('Consultas a integraciones suspendidas'));
+});
