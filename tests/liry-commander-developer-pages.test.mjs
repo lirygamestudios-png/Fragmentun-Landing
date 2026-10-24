@@ -164,3 +164,13 @@ test("Live Commander API requires context-bound MFA and isolated data",()=>{
  assert.match(source,/lirygames_mfa_required/);
  assert.match(source,/profile\.role!=="admin"/);
 });
+
+test("LIRYGAMES contact API refuses writes before isolation gate",()=>{
+ const src=text("app/api/admin/lirygames-contact/route.ts");
+ const route=src.indexOf("export async function PATCH");
+ const gate=src.indexOf('process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED!=="true"',route);
+ const client=src.indexOf("const supabase=await createSupabaseServerClient();",route);
+ assert.ok(route>=0&&gate>route&&client>gate);
+ assert.match(src,/lirygames_data_isolation_pending/);
+ assert.match(src,/liry_mfa_context/);
+});
