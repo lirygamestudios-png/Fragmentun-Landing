@@ -152,3 +152,15 @@ test("Audit, Maintenance and Backups do not read shared project records",()=>{
   assert.match(src,/endpoint|NEXT_PUBLIC_SUPABASE_URL/);
  }
 });
+
+test("Live Commander API requires context-bound MFA and isolated data",()=>{
+ const source=text("app/api/admin/master/live/route.ts");
+ assert.match(source,/isolatedLiryData\(\)/);
+ assert.match(source,/hasSatisfiedMfa\(supabase\)/);
+ assert.match(source,/liry_mfa_context/);
+ assert.match(source,/admin_mfa_context_sessions/);
+ assert.match(source,/token_hash/);
+ assert.match(source,/lirygames_commander/);
+ assert.match(source,/lirygames_mfa_required/);
+ assert.match(source,/profile\.role!=="admin"/);
+});
