@@ -1,17 +1,18 @@
 "use client";
 import {useEffect,useState} from "react";
 import type {LiryFrontdeskLocale} from "../lib/games/liry-frontdesk-i18n";
+import {isValidLiryDisplayName} from "../lib/games/liry-display-name-validation";
 import styles from "../app/lirygames/mi-liry/mi-liry.module.css";
 export function LiryPlayerIdentityHeader({locale,displayName,eyebrow,note}:{locale:LiryFrontdeskLocale;displayName:string;eyebrow:string;note:string}){
  const [photo,setPhoto]=useState<string|null>(null);
  const [previewName,setPreviewName]=useState("");
  useEffect(()=>{
   const onAvatar=(event:Event)=>{if(!(event instanceof CustomEvent))return;setPhoto(typeof event.detail?.url==="string"?event.detail.url:null)};
-  const onName=(event:Event)=>{if(event instanceof CustomEvent)setPreviewName(typeof event.detail?.name==="string"?event.detail.name:"")};
+  const onName=(event:Event)=>{if(event instanceof CustomEvent)setPreviewName(isValidLiryDisplayName(event.detail?.name)?event.detail.name:"")};
   const restoreName=()=>{
    try{
     const name=sessionStorage.getItem("liry:temporary-display-name");
-    setPreviewName(name&&name.length>=2&&name.length<=40&&name.trim()===name?name:"");
+    setPreviewName(name&&isValidLiryDisplayName(name)?name:"");
    }catch{setPreviewName("")}
   };
   const restoreAvatar=()=>{
