@@ -209,3 +209,12 @@ test("Commander logout fails closed when MFA context revocation fails",()=>{
  assert.ok(src.includes('error:"context_revocation_failed"'));
  assert.ok(src.includes('status:500'));
 });
+
+test("Commander MFA rotation fails closed if prior sessions cannot be revoked",()=>{
+ const src=text("app/api/admin/lirygames/mfa/verify/route.ts");
+ const revoke=src.indexOf("const{error:revocationError}");
+ const reject=src.indexOf('error:"context_revocation_failed"',revoke);
+ const insert=src.indexOf("const{error:insertError}",revoke);
+ assert.ok(revoke>=0&&reject>revoke&&insert>reject);
+ assert.ok(src.includes("if(revocationError)"));
+});
