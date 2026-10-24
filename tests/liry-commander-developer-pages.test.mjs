@@ -141,3 +141,14 @@ test("Business oversight modules refuse shared backend reads and mutations",()=>
   assert.ok(gate>page&&firstRead>gate,domain);
  }
 });
+
+test("Audit, Maintenance and Backups do not read shared project records",()=>{
+ for(const domain of ["audit","maintenance","backups"]){
+  const src=text("app/admin/master/"+domain+"/page.tsx");
+  const page=src.indexOf("export default async function");
+  const gate=src.indexOf('process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED!=="true"',page);
+  const query=src.indexOf('supabase.from(',src.indexOf('if(!profile',page)+1);
+  assert.ok(page>=0&&gate>page&&query>gate,domain);
+  assert.match(src,/endpoint|NEXT_PUBLIC_SUPABASE_URL/);
+ }
+});
