@@ -22,8 +22,15 @@ function activityLabel(value:string){
   return map[value]||String(value||"").toUpperCase();
 }
 
+function requireIsolatedLirygamesData(){
+  const endpoint=process.env.NEXT_PUBLIC_SUPABASE_URL||"";
+  if(process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED!=="true"||!endpoint||endpoint.includes("pasoapugmsazziflaomp"))
+    throw new Error("LIRYGAMES_DATA_NOT_ISOLATED");
+}
+
 async function requireGrowthEditor(){
   "use server";
+  requireIsolatedLirygamesData();
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user) redirect("/admin/lirygames/login");
