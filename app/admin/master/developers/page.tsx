@@ -34,6 +34,7 @@ export default async function DeveloperReadiness(){
     <h3>{stage.name}</h3><p><strong>Responsable:</strong> {stage.owner}</p><p>{stage.gate}</p>
    </article>)}
   </section>
+  <section className={styles.grid}><a className={styles.card} href="/admin/master/developers/dossier"><div className={styles.cardTop}><span>EXPEDIENTE</span><em>PREPARACIÓN</em></div><h3>Control documental y decisiones</h3><p>Consultar el esquema de identidad, KYB, derechos, contratos, finanzas y auditoría sin datos personales.</p><span className={styles.cardLink}>Abrir expediente de referencia →</span></a></section>
   <section className={styles.sectionHead}><div><span>SEGURIDAD</span><h2>Bloqueos obligatorios</h2></div><p>No usar fotografías, biometría ni documentos reales en pruebas. Falta validar separación de los datos y autorización de producción.</p></section>
   <section className={styles.grid}>
    <article className={styles.card}><h3>Estados independientes</h3><p>Identidad, KYB, derechos, contrato, pagos y publicación se evalúan por separado. Un resultado positivo no desbloquea automáticamente los demás.</p></article>
