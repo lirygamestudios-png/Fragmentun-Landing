@@ -200,3 +200,12 @@ test("Commander logout UI handles API failures without claiming success",()=>{
  assert.match(src,/window\.location\.assign\("\/admin\/lirygames\/login"\)/);
  assert.ok(!src.includes("finally{\n      window.location.assign"));
 });
+
+test("Commander logout fails closed when MFA context revocation fails",()=>{
+ const src=text("app/api/admin/lirygames/logout/route.ts");
+ const error=src.indexOf('if(contextError){');
+ const signOut=src.indexOf('const{error:signOutError}=await supabase.auth.signOut()');
+ assert.ok(error>=0&&signOut>error);
+ assert.ok(src.includes('error:"context_revocation_failed"'));
+ assert.ok(src.includes('status:500'));
+});
