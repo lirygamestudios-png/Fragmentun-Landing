@@ -18,6 +18,8 @@ test("frontdesk identity follows preview and page restore",()=>{
 test("Mi Liry header restores temporary name after page navigation",()=>{
  const header=readFileSync(new URL("../components/LiryPlayerIdentityHeader.tsx",import.meta.url),"utf8");
  assert.match(header,/sessionStorage\.getItem\("liry:temporary-display-name"\)/);
+ assert.match(header,/name&&isValidLiryDisplayName\(name\)\?name:""/);
+ assert.match(header,/isValidLiryDisplayName\(event\.detail\?\.name\)\?event\.detail\.name:""/);
  assert.match(header,/window\.addEventListener\("pageshow",restoreName\)/);
  assert.match(header,/window\.removeEventListener\("pageshow",restoreName\)/);
 });
