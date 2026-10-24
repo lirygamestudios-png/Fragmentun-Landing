@@ -228,3 +228,12 @@ test("Commander layout requires current Supabase AAL2 and context MFA",()=>{
  const token=src.indexOf('cookieStore.get("liry_mfa_context")');
  assert.ok(aal2>=0&&token>aal2);
 });
+
+test("Developer dossier and review offer labeled reciprocal navigation",()=>{
+ const dossier=text("app/admin/master/developers/dossier/page.tsx");
+ const review=text("app/admin/master/developers/review/page.tsx");
+ assert.ok(dossier.includes('aria-label="Navegación de Liry Developers"'));
+ assert.ok(review.includes('aria-label="Navegación de Liry Developers"'));
+ assert.ok(dossier.includes('href="/admin/master/developers/review"'));
+ assert.ok(review.includes('href="/admin/master/developers/dossier"'));
+});
