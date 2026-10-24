@@ -46,10 +46,14 @@ export async function POST(request:NextRequest){
   const tokenHash=createHash("sha256").update(token).digest("hex");
   const expiresAt=new Date(Date.now()+8*60*60*1000).toISOString();
 
-  await supabase.from("admin_mfa_context_sessions")
+  const{error:revocationError}=await supabase.from("admin_mfa_context_sessions")
     .delete()
     .eq("user_id",user.id)
     .eq("context",CONTEXT);
+  if(revocationError){
+    console.error("lirygames_mfa_prior_context_revocation_failed",revocationError.code);
+    return NextResponse.json({ok:false,error:"context_revocation_failed"},{status:500,headers:{"Cache-Control":"no-store"}});
+  }
 
   const{error:insertError}=await supabase.from("admin_mfa_context_sessions").insert({
     user_id:user.id,
