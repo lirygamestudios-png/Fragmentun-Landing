@@ -129,3 +129,15 @@ test("Sensitive Commander modules deny shared backend reads and mutations",()=>{
   assert.ok(page>=0 && gate>page && businessQuery>gate,"page must gate domain queries: "+domain);
  }
 });
+
+test("Business oversight modules refuse shared backend reads and mutations",()=>{
+ for(const domain of ["risk","strategy","capital","partners","suppliers","brand"]){
+  const src=text("app/admin/master/"+domain+"/page.tsx");
+  assert.match(src,/LIRYGAMES_COMMANDER_DATA_NOT_ISOLATED/);
+  assert.ok(src.includes("requireIsolatedCommanderData();"),domain);
+  const page=src.indexOf("export default async function");
+  const gate=src.indexOf('process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED!=="true"',page);
+  const firstRead=src.indexOf('supabase.from(',src.indexOf('if(!profile) redirect(',page)+1);
+  assert.ok(gate>page&&firstRead>gate,domain);
+ }
+});
