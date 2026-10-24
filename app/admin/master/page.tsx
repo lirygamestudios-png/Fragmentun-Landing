@@ -43,8 +43,7 @@ const domains:Domain[]=[
   {title:"Capital e Inversionistas",subtitle:"Inversión, relaciones con inversionistas y operaciones estratégicas",href:"/admin/master/capital",phase:"50",status:"active"},
       {title:"Configuración",subtitle:"Ajustes generales y funciones del sistema",href:"/admin/master/settings",phase:"60",status:"active"},
   {title:"Revisión antes de publicar",subtitle:"Comprobaciones, evidencia y aprobación antes de publicar",href:"/admin/master/releases",phase:"60",status:"active"},
-  {title:"Estado y Pruebas",subtitle:"Comprobaciones, historial y estado de la versión de prueba",href:"/admin/master/observability",phase:"60",status:"active"},
-  {title:"FRAGMENTUN",subtitle:"Administración de la IP y su sitio público",href:"/admin",phase:"Actual",status:"active"}
+  {title:"Estado y Pruebas",subtitle:"Comprobaciones, historial y estado de la versión de prueba",href:"/admin/master/observability",phase:"60",status:"active"}
 ];
 
 export default async function MasterAdminPage(){
