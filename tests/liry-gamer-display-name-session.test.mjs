@@ -34,3 +34,9 @@ test("account center refreshes temporary name when returning to Mi Liry",()=>{
  assert.match(account,/window\.removeEventListener\("pageshow",restoreTemporaryName\)/);
  assert.match(account,/setPublicName\(saved&&isValidLiryDisplayName\(saved\)\?saved:""\)/);
 });
+
+test("frontdesk profile applies the shared validated display-name rule",()=>{
+ assert.match(identity,/import \{isValidLiryDisplayName\} from "\.\.\/lib\/games\/liry-display-name-validation"/);
+ assert.match(identity,/saved&&isValidLiryDisplayName\(saved\)\?saved:null/);
+ assert.match(identity,/typeof name==="string"&&isValidLiryDisplayName\(name\)\?name:null/);
+});
