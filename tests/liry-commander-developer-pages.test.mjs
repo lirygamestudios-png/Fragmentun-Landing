@@ -262,3 +262,13 @@ test("Developer administrative screens keep explicit no-live-data notices and re
   assert.match(source,/Sin solicitudes reales|sin datos personales|no tramita solicitudes reales/i,path);
  }
 });
+
+test("Commander entry routes reject non-admin profiles and keep LIRYGAMES branding isolated",()=>{
+ const layout=text("app/admin/master/layout.tsx");
+ const mfa=text("app/admin/lirygames/mfa/page.tsx");
+ const login=text("app/admin/lirygames/login/page.tsx");
+ assert.ok(layout.includes('if(!profile||profile.role!=="admin")'));
+ assert.ok(mfa.includes('if(!profile||profile.role!=="admin")'));
+ assert.ok(!login.includes('href="/admin/login"'));
+ assert.ok(!login.includes("Acceso FRAGMENTUN"));
+});
