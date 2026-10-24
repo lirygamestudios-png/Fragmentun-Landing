@@ -10,7 +10,10 @@ export async function POST(){
       .delete()
       .eq("user_id",user.id)
       .eq("context","lirygames_commander");
-    if(contextError)console.error("lirygames_logout_context_revocation_failed",contextError.code);
+    if(contextError){
+      console.error("lirygames_logout_context_revocation_failed",contextError.code);
+      return NextResponse.json({ok:false,error:"context_revocation_failed"},{status:500,headers:{"Cache-Control":"no-store"}});
+    }
   }
 
   const{error:signOutError}=await supabase.auth.signOut();
