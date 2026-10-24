@@ -218,3 +218,13 @@ test("Commander MFA rotation fails closed if prior sessions cannot be revoked",(
  assert.ok(revoke>=0&&reject>revoke&&insert>reject);
  assert.ok(src.includes("if(revocationError)"));
 });
+
+test("Commander layout requires current Supabase AAL2 and context MFA",()=>{
+ const src=text("app/admin/master/layout.tsx");
+ assert.match(src,/hasSatisfiedMfa\(supabase\)/);
+ assert.match(src,/liry_mfa_context/);
+ assert.match(src,/admin_mfa_context_sessions/);
+ const aal2=src.indexOf("hasSatisfiedMfa(supabase)");
+ const token=src.indexOf('cookieStore.get("liry_mfa_context")');
+ assert.ok(aal2>=0&&token>aal2);
+});
