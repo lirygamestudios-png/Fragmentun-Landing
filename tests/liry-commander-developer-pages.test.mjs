@@ -86,3 +86,16 @@ test("Growth and Data reject shared database access for reads and mutations",()=
   assert.ok(gate>=0 && data>gate,"isolation gate precedes analytics reads");
  }
 });
+
+test("Finance and Commerce remain isolated from FRAGMENTUN",()=>{
+ const finance=text("app/admin/master/finance/page.tsx");
+ const commerce=text("app/admin/master/commerce/page.tsx");
+ assert.ok(finance.includes('requireIsolatedFinanceData();'));
+ assert.ok(finance.includes('LIRYGAMES_FINANCE_DATA_NOT_ISOLATED'));
+ for(const source of [finance,commerce]){
+  const page=source.indexOf('export default async function');
+  const gate=source.indexOf('LIRYGAMES_COMMUNITY_DATA_ISOLATED',page);
+  const firstBusinessRead=source.indexOf('supabase.from("shop_orders")',page);
+  assert.ok(page>=0 && gate>page && firstBusinessRead>gate);
+ }
+});
