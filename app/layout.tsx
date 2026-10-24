@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   applicationName:"FRAGMENTUN",
   authors:[{name:"José Liranzo"}],
   creator:"José Liranzo",
-  publisher:"LIRYGAMES STUDIOS",
+  publisher:"José Liranzo",
   category:"Books",
   icons:{
     icon:[{url:"/fragmentun-mark.png",type:"image/png",sizes:"192x192"}],
