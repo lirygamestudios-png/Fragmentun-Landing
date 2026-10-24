@@ -47,3 +47,19 @@ test("identity release policy remains explicitly disabled",()=>{
 test("read-only pages do not include application submission forms",()=>{
  for(const path of pages)assert.doesNotMatch(text(path),/<form\b|<button\b/);
 });
+
+test("Commander navigation keeps FRAGMENTUN links out of LIRYGAMES UI",()=>{
+ const sidebar=text("components/MasterSidebar.tsx");
+ const home=text("app/admin/master/page.tsx");
+ assert.doesNotMatch(sidebar,/href="\\/admin"(?!\\/)|href="\\/es"(?!\\/)/);
+ assert.doesNotMatch(sidebar,/FRAGMENTUN Admin|Ver web pública/);
+ assert.ok(sidebar.includes('href="/lirygames"'));
+ assert.doesNotMatch(home,/title:"FRAGMENTUN"/);
+});
+
+test("sensitive provider screens remain informational and links stay in LIRYGAMES",()=>{
+ const source=text("app/admin/master/integrations/providers/page.tsx");
+ assert.match(source,/CUENTA ABIERTA · CONEXIÓN NO VERIFICADA/);
+ assert.match(source,/Ninguna operación real autorizada/);
+ assert.doesNotMatch(source,/href="\\/admin"(?!\\/master)/);
+});
