@@ -2604,3 +2604,9 @@
 .moduleCommunity .communitySectionNav a:hover,.moduleCommunity .communityManagementNav a:hover{transform:translateY(-2px);border-color:rgba(114,220,255,.75);box-shadow:0 6px 22px rgba(79,216,255,.13)}
 .moduleCommunity .communitySectionNav a:focus-visible,.moduleCommunity .communityManagementNav a:focus-visible{outline:2px solid #81eaff;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.moduleCommunity .communitySectionNav a,.moduleCommunity .communityManagementNav a{transition:none!important}.moduleCommunity .communitySectionNav a:hover,.moduleCommunity .communityManagementNav a:hover{transform:none!important}}
+
+/* Liry Developers: subpage navigation follows the approved luminous-blue UI. */
+.developerSubnav{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 18px;min-width:0}
+.developerSubnav a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;max-width:100%;overflow-wrap:anywhere}
+.developerSubnav a:focus-visible{outline:2px solid #8beaff;outline-offset:3px}
+@media(max-width:600px){.developerSubnav{display:grid;grid-template-columns:minmax(0,1fr)}.developerSubnav a{width:100%;white-space:normal}}
