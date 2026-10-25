@@ -82,6 +82,43 @@ try {
     await dna.locator('[class*="dnaExplorerClose"]').click();
     assert.equal(await dna.locator("#liry-dna-explorer").count(),0,"Cerrar ADN debe ocultar el explorador");
    }
+   // Tienda: filtros y estados reales; la prueba no inventa productos publicados.
+   if(item.label==="desktop-es-1440"||item.label==="desktop-en-1024"){
+    const store=page.locator('[class*="liryStoreListing"]');
+    const filters=store.locator('[class*="liryStoreFilters"]');
+    const search=filters.locator('input[type="search"]');
+    const selects=filters.locator("select");
+    assert.equal(await selects.count(),3,"La tienda debe mostrar categoría, disponibilidad y orden");
+    const reset=filters.locator("button");
+    assert.equal(await reset.isDisabled(),true,"El restablecimiento comienza deshabilitado");
+    await search.fill("qa-producto-inexistente-20261025");
+    await store.locator('[role="status"]').waitFor();
+    assert.equal(await store.locator("[data-liry-store-product]").count(),0,"La búsqueda imposible no muestra artículos");
+    assert.equal(await reset.isEnabled(),true,"La búsqueda habilita limpiar filtros");
+    await reset.click();
+    assert.equal(await search.inputValue(),"","Limpiar filtros vacía la búsqueda");
+    await selects.nth(1).selectOption("available");
+    await selects.nth(1).selectOption("all");
+    await selects.nth(2).selectOption("price-desc");
+    await selects.nth(2).selectOption("name");
+    assert.equal(await reset.isDisabled(),true,"La configuración inicial deshabilita limpiar");
+    const category=page.locator('button[aria-controls="liry-store-category-dialog"]').first();
+    await category.click();
+    const categoryDialog=page.locator("#liry-store-category-dialog");
+    assert.equal(await categoryDialog.evaluate(el=>el.open),true,"La categoría abre modal nativo");
+    await page.keyboard.press("Escape");
+    await page.waitForFunction(()=>document.querySelector("#liry-store-category-dialog")?.open===false);
+    assert.equal(await category.evaluate(el=>document.activeElement===el),true,"Cerrar categoría restaura el foco");
+    const items=store.locator("[data-liry-store-product]");
+    if(await items.count()>12)throw new Error("La tienda no debe superar 12 productos por página");
+    const pages=store.locator('[class*="liryStorePages"]');
+    if(await pages.count()){
+     const next=pages.locator("button").last();
+     await next.click();
+     assert.equal(await store.locator('nav [aria-current="page"]').count(),1,"Paginación mantiene una página activa");
+     assert.ok(await items.count()<=12,"Paginación respeta el límite de doce");
+    }
+   }
    if(item.mobile){
     const toggle=page.locator('button[aria-controls="liry-mobile-nav"]');
     await toggle.click();
