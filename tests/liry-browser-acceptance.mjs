@@ -60,6 +60,11 @@ try {
     assert.equal(await catalogImages.count(),9,"Las nueve tarjetas públicas deben conservar sus imágenes");
     const sources=await catalogImages.evaluateAll(images=>images.map(img=>new URL(img.getAttribute("src"),location.href).pathname));
     assert.deepEqual([...sources].sort(),Array.from({length:9},(_,i)=>"/liry-assets/world-"+String(i+1).padStart(2,"0")+".webp"),"Las nueve imágenes deben apuntar a recursos públicos distintos");
+    for(const image of await catalogImages.all()){
+     await image.scrollIntoViewIfNeeded();
+     await image.evaluate(img=>img.decode());
+     assert.equal(await image.evaluate(img=>img.complete&&img.naturalWidth>0),true,"La imagen pública debe cargarse y decodificarse");
+    }
     const catalogSearch=page.locator('[class*="liryCatalogFilters"] input[type=search]');
     await catalogSearch.fill("codigo-improbable-sin-coincidencia-qa");
     await page.locator('[class*="liryCatalogCount"]').waitFor();
@@ -71,7 +76,7 @@ try {
     assert.equal(await gameDialog.isVisible(),true,"La ficha del catálogo debe abrirse");
     await page.keyboard.press("Escape");
     await gameDialog.waitFor({state:"detached"});
-    await page.waitForFunction(()=>{const opener=document.querySelector('[class*="worldCardOpen"]');return opener&&document.activeElement===opener},"La ficha debe devolver el foco al botón");
+    await page.waitForFunction(()=>{const opener=document.querySelector('[class*="worldCardOpen"]');return opener&&document.activeElement===opener},undefined,{timeout:5000});
     const dna=page.locator("#liry-dna");
     await dna.locator('button[aria-controls="liry-dna-explorer"]').click();
     await dna.locator('[class*="dnaSurveyToggle"]').click();
@@ -114,7 +119,7 @@ try {
     assert.equal(await categoryDialog.evaluate(el=>el.open),true,"La categoría abre modal nativo");
     await page.keyboard.press("Escape");
     await page.waitForFunction(()=>document.querySelector("#liry-store-category-dialog")?.open===false);
-    await page.waitForFunction(()=>{const opener=document.querySelector('button[aria-controls="liry-store-category-dialog"]');return opener&&document.activeElement===opener},"Cerrar categoría restaura el foco");
+    await page.waitForFunction(()=>{const opener=document.querySelector('button[aria-controls="liry-store-category-dialog"]');return opener&&document.activeElement===opener},undefined,{timeout:5000});
     const items=store.locator("[data-liry-store-product]");
     if(await items.count()>12)throw new Error("La tienda no debe superar 12 productos por página");
     const pages=store.locator('[class*="liryStorePages"]');
