@@ -9,7 +9,7 @@
  * Ejemplo: BASE_URL=https://<preview-lirygames>.vercel.app node tests/liry-browser-acceptance.mjs
  * Capturas: /tmp/liry-browser-acceptance
  * No transmite formularios, no crea cuentas, no compra, no modifica datos.
- * Requiere conectividad directa a Vercel. Un bloqueo de red NO es aprobación.
+ * Requiere conectividad directa y sesión SSO autenticada. Redirección a login NO es aprobación.
  */
 import assert from "node:assert/strict";
 import {mkdir} from "node:fs/promises";
@@ -48,6 +48,7 @@ try {
   try {
    const response=await page.goto(base+"/lirygames?lang="+item.locale,{waitUntil:"domcontentloaded",timeout:30000});
    assert.equal(response?.status(),200,"FrontDesk debe responder 200");
+   assert.equal(new URL(page.url()).pathname,"/lirygames","La sesión SSO debe llegar al FrontDesk, no a la pantalla de autenticación");
    await page.locator("body").waitFor();
    await page.screenshot({path:join(out,item.label+"-frontdesk.png"),fullPage:true});
    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+1);
@@ -61,6 +62,7 @@ try {
    }
    const mi=await page.goto(base+"/lirygames/mi-liry?lang="+item.locale,{waitUntil:"domcontentloaded",timeout:30000});
    assert.equal(mi?.status(),200,"Mi Liry debe responder 200");
+   assert.equal(new URL(page.url()).pathname,"/lirygames/mi-liry","La sesión SSO debe llegar a Mi Liry, no a la pantalla de autenticación");
    const first=page.locator('button[aria-controls="mi-liry-area-dialog"]').first();
    await first.click();
    const dialog=page.locator("#mi-liry-area-dialog");
