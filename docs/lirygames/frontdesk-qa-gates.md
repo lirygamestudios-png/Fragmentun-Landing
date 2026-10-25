@@ -1,7 +1,7 @@
 # LIRYGAMES STUDIOS — Puertas de calidad del FrontDesk
 
 Última auditoría de código: 25 de octubre de 2026.
-Referencia actual de código verificada: Preview Vercel READY `96a5d05ac758765a00bcf81e20711b8d114a1304`, despliegue `dpl_BzWZh2X5s3hyBFFmtuEKZad9qKCh`, URL `https://lirygames-studios-frontdesk-9nwqjhgok-lirygamestudios-7579.vercel.app/lirygames` (bloque Catálogo + Tienda + Liry ADN compilado; commit GitHub/Vercel coincidente).
+Último Preview READY verificado: `205063173a62263090d42da4b8017b7c4c582514`, despliegue `dpl_A9TAJKQHgS8kXd3g2qs4oYYTvnPX`, URL `https://lirygames-studios-frontdesk-hye72gcz4-lirygamestudios-7579.vercel.app/lirygames`. Las posteriores modificaciones de la batería manual no se han desplegado.
 **Este documento NO certifica pruebas visuales manuales que aún no se han realizado.**
 
 ## Verificaciones confirmadas
@@ -19,6 +19,8 @@ Referencia actual de código verificada: Preview Vercel READY `96a5d05ac758765a0
 - [x] La prueba `tests/liry-whatsapp-product-share.test.mjs` actualizó sus tres expectativas obsoletas de enfoque/desplazamiento; la tienda conserva la guardia `match?.isConnected`. Commit de corrección `96a5d05a`; Preview READY confirmado por Vercel.
 - [x] La compilación `npm run build` del Preview concluyó READY. Esto valida la puerta automatizada de compilación, NO los recorridos manuales de navegador.
 - [x] Las nueve IP permanecen representadas públicamente mediante identificadores no reveladores.
+
+- [x] Script independiente de aceptación amplía comprobaciones de catálogo, tienda y ADN; incluye espera de controles y comprobación estructural de las nueve imágenes. Su ejecución real con SSO sigue pendiente.
 
 ## Bloqueos de cierre que requieren una sesión de navegador real
 
