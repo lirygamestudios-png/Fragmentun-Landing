@@ -50,11 +50,16 @@ try {
    assert.equal(response?.status(),200,"FrontDesk debe responder 200");
    assert.equal(new URL(page.url()).pathname,"/lirygames","La sesión SSO debe llegar al FrontDesk, no a la pantalla de autenticación");
    await page.locator("body").waitFor();
+   await page.locator('[class*="liryCatalogFilters"] input[type="search"]').waitFor({state:"visible"});
    await page.screenshot({path:join(out,item.label+"-frontdesk.png"),fullPage:true});
    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+1);
    assert.equal(overflow,false,"No debe aparecer scroll horizontal");
    // Recorridos observables de catálogo y ADN (sin escribir datos de usuario).
    if(item.label==="desktop-es-1440"||item.label==="desktop-en-1024"){
+    const catalogImages=page.locator('img[class*="gameCardArt"]');
+    assert.equal(await catalogImages.count(),9,"Las nueve tarjetas públicas deben conservar sus imágenes");
+    const sources=await catalogImages.evaluateAll(images=>images.map(img=>new URL(img.getAttribute("src"),location.href).pathname));
+    assert.deepEqual([...sources].sort(),Array.from({length:9},(_,i)=>"/liry-assets/world-"+String(i+1).padStart(2,"0")+".webp"),"Las nueve imágenes deben apuntar a recursos públicos distintos");
     const catalogSearch=page.locator('[class*="liryCatalogFilters"] input[type=search]');
     await catalogSearch.fill("codigo-improbable-sin-coincidencia-qa");
     await page.locator('[class*="liryCatalogCount"]').waitFor();
