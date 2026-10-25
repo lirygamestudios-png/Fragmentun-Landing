@@ -39,3 +39,18 @@ Los identificadores siguientes son **internos y anónimos**. La correspondencia 
 - No presentar solicitudes ni contratar servicios de registro con costo sin autorización explícita.
 
 **Confidencialidad:** este archivo es seguro para repositorio público sólo porque no identifica las IP. No agregar jamás la tabla de correspondencia nombre↔identificador aquí.
+
+## Evaluación pendiente — Videos recomendados y publicidad recompensada (25/10/2026)
+
+El titular observó en el consolidado privado que varios de los nueve juegos contemplan **videos recomendados** relacionados con logros. Todavía no se ha verificado juego por juego si son tutoriales, contenido editorial, anuncios con recompensa o una combinación. **No** asumir que todas las IP contienen anuncios ni publicar su correspondencia privada.
+
+- **Videos instructivos/recomendados:** ayudan al jugador a aprender una mecánica o conseguir un logro; no generan necesariamente ingresos publicitarios.
+- **Publicidad recompensada (opt-in):** el jugador decide ver un anuncio claramente identificado a cambio de una recompensa previamente indicada; evaluar como ingreso adicional a compras in-game, videojuegos premium y comisiones de terceros. No integrar ni activar proveedores todavía.
+- **Inventario de diseño por IP:** documentar en el archivo **privado**, no en GitHub, la mecánica, tipo de video, recompensa, frecuencia, público/edad, plataforma objetivo y alternativa sin anuncios. Mantener aquí solamente requisitos genéricos sin relación identificable con las nueve IP.
+- **Economía y UX:** evitar ventajas competitivas injustas, premios que desvaloricen compras, incentivos coercitivos y saturación; no condicionar la progresión esencial del videojuego a publicidad, ofrecer opciones claras para no participar.
+- **Control técnico futuro:** adaptador de proveedor desacoplado del motor, disponibilidad antes de mostrar el botón, verificación de recompensa desde fuente confiable cuando aplique, idempotencia contra duplicados, registros antifraude y métricas agregadas. Validar compatibilidad del SDK con Godot/web y Unity/Unreal antes de decidir proveedor.
+- **Privacidad y cumplimiento:** revisión específica por edad/jurisdicción (incluidos menores, consentimiento y contenido de anuncios), reglas del proveedor y de las tiendas de aplicaciones. No activar segmentación ni captación de datos hasta revisión jurídica/técnica.
+- **Métricas previstas:** usuarios activos diarios, sesiones, tasa de aceptación, vistas completas elegibles, impresiones efectivamente monetizadas, eCPM neto, ingreso por usuario, impacto en retención y canibalización de IAP. No prometer ingresos sin tráfico y demanda validados.
+- **Siguiente fase:** preparar prototipo de interfaz sin SDK, anuncios reales, cuentas ni cobros; definir después una prueba controlada **solo con aprobación expresa**.
+
+Fuentes técnicas para evaluación futura: Google AdMob rewarded ads (https://admob.google.com/home/resources/rewarded-ads-win-for-everyone/) y Unity Monetization Strategy (https://docs.unity.com/en-us/monetization/getting-started/monetization-strategy). Esta nota es una **línea estratégica pendiente**, no una decisión de integración o contratación.
