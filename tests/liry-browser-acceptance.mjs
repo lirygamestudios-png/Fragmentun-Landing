@@ -55,12 +55,12 @@ try {
    assert.equal(overflow,false,"No debe aparecer scroll horizontal");
    // Recorridos observables de catálogo y ADN (sin escribir datos de usuario).
    if(item.label==="desktop-es-1440"||item.label==="desktop-en-1024"){
-    const catalogSearch=page.locator(".liryCatalogFilters input[type=search]");
+    const catalogSearch=page.locator("[class*="liryCatalogFilters"] input[type=search]");
     await catalogSearch.fill("codigo-improbable-sin-coincidencia-qa");
-    await page.locator(".liryCatalogCount").waitFor();
-    assert.equal(await page.locator(".worldCardOpen").count(),0,"Un filtro inexistente no debe mostrar tarjetas");
+    await page.locator("[class*="liryCatalogCount"]").waitFor();
+    assert.equal(await page.locator("[class*="worldCardOpen"]").count(),0,"Un filtro inexistente no debe mostrar tarjetas");
     await catalogSearch.fill("");
-    const openGame=page.locator(".worldCardOpen").first();
+    const openGame=page.locator("[class*="worldCardOpen"]").first();
     await openGame.click();
     const gameDialog=page.locator('[role="dialog"][aria-labelledby="liry-world-dialog-title"]');
     assert.equal(await gameDialog.isVisible(),true,"La ficha del catálogo debe abrirse");
@@ -69,17 +69,17 @@ try {
     assert.equal(await openGame.evaluate(el=>document.activeElement===el),true,"La ficha debe devolver el foco al botón");
     const dna=page.locator("#liry-dna");
     await dna.locator('button[aria-controls="liry-dna-explorer"]').click();
-    await dna.locator(".dnaSurveyToggle").click();
+    await dna.locator("[class*="dnaSurveyToggle"]").click();
     for(let question=0;question<6;question++){
      const choice=dna.locator('input[name="liry-dna-q-'+question+'"]').last();
      await choice.check();
      if(question<5)await dna.locator('input[name="liry-dna-q-'+(question+1)+'"]').first().waitFor();
     }
-    await dna.locator(".dnaSurveyResult").waitFor();
+    await dna.locator("[class*="dnaSurveyResult"]").waitFor();
     assert.equal(await dna.locator('[role="progressbar"]').count(),6,"ADN debe mostrar seis indicadores de resultado");
-    await dna.locator(".dnaSurveyRestart").click();
+    await dna.locator("[class*="dnaSurveyRestart"]").click();
     await dna.locator('input[name="liry-dna-q-0"]').first().waitFor();
-    await dna.locator(".dnaExplorerClose").click();
+    await dna.locator("[class*="dnaExplorerClose"]").click();
     assert.equal(await dna.locator("#liry-dna-explorer").count(),0,"Cerrar ADN debe ocultar el explorador");
    }
    if(item.mobile){
