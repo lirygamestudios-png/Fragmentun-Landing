@@ -8,7 +8,7 @@ function liryMetadataOrigin(){
   if(candidate){const u=new URL(candidate);if(u.protocol==="https:"&&!u.username&&!u.password)return u.origin;}
  }catch{}
  if(rawDeployment&&/^[a-zA-Z0-9.-]+\.vercel\.app$/.test(rawDeployment))return "https://"+rawDeployment;
- return "https://fragmentunweblandingoficial01.vercel.app";
+ return "https://lirygames-studios-frontdesk.vercel.app";
 }
 export const metadata:Metadata={
  metadataBase:new URL(liryMetadataOrigin()),
