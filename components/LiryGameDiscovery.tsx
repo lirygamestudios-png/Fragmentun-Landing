@@ -107,7 +107,7 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog,approved
     if(selectedGame===null)return;
     gameCloseRef.current?.focus({preventScroll:true});
     const onKey=(event:KeyboardEvent)=>{
-      if(event.key==="Escape"){event.preventDefault();const index=selectedGame;setSelectedGame(null);requestAnimationFrame(()=>gameTriggersRef.current[index]?.focus({preventScroll:true}));return;}
+      if(event.key==="Escape"){event.preventDefault();const index=selectedGame;setSelectedGame(null);requestAnimationFrame(()=>{const trigger=gameTriggersRef.current[index];if(trigger?.isConnected)trigger.focus({preventScroll:true})});return;}
       if(event.key!=="Tab")return;
       const elements=Array.from(gameDialogRef.current?.querySelectorAll<HTMLElement>('a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])')??[]).filter(element=>element.getClientRects().length>0);
       if(!elements.length){event.preventDefault();return;}
@@ -122,7 +122,7 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog,approved
     if(selectedGame===null)return;
     const index=selectedGame;
     setSelectedGame(null);
-    requestAnimationFrame(()=>gameTriggersRef.current[index]?.focus({preventScroll:true}));
+    requestAnimationFrame(()=>{const trigger=gameTriggersRef.current[index];if(trigger?.isConnected)trigger.focus({preventScroll:true})});
   };
 
   // Preferencia local efímera: nunca XP ni identidad autenticada.
