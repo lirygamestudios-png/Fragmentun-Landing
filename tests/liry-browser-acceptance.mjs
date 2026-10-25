@@ -5,8 +5,9 @@
  *   npx playwright install chromium
  *   node tests/liry-browser-acceptance.mjs
  *
- * BASE_URL permite probar otro despliegue; por defecto usa el último READY
- * conocido al crear esta prueba. Capturas: /tmp/liry-browser-acceptance
+ * BASE_URL es obligatorio: especificar el Preview protegido de LIRYGAMES a verificar.
+ * Ejemplo: BASE_URL=https://<preview-lirygames>.vercel.app node tests/liry-browser-acceptance.mjs
+ * Capturas: /tmp/liry-browser-acceptance
  * No transmite formularios, no crea cuentas, no compra, no modifica datos.
  * Requiere conectividad directa a Vercel. Un bloqueo de red NO es aprobación.
  */
@@ -14,7 +15,12 @@ import assert from "node:assert/strict";
 import {mkdir} from "node:fs/promises";
 import {join} from "node:path";
 
-const base = (process.env.BASE_URL || "https://fragmentunweblandingoficial01-ia3k1mthn-lirygamestudios-7579.vercel.app").replace(/\/$/, "");
+const requestedBase = process.env.BASE_URL?.trim();
+if(!requestedBase){console.error("BASE_URL obligatorio: indicar explícitamente el Preview SSO de LIRYGAMES.");process.exit(2)}
+let previewUrl;
+try{previewUrl=new URL(requestedBase)}catch{console.error("BASE_URL no es una URL válida.");process.exit(2)}
+if(previewUrl.protocol!=="https:"||!previewUrl.hostname.startsWith("lirygames-studios-frontdesk-")||!previewUrl.hostname.endsWith(".vercel.app")||previewUrl.pathname!=="/"||previewUrl.search||previewUrl.hash){console.error("BASE_URL debe señalar la raíz HTTPS de un Preview Vercel de LIRYGAMES, sin ruta ni parámetros.");process.exit(2)}
+const base=previewUrl.origin;
 const out = process.env.LIRY_EVIDENCE_DIR || "/tmp/liry-browser-acceptance";
 await mkdir(out,{recursive:true});
 let chromium;
