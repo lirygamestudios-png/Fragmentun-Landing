@@ -75,7 +75,7 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog,approved
     const max=completed?Math.max(...scores):0;
     const chosen=max>0?traits[scores.indexOf(max)]:null;
     if(chosen)window.dispatchEvent(new CustomEvent("liry:dna-closed",{detail:{style:chosen,durationMs:10000}}));
-    setExploringDna(false);resetDnaEvaluation(Boolean(chosen));explorerOpenRef.current?.focus({preventScroll:true});
+    setExploringDna(false);resetDnaEvaluation(Boolean(chosen));if(explorerOpenRef.current?.isConnected)explorerOpenRef.current.focus({preventScroll:true});
   };
   useEffect(()=>()=>clearAdvanceTimer(),[]);
   useEffect(()=>{
