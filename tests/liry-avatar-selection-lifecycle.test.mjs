@@ -11,3 +11,5 @@ test("el retrato del perfil sigue los cambios temporales de avatar",()=>{
  assert.match(src,/window\.addEventListener\("pageshow",syncAvatar\)/);
  assert.match(src,/if\(avatarUrl\.current\)return/);
 });
+
+test("avatar dialog restores focus only if the portrait trigger is mounted",()=>{assert.match(src,/onClose=\{\(\)=>\{if\(triggerRef\.current\?\.isConnected\)triggerRef\.current\.focus\(\{preventScroll:true\}\)\}\}/);});
