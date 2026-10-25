@@ -71,7 +71,7 @@ try {
     assert.equal(await gameDialog.isVisible(),true,"La ficha del catálogo debe abrirse");
     await page.keyboard.press("Escape");
     await gameDialog.waitFor({state:"detached"});
-    assert.equal(await openGame.evaluate(el=>document.activeElement===el),true,"La ficha debe devolver el foco al botón");
+    await page.waitForFunction(()=>{const opener=document.querySelector('[class*="worldCardOpen"]');return opener&&document.activeElement===opener},"La ficha debe devolver el foco al botón");
     const dna=page.locator("#liry-dna");
     await dna.locator('button[aria-controls="liry-dna-explorer"]').click();
     await dna.locator('[class*="dnaSurveyToggle"]').click();
@@ -114,7 +114,7 @@ try {
     assert.equal(await categoryDialog.evaluate(el=>el.open),true,"La categoría abre modal nativo");
     await page.keyboard.press("Escape");
     await page.waitForFunction(()=>document.querySelector("#liry-store-category-dialog")?.open===false);
-    assert.equal(await category.evaluate(el=>document.activeElement===el),true,"Cerrar categoría restaura el foco");
+    await page.waitForFunction(()=>{const opener=document.querySelector('button[aria-controls="liry-store-category-dialog"]');return opener&&document.activeElement===opener},"Cerrar categoría restaura el foco");
     const items=store.locator("[data-liry-store-product]");
     if(await items.count()>12)throw new Error("La tienda no debe superar 12 productos por página");
     const pages=store.locator('[class*="liryStorePages"]');
