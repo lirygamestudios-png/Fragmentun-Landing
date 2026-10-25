@@ -124,7 +124,7 @@ export function LiryGamerIdentity({snapshot,locale="es"}:{snapshot:Readonly<Publ
   <small className={styles.gamerDataNote}>{style?detailCopy.styleHint:detailCopy.styleIntro}</small>
   <div className={styles.gamerMetrics}><div><small>{detailCopy.gamesPlayed}</small><strong>{verified?verified.gamesPlayed:"—"}</strong></div><div><small>{detailCopy.achievements}</small><strong>{verified?verified.achievedCount:"—"}</strong></div><div><small>{detailCopy.playHours}</small><strong>{verified?(verified.playMinutes/60).toFixed(1):"—"}</strong></div></div>
   <small className={styles.gamerDataNote}>{verified?detailCopy.verifiedActivity:profileCopy.noSession}</small>
-  <dialog ref={dialogRef} className={styles.gamerInfoDialog} aria-label={detailCopy.avatarDialog} onClose={()=>triggerRef.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
+  <dialog ref={dialogRef} className={styles.gamerInfoDialog} aria-label={detailCopy.avatarDialog} onClose={()=>{if(triggerRef.current?.isConnected)triggerRef.current.focus({preventScroll:true})}} onClick={event=>{if(event.target===dialogRef.current)dialogRef.current.close()}}>
    <div className={styles.gamerInfoDialogInside}>
     <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label={detailCopy.close}>×</button></form>
     <p className={styles.gamerInfoEyebrow}>{detailCopy.avatarEyebrow}</p>
