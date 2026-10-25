@@ -43,8 +43,7 @@ export function LiryStoreCategories({locale="es",products=[]}:{locale?:LiryFront
   linkedProductId.current=null;
   requestAnimationFrame(()=>{
    const match=Array.from(document.querySelectorAll<HTMLElement>("[data-liry-store-product]")).find(el=>el.dataset.liryStoreProduct===id);
-   match?.scrollIntoView({block:"center",behavior:"auto"});
-   match?.focus({preventScroll:true});
+   if(match?.isConnected){match.scrollIntoView({block:"center",behavior:"auto"});match.focus({preventScroll:true})}
   });
  },[currentPage,pageItems.map(item=>item.id).join("|")]);
  const resultStatus=useRef<HTMLParagraphElement>(null);
