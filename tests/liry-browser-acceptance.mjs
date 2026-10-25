@@ -55,7 +55,7 @@ try {
    assert.equal(overflow,false,"No debe aparecer scroll horizontal");
    // Recorridos observables de catálogo y ADN (sin escribir datos de usuario).
    if(item.label==="desktop-es-1440"||item.label==="desktop-en-1024"){
-    const catalogSearch=page.locator("[class*="liryCatalogFilters"] input[type=search]");
+    const catalogSearch=page.locator('[class*="liryCatalogFilters"] input[type=search]');
     await catalogSearch.fill("codigo-improbable-sin-coincidencia-qa");
     await page.locator('[class*="liryCatalogCount"]').waitFor();
     assert.equal(await page.locator('[class*="worldCardOpen"]').count(),0,"Un filtro inexistente no debe mostrar tarjetas");
