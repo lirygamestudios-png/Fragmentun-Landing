@@ -21,6 +21,7 @@ export function LiryStoreCategories({locale="es",products=[]}:{locale?:LiryFront
  const filtered=products.filter(item=>(category==="all"||item.category===category)&&(availability==="all"||(availability==="available"?item.available:!item.available))&&normalizeSearch(`${item.name} ${collections.find(entry=>entry.id===item.category)?.name??""}`).includes(normalizeSearch(term))).sort((a,b)=>{const byName=a.name.localeCompare(b.name,locale)||a.id.localeCompare(b.id);return sortBy==="price-asc"?(a.price-b.price)||byName:sortBy==="price-desc"?(b.price-a.price)||byName:byName});
  const pages=Math.max(1,Math.ceil(filtered.length/12));
  const currentPage=Math.min(page,pages);
+ useEffect(()=>{setPage(previous=>Math.min(previous,pages))},[pages]);
  const pageItems=filtered.slice((currentPage-1)*12,currentPage*12);
  const deepLinkHandled=useRef(false);
  const linkedProductId=useRef<string|null>(null);
