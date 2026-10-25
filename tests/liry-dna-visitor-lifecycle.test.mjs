@@ -28,3 +28,5 @@ test("DNA-to-player style handoff is temporary and resettable",()=>{const identi
 test("DNA survey advances keyboard focus to each new question and the final result",()=>{assert.match(src,/dnaStepFocusPending\.current=true;setDnaStep/);assert.match(src,/querySelector<HTMLInputElement>\(`input\[name="liry-dna-q-\$\{dnaStep\}"\]`\)\?\.focus/);assert.match(src,/ref=\{dnaResultHeadingRef\} tabIndex=\{-1\}/);assert.match(src,/dnaStepFocusPending\.current=false/);});
 
 test("DNA survey Previous restores keyboard focus to the earlier question",()=>{assert.match(src,/clearAdvanceTimer\(\);dnaStepFocusPending\.current=true;setDnaStep\(step=>Math\.max\(0,step-1\)\)/);});
+
+test("DNA survey restart waits for first question to render before focusing",()=>{assert.match(src,/setDnaAnswers\(Array\(6\)\.fill\(null\)\);dnaStepFocusPending\.current=true;setDnaStep\(0\)/);});
