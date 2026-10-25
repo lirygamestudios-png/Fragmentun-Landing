@@ -1,7 +1,7 @@
 # LIRYGAMES STUDIOS — Puertas de calidad del FrontDesk
 
 Última auditoría de código: 25 de octubre de 2026.
-Referencia actual: Preview Vercel READY `7e3d5774a2fc938e9205c06be01a04ff5bde72de` (metadatos independientes y retorno de enfoque en vista previa de compartir).
+Referencia actual: Preview Vercel READY `331f99e196509a93313c8d9c3be0d4d152f8cfc4` (bloques de Perfil/Journey y navegación/búsqueda compilados; controles de enfoque reforzados).
 **Este documento NO certifica pruebas visuales manuales que aún no se han realizado.**
 
 ## Verificaciones confirmadas
@@ -13,6 +13,7 @@ Referencia actual: Preview Vercel READY `7e3d5774a2fc938e9205c06be01a04ff5bde72d
 - [x] Recursos `public/liry-dna-cinematic.svg`, `public/LIRY_DNA_Hiperrealista.png` y `public/lirygames-brand-icon.svg` existen en Git.
 - [x] El código incluye retorno de enfoque al disparador al cerrar ficha de catálogo, con guardia `isConnected`.
 - [x] El código incluye cierre del menú móvil con tecla Escape y `preventDefault()`.
+- [x] Bloque de navegación/búsqueda compilado en READY: se comprueba `isConnected` antes de enfocar el menú, destinos y resultados, con pruebas de regresión.
 - [x] El componente de tienda implementa filtros, paginación y retorno de enfoque al cerrar categoría.
 - [x] La vista previa de compartir comprueba que su botón de origen aún exista antes de devolverle el enfoque; prueba de regresión incorporada.
 - [x] Las nueve IP permanecen representadas públicamente mediante identificadores no reveladores.
