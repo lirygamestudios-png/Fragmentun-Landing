@@ -17,6 +17,7 @@ test("mobile menu exposes state and closes via Escape with focus restored",()=>{
  assert.match(mobile,/aria-controls="liry-mobile-nav"/);
  assert.match(mobile,/id="liry-mobile-nav"/);
  assert.match(mobile,/event\.key==="Escape"/);
+ assert.match(mobile,/if\(event\.key==="Escape"\)\{event\.preventDefault\(\);setOpen\(false\);toggle\.current\?\.focus\(\{preventScroll:true\}\)\}/);
  assert.match(mobile,/toggle\.current\?\.focus\(\{preventScroll:true\}\)/);
 });
 test("mobile menu closes when navigating or clicking outside",()=>{
