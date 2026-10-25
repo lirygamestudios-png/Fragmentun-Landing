@@ -9,3 +9,5 @@ test("catalog and store result counts retain scroll space beneath header",()=>{c
 test("mobile store filter reset spans both columns and remains touch accessible",()=>{const css=readFileSync(new URL("../app/lirygames/lirygames.module.css",import.meta.url),"utf8");assert.match(css,/\.liryStoreFilters button\{grid-column:1\/-1;justify-self:stretch;min-height:44px/);});
 
 test("game dialog restores focus only to a mounted catalog trigger",()=>{assert.equal((source.match(/if\(trigger\?\.isConnected\)trigger\.focus\(\{preventScroll:true\}\)/g)||[]).length,2);});
+
+test("catalog page state is clamped when filtered game count shrinks",()=>{assert.match(source,/useEffect\(\(\)=>\{setCatalogPage\(previous=>Math\.min\(previous,catalogPages\)\)\},\[catalogPages\]\)/);assert.match(source,/const currentCatalogPage=Math\.min\(catalogPage,catalogPages\)/);});
