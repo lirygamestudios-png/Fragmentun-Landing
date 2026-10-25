@@ -1,12 +1,14 @@
 # LIRYGAMES STUDIOS — Puertas de calidad del FrontDesk
 
 Última auditoría de código: 25 de octubre de 2026.
-Referencia: Preview Vercel READY `ea878388e7ba178249cd62aedf4f36792c460d03`.
+Referencia actual: Preview Vercel READY `293d03d8999023bd69ce55ae232aaae035e3978b` (metadatos LIRYGAMES separados de FRAGMENTUN).
 **Este documento NO certifica pruebas visuales manuales que aún no se han realizado.**
 
 ## Verificaciones confirmadas
 
-- [x] Build del Preview READY en Vercel.
+- [x] Build del Preview READY en Vercel y commit de despliegue coincidente con la rama de trabajo al verificarlo.
+- [x] Metadatos de LIRYGAMES usan respaldo propio, no dominio de FRAGMENTUN; existe prueba de regresión.
+- [x] Vercel informa SSO habilitado para previews: las pruebas externas requieren acceso autenticado.
 - [x] Las 9 imágenes de tarjetas `public/liry-assets/world-01.webp` a `world-09.webp` existen en Git.
 - [x] Recursos `public/liry-dna-cinematic.svg`, `public/LIRY_DNA_Hiperrealista.png` y `public/lirygames-brand-icon.svg` existen en Git.
 - [x] El código incluye retorno de enfoque al disparador al cerrar ficha de catálogo, con guardia `isConnected`.
