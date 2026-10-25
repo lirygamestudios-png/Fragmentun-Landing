@@ -51,6 +51,9 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog,approved
   const [activeTrait,setActiveTrait]=useState(0);
   const [dnaSurvey,setDnaSurvey]=useState(false);
   const [dnaStep,setDnaStep]=useState(0);
+  const dnaStepFocusPending=useRef(false);
+  const dnaResultHeadingRef=useRef<HTMLHeadingElement>(null);
+  useEffect(()=>{if(!dnaStepFocusPending.current)return;dnaStepFocusPending.current=false;if(dnaStep===6)dnaResultHeadingRef.current?.focus({preventScroll:true});else document.querySelector<HTMLInputElement>(`input[name="liry-dna-q-${dnaStep}"]`)?.focus({preventScroll:true})},[dnaStep]);
   const [dnaAnswers,setDnaAnswers]=useState<(number|null)[]>(Array(6).fill(null));
   const [selectedGame,setSelectedGame]=useState<number|null>(null);
   const [catalogSearch,setCatalogSearch]=useState("");
@@ -62,7 +65,7 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog,approved
   const navigateCatalogPage=(next:number)=>{if(next===catalogPage)return;focusAfterCatalogPageChange.current=true;setCatalogPage(next);const reduceMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)").matches??false;catalogResultRef.current?.scrollIntoView({behavior:reduceMotion?"auto":"smooth",block:"start"})};
   const [catalogHeight,setCatalogHeight]=useState<number|null>(null);
   const resetDnaEvaluation=(preserveStyle=false)=>{
-    clearAdvanceTimer();
+    clearAdvanceTimer();dnaStepFocusPending.current=false;
     if(!preserveStyle)window.dispatchEvent(new CustomEvent("liry:dna-style",{detail:{style:null}}));
     setDnaSurvey(false);setDnaStep(0);setDnaAnswers(Array(6).fill(null));setActiveTrait(0);
   };
@@ -170,9 +173,9 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog,approved
       <button type="button" className={styles.dnaSurveyToggle} onClick={()=>{if(dnaSurvey)resetDnaEvaluation();else setDnaSurvey(true)}} aria-expanded={dnaSurvey}>{dnaSurvey?dnaCopy.hide:`${dnaCopy.survey} →`}</button>
       {dnaSurvey&&<div className={styles.dnaSurvey} aria-label={accessibilityCopy.surveyAria}>
         <p>{detailCopy.surveyIntro}</p>
-        {dnaQuestions.map((question,i)=>i!==dnaStep?null:<fieldset key={question} className={styles.dnaSurveyQuestion}><legend>{i+1}. {question}</legend><div className={styles.dnaSurveyAnswers}>{dnaOptions.map(option=><label key={option.value} className={dnaAnswers[i]===option.value?styles.dnaSurveyAnswerSelected:undefined}>{option.label}<input type="radio" name={`liry-dna-q-${i}`} checked={dnaAnswers[i]===option.value} onChange={()=>{clearAdvanceTimer();setDnaAnswers(current=>current.map((answer,index)=>index===i?option.value:answer));advanceTimerRef.current=setTimeout(()=>{setDnaStep(Math.min(i+1,6));advanceTimerRef.current=null;},420);}}/></label>)}</div></fieldset>)}
+        {dnaQuestions.map((question,i)=>i!==dnaStep?null:<fieldset key={question} className={styles.dnaSurveyQuestion}><legend>{i+1}. {question}</legend><div className={styles.dnaSurveyAnswers}>{dnaOptions.map(option=><label key={option.value} className={dnaAnswers[i]===option.value?styles.dnaSurveyAnswerSelected:undefined}>{option.label}<input type="radio" name={`liry-dna-q-${i}`} checked={dnaAnswers[i]===option.value} onChange={()=>{clearAdvanceTimer();setDnaAnswers(current=>current.map((answer,index)=>index===i?option.value:answer));advanceTimerRef.current=setTimeout(()=>{dnaStepFocusPending.current=true;setDnaStep(Math.min(i+1,6));advanceTimerRef.current=null;},420);}}/></label>)}</div></fieldset>)}
         {dnaStep===6&&dnaAnswers.every(answer=>answer!==null)?
-          <div className={styles.dnaSurveyResult} aria-live="polite"><h4>{detailCopy.resultTitle}</h4>
+          <div className={styles.dnaSurveyResult} aria-live="polite"><h4 ref={dnaResultHeadingRef} tabIndex={-1}>{detailCopy.resultTitle}</h4>
             {traits.map((trait,i)=><div className={styles.dnaResultRow} key={trait}><span>{trait}</span><div className={styles.dnaAffinityTrack} role="progressbar" aria-label={trait} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round((dnaAnswers[i]??0)/3*100)} style={{["--dna-accent" as string]:["#19d7ff","#ad58f4","#f5685f","#ffd34c","#d65ef7","#7665ff"][i]}}><span style={{width:`${Math.round((dnaAnswers[i]??0)/3*100)}%`}} /></div><strong>{Math.round((dnaAnswers[i]??0)/3*100)}%</strong></div>)}
             <h4>{detailCopy.recommendations}</h4>
             {dnaAnswers.every(answer=>answer===0)?<p>{detailCopy.noPreferences}</p>:<>
