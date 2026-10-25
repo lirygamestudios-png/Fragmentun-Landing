@@ -11,7 +11,7 @@ export function LiryMobileNav({ariaLabel,items,locale="es"}:{ariaLabel:string;it
  useEffect(()=>{
   if(!open)return;
   const closeOutside=(event:PointerEvent)=>{if(!root.current?.contains(event.target as Node))setOpen(false)};
-  const closeEscape=(event:KeyboardEvent)=>{if(event.key==="Escape"){event.preventDefault();setOpen(false);toggle.current?.focus({preventScroll:true})}};
+  const closeEscape=(event:KeyboardEvent)=>{if(event.key==="Escape"){event.preventDefault();setOpen(false);if(toggle.current?.isConnected)toggle.current.focus({preventScroll:true})}};
   const closeOnNavigation=()=>setOpen(false);
   document.addEventListener("pointerdown",closeOutside);
   document.addEventListener("keydown",closeEscape);
