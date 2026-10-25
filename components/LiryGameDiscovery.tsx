@@ -96,6 +96,7 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog,approved
     if(!exploringDna)return;
     const onKeyDown=(event:KeyboardEvent)=>{
       if(event.key==="Escape"){
+        event.preventDefault();
         closeDnaExplorer();
       }
     };
