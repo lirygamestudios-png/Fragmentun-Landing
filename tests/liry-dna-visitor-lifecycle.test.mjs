@@ -30,3 +30,5 @@ test("DNA survey advances keyboard focus to each new question and the final resu
 test("DNA survey Previous restores keyboard focus to the earlier question",()=>{assert.match(src,/clearAdvanceTimer\(\);dnaStepFocusPending\.current=true;setDnaStep\(step=>Math\.max\(0,step-1\)\)/);});
 
 test("DNA survey opening and restart use the shared focus lifecycle",()=>{assert.match(src,/dnaStepFocusPending\.current=true;setDnaSurvey\(true\)/);assert.match(src,/\},\[dnaStep,dnaSurvey\]\)/);assert.match(src,/setDnaAnswers\(Array\(6\)\.fill\(null\)\);dnaStepFocusPending\.current=true;setDnaStep\(0\)/);});
+
+test("Escape closes DNA explorer without browser default behavior",()=>{assert.match(src,/if\(event\.key==="Escape"\)\{\s*event\.preventDefault\(\);\s*closeDnaExplorer\(\)/);});
