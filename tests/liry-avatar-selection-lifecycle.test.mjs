@@ -13,3 +13,5 @@ test("el retrato del perfil sigue los cambios temporales de avatar",()=>{
 });
 
 test("avatar dialog restores focus only if the portrait trigger is mounted",()=>{assert.match(src,/onClose=\{\(\)=>\{if\(triggerRef\.current\?\.isConnected\)triggerRef\.current\.focus\(\{preventScroll:true\}\)\}\}/);});
+
+test("gamer information dialog restores focus only to a mounted trigger",()=>{const info=readFileSync(new URL("../components/LiryGamerInfoDialog.tsx",import.meta.url),"utf8");assert.match(info,/if\(triggerRef\.current\?\.isConnected\)triggerRef\.current\.focus\(\{preventScroll:true\}\)/);});
