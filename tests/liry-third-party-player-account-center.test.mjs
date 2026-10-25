@@ -589,7 +589,7 @@ test("Catálogo externo restaura foco al salir del estado sin resultados",()=>{
 test("Menú móvil conserva cierre Escape, foco y estado de navegación",()=>{
  const src=readFileSync(new URL("../components/LiryMobileNav.tsx",import.meta.url),"utf8");
  assert.ok(src.includes("event.key===\"Escape\""));
- assert.ok(src.includes("toggle.current?.focus({preventScroll:true})"));
+ assert.ok(src.includes("if(toggle.current?.isConnected)toggle.current.focus({preventScroll:true})"));
  assert.ok(src.includes("document.addEventListener(\"pointerdown\",closeOutside)"));
  assert.ok(src.includes("aria-expanded={open}"));
  assert.ok(src.includes("aria-controls=\"liry-mobile-nav\""));
