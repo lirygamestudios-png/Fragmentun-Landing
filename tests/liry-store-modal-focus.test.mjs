@@ -37,3 +37,5 @@ test("store filters reset pagination and never exceed twelve products per page",
 test("Liryboost closes by returning keyboard focus only to a connected trigger",()=>{const source=readFileSync(new URL("../components/LiryBoostEnrollment.tsx",import.meta.url),"utf8");assert.match(source,/if\(triggerRef\.current\?\.isConnected\)triggerRef\.current\.focus\(\{preventScroll:true\}\)/);});
 
 test("store deep link only scrolls and focuses a mounted product",()=>{assert.match(source,/if\(match\?\.isConnected\)\{match\.scrollIntoView\(\{block:"center",behavior:"auto"\}\);match\.focus\(\{preventScroll:true\}\)\}/);});
+
+test("store page state is clamped when filtered product count decreases",()=>{assert.match(source,/useEffect\(\(\)=>\{setPage\(previous=>Math\.min\(previous,pages\)\)\},\[pages\]\)/);assert.match(source,/const currentPage=Math\.min\(page,pages\)/);});
