@@ -3,3 +3,5 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 const component=readFileSync(new URL("../components/LiryHeaderUtilities.tsx",import.meta.url),"utf8");
 test("header search activates first result with Enter and retains arrow navigation",()=>{assert.match(component,/e\.key==="Enter"&&results\.length>0/);assert.match(component,/firstResult\.current\?\.click\(\)/);assert.match(component,/e\.key==="ArrowDown"&&results\.length>0/);});
+
+test("header modal only focuses mounted controls while open",()=>{assert.match(component,/if\(dialog\.current\?\.open&&target\?\.isConnected\)target\.focus\(\{preventScroll:true\}\)/);});
