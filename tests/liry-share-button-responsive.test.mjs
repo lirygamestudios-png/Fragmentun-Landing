@@ -13,3 +13,5 @@ test("share icon sizing cannot apply to buttons inside modal",()=>{assert.doesNo
 test("mobile product cards have an ordered vertical layout without changing the share modal",()=>{assert.match(css,/@media\(max-width:560px\)\{\.liryStoreProducts\{[^}]*align-items:stretch/);assert.match(css,/\.liryStoreProduct\{display:flex;flex-direction:column;align-items:stretch;gap:10px/);assert.match(css,/\.liryStoreProduct h4\{margin:0;line-height:1\.4;min-height:2\.8em/);assert.match(css,/\.liryStoreProduct>\.liryShareEntry\{align-self:flex-start;margin:0/);});
 
 test("WhatsApp share dialog only restores focus to mounted product icon",()=>{assert.match(share,/if\(opener\.current\?\.isConnected\)opener\.current\.focus/);assert.match(share,/opener\.current=null/);});
+
+test("social share preview restores focus only to a mounted trigger",()=>{const s=readFileSync(new URL("../components/LiryShare.tsx",import.meta.url),"utf8");assert.match(s,/if\(previewTrigger\.current\?\.isConnected\)previewTrigger\.current\.focus\(\{preventScroll:true\}\)/);assert.match(s,/previewTrigger\.current=null/);});
