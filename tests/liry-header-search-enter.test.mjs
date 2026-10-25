@@ -7,3 +7,5 @@ test("header search activates first result with Enter and retains arrow navigati
 test("header modal only focuses mounted controls while open",()=>{assert.match(component,/if\(dialog\.current\?\.open&&target\?\.isConnected\)target\.focus\(\{preventScroll:true\}\)/);});
 
 test("search destination is focused only when connected to document",()=>{assert.match(component,/if\(!target\?\.isConnected\)return/);assert.match(component,/target\.focus\(\{preventScroll:true\}\)/);});
+
+test("ArrowDown focuses only a mounted search result",()=>{assert.match(component,/if\(firstResult\.current\?\.isConnected\)firstResult\.current\.focus\(\{preventScroll:true\}\)/);});
