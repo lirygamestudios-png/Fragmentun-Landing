@@ -35,3 +35,5 @@ test("player and developer return links preserve selected language",()=>{for(con
 test("store filters reset pagination and never exceed twelve products per page",()=>{const src=readFileSync(new URL("../components/LiryStoreCategories.tsx",import.meta.url),"utf8");for(const setter of ["setTerm","setCategory","setAvailability","setSortBy"]){assert.ok(src.includes(setter+'(e.target.value);setPage(1)'),setter+" must reset page");}assert.match(src,/Math\.ceil\(filtered\.length\/12\)/);assert.match(src,/filtered\.slice\(\(currentPage-1\)\*12,currentPage\*12\)/);assert.match(src,/Math\.min\(page,pages\)/);});
 
 test("Liryboost closes by returning keyboard focus only to a connected trigger",()=>{const source=readFileSync(new URL("../components/LiryBoostEnrollment.tsx",import.meta.url),"utf8");assert.match(source,/if\(triggerRef\.current\?\.isConnected\)triggerRef\.current\.focus\(\{preventScroll:true\}\)/);});
+
+test("store deep link only scrolls and focuses a mounted product",()=>{assert.match(source,/if\(match\?\.isConnected\)\{match\.scrollIntoView\(\{block:"center",behavior:"auto"\}\);match\.focus\(\{preventScroll:true\}\)\}/);});
