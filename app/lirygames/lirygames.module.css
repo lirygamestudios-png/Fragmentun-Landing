@@ -1552,7 +1552,7 @@ button.storeCategory:hover,button.storeCategory:focus-visible{border-color:#4ee4
 .headerUtilityLabel input{box-sizing:border-box;width:100%;min-width:0;min-height:44px;font-size:16px;padding:10px 12px;background:#061429;color:#fff;border:1px solid #3dadd4;border-radius:9px}
 .headerUtilityBody p{color:#c3d6e8;line-height:1.6}
 .headerUtilityResults{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
-.headerUtilityResults a{min-width:0;padding:12px;border:1px solid #3dadd4;border-radius:9px;background:#0b2643;color:#d9f5ff;text-decoration:none}
+.headerUtilityResults a{min-width:0;min-height:44px;box-sizing:border-box;padding:12px;border:1px solid #3dadd4;border-radius:9px;background:#0b2643;color:#d9f5ff;text-decoration:none}
 .headerUtilityResults a:hover,.headerUtilityResults a:focus-visible,.headerUtilityClose:focus-visible{border-color:#7bdaf8;outline:2px solid #7bdaf8;outline-offset:2px}
 @media(max-width:560px){.headerUtilityResults{grid-template-columns:1fr}}
 
