@@ -42,7 +42,7 @@ export function LiryShare({locale="es"}:{locale?:LiryFrontdeskLocale}){
   <button type="button" className={styles.liryShareButton} aria-haspopup="dialog" onClick={event=>{previewTrigger.current=event.currentTarget;previewRef.current?.showModal()}}>{copy.preview} ↗</button>
   <span role="status" aria-live="polite" className={styles.socialPending}>{shareNotice}</span>
  </div>
- <dialog ref={previewRef} className={styles.gamerInfoDialog} aria-label={copy.previewAria} onClose={()=>previewTrigger.current?.focus({preventScroll:true})} onClick={event=>{if(event.target===previewRef.current)previewRef.current.close()}}>
+ <dialog ref={previewRef} className={styles.gamerInfoDialog} aria-label={copy.previewAria} onClose={()=>{if(previewTrigger.current?.isConnected)previewTrigger.current.focus({preventScroll:true});previewTrigger.current=null}} onClick={event=>{if(event.target===previewRef.current)previewRef.current.close()}}>
   <div className={styles.gamerInfoDialogInside}>
    <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label={copy.closeAria}>×</button></form>
    <p className={styles.gamerInfoEyebrow}>LIRYGAMES STUDIOS · COMPARTIR</p>
