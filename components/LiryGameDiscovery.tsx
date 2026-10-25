@@ -53,7 +53,7 @@ export function LiryGameDiscovery({games,locale="es",approvedDnaCatalog,approved
   const [dnaStep,setDnaStep]=useState(0);
   const dnaStepFocusPending=useRef(false);
   const dnaResultHeadingRef=useRef<HTMLHeadingElement>(null);
-  useEffect(()=>{if(!dnaStepFocusPending.current)return;dnaStepFocusPending.current=false;if(dnaStep===6)dnaResultHeadingRef.current?.focus({preventScroll:true});else document.querySelector<HTMLInputElement>(`input[name="liry-dna-q-${dnaStep}"]`)?.focus({preventScroll:true})},[dnaStep,dnaSurvey]);
+  useEffect(()=>{if(!dnaStepFocusPending.current)return;dnaStepFocusPending.current=false;if(dnaStep===6)dnaResultHeadingRef.current?.focus({preventScroll:true});else (document.querySelector<HTMLInputElement>(`input[name="liry-dna-q-${dnaStep}"]:checked`)??document.querySelector<HTMLInputElement>(`input[name="liry-dna-q-${dnaStep}"]`))?.focus({preventScroll:true})},[dnaStep,dnaSurvey]);
   const [dnaAnswers,setDnaAnswers]=useState<(number|null)[]>(Array(6).fill(null));
   const [selectedGame,setSelectedGame]=useState<number|null>(null);
   const [catalogSearch,setCatalogSearch]=useState("");
