@@ -1,7 +1,7 @@
 # LIRYGAMES STUDIOS — Puertas de calidad del FrontDesk
 
 Última auditoría de código: 25 de octubre de 2026.
-Referencia actual: Preview Vercel READY `331f99e196509a93313c8d9c3be0d4d152f8cfc4` (bloques de Perfil/Journey y navegación/búsqueda compilados; controles de enfoque reforzados).
+Referencia actual de código verificada: Preview Vercel READY `96a5d05ac758765a00bcf81e20711b8d114a1304`, despliegue `dpl_BzWZh2X5s3hyBFFmtuEKZad9qKCh`, URL `https://lirygames-studios-frontdesk-9nwqjhgok-lirygamestudios-7579.vercel.app/lirygames` (bloque Catálogo + Tienda + Liry ADN compilado; commit GitHub/Vercel coincidente).
 **Este documento NO certifica pruebas visuales manuales que aún no se han realizado.**
 
 ## Verificaciones confirmadas
@@ -16,6 +16,8 @@ Referencia actual: Preview Vercel READY `331f99e196509a93313c8d9c3be0d4d152f8cfc
 - [x] Bloque de navegación/búsqueda compilado en READY: se comprueba `isConnected` antes de enfocar el menú, destinos y resultados, con pruebas de regresión.
 - [x] El componente de tienda implementa filtros, paginación y retorno de enfoque al cerrar categoría.
 - [x] La vista previa de compartir comprueba que su botón de origen aún exista antes de devolverle el enfoque; prueba de regresión incorporada.
+- [x] La prueba `tests/liry-whatsapp-product-share.test.mjs` actualizó sus tres expectativas obsoletas de enfoque/desplazamiento; la tienda conserva la guardia `match?.isConnected`. Commit de corrección `96a5d05a`; Preview READY confirmado por Vercel.
+- [x] La compilación `npm run build` del Preview concluyó READY. Esto valida la puerta automatizada de compilación, NO los recorridos manuales de navegador.
 - [x] Las nueve IP permanecen representadas públicamente mediante identificadores no reveladores.
 
 ## Bloqueos de cierre que requieren una sesión de navegador real
