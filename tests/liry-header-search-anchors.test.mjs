@@ -17,3 +17,5 @@ test("DNA anchor remains inside discovery component mounted by FrontDesk",()=>{
  assert.match(page,/<LiryGameDiscovery\b/);
  assert.match(discovery,/id="liry-dna"/);
 });
+
+test("header search touch controls keep mobile accessibility dimensions",()=>{const css=readFileSync(new URL("app/lirygames/lirygames.module.css",root),"utf8");assert.match(css,/\.headerUtilityResults a\{[^}]*min-height:44px/);assert.match(css,/\.headerUtilityLabel input\{[^}]*font-size:16px/);assert.match(css,/@media\(max-width:560px\)\{\.headerUtilityResults\{grid-template-columns:1fr\}\}/);});
