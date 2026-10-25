@@ -556,7 +556,7 @@ test("gamer mobile metrics and avatar action labels do not overflow small screen
 test("gamer avatar dialog clears stale validation errors on reopening",()=>{
  const source=readFileSync(new URL("../components/LiryGamerIdentity.tsx",import.meta.url),"utf8");
  assert.match(source,/setAvatarError\(null\);dialogRef\.current\?\.showModal\(\)/);
- assert.match(source,/onClose=\{\(\)=>triggerRef\.current\?\.focus\(\{preventScroll:true\}\)\}/);
+ assert.match(source,/onClose=\{\(\)=>\{if\(triggerRef\.current\?\.isConnected\)triggerRef\.current\.focus\(\{preventScroll:true\}\)\}\}/);
 });
 
 
@@ -588,7 +588,7 @@ test("Journey world visited icons share verified identity with ring calculation"
 test("Journey information dialog close control uses localized accessible label and restores focus",()=>{
  const source=readFileSync(new URL("../components/LiryGamerInfoDialog.tsx",import.meta.url),"utf8");
  assert.match(source,/className=\{styles\.gamerInfoClose\} aria-label=\{copy\.close\}/);
- assert.match(source,/onClose=\{\(\)=>\{setSelectedWorld\(null\);triggerRef\.current\?\.focus\(\{preventScroll:true\}\)\}\}/);
+ assert.match(source,/onClose=\{\(\)=>\{setSelectedWorld\(null\);if\(triggerRef\.current\?\.isConnected\)triggerRef\.current\.focus\(\{preventScroll:true\}\)\}\}/);
 });
 
 
