@@ -1,7 +1,7 @@
 # LIRYGAMES STUDIOS — Puertas de calidad del FrontDesk
 
 Última auditoría de código: 25 de octubre de 2026.
-Referencia actual: Preview Vercel READY `293d03d8999023bd69ce55ae232aaae035e3978b` (metadatos LIRYGAMES separados de FRAGMENTUN).
+Referencia actual: Preview Vercel READY `7e3d5774a2fc938e9205c06be01a04ff5bde72de` (metadatos independientes y retorno de enfoque en vista previa de compartir).
 **Este documento NO certifica pruebas visuales manuales que aún no se han realizado.**
 
 ## Verificaciones confirmadas
@@ -14,6 +14,7 @@ Referencia actual: Preview Vercel READY `293d03d8999023bd69ce55ae232aaae035e3978
 - [x] El código incluye retorno de enfoque al disparador al cerrar ficha de catálogo, con guardia `isConnected`.
 - [x] El código incluye cierre del menú móvil con tecla Escape y `preventDefault()`.
 - [x] El componente de tienda implementa filtros, paginación y retorno de enfoque al cerrar categoría.
+- [x] La vista previa de compartir comprueba que su botón de origen aún exista antes de devolverle el enfoque; prueba de regresión incorporada.
 - [x] Las nueve IP permanecen representadas públicamente mediante identificadores no reveladores.
 
 ## Bloqueos de cierre que requieren una sesión de navegador real
