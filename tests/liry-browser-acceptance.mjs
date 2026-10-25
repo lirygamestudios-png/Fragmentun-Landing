@@ -58,7 +58,7 @@ try {
     const catalogSearch=page.locator('[class*="liryCatalogFilters"] input[type=search]');
     await catalogSearch.fill("codigo-improbable-sin-coincidencia-qa");
     await page.locator('[class*="liryCatalogCount"]').waitFor();
-    assert.equal(await page.locator('[class*="worldCardOpen"]').count(),0,"Un filtro inexistente no debe mostrar tarjetas");
+    await page.waitForFunction(()=>document.querySelectorAll('[class*="worldCardOpen"]').length===0);
     await catalogSearch.fill("");
     const openGame=page.locator('[class*="worldCardOpen"]').first();
     await openGame.click();
@@ -93,7 +93,7 @@ try {
     assert.equal(await reset.isDisabled(),true,"El restablecimiento comienza deshabilitado");
     await search.fill("qa-producto-inexistente-20261025");
     await store.locator('[role="status"]').waitFor();
-    assert.equal(await store.locator("[data-liry-store-product]").count(),0,"La búsqueda imposible no muestra artículos");
+    await page.waitForFunction(()=>document.querySelectorAll('[data-liry-store-product]').length===0);
     assert.equal(await reset.isEnabled(),true,"La búsqueda habilita limpiar filtros");
     await reset.click();
     assert.equal(await search.inputValue(),"","Limpiar filtros vacía la búsqueda");
@@ -101,6 +101,7 @@ try {
     await selects.nth(1).selectOption("all");
     await selects.nth(2).selectOption("price-desc");
     await selects.nth(2).selectOption("name");
+    await reset.waitFor({state:"visible"});
     assert.equal(await reset.isDisabled(),true,"La configuración inicial deshabilita limpiar");
     const category=page.locator('button[aria-controls="liry-store-category-dialog"]').first();
     await category.click();
