@@ -502,8 +502,10 @@ test("Liry DNA affinity results expose exact percent values to assistive technol
 
 test("DNA restart clears all answers and focuses the first question without scrolling",()=>{
  const source=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");
- assert.match(source,/setDnaAnswers\(Array\(6\)\.fill\(null\)\);setDnaStep\(0\);requestAnimationFrame/);
- assert.match(source,/liry-dna-q-0/);
+ assert.match(source,/setDnaAnswers\(Array\(6\)\.fill\(null\)\);dnaStepFocusPending\.current=true;setDnaStep\(0\)/);
+ assert.match(source,/document\.querySelector<HTMLInputElement>/);
+ assert.match(source,/dnaStepFocusPending\.current=false/);
+ assert.match(source,/\},\[dnaStep,dnaSurvey\]\)/);
  assert.match(source,/focus\(\{preventScroll:true\}\)/);
 });
 
