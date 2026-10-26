@@ -9,11 +9,14 @@
  * Ejemplo: BASE_URL=https://<preview-lirygames>.vercel.app node tests/liry-browser-acceptance.mjs
  * Capturas: carpeta temporal del sistema / liry-browser-acceptance
  * No transmite formularios, no crea cuentas, no compra, no modifica datos.
- * Requiere conectividad y acceso SSO autorizado. Si existe una sesión Playwright\n * exportada localmente, definir LIRY_STORAGE_STATE con la ruta privada del JSON.\n * Nunca agregar ese archivo a Git. Redirección al login NO es aprobación.
+ * Requiere conectividad y acceso SSO autorizado. Si existe una sesión Playwright
+ * exportada localmente, definir LIRY_STORAGE_STATE con la ruta privada del JSON.
+ * Nunca agregar ese archivo a Git. Redirección al login NO es aprobación.
  */
 import assert from "node:assert/strict";
 import {mkdir} from "node:fs/promises";
-import {join} from "node:path";\nimport {tmpdir} from "node:os";
+import {join} from "node:path";
+import {tmpdir} from "node:os";
 
 const requestedBase = process.env.BASE_URL?.trim();
 if(!requestedBase){console.error("BASE_URL obligatorio: indicar explícitamente el Preview SSO de LIRYGAMES.");process.exit(2)}
