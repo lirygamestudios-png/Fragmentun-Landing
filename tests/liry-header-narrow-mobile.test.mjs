@@ -37,3 +37,5 @@ test("desktop header keeps primary navigation on one row without moving utilitie
 test("every mobile menu anchor resolves to a rendered public FrontDesk section",()=>{const discovery=readFileSync(new URL("../components/LiryGameDiscovery.tsx",import.meta.url),"utf8");const menuItems=page.match(/<LiryMobileNav[^>]*items=\{\[([\s\S]*?)\]\}/)?.[1];assert.ok(menuItems,"Mobile menu items should be defined");const links=[...menuItems.matchAll(/href:"(#[a-z-]+)"/g)].map(match=>match[1]);assert.equal(links.length,8);for(const href of links){const id=href.slice(1);assert.ok(page.includes(`id="${id}"`)||discovery.includes(`id="${id}"`),`Missing mobile navigation anchor: ${href}`)}});
 
 test("mobile menu only focuses a connected navigation destination",()=>{assert.match(mobile,/if\(!target\?\.isConnected\)return/);assert.match(mobile,/target\.focus\(\{preventScroll:true\}\)/);});
+
+test("gamer XP respects reduced motion preference",()=>{assert.match(css,/\.gamerXpTrack span\{[^}]*transition:width \.5s ease/);assert.match(css,/@media\(prefers-reduced-motion:reduce\)\{\.gamerXpTrack span\{transition:none\}\}/);});
