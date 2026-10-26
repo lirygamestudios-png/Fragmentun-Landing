@@ -319,7 +319,7 @@ export default async function MasterPublishingPage(){
         <div className={styles.formGrid}>
           <label>Plataforma<select name="storefront_id" required defaultValue=""><option value="" disabled>Seleccionar plataforma</option>{stores.map((s:any)=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
           <label>Estado cuenta<select name="account_status" defaultValue="configured"><option value="not_configured">Sin configurar</option><option value="configured">Configurada</option><option value="verified">Verificada</option><option value="restricted">Restringida</option><option value="suspended">Suspendida</option></select></label>
-          <label>Activo<select name="active" defaultValue="true"><option value="true">Sí</option><option value="false">No</option></select></label>
+          <label>Activo<select name="active" defaultValue="false"><option value="false">No · pendiente de autorización</option></select></label>
           <label className={styles.span2}>Regiones<input name="region_scope" placeholder="EE. UU., Latinoamérica, Europa"/></label>
         </div>
         <MasterSubmitButton className={styles.formButton} disabled={!stores.length} disabledReason="No hay plataformas registradas para actualizar.">Actualizar plataforma</MasterSubmitButton>
