@@ -23,7 +23,7 @@ async function saveInternalWorld(formData:FormData){
   const playUrl=String(formData.get("play_url")||"").trim()||null;
   const status=String(formData.get("publication_status")||"planned");
   if(!gameId||!Number.isInteger(number)||number<1||number>INITIAL_WORLDS_PER_GAME||!title||title.length>160||(summary&&summary.length>2000)||!["planned","beta","available","retired"].includes(status))throw new Error("invalid_world");
-  for(const url of [artworkUrl,playUrl])if(url){try{const parsed=new URL(url);if(parsed.protocol!=="https:")throw new Error("invalid_url");}catch{throw new Error("invalid_url");}}
+  for(const url of [artworkUrl,playUrl])if(url){try{const parsed=new URL(url);if(parsed.protocol!=="https:"||!parsed.hostname||parsed.username||parsed.password)throw new Error("invalid_url");}catch{throw new Error("invalid_url");}}
   // No autorizar publicación ni acceso beta hasta conectar pruebas de ejecutable y Release Gate.
   if(status!=="planned"&&status!=="retired")throw new Error("publication_requires_release_gate");
   const{data:game,error:gameError}=await supabase.from("game_titles").select("id").eq("id",gameId).maybeSingle();
