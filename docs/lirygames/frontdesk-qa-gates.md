@@ -4,6 +4,8 @@
 Último Preview READY verificado: `205063173a62263090d42da4b8017b7c4c582514`, despliegue `dpl_A9TAJKQHgS8kXd3g2qs4oYYTvnPX`, URL `https://lirygames-studios-frontdesk-hye72gcz4-lirygamestudios-7579.vercel.app/lirygames`. Las posteriores modificaciones de la batería manual no se han desplegado.
 **Este documento NO certifica pruebas visuales manuales que aún no se han realizado.**
 
+**Actualización 26 de octubre de 2026:** Preview READY `dpl_3ouzivcpHcaPyfXrQQwYvCfWJ6hA` del commit `691c1d1720eecc4a2a30e3b010df6f880b6bef16`. El script manual de Playwright recibió una corrección posterior de caracteres de salto de línea (`5c9a2265`), todavía no desplegada. READY certifica el build automatizado, no la ejecución manual de Playwright ni la aprobación visual SSO.
+
 ## Verificaciones confirmadas
 
 - [x] Build del Preview READY en Vercel y commit de despliegue coincidente con la rama de trabajo al verificarlo.
