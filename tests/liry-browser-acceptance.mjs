@@ -9,7 +9,7 @@
  * Ejemplo: BASE_URL=https://<preview-lirygames>.vercel.app node tests/liry-browser-acceptance.mjs
  * Capturas: /tmp/liry-browser-acceptance
  * No transmite formularios, no crea cuentas, no compra, no modifica datos.
- * Requiere conectividad directa y sesión SSO autenticada. Redirección a login NO es aprobación.
+ * Requiere conectividad y acceso SSO autorizado. Si hay sesión Playwright exportada localmente,\n * definir LIRY_STORAGE_STATE=/ruta/privada/auth.json; nunca agregar este archivo a Git.\n * La redirección a login NO es aprobación.
  */
 import assert from "node:assert/strict";
 import {mkdir} from "node:fs/promises";
@@ -27,6 +27,8 @@ let chromium;
 try { ({chromium}=await import("playwright")); }
 catch { console.error("Falta playwright. Consultar las instrucciones al principio de este archivo."); process.exit(2); }
 
+const storageStatePath=process.env.LIRY_STORAGE_STATE?.trim();
+if(storageStatePath){console.log("QA: usando sesión Playwright autorizada desde archivo local; no se publicarán credenciales.");}
 const browser=await chromium.launch({headless:true});
 let failures=0;
 const cases=[
@@ -41,7 +43,7 @@ const cases=[
 ];
 try {
  for (const item of cases) {
-  const context=await browser.newContext({viewport:{width:item.width,height:item.height},isMobile:item.mobile,hasTouch:item.mobile,deviceScaleFactor:1});
+  const context=await browser.newContext({viewport:{width:item.width,height:item.height},isMobile:item.mobile,hasTouch:item.mobile,deviceScaleFactor:1,...(storageStatePath?{storageState:storageStatePath}:{})});
   const page=await context.newPage();
   const errors=[];
   page.on("pageerror",e=>errors.push(e.message));
