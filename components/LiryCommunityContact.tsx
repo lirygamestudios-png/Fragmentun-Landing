@@ -12,7 +12,7 @@ export function LiryCommunityContact({locale="es"}:{locale?:LiryFrontdeskLocale}
  const [opened,setOpened]=useState(false);
  return <>
   <button ref={opener} className={styles.communityContactAction} type="button" aria-haspopup="dialog" aria-controls="liry-community-contact" aria-expanded={opened} onClick={()=>{if(dialog.current&&!dialog.current.open){dialog.current.showModal();setOpened(true)}}}>{copy.trigger} →</button>
-  <dialog ref={dialog} id="liry-community-contact" aria-modal="true" className={styles.liryStandaloneDialog} aria-labelledby="community-contact-heading" onClose={()=>{setOpened(false);opener.current?.focus({preventScroll:true})}} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
+  <dialog ref={dialog} id="liry-community-contact" aria-modal="true" className={styles.liryStandaloneDialog} aria-labelledby="community-contact-heading" onClose={()=>{setOpened(false);if(opener.current?.isConnected)opener.current.focus({preventScroll:true})}} onClick={event=>{if(event.target===dialog.current)dialog.current.close()}}>
    <div className={styles.liryStandaloneContent}>
     <form method="dialog"><button type="submit" className={styles.gamerInfoClose} aria-label={copy.closeAria}>×</button></form>
     <p className={styles.gamerInfoEyebrow}>{copy.eyebrow}</p>
