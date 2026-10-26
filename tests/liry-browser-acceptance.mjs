@@ -88,6 +88,13 @@ try {
     await page.keyboard.press("Escape");
     await searchDialog.waitFor({state:"hidden"});
     await page.waitForFunction(()=>document.activeElement?.matches('button[class*="navSearch"]'));
+    const noticeToggle=page.locator('button[class*="navNotice"]');
+    await noticeToggle.click();
+    await searchDialog.waitFor({state:"visible"});
+    assert.equal(await searchDialog.locator('[role="status"]').isVisible(),true,"Los avisos muestran un estado auténtico, sin inventar notificaciones");
+    await page.keyboard.press("Escape");
+    await searchDialog.waitFor({state:"hidden"});
+    await page.waitForFunction(()=>document.activeElement?.matches('button[class*="navNotice"]'),undefined,{timeout:5000});
    }
    // Recorridos observables de catálogo y ADN (sin escribir datos de usuario).
    if(item.label==="desktop-es-1440"||item.label==="desktop-en-1024"){
