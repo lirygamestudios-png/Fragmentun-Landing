@@ -138,3 +138,28 @@ Fuentes técnicas para evaluación futura: Google AdMob rewarded ads (https://ad
 **Referencias para políticas:** FTC Endorsement Guides (https://consumer.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking), Steam DLC (https://partner.steamgames.com/doc/store/application/dlc), Apple App Review Guidelines (https://developer.apple.com/app-store/review/guidelines/). Revalidar antes de publicar.
 
 **No modificar** FRAGMENTUN, `main` ni producción; no activar pagos, proveedores, publicidad, servicios de costo, ni generar compromisos con creadores sin autorización.
+
+## Anexo financiero de continuidad — presupuesto de sensibilidad (provisional)
+
+**Importante:** el orden de las fases está expresamente **pendiente de ajustes del titular**. Este anexo NO modifica prioridades, compromete fechas ni autoriza contratación. Las cifras son supuestos construidos para una primera sensibilidad, no cotizaciones ni previsiones confirmadas.
+
+**Ingresos conservadores del modelo anterior:** año 1 $22.200; año 2 $179.000; total $201.200. Riesgo: si no se lanza un juego comercial el año 1, ingresos de ese año pueden ser $0.
+
+| Costo directo/operativo estimado (USD) | Año 1 | Año 2 |
+|---|---:|---:|
+| Desarrollo de videojuegos y contenido | 55.000 | 75.000 |
+| Plataforma y mantenimiento técnico | 12.000 | 18.000 |
+| Infraestructura, QA, legal y administración | 13.000 | 20.000 |
+| Marketing y adquisición (excepto creadores) | 8.000 | 15.000 |
+| LIRY CREATORS — comisiones/promoción | 900 | 6.500 |
+| **Total de gastos hipotéticos** | **88.900** | **134.500** |
+
+**Resultados de sensibilidad (antes de impuestos y financiación):** año 1 $22.200 - $88.900 = **-$66.700**; año 2 $179.000 - $134.500 = **+$44.500**; acumulado de 24 meses **-$22.200**. No existe punto de equilibrio acumulado al finalizar el horizonte bajo estos supuestos. El año 2 presenta excedente anual, pero el saldo histórico continúa negativo. Promedios del año 2: ingreso $14.916,67/mes y gasto $11.208,33/mes; igualarlos no prueba un mes real de break-even, que requiere calendario mensual de cobros/pagos.
+
+**Financiación necesaria:** para evitar confundir pérdidas contables con caja, calcular flujo mensual por hitos. Como simple reserva indicativa, 9 meses de ejecución con gasto promedio del año 1 ($88.900/12 = $7.408,33 al mes) representan **$66.675** antes de ingresos; un margen de contingencia del 20% eleva esa **reserva ilustrativa** a **$80.010**. No es presupuesto de lanzamiento ni capital requerido demostrado: pueden existir anticipos, concentración de desarrollos, gastos variables, impuestos y cobros desfasados.
+
+**Pruebas de estrés obligatorias:** retraso de 6 y 12 meses; ingresos publicitarios nulos; participación de terceros nula; ventas -50%; desarrollo +30%; gastos fijos mínimos aun sin juego publicado. Antes de estimar ROI/capitalización verificar alcance técnico del primer juego, presupuestos con proveedores, calendario y naturaleza legal de los compromisos.
+
+**Protección del control:** estudiar autofinanciación gradual, hitos financiados, anticipos no dilutivos, licencias con condiciones y acuerdos de codesarrollo sin ceder control societario; comparar costo total, exclusividad, derechos de IP y obligaciones. No suponer subvenciones o crédito concedidos.
+
+**Guardarraíles:** no activar costos, pagos, identidad, proveedores o plataformas sin aprobación expresa. No modificar FRAGMENTUN, `main` o producción. Pendiente ajustar orden de fases con el titular.
