@@ -13,3 +13,11 @@ test("release evidence rejects mismatched game and missing human approval",()=>{
  assert.ok(result.missing.includes(GAME_RELEASE_APPROVAL_REQUIREMENTS[0]));
  assert.ok(result.missing.includes(GAME_RELEASE_APPROVAL_REQUIREMENTS[3]));
 });
+
+test("rejects malformed validation ID and ambiguous reviewer time",()=>{
+ const base={gameId:"game-1",releaseId:"release-1",deploymentId:"dpl_Valid123",commitSha:"a".repeat(40),validationRunId:"bad id",reviewerUserId:"reviewer",reviewedAt:"yesterday"};
+ const result=reviewGameReleaseApprovalEvidence(id,base);
+ assert.equal(result.complete,false);
+ assert.ok(result.missing.includes(GAME_RELEASE_APPROVAL_REQUIREMENTS[2]));
+ assert.ok(result.missing.includes(GAME_RELEASE_APPROVAL_REQUIREMENTS[3]));
+});
