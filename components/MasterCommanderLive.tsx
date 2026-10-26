@@ -24,9 +24,13 @@ export function MasterCommanderLive({initial}:{initial:MasterLiveSnapshot}){
 
   useEffect(()=>{
     let alive=true;
+    let pending=false;
+    const controller=new AbortController();
     const refresh=async()=>{
+      if(pending||!alive)return;
+      pending=true;
       try{
-        const response=await fetch("/api/admin/master/live",{cache:"no-store"});
+        const response=await fetch("/api/admin/master/live",{cache:"no-store",signal:controller.signal});
         const body=await response.json();
         if(alive&&response.ok&&body?.snapshot){
           setSnapshot(body.snapshot);
@@ -35,12 +39,14 @@ export function MasterCommanderLive({initial}:{initial:MasterLiveSnapshot}){
           setConnected(false);
         }
       }catch{
-        if(alive)setConnected(false);
+        if(alive&&!controller.signal.aborted)setConnected(false);
+      }finally{
+        pending=false;
       }
     };
     void refresh();
     const timer=window.setInterval(refresh,15000);
-    return()=>{alive=false;window.clearInterval(timer);};
+    return()=>{alive=false;controller.abort();window.clearInterval(timer);};
   },[]);
 
   const updated=new Date(snapshot.generatedAt).toLocaleTimeString("es-US",{hour:"2-digit",minute:"2-digit",second:"2-digit"});
