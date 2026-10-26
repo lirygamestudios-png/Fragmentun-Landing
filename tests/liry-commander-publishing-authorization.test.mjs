@@ -47,3 +47,8 @@ test("storefront verification requires external evidence",()=>{
 test("new storefront records default to explicitly inactive",()=>{
  assert.match(source,/account_status:accountStatus,active:false,created_by:user\.id/);
 });
+
+test("new storefront records are created inactive regardless of database defaults",()=>{
+ const create=source.slice(source.indexOf("async function createPlataforma"),source.indexOf("async function createRelease"));
+ assert.match(create,/account_status:accountStatus,active:false,created_by:user\.id/);
+});
