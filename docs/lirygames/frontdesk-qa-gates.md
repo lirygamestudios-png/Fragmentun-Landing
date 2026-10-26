@@ -2,7 +2,7 @@
 
 Última revisión de estado: 26 de octubre de 2026.
 
-**Último Preview READY confirmado:** commit `cb325886c0d94d293b989dc3a996b6c9853a896c`, despliegue `dpl_8JahbDyZvhDKqJPjSncVGXknfbLa`, URL `https://lirygames-studios-frontdesk-3lhzw5jh8-lirygamestudios-7579.vercel.app/lirygames`.
+**Último Preview READY confirmado:** commit `4063b9b4d2e034eeae291be3f694f071a3105b8f`, despliegue `dpl_DK9obnosCaFd5dXfS5afZ3WAahs3`, URL `https://lirygames-studios-frontdesk-ae34dhccb-lirygamestudios-7579.vercel.app/lirygames`.
 
 Este estado confirma la compilación automatizada en Vercel. **NO equivale a una ejecución satisfactoria del script manual Playwright ni a una auditoría visual autenticada.** El Preview mantiene la protección SSO; no se desactivará para facilitar las pruebas.
 
