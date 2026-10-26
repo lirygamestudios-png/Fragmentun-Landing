@@ -28,3 +28,10 @@ test("header search supports ArrowUp from first result back to its input",()=>{
  assert.match(header,/links\[index\+1\]\?\.focus/);
  assert.match(header,/input\.current\?\.focus\(\{preventScroll:true\}\)/);
 });
+
+test("header result navigation supports Home and End keys",()=>{
+ assert.match(header,/e\.key==="Home"/);
+ assert.match(header,/e\.key==="End"/);
+ assert.match(header,/links\[0\]\?\.focus\(\{preventScroll:true\}\)/);
+ assert.match(header,/links\[links\.length-1\]\?\.focus\(\{preventScroll:true\}\)/);
+});
