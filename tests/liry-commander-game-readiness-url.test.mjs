@@ -36,3 +36,9 @@ test("readiness displays the exact game ID for release traceability",()=>{
  assert.match(source,/Identificador del videojuego: <code>\{game\.id\}<\/code>/);
  assert.match(source,/PUBLICACIÓN BLOQUEADA/);
 });
+
+test("readiness blocks shared Fragmentun data before querying game tables",()=>{
+ assert.match(source,/LIRYGAMES_COMMUNITY_DATA_ISOLATED!=="true"/);
+ assert.match(source,/Datos de LIRYGAMES no aislados/);
+ assert.ok(source.indexOf("LIRYGAMES_COMMUNITY_DATA_ISOLATED")<source.indexOf('supabase.from("game_titles")'));
+});
