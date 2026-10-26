@@ -75,6 +75,9 @@ try {
     await page.waitForFunction(()=>document.activeElement?.getAttribute("href")==="#secretos");
     await secretLink.press("ArrowUp");
     await page.waitForFunction(()=>document.activeElement?.matches('dialog[class*="headerUtilityDialog"] input[type="search"]'));
+    await searchField.fill("liry-qa-no-such-public-section");
+    await page.waitForFunction(()=>document.querySelectorAll('[class*="headerUtilityResults"] a').length===0);
+    assert.equal(await searchDialog.locator('[class*="headerUtilityResults"] [role="status"]').isVisible(),true,"La búsqueda debe anunciar el estado sin resultados");
     await searchField.fill("");
     await page.waitForFunction(()=>document.querySelectorAll('[class*="headerUtilityResults"] a').length===8);
     await searchField.press("ArrowDown");
