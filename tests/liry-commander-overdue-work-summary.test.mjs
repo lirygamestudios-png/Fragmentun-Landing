@@ -6,3 +6,7 @@ test("Commander work summary highlights overdue open items",()=>{
  assert.match(source,/const overdueWork=open\.filter\(w=>typeof w\.due_date==="string"&&w\.due_date\.slice\(0,10\)<today\)/);
  assert.match(source,/\{overdueWork\.length\} vencidos/);
 });
+
+test("critical operations exclude completed and canceled work",()=>{
+ assert.match(source,/const blocked=open\.filter\(w=>w\.status==="blocked"\|\|w\.priority==="critical"\)/);
+});
