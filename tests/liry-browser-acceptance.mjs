@@ -239,7 +239,8 @@ try {
    await nextArea.click();
    await page.waitForFunction(()=>document.querySelector('#mi-liry-area-dialog nav small[aria-live="polite"]')?.textContent?.trim()==="2 / 6");
    assert.notEqual(await areaHeading.innerText(),firstAreaTitle,"Avanzar debe mostrar otra área");
-   assert.equal(await page.locator('button[aria-controls="mi-liry-area-dialog"][aria-expanded="true"]').count(),1,"Solo el área visible debe anunciarse expandida");
+   assert.equal(await first.getAttribute("aria-expanded"),"true","La tarjeta que abrió Mi Liry conserva su estado expandido durante la navegación");
+   assert.equal(await page.locator('button[aria-controls="mi-liry-area-dialog"][aria-expanded="true"]').count(),1,"Solo la tarjeta de origen anuncia la subpantalla expandida");
    assert.equal(await dialog.evaluate(el=>el.open),true,"Mi Liry mantiene abierta la subpantalla");
    const previousArea=dialog.locator('nav button').first();
    await previousArea.click();
