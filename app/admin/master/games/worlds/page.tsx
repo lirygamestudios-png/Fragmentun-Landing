@@ -7,8 +7,14 @@ import {createSupabaseServerClient} from "../../../../../lib/supabase/server";
 import {INITIAL_WORLDS_PER_GAME,PORTFOLIO_GAME_LIMIT} from "../../../../../lib/games/world-model";
 import styles from "../../master-admin.module.css";
 
+function commanderWorldDataIsolated(){
+ const endpoint=process.env.NEXT_PUBLIC_SUPABASE_URL||"";
+ return process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED==="true"&&!!endpoint&&!endpoint.includes("pasoapugmsazziflaomp");
+}
+
 async function saveInternalWorld(formData:FormData){
   "use server";
+  if(!commanderWorldDataIsolated())throw new Error("LIRYGAMES_COMMANDER_DATA_NOT_ISOLATED");
   const supabase=await createSupabaseServerClient();
   const{data:{user}}=await supabase.auth.getUser();
   if(!user)redirect("/admin/lirygames/login");
@@ -56,6 +62,8 @@ export default async function InternalGameWorldsPage(){
   if(!user)redirect("/admin/lirygames/login");
   const{data:profile,error:profileError}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
   if(profileError||!profile)redirect("/admin/lirygames/login?unauthorized=1");
+  if(!commanderWorldDataIsolated())return <main className={`${styles.workspace} ${styles.modulePage}`}><header className={styles.topbar}><div><span className={styles.eyebrow}>LIRYGAMES · VIDEOJUEGOS</span><h1>Mundos internos</h1></div></header><section className={styles.notice}><div><strong>Datos de LIRYGAMES no aislados</strong><span>La administración de mundos internos permanece bloqueada hasta verificar el backend exclusivo de LIRYGAMES. No se consultan datos compartidos con FRAGMENTUN.</span></div><code>NO VERIFICADO</code></section></main>;
+
 
   const{data:games,error}=await supabase.from("game_titles")
     .select("id,name,lifecycle_stage").order("created_at",{ascending:true}).limit(PORTFOLIO_GAME_LIMIT);
