@@ -144,7 +144,7 @@ async function updateMilestone(formData:FormData){
   const exitCriteria=String(formData.get("exit_criteria")||"").trim()||null;
   const notes=String(formData.get("notes")||"").trim()||null;
   const allowedStatus=new Set(["planned","in_progress","blocked","at_risk","completed","canceled"]);
-  if(!id||!allowedStatus.has(status)||!validPercent(progress)||(status==="completed"&&(progress!==100||!exitCriteria))) throw new Error("invalid_milestone_update");
+  if(!id||!allowedStatus.has(status)||!validPercent(progress)||(status==="completed"&&(progress!==100||!exitCriteria||!ownerUserId))) throw new Error("invalid_milestone_update");
   const patch:any={
     status,owner_user_id:ownerUserId,progress_percent:Math.trunc(progress),target_date:targetDate,
     exit_criteria:exitCriteria,notes,updated_at:new Date().toISOString()
