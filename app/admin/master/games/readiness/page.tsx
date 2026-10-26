@@ -3,6 +3,11 @@ import {createSupabaseServerClient} from "../../../../../lib/supabase/server";
 import {INITIAL_WORLDS_PER_GAME} from "../../../../../lib/games/world-model";
 import styles from "../../master-admin.module.css";
 
+function validGamePlayUrl(value:string|null|undefined){
+ if(!value)return false;
+ try{const url=new URL(value);return url.protocol==="https:"&&!!url.hostname&&!url.username&&!url.password;}catch{return false;}
+}
+
 /** Read-only administrative checklist, never an approval button. */
 export default async function GameReleaseReadinessPage(){
  const supabase=await createSupabaseServerClient();
@@ -25,7 +30,7 @@ export default async function GameReleaseReadinessPage(){
       const assigned=(worlds||[]).filter(w=>w.game_id===game.id);
       const configured=Array.from({length:INITIAL_WORLDS_PER_GAME},(_,i)=>{
         const item=assigned.find(w=>w.world_number===i+1);
-        return {number:i+1,valid:!!item&&item.access_type==="free"&&item.publication_status==="available"&&!!item.play_url?.startsWith("https://")};
+        return {number:i+1,valid:!!item&&item.access_type==="free"&&item.publication_status==="available"&&validGamePlayUrl(item.play_url)};
       });
       return <article key={game.id} className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgePlanned}>PUBLICACIÓN BLOQUEADA</span></div>
