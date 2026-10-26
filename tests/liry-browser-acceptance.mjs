@@ -172,8 +172,14 @@ try {
     if(await pages.count()){
      const next=pages.locator("button").last();
      await next.click();
+     await page.waitForFunction(()=>{const status=document.querySelector('[class*="liryStoreListing"] p[aria-live="polite"]');return status&&document.activeElement===status},undefined,{timeout:5000});
      assert.equal(await store.locator('nav [aria-current="page"]').count(),1,"Paginación mantiene una página activa");
      assert.ok(await items.count()<=12,"Paginación respeta el límite de doce");
+     assert.match(await store.locator('p[aria-live="polite"]').innerText(),item.locale==="es"?/Página 2 de /:/Page 2 of /,"El estado anuncia la segunda página");
+     const previous=pages.locator("button").first();
+     await previous.click();
+     await page.waitForFunction(()=>{const status=document.querySelector('[class*="liryStoreListing"] p[aria-live="polite"]');return status&&document.activeElement===status},undefined,{timeout:5000});
+     assert.match(await store.locator('p[aria-live="polite"]').innerText(),item.locale==="es"?/Página 1 de /:/Page 1 of /,"La navegación anterior restablece página uno");
     }
    }
    if(item.mobile){
