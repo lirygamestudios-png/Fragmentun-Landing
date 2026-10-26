@@ -135,7 +135,13 @@ try {
     await toggle.click();
     assert.equal(await toggle.getAttribute("aria-expanded"),"true");
     await page.keyboard.press("Escape");
-    await page.waitForFunction(()=>document.querySelector('button[aria-controls="liry-mobile-nav"]')?.getAttribute("aria-expanded")==="false");
+    await page.waitForFunction(()=>{const button=document.querySelector('button[aria-controls="liry-mobile-nav"]');return button?.getAttribute("aria-expanded")==="false"&&document.activeElement===button},undefined,{timeout:5000});
+    await toggle.click();
+    const menu=page.locator("#liry-mobile-nav");
+    await menu.locator('a[href="#mundos"]').click();
+    await page.waitForFunction(()=>location.hash==="#mundos"&&document.querySelector('button[aria-controls="liry-mobile-nav"]')?.getAttribute("aria-expanded")==="false");
+    await page.waitForFunction(()=>document.activeElement?.id==="mundos",undefined,{timeout:5000});
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+1),false,"Navegar con el menú móvil no debe generar scroll horizontal");
    }
    const mi=await page.goto(base+"/lirygames/mi-liry?lang="+item.locale,{waitUntil:"domcontentloaded",timeout:30000});
    assert.equal(mi?.status(),200,"Mi Liry debe responder 200");
