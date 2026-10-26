@@ -15,6 +15,9 @@ export default async function GameReleaseReadinessPage(){
  if(!user)redirect("/admin/lirygames/login");
  const{data:profile,error:profileError}=await supabase.from("admin_profiles").select("role").eq("user_id",user.id).maybeSingle();
  if(profileError||!profile)redirect("/admin/lirygames/login?unauthorized=1");
+ if(process.env.LIRYGAMES_COMMUNITY_DATA_ISOLATED!=="true"||!process.env.NEXT_PUBLIC_SUPABASE_URL||process.env.NEXT_PUBLIC_SUPABASE_URL.includes("pasoapugmsazziflaomp")){
+  return <main className={`${styles.workspace} ${styles.modulePage}`}><header className={styles.topbar}><div><span className={styles.eyebrow}>LIRYGAMES · PREPARACIÓN</span><h1>Preparación por videojuego</h1></div></header><section className={styles.notice}><div><strong>Datos de LIRYGAMES no aislados</strong><span>La comprobación de los mundos internos permanece bloqueada hasta verificar el backend exclusivo de LIRYGAMES. No se consultan datos del entorno compartido con FRAGMENTUN.</span></div><code>NO VERIFICADO</code></section></main>;
+ }
  const{data:games,error:gameError}=await supabase.from("game_titles").select("id,name,lifecycle_stage").order("created_at",{ascending:true}).limit(9);
  const{data:worlds,error:worldError}=await supabase.from("game_internal_worlds").select("game_id,world_number,access_type,publication_status,play_url").order("world_number",{ascending:true});
  const failed=!!gameError||!!worldError;
