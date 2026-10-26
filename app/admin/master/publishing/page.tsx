@@ -62,7 +62,7 @@ async function createPlataforma(formData:FormData){
   if(!allowedStatus.has(accountStatus)) throw new Error("invalid_account_status");
   if(accountStatus==="verified")throw new Error("storefront_verification_requires_external_evidence");
   const{error}=await supabase.from("publishing_storefronts").insert({
-    name,code,platform,region_scope:regions,account_status:accountStatus,created_by:user.id
+    name,code,platform,region_scope:regions,account_status:accountStatus,active:false,created_by:user.id
   });
   if(error) throw new Error(error.message);
   revalidatePath("/admin/master/publishing");
