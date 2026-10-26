@@ -28,3 +28,15 @@ test("rejects impossible UTC calendar dates",()=>{
  assert.equal(result.complete,false);
  assert.ok(result.missing.includes(GAME_RELEASE_APPROVAL_REQUIREMENTS[3]));
 });
+
+test("a complete self-reported checklist never authorizes publication",()=>{
+ const evidence={gameId:"game-1",releaseId:"release-1",deploymentId:"dpl_Valid123",commitSha:"a".repeat(40),validationRunId:"run-123",reviewerUserId:"reviewer",reviewedAt:"2026-10-20T12:00:00Z"};
+ const result=reviewGameReleaseApprovalEvidence(id,evidence);
+ assert.equal(result.complete,true);
+ assert.equal(result.publishAuthorized,false);
+});
+
+test("missing release evidence explicitly denies publication",()=>{
+ const result=reviewGameReleaseApprovalEvidence(id,null);
+ assert.equal(result.publishAuthorized,false);
+});
