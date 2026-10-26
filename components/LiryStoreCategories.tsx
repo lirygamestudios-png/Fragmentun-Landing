@@ -25,6 +25,12 @@ export function LiryStoreCategories({locale="es",products=[]}:{locale?:LiryFront
  const pageItems=filtered.slice((currentPage-1)*12,currentPage*12);
  const deepLinkHandled=useRef(false);
  const linkedProductId=useRef<string|null>(null);
+ const [historyRevision,setHistoryRevision]=useState(0);
+ useEffect(()=>{
+  const onHistoryNavigation=()=>{deepLinkHandled.current=false;setHistoryRevision(value=>value+1)};
+  window.addEventListener("popstate",onHistoryNavigation);
+  return ()=>window.removeEventListener("popstate",onHistoryNavigation);
+ },[]);
  useEffect(()=>{
   if(deepLinkHandled.current)return;
   const selectedProduct=new URLSearchParams(window.location.search).get("product");
@@ -37,7 +43,7 @@ export function LiryStoreCategories({locale="es",products=[]}:{locale?:LiryFront
   setTerm("");setCategory("all");setAvailability("all");setSortBy("name");
   setPage(Math.floor(targetIndex/12)+1);
 
- },[products,locale]);
+ },[products,locale,historyRevision]);
  useEffect(()=>{
   const id=linkedProductId.current;
   if(!id||!pageItems.some(item=>item.id===id))return;
