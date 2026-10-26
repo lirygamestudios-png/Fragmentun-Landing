@@ -169,8 +169,6 @@ export default async function MasterPublishingPage(){
     {data:storefronts},
     {data:releases},
     {data:games},
-    {count:editions},
-    {count:amazonClicks},
     {count:campaigns},
     {data:virtualItems},
     {data:virtualOffers}
@@ -178,8 +176,6 @@ export default async function MasterPublishingPage(){
     supabase.from("publishing_storefronts").select("id,code,name,platform,region_scope,active,account_status,created_at").order("name",{ascending:true}),
     supabase.from("publishing_releases").select("id,game_id,storefront_id,sku,release_name,release_type,status,target_date,price_cents,currency,territories,certification_status,store_url,created_at").order("target_date",{ascending:true}),
     supabase.from("game_titles").select("id,name,ip_name,lifecycle_stage,health_status").order("name",{ascending:true}),
-    supabase.from("book_editions").select("*",{count:"exact",head:true}),
-    supabase.from("analytics_events").select("*",{count:"exact",head:true}).eq("event_name","amazon_click"),
     supabase.from("campaigns").select("*",{count:"exact",head:true}),
     supabase.from("game_virtual_items").select("id,game_id,active").eq("active",true),
     supabase.from("game_virtual_item_offers").select("id,item_id,platform,active").eq("active",true)
@@ -349,8 +345,6 @@ export default async function MasterPublishingPage(){
     </section>
     <section className={styles.kpis}>
       <article><small>Juegos registrados</small><strong>{gameRows.length}</strong><span>Juegos del estudio</span></article>
-      <article><small>Ediciones</small><strong>{(editions||0).toLocaleString()}</strong><span>Catálogo editorial</span></article>
-      <article><small>Clics en Amazon</small><strong>{(amazonClicks||0).toLocaleString()}</strong><span>Interés comercial</span></article>
       <article><small>Campañas</small><strong>{(campaigns||0).toLocaleString()}</strong><span>Campañas activas</span></article>
     </section>
   </main>;
