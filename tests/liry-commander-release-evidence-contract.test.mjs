@@ -21,3 +21,10 @@ test("rejects malformed validation ID and ambiguous reviewer time",()=>{
  assert.ok(result.missing.includes(GAME_RELEASE_APPROVAL_REQUIREMENTS[2]));
  assert.ok(result.missing.includes(GAME_RELEASE_APPROVAL_REQUIREMENTS[3]));
 });
+
+test("rejects impossible UTC calendar dates",()=>{
+ const evidence={gameId:"game-1",releaseId:"release-1",deploymentId:"dpl_Valid123",commitSha:"a".repeat(40),validationRunId:"run-123",reviewerUserId:"reviewer",reviewedAt:"2026-02-30T12:00:00Z"};
+ const result=reviewGameReleaseApprovalEvidence(id,evidence);
+ assert.equal(result.complete,false);
+ assert.ok(result.missing.includes(GAME_RELEASE_APPROVAL_REQUIREMENTS[3]));
+});
