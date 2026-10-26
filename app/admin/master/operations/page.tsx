@@ -151,7 +151,7 @@ export default async function MasterOperationsPage(){
   const workRows=(workItems||[]) as any[];
   const decisionRows=(decisions||[]) as any[];
   const open=workRows.filter(w=>!["completed","canceled"].includes(w.status));
-  const blocked=workRows.filter(w=>w.status==="blocked"||w.priority==="critical");
+  const blocked=open.filter(w=>w.status==="blocked"||w.priority==="critical");
   const today=new Date().toISOString().slice(0,10);
   const overdueWork=open.filter(w=>typeof w.due_date==="string"&&w.due_date.slice(0,10)<today);
   const pendingDecisions=decisionRows.filter(d=>d.status==="proposed");
