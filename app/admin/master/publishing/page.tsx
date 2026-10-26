@@ -129,6 +129,8 @@ async function updateRelease(formData:FormData){
   if(existingReleaseError) throw new Error(existingReleaseError.message);
   if(!existingRelease) throw new Error("release_not_found");
   if(["scheduled","live"].includes(status)&&!targetDate) throw new Error("target_date_required");
+  // Sin autorización vinculada al ID del videojuego, la publicación real permanece bloqueada.
+  if(status==="live")throw new Error("game_specific_release_authorization_required");
   if(status==="live"){
     if(!["passed","waived"].includes(certification)||!storeUrl) throw new Error("release_not_ready");
     if(existingRelease.storefront_id){
