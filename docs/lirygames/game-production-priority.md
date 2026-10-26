@@ -54,3 +54,31 @@ El titular aclaró que los **videos recomendados son ayudas para conseguir logro
 - **Siguiente fase:** preparar prototipo de interfaz sin SDK, anuncios reales, cuentas ni cobros; definir después una prueba controlada **solo con aprobación expresa**.
 
 Fuentes técnicas para evaluación futura: Google AdMob rewarded ads (https://admob.google.com/home/resources/rewarded-ads-win-for-everyone/) y Unity Monetization Strategy (https://docs.unity.com/en-us/monetization/getting-started/monetization-strategy). Esta nota es una **línea estratégica pendiente**, no una decisión de integración o contratación.
+
+## Pendientes aprobados para planificación — sistema publicitario híbrido
+
+**Registro:** 25/10/2026. La aprobación corresponde a **incorporar el tema al backlog estratégico**, NO a contratar, activar o monetizar servicios.
+
+### P0 — antes de publicidad: cerrar FrontDesk
+- [ ] Completar auditoría visual/interactiva SSO en escritorio y móvil, ES/EN, con evidencias reales; corregir defectos por bloques y verificar Preview READY / SHA.
+- [ ] Conservar los nueve proyectos con identificadores anónimos y no añadir anuncios, SDKs, tarifas o estadísticas comerciales ficticias en el FrontDesk público.
+
+### P1 — preproducción del primer videojuego y después de los restantes
+- [ ] Inventariar EN DOCUMENTACIÓN PRIVADA de cada IP los videos recomendados que sirven como **guías para conseguir logros** (no son anuncios), sus hitos, duración, derechos, idioma, accesibilidad y forma de acceso.
+- [ ] Diseñar las pantallas y flujos opcionales de guías/logros como parte de la jugabilidad, sin conceder logros automáticamente por mirar videos.
+- [ ] Identificar ubicaciones potenciales de anuncios en pausas naturales para cada juego (recompensados opt-in, intersticiales y patrocinio), separadas de guías. La referencia exploratoria de 24 espacios candidatos en el conjunto de nueve juegos **no está validada** y nunca equivale a 24 anuncios por sesión.
+- [ ] Prototipar con ubicaciones desactivadas, sin llamadas a red publicitaria, SDK, cuentas, datos reales ni recompensas comerciales.
+- [ ] Definir política de frecuencia por juego y plataforma, exclusiones por edad/jurisdicción, consentimiento, accesibilidad, antifraude, límites de progresión y equilibrio con compras in-game.
+
+### P2 — decisión financiera y técnica antes de cualquier piloto
+- [ ] Elaborar matriz de proveedores según plataforma: publicidad web/H5 frente a Android/iOS; comparar elegibilidad, compatibilidad con motor, formatos, eCPM, deducciones, pagos, requisitos y restricciones. Considerar Google y otras redes; ninguna contratada.
+- [ ] Modelar escenarios conservador, base y expansión por juego y región: DAU únicos, sesiones, ofertas, aceptación, fill, impresiones efectivamente monetizadas, eCPM NETO, IAP, ventas premium, patrocinios, comisiones de terceros, retención y costos. **No confundir espacios con impresiones, benchmarks con precios garantizados ni guías con anuncios**.
+- [ ] Diseñar estrategia híbrida: red programática gestiona demanda y facturación de anunciantes; LIRYGAMES controla ubicaciones, experiencia, frecuencia, contratos de patrocinio directo y aprobaciones.
+- [ ] Realizar revisión técnica/legal de políticas de publicidad, protección de menores, privacidad, contratos y derechos audiovisuales antes de autorizar integraciones.
+
+### P3 — Commander Center, únicamente tras FrontDesk y autorización posterior
+- [ ] Diseñar **Centro de Monetización Publicitaria**: ingresos por juego/formato/plataforma/país, impresiones, eCPM neto, rendimiento de guías (separado), controles de espacios/frecuencia, campañas y auditoría.
+- [ ] Panel de Liry Developers: propuesta de inventario y guías por desarrollador, aprobación final LIRYGAMES, participación en ingresos solo mediante contrato y acceso limitado a sus cifras.
+- [ ] Proponer piloto limitado en un juego y segmento elegible, con KPI/criterios de suspensión, sujeto a aprobación EXPRESA de contratación/SDK/cuenta/publicidad/costos.
+
+**Invariantes:** no tocar FRAGMENTUN ni `main`, no desplegar producción, no habilitar proveedores, identidad, publicidad, pagos, campañas ni servicios de costo sin autorización. Este es un backlog de diseño, no un cronograma de activación.
