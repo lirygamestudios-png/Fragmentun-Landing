@@ -82,3 +82,59 @@ Fuentes técnicas para evaluación futura: Google AdMob rewarded ads (https://ad
 - [ ] Proponer piloto limitado en un juego y segmento elegible, con KPI/criterios de suspensión, sujeto a aprobación EXPRESA de contratación/SDK/cuenta/publicidad/costos.
 
 **Invariantes:** no tocar FRAGMENTUN ni `main`, no desplegar producción, no habilitar proveedores, identidad, publicidad, pagos, campañas ni servicios de costo sin autorización. Este es un backlog de diseño, no un cronograma de activación.
+
+## Políticas y ruta crítica — LIRY CREATORS y DLC/pases de temporada
+
+**Decisión del titular (25/10/2026):** incluir como oportunidades estratégicas prioritarias (1) LIRY CREATORS — programa de creadores/afiliados; (2) DLC y pases de temporada. **La incorporación al diseño no autoriza su lanzamiento, contratos, cuentas, pagos o proveedores con costos.** Prioridad: terminar FrontDesk antes de Commander Center y juego jugable. La única rama autorizada es `work/master-admin-implementation`.
+
+### Política PC-01: LIRY CREATORS — adquisición de usuarios atribuible
+
+1. **Elegibilidad:** solicitud y revisión humana de creadores con audiencia auténtica, derechos de publicación y cumplimiento de políticas de contenido, edad aplicable y canales; LIRYGAMES puede suspender participación por fraude o incumplimiento, con procedimiento de reclamación.
+2. **Transparencia:** indicar de forma clara y próxima a cada promoción la relación económica, patrocinio o comisión; no bastan enlaces ocultos o etiquetas ambiguas. Revisar Endorsement Guides de FTC, además de reglas de cada red social, país y público.
+3. **Propiedad intelectual:** el creador recibe permiso limitado, revocable, no exclusivo y condicionado a contenido aprobado; prohibición de divulgar nombres/elementos protegidos de las nueve IP antes de autorización, usar marcas de terceros indebidamente o publicar gameplay no autorizado.
+4. **Atribución:** únicamente órdenes efectivamente cobradas, conciliadas y elegibles; ventana inicial de atribución propuesta 7 días, último enlace elegible según reglas a aprobar, exclusión de autorreferidos, bots, duplicados, cancelaciones, fraude, contracargos e impuestos. No rastreo personal sin base legal y consentimiento apropiado.
+5. **Remuneración:** hipótesis contractual inicial **8% de ingreso neto elegible atribuible de juegos propios y DLC** (no del valor bruto de toda la orden, ni de juegos de terceros sin autorización contractual). Es un parámetro negociable, no tarifa estándar. Liquidaciones tras validación y periodo de devoluciones, sujeto a KYC/KYB y facturación cuando se active. No prometer recompensas antes de autorizar.
+6. **Controles:** aprobación de campañas/códigos, topes de presupuesto, deduplicación, trazabilidad de cupones, detección antifraude, restricciones de contenido y acceso a métricas agregadas por creador; separar coste comercial del ingreso.
+7. **KPIs:** tráfico válido, tasa registro→jugador, conversión a compra, CAC por creador, ingreso neto atribuible, retención D7/D30, reembolsos, retorno sobre gasto y concentración de ventas.
+8. **Integración:** FrontDesk únicamente especificación y vínculos públicos cuando esté aprobado; sistema real de cuentas, atribución y liquidaciones después del lanzamiento jugable y autorización expresa.
+
+**Ruta crítica PC-01:** FrontDesk aceptado → juego jugable y producto cobrable aprobado → identidad/pagos/contratos conforme a reglas → política legal/IP y transparencia aprobadas → diseño de tracking/consentimiento y antiabuso → piloto manual de 3–5 creadores con presupuesto tope aprobado → conciliación y métricas → decisión de escalamiento. Cada puerta exige evidencia; no fijar fechas artificiales.
+
+### Política PC-02: DLC y pases de temporada
+
+1. **Contenido base íntegro:** los tres niveles/mundos del primer juego se mantendrán conforme al alcance aprobado; no retirar contenido prometido para revenderlo como DLC. DLC debe aportar valor nuevo real y describirlo antes de comprar.
+2. **Catálogo:** DLC permanente (nuevos niveles/misiones/historias, compra única) y pase de temporada de periodo definido, con catálogo, caducidad/acceso, niveles de recompensas, precio, restricciones y condiciones claros. No usar cajas sorpresa opacas ni mecánicas pay-to-win.
+3. **No doble cobro:** compras cosméticas/IAP, DLC, pases y membresía futura deben distinguirse; el mismo beneficio no debe cobrarse dos veces por error. Restauración de licencias y entregas idempotentes; reembolsos según reglas del canal.
+4. **Economía:** progresión esencial realizable sin pagar, recompensas visuales antes de compra, balance económico medido, evitar presión excesiva a menores y sesgos competitivos. Ofrecer experiencias accesibles y compatibles con ES/EN.
+5. **Plataformas:** respetar reglas de Steam, Apple/Google y de la tienda web donde se publique; los mecanismos de cobro de bienes digitales varían por canal/territorio. No suponer que el checkout web pueda sustituir a los pagos integrados móviles.
+6. **Seguridad:** entitlement comprobable, protección frente a duplicados, políticas de suspensión/fraude, protección de datos, logs de cambios y QA funcional, rendimiento, propiedad y devoluciones.
+7. **Métricas:** tasa de adjunción DLC, compradores únicos, ARPPU, tasa pase→compleción, ingreso incremental frente a IAP, reembolsos, retención, costo de contenido y margen de contribución.
+
+**Ruta crítica PC-02:** diseño del juego base y economía → prototipo de 3 niveles jugables → identificar contenido adicional NO incluido en base → costos y compatibilidad de motor/plataforma → especificaciones y legal/privacidad → prototipo de derechos de acceso sin ventas → QA funcional/económica/ES-EN → aprobación de precios/pagos → lanzamiento del juego → primer DLC posterior solo si demanda e indicadores lo justifican → medir y decidir siguiente temporada.
+
+### Proyección financiera conservadora de 24 meses — hipótesis, no presupuesto aprobado
+
+**Periodo:** noviembre 2026–octubre 2028, dos años completos de 12 meses; sin ingresos reales conocidos ni contratos activos. Escenario condicionado: primer juego propio empieza a monetizar hacia final del año 1; expansión modesta y algunos terceros habilitados tras autorización en año 2. **No se presume que los nueve juegos estén lanzados en 24 meses.** Ingreso neto estimado retenido por LIRYGAMES antes de gastos operativos generales, impuestos y desarrollo, no GMV de terceros.
+
+| Modalidad (USD, neto estimado retenido) | Año 1 | Año 2 |
+|---|---:|---:|
+| Venta de juegos propios (premium/desbloqueos) | 12.000 | 48.000 |
+| Compras in-game / IAP (skins, utilidades) | 9.000 | 60.000 |
+| DLC y expansiones | 0 | 18.000 |
+| Pases de temporada | 0 | 12.000 |
+| Publicidad programática | 1.200 | 10.000 |
+| Comisiones netas por terceros | 0 | 16.000 |
+| Servicios opcionales Liry Developers | 0 | 5.000 |
+| Patrocinios y eventos | 0 | 6.000 |
+| Tienda y merchandising (margen retenido) | 0 | 4.000 |
+| LIRY PASS / membresía transversal | 0 | 0 |
+| Licencias audiovisuales / IP | 0 | 0 |
+| **TOTAL (ingresos netos estimados antes de costos)** | **22.200** | **179.000** |
+
+**Acumulado de ingresos estimados dos años: US$201.200.** LIRY CREATORS **no se suma como fuente de ingreso separada:** origina ventas ya contenidas en los rubros y genera un gasto por comisiones/marketing; planificar provisión ilustrativa de US$900 año 1 y US$6.500 año 2 solo si se activa y demuestra ventas atribuibles. Costo de creación de contenido, producción de los juegos, hosting, soporte, plataformas, impuestos, reembolsos y adquisición de usuarios deben modelarse por separado antes de inferir utilidad o ROI. Estos importes son **objetivos de sensibilidad construidos para LIRYGAMES**, no resultados de benchmarks observados, compromisos comerciales o pronóstico confiable.
+
+**Riesgo de calendario:** si no existe un juego comercial operando durante el primer año, sustituir todos los ingresos no confirmados de dicho periodo por 0. Mantener escenarios de atraso y capital de trabajo independiente.
+
+**Referencias para políticas:** FTC Endorsement Guides (https://consumer.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking), Steam DLC (https://partner.steamgames.com/doc/store/application/dlc), Apple App Review Guidelines (https://developer.apple.com/app-store/review/guidelines/). Revalidar antes de publicar.
+
+**No modificar** FRAGMENTUN, `main` ni producción; no activar pagos, proveedores, publicidad, servicios de costo, ni generar compromisos con creadores sin autorización.
