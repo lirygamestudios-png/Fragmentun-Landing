@@ -254,6 +254,7 @@ export default async function MasterPublishingPage(){
         </div>
         <h3>{r.release_name}</h3>
         <p>Identificador del videojuego: <code>{r.game_id}</code><br/>Identificador del lanzamiento: <code>{r.id}</code></p>
+        <p>Autorización individual vinculada al videojuego y al lanzamiento: PENDIENTE DE IMPLEMENTACIÓN. Ningún estado administrativo concede permiso de publicación.</p>
         <p>{gameById.get(r.game_id)?.name||"Juego"} · {storeById.get(r.storefront_id)?.name||"Sin plataforma"}<br/>{r.target_date||"Sin fecha"} · {r.price_cents!=null?money(r.price_cents,r.currency||"USD"):"Precio por definir"}</p>
       </article>)}
       {!releaseRows.length&&<article className={styles.card}><h3>Sin lanzamientos cargados</h3><p>El sistema está listo para demos, juego base, contenido descargable, expansiones, temporadas, paquetes y actualizaciones.</p></article>}
