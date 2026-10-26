@@ -26,3 +26,8 @@ test("readiness shows bounded progress for three worlds without publication appr
  assert.match(source,/Mundos registrados: \{registeredWorlds\} de \{INITIAL_WORLDS_PER_GAME\}/);
  assert.match(source,/La configuración no concede permiso de publicación/);
 });
+
+test("individual game administrative ID remains visible without changing blocked publication",()=>{
+ assert.match(source,/Identificador del videojuego: <code>\{game\.id\}<\/code>/);
+ assert.match(source,/PUBLICACIÓN BLOQUEADA/);
+});
