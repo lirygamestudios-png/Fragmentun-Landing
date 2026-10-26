@@ -7,3 +7,8 @@ test("publishing remains blocked without game-specific release authorization",()
  assert.match(update,/if\(\["approved","scheduled","live"\]\.includes\(status\)\)throw new Error\("game_specific_release_authorization_required"\)/);
  assert.match(update,/requirePublishingEditor\(\)/);
 });
+
+test("publishing cards expose individual game and release IDs without approval",()=>{
+ assert.match(source,/Identificador del videojuego: <code>\{r\.game_id\}<\/code>/);
+ assert.match(source,/Identificador del lanzamiento: <code>\{r\.id\}<\/code>/);
+});
