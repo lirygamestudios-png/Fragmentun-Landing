@@ -52,7 +52,7 @@ export function LiryStoreCategories({locale="es",products=[]}:{locale?:LiryFront
    const match=Array.from(document.querySelectorAll<HTMLElement>("[data-liry-store-product]")).find(el=>el.dataset.liryStoreProduct===id);
    if(match?.isConnected){match.scrollIntoView({block:"center",behavior:"auto"});match.focus({preventScroll:true})}
   });
- },[currentPage,pageItems.map(item=>item.id).join("|")]);
+ },[currentPage,historyRevision,pageItems.map(item=>item.id).join("|")]);
  const resultStatus=useRef<HTMLParagraphElement>(null);
  const focusAfterPageChange=useRef(false);
  useEffect(()=>{if(focusAfterPageChange.current){focusAfterPageChange.current=false;resultStatus.current?.focus({preventScroll:true})}},[currentPage]);
