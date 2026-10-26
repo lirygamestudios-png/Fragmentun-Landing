@@ -201,9 +201,9 @@ try {
    const avatarDialog=page.locator('dialog[class*="gamerInfoDialog"]').filter({has:page.locator('input[type="file"]')});
    await avatarDialog.waitFor({state:"visible"});
    const avatarInput=avatarDialog.locator('input[type="file"]');
-   assert.match(await avatarInput.getAttribute("accept")||"",/image\\/png/,"El perfil ofrece PNG");
-   assert.match(await avatarInput.getAttribute("accept")||"",/image\\/jpeg/,"El perfil ofrece JPEG");
-   assert.match(await avatarInput.getAttribute("accept")||"",/image\\/webp/,"El perfil ofrece WebP");
+   assert.match(await avatarInput.getAttribute("accept")||"",/image\/png/,"El perfil ofrece PNG");
+   assert.match(await avatarInput.getAttribute("accept")||"",/image\/jpeg/,"El perfil ofrece JPEG");
+   assert.match(await avatarInput.getAttribute("accept")||"",/image\/webp/,"El perfil ofrece WebP");
    await page.keyboard.press("Escape");
    await avatarDialog.waitFor({state:"hidden"});
    await page.waitForFunction(()=>document.activeElement?.matches('button[class*="gamerPortrait"]'),undefined,{timeout:5000});
