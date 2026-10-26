@@ -15,3 +15,8 @@ test("proposed decisions show overdue reviews using existing Commander summary",
  assert.match(source,/const overdueDecisions=pendingDecisions\.filter\(d=>typeof d\.review_date==="string"&&d\.review_date\.slice\(0,10\)<today\)/);
  assert.match(source,/\{overdueDecisions\.length\} revisiones vencidas/);
 });
+
+test("Commander summary shows open work without an assigned owner",()=>{
+ assert.match(source,/const unassignedWork=open\.filter\(w=>!w\.owner_user_id\)/);
+ assert.match(source,/\{unassignedWork\.length\} sin responsable/);
+});
