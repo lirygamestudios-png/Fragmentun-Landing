@@ -169,6 +169,8 @@ export default async function MasterAdminPage(){
   }).length;
   const overdueTotal=overdueWork+overdueRisks+overdueReviews+fundraisingDue;
   const criticalExceptions=gamesAtRisk+milestonesAtRisk+releaseRisks+highRiskAprobaciones+blockedWork+highRisks+criticalSecurity+riskyTechChanges;
+  const sourcesIncomplete=(liveSnapshot.sourceWarnings?.length??0)>0;
+  const ecosystemStatus=criticalExceptions>0?"ATENCIÓN REQUERIDA":sourcesIncomplete?"DATOS INCOMPLETOS":"OPERACIÓN ESTABLE";
   const currentCommit=process.env.VERCEL_GIT_COMMIT_SHA||null;
   const currentDeployment=process.env.VERCEL_DEPLOYMENT_ID||null;
   const gateMatches=Boolean(latestGate&&currentCommit&&currentDeployment&&latestGate.target_commit===currentCommit&&latestGate.target_deployment_id===currentDeployment);
@@ -188,8 +190,8 @@ export default async function MasterAdminPage(){
         </div>
         <div className={styles.commandHeroSide}>
           <span>ESTADO DEL ECOSISTEMA</span>
-          <strong>{criticalExceptions>0?"ATENCIÓN REQUERIDA":"OPERACIÓN ESTABLE"}</strong>
-          <small>{criticalExceptions} excepciones críticas · {overdueTotal} seguimientos vencidos</small>
+          <strong>{ecosystemStatus}</strong>
+          <small>{criticalExceptions} excepciones críticas · {overdueTotal} seguimientos vencidos{sourcesIncomplete?` · ${liveSnapshot.sourceWarnings.length} fuentes sin verificar`:""}</small>
         </div>
       </header>
 
