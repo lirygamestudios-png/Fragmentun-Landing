@@ -43,3 +43,7 @@ test("storefront verification requires external evidence",()=>{
  assert.equal((source.match(/storefront_verification_requires_external_evidence/g)||[]).length,2);
  assert.doesNotMatch(source,/<option value="verified">Verificada<\/option>/);
 });
+
+test("new storefront records default to explicitly inactive",()=>{
+ assert.match(source,/account_status:accountStatus,active:false,created_by:user\.id/);
+});
