@@ -99,7 +99,8 @@ async function updatePlataforma(formData:FormData){
   const {supabase}=await requirePublishingEditor();
   const id=String(formData.get("storefront_id")||"").trim();
   const accountStatus=String(formData.get("account_status")||"not_configured");
-  const active=String(formData.get("active")||"true")==="true";
+  const active=String(formData.get("active")||"false")==="true";
+  if(active)throw new Error("storefront_activation_requires_explicit_authorization");
   const regions=String(formData.get("region_scope")||"").split(",").map(x=>x.trim()).filter(Boolean);
   const allowedStatus=new Set(["not_configured","configured","verified","restricted","suspended"]);
   if(!id||!allowedStatus.has(accountStatus)) throw new Error("invalid_storefront_update");
