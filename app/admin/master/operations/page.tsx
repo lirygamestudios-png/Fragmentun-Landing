@@ -129,8 +129,6 @@ export default async function MasterOperationsPage(){
     {data:decisions},
     {count:leads},
     {count:media},
-    {count:books},
-    {count:characters},
     {data:latestLead},
     {data:latestEvent},
     {data:owners},
@@ -142,8 +140,6 @@ export default async function MasterOperationsPage(){
     supabase.from("ops_decisions").select("id,decision_code,title,domain,status,owner_user_id,approved_by,decision,rationale,decision_date,review_date,created_at").order("created_at",{ascending:false}),
     supabase.from("leads").select("*",{count:"exact",head:true}),
     supabase.from("media_assets").select("*",{count:"exact",head:true}),
-    supabase.from("books").select("*",{count:"exact",head:true}),
-    supabase.from("characters").select("*",{count:"exact",head:true}),
     supabase.from("leads").select("created_at,email").order("created_at",{ascending:false}).limit(1).maybeSingle(),
     supabase.from("analytics_events").select("created_at,event_name").order("created_at",{ascending:false}).limit(1).maybeSingle(),
     supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true}),
@@ -322,8 +318,8 @@ export default async function MasterOperationsPage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Libros</small><strong>{(books||0).toLocaleString()}</strong><span>Catálogo</span></article>
-      <article><small>Personajes</small><strong>{(characters||0).toLocaleString()}</strong><span>Universo IP</span></article>
+      <article><small>Trabajos abiertos</small><strong>{open.length.toLocaleString()}</strong><span>Operaciones registradas</span></article>
+      <article><small>Alertas operativas</small><strong>{blocked.length.toLocaleString()}</strong><span>Bloqueados o críticos</span></article>
       <article><small>Acceso a datos</small><strong className={styles.kpiCompactValue}>PROTEGIDO</strong><span>Administración protegida</span></article>
       <article><small>Producción</small><strong className={styles.kpiCompactValue}>PROTEGIDA</strong><span>Sitio público intacto</span></article>
     </section>
