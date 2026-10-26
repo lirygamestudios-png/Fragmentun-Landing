@@ -8,6 +8,9 @@ export type TrustedReleaseReviewContext={
  deploymentMatchesCommit:boolean;
  validationRunPassed:boolean;
  validationRunMatchesCommit:boolean;
+ trustedDeploymentId:string;
+ trustedCommitSha:string;
+ trustedValidationRunId:string;
  reviewerDecision:"approved"|"rejected"|"pending";
 };
 export function assessReleaseReviewReadiness(
@@ -23,8 +26,10 @@ export function assessReleaseReviewReadiness(
    reasons.push("reviewer_identity_mismatch");
  if(!context.reviewerHasPublishingRole)reasons.push("publishing_role_required");
  if(!context.reviewerMfaSatisfied)reasons.push("reviewer_mfa_required");
- if(!context.deploymentMatchesCommit)reasons.push("deployment_commit_not_verified");
- if(!context.validationRunPassed||!context.validationRunMatchesCommit)reasons.push("validation_run_not_verified");
+ if(!context.deploymentMatchesCommit||!evidence||!context.trustedDeploymentId||!context.trustedCommitSha||context.trustedDeploymentId!==evidence.deploymentId||context.trustedCommitSha!==evidence.commitSha)
+   reasons.push("deployment_commit_not_verified");
+ if(!context.validationRunPassed||!context.validationRunMatchesCommit||!evidence||!context.trustedValidationRunId||context.trustedValidationRunId!==evidence.validationRunId)
+   reasons.push("validation_run_not_verified");
  if(context.reviewerDecision!=="approved")reasons.push("human_approval_not_confirmed");
  // This result is for administrative review only; it is never a publication grant.
  return {reviewReady:reasons.length===0,publishAuthorized:false,reasons};
