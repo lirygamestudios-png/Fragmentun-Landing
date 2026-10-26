@@ -55,3 +55,21 @@ Estas puertas son dependencias de riesgo, no un cambio unilateral a las fases de
 - Conservar control societario del titular y derechos de IP en contratos: ninguna cesión por defecto.
 
 **Restricciones:** no activar anuncios, cuentas, servicios, pago, servidores u otras suscripciones con costo sin autorización. No tocar FRAGMENTUN, `main` ni producción. No publicar IP privadas en este repositorio.
+
+## Inventario verificado en GitHub
+
+**Revisión del árbol completo de la rama autorizada, 25/10/2026, commit base 9119f317.** El árbol de GitHub no estaba truncado.
+
+| Material observado | Resultado real | Reutilización recomendada | Límite |
+|---|---|---|---|
+| `public/liry-assets/world-01.webp` a `world-09.webp` | nueve imágenes existentes | presentación de catálogo/marketing | no demuestra arte jugable ni licencias de uso externo |
+| `components/LiryGameDiscovery.tsx` | catálogo y visualización pública | UX y patrones de navegación | no es código de mecánica jugable |
+| `lib/games/liry-global-journey.ts`, `gamer-xp.ts` | módulos de plataforma existentes | estudiar contratos de progresión/experiencia | no asumir compatibilidad directa con motor |
+| `lib/games/liry-public-dna-projection.ts` | proyección de afinidad en plataforma | recomendación y perfil de gamer | no aporta niveles jugables |
+| `components/LiryStoreCategories.tsx` y contratos commerce | interfaz/contratos de tienda | diseño de monetización futura | no habilitar pagos ni suponer checkout operativo |
+| Componentes de perfil, autenticación y comunidad | componentes de plataforma existentes | patrón de integración futura | deben pasar revisión de seguridad y privacidad |
+| Archivos nativos `.godot`, `.unity`, `.uproject`, `.blend`, `.fbx`, `.glb`, `.gltf`, `.wav`, `.mp3`, `.ogg`, `.psd` en el árbol | ninguno identificado | ninguno verificado | esto no prueba inexistencia en archivos privados u otras fuentes |
+
+**Conclusión:** se han identificado principalmente activos de promoción y arquitectura de plataforma. **No existe evidencia en este repositorio de que ya dispongamos de los tres niveles jugables, assets de producción, proyecto de motor o licencias de audio/arte del primer videojuego.**
+
+**Próxima puerta G1:** revisar el consolidado creativo PRIVADO del titular y cada activo de LGS-G01, sin publicarlo: inventario de diseño/narrativa, prototipos/archivos de motor, modelos, animación, UI/HUD, sonidos, derechos/licencias, formatos, autor/responsable, madurez (concepto/prototipo/producción) y esfuerzo de adaptación. Clasificar reutilizable sin cambios / adaptable / requiere creación / no comprobado. Solo después solicitar cotizaciones y ajustar presupuesto. El orden de fases sigue provisional.
