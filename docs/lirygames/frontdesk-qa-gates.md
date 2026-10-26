@@ -1,10 +1,12 @@
 # LIRYGAMES STUDIOS — Puertas de calidad del FrontDesk
 
-Última auditoría de código: 25 de octubre de 2026.
-Último Preview READY verificado: `205063173a62263090d42da4b8017b7c4c582514`, despliegue `dpl_A9TAJKQHgS8kXd3g2qs4oYYTvnPX`, URL `https://lirygames-studios-frontdesk-hye72gcz4-lirygamestudios-7579.vercel.app/lirygames`. Las posteriores modificaciones de la batería manual no se han desplegado.
-**Este documento NO certifica pruebas visuales manuales que aún no se han realizado.**
+Última revisión de estado: 26 de octubre de 2026.
 
-**Actualización 26 de octubre de 2026:** Preview READY `dpl_3ouzivcpHcaPyfXrQQwYvCfWJ6hA` del commit `691c1d1720eecc4a2a30e3b010df6f880b6bef16`. El script manual de Playwright recibió una corrección posterior de caracteres de salto de línea (`5c9a2265`), todavía no desplegada. READY certifica el build automatizado, no la ejecución manual de Playwright ni la aprobación visual SSO.
+**Último Preview READY confirmado:** commit `cb325886c0d94d293b989dc3a996b6c9853a896c`, despliegue `dpl_8JahbDyZvhDKqJPjSncVGXknfbLa`, URL `https://lirygames-studios-frontdesk-3lhzw5jh8-lirygamestudios-7579.vercel.app/lirygames`.
+
+Este estado confirma la compilación automatizada en Vercel. **NO equivale a una ejecución satisfactoria del script manual Playwright ni a una auditoría visual autenticada.** El Preview mantiene la protección SSO; no se desactivará para facilitar las pruebas.
+
+Prioridad de cierre: ejecutar los recorridos reales en escritorio y móvil (ES/EN), registrar defectos observados y corregir solo aquellos que puedan reproducirse. No añadir pruebas repetitivas como sustituto de esta validación.
 
 ## Verificaciones confirmadas
 
