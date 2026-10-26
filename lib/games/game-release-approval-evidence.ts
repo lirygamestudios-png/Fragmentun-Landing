@@ -17,8 +17,8 @@ export const GAME_RELEASE_APPROVAL_REQUIREMENTS=[
 export function reviewGameReleaseApprovalEvidence(
  expected:{gameId:string;releaseId:string},
  evidence:GameReleaseApprovalEvidence|null
-):{complete:boolean;missing:readonly string[]}{
- if(!evidence)return {complete:false,missing:[...GAME_RELEASE_APPROVAL_REQUIREMENTS]};
+):{complete:boolean;publishAuthorized:false;missing:readonly string[]}{
+ if(!evidence)return {complete:false,publishAuthorized:false,missing:[...GAME_RELEASE_APPROVAL_REQUIREMENTS]};
  const missing:string[]=[];
  if(!expected.gameId||!expected.releaseId||evidence.gameId!==expected.gameId||evidence.releaseId!==expected.releaseId)missing.push(GAME_RELEASE_APPROVAL_REQUIREMENTS[0]);
  if(!/^dpl_[A-Za-z0-9]+$/.test(evidence.deploymentId)||!/^[0-9a-f]{40}$/.test(evidence.commitSha))missing.push(GAME_RELEASE_APPROVAL_REQUIREMENTS[1]);
@@ -26,5 +26,7 @@ export function reviewGameReleaseApprovalEvidence(
  const reviewedAtIsUtc=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/.test(evidence.reviewedAt);
  const reviewedAtMs=Date.parse(evidence.reviewedAt);
  if(!evidence.reviewerUserId.trim()||!reviewedAtIsUtc||!Number.isFinite(reviewedAtMs)||new Date(reviewedAtMs).toISOString()!==evidence.reviewedAt.replace(/(?:\.(\d{1,3}))?Z$/,(_,fraction:string|undefined)=>`.${(fraction||"").padEnd(3,"0")}Z`)||reviewedAtMs>Date.now())missing.push(GAME_RELEASE_APPROVAL_REQUIREMENTS[3]);
- return {complete:missing.length===0,missing};
+ // A structurally complete checklist is not a trusted deployment, QA, or human approval attestation.
+ // Publication must remain disabled until a separate, authenticated authorization gate exists.
+ return {complete:missing.length===0,publishAuthorized:false,missing};
 }
