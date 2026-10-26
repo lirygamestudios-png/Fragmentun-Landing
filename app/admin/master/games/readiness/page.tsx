@@ -32,10 +32,13 @@ export default async function GameReleaseReadinessPage(){
         const item=assigned.find(w=>w.world_number===i+1);
         return {number:i+1,valid:!!item&&item.access_type==="free"&&item.publication_status==="available"&&validGamePlayUrl(item.play_url),detail:!item?"No registrado":item.access_type!=="free"?"Acceso gratuito por corregir":!validGamePlayUrl(item.play_url)?"Enlace HTTPS pendiente o inválido":item.publication_status!=="available"?"Configuración registrada; publicación aún no autorizada":"Configuración técnica aparente; falta autorización individual"};
       });
+      const registeredWorlds=configured.filter(w=>w.detail!=="No registrado").length;
+      const technicallyConfigured=assigned.filter(w=>w.world_number>=1&&w.world_number<=INITIAL_WORLDS_PER_GAME&&w.access_type==="free"&&validGamePlayUrl(w.play_url)).length;
       return <article key={game.id} className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgePlanned}>PUBLICACIÓN BLOQUEADA</span></div>
         <h3>{game.name}</h3>
         <p>Etapa de desarrollo: {game.lifecycle_stage}. La etapa no equivale a aprobación.</p>
+        <p>Mundos registrados: {registeredWorlds} de {INITIAL_WORLDS_PER_GAME} · Configuración técnica: {technicallyConfigured} de {INITIAL_WORLDS_PER_GAME}. La configuración no concede permiso de publicación.</p>
         {configured.map(w=><p key={w.number}>Mundo {w.number}: {w.detail} · acceso gratuito obligatorio</p>)}
         <p>Aprobación vinculada al videojuego: pendiente. Release Gate de producción: sin verificar.</p>
       </article>;
