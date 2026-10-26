@@ -7,7 +7,7 @@ const page=readFileSync(new URL("app/lirygames/page.tsx",root),"utf8");
 const discovery=readFileSync(new URL("components/LiryGameDiscovery.tsx",root),"utf8");
 test("header search only links to public sections with existing anchors",()=>{
  const targets=[...header.matchAll(/href:"(#[a-z-]+)"/g)].map(match=>match[1]);
- assert.deepEqual(targets,["#mundos","#liry-dna","#perfil-gamer","#comunidad","#liryboost","#tienda"]);
+ assert.deepEqual(targets,["#mundos","#liry-dna","#perfil-gamer","#comunidad","#social","#liryboost","#tienda","#secretos"]);
  for(const target of targets){
   const id=target.slice(1);
   assert.ok(page.includes(`id="${id}"`)||discovery.includes(`id="${id}"`),`Missing public search anchor: ${target}`);
