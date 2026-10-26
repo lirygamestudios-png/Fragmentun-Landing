@@ -31,3 +31,8 @@ test("individual game administrative ID remains visible without changing blocked
  assert.match(source,/Identificador del videojuego: <code>\{game\.id\}<\/code>/);
  assert.match(source,/PUBLICACIÓN BLOQUEADA/);
 });
+
+test("readiness displays the exact game ID for release traceability",()=>{
+ assert.match(source,/Identificador del videojuego: <code>\{game\.id\}<\/code>/);
+ assert.match(source,/PUBLICACIÓN BLOQUEADA/);
+});
