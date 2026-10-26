@@ -224,6 +224,7 @@ try {
    const mi=await page.goto(base+"/lirygames/mi-liry?lang="+item.locale,{waitUntil:"domcontentloaded",timeout:30000});
    assert.equal(mi?.status(),200,"Mi Liry debe responder 200");
    assert.equal(new URL(page.url()).pathname,"/lirygames/mi-liry","La sesión SSO debe llegar a Mi Liry, no a la pantalla de autenticación");
+   assert.equal(new URL(page.url()).searchParams.get("lang"),item.locale,"Mi Liry debe preservar el idioma seleccionado");
    const first=page.locator('button[aria-controls="mi-liry-area-dialog"]').first();
    await first.click();
    const dialog=page.locator("#mi-liry-area-dialog");
