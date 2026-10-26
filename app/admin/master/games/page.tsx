@@ -194,6 +194,7 @@ export default async function MasterGamesPage(){
   const gameRows=(games||[]) as any[];
   const milestoneRows=(milestones||[]) as any[];
   const activeMilestones=milestoneRows.filter(m=>!["completed","canceled"].includes(m.status));
+  const unassignedMilestones=activeMilestones.filter(m=>!m.owner_user_id);
   const milestoneToday=new Date().toISOString().slice(0,10);
   const overdueMilestones=activeMilestones.filter(m=>typeof m.target_date==="string"&&m.target_date.slice(0,10)<milestoneToday);
   const blocked=milestoneRows.filter(m=>m.status==="blocked"||m.status==="at_risk");
@@ -235,7 +236,7 @@ export default async function MasterGamesPage(){
 
     <section className={styles.kpis}>
       <article><small>Portafolio</small><strong>{gameRows.length}/{portfolioCapacity}</strong><span>{availableSlots} espacios disponibles</span></article>
-      <article><small>Etapas abiertas</small><strong>{activeMilestones.length}</strong><span>{overdueMilestones.length} etapas vencidas</span></article>
+      <article><small>Etapas abiertas</small><strong>{activeMilestones.length}</strong><span>{overdueMilestones.length} etapas vencidas · {unassignedMilestones.length} sin responsable</span></article>
       <article className={blocked.length?styles.kpiAttention:undefined}><small>En riesgo o bloqueados</small><strong>{blocked.length}</strong><span>{blocked.length?"Requieren atención":"Sin excepciones activas"}</span></article>
       <article className={redGames.length?styles.kpiAttention:undefined}><small>Salud crítica</small><strong>{redGames.length}</strong><span>{redGames.length?"Críticos o pausados":"Sin títulos críticos"}</span></article>
     </section>
