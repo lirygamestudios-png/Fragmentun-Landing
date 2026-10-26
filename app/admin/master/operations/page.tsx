@@ -155,6 +155,7 @@ export default async function MasterOperationsPage(){
   const today=new Date().toISOString().slice(0,10);
   const overdueWork=open.filter(w=>typeof w.due_date==="string"&&w.due_date.slice(0,10)<today);
   const pendingDecisions=decisionRows.filter(d=>d.status==="proposed");
+  const overdueDecisions=pendingDecisions.filter(d=>typeof d.review_date==="string"&&d.review_date.slice(0,10)<today);
   const ownerRows=(owners||[]) as any[];
   const ownerName=(id:string|null|undefined)=>ownerRows.find(o=>o.user_id===id)?.display_name||"Sin responsable";
   const entitlementIssues=((gameEntitlements||[]) as any[]).filter(e=>["pending","failed"].includes(e.status)).length;
@@ -218,7 +219,7 @@ export default async function MasterOperationsPage(){
 
     <section className={styles.kpis}>
       <article><small>Trabajos abiertos</small><strong>{open.length}</strong><span>{blocked.length} bloqueados o críticos · {overdueWork.length} vencidos</span></article>
-      <article><small>Decisiones pendientes</small><strong>{pendingDecisions.length}</strong><span>{decisionRows.length} registradas</span></article>
+      <article><small>Decisiones pendientes</small><strong>{pendingDecisions.length}</strong><span>{decisionRows.length} registradas · {overdueDecisions.length} revisiones vencidas</span></article>
       <article><small>Contactos</small><strong>{(leads||0).toLocaleString()}</strong><span>Base actual</span></article>
       <article><small>Recursos multimedia</small><strong>{(media||0).toLocaleString()}</strong><span>Biblioteca</span></article>
     </section>
