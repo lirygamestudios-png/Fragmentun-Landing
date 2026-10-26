@@ -22,3 +22,8 @@ test("publishing uses a read-only incomplete evidence checklist",()=>{
  assert.match(source,/reviewGameReleaseApprovalEvidence\(\{gameId:r\.game_id,releaseId:r\.id\},null\)/);
  assert.match(source,/Autorización individual: NO VERIFICADA/);
 });
+
+test("storefront activation cannot occur through preparatory editor",()=>{
+ assert.match(source,/const active=String\(formData\.get\("active"\)\|\|"false"\)==="true"/);
+ assert.match(source,/if\(active\)throw new Error\("storefront_activation_requires_explicit_authorization"\)/);
+});
