@@ -16,7 +16,7 @@ export function prepareReleaseReviewAuditDraft(
  if(!trusted?.authenticatedReviewerId||!trusted.reviewerHasPublishingRole||!trusted.reviewerMfaSatisfied)
    throw new Error("authenticated_review_authority_required");
  const timestamp=Date.parse(serverRecordedAt);
- if(!/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$/.test(serverRecordedAt)||
+ if(!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(serverRecordedAt)||
    !Number.isFinite(timestamp)||new Date(timestamp).toISOString()!==serverRecordedAt)
    throw new Error("invalid_server_audit_timestamp");
  if(!expected.gameId||!expected.releaseId)throw new Error("release_identity_required");
