@@ -88,6 +88,10 @@ async function createRelease(formData:FormData){
   if(!validCurrency(currency)||(priceCents!==null&&(!Number.isFinite(priceCents)||priceCents<0))) throw new Error("invalid_price");
   const{data:linkedGame,error:linkedGameError}=await supabase.from("game_titles").select("id").eq("id",gameId).maybeSingle();
   if(linkedGameError||!linkedGame)throw new Error("release_game_not_found");
+  if(storefrontId){
+    const{data:linkedStorefront,error:linkedStorefrontError}=await supabase.from("publishing_storefronts").select("id").eq("id",storefrontId).maybeSingle();
+    if(linkedStorefrontError||!linkedStorefront)throw new Error("release_storefront_not_found");
+  }
   const{error}=await supabase.from("publishing_releases").insert({
     game_id:gameId,storefront_id:storefrontId,release_name:releaseName,release_type:releaseType,
     target_date:targetDate,sku,territories,price_cents:priceCents,currency,created_by:user.id
