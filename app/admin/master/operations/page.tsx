@@ -151,6 +151,7 @@ export default async function MasterOperationsPage(){
   const workRows=(workItems||[]) as any[];
   const decisionRows=(decisions||[]) as any[];
   const open=workRows.filter(w=>!["completed","canceled"].includes(w.status));
+  const unassignedWork=open.filter(w=>!w.owner_user_id);
   const blocked=open.filter(w=>w.status==="blocked"||w.priority==="critical");
   const today=new Date().toISOString().slice(0,10);
   const overdueWork=open.filter(w=>typeof w.due_date==="string"&&w.due_date.slice(0,10)<today);
@@ -218,7 +219,7 @@ export default async function MasterOperationsPage(){
     </section>
 
     <section className={styles.kpis}>
-      <article><small>Trabajos abiertos</small><strong>{open.length}</strong><span>{blocked.length} bloqueados o críticos · {overdueWork.length} vencidos</span></article>
+      <article><small>Trabajos abiertos</small><strong>{open.length}</strong><span>{blocked.length} bloqueados o críticos · {overdueWork.length} vencidos · {unassignedWork.length} sin responsable</span></article>
       <article><small>Decisiones pendientes</small><strong>{pendingDecisions.length}</strong><span>{decisionRows.length} registradas · {overdueDecisions.length} revisiones vencidas</span></article>
       <article><small>Contactos</small><strong>{(leads||0).toLocaleString()}</strong><span>Base actual</span></article>
       <article><small>Recursos multimedia</small><strong>{(media||0).toLocaleString()}</strong><span>Biblioteca</span></article>
