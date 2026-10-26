@@ -60,6 +60,7 @@ async function createPlataforma(formData:FormData){
   const allowedStatus=new Set(["not_configured","configured","verified","restricted","suspended"]);
   if(!name||!code||!platform) throw new Error("storefront_required_fields");
   if(!allowedStatus.has(accountStatus)) throw new Error("invalid_account_status");
+  if(accountStatus==="verified")throw new Error("storefront_verification_requires_external_evidence");
   const{error}=await supabase.from("publishing_storefronts").insert({
     name,code,platform,region_scope:regions,account_status:accountStatus,created_by:user.id
   });
@@ -104,6 +105,7 @@ async function updatePlataforma(formData:FormData){
   const regions=String(formData.get("region_scope")||"").split(",").map(x=>x.trim()).filter(Boolean);
   const allowedStatus=new Set(["not_configured","configured","verified","restricted","suspended"]);
   if(!id||!allowedStatus.has(accountStatus)) throw new Error("invalid_storefront_update");
+  if(accountStatus==="verified")throw new Error("storefront_verification_requires_external_evidence");
   const{error}=await supabase.from("publishing_storefronts").update({
     account_status:accountStatus,active,region_scope:regions,updated_at:new Date().toISOString()
   }).eq("id",id);
@@ -277,7 +279,7 @@ export default async function MasterPublishingPage(){
           <label>Estado de cuenta<select name="account_status" defaultValue="not_configured">
             <option value="not_configured">Sin configurar</option>
             <option value="configured">Configurada</option>
-            <option value="verified">Verificada</option>
+            
             <option value="restricted">Restringida</option>
             <option value="suspended">Suspendida</option>
           </select></label>
@@ -318,7 +320,7 @@ export default async function MasterPublishingPage(){
         <div className={styles.formTitle}><span>GESTIONAR PLATAFORMA</span><h2>Actualizar plataforma</h2></div>
         <div className={styles.formGrid}>
           <label>Plataforma<select name="storefront_id" required defaultValue=""><option value="" disabled>Seleccionar plataforma</option>{stores.map((s:any)=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
-          <label>Estado cuenta<select name="account_status" defaultValue="configured"><option value="not_configured">Sin configurar</option><option value="configured">Configurada</option><option value="verified">Verificada</option><option value="restricted">Restringida</option><option value="suspended">Suspendida</option></select></label>
+          <label>Estado cuenta<select name="account_status" defaultValue="configured"><option value="not_configured">Sin configurar</option><option value="configured">Configurada</option><option value="restricted">Restringida</option><option value="suspended">Suspendida</option></select></label>
           <label>Activo<select name="active" defaultValue="false"><option value="false">No · pendiente de autorización</option></select></label>
           <label className={styles.span2}>Regiones<input name="region_scope" placeholder="EE. UU., Latinoamérica, Europa"/></label>
         </div>
