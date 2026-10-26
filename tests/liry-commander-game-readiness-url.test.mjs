@@ -14,3 +14,8 @@ test("three-world readiness lists precise blockers without approval actions",()=
  for(const label of ["No registrado","Acceso gratuito por corregir","Enlace HTTPS pendiente o inválido","Configuración registrada; publicación aún no autorizada"])assert.ok(source.includes(label));
  assert.match(source,/PUBLICACIÓN BLOQUEADA/);
 });
+
+test("internal world editor rejects HTTPS URLs with embedded credentials",()=>{
+ const worlds=readFileSync(new URL("../app/admin/master/games/worlds/page.tsx",import.meta.url),"utf8");
+ assert.match(worlds,/parsed\.protocol!=="https:"\|\|!parsed\.hostname\|\|parsed\.username\|\|parsed\.password/);
+});
