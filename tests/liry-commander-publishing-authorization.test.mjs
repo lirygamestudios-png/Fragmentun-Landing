@@ -33,3 +33,8 @@ test("storefront editor defaults to inactive and has no activation option",()=>{
  assert.match(source,/No · pendiente de autorización/);
  assert.doesNotMatch(source,/<option value="true">Sí<\/option>/);
 });
+
+test("storefront cannot be marked verified without external evidence",()=>{
+ assert.equal((source.match(/storefront_verification_requires_external_evidence/g)||[]).length,2);
+ assert.doesNotMatch(source,/<option value="verified">Verificada<\/option>/);
+});
