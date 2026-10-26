@@ -27,3 +27,9 @@ test("storefront activation cannot occur through preparatory editor",()=>{
  assert.match(source,/const active=String\(formData\.get\("active"\)\|\|"false"\)==="true"/);
  assert.match(source,/if\(active\)throw new Error\("storefront_activation_requires_explicit_authorization"\)/);
 });
+
+test("storefront editor defaults to inactive and has no activation option",()=>{
+ assert.match(source,/name="active" defaultValue="false"/);
+ assert.match(source,/No · pendiente de autorización/);
+ assert.doesNotMatch(source,/<option value="true">Sí<\/option>/);
+});
