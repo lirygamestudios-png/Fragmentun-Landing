@@ -17,3 +17,8 @@ test("release cards state individual authorization remains unavailable",()=>{
  assert.match(source,/Autorización individual vinculada al videojuego y al lanzamiento: PENDIENTE DE IMPLEMENTACIÓN/);
  assert.match(source,/Ningún estado administrativo concede permiso de publicación/);
 });
+
+test("publishing uses a read-only incomplete evidence checklist",()=>{
+ assert.match(source,/reviewGameReleaseApprovalEvidence\(\{gameId:r\.game_id,releaseId:r\.id\},null\)/);
+ assert.match(source,/Autorización individual: NO VERIFICADA/);
+});
