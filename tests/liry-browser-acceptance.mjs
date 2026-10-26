@@ -146,8 +146,10 @@ try {
     const reset=filters.locator("button");
     assert.equal(await reset.isDisabled(),true,"El restablecimiento comienza deshabilitado");
     await search.fill("qa-producto-inexistente-20261025");
-    await store.locator('[role="status"]').waitFor();
+    const emptyState=store.locator('[role="status"]');
+    await emptyState.waitFor();
     await page.waitForFunction(()=>document.querySelectorAll('[data-liry-store-product]').length===0);
+    assert.match(await emptyState.innerText(),item.locale==="es"?/Todavía no hay productos publicados que coincidan con estos filtros/:/No published products match these filters yet/,"La tienda anuncia resultados vacíos en el idioma seleccionado");
     assert.equal(await reset.isEnabled(),true,"La búsqueda habilita limpiar filtros");
     await reset.click();
     assert.equal(await search.inputValue(),"","Limpiar filtros vacía la búsqueda");
