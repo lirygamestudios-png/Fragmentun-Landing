@@ -21,6 +21,10 @@ test("DNA anchor remains inside discovery component mounted by FrontDesk",()=>{
 test("header search touch controls keep mobile accessibility dimensions",()=>{const css=readFileSync(new URL("app/lirygames/lirygames.module.css",root),"utf8");assert.match(css,/\.headerUtilityResults a\{[^}]*min-height:44px/);assert.match(css,/\.headerUtilityLabel input\{[^}]*font-size:16px/);assert.match(css,/@media\(max-width:560px\)\{\.headerUtilityResults\{grid-template-columns:1fr\}\}/);});
 
 test("header search supports ArrowUp from first result back to its input",()=>{
- assert.match(header,/onKeyDown=\{e=>\{if\(e\.key==="ArrowUp"&&e\.target===firstResult\.current\)/);
+ assert.match(header,/e\.key==="ArrowUp"/);
+ assert.match(header,/e\.key==="ArrowDown"/);
+ assert.match(header,/if\(index===0\)input\.current\?\.focus/);
+ assert.match(header,/links\[index-1\]\?\.focus/);
+ assert.match(header,/links\[index\+1\]\?\.focus/);
  assert.match(header,/input\.current\?\.focus\(\{preventScroll:true\}\)/);
 });
