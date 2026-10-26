@@ -254,6 +254,16 @@ try {
    await thirdArea.click();
    await page.waitForFunction(()=>document.querySelector('#mi-liry-area-dialog nav small[aria-live="polite"]')?.textContent?.trim()==="3 / 6");
    assert.equal(await thirdArea.getAttribute("aria-expanded"),"true","La segunda apertura pertenece a su propia tarjeta");
+   // Los controles no deben sobrepasar los extremos de las seis áreas.
+   const previousBoundary=dialog.locator('nav button').first();
+   const nextBoundary=dialog.locator('nav button').last();
+   for(let index=3;index<6;index++){
+    await nextBoundary.click();
+    await page.waitForFunction(expected=>document.querySelector('#mi-liry-area-dialog nav small[aria-live="polite"]')?.textContent?.trim()===expected,`${index+1} / 6`);
+   }
+   assert.equal(await nextBoundary.isDisabled(),true,"En el área seis, Próximo debe estar deshabilitado");
+   assert.equal(await previousBoundary.isEnabled(),true,"Desde el área seis debe poder retrocederse");
+   assert.equal(await thirdArea.getAttribute("aria-expanded"),"true","La tarjeta de origen conserva la expansión tras recorrer las seis áreas");
    await page.keyboard.press("Escape");
    await page.waitForFunction(()=>document.querySelector('#mi-liry-area-dialog')?.open===false&&document.querySelectorAll('button[aria-controls="mi-liry-area-dialog"][aria-expanded="true"]').length===0);
    await page.waitForFunction(()=>document.activeElement===document.querySelectorAll('button[aria-controls="mi-liry-area-dialog"]')[2],undefined,{timeout:5000});
