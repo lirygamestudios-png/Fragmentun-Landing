@@ -25,6 +25,6 @@ export function reviewGameReleaseApprovalEvidence(
  if(!/^[A-Za-z0-9][A-Za-z0-9_-]{2,127}$/.test(evidence.validationRunId))missing.push(GAME_RELEASE_APPROVAL_REQUIREMENTS[2]);
  const reviewedAtIsUtc=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/.test(evidence.reviewedAt);
  const reviewedAtMs=Date.parse(evidence.reviewedAt);
- if(!evidence.reviewerUserId.trim()||!reviewedAtIsUtc||!Number.isFinite(reviewedAtMs)||new Date(reviewedAtMs).toISOString()!==new Date(evidence.reviewedAt).toISOString()||reviewedAtMs>Date.now())missing.push(GAME_RELEASE_APPROVAL_REQUIREMENTS[3]);
+ if(!evidence.reviewerUserId.trim()||!reviewedAtIsUtc||!Number.isFinite(reviewedAtMs)||new Date(reviewedAtMs).toISOString()!==evidence.reviewedAt.replace(/(?:\.(\d{1,3}))?Z$/,(_,fraction:string|undefined)=>`.${(fraction||"").padEnd(3,"0")}Z`)||reviewedAtMs>Date.now())missing.push(GAME_RELEASE_APPROVAL_REQUIREMENTS[3]);
  return {complete:missing.length===0,missing};
 }
