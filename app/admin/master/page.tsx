@@ -75,7 +75,6 @@ export default async function MasterAdminPage(){
   const [
     {count:leadCount},
     {count:eventCount},
-    {count:bookCount},
     {count:mediaCount},
     {data:games},
     {data:milestones},
@@ -99,7 +98,6 @@ export default async function MasterAdminPage(){
   ]=await Promise.all([
     supabase.from("leads").select("*",{count:"exact",head:true}),
     supabase.from("analytics_events").select("*",{count:"exact",head:true}),
-    supabase.from("books").select("*",{count:"exact",head:true}),
     supabase.from("media_assets").select("*",{count:"exact",head:true}),
     supabase.from("game_titles").select("id,name,lifecycle_stage,health_status,target_release_date"),
     supabase.from("game_milestones").select("id,status,target_date,progress_percent"),
