@@ -174,8 +174,6 @@ export default async function MasterGamesPage(){
   const[
     {data:games},
     {data:milestones},
-    {count:books},
-    {count:characters},
     {count:media},
     {data:owners},
     {data:virtualItems},
@@ -185,8 +183,6 @@ export default async function MasterGamesPage(){
   ]=await Promise.all([
     supabase.from("game_titles").select("id,slug,name,ip_name,platform_scope,lifecycle_stage,health_status,owner_user_id,target_release_date,budget_cents,currency,summary,created_at").order("created_at",{ascending:true}),
     supabase.from("game_milestones").select("id,game_id,name,milestone_type,status,target_date,completed_at,owner_user_id,progress_percent,exit_criteria,notes,created_at").order("target_date",{ascending:true}),
-    supabase.from("books").select("*",{count:"exact",head:true}),
-    supabase.from("characters").select("*",{count:"exact",head:true}),
     supabase.from("media_assets").select("*",{count:"exact",head:true}),
     supabase.from("admin_profiles").select("user_id,display_name,role").order("display_name",{ascending:true}),
     supabase.from("game_virtual_items").select("id,game_id,active"),
@@ -407,8 +403,8 @@ export default async function MasterGamesPage(){
       <p>El sistema conecta el futuro portfolio de juegos con el contenido editorial y multimedia existente.</p>
     </section>
     <section className={styles.kpis}>
-      <article><small>Libros</small><strong>{(books||0).toLocaleString()}</strong><span>Base creativa</span></article>
-      <article><small>Personajes</small><strong>{(characters||0).toLocaleString()}</strong><span>Universo narrativo</span></article>
+      <article><small>Videojuegos</small><strong>{gameRows.length.toLocaleString()}</strong><span>Títulos registrados</span></article>
+      <article><small>Etapas pendientes</small><strong>{activeMilestones.length.toLocaleString()}</strong><span>Producción en seguimiento</span></article>
       <article><small>Recursos</small><strong>{(media||0).toLocaleString()}</strong><span>Archivos registrados</span></article>
       <article><small>Acceso a datos</small><strong className={styles.kpiCompactValue}>PROTEGIDO</strong><span>Acceso administrativo</span></article>
     </section>
