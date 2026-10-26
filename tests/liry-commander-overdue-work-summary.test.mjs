@@ -20,3 +20,8 @@ test("Commander summary shows open work without an assigned owner",()=>{
  assert.match(source,/const unassignedWork=open\.filter\(w=>!w\.owner_user_id\)/);
  assert.match(source,/\{unassignedWork\.length\} sin responsable/);
 });
+
+test("proposed decisions without owners are counted in existing summary",()=>{
+ assert.match(source,/const unassignedDecisions=pendingDecisions\.filter\(d=>!d\.owner_user_id\)/);
+ assert.match(source,/\{unassignedDecisions\.length\} sin responsable/);
+});
