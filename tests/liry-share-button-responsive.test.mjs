@@ -15,3 +15,5 @@ test("mobile product cards have an ordered vertical layout without changing the 
 test("WhatsApp share dialog only restores focus to mounted product icon",()=>{assert.match(share,/if\(opener\.current\?\.isConnected\)opener\.current\.focus/);assert.match(share,/opener\.current=null/);});
 
 test("social share preview restores focus only to a mounted trigger",()=>{const s=readFileSync(new URL("../components/LiryShare.tsx",import.meta.url),"utf8");assert.match(s,/if\(previewTrigger\.current\?\.isConnected\)previewTrigger\.current\.focus\(\{preventScroll:true\}\)/);assert.match(s,/previewTrigger\.current=null/);});
+
+test("community and social dialog focus checks mounted triggers",()=>{const fs=readFileSync(new URL("../components/LiryOfficialNetworks.tsx",import.meta.url),"utf8");const contact=readFileSync(new URL("../components/LiryCommunityContact.tsx",import.meta.url),"utf8");assert.match(fs,/lastTrigger\.current\?\.isConnected/);assert.match(contact,/opener\.current\?\.isConnected/);});
