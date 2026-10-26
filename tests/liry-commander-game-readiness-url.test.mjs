@@ -9,3 +9,8 @@ test("game readiness parses full HTTPS play URLs instead of string prefix",()=>{
  assert.match(source,/validGamePlayUrl\(item\.play_url\)/);
  assert.doesNotMatch(source,/play_url\?\.startsWith\("https:\/\/"\)/);
 });
+
+test("three-world readiness lists precise blockers without approval actions",()=>{
+ for(const label of ["No registrado","Acceso gratuito por corregir","Enlace HTTPS pendiente o inválido","Configuración registrada; publicación aún no autorizada"])assert.ok(source.includes(label));
+ assert.match(source,/PUBLICACIÓN BLOQUEADA/);
+});
