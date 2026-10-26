@@ -86,6 +86,8 @@ async function createRelease(formData:FormData){
   const allowedTypes=new Set(["base_game","demo","prologue","dlc","expansion","season","bundle","patch","other"]);
   if(!allowedTypes.has(releaseType)) throw new Error("invalid_release_type");
   if(!validCurrency(currency)||(priceCents!==null&&(!Number.isFinite(priceCents)||priceCents<0))) throw new Error("invalid_price");
+  const{data:linkedGame,error:linkedGameError}=await supabase.from("game_titles").select("id").eq("id",gameId).maybeSingle();
+  if(linkedGameError||!linkedGame)throw new Error("release_game_not_found");
   const{error}=await supabase.from("publishing_releases").insert({
     game_id:gameId,storefront_id:storefrontId,release_name:releaseName,release_type:releaseType,
     target_date:targetDate,sku,territories,price_cents:priceCents,currency,created_by:user.id
