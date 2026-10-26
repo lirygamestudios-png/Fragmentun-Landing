@@ -91,7 +91,9 @@ try {
     const noticeToggle=page.locator('button[class*="navNotice"]');
     await noticeToggle.click();
     await searchDialog.waitFor({state:"visible"});
-    assert.equal(await searchDialog.locator('[role="status"]').isVisible(),true,"Los avisos muestran un estado auténtico, sin inventar notificaciones");
+    const noticeStatus=searchDialog.locator('[role="status"]');
+    assert.equal(await noticeStatus.isVisible(),true,"Los avisos deben tener un estado visible");
+    assert.match(await noticeStatus.innerText(),item.locale==="es"?/No hay notificaciones de jugador disponibles/:/No player notifications available/,"El estado vacío debe estar localizado y no contener avisos ficticios");
     await page.keyboard.press("Escape");
     await searchDialog.waitFor({state:"hidden"});
     await page.waitForFunction(()=>document.activeElement?.matches('button[class*="navNotice"]'),undefined,{timeout:5000});
