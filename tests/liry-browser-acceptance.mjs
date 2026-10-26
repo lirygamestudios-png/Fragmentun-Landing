@@ -230,6 +230,20 @@ try {
    const dialog=page.locator("#mi-liry-area-dialog");
    assert.equal(await dialog.evaluate(el=>el.open),true,"Subpantalla debe abrirse");
    await page.waitForFunction(()=>document.querySelector('button[aria-controls="mi-liry-area-dialog"]')?.getAttribute("aria-expanded")==="true");
+   // Mi Liry: la navegación entre áreas mantiene el diálogo abierto y anuncia la posición.
+   const areaHeading=dialog.locator("#mi-liry-area-title");
+   const firstAreaTitle=await areaHeading.innerText();
+   const position=dialog.locator('nav small[aria-live="polite"]');
+   assert.match(await position.innerText(),/1\s*\/\s*6/,"Mi Liry comienza en la primera de seis áreas");
+   const nextArea=dialog.locator('nav button').last();
+   await nextArea.click();
+   await page.waitForFunction(()=>document.querySelector('#mi-liry-area-dialog nav small[aria-live="polite"]')?.textContent?.trim()==="2 / 6");
+   assert.notEqual(await areaHeading.innerText(),firstAreaTitle,"Avanzar debe mostrar otra área");
+   assert.equal(await dialog.evaluate(el=>el.open),true,"Mi Liry mantiene abierta la subpantalla");
+   const previousArea=dialog.locator('nav button').first();
+   await previousArea.click();
+   await page.waitForFunction(()=>document.querySelector('#mi-liry-area-dialog nav small[aria-live="polite"]')?.textContent?.trim()==="1 / 6");
+   assert.equal(await areaHeading.innerText(),firstAreaTitle,"Anterior recupera el área original");
    await page.screenshot({path:join(out,item.label+"-mi-liry-modal.png")});
    await page.keyboard.press("Escape");
    await page.waitForFunction(()=>{const d=document.querySelector("#mi-liry-area-dialog");const b=document.querySelector('button[aria-controls="mi-liry-area-dialog"]');return d&&!d.open&&b?.getAttribute("aria-expanded")==="false"&&document.activeElement===b});
