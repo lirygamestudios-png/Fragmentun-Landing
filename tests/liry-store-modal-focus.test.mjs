@@ -41,3 +41,5 @@ test("store deep link only scrolls and focuses a mounted product",()=>{assert.ma
 test("store page state is clamped when filtered product count decreases",()=>{assert.match(source,/useEffect\(\(\)=>\{setPage\(previous=>Math\.min\(previous,pages\)\)\},\[pages\]\)/);assert.match(source,/const currentPage=Math\.min\(page,pages\)/);});
 
 test("store rechecks product URLs on browser history navigation",()=>{assert.match(source,/window\.addEventListener\("popstate",onHistoryNavigation\)/);assert.match(source,/deepLinkHandled\.current=false;setHistoryRevision\(value=>value\+1\)/);assert.match(source,/\[products,locale,historyRevision\]/);});
+
+test("history navigation retries focus even when product page does not change",()=>{assert.match(source,/\[currentPage,historyRevision,pageItems\.map\(item=>item\.id\)\.join\("\|"\)\]/);});
