@@ -34,7 +34,7 @@ export function LiryStoreCategories({locale="es",products=[]}:{locale?:LiryFront
  useEffect(()=>{
   if(deepLinkHandled.current)return;
   const selectedProduct=new URLSearchParams(window.location.search).get("product");
-  if(!selectedProduct){deepLinkHandled.current=true;return;}
+  if(!selectedProduct){linkedProductId.current=null;deepLinkHandled.current=true;return;}
   const sorted=[...products].sort((a,b)=>a.name.localeCompare(b.name,locale)||a.id.localeCompare(b.id));
   const targetIndex=sorted.findIndex(item=>item.id===selectedProduct);
   if(targetIndex<0)return;
