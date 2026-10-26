@@ -17,6 +17,7 @@ export function LiryBoostTop10({locale="es"}:{locale?:LiryFrontdeskLocale}){
   fetch("/api/liryboost/top10",{signal:controller.signal,cache:"no-store"})
    .then(r=>{if(!r.ok)throw new Error("Unavailable");return r.json() as Promise<ResponseShape>})
    .then(data=>{
+    if(controller.signal.aborted)return;
     if(!data||typeof data.programActive!=="boolean"||!Array.isArray(data.leaderboard))throw new Error("Invalid leaderboard response");
     if(data.programActive===false){setEntries([]);setActive(false);setUnavailable(false);return;}
     setEntries(data.leaderboard.filter(e=>e&&typeof e.publicName==="string"&&e.publicName.trim().length>0&&e.publicName.length<=60&&!/[<>@]/.test(e.publicName)&&!e.publicName.includes("\n")&&!e.publicName.includes("\r")&&Number.isSafeInteger(e.verifiedInvitations)&&e.verifiedInvitations>0).slice(0,10));
