@@ -19,3 +19,10 @@ test("internal world editor rejects HTTPS URLs with embedded credentials",()=>{
  const worlds=readFileSync(new URL("../app/admin/master/games/worlds/page.tsx",import.meta.url),"utf8");
  assert.match(worlds,/parsed\.protocol!=="https:"\|\|!parsed\.hostname\|\|parsed\.username\|\|parsed\.password/);
 });
+
+test("readiness shows bounded progress for three worlds without publication approval",()=>{
+ assert.match(source,/const registeredWorlds=configured\.filter/);
+ assert.match(source,/const technicallyConfigured=configured\.filter/);
+ assert.match(source,/Mundos registrados: \{registeredWorlds\} de \{INITIAL_WORLDS_PER_GAME\}/);
+ assert.match(source,/La configuración no concede permiso de publicación/);
+});
