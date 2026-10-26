@@ -56,6 +56,36 @@ try {
    await page.screenshot({path:join(out,item.label+"-frontdesk.png"),fullPage:true});
    const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+1);
    assert.equal(overflow,false,"No debe aparecer scroll horizontal");
+   // Buscador público ES/EN: destinos y navegación por teclado.
+   if(item.label==="desktop-es-1440"||item.label==="desktop-en-1024"){
+    const searchToggle=page.locator('button[class*="navSearch"]');
+    await searchToggle.click();
+    const searchDialog=page.locator('dialog[class*="headerUtilityDialog"]');
+    await searchDialog.waitFor({state:"visible"});
+    const searchField=searchDialog.locator('input[type="search"]');
+    const results=searchDialog.locator('[class*="headerUtilityResults"] a');
+    assert.equal(await results.count(),8,"El buscador debe listar ocho secciones públicas");
+    const destinations=await results.evaluateAll(links=>links.map(link=>link.getAttribute("href")));
+    assert.deepEqual(destinations,["#mundos","#liry-dna","#perfil-gamer","#comunidad","#social","#liryboost","#tienda","#secretos"],"Los destinos deben ser exclusivamente secciones públicas");
+    await searchField.fill(item.locale==="es"?"secretos":"secrets");
+    await page.waitForFunction(()=>document.querySelectorAll('[class*="headerUtilityResults"] a').length===1);
+    const secretLink=results.first();
+    assert.equal(await secretLink.getAttribute("href"),"#secretos","La búsqueda localiza Secretos de Liry");
+    await searchField.press("ArrowDown");
+    await page.waitForFunction(()=>document.activeElement?.getAttribute("href")==="#secretos");
+    await secretLink.press("ArrowUp");
+    await page.waitForFunction(()=>document.activeElement?.matches('dialog[class*="headerUtilityDialog"] input[type="search"]'));
+    await searchField.fill("");
+    await page.waitForFunction(()=>document.querySelectorAll('[class*="headerUtilityResults"] a').length===8);
+    await searchField.press("ArrowDown");
+    await results.first().press("End");
+    await page.waitForFunction(()=>document.activeElement?.getAttribute("href")==="#secretos");
+    await results.last().press("Home");
+    await page.waitForFunction(()=>document.activeElement?.getAttribute("href")==="#mundos");
+    await page.keyboard.press("Escape");
+    await searchDialog.waitFor({state:"hidden"});
+    await page.waitForFunction(()=>document.activeElement?.matches('button[class*="navSearch"]'));
+   }
    // Recorridos observables de catálogo y ADN (sin escribir datos de usuario).
    if(item.label==="desktop-es-1440"||item.label==="desktop-en-1024"){
     const catalogImages=page.locator('img[class*="gameCardArt"]');
