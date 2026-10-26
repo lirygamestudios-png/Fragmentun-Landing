@@ -58,3 +58,10 @@ test("new release registration requires an existing game record",()=>{
  assert.match(create,/supabase\.from\("game_titles"\)\.select\("id"\)\.eq\("id",gameId\)/);
  assert.match(create,/release_game_not_found/);
 });
+
+test("release registration rejects missing optional storefront records",()=>{
+ const create=source.slice(source.indexOf("async function createRelease"),source.indexOf("async function updatePlataforma"));
+ assert.match(create,/if\(storefrontId\)/);
+ assert.match(create,/supabase\.from\("publishing_storefronts"\)\.select\("id"\)\.eq\("id",storefrontId\)/);
+ assert.match(create,/release_storefront_not_found/);
+});
