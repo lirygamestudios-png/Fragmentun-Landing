@@ -37,6 +37,7 @@ export default async function GameReleaseReadinessPage(){
       return <article key={game.id} className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgePlanned}>PUBLICACIÓN BLOQUEADA</span></div>
         <h3>{game.name}</h3>
+        <p>Identificador del videojuego: <code>{game.id}</code></p>
         <p>Etapa de desarrollo: {game.lifecycle_stage}. La etapa no equivale a aprobación.</p>
         <p>Mundos registrados: {registeredWorlds} de {INITIAL_WORLDS_PER_GAME} · Configuración técnica: {technicallyConfigured} de {INITIAL_WORLDS_PER_GAME}. La configuración no concede permiso de publicación.</p>
         {configured.map(w=><p key={w.number}>Mundo {w.number}: {w.detail} · acceso gratuito obligatorio</p>)}
