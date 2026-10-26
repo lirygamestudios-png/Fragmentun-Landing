@@ -38,3 +38,8 @@ test("storefront cannot be marked verified without external evidence",()=>{
  assert.equal((source.match(/storefront_verification_requires_external_evidence/g)||[]).length,2);
  assert.doesNotMatch(source,/<option value="verified">Verificada<\/option>/);
 });
+
+test("storefront verification requires external evidence",()=>{
+ assert.equal((source.match(/storefront_verification_requires_external_evidence/g)||[]).length,2);
+ assert.doesNotMatch(source,/<option value="verified">Verificada<\/option>/);
+});
