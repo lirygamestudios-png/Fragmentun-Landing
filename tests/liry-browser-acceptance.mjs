@@ -194,6 +194,10 @@ try {
     await page.waitForFunction(()=>location.hash==="#mundos"&&document.querySelector('button[aria-controls="liry-mobile-nav"]')?.getAttribute("aria-expanded")==="false");
     await page.waitForFunction(()=>document.activeElement?.id==="mundos",undefined,{timeout:5000});
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+1),false,"Navegar con el menú móvil no debe generar scroll horizontal");
+    await toggle.click();
+    await page.waitForFunction(()=>document.querySelector('#liry-mobile-nav')?.getClientRects().length>0);
+    await page.locator("main").first().click({position:{x:8,y:8},force:true});
+    await page.waitForFunction(()=>document.querySelector('button[aria-controls="liry-mobile-nav"]')?.getAttribute("aria-expanded")==="false",undefined,{timeout:5000});
    }
    // Perfil público: el avatar abre un diálogo accesible y Escape devuelve el foco.
    const gamerPortrait=page.locator('button[class*="gamerPortrait"]').first();
