@@ -249,6 +249,14 @@ try {
    await page.screenshot({path:join(out,item.label+"-mi-liry-modal.png")});
    await page.keyboard.press("Escape");
    await page.waitForFunction(()=>{const d=document.querySelector("#mi-liry-area-dialog");const b=document.querySelector('button[aria-controls="mi-liry-area-dialog"]');return d&&!d.open&&b?.getAttribute("aria-expanded")==="false"&&document.activeElement===b});
+   // Abrir otra tarjeta distinta debe restablecer la sección activa sin heredar la anterior.
+   const thirdArea=page.locator('button[aria-controls="mi-liry-area-dialog"]').nth(2);
+   await thirdArea.click();
+   await page.waitForFunction(()=>document.querySelector('#mi-liry-area-dialog nav small[aria-live="polite"]')?.textContent?.trim()==="3 / 6");
+   assert.equal(await thirdArea.getAttribute("aria-expanded"),"true","La segunda apertura pertenece a su propia tarjeta");
+   await page.keyboard.press("Escape");
+   await page.waitForFunction(()=>document.querySelector('#mi-liry-area-dialog')?.open===false&&document.querySelectorAll('button[aria-controls="mi-liry-area-dialog"][aria-expanded="true"]').length===0);
+   await page.waitForFunction(()=>document.activeElement===document.querySelectorAll('button[aria-controls="mi-liry-area-dialog"]')[2],undefined,{timeout:5000});
    assert.deepEqual(errors,[],"Sin errores JavaScript no capturados");
    console.log("PASS",item.label);
   }catch(e){failures++;console.error("FAIL",item.label,e.message);try{await page.screenshot({path:join(out,item.label+"-failed.png"),fullPage:true,timeout:5000})}catch{}}
