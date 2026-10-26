@@ -9,7 +9,7 @@ test("contact form mounts only while modal is open and receives locale",()=>{
  assert.match(src,/setOpened\(true\)/);
 });
 test("contact modal restores opening focus and unmounts form on close",()=>{
- assert.match(src,/onClose=\{\(\)=>\{setOpened\(false\);opener\.current\?\.focus/);
+ assert.match(src,/onClose=\{\(\)=>\{setOpened\(false\);if\(opener\.current\?\.isConnected\)opener\.current\.focus/);
 });
 test("contact dialog retains approved modal accessibility semantics",()=>{
  assert.match(src,/aria-modal="true"/);
