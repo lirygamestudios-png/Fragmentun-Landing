@@ -7,8 +7,10 @@ const targets=[
  {es:"Liry ADN",en:"Liry DNA",href:"#liry-dna",tags:"adn dna afinidad personality"},
  {es:"Mi perfil de jugador",en:"My gamer profile",href:"#perfil-gamer",tags:"perfil jugador avatar gamer"},
  {es:"Comunidad",en:"Community",href:"#comunidad",tags:"social comunidad community"},
+ {es:"Redes sociales",en:"Social networks",href:"#social",tags:"redes sociales social networks youtube compartir share"},
  {es:"LiryBoost",en:"LiryBoost",href:"#liryboost",tags:"beta compartir ranking"},
  {es:"Tienda",en:"Store",href:"#tienda",tags:"tienda skins shop store"},
+ {es:"Secretos de Liry",en:"Secrets of Liry",href:"#secretos",tags:"secretos secretos de liry secrets discover misterio"},
 ] as const;
 export function LiryHeaderUtilities({locale,searchLabel,noticeLabel}:{locale:Locale;searchLabel:string;noticeLabel:string}){
  const [section,setSection]=useState<"search"|"notice">("search");
