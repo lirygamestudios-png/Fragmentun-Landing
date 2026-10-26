@@ -52,3 +52,9 @@ test("new storefront records are created inactive regardless of database default
  const create=source.slice(source.indexOf("async function createPlataforma"),source.indexOf("async function createRelease"));
  assert.match(create,/account_status:accountStatus,active:false,created_by:user\.id/);
 });
+
+test("new release registration requires an existing game record",()=>{
+ const create=source.slice(source.indexOf("async function createRelease"),source.indexOf("async function updatePlataforma"));
+ assert.match(create,/supabase\.from\("game_titles"\)\.select\("id"\)\.eq\("id",gameId\)/);
+ assert.match(create,/release_game_not_found/);
+});
