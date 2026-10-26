@@ -11,3 +11,7 @@ test("Commander counts active milestones without an owner",()=>{
  assert.match(source,/const unassignedMilestones=activeMilestones\.filter\(m=>!m\.owner_user_id\)/);
  assert.match(source,/\{unassignedMilestones\.length\} sin responsable/);
 });
+
+test("completing a game milestone requires an assigned owner and exit criteria",()=>{
+ assert.match(source,/status==="completed"&&\(progress!==100\|\|!exitCriteria\|\|!ownerUserId\)/);
+});
