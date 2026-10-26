@@ -217,6 +217,10 @@ try {
    const xp=await gamerProfile.locator('[role="progressbar"]').first().evaluate(el=>({now:el.getAttribute("aria-valuenow"),text:el.getAttribute("aria-valuetext")}));
    if(xp.now===null)assert.ok(xp.text,"El progreso no verificado debe tener un estado accesible");
 
+   // El acceso al perfil desde la cabecera debe conservar el idioma.
+   const headerProfileLink=page.locator('a[class*="profileAccess"]').first();
+   assert.equal(new URL(await headerProfileLink.getAttribute("href"),base).pathname,"/lirygames/mi-liry","Acceso de perfil apunta a Mi Liry");
+   assert.equal(new URL(await headerProfileLink.getAttribute("href"),base).searchParams.get("lang"),item.locale,"El enlace de perfil conserva el idioma");
    const mi=await page.goto(base+"/lirygames/mi-liry?lang="+item.locale,{waitUntil:"domcontentloaded",timeout:30000});
    assert.equal(mi?.status(),200,"Mi Liry debe responder 200");
    assert.equal(new URL(page.url()).pathname,"/lirygames/mi-liry","La sesión SSO debe llegar a Mi Liry, no a la pantalla de autenticación");
