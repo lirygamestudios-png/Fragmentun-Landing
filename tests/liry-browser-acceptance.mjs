@@ -195,6 +195,18 @@ try {
     await page.waitForFunction(()=>document.activeElement?.id==="mundos",undefined,{timeout:5000});
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+1),false,"Navegar con el menú móvil no debe generar scroll horizontal");
    }
+   // Perfil público: el avatar abre un diálogo accesible y Escape devuelve el foco.
+   const gamerPortrait=page.locator('button[class*="gamerPortrait"]').first();
+   await gamerPortrait.click();
+   const avatarDialog=page.locator('dialog[class*="gamerInfoDialog"]').filter({has:page.locator('input[type="file"]')});
+   await avatarDialog.waitFor({state:"visible"});
+   const avatarInput=avatarDialog.locator('input[type="file"]');
+   assert.match(await avatarInput.getAttribute("accept")||"",/image\\/png/,"El perfil ofrece PNG");
+   assert.match(await avatarInput.getAttribute("accept")||"",/image\\/jpeg/,"El perfil ofrece JPEG");
+   assert.match(await avatarInput.getAttribute("accept")||"",/image\\/webp/,"El perfil ofrece WebP");
+   await page.keyboard.press("Escape");
+   await avatarDialog.waitFor({state:"hidden"});
+   await page.waitForFunction(()=>document.activeElement?.matches('button[class*="gamerPortrait"]'),undefined,{timeout:5000});
    const mi=await page.goto(base+"/lirygames/mi-liry?lang="+item.locale,{waitUntil:"domcontentloaded",timeout:30000});
    assert.equal(mi?.status(),200,"Mi Liry debe responder 200");
    assert.equal(new URL(page.url()).pathname,"/lirygames/mi-liry","La sesión SSO debe llegar a Mi Liry, no a la pantalla de autenticación");
