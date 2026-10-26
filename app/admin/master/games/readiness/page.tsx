@@ -30,13 +30,13 @@ export default async function GameReleaseReadinessPage(){
       const assigned=(worlds||[]).filter(w=>w.game_id===game.id);
       const configured=Array.from({length:INITIAL_WORLDS_PER_GAME},(_,i)=>{
         const item=assigned.find(w=>w.world_number===i+1);
-        return {number:i+1,valid:!!item&&item.access_type==="free"&&item.publication_status==="available"&&validGamePlayUrl(item.play_url)};
+        return {number:i+1,valid:!!item&&item.access_type==="free"&&item.publication_status==="available"&&validGamePlayUrl(item.play_url),detail:!item?"No registrado":item.access_type!=="free"?"Acceso gratuito por corregir":!validGamePlayUrl(item.play_url)?"Enlace HTTPS pendiente o inválido":item.publication_status!=="available"?"Configuración registrada; publicación aún no autorizada":"Configuración técnica aparente; falta autorización individual"};
       });
       return <article key={game.id} className={styles.card}>
         <div className={styles.cardTop}><span className={styles.badgePlanned}>PUBLICACIÓN BLOQUEADA</span></div>
         <h3>{game.name}</h3>
         <p>Etapa de desarrollo: {game.lifecycle_stage}. La etapa no equivale a aprobación.</p>
-        {configured.map(w=><p key={w.number}>Mundo {w.number}: {w.valid?"Configuración técnica aparente; falta autorización individual":"Pendiente de completar y verificar"} · acceso gratuito obligatorio</p>)}
+        {configured.map(w=><p key={w.number}>Mundo {w.number}: {w.detail} · acceso gratuito obligatorio</p>)}
         <p>Aprobación vinculada al videojuego: pendiente. Release Gate de producción: sin verificar.</p>
       </article>;
     })}
