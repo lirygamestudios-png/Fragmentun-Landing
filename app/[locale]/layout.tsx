@@ -47,8 +47,8 @@ export async function generateMetadata({
         width:1200,
         height:1800,
         alt:isEs
-          ?"Ciudad de Lumen — universo FRAGMENTUN de José Liranzo"
-          :"Lumen City — the FRAGMENTUN universe by José Liranzo"
+          ?"Elyon Voss — protagonista de FRAGMENTUN, de José Liranzo"
+          :"Elyon Voss — protagonist of FRAGMENTUN by José Liranzo"
       }]
     },
     twitter:{
