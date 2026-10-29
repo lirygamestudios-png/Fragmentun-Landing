@@ -267,7 +267,7 @@ export default async function Home({
               </TrackLink>
               <a
                 className="lumenWhatsappShare"
-                href={`https://api.whatsapp.com/send?text=${encodeURIComponent((locale==="es"?"Descubre FRAGMENTUN: entra en Lumen, donde sentir es rebelarse.":"Discover FRAGMENTUN: enter Lumen, where feeling is rebellion.")+" https://www.fragmentun.com/"+locale)}`}
+                href={`https://api.whatsapp.com/send?text=${encodeURIComponent((locale==="es"?"Descubre FRAGMENTUN: entra en Lumen, donde sentir es rebelarse.":"Discover FRAGMENTUN: enter Lumen, where feeling is rebellion.")+" https://www.fragmentun.com/"+locale+"?card=azul-20261029")}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={locale==="es"?"Compartir FRAGMENTUN por WhatsApp":"Share FRAGMENTUN on WhatsApp"}
