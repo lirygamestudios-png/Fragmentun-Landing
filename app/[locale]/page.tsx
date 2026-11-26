@@ -129,15 +129,18 @@ export default async function Home({
       inLanguage:locale,
       url:`${site}/${locale}`,
       image:firstBook?.cover_url||`${site}/fragmentun-i-cover-es.jpg`,
-      sameAs:["https://www.amazon.com/dp/B0HBLTHT8S",patreonUrl,...socialItems.map(x=>x.url).filter(Boolean)],
-      publisher:{"@type":"Organization",name:"LIRYGAMES STUDIOS"}
+      sameAs:locale==="es"?["https://www.amazon.com/dp/B0HBLTHT8S"]:[],
+      genre:["Ciencia ficciÃ³n","DistopÃ­a"],
+      isPartOf:{"@type":"BookSeries",name:"FRAGMENTUN"},
+      description:locale==="es"
+        ?"En Lumen las emociones estÃ¡n reguladas. Elyon Voss descubre el precio de sentir en una sociedad que controla las emociones."
+        :"In Lumen, emotions are regulated. Elyon Voss discovers the price of feeling in a society that controls emotions."
     },
     {
       "@context":"https://schema.org",
       "@type":"Person",
       name:"José Liranzo",
       url:`${site}/${locale}#autor`,
-      worksFor:{"@type":"Organization",name:"LIRYGAMES STUDIOS"},
       sameAs:socialItems.map(x=>x.url).filter(Boolean)
     },
     {
@@ -160,8 +163,8 @@ export default async function Home({
       <section className="hero">
         <div className="container heroGrid">
           <div className="approvedLandingHeroCopy">
-            <div className="kicker">{locale==="es"?"FRAGMENTUN I · EL DESPERTAR EMOCIONAL":"FRAGMENTUN I · THE EMOTIONAL AWAKENING"}</div>
-            <h1>{hero.question||t.heroQuestion}</h1>
+            <h1 className="kicker">{locale==="es"?"FRAGMENTUN I · EL DESPERTAR EMOCIONAL":"FRAGMENTUN I · THE EMOTIONAL AWAKENING"}</h1>
+            <h2 className="heroSeoQuestion">{hero.question||t.heroQuestion}</h2>
             <p className="lead">{hero.body||t.heroBody}</p>
 
             <div className="heroActions">
@@ -202,7 +205,7 @@ export default async function Home({
             <p className="lead">{author.body||(locale==="es"
               ?"Creo en el poder de las historias para despertar lo que sentimos, cuestionar lo que somos y construir mundos más humanos."
               :"I believe in the power of stories to awaken what we feel, question who we are, and build more human worlds.")}</p>
-            <a className="btn btnPrimary" href="#historia">{author.cta||(locale==="es"?"Conoce mi historia":"Meet the author")}</a>
+            <a className="btn btnPrimary" href={`/${locale}/autor`}>{author.cta||(locale==="es"?"Conoce mi historia":"Meet the author")}</a>
           </div>
           <div className="masterAuthorPortrait">
             {author.video_url
@@ -250,7 +253,7 @@ export default async function Home({
         id="lumen"
       >
         {lumen.image_url
-          ?<img className="lumenManagedImage" src={lumen.image_url} alt={lumen.image_alt||"Ciudad de Lumen"}/>
+          ?<img className="lumenManagedImage" src={lumen.image_url} alt={lumen.image_alt||(locale==="es"?"Ciudad de Lumen, escenario de FRAGMENTUN I":"City of Lumen, setting of FRAGMENTUN I")}/>
           :<CmsSectionMedia content={lumen} className="lumenCmsMedia"/>}
         <div className="cmsMediaOverlay lumenMediaOverlay"/>
         <div className="container split cmsMediaContent">

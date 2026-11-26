@@ -20,8 +20,8 @@ export async function generateMetadata({
     ? "FRAGMENTUN I — El Despertar Emocional | José Liranzo"
     : "FRAGMENTUN I — The Emotional Awakening | José Liranzo";
   const description=isEs
-    ? "En Lumen, las emociones están reguladas. Descubre FRAGMENTUN I: El Despertar Emocional, la saga de ciencia ficción de José Liranzo."
-    : "In Lumen, emotions are regulated. Discover FRAGMENTUN I: The Emotional Awakening, José Liranzo's science-fiction saga.";
+    ? "FRAGMENTUN I: El Despertar Emocional, novela distÃ³pica de JosÃ© Liranzo. En Lumen las emociones estÃ¡n reguladas. Lee gratis el capÃ­tulo 1."
+    : "Discover FRAGMENTUN I: The Emotional Awakening, a dystopian sci-fi story by JosÃ© Liranzo. Explore Lumen and read Chapter 1 free.";
 
   return {
     title,
