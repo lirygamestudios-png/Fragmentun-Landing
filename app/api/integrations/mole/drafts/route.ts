@@ -22,10 +22,9 @@ function authorize(request:NextRequest):boolean{
 }
 function config(){
  const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
- const key=process.env.FRAGMENTUN_MOLE_SUPABASE_SERVICE_ROLE_KEY;
- const editor=process.env.FRAGMENTUN_MOLE_EDITOR_UUID;
- if(!url||!/^https:\/\/[a-z0-9.-]+\.supabase\.co\/?$/i.test(url)||!key||!uuid.test(editor||""))return null;
- return {editor:editor!,db:createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}})};
+ const key=process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+ if(!url||!/^https:\/\/[a-z0-9.-]+\.supabase\.co\/?$/i.test(url)||!key)return null;
+ return createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
 }
 async function parse(request:NextRequest,update:boolean):Promise<{draft:Draft;id?:string}|null>{
  if(!/^application\/json(?:\s*;|$)/i.test(request.headers.get("content-type")||""))return null;
@@ -56,29 +55,26 @@ async function parse(request:NextRequest,update:boolean):Promise<{draft:Draft;id
 }
 async function handle(request:NextRequest,update:boolean){
  if(!authorize(request))return rejected("unauthorized",401);
- const cfg=config();
- if(!cfg)return rejected("integration_disabled",503);
+ const db=config();
+ if(!db)return rejected("integration_disabled",503);
  const parsed=await parse(request,update).catch(()=>null);
  if(!parsed)return rejected("invalid_draft",400);
- const {draft}=parsed;
- // Explicit allowlist: publication state and writer identity are never client-controlled.
- const record={...draft,image_url:draft.image_url||null,updated_by:cfg.editor,
-   published_es:false,published_en:false,published_at:null,updated_at:new Date().toISOString()};
- if(!update){
-   const {data,error}=await cfg.db.from("fragmentun_blog_posts").insert(record).select("id,slug").single();
-   if(error)return rejected(error.code==="23505"?"slug_conflict":"save_failed",error.code==="23505"?409:503);
-   return NextResponse.json({data,status:"draft_created"},{status:201,headers:{"Cache-Control":"no-store"}});
+ // A separate restricted database function enforces the draft-only state and editor ownership.
+ // The public Supabase key has NO direct draft table write privileges.
+ const bearer=request.headers.get("authorization")!.slice(7);
+ const {data,error}=await db.rpc("fragmentun_mole_draft_upsert_v1",{
+   p_token:bearer,p_draft:{...parsed.draft,image_url:parsed.draft.image_url||null},
+   p_id:update?parsed.id:null
+ });
+ if(error){
+   if(error.code==="23505")return rejected("slug_conflict",409);
+   if(error.code==="P0002")return rejected("not_found_or_not_editable",409);
+   if(error.code==="28000")return rejected("unauthorized",401);
+   return rejected("save_unavailable",503);
  }
- // Compare-and-update predicates: never modify an existing published article or another editor's draft.
- // In particular we do NOT write published_* or published_at in an update request.
- const {published_es,published_en,published_at,...changes}=record;
- void published_es;void published_en;void published_at;
- const {data,error}=await cfg.db.from("fragmentun_blog_posts").update(changes)
-   .eq("id",parsed.id!).eq("updated_by",cfg.editor).eq("published_es",false).eq("published_en",false)
-   .is("published_at",null).select("id,slug").maybeSingle();
- if(error)return rejected(error.code==="23505"?"slug_conflict":"save_failed",error.code==="23505"?409:503);
- if(!data)return rejected("not_found_or_not_editable",409);
- return NextResponse.json({data,status:"draft_updated"},{headers:{"Cache-Control":"no-store"}});
+ if(!data||typeof data!=="object"||typeof data.id!=="string")return rejected("save_unavailable",503);
+ return NextResponse.json({data,status:update?"draft_updated":"draft_created"},{status:update?200:201,headers:{"Cache-Control":"no-store"}});
+
 }
 export async function POST(request:NextRequest){return handle(request,false);}
 export async function PATCH(request:NextRequest){return handle(request,true);}
