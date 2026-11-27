@@ -15,7 +15,7 @@ REVOKE ALL ON TABLE fragmentun_integrations.mole_credentials FROM PUBLIC, anon, 
 ALTER TABLE fragmentun_integrations.mole_credentials ENABLE ROW LEVEL SECURITY;
 ALTER TABLE fragmentun_integrations.mole_credentials FORCE ROW LEVEL SECURITY;
 
-CREATE OR REPLACE FUNCTION public.fragmentun_mole_draft_upsert_v1(
+-- SECURITY DEFINER must be owned by an approved privileged DB role; verify owner\n-- and FORCE RLS behavior in a disposable database before applying.\nCREATE OR REPLACE FUNCTION public.fragmentun_mole_draft_upsert_v1(
  p_token text, p_draft jsonb, p_id uuid DEFAULT NULL
 ) RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER
  SET search_path = pg_catalog, pg_temp
@@ -42,6 +42,14 @@ BEGIN
  WHERE token_hash = sha256(convert_to(p_token,'UTF8'))
    AND enabled IS TRUE AND expires_at > now();
  IF v_editor IS NULL THEN RAISE EXCEPTION 'unauthorized' USING ERRCODE='28000'; END IF;
+ -- The enrolled identity must still be an active editorial member.
+ -- Revoking the admin_profiles role immediately stops further Mole writes.
+ IF NOT EXISTS (
+   SELECT 1 FROM public.admin_profiles p
+   WHERE p.user_id = v_editor AND p.role IN ('admin','editor')
+ ) THEN
+   RAISE EXCEPTION 'editor_not_authorized' USING ERRCODE='28000';
+ END IF;
  IF p_draft IS NULL OR jsonb_typeof(p_draft) <> 'object'
     OR EXISTS (SELECT 1 FROM jsonb_object_keys(p_draft) k WHERE k <> ALL(v_keys)) THEN
   RAISE EXCEPTION 'invalid_draft' USING ERRCODE='22023';
