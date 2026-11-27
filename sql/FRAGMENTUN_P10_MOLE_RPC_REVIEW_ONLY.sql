@@ -1,6 +1,8 @@
 -- FRAGMENTUN P10: REVIEW ONLY. DO NOT APPLY TO PRODUCTION DATABASE.
 -- The draft-only RPC does not require a service-role credential in Vercel.
 -- Requires PostgreSQL with built-in sha256(bytea). No credential is created.
+-- Staging design only: execute in a disposable database, not the live FRAGMENTUN Supabase project.
+-- A successful SQL parse or static contract test does NOT prove RLS isolation.
 BEGIN;
 CREATE SCHEMA IF NOT EXISTS fragmentun_integrations;
 REVOKE ALL ON SCHEMA fragmentun_integrations FROM PUBLIC, anon, authenticated;
@@ -74,7 +76,7 @@ BEGIN
    length(v_excerpt_es)>400 OR length(v_excerpt_en)>400 OR
    length(v_body_es) NOT BETWEEN 1 AND 50000 OR length(v_body_en) NOT BETWEEN 1 AND 50000 OR
    (v_image IS NOT NULL AND (length(v_image)>1000 OR
-      (v_image !~ '^https://[^[:space:]]+$' AND v_image !~ '^/[^/][A-Za-z0-9/_.-]*$'))) THEN
+      (v_image !~ '^https://[^[:space:]]+$' AND v_image !~ '^/[A-Za-z0-9_.-][A-Za-z0-9/_.-]*))) THEN
    RAISE EXCEPTION 'invalid_draft' USING ERRCODE='22023';
  END IF;
  IF p_id IS NULL THEN
@@ -86,11 +88,48 @@ BEGIN
    RETURNING id INTO v_id;
  ELSE
    UPDATE public.fragmentun_blog_posts SET
-    slug=v_slug,title_es=v_title_es,title_en=v_title_en,
+    title_es=v_title_es,title_en=v_title_en,
     excerpt_es=v_excerpt_es,excerpt_en=v_excerpt_en,
     body_es=v_body_es,body_en=v_body_en,image_url=v_image,
     updated_at=now()
-   WHERE id=p_id AND updated_by=v_editor AND published_es IS FALSE
+   WHERE id=p_id AND slug=v_slug AND updated_by=v_editor AND published_es IS FALSE
+     AND published_en IS FALSE AND published_at IS NULL
+   RETURNING id INTO v_id;
+   IF v_id IS NULL THEN RAISE EXCEPTION 'not_editable' USING ERRCODE='P0002'; END IF;
+ END IF;
+ RETURN jsonb_build_object('id',v_id,'slug',v_slug);
+END;
+$function$;
+REVOKE ALL ON FUNCTION public.fragmentun_mole_draft_upsert_v1(text,jsonb,uuid) FROM PUBLIC, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.fragmentun_mole_draft_upsert_v1(text,jsonb,uuid) TO anon;
+COMMIT;
+
+-- Credential enrollment must be performed separately, only after review:
+--   - Generate a fresh high-entropy secret outside chat and commit history.
+--   - Insert only sha256(convert_to(token,'UTF8')), real editor UUID, expires_at, enabled=true.
+--   - Store matching hash in Vercel's Preview-only FRAGMENTUN_MOLE_TOKEN_SHA256.
+--   - Store raw token only in Mole's secured credentials vault.
+-- NEVER put raw credentials into SQL files, logs, chat or GitHub.
+-- Mandatory live-negative verification: anon without token cannot create, edit or publish;
+-- revoked editor and expired token fail; published, foreign and renamed slugs cannot update.
+-- Runtime abuse throttling and audit logging are NOT yet implemented: activation blocked.
+))) THEN
+   RAISE EXCEPTION 'invalid_draft' USING ERRCODE='22023';
+ END IF;
+ IF p_id IS NULL THEN
+   INSERT INTO public.fragmentun_blog_posts
+   (slug,title_es,title_en,excerpt_es,excerpt_en,body_es,body_en,image_url,
+    published_es,published_en,published_at,updated_by)
+   VALUES (v_slug,v_title_es,v_title_en,v_excerpt_es,v_excerpt_en,v_body_es,v_body_en,v_image,
+    false,false,null,v_editor)
+   RETURNING id INTO v_id;
+ ELSE
+   UPDATE public.fragmentun_blog_posts SET
+    title_es=v_title_es,title_en=v_title_en,
+    excerpt_es=v_excerpt_es,excerpt_en=v_excerpt_en,
+    body_es=v_body_es,body_en=v_body_en,image_url=v_image,
+    updated_at=now()
+   WHERE id=p_id AND slug=v_slug AND updated_by=v_editor AND published_es IS FALSE
      AND published_en IS FALSE AND published_at IS NULL
    RETURNING id INTO v_id;
    IF v_id IS NULL THEN RAISE EXCEPTION 'not_editable' USING ERRCODE='P0002'; END IF;
