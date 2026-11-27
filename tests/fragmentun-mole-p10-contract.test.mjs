@@ -21,13 +21,13 @@ test("P10 disabled unless server-only configuration explicitly supplied",()=>{
  assert.doesNotMatch(route,/FRAGMENTUN_MOLE_EDITOR_UUID/);
  assert.match(route,/NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY/);
  assert.match(route,/fragmentun_mole_draft_upsert_v1/);
- assert.match(route,/if\(!cfg\)return rejected\("integration_disabled",503\)/);
+ assert.match(route,/if\(!db\)return rejected\("integration_disabled",503\)/);
  assert.doesNotMatch(route,/NEXT_PUBLIC_SUPABASE_SERVICE_ROLE/);
 });
 test("P10 input is allowlisted; publication cannot be requested",()=>{
  assert.match(route,/const fields=\["slug","title_es","title_en","excerpt_es","excerpt_en","body_es","body_en","image_url"\]/);
  assert.match(route,/Object\.keys\(data\)\.some\(k=>!allowed\.has\(k\)\)/);
- assert.match(route,/published_es:false,published_en:false,published_at:null/);
+ assert.match(route,/p_draft:\{\.\.\.parsed\.draft,image_url:parsed\.draft\.image_url\|\|null\}/);
 });
 test("P10 delegates ownership and publication checks to restricted DB RPC",()=>{
  assert.match(route,/db\.rpc\("fragmentun_mole_draft_upsert_v1"/);
