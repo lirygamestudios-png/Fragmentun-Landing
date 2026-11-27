@@ -27,6 +27,7 @@ export function PublicHeader({locale,amazonUrl,patreonUrl,shopEnabled=false}:{lo
     [t.nav.universe,`/${locale}#lumen`],
     [locale==="es"?"Personajes":"Characters",`/${locale}#personajes`],
     [t.nav.test,`/${locale}#test`],
+    [locale==="es"?"Blog":"Blog",`/${locale}/blog`],
     [locale==="es"?"Noticias":"News",`/${locale}#noticias`],
     [locale==="es"?"Comunidad":"Community",`/${locale}#comunidad-publica`],
     ...(shopEnabled?[[locale==="es"?"Tienda":"Store",`/${locale}#tienda`]]:[]),

@@ -16,6 +16,7 @@ export default async function AdminContenidoPage(){
       <Link className="btn btnGhost" href="/admin">← Inicio</Link>
     </div>
     <p className="lead">Edita el contenido bilingüe que alimenta la web pública. Los cambios publicados se reflejan desde Supabase.</p>
+    <p><Link className="btn btnPrimary" href="/admin/blog">Administrar blog editorial</Link></p>
     <AdminContentEditor/>
   </main>;
 }

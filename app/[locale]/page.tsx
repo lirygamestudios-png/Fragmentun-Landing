@@ -346,6 +346,10 @@ export default async function Home({
             <span className="newsSignal">● {news.signal||(locale==="es"?"TRANSMISIÓN ACTIVA":"LIVE TRANSMISSION")}</span>
           </div>
 
+          <div data-fragmentun-blog-entry="p7o" style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:16,margin:"12px 0 24px"}}>
+          <a href={`/${locale}/blog`} className="btn btnSecondary">{locale==="es"?"Explorar el Blog · Crónicas":"Explore the Blog · Chronicles"}</a>
+          <span style={{color:"#c4d3e8",fontSize:14}}>{locale==="es"?"Artículos y novedades del universo FRAGMENTUN":"Stories and updates from the FRAGMENTUN universe"}</span>
+        </div>
           <div className="newsGrid">
             <article className="newsCard featured">
               <div className="newsVisual bookNews"><img src={news.card_feature_image||firstBook?.cover_url||"/fragmentun-i-cover-es.jpg"} alt={firstBook?.cover_alt||"FRAGMENTUN I"}/></div>
@@ -470,6 +474,7 @@ export default async function Home({
           <a href="#comunidad-publica">{locale==="es"?"Comunidad":"Community"}</a>
           <a href="#lectores">{locale==="es"?"Reseñas":"Reviews"}</a>
           <a href="#capitulo">{locale==="es"?"Capítulo 1":"Chapter 1"}</a>
+          <a href={`/${locale}/blog`}>{locale==="es"?"Blog · Crónicas":"Blog · Chronicles"}</a>
           {shopPublicEnabled&&<a href="#tienda">{locale==="es"?"Tienda FRAGMENTUN":"FRAGMENTUN Store"}</a>}
         </div>
         <div className="approvedFooterCol">
