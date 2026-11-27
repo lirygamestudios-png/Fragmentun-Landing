@@ -33,7 +33,7 @@ test("P10 SQL rejects caller-supplied publication flags and only inserts as draf
  assert.doesNotMatch(sql,/EXECUTE .*\bDELETE\b/);
 });
 test("P10 SQL updates only drafts owned by the enrolled editor",()=>{
- assert.match(sql,/WHERE id=p_id AND updated_by=v_editor AND published_es IS FALSE/);
+ assert.match(sql,/WHERE id=p_id AND slug=v_slug AND updated_by=v_editor AND published_es IS FALSE/);
  assert.match(sql,/AND published_en IS FALSE AND published_at IS NULL/);
  assert.match(sql,/not_editable/);
 });
