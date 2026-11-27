@@ -4,7 +4,7 @@ import {readFileSync} from "node:fs";
 const sql=readFileSync(new URL("../sql/FRAGMENTUN_P10_MOLE_RPC_REVIEW_ONLY.sql",import.meta.url),"utf8");
 
 test("P10 SQL remains review only and requires no raw credentials in repository",()=>{
- assert.match(sql,/REVIEW ONLY\. DO NOT APPLY TO PRODUCTION/);
+ assert.match(sql,/REVIEW ONLY\. DO NOT APPLY TO (?:A LIVE SUPABASE PROJECT|PRODUCTION)/);
  assert.doesNotMatch(sql,/INSERT INTO fragmentun_integrations\.mole_credentials/);
  assert.doesNotMatch(sql,/secret_[A-Za-z0-9]{20,}/);
 });
@@ -18,8 +18,8 @@ test("P10 SQL denies unauthorized schema access and enforces FORCE RLS",()=>{
  assert.match(sql,/REVOKE ALL ON SCHEMA fragmentun_integrations FROM PUBLIC, anon, authenticated/);
  assert.match(sql,/REVOKE ALL ON TABLE fragmentun_integrations\.mole_credentials FROM PUBLIC, anon, authenticated/);
  assert.match(sql,/ALTER TABLE fragmentun_integrations\.mole_credentials FORCE ROW LEVEL SECURITY/);
- assert.match(sql,/REVOKE ALL ON FUNCTION public\.fragmentun_mole_draft_upsert_v1\(text,jsonb,uuid\) FROM PUBLIC, authenticated, service_role/);
- assert.match(sql,/GRANT EXECUTE ON FUNCTION public\.fragmentun_mole_draft_upsert_v1\(text,jsonb,uuid\) TO anon/);
+ assert.match(sql,/REVOKE ALL ON FUNCTION public\.fragmentun_mole_draft_upsert_v1\(text,jsonb,uuid\)\s+FROM PUBLIC, authenticated, service_role/);
+ assert.match(sql,/GRANT EXECUTE ON FUNCTION public\.fragmentun_mole_draft_upsert_v1\(text,jsonb,uuid\)\s+TO anon/);
 });
 test("P10 SQL revalidates editor membership on every write",()=>{
  assert.match(sql,/FROM public\.admin_profiles p/);
@@ -44,5 +44,5 @@ test("P10 update cannot rename slugs or create article takeover",()=>{
 });
 test("P10 never elevates token holder to direct privileged table write",()=>{
  assert.doesNotMatch(sql,/GRANT (?:INSERT|UPDATE|DELETE) ON .*fragmentun_blog_posts TO anon/);
- assert.match(sql,/REVOKE ALL ON FUNCTION public\.fragmentun_mole_draft_upsert_v1\(text,jsonb,uuid\) FROM PUBLIC, authenticated, service_role/);
+ assert.match(sql,/REVOKE ALL ON FUNCTION public\.fragmentun_mole_draft_upsert_v1\(text,jsonb,uuid\)\s+FROM PUBLIC, authenticated, service_role/);
 });
