@@ -17,8 +17,10 @@ test("P10 token must be hashed and compared in constant time",()=>{
  assert.match(route,/if\(!authorize\(request\)\)return rejected\("unauthorized",401\)/);
 });
 test("P10 disabled unless server-only configuration explicitly supplied",()=>{
- assert.match(route,/FRAGMENTUN_MOLE_SUPABASE_SERVICE_ROLE_KEY/);
- assert.match(route,/FRAGMENTUN_MOLE_EDITOR_UUID/);
+ assert.doesNotMatch(route,/FRAGMENTUN_MOLE_SUPABASE_SERVICE_ROLE_KEY/);
+ assert.doesNotMatch(route,/FRAGMENTUN_MOLE_EDITOR_UUID/);
+ assert.match(route,/NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY/);
+ assert.match(route,/fragmentun_mole_draft_upsert_v1/);
  assert.match(route,/if\(!cfg\)return rejected\("integration_disabled",503\)/);
  assert.doesNotMatch(route,/NEXT_PUBLIC_SUPABASE_SERVICE_ROLE/);
 });
@@ -27,11 +29,11 @@ test("P10 input is allowlisted; publication cannot be requested",()=>{
  assert.match(route,/Object\.keys\(data\)\.some\(k=>!allowed\.has\(k\)\)/);
  assert.match(route,/published_es:false,published_en:false,published_at:null/);
 });
-test("P10 existing published posts and other writers cannot be edited",()=>{
- assert.match(route,/\.eq\("updated_by",cfg\.editor\)/);
- assert.match(route,/\.eq\("published_es",false\)\.eq\("published_en",false\)/);
- assert.match(route,/\.is\("published_at",null\)/);
- assert.match(route,/\.eq\("id",parsed\.id!\)/);
+test("P10 delegates ownership and publication checks to restricted DB RPC",()=>{
+ assert.match(route,/db\.rpc\("fragmentun_mole_draft_upsert_v1"/);
+ assert.match(route,/p_token:bearer/);
+ assert.match(route,/p_id:update\?parsed\.id:null/);
+ assert.doesNotMatch(route,/\.from\("fragmentun_blog_posts"\)\.(insert|update)/);
 });
 test("P10 preserves body size guard, duplicate-slug conflict and no-store",()=>{
  assert.match(route,/const maxBytes=125000/);
