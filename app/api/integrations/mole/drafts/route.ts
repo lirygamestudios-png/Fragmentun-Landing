@@ -2,12 +2,12 @@ import {createHash,timingSafeEqual} from "node:crypto";
 import {NextRequest,NextResponse} from "next/server";
 import {createClient} from "@supabase/supabase-js";
 
-// P10: Disabled until three server-only variables are deliberately configured.
-// Never provide the service credential, editor UUID, or token hash to Mole.
+// P10: disabled until a server-only Bearer digest is configured and the database-scoped RPC is reviewed.
+// Never provide the raw Bearer secret or administrator credentials in a repository, browser or logs.
 export const runtime="nodejs";
 export const dynamic="force-dynamic";
 const maxBytes=125000;
-const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const slugRx=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const fields=["slug","title_es","title_en","excerpt_es","excerpt_en","body_es","body_en","image_url"] as const;
 type DraftField=(typeof fields)[number];
