@@ -18,7 +18,7 @@ test("P10 SQL denies unauthorized schema access and enforces FORCE RLS",()=>{
  assert.match(sql,/REVOKE ALL ON SCHEMA fragmentun_integrations FROM PUBLIC, anon, authenticated/);
  assert.match(sql,/REVOKE ALL ON TABLE fragmentun_integrations\.mole_credentials FROM PUBLIC, anon, authenticated/);
  assert.match(sql,/ALTER TABLE fragmentun_integrations\.mole_credentials FORCE ROW LEVEL SECURITY/);
- assert.match(sql,/REVOKE ALL ON FUNCTION public\.fragmentun_mole_draft_upsert_v1\(text,jsonb,uuid\) FROM PUBLIC, authenticated/);
+ assert.match(sql,/REVOKE ALL ON FUNCTION public\.fragmentun_mole_draft_upsert_v1\(text,jsonb,uuid\) FROM PUBLIC, authenticated, service_role/);
  assert.match(sql,/GRANT EXECUTE ON FUNCTION public\.fragmentun_mole_draft_upsert_v1\(text,jsonb,uuid\) TO anon/);
 });
 test("P10 SQL revalidates editor membership on every write",()=>{
@@ -36,4 +36,13 @@ test("P10 SQL updates only drafts owned by the enrolled editor",()=>{
  assert.match(sql,/WHERE id=p_id AND updated_by=v_editor AND published_es IS FALSE/);
  assert.match(sql,/AND published_en IS FALSE AND published_at IS NULL/);
  assert.match(sql,/not_editable/);
+});
+
+test("P10 update cannot rename slugs or create article takeover",()=>{
+ assert.match(sql,/WHERE id=p_id AND slug=v_slug AND updated_by=v_editor/);
+ assert.doesNotMatch(sql,/UPDATE public\.fragmentun_blog_posts SET\s*slug=/);
+});
+test("P10 never elevates token holder to direct privileged table write",()=>{
+ assert.doesNotMatch(sql,/GRANT (?:INSERT|UPDATE|DELETE) ON .*fragmentun_blog_posts TO anon/);
+ assert.match(sql,/REVOKE ALL ON FUNCTION public\.fragmentun_mole_draft_upsert_v1\(text,jsonb,uuid\) FROM PUBLIC, authenticated, service_role/);
 });
