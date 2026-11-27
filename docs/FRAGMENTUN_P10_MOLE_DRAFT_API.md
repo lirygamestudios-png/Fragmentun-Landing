@@ -16,16 +16,16 @@ Successful POST: HTTP 201 with `{"status":"draft_created","data":{"id":"...","sl
 Successful PATCH: HTTP 200 with `{"status":"draft_updated","data":{"id":"...","slug":"..."}}`.
 Failure examples: 401 invalid Bearer, 503 not configured, 400 invalid body, 409 duplicate slug or non-editable draft.
 
-To prevent duplicate posts use the same unique slug. POST on an existing slug returns 409. Keep the returned ID for PATCH; a draft becomes non-editable through this integration if manually published, transferred to a different editor or marked with a publication timestamp. The public blog retains its existing RLS-based published-only read path.
+To prevent duplicate posts use the same unique slug. POST on an existing slug returns 409. Keep the returned ID for PATCH; a draft becomes non-editable through this integration if manually published, transferred to a different editor or marked with a publication timestamp. The public blog retains its existing RLS-based published-only read path. The database RPC must be reviewed and installed separately before any successful write is possible.
 
 ## Server-only configuration, NOT COMMITTED
 
-The Preview branch must explicitly receive these **server-only** environment variables before activating the integration:
-- `FRAGMENTUN_MOLE_TOKEN_SHA256`: lowercase SHA-256 hex digest of a unique 32+ character random Bearer secret. The raw token is provided **only** to Mole through its secure credential field.
-- `FRAGMENTUN_MOLE_EDITOR_UUID`: approved, real editor user UUID from Supabase. Do not fabricate a UUID.
-- `FRAGMENTUN_MOLE_SUPABASE_SERVICE_ROLE_KEY`: Supabase server-only privileged key, stored as an encrypted Vercel server secret. Never use `NEXT_PUBLIC_` for this credential and never send it to Mole.
+The Preview branch must receive only **one new server-only variable** before activating the integration:
+- `FRAGMENTUN_MOLE_TOKEN_SHA256`: SHA-256 hex digest of a unique high-entropy Bearer secret. Provide the raw token **only** to Mole through its secure credential field.
 
-**Security warning:** A Supabase service-role credential is privileged and bypasses RLS. It is only used inside the route; the Bearer token grants only the route's narrow API operations, not direct database access. Before enabling this candidate outside an isolated Preview, prefer replacing the service-role access with an explicitly scoped, database-enforced write interface. Review token rotation, audit logging, abuse controls and deployment protection first.
+Use the existing FRAGMENTUN Supabase URL and **publishable** key for the connection. The API calls the dedicated PostgreSQL RPC `public.fragmentun_mole_draft_upsert_v1`; it never receives a Supabase service-role credential or an administrator session. SQL is supplied in `sql/FRAGMENTUN_P10_MOLE_RPC_REVIEW_ONLY.sql` and is **not applied**. The private credentials table must contain only a token hash and an approved real editor UUID, after a separate authorized enrollment.
+
+**Security warning:** This draft-only database RPC is `SECURITY DEFINER`, which can bypass RLS depending on its database owner. Its allowlist, ownership conditions, and method scope therefore require independent review before enabling. This Preview branch contains **no service-role key**. The proposed SQL is review-only, and must not be applied to production without authorization. Add request rate limits, replay/abuse controls, explicit token expiration, audit and revocation tests before onboarding Mole.
 
 ## Safeguards
 
@@ -40,7 +40,7 @@ The Preview branch must explicitly receive these **server-only** environment var
 1. Vercel Preview build READY for branch `work/fragmentun-mole-editorial-p10`.
 2. Local contract test `node --test tests/fragmentun-mole-p10-contract.test.mjs` and project build.
 3. Without server secrets: reject Bearer requests and do not create DB rows.
-4. After explicitly configuring Preview-only secrets: test invalid/valid Bearer, create draft, repeat slug, edit own draft, reject forbidden fields, reject published or other-editor draft, verify RLS and inspect DB rows.
+4. Review and apply database RPC **only in an isolated authorized lab**; verify function grants and direct table denial; configure Preview-only hash and enroll a short-lived test token; test invalid/valid Bearer, create draft, repeat slug, edit own draft, reject forbidden fields, reject published or other-editor draft, verify public RLS and inspect DB rows.
 5. Revoke a test token and prove rejection; verify public blog still only sees published content.
 6. Approval before any production merge/deployment. Do not put a raw token in a commit, public link, test output or chat message.
 
